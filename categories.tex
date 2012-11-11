@@ -1,0 +1,181 @@
+\newcommand{\uset}{\ensuremath{\underline{\set}}\xspace}
+\newcommand{\inv}[1]{{#1}^{-1}}
+\newcommand{\idtoiso}{\ensuremath{\mathsf{idtoiso}}\xspace}
+\newcommand{\isotoid}{\ensuremath{\mathsf{isotoid}}\xspace}
+
+\chapter{Category theory}
+\label{sec:category-theory}
+
+\section{Categories and precategories}
+\label{sec:cats}
+
+In classical mathematics, there are many equivalent definitions of a category.  
+
+\begin{defn}\label{ct:precategory}
+  A \textbf{precategory} $A$ consists of the following.
+  \begin{enumerate}
+  \item A type $A_0$ of \emph{objects}.  We write $a:A$ for $a:A_0$.
+  \item For each $a,b:A$, a set $\hom_A(a,b)$ of \emph{arrows} or \emph{morphisms}.
+  \item For each $a:A$, a morphism $1_a:\hom_A(a,a)$.
+  \item For each $a,b,c:A$, a function
+    \[  \hom_A(a,b) \to \hom_A(b,c) \to \hom_A(a,c) \]
+    denoted infix by $f\mapsto g\mapsto f;g$.
+  \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id f {f;1_b}$ and $\id f {1_a;f}$.
+  \item For each $a,b,c,d:A$ and $f:\hom_A(a,b)$, $g:\hom_A(b,c)$, $h:\hom_A(c,d)$, we have $\id {(f;g);h}{f;(g;h)}$.
+  \end{enumerate}
+\end{defn}
+
+The problem with the notion of precategory is that for objects $a,b:A$, we have two possibly-different notions of ``sameness''.  On the one hand, we have $\id[A_0]{a}{b}$.  But on the other hand, there is the standard categorical notion of \emph{isomorphism}.
+
+\begin{defn}\label{ct:isomorphism}
+  A morphism $f:\hom_A(a,b)$ is an \textbf{isomorphism} if there is a morphism $g:\hom_A(b,a)$ such that $\id{f;g}{1_a}$ and $\id{g;f}{1_b}$.  We write $a\cong b$ for the type of such isomorphisms.
+\end{defn}
+
+\begin{lem}\label{ct:isoprop}
+  For any $f:\hom_A(a,b)$, the type ``$f$ is an isomorphism'' is a subsingleton.
+  Therefore, for any $a,b:A$ the type $a\cong b$ is a set.
+\end{lem}
+\begin{proof}
+  Suppose given $g:\hom_A(b,a)$ and $\eta:(\id{1_a}{f; g})$ and $\epsilon:(\id{g; f}{1_b})$, and similarly $g'$, $\eta'$, and $\epsilon'$.  We must show $\id{(g,\eta,\epsilon)}{(g',\eta',\epsilon')}$.
+  But since all hom-sets are sets, their identity types are subsingletons, so it suffices to show $\id g {g'}$.
+  For this we have
+  \[g' = g';1_a = g'; (f; g) = (g'; f); g = 1_b; g = g\]
+  using $\eta$ and $\epsilon'$.
+\end{proof}
+
+If $f:a\cong b$, then we write $\inv f$ for its inverse, which by \autoref{ct:isoprop} is uniquely determined.
+
+The only relationship between these two notions of sameness that we have in a precategory is the following.
+
+\begin{lem}[\textsf{idtoiso}]\label{ct:idtoiso}
+  If $A$ is a precategory and $a,b:A$, then
+  \[(\id a b)\to (a \cong b).\]
+\end{lem}
+\begin{proof}
+  By induction on identity, we may assume $a$ and $b$ are the same.  But then we have $1_a:\hom_A(a,a)$, which it is easy to see is an isomorphism.
+\end{proof}
+
+Clearly, this situation is analogous to the issue that motivated us to introduce the univalence axiom.  In fact, we have the following:
+
+\begin{eg}\label{ct:precatset}
+  There is a precategory \uset, whose type of objects is \set, and with $\hom_{\uset}(A,B) = (A\to B)$.  The identity morphisms are identity functions and the composition is function composition.  For this precategory, \autoref{ct:idtoiso} is identical to (the restriction to sets of) the identity-to-equivalence map from the chapter on univalence.
+\end{eg}
+
+Thus, it is natural to make the following definition.
+
+\begin{defn}\label{ct:category}
+  A \textbf{category} is a precategory such that for all $a,b:A$, the function $\idtoiso_{a,b}$ from \autoref{ct:idtoiso} is an equivalence.
+\end{defn}
+
+In particular, if $a\cong b$, then $a=b$.  The following consequence is also important.
+
+\begin{lem}\label{ct:obj-1type}
+  In a category, the type of objects is a 1-type.
+\end{lem}
+\begin{proof}
+  It suffices to show that for any $a,b:A$, the type $\id a b$ is a set.  But $\id a b$ is equivalent to $a \cong b$, which is a set.
+\end{proof}
+
+We write $\isotoid$ for the inverse $(a\cong b) \to (\id a b)$ of $\idtoiso$.  The following relationship between the two is important.
+
+\begin{lem}\label{ct:idtoiso-trans}
+  For $p:\id a a'$, $q:\id b b'$, and $f:\hom_A(a,b)$, we have
+  \begin{equation}\label{ct:idtoisocompute}
+    \id[\hom_A(a',b')]{\trans{(p,q)}{f}}
+    {\inv{(\idtoiso(p))};f;\idtoiso(q)}
+  \end{equation}
+\end{lem}
+\begin{proof}
+  By induction, we may assume $p$ and $q$ are $\refl a$ and $\refl b$ respectively.  Then the left-hand side of~\eqref{ct:idtoisocompute} is simply $f$.
+  But by definition, $\idtoiso(\refl a)$ is $1_a$, and $\idtoiso(\refl b)$ is $1_b$, so the right-hand side of~\eqref{ct:idtoisocompute} is $1_a;f;1_b$, which is identical to $f$.
+\end{proof}
+
+Similarly, we can show
+\begin{gather}
+  \id{\idtoiso(\rev p)}{\inv {(\idtoiso(p))}}\\
+  \id{\idtoiso(p\ct q)}{\idtoiso(p);\idtoiso(q)}\\
+  \id{\isotoid(e;f)}{\isotoid(e)\ct \isotoid(f)}
+\end{gather}
+and so on.
+
+
+\section{Functors and transformations}
+\label{sec:transfors}
+
+\begin{defn}
+  Let $A$ and $B$ be precategories.  A \textbf{functor} $F:A\to B$ consists of
+  \begin{enumerate}
+  \item A function $F_0:A_0\to B_0$, generally also denoted $F$.
+  \item For each $a,b:A$, a function $F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)$, generally also denoted $F$.
+  \item For each $a:A$, we have $\id{F(1_a)}{1_{Fa}}$.
+  \item For each $a,b,c:A$ and $f:\hom_A(a,b)$ and $g:\hom_B(b,c)$, we have $\id{F(f;g)}{Ff;Fg}$.
+  \end{enumerate}
+\end{defn}
+
+\begin{defn}
+  For functors $F,G:A\to B$, a \textbf{natural transformation} $\gamma:F\to G$ consists of
+  \begin{enumerate}
+  \item For each $a:A$, a morphism $\gamma_a:\hom_B(Fa,Ga)$ (the ``components'').
+  \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id{\gamma_a;Gf}{Ff;\gamma_b}$ (the ``naturality axiom'').
+  \end{enumerate}
+\end{defn}
+
+Since each type $\hom_B(Fa,Ga)$ is a set, its identity type is a subsingleton.  Thus, the naturality axiom is a subsingleton, so identity of natural transformations is determined by identity of their components.
+In particualar, for any $F$ and $G$, the type of natural transformations from $F$ to $G$ is again a set.
+
+\begin{defn}
+  For precategories $A,B$, there is a precategory $B^A$ defined by
+  \begin{itemize}
+  \item $(B^A)_0$ is the type of functors from $A$ to $B$.
+  \item $\hom_{B^A}(F,G)$ is the type of natural transformations from $F$ to $G$.
+  \end{itemize}
+\end{defn}
+\begin{proof}
+  We define $1_F$ by taking $(1_F)_a$ to be $1_{Fa}$; naturality follows by the unit axioms of a precategory.  For $\gamma:F\to G$ and $\delta:G\to H$, we define $\gamma;\delta$ by taking $(\gamma;\delta)_a$ to be $\gamma_a;\delta_a$; naturality follows by associativity.
+  Similarly, the unit and associativity laws for $B^A$ follow from those for $B$.
+\end{proof}
+
+\begin{lem}
+  A natural transformation $\gamma:F\to G$ is an isomorphism in $B^A$ if and only if each $\gamma_a$ is an isomorphism in $B$.
+\end{lem}
+\begin{proof}
+  If $\gamma$ is an isomorphism, then we have $\delta:G\to F$ that is its inverse.  By definition of composition in $B^A$, $(\gamma;\delta)_a$ is $\gamma_a;\delta_a$ and similarly.  Thus, $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$ imply $\id{\gamma_a;\delta_a}{1_{Fa}}$ and $\id{\delta_a;\gamma_a}{1_{Ga}}$, so $\gamma_a$ is an isomorphism.
+
+  Conversely, suppose each $\gamma_a$ is an isomorphism, with inverse called $\delta_a$, say.  We define a natural transformation $\delta:G\to F$ with components $\delta$; for the naturality axiom we have
+  \[ \delta_a;Ff = \delta_a;Ff;\gamma_b;\delta_b = \delta_a;\gamma_a;Gf;\delta_b = Gf;\delta_b. \]
+  Now since composition and identity of natural transformations is determined on their components, we have $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$.
+\end{proof}
+
+\begin{lem}
+  If $A$ is a precategory and $B$ is a category, then $B^A$ is a category.
+\end{lem}
+\begin{proof}
+  Let $F,G:A\to B$; we must show that $\idtoiso:(\id{F}{G}) \to (F\cong G)$ is an equivalence.
+
+  To give an inverse to it, suppose $\gamma:F\cong G$ is a natural isomorphism.  Then for any $a:A$, we have an isomorphism $\gamma_a:Fa \cong Ga$, hence an identity $\isotoid(\gamma_a):\id{Fa}{Ga}$.  By function extensionality, we have an identity $\bar{\gamma}:\id[(A_0\to B_0)]{F_0}{G_0}$.
+
+  Now since the last two axioms of a functor are subsingletons, to show that $\id{F}{G}$ it will suffice to show that for any $a,b:A$, the functions
+  \begin{align*}
+    F_{a,b}&:\hom_A(a,b) \to \hom_B(Fa,Fb)\mathrlap{\qquad\text{and}}\\
+    G_{a,b}&:\hom_A(a,b) \to \hom_B(Ga,Gb)
+  \end{align*}
+  become identical when transported along $\bar\gamma$.  Now by computation for function extensionality, when applied to $a$, $\bar\gamma$ becomes identical to $\isotoid(\gamma_a)$.  But by \autoref{ct:idtoiso-trans}, transporting $Ff:\hom_B(Fa,Fb)$ along $\isotoid(\gamma_a)$ and $\isotoid(\gamma_b)$ is identical to the composite $\inv{(\gamma_a)};Ff;\gamma_b$, which by naturality of $\gamma$ is identical to $Gf$.
+
+  This completes the definition of a function $(F\cong G) \to (\id F G)$.  Now consider the composite
+  \[ (\id F G) \to (F\cong G) \to (\id F G). \]
+  Since hom-sets are sets, their identity types are subsingletons, so to show that two identities $p,q:\id F G$ are identical, it suffices to show that $\id[\id{F_0}{G_0}]{p}{q}$.
+  But in the definition of $\bar\gamma$, if $\gamma$ were of the form $\idtoiso(p)$, then $\gamma_a$ would be identical to $\idtoiso(p_a)$ (this can easily be proved by induction on $p$).
+  Thus, $\isotoid(\gamma_a)$ would be identical to $p_a$, and so by function extensionality we would have $\id{\bar\gamma}{p}$, which is what we need.
+
+  Finally, consider the composite
+  \[(F\cong G)\to  (\id F G) \to (F\cong G). \]
+  Since identity of natural transformations can be tested componentwise, it suffices to show that for each $a$ we have $\id{\idtoiso(\bar\gamma)_a}{\gamma_a}$.  But as observed above, we have $\id{\idtoiso(\bar\gamma)_a}{\idtoiso((\bar\gamma)_a)}$, while $\id{(\bar\gamma)_a}{\isotoid(\gamma_a)}$ by computation for function extensionality.  Since $\isotoid$ and $\idtoiso$ are inverses, we have $\id{\idtoiso(\bar\gamma)_a}{\gamma_a}$ as desired.
+\end{proof}
+
+In particular, naturally isomorphic functors are identical.
+
+
+
+% Local Variables:
+% TeX-master: "main"
+% End:

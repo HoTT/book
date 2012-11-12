@@ -6,10 +6,15 @@
 \chapter{Category theory}
 \label{sec:category-theory}
 
+In this chapter we will develop some basic category theory.  Although homotopy type theory is well-adapted for \emph{higher} category theory, here we will restrict ourselves to 1-categories.  We will see that even in this case, the theory has a slightly different flavor from the classical set-based one (and this same difference carries over to the higher-categorical situation).
+
+We assume the reader has some basic familiarity with the classical theory.
+
+
 \section{Categories and precategories}
 \label{sec:cats}
 
-In classical mathematics, there are many equivalent definitions of a category.  
+In classical mathematics, there are many equivalent definitions of a category.  In our case, since we have dependent types, it is natural to choose the arrows to be dependent over the objects.  This matches the way hom-types are always used in category theory: we never even consider comparing two arrows unless we know their sources and targets agree.  Furthermore, it seems clear that for a theory of 1-categories, the hom-types should all be sets.  This leads us to the following definition.
 
 \begin{defn}\label{ct:precategory}
   A \textbf{precategory} $A$ consists of the following.
@@ -24,6 +29,8 @@ In classical mathematics, there are many equivalent definitions of a category.
   \item For each $a,b,c,d:A$ and $f:\hom_A(a,b)$, $g:\hom_A(b,c)$, $h:\hom_A(c,d)$, we have $\id {(f;g);h}{f;(g;h)}$.
   \end{enumerate}
 \end{defn}
+
+Note that we are writing composition in ``diagrammatic'' order: $a\xrightarrow{f} b \xrightarrow{g}c$ yields $a \xrightarrow{f;g} c$.
 
 The problem with the notion of precategory is that for objects $a,b:A$, we have two possibly-different notions of ``sameness''.  On the one hand, we have $\id[A_0]{a}{b}$.  But on the other hand, there is the standard categorical notion of \emph{isomorphism}.
 
@@ -52,10 +59,10 @@ The only relationship between these two notions of sameness that we have in a pr
   \[(\id a b)\to (a \cong b).\]
 \end{lem}
 \begin{proof}
-  By induction on identity, we may assume $a$ and $b$ are the same.  But then we have $1_a:\hom_A(a,a)$, which it is easy to see is an isomorphism.
+  By induction on identity, we may assume $a$ and $b$ are the same.  But then we have $1_a:\hom_A(a,a)$, which is clearly an isomorphism.
 \end{proof}
 
-Clearly, this situation is analogous to the issue that motivated us to introduce the univalence axiom.  In fact, we have the following:
+Evidently, this situation is analogous to the issue that motivated us to introduce the univalence axiom.  In fact, we have the following:
 
 \begin{eg}\label{ct:precatset}
   There is a precategory \uset, whose type of objects is \set, and with $\hom_{\uset}(A,B) = (A\to B)$.  The identity morphisms are identity functions and the composition is function composition.  For this precategory, \autoref{ct:idtoiso} is identical to (the restriction to sets of) the identity-to-equivalence map from the chapter on univalence.
@@ -67,7 +74,7 @@ Thus, it is natural to make the following definition.
   A \textbf{category} is a precategory such that for all $a,b:A$, the function $\idtoiso_{a,b}$ from \autoref{ct:idtoiso} is an equivalence.
 \end{defn}
 
-In particular, if $a\cong b$, then $a=b$.  The following consequence is also important.
+In particular, in a category, if $a\cong b$, then $a=b$.  The following consequence is also important.
 
 \begin{lem}\label{ct:obj-1type}
   In a category, the type of objects is a 1-type.
@@ -76,7 +83,7 @@ In particular, if $a\cong b$, then $a=b$.  The following consequence is also imp
   It suffices to show that for any $a,b:A$, the type $\id a b$ is a set.  But $\id a b$ is equivalent to $a \cong b$, which is a set.
 \end{proof}
 
-We write $\isotoid$ for the inverse $(a\cong b) \to (\id a b)$ of $\idtoiso$.  The following relationship between the two is important.
+We write $\isotoid$ for the inverse $(a\cong b) \to (\id a b)$ of the map $\idtoiso$ from \autoref{ct:idtoiso}.  The following relationship between the two is important.
 
 \begin{lem}\label{ct:idtoiso-trans}
   For $p:\id a a'$, $q:\id b b'$, and $f:\hom_A(a,b)$, we have
@@ -102,7 +109,9 @@ and so on.
 \section{Functors and transformations}
 \label{sec:transfors}
 
-\begin{defn}
+The following definitions are fairly obvious, and need no modification.
+
+\begin{defn}\label{ct:functor}
   Let $A$ and $B$ be precategories.  A \textbf{functor} $F:A\to B$ consists of
   \begin{enumerate}
   \item A function $F_0:A_0\to B_0$, generally also denoted $F$.
@@ -112,7 +121,9 @@ and so on.
   \end{enumerate}
 \end{defn}
 
-\begin{defn}
+Note that by induction on identity, a functor also preserves \idtoiso.
+
+\begin{defn}\label{ct:nattrans}
   For functors $F,G:A\to B$, a \textbf{natural transformation} $\gamma:F\to G$ consists of
   \begin{enumerate}
   \item For each $a:A$, a morphism $\gamma_a:\hom_B(Fa,Ga)$ (the ``components'').
@@ -123,7 +134,9 @@ and so on.
 Since each type $\hom_B(Fa,Ga)$ is a set, its identity type is a subsingleton.  Thus, the naturality axiom is a subsingleton, so identity of natural transformations is determined by identity of their components.
 In particualar, for any $F$ and $G$, the type of natural transformations from $F$ to $G$ is again a set.
 
-\begin{defn}
+Similarly, identity of functors is determined by identity of the functions $A_0\to B_0$ and (transported along this) of the corresponding functions on hom-sets.
+
+\begin{defn}\label{ct:functor-precat}
   For precategories $A,B$, there is a precategory $B^A$ defined by
   \begin{itemize}
   \item $(B^A)_0$ is the type of functors from $A$ to $B$.
@@ -135,7 +148,7 @@ In particualar, for any $F$ and $G$, the type of natural transformations from $F
   Similarly, the unit and associativity laws for $B^A$ follow from those for $B$.
 \end{proof}
 
-\begin{lem}
+\begin{lem}\label{ct:natiso}
   A natural transformation $\gamma:F\to G$ is an isomorphism in $B^A$ if and only if each $\gamma_a$ is an isomorphism in $B$.
 \end{lem}
 \begin{proof}
@@ -146,9 +159,11 @@ In particualar, for any $F$ and $G$, the type of natural transformations from $F
   Now since composition and identity of natural transformations is determined on their components, we have $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$.
 \end{proof}
 
-\begin{lem}
+The following result is fundamental.
+
+\begin{thm}\label{ct:functor-cat}
   If $A$ is a precategory and $B$ is a category, then $B^A$ is a category.
-\end{lem}
+\end{thm}
 \begin{proof}
   Let $F,G:A\to B$; we must show that $\idtoiso:(\id{F}{G}) \to (F\cong G)$ is an equivalence.
 
@@ -159,7 +174,7 @@ In particualar, for any $F$ and $G$, the type of natural transformations from $F
     F_{a,b}&:\hom_A(a,b) \to \hom_B(Fa,Fb)\mathrlap{\qquad\text{and}}\\
     G_{a,b}&:\hom_A(a,b) \to \hom_B(Ga,Gb)
   \end{align*}
-  become identical when transported along $\bar\gamma$.  Now by computation for function extensionality, when applied to $a$, $\bar\gamma$ becomes identical to $\isotoid(\gamma_a)$.  But by \autoref{ct:idtoiso-trans}, transporting $Ff:\hom_B(Fa,Fb)$ along $\isotoid(\gamma_a)$ and $\isotoid(\gamma_b)$ is identical to the composite $\inv{(\gamma_a)};Ff;\gamma_b$, which by naturality of $\gamma$ is identical to $Gf$.
+  become identical when transported along $\bar\gamma$.  By computation for function extensionality, when applied to $a$, $\bar\gamma$ becomes identical to $\isotoid(\gamma_a)$.  But by \autoref{ct:idtoiso-trans}, transporting $Ff:\hom_B(Fa,Fb)$ along $\isotoid(\gamma_a)$ and $\isotoid(\gamma_b)$ is identical to the composite $\inv{(\gamma_a)};Ff;\gamma_b$, which by naturality of $\gamma$ is identical to $Gf$.
 
   This completes the definition of a function $(F\cong G) \to (\id F G)$.  Now consider the composite
   \[ (\id F G) \to (F\cong G) \to (\id F G). \]

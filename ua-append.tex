@@ -1,0 +1,136 @@
+% !Tex root = note.tex
+
+\section{Appendix: Another proof of the theorem}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Adjoint  Isomorphisms}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+In order to define the notion of an adjoint isomorphism we need the following definition.
+\be{deff} $\;$
+If $f:A\ra B$ define, by Id-induction, $fz:fx=fx'$ for $x,x':A, z:x=x'$ such that $f\refl{x} = \refl{fx}$ for $x:A$.
+\en{deff}
+
+\be{deff} A function $f:A\ra B$ is an {\em adjoint isomorphism} if there are $g:B\ra A$, $\eta:\forall_{x:A}\; [x=g(fx)]$ and $\epsilon:\forall_{y:B}\; [f(gy)=y]$ such that 
+  \[\forall_{x:A}\;[(f(\eta x)\; @\;\epsilon(fx))=1_{fx}].\]
+\en{deff}
+\be{prop}\label{prop:6.3} The following are logically equivalent for $f:A\ra B$.
+\be{enumerate}
+\item $f$ is an equivalence.
+\item $f$ is an isomorphism
+\item $f$ is an adjoint isomorphism
+\en{enumerate}
+\en{prop}
+\proof $1\ra 2$ is Proposition~\ref{prop:3.4}.  The other logical implications might best be left to another chapter.
+\qed
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The Main Lemma - version 2}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ Let $\bbU$ be a universe.  In the following, when we write $Z:X=X'$ it will be implicit that $X,X':\bbU$.  We use transport to define,  for $Z:X=X'$, $Z_0$ and also $Z_B$, for each type $B$. 
+\be{deff} $\;$\label{def:6.4}
+\be{enumerate}
+\item For $Z:X=X'$ let $Z_0:= Z^*_{P_0}$ where $P_0[X]:=X$ for $X:\bbU$.  
+So $Z_0:X\ra X'$ is an equivalence for  $Z:X=X'$.
+\item Let $B$ be a type.  For $Z:X=X'$ let $Z_B:=(Z^{-1})^*_{P_B}$ where
+$P_B[X]:=(X\ra B)$ for $X:\bbU$.  So $Z_B: (X'\ra B)\ra(X\ra B)$ is an equivalence for $Z:X=X'$.
+\en{enumerate}
+\en{deff}
+
+\be{lem} $\;$\label{lem:6.5}
+\be{enumerate}
+\item For $Z:X=X'$ 
+  \[ Z_Bg = g\circ Z_0 \mbox{ for $g:X'\ra B$}.\]
+\item For $Z:X=X'$
+  \[ Z_0 = \pi_{X,X'}(E_{X,X'}Z),\] 
+where $\pi_{X,X'}:(X\simeq X')\ra (X\ra X')$ is defined by
+  \[ \pi_{X,X'}(f,q):=f\mbox{ for } f:X\ra X', q:EQ(f).\]
+\en{enumerate}
+\en{lem}
+\proof
+\be{enumerate}
+\item By Id-induction on $Z:X=X'$, for $X,X':\bbU$, it suffices to show that, for $X:\bbU$ and $g:X\ra B$,
+  \[ (\refl{X})_Bg = g\circ(\refl{X})_0.\]
+But
+  \[\be{array}{ll}
+(\refl{X})_Bg 
+&= (\refl{X}^{-1})_{P_B}^*g\\
+&= (\refl{X})_{P_B}^*g\\
+&= 1_{X\ra B}g\\
+&= g\\
+&= \lambda_{x:X}gx\\
+&= g\circ 1_X\\
+&= g\circ (\refl{X})_0
+\en{array}\]
+\item Observe that 
+  \[(\refl{X})_0=1_X=\pi_{X,X}(1_X,s_X)=\pi_{X,X}(E_{X,X}\refl{X})\]
+for $X:\bbU$, where $s_X:EQ(1_X)$.  So, by Id-induction on $Z:X=X'$, for 
+$X,X':\bbU$,
+  \[ Z_0 = \pi_{X,X'}(E_{X,X'}Z).\]
+\en{enumerate}
+\qed
+
+\be{lem}[Main Lemma - version 2]\label{fe:lem-main2}\label{lem:6.6}
+Let $A,A'$ be types in a univalent universe.  For each type $C$ and each
+$f:A\ra A'$ define
+$G_f := (-)\circ f:(A'\ra C)\ra (A\ra C)$;
+i.e.
+  \[ G_f := \lambda_{g:A'\ra C}\; g\circ f\]
+ If $f$ is an equivalence then so is $G_f$.
+\en{lem}
+%\pagebreak
+\proof Let $\bbU$ be a univalent universe and let $f:A\ra A'$ be an 
+equivalence, where $A,A':\bbU$.  We want to show that $G_f$ is an equivalence.
+
+By Corollary~\ref{cor:3.5} $E_{A,A'}:(A=A')\ra (A\simeq A')$ is surjective.  
+As $f$ is an equivalence there is $q:EQ(f)$ so that $(f,q):A\simeq A'$. Let $u:=(f,q):(A\simeq A')$.  So there is $Z_f:(A=A')$ such that $E_{A,A'}Z_f = u$.
+
+\be{description}
+\item[Proof that $G_f$ is an equivalence:]
+By part 2 of Definition~\ref{def:6.4} 
+  \[ (Z_f)_B^*:(A'\ra B)\ra (A\ra B)\]
+is an equivalence.  So, by Lemma~\ref{lem:6.5}
+  \[(Z_f)_B^*g = g\circ (Z_f)_0\mbox{ for } g:A'\ra B.\]
+By Proposition~\ref{prop:4.5}, as $EQ((Z_f)_B^*)$, $EQ(G_{(Z_f)_0})$; i.e. $G_{(Z_f)_0}$ is an equivalence.
+
+As $u:=(f,q):A\simeq A'$
+  \[(Z_f)_0 = \pi_{A,A'}(E_{A,A'}(Z_f)) =\pi_{A,A'}u = f.\]
+So $G_f$ is an equivalence.
+\en{description}
+\qed
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proof of the Theorem - version 2: } 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We use the following lemma.
+\be{lem}\label{fe:lem-projs}\label{lem:6.7}
+If $B$ is a type in a univalent universe then $\pi^1_B = \pi^2_B$.
+\en{lem}
+\proof By part 3 of Lemma~\ref{lem:4.9} $\delta_B$ is an isomorphism and hence an equivalence, by $2\ra 1$ of Proposition~\ref{prop:6.3}.  So, by part 1 of the Main Lemma, if $B$ is in a univalent universe then
+  \[ (-)\circ\delta_B : (Id(B)\ra B)\ra (B\ra B)\]
+is an equivalence and hence is injective.  By part 1 of Lemma~\ref{lem:4.9},
+  \[ \pi^1_B\circ\delta_B = \pi^2_B\circ\delta_B\]
+so that $\pi^1_B=\pi^2_B$.
+\qed
+
+
+Let $f_1,f_2:A\ra B$, where $B$ is a type in a univalent universe, and let 
+$q:\forall_{x:A}\; f_1x=f_2x$.  We must show that $f_1=f_2$.
+Define $f:A\ra Id(B)$ by
+  \[ f := \lambda_{x:A}(f_1x,f_2x,qx).\]
+
+For $i=1,2$, if $x:A$ then
+  \[\be{array}{lll}
+\pi^i_B(fx)&=_{def}&\pi^i_B(f_1x,f_2x,qx)\\
+           &=_{def}& f_ix
+  \en{array}\]
+so that
+  \[\be{array}{lll}
+\pi^i_B\circ f&=_{def}& \lambda_{x:A}\pi^i_B(fx)\\
+           &=_{def}& \lambda_{x:A}f_ix,\mbox{by } {\bf (FE_{def}})_{A\ra B}\\
+           &=& f_i,\mbox{by }{(\eta_{\sf prop})}.
+  \en{array}\]
+By Lemma~\ref{lem:6.7} $\pi^1_B\circ f = \pi^2_B\circ f$ so that $f_1=f_2$.
+\qed

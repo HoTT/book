@@ -1,0 +1,184 @@
+% !Tex root = note.tex
+
+\section{Function Extensionality in a Univalent Universe}
+
+\subsection{Function Extensionality}
+\be{deff}
+Given types $A,B$ we are concerned with the {\bf Function Extensionality} principle for functions $A\ra B$.
+\be{center}
+{\bf $({\bf FE_{\sf prop}})_{A\ra B}:\;\;$} 
+  $\forall_{f_1,f_2:A\ra B}[\forall_{x:A}(f_1x=f_2x)\ra (f_1=f_2)]$
+\en{center}
+\en{deff}
+We aim to prove the following result.
+\be{thm}\label{fe:thm}\label{thm:4.2} For types $A,B$, with $B$ in a univalent universe, 
+$({\bf FE_{\sf prop}})_{A\ra B}$.
+\en{thm}
+We will need to assume the following principle as part of our type theory.
+\be{center}
+{\bf $({\eta_{\sf prop}})_{A\ra B}:\;\;$} 
+  $\forall_{f:A\ra B}[\lambda_{x:A}fx = f]$.
+\en{center}
+
+In order to carry through the proof of the theorem we use the following rule of our basic type theory concerning definitional equality.  For $f_1,f_2:A\ra B$,
+\be{center}
+$({\bf FE_{\sf def}})_{A\ra B}$: From $f_1x=_{def}f_2x$ for $x:A$ infer $\lambda_{x:A}f_1x =_{def} \lambda_{x:A}f_2x$.
+\en{center}
+When the definitional equality, $=_{def}$,  used in this rule is replaced by propositional equality, $=$, then the rule is not a correct rule of the basic type theory, but when combined with $({\eta_{\sf prop}})_{A\ra B}$ is equivalent to $({\bf FE_{\sf prop}})_{A\ra B}$.  I suspect that once Function Extensionality is assumed there will no longer be much need to refer to definitional equality in our informal development.
+
+
+\subsection{Extensional Properties of Maps}
+\be{deff}
+If $P[f]$ is a type for $f:A\ra B$ we define $P[f]$ to be {\em extensional in $f$} if, for all $f_1,f_2:A\ra B$
+  \[ \forall_{x:A}(f_1x=f_2x)\;\ra\; (P[f_1]\ra P[f_2]).\]
+\en{deff} 
+\be{deff} For a function $f:A\ra B$ let $EQ(f)$ be the type 
+\be{center}
+{\em $(f\mbox{ is an equivalence})$}.
+\en{center}
+\en{deff}
+\be{prop}\label{prop:4.5}
+For types $A,B$ the type $EQ(f)$ is extensional in $f:A\ra B$.
+\en{prop}
+\proof  By examining the formal definition of $EQ(f)$ it is evident that $f$ only occurs when applied to an argument.
+\qed
+
+\be{cor} \label{cor:4.6}
+For types $A,B$ the function $\lambda:(A\ra B)\ra(A\ra B)$ is an equivalence, where 
+  \[ \lambda f := \lambda_{x:A} fx\mbox{ for } f:A\ra B.\]
+\en{cor}
+\proof By $(\eta_{\sf prop})$
+  \[ \lambda f = f = 1_{A\ra B}f\mbox{ for } f:A\ra B\]
+so that $\forall_{f:A\ra B}\; \lambda f=1_{A\ra B}f$.
+
+As $1_{A\ra B}$ is an equivalence, by Lemma~\ref{lem:2.3}, and $EQ(f)$ is extensional in $f$, by Proposition~\ref{prop:4.5} it follows that $\lambda$ is an equivalence.
+\qed
+
+%%%%%%%%%%%%%%%%%
+\subsection{The type $Id(B)$}
+%%%%%%%%%%%%%%%%%
+
+\be{deff} Let $B$ be a type.
+\be{enumerate}
+\item Define the type $Id(B):=\Sigma_{y,y':B}(y=y')$.
+\item Define the function $\delta_B:B\ra Id(B)$ by
+$\delta_B:=\lambda_{y:B}(y,y,\refl{y})$.
+\item For $i=1,2$, define  the function $\pi^i_B:Id(B)\ra B$ by
+  \[ \pi^i_B(y_1,y_2,z):= y_i\;\;\mbox{ for }y_1,y_2:Id(B), z:(y_1=y_2).\]
+\en{enumerate}
+\en{deff}
+\be{prop}
+$\forall_{u:Id(B)}(\pi^1_Bu = \pi^2_Bu)$.
+\en{prop}
+\proof
+For $y_1,y_2:Id(B), z:(y_1=y_2)$
+  \[\be{array}{lll}
+\pi^1_B(y_1,y_2,z)&=_{def}& y_1\\
+                 &=&y_2, \mbox{by } z\\
+                 &=_{def}&\pi^2_B(y_1,y_2,z)
+  \en{array}\]
+So, by Id-induction on $u:Id(B)$, $\pi^1_Bu = \pi^2_Bu$.  
+\qed
+It follows that if we could assume
+the theorem then we would get a proof that 
+  \[ (*)\;\;\;\pi^1_B = \pi^2_B\mbox{ for $B$ in a univalent universe.}\]  
+Instead in our second proof of the theorem we will use $(*)$ 
+and give another proof of (*) in Lemma~\ref{lem:6.7}.
+
+\be{lem}\label{fe:lem-delta-equiv} \label{lem:4.9}
+For $i=1,2$,
+\be{enumerate}
+\item $\pi^i_B\circ\delta_B =_{def} 1_B$ and hence 
+$(\pi^i_B\circ\delta_B)y =_{def} y$ for $y:B$.
+\item $(\delta_B\circ\pi^i_B)u = u$ for $u:Id(B)$
+\item $\delta_B$ is an isomorphism.
+\en{enumerate}
+\en{lem}
+\proof Routine
+\qed
+
+
+\be{lem}\label{lem:4.10}
+For $i=1,2$, $\pi^i_B$ is an equivalence.
+\en{lem}
+\proof For $y:B$ we must show that the type $Dy$ is contractible, where
+  \[ Dy := \Sigma_{u:Id(B)}\; \pi^i_Bu=y.\]
+Let $dy:=(\delta_By,\refl{y}):Dy$.  We show that $\forall_{v:Dy}\; v=dy$.
+By $\Sigma$-folding it suffices to show that
+  \[ \forall_{u:Id(B)}\forall_{q:(\pi^i_Bu=y)}\; (u,q)=dy.\]
+By another $\Sigma$-folding and using $\pi^i_B(y_1,y_2,p)=_{def}y_i$,
+  \[\forall_{y_1,y_2:B}\forall_{p:(y_1=y_2)}\forall_{q:(y_i=y)}
+       \;  ((y_1,y_2,p),q)=dy
+  \]
+By Id-induction it suffices to show that
+  \[ \forall_{y':B}\forall_{q:(y'=y)}\; (\delta_By',q)=dy\]
+By another Id-induction, this time \`{a} la Christine Pauline, it suffices to observe that
+  \[ (\delta_By,\refl{y})=dy\]
+by the definition of $dy$.
+\qed
+
+\section{First Proof of the theorem}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{ The Main Lemma - version 1}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+We now state and  prove version 1 of the main lemma needed to prove the theorem.
+\be{lem}[Main Lemma]\label{fe:lem-main1}\label{lem:5.1}
+Let $A,A'$ be types in a univalent universe.  For each type $C$ and each
+$f:A\ra A'$ define $H_f := f\circ(-): (C\ra A)\ra (C\ra A')$; i.e.
+  \[ H_f := \lambda_{g:C\ra A}\;  f\circ g.\]
+If $f$ is an equivalence then so is $H_f$.
+\en{lem}
+\proof Let $\bbU$ be a univalent universe and let $f:A\ra A'$ be an equivalence, where $A,A':\bbU$.  We want to show that $H_f$ is an equivalence.
+
+By Corollary~\ref{cor:3.5} $E_{A,A'}:(A=A')\ra (A\simeq A')$ is surjective.  
+As $f$ is an equivalence there is $q:EQ(f)$ so that $(f,q):A\simeq A'$. Let $u:=(f,q):(A\simeq A')$.  So there is $Z_f:(A=A')$ such that $E_{A,A'}Z_f = u$.
+
+\be{description}
+\item[Proof that $H_f$ is an equivalence:]
+For $X,X':\bbU$, $Z:X=X'$ let 
+  \[\tau X X' Z:= \pi_{X,X'}( E_{X,X'}Z)\]
+where $\pi_{X,X'}:(X\simeq X')\ra (X\ra X')$ is defined by
+  \[ \pi_{X,X'}(f,q):= f\mbox{ for $f:X\ra X',q:EQ(f)$}.\]
+ \be{quote}
+{\bf Claim:} $H_{\tau A A' Z}$ is an equivalence for $Z:A=A'$.\\
+\proof By Id-induction it suffices to show that $H_{\tau X X \refl{X}}$ is an equivalence for $X:\bbU$.  As $\tau X X\refl{X}=1_X$,
+  \[ H_{\tau X X\refl{X}} = H_{1_X}=1_{B\ra X}\]
+is an equivalence, by Corollary~\ref{cor:4.6}, so that 
+$H_{\tau X X \refl{X}}$ is an equivalence.
+\qed
+\en{quote}
+Observe that
+  \[ f = \pi_{A,A'}(f,q)=\pi_{A,A'}(E_{A,A'}Z_f)=\tau A A' Z_f\]
+so that, by the claim, $H_f$ is an equivalence.
+\en{description}
+\qed
+%\pagebreak
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Proof of the Theorem - version 1: } 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Let $f_1,f_2:A\ra B$, where $B$ is a type in a univalent universe, and let 
+$q:\forall_{x:A}\; f_1x=f_2x$.  We must show that $f_1=f_2$.
+Define $f:A\ra Id(B)$ by
+  \[ f := \lambda_{x:A}(f_1x,f_2x,qx).\]
+
+Define $d:A\ra Id(B)$ by
+  \[ d:=\delta_B\circ f_1\]
+Then
+  \[\be{array}{ll}
+\pi^1_B\circ d &=\lambda_{x:A}\;\pi^1_B(\delta_B(f_1x))\\
+              &=\lambda_{x:A}\; f_1x, \mbox{by part 1 of Lemma~\ref{lem:4.9}}\\
+              &=\pi^1_B\circ f.
+  \en{array}\]
+As, by Lemma~\ref{lem:4.10},
+ $\pi^1_B$ is an equivalence, by part 2 of the Main Lemma, so is $H_{\pi^1_B}$ so that, by Proposition~\ref{prop:3.4},
+$H_{\pi^1_B}$ is injective.  It follows that  $d=f$ and so 
+$\pi^2_B\circ d =\pi^2_B\circ f$; i.e. $\lambda_{x:A}f_1x =\lambda_{x:A}f_2x$.
+So $f_1=f_2$ by $(\eta_{\sf prop})$.
+\qed 
+
+

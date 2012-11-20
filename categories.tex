@@ -2,6 +2,8 @@
 \newcommand{\inv}[1]{{#1}^{-1}}
 \newcommand{\idtoiso}{\ensuremath{\mathsf{idtoiso}}\xspace}
 \newcommand{\isotoid}{\ensuremath{\mathsf{isotoid}}\xspace}
+\newcommand{\op}{^{\textrm{op}}}
+\newcommand{\y}{\ensuremath{\mathbf{y}}\xspace}
 
 \chapter{Category theory}
 \label{cha:category-theory}
@@ -77,7 +79,7 @@ Evidently, this situation is analogous to the issue that motivated us to introdu
 In fact, we have the following:
 
 \begin{eg}\label{ct:precatset}
-  There is a precategory \uset, whose type of objects is \set, and with $\hom_{\uset}(A,B) = (A\to B)$.
+  There is a precategory \uset, whose type of objects is \set, and with $\hom_{\uset}(A,B) \defeq (A\to B)$.
   The identity morphisms are identity functions and the composition is function composition.
   For this precategory, \autoref{ct:idtoiso} is identical to (the restriction to sets of) the identity-to-equivalence map from the chapter on univalence.
 \end{eg}
@@ -430,7 +432,7 @@ Thus, $F_0$ is an equivalence of types.
   Thus, by \autoref{ct:ffeso}, $F$ is an equivalence of categories.
 \end{proof}
 
-Finally, we show that categories, functors, and natural transformations form, not merely a pre-2-category, but a 2-category.
+Finally, we show that categories, functors, and natural transformations form, not just a pre-2-category, but a 2-category.
 
 \begin{thm}\label{ct:cat-2cat}
   If $A$ and $B$ are categories, then the function
@@ -461,8 +463,143 @@ As a consequence, the type of categories is a 2-type.
 For since $A\simeq B$ is a subtype of the type of functors from $A$ to $B$, which are the objects of a category, it is a 1-type; hence the identity types $\id A B$ are also 1-types.
 
 \section{The Yoneda lemma}
-\label{sec:yoneda-lemma}
+\label{sec:yoneda}
 
+Recall that we have a category \uset whose objects are sets and whose morphisms are functions.
+We now show that every precategory has a \uset-valued hom-functor.
+First we need to define opposites and products of (pre)categories.
+
+\begin{defn}
+  For a precategory $A$, its \textbf{opposite} $A\op$ is a precategory with the same type of objects, with $\hom_{A\op}(a,b) \defeq \hom_A(b,a)$, and with identities and composition inherited from $A$.
+\end{defn}
+
+\begin{defn}
+  For precategories $A$ and $B$, their \textbf{product} $A\times B$ is a precategory with $(A\times B)_0 \defeq A_0 \times B_0$ and
+  \[\hom_{A\times B}((a,b),(a',b')) \defeq \hom_A(a,a') \times \hom_B(b,b').\]
+  Identities are defined by $1_{(a,b)}\defeq (1_a,1_b)$ and composition by $(f,f');(g,g') \defeq ((f;g),(f';g'))$.
+\end{defn}
+
+\begin{lem}\label{ct:functorexpadj}
+  For precategories $A,B,C$, the following types are equivalent.
+  \begin{enumerate}
+  \item Functors $A\times B\to C$.
+  \item Functors $A\to C^B$.
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  Given $F:A\times B\to C$, for any $a:A$ we obviously have a functor $F_a : B\to C$.
+  This gives a function $A_0 \to (C^B)_0$.
+  Next, for any $f:\hom_A(a,a')$, we have for any $b:B$ the morphism $F_{(a,b),(a',b)}(f,1_b):F_a(b) \to F_{a'}(b)$.
+  These are the components of a natural transformation $F_a \to F_{a'}$.
+  Functoriality in $a$ is easy to check, so we have a functor $\hat{F}:A\to C^B$.
+
+  Conversely, suppose given $G:A\to C^B$.
+  Then for any $a:A$ and $b:B$ we have the object $G(a)(b):C$, giving a function $A_0 \times B_0 \to C_0$.
+  And for $f:\hom_A(a,a')$ and $g:\hom_B(b,b')$, we have the morphism
+  \begin{equation*}
+    G_{a,a'}(f)_b ; G(a')_{b,b'}(g) = G(a)_{b,b'}(g) ; G_{a,a'}(f)_{b'}
+  \end{equation*}
+  in $\hom_C(G(a)(b), G(a')(b'))$.
+  Functoriality is again easy to check, so we have a functor $\check{F}:A\times B \to C$.
+
+  Finally, it is also clear that these operations are inverses.
+\end{proof}
+
+Now for any precategory $A$, we have a hom-functor
+\[\hom_A : A\op \times A \to \uset.\]
+It takes a pair $(a,b): (A\op)_0 \times A_0 \jdeq A_0 \times A_0$ to the set $\hom_A(a,b)$.
+For a morphism $(f,f') : \hom_{A\op\times A}((a,b),(a',b'))$, by definition we have $f:\hom_A(a',a)$ and $f':\hom_A(b,b')$, so we can define 
+\begin{align*}
+  (\hom_A)_{(a,b),(a',b')}(f,f')
+  &\defeq (g \mapsto (f;g;f'))\\
+  &: \hom_A(a,b) \to \hom_A(a',b').
+\end{align*}
+Functoriality is easy to check.
+
+By \autoref{ct:functorexpadj}, therefore, we have an induced functor $\y:A\to \uset^{A\op}$, which we call the \textbf{Yoneda embedding}.
+
+\begin{thm}[The Yoneda lemma]\label{ct:yoneda}
+  For any precategory $A$, any $a:A$, and any functor $F:\uset^{A\op}$, we have an isomorphism
+  \begin{equation}\label{eq:yoneda}
+    \hom_{\uset^{A\op}}(\y a, F) \cong Fa.
+  \end{equation}
+  Moreover, this is natural in both $a$ and $F$.
+\end{thm}
+\begin{proof}
+  Given a natural transformation $\alpha:\y a \to F$, we can consider the component $\alpha_a : \y a(a) \to F a$.
+  Since $\y a(a)\jdeq \hom_A(a,a)$, we have $1_a : \y a(a)$, so that $\alpha_a(1_a) : F a$.
+  This gives a function $(\alpha \mapsto \alpha_a(1_a))$ from left to right in~\eqref{eq:yoneda}.
+
+  In the other direction, given $x:F a$, we define $\alpha:\y a \to F$ by
+  \[\alpha_{a'}(f) \defeq F_{a',a}(f)(x). \]
+  Naturality is easy to check, so this gives a function from right to left in~\eqref{eq:yoneda}.
+
+  To show that these are inverses, first suppose given $x:F a$.
+  Then with $\alpha$ defined as above, we have $\alpha_a(1_a) = F_{a,a}(1_a)(x) = 1_{F a}(x) = x$.
+  On the other hand, if we suppose given $\alpha:\y a \to F$ and define $x$ as above, then for any $f:\hom_A(a',a)$ we have
+  \begin{align*}
+    \alpha_{a'}(f)
+    &= \alpha_{a'} (\y a_{a',a}(f))\\
+    &= (\y a_{a',a}(f);\alpha_{a'})(1_a)\\
+    &= (\alpha_a; F_{a',a}(f))(1_a)\\
+    &= F_{a',a}(f)(\alpha_a(1_a))\\
+    &= F_{a',a}(f)(x).
+  \end{align*}
+  Thus, both composites are equal to identities.
+  We leave the proof of naturality to the reader.
+\end{proof}
+
+\begin{cor}\label{ct:yoneda-embedding}
+  The Yoneda embedding $\y :A\to \uset^{A\op}$ is fully faithful.
+\end{cor}
+\begin{proof}
+  By \autoref{ct:yoneda}, we have
+  \[ \hom_{\uset^{A\op}}(\y a, \y b) \cong \y b(a) \jdeq \hom_A(a,b). \]
+  It is easy to check that this isomorphism is in fact the action of \y on hom-sets.
+\end{proof}
+
+\begin{cor}\label{ct:yoneda-mono}
+  If $A$ is a category, then $\y_0 : A_0 \to (\uset^{A\op})_0$ is a monomorphism.
+  In particular, if $\y a = \y b$, then $a=b$.
+\end{cor}
+\begin{proof}
+  By \autoref{ct:yoneda-embedding}, \y induces an isomorphism on sets of isomorphisms.
+  But as $A$ and $\uset^{A\op}$ are categories and \y is a functor, this is equivalently an isomorphism on identity types, which is the definition of being mono.
+\end{proof}
+
+\begin{defn}\label{ct:representable}
+  A functor $F:\uset^{A\op}$ is said to be \textbf{representable} if there exists $a:A$ and an isomorphism $\y a \cong F$.
+\end{defn}
+
+\begin{thm}\label{ct:representable-prop}
+  If $A$ is a category, then the type ``$F$ is representable'' is a subsingleton.
+\end{thm}
+\begin{proof}
+  By definition ``$F$ is representable'' is just the fiber of $\y_0$ over $F$.
+  Since $\y_0$ is mono by \autoref{ct:yoneda-mono}, this fiber is a subsingleton.
+\end{proof}
+
+In particular, in a category, any two representations of the same functor are equal.
+We can use this to give a different proof of \autoref{ct:adjprop}.
+First we give a characterization of adjunctions in terms of representability.
+
+\begin{lem}\label{ct:adj-repr}
+  For any precategories $A$ and $B$ and a functor $F:A\to B$, the following types are equivalent.
+  \begin{enumerate}
+  \item $F$ is a left adjoint.\label{item:ct:ar1}
+  \item For each $b:B$, the functor $(a \mapsto \hom_B(Fa,b))$ from $A\op$ to \uset is representable.\label{item:ct:ar2}
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  Unfinished\dots
+\end{proof}
+
+\begin{cor}\label{ct:adjprop2}
+  If $A$ is a category and $F:A\to B$, then the type ``$F$ is a left adjoint'' is a subsingleton.
+\end{cor}
+\begin{proof}
+  By \autoref{ct:representable-prop}, if $A$ is a category then the type in \autoref{ct:adj-repr}\ref{item:ct:ar2} is a subsingleton.
+\end{proof}
 
 
 \section*{Notes}

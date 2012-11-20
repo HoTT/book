@@ -6,7 +6,9 @@
 \chapter{Category theory}
 \label{cha:category-theory}
 
-In this chapter we will develop some basic category theory.  Although homotopy type theory is well-adapted for \emph{higher} category theory, here we will restrict ourselves to 1-categories.  We will see that even in this case, the theory has a slightly different flavor from the classical set-based one (and this same difference carries over to the higher-categorical situation).
+In this chapter we will develop some basic category theory.
+Although homotopy type theory is well-adapted for \emph{higher} category theory, here we will restrict ourselves to 1-categories.
+We will see that even in this case, the theory has a slightly different flavor from the classical set-based one (and this same difference carries over to the higher-categorical situation).
 
 We assume the reader has some basic familiarity with the classical theory.
 
@@ -14,7 +16,11 @@ We assume the reader has some basic familiarity with the classical theory.
 \section{Categories and precategories}
 \label{sec:cats}
 
-In classical mathematics, there are many equivalent definitions of a category.  In our case, since we have dependent types, it is natural to choose the arrows to be dependent over the objects.  This matches the way hom-types are always used in category theory: we never even consider comparing two arrows unless we know their sources and targets agree.  Furthermore, it seems clear that for a theory of 1-categories, the hom-types should all be sets.  This leads us to the following definition.
+In classical mathematics, there are many equivalent definitions of a category.
+In our case, since we have dependent types, it is natural to choose the arrows to be dependent over the objects.
+This matches the way hom-types are always used in category theory: we never even consider comparing two arrows unless we know their sources and targets agree.
+Furthermore, it seems clear that for a theory of 1-categories, the hom-types should all be sets.
+This leads us to the following definition.
 
 \begin{defn}\label{ct:precategory}
   A \textbf{precategory} $A$ consists of the following.
@@ -32,7 +38,9 @@ In classical mathematics, there are many equivalent definitions of a category.  
 
 Note that we are writing composition in ``diagrammatic'' order: $a\xrightarrow{f} b \xrightarrow{g}c$ yields $a \xrightarrow{f;g} c$.
 
-The problem with the notion of precategory is that for objects $a,b:A$, we have two possibly-different notions of ``sameness''.  On the one hand, we have $\id[A_0]{a}{b}$.  But on the other hand, there is the standard categorical notion of \emph{isomorphism}.
+The problem with the notion of precategory is that for objects $a,b:A$, we have two possibly-different notions of ``sameness''.
+On the one hand, we have $\id[A_0]{a}{b}$.
+But on the other hand, there is the standard categorical notion of \emph{isomorphism}.
 
 \begin{defn}\label{ct:isomorphism}
   A morphism $f:\hom_A(a,b)$ is an \textbf{isomorphism} if there is a morphism $g:\hom_A(b,a)$ such that $\id{f;g}{1_a}$ and $\id{g;f}{1_b}$.
@@ -44,7 +52,8 @@ The problem with the notion of precategory is that for objects $a,b:A$, we have 
   Therefore, for any $a,b:A$ the type $a\cong b$ is a set.
 \end{lem}
 \begin{proof}
-  Suppose given $g:\hom_A(b,a)$ and $\eta:(\id{1_a}{f; g})$ and $\epsilon:(\id{g; f}{1_b})$, and similarly $g'$, $\eta'$, and $\epsilon'$.  We must show $\id{(g,\eta,\epsilon)}{(g',\eta',\epsilon')}$.
+  Suppose given $g:\hom_A(b,a)$ and $\eta:(\id{1_a}{f; g})$ and $\epsilon:(\id{g; f}{1_b})$, and similarly $g'$, $\eta'$, and $\epsilon'$.
+We must show $\id{(g,\eta,\epsilon)}{(g',\eta',\epsilon')}$.
   But since all hom-sets are sets, their identity types are subsingletons, so it suffices to show $\id g {g'}$.
   For this we have
   \[g' = g';1_a = g'; (f; g) = (g'; f); g = 1_b; g = g\]
@@ -79,7 +88,9 @@ Thus, it is natural to make the following definition.
   A \textbf{category} is a precategory such that for all $a,b:A$, the function $\idtoiso_{a,b}$ from \autoref{ct:idtoiso} is an equivalence.
 \end{defn}
 
-In particular, in a category, if $a\cong b$, then $a=b$.  The following consequence is also important.
+In particular, in a category, if $a\cong b$, then $a=b$.
+The univalence axiom implies immediately that \uset is a category.
+The following consequence is also important.
 
 \begin{lem}\label{ct:obj-1type}
   In a category, the type of objects is a 1-type.
@@ -100,7 +111,8 @@ The following relationship between the two is important.
   \end{equation}
 \end{lem}
 \begin{proof}
-  By induction, we may assume $p$ and $q$ are $\refl a$ and $\refl b$ respectively.  Then the left-hand side of~\eqref{ct:idtoisocompute} is simply $f$.
+  By induction, we may assume $p$ and $q$ are $\refl a$ and $\refl b$ respectively.
+Then the left-hand side of~\eqref{ct:idtoisocompute} is simply $f$.
   But by definition, $\idtoiso(\refl a)$ is $1_a$, and $\idtoiso(\refl b)$ is $1_b$, so the right-hand side of~\eqref{ct:idtoisocompute} is $1_a;f;1_b$, which is identical to $f$.
 \end{proof}
 
@@ -119,7 +131,8 @@ and so on.
 The following definitions are fairly obvious, and need no modification.
 
 \begin{defn}\label{ct:functor}
-  Let $A$ and $B$ be precategories.  A \textbf{functor} $F:A\to B$ consists of
+  Let $A$ and $B$ be precategories.
+  A \textbf{functor} $F:A\to B$ consists of
   \begin{enumerate}
   \item A function $F_0:A_0\to B_0$, generally also denoted $F$.
   \item For each $a,b:A$, a function $F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)$, generally also denoted $F$.
@@ -138,7 +151,8 @@ Note that by induction on identity, a functor also preserves \idtoiso.
   \end{enumerate}
 \end{defn}
 
-Since each type $\hom_B(Fa,Ga)$ is a set, its identity type is a subsingleton.  Thus, the naturality axiom is a subsingleton, so identity of natural transformations is determined by identity of their components.
+Since each type $\hom_B(Fa,Ga)$ is a set, its identity type is a subsingleton.
+Thus, the naturality axiom is a subsingleton, so identity of natural transformations is determined by identity of their components.
 In particualar, for any $F$ and $G$, the type of natural transformations from $F$ to $G$ is again a set.
 
 Similarly, identity of functors is determined by identity of the functions $A_0\to B_0$ and (transported along this) of the corresponding functions on hom-sets.
@@ -151,7 +165,8 @@ Similarly, identity of functors is determined by identity of the functions $A_0\
   \end{itemize}
 \end{defn}
 \begin{proof}
-  We define $1_F$ by taking $(1_F)_a$ to be $1_{Fa}$; naturality follows by the unit axioms of a precategory.  For $\gamma:F\to G$ and $\delta:G\to H$, we define $\gamma;\delta$ by taking $(\gamma;\delta)_a$ to be $\gamma_a;\delta_a$; naturality follows by associativity.
+  We define $1_F$ by taking $(1_F)_a$ to be $1_{Fa}$; naturality follows by the unit axioms of a precategory.
+  For $\gamma:F\to G$ and $\delta:G\to H$, we define $\gamma;\delta$ by taking $(\gamma;\delta)_a$ to be $\gamma_a;\delta_a$; naturality follows by associativity.
   Similarly, the unit and associativity laws for $B^A$ follow from those for $B$.
 \end{proof}
 
@@ -159,9 +174,12 @@ Similarly, identity of functors is determined by identity of the functions $A_0\
   A natural transformation $\gamma:F\to G$ is an isomorphism in $B^A$ if and only if each $\gamma_a$ is an isomorphism in $B$.
 \end{lem}
 \begin{proof}
-  If $\gamma$ is an isomorphism, then we have $\delta:G\to F$ that is its inverse.  By definition of composition in $B^A$, $(\gamma;\delta)_a$ is $\gamma_a;\delta_a$ and similarly.  Thus, $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$ imply $\id{\gamma_a;\delta_a}{1_{Fa}}$ and $\id{\delta_a;\gamma_a}{1_{Ga}}$, so $\gamma_a$ is an isomorphism.
+  If $\gamma$ is an isomorphism, then we have $\delta:G\to F$ that is its inverse.
+  By definition of composition in $B^A$, $(\gamma;\delta)_a$ is $\gamma_a;\delta_a$ and similarly.
+  Thus, $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$ imply $\id{\gamma_a;\delta_a}{1_{Fa}}$ and $\id{\delta_a;\gamma_a}{1_{Ga}}$, so $\gamma_a$ is an isomorphism.
 
-  Conversely, suppose each $\gamma_a$ is an isomorphism, with inverse called $\delta_a$, say.  We define a natural transformation $\delta:G\to F$ with components $\delta$; for the naturality axiom we have
+  Conversely, suppose each $\gamma_a$ is an isomorphism, with inverse called $\delta_a$, say.
+We define a natural transformation $\delta:G\to F$ with components $\delta$; for the naturality axiom we have
   \[ \delta_a;Ff = \delta_a;Ff;\gamma_b;\delta_b = \delta_a;\gamma_a;Gf;\delta_b = Gf;\delta_b. \]
   Now since composition and identity of natural transformations is determined on their components, we have $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$.
 \end{proof}
@@ -174,16 +192,21 @@ The following result is fundamental.
 \begin{proof}
   Let $F,G:A\to B$; we must show that $\idtoiso:(\id{F}{G}) \to (F\cong G)$ is an equivalence.
 
-  To give an inverse to it, suppose $\gamma:F\cong G$ is a natural isomorphism.  Then for any $a:A$, we have an isomorphism $\gamma_a:Fa \cong Ga$, hence an identity $\isotoid(\gamma_a):\id{Fa}{Ga}$.  By function extensionality, we have an identity $\bar{\gamma}:\id[(A_0\to B_0)]{F_0}{G_0}$.
+  To give an inverse to it, suppose $\gamma:F\cong G$ is a natural isomorphism.
+  Then for any $a:A$, we have an isomorphism $\gamma_a:Fa \cong Ga$, hence an identity $\isotoid(\gamma_a):\id{Fa}{Ga}$.
+  By function extensionality, we have an identity $\bar{\gamma}:\id[(A_0\to B_0)]{F_0}{G_0}$.
 
   Now since the last two axioms of a functor are subsingletons, to show that $\id{F}{G}$ it will suffice to show that for any $a,b:A$, the functions
   \begin{align*}
     F_{a,b}&:\hom_A(a,b) \to \hom_B(Fa,Fb)\mathrlap{\qquad\text{and}}\\
     G_{a,b}&:\hom_A(a,b) \to \hom_B(Ga,Gb)
   \end{align*}
-  become identical when transported along $\bar\gamma$.  By computation for function extensionality, when applied to $a$, $\bar\gamma$ becomes identical to $\isotoid(\gamma_a)$.  But by \autoref{ct:idtoiso-trans}, transporting $Ff:\hom_B(Fa,Fb)$ along $\isotoid(\gamma_a)$ and $\isotoid(\gamma_b)$ is identical to the composite $\inv{(\gamma_a)};Ff;\gamma_b$, which by naturality of $\gamma$ is identical to $Gf$.
+  become identical when transported along $\bar\gamma$.
+  By computation for function extensionality, when applied to $a$, $\bar\gamma$ becomes identical to $\isotoid(\gamma_a)$.
+  But by \autoref{ct:idtoiso-trans}, transporting $Ff:\hom_B(Fa,Fb)$ along $\isotoid(\gamma_a)$ and $\isotoid(\gamma_b)$ is identical to the composite $\inv{(\gamma_a)};Ff;\gamma_b$, which by naturality of $\gamma$ is identical to $Gf$.
 
-  This completes the definition of a function $(F\cong G) \to (\id F G)$.  Now consider the composite
+  This completes the definition of a function $(F\cong G) \to (\id F G)$.
+  Now consider the composite
   \[ (\id F G) \to (F\cong G) \to (\id F G). \]
   Since hom-sets are sets, their identity types are subsingletons, so to show that two identities $p,q:\id F G$ are identical, it suffices to show that $\id[\id{F_0}{G_0}]{p}{q}$.
   But in the definition of $\bar\gamma$, if $\gamma$ were of the form $\idtoiso(p)$, then $\gamma_a$ would be identical to $\idtoiso(p_a)$ (this can easily be proved by induction on $p$).
@@ -191,7 +214,9 @@ The following result is fundamental.
 
   Finally, consider the composite
   \[(F\cong G)\to  (\id F G) \to (F\cong G). \]
-  Since identity of natural transformations can be tested componentwise, it suffices to show that for each $a$ we have $\id{\idtoiso(\bar\gamma)_a}{\gamma_a}$.  But as observed above, we have $\id{\idtoiso(\bar\gamma)_a}{\idtoiso((\bar\gamma)_a)}$, while $\id{(\bar\gamma)_a}{\isotoid(\gamma_a)}$ by computation for function extensionality.  Since $\isotoid$ and $\idtoiso$ are inverses, we have $\id{\idtoiso(\bar\gamma)_a}{\gamma_a}$ as desired.
+  Since identity of natural transformations can be tested componentwise, it suffices to show that for each $a$ we have $\id{\idtoiso(\bar\gamma)_a}{\gamma_a}$.
+  But as observed above, we have $\id{\idtoiso(\bar\gamma)_a}{\idtoiso((\bar\gamma)_a)}$, while $\id{(\bar\gamma)_a}{\isotoid(\gamma_a)}$ by computation for function extensionality.
+  Since $\isotoid$ and $\idtoiso$ are inverses, we have $\id{\idtoiso(\bar\gamma)_a}{\gamma_a}$ as desired.
 \end{proof}
 
 In particular, naturally isomorphic functors between categories (as opposed to precategories) are identical.
@@ -215,7 +240,8 @@ We now define all the usual ways to compose functors and natural transformations
   \begin{itemize}
   \item For each $a:A$, the component $\gamma_{Fa}$.
   \end{itemize}
-  Naturality is easy to check.  Similarly, for $\gamma$ as above and $K:C\to D$, the composite $(\gamma;K):G;K\to H;K$ is given by
+  Naturality is easy to check.
+  Similarly, for $\gamma$ as above and $K:C\to D$, the composite $(\gamma;K):G;K\to H;K$ is given by
   \begin{itemize}
   \item For each $b:B$, the component $K(\gamma_b)$.
   \end{itemize}
@@ -238,16 +264,20 @@ We now define all the usual ways to compose functors and natural transformations
   using naturality of $\delta$ at the middle step.
 \end{proof}
 
-Classically, one defines the ``horizontal composite'' of $\gamma:F\to G$ and $\delta:H\to K$ to be the common value of $(\gamma;H);(G;\delta)$ and $(F;\delta);(\gamma;K)$.  We will refrain from doing this, because while identical, these two transformations are not \emph{definitionally} equal.  This also has the consequence that we can use the symbol $;$ for all kinds of composition unambiguously: there is only one way to compose two natural transformations (as opposed to composing a natural transformation with a functor on either side).
+Classically, one defines the ``horizontal composite'' of $\gamma:F\to G$ and $\delta:H\to K$ to be the common value of $(\gamma;H);(G;\delta)$ and $(F;\delta);(\gamma;K)$.
+We will refrain from doing this, because while identical, these two transformations are not \emph{definitionally} equal.
+This also has the consequence that we can use the symbol $;$ for all kinds of composition unambiguously: there is only one way to compose two natural transformations (as opposed to composing a natural transformation with a functor on either side).
 
 \begin{lem}\label{ct:functor-assoc}
   Composition of functors is associative: $\id{(F;G);H}{F;(G;H)}$.
 \end{lem}
 \begin{proof}
-  Since composition of functions is associative, this follows immediately for the actions on objects and on homs.  And since hom-sets are sets, the rest of the data is automatic.
+  Since composition of functions is associative, this follows immediately for the actions on objects and on homs.
+  And since hom-sets are sets, the rest of the data is automatic.
 \end{proof}
 
-The identity in \autoref{ct:functor-assoc} is likewise not a definitional equality.  (Composition of functions is associative up to definitional equality, but the axioms that go into a functor must also be composed, and this breaks definitional associativity.)  For this reason, we need also to know about \emph{coherence} for \autoref{ct:functor-assoc}.
+The identity in \autoref{ct:functor-assoc} is likewise not a definitional equality.
+(Composition of functions is associative up to definitional equality, but the axioms that go into a functor must also be composed, and this breaks definitional associativity.)  For this reason, we need also to know about \emph{coherence} for \autoref{ct:functor-assoc}.
 
 \begin{lem}\label{ct:pentagon}
   \autoref{ct:functor-assoc} is coherent, i.e.\ the following pentagon of identities commutes:
@@ -260,7 +290,8 @@ The identity in \autoref{ct:functor-assoc} is likewise not a definitional equali
   As in \autoref{ct:functor-assoc}, this is evident for the actions on objects, and the rest is automatic.
 \end{proof}
 
-We have a similar coherence result relating \autoref{ct:functor-assoc} to the evident identities $\id{(1_A;F)}{F}$ and $\id{(F;1_B)}{F}$.  Thus, (pre)categories, functors, and natural transformations form a \emph{pre-2-category}.
+We have a similar coherence result relating \autoref{ct:functor-assoc} to the evident identities $\id{(1_A;F)}{F}$ and $\id{(F;1_B)}{F}$.
+Thus, (pre)categories, functors, and natural transformations form a \emph{pre-2-category}.
 
 We will henceforth abuse notation by writing $F;G;H$ for either $(F;G);H$ or $F;(G;H)$, transporting along \autoref{ct:functor-assoc} whenever necessary.
 
@@ -283,7 +314,9 @@ We will henceforth abuse notation by writing $F;G;H$ for either $(F;G);H$ or $F;
   If $A$ is a category (but $B$ may be only a precategory), then the type ``$F$ is a left adjoint'' is a subsingleton.
 \end{lem}
 \begin{proof}
-  Suppose given $(G,\eta,\epsilon)$ with the triangle identities and also $(G',\eta',\epsilon')$.  Define $\gamma:G\to G'$ to be $(G;\eta');(\epsilon;G')$, and $\delta:G'\to G$ to be $(G';\eta);(\epsilon';G)$.  Then we have
+  Suppose given $(G,\eta,\epsilon)$ with the triangle identities and also $(G',\eta',\epsilon')$.
+  Define $\gamma:G\to G'$ to be $(G;\eta');(\epsilon;G')$, and $\delta:G'\to G$ to be $(G';\eta);(\epsilon';G)$.
+  Then we have
   \begin{align*}
     \gamma;\delta &= (G;\eta');(\epsilon;G');(G';\eta);(\epsilon';G)\\
     &= (G;\eta');(G;F;G';\eta);(\epsilon;G';F;G);(\epsilon';G)\\
@@ -291,15 +324,20 @@ We will henceforth abuse notation by writing $F;G;H$ for either $(F;G);H$ or $F;
     &= (G;\eta);(\epsilon;G)\\
     &= 1_G
   \end{align*}
-  using \autoref{ct:interchange} and the triangle identities.  Similarly, we show $\id{\delta;\gamma}{1_{G'}}$, so $\gamma$ is a natural isomorphism $G\cong G'$.  By \autoref{ct:functor-cat}, we have an identity $\id G {G'}$.
+  using \autoref{ct:interchange} and the triangle identities.
+  Similarly, we show $\id{\delta;\gamma}{1_{G'}}$, so $\gamma$ is a natural isomorphism $G\cong G'$.
+  By \autoref{ct:functor-cat}, we have an identity $\id G {G'}$.
 
-  Now we need to know that when $\eta$ and $\epsilon$ are transported along this identity, they become identical to $\eta'$ and $\epsilon'$.  By \autoref{ct:idtoiso-trans}, this transport is given by composing with $\gamma$ or $\delta$ as appropriate.  For $\eta$, this yields
+  Now we need to know that when $\eta$ and $\epsilon$ are transported along this identity, they become identical to $\eta'$ and $\epsilon'$.
+  By \autoref{ct:idtoiso-trans}, this transport is given by composing with $\gamma$ or $\delta$ as appropriate.
+  For $\eta$, this yields
   \begin{equation*}
     \eta;(F;G;\eta');(F;\epsilon;G')
     = \eta';(\eta;F';G');(F;\epsilon;G')
     = \eta'
   \end{equation*}
-  using \autoref{ct:interchange} and the triangle identity.  The case of $\epsilon$ is similar.
+  using \autoref{ct:interchange} and the triangle identity.
+  The case of $\epsilon$ is similar.
   Finally, the triangle identities transport correctly automatically, since hom-sets are sets.
 \end{proof}
 
@@ -310,7 +348,8 @@ In \S\ref{sec:yoneda} we will give another proof of \autoref{ct:adjprop}.
 \label{sec:equivalences}
 
 \begin{defn}
-  A functor $F:A\to B$ is an \textbf{equivalence of (pre)categories} if it is a left adjoint for which $\eta$ and $\epsilon$ are isomorphisms.  We write $A\simeq B$ for the type of equivalences of categories from $A$ to $B$.
+  A functor $F:A\to B$ is an \textbf{equivalence of (pre)categories} if it is a left adjoint for which $\eta$ and $\epsilon$ are isomorphisms.
+  We write $A\simeq B$ for the type of equivalences of categories from $A$ to $B$.
 \end{defn}
 
 By \autoref{ct:adjprop} and \autoref{ct:isoprop}, if $A$ is a category, then the type ``$F$ is an equivalence of categories'' is a subsingleton.
@@ -328,7 +367,8 @@ We say a functor $F:A\to B$ is \textbf{fully faithful} if for all $a,b:A$, the f
   The type ``$F$ is an equivalence of categories'' is equivalent to ``$F$ is fully faithful, and for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.''
 \end{lem}
 \begin{proof}
-  Suppose $F$ is an equivalence of categories, with $G,\eta,\epsilon$ specified.  Then we have the function
+  Suppose $F$ is an equivalence of categories, with $G,\eta,\epsilon$ specified.
+  Then we have the function
   \begin{equation*}
     \begin{array}{rcl}
       \hom_B(Fa,Fb) &\to& \hom_A(a,b)\\
@@ -348,18 +388,30 @@ We say a functor $F:A\to B$ is \textbf{fully faithful} if for all $a,b:A$, the f
     &= F(\eta_a);\epsilon_{Fa};g\\
     &= g
   \end{align*}
-  using the triangle identities twice.  Thus, $F_{a,b}$ is an equivalence, so $F$ is fully faithful.  Finally, for any $b:B$, we have $Gb:A$ and $\epsilon_b:FGb\cong b$.
+  using the triangle identities twice.
+  Thus, $F_{a,b}$ is an equivalence, so $F$ is fully faithful.
+  Finally, for any $b:B$, we have $Gb:A$ and $\epsilon_b:FGb\cong b$.
 
-  On the other hand, suppose $F$ is fully faithful, and that for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.  Define $G_0:B_0\to A_0$ by sending $b:B$ to the specified $a:A$, and write $\epsilon_b$ for the specified isomorphism $FGb\cong b$.
+  On the other hand, suppose $F$ is fully faithful, and that for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.
+  Define $G_0:B_0\to A_0$ by sending $b:B$ to the specified $a:A$, and write $\epsilon_b$ for the specified isomorphism $FGb\cong b$.
 
-  Now for any $g:\hom_B(b,b')$, define $G(g):\hom_A(Gb,Gb')$ to be the unique morphism such that $\id{FG(g)}{\epsilon_b;g;\inv{\epsilon_{b'}}}$ (which exists since $F$ is fully faithful).  Finally, for $a:A$ define $\eta_a:\hom_A(a,GFa)$ to be the unique morphism such that $\id{F\eta_a}{\inv{\epsilon_{Fa}}}$.  It is easy to verify that $G$ is a functor and that $(G,\eta,\epsilon)$ exhibit $F$ as an equivalence of categories.
+  Now for any $g:\hom_B(b,b')$, define $G(g):\hom_A(Gb,Gb')$ to be the unique morphism such that $\id{FG(g)}{\epsilon_b;g;\inv{\epsilon_{b'}}}$ (which exists since $F$ is fully faithful).
+  Finally, for $a:A$ define $\eta_a:\hom_A(a,GFa)$ to be the unique morphism such that $\id{F\eta_a}{\inv{\epsilon_{Fa}}}$.
+  It is easy to verify that $G$ is a functor and that $(G,\eta,\epsilon)$ exhibit $F$ as an equivalence of categories.
 
-  We thus have functions in either direction.  Moreover, by construction, the functor $G$ and the transformation $\epsilon$, on one hand, and the function specifying for each $b:B$ an $a:A$ and an isomorphism $Fa\cong b$, on the other hand, are preserved in both directions.  On the equivalence-of-categories side, therefore, it suffices to observe that $\eta$ is uniquely determined by $\epsilon$; while on the other side there is nothing to do, since being fully faithful is a subsingleton.
+  %% TODO: This paragraph is impenetrable!
+  We thus have functions in either direction.
+  Moreover, by construction, the functor $G$ and the transformation $\epsilon$, on one hand, and the function specifying for each $b:B$ an $a:A$ and an isomorphism $Fa\cong b$, on the other hand, are preserved in both directions.
+  On the equivalence-of-categories side, therefore, it suffices to observe that $\eta$ is uniquely determined by $\epsilon$; while on the other side there is nothing to do, since being fully faithful is a subsingleton.
 \end{proof}
 
-However, if $B$ is not a category, then neither type in \autoref{ct:ffeso} may necessarily be a subsingleton.  Thus, for precategories we might study an additional notion of ``weak equivalence'', meaning a fully faithful functor such that for all $b:B$ there \emph{merely} exists an $a:A$ such that $Fa\cong b$.  With categories, however, there is no need for such a thing.
+However, if $B$ is not a category, then neither type in \autoref{ct:ffeso} may necessarily be a subsingleton.
+Thus, for precategories we might study an additional notion of ``weak equivalence'', meaning a fully faithful functor such that for all $b:B$ there \emph{merely} exists an $a:A$ such that $Fa\cong b$.
+With categories, however, there is no need for such a thing.
 
-This is an important advantage of our category theory over set-based approaches.  With a purely set-based definition of category, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the axiom of choice (the strong one, not the trivial one).  Here we have it for free, as a category-theoretic version of the function comprehension principle.
+This is an important advantage of our category theory over set-based approaches.
+With a purely set-based definition of category, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the axiom of choice (the strong one, not the trivial one).
+Here we have it for free, as a category-theoretic version of the function comprehension principle.
 
 On the other hand, the following characterization of equivalences of categories is perhaps even more useful.
 
@@ -367,9 +419,15 @@ On the other hand, the following characterization of equivalences of categories 
   For categories $A$ and $B$ and a functor $F:A\to B$, the type ``$F$ is an equivalence of categories'' is equivalent to ``$F$ is fully faithful, and $F_0:A_0\to B_0$ is an equivalence of types''.
 \end{lem}
 \begin{proof}
-  Since both are subsingletons, it suffices to show they are co-inhabited.  So first suppose $F$ is an equivalence of categories, with $(G,\eta,\epsilon)$ given.  We have already seen that $F$ is fully faithful.  By \autoref{ct:functor-cat}, the natural isomorphisms $\eta$ and $\epsilon$ yield identities $\id{1_A}{F;G}$ and $\id{G;F}{1_B}$, hence in particular identities $\id{\idfunc[A]}{G_0\circ F_0}$ and $\id{F_0\circ G_0}{\idfunc[B]}$.  Thus, $F_0$ is an equivalence of types.
+  Since both are subsingletons, it suffices to show they are co-inhabited.
+  So first suppose $F$ is an equivalence of categories, with $(G,\eta,\epsilon)$ given.
+  We have already seen that $F$ is fully faithful.
+  By \autoref{ct:functor-cat}, the natural isomorphisms $\eta$ and $\epsilon$ yield identities $\id{1_A}{F;G}$ and $\id{G;F}{1_B}$, hence in particular identities $\id{\idfunc[A]}{G_0\circ F_0}$ and $\id{F_0\circ G_0}{\idfunc[B]}$.
+Thus, $F_0$ is an equivalence of types.
 
-  Conversely, suppose $F$ is fully faithful and $F_0$ is an equivalence of types, with inverse $G_0$, say.  Then for each $b:B$ we have $G_0 b:A$ and an identity $\id{FGb}{b}$, hence an isomorphism $FGb\cong b$.  Thus, by \autoref{ct:ffeso}, $F$ is an equivalence of categories.
+  Conversely, suppose $F$ is fully faithful and $F_0$ is an equivalence of types, with inverse $G_0$, say.
+  Then for each $b:B$ we have $G_0 b:A$ and an identity $\id{FGb}{b}$, hence an isomorphism $FGb\cong b$.
+  Thus, by \autoref{ct:ffeso}, $F$ is an equivalence of categories.
 \end{proof}
 
 Finally, we show that categories, functors, and natural transformations form, not merely a pre-2-category, but a 2-category.
@@ -395,10 +453,17 @@ Finally, we show that categories, functors, and natural transformations form, no
     \[F_{a,b}:\eqv{\hom_A(a,b)}{\hom_B(F_0 (a),F_0 (b))},\]
   \item and identities $\id{F_{a,a}(1_a)}{1_{F_0 (a)}}$ and $\id{F_{a,c}(f;g)}{F_{a,b} (f);F_{b,c} (g)}$.
   \end{itemize}
-  But by \autoref{ct:eqv-levelwise}, this is equivalent to giving a functor $F:A\to B$ that is an equivalence of categories.  Finally, by induction on identity, this equivalence $\eqv{(\id A B)}{(A\simeq B)}$ is identical to the one obtained by induction.
+  But by \autoref{ct:eqv-levelwise}, this is equivalent to giving a functor $F:A\to B$ that is an equivalence of categories.
+  Finally, by induction on identity, this equivalence $\eqv{(\id A B)}{(A\simeq B)}$ is identical to the one obtained by induction.
 \end{proof}
 
-As a consequence, the type of categories is a 2-type.  For since $A\simeq B$ is a subtype of the type of functors from $A$ to $B$, which are the objects of a category, it is a 1-type; hence the identity types $\id A B$ are also 1-types.
+As a consequence, the type of categories is a 2-type.
+For since $A\simeq B$ is a subtype of the type of functors from $A$ to $B$, which are the objects of a category, it is a 1-type; hence the identity types $\id A B$ are also 1-types.
+
+\section{The Yoneda lemma}
+\label{sec:yoneda-lemma}
+
+
 
 \section*{Notes}
 \label{sec:ct:notes}

@@ -124,6 +124,17 @@ Similarly, we can show
 \end{gather}
 and so on.
 
+\begin{eg}\label{ct:orders}
+  A precategory in which each set $\hom_A(a,b)$ is a mere proposition is equivalently a type $A_0$ equipped with a mere relation ``$\le$'' that is reflexive ($a\le a$) and transitive (if $a\le b$ and $b\le c$, then $a\le c$).
+  We call this a \textbf{preorder}.
+
+  In a preorder, a proof $f\colon a\le b$ is an isomorphism just when there exists some proof $g\colon b\le a$.
+  Thus, $a\cong b$ is the mere proposition that $a\le b$ and $b\le a$.
+  Therefore, a preorder $A$ is a category just when (1) each type $a=b$ is a mere proposition, and (2) for any $a,b:A_0$ there exists a function $(a\cong b) \to (a=b)$.
+  In other words, $A_0$ must be a set, and $\le$ must be antisymmetric (if $a\le b$ and $b\le a$, then $a=b$).
+  We call this a \textbf{(partial) order} or a \textbf{poset}.
+\end{eg}
+
 
 \section{Functors and transformations}
 \label{sec:transfors}
@@ -413,16 +424,131 @@ Thus, for precategories we might study an additional notion of ``weak equivalenc
 With categories, however, there is no need for such a thing.
 
 This is an important advantage of our category theory over set-based approaches.
-With a purely set-based definition of category, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the axiom of choice (the strong one, not the trivial one).
+With a purely set-based definition of category, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the mere axiom of choice (that is, the strong one, not the trivial one).
 Here we have it for free, as a category-theoretic version of the function comprehension principle.
 
 On the other hand, the following characterization of equivalences of categories is perhaps even more useful.
 
+\begin{defn}\label{ct:isocat}
+  A functor $F:A\to B$ is an \textbf{isomorphism of (pre)categories} if $F$ is fully faithful and $F_0:A_0\to B_0$ is an equivalence of types.
+\end{defn}
+
+Note that being an isomorphism of precategories is always a mere property.
+
+\begin{lem}\label{ct:isoprecat}
+  For precategories $A$ and $B$ and $F:A\to B$, the following are equivalent.
+  \begin{enumerate}
+  \item $F$ is an isomorphism of precategories.\label{item:ct:ipc1}
+  \item There exist $G:B\to A$ and $\eta:1_A = GF$ and $\epsilon:FG=1_B$ such that\label{item:ct:ipc2}
+    \begin{equation}
+      \map{(\lambda H. F H)}{\eta} = \map{(\lambda K. K F)}{\opp\epsilon}.\label{eq:ct:isoprecattri}
+    \end{equation}
+  \end{enumerate}
+\end{lem}
+
+Note that if $B_0$ is not a 1-type, then~\eqref{eq:ct:isoprecattri} may not be a mere proposition.
+
+\begin{proof}
+  First note that since hom-sets are sets, equalities between equalities of functors are uniquely determined by their object-parts.
+  Thus, by function extensionality,~\eqref{eq:ct:isoprecattri} is equivalent to
+  \begin{equation}
+    \map{(F_0)}{\eta_0}_a = \opp{(\epsilon_0)}_{F_0 a}.\label{eq:ct:ipctri}
+  \end{equation}
+  for all $a:A_0$.
+  Note that this is precisely the triangle identity for $G_0$, $\eta_0$, and $\epsilon_0$ to be a proof that $F_0$ is an equivalence of types.
+
+  Now suppose~\ref{item:ct:ipc1}.
+  Let $G_0:B_0 \to A_0$ be the inverse of $F_0$, with $\eta_0: \idfunc[A_0] = G_0 F_0$ and $\epsilon_0:F_0G_0 = \idfunc[B_0]$ satisfying the triangle identity, which is precisely~\eqref{eq:ct:ipctri}.
+  Now define $G_{b,b'}:\hom_B(b,b') \to \hom_A(G_0b,G_0b')$ by
+  \[ G_{b,b'}(g) \defeq
+  \inv{(F_{G_0b,G_0b'})}\Big(\idtoiso(\opp{(\epsilon_0)}_{b'}) \circ g \circ \idtoiso((\epsilon_0)_b)\Big)
+  \]
+  (using the assumption that $F$ is fully faithful).
+  Since \idtoiso takes opposites to inverses and concatenation to composition, and $F$ is a functor, it follows that $G$ is a functor.
+
+  By definition, we have $(GF)_0 \jdeq G_0 F_0$, which is equal to $\idfunc[A_0]$ by $\eta_0$.
+  To obtain $1_A = GF$, we need to show that when transported along $\eta_0$, the identity function of $\hom_A(a,a')$ becomes equal to the composite $G_{Fa,Fa'} \circ F_{a,a'}$.
+  In other words, for any $f:\hom_A(a,a')$ we must have
+  \begin{multline*}
+    \idtoiso((\eta_0)_{a'}) \circ f \circ \idtoiso(\opp{(\eta_0)}_a)\\
+    = \inv{(F_{GFa,GFa'})}\Big(\idtoiso(\opp{(\epsilon_0)}_{Fa'})
+    \circ F_{a,a'}(f) \circ \idtoiso((\epsilon_0)_{Fa})\Big).
+  \end{multline*}
+  But this is equivalent to
+  \begin{multline*}
+    (F_{GFa,GFa'})\Big(\idtoiso((\eta_0)_{a'}) \circ f \circ \idtoiso(\opp{(\eta_0)}_a)\Big)\\
+    = \idtoiso(\opp{(\epsilon_0)}_{Fa'})
+    \circ F_{a,a'}(f) \circ \idtoiso((\epsilon_0)_{Fa}).
+  \end{multline*}
+  which follows from functoriality of $F$, the fact that $F$ preserves \idtoiso, and~\eqref{eq:ct:ipctri}.
+  Thus we have $\eta:1_A = GF$.
+
+  On the other side, we have $(FG)_0\jdeq F_0 G_0$, which is equal to $\idfunc[B_0]$ by $\epsilon_0$.
+  To obtain $FG=1_B$, we need to show that when transported along $\epsilon_0$, the identity function of $\hom_B(b,b')$ becomes equal to the composite $F_{Gb,Gb'} \circ G_{b,b'}$.
+  That is, for any $g:\hom_B(b,b')$ we must have
+  \begin{multline*}
+    F_{Gb,Gb'}\Big(\inv{(F_{Gb,Gb'})}\Big(\idtoiso(\opp{(\epsilon_0)}_{b'}) \circ g \circ \idtoiso((\epsilon_0)_b)\Big)\Big)\\
+    = \idtoiso((\opp{\epsilon_0})_{b'}) \circ g \circ \idtoiso((\epsilon_0)_b).
+  \end{multline*}
+  But this is just the fact that $\inv{(F_{Gb,Gb'})}$ is the inverse of $F_{Gb,Gb'}$.
+  And we have remarked that~\eqref{eq:ct:isoprecattri} is equivalent to~\eqref{eq:ct:ipctri}, so~\ref{item:ct:ipc2} holds.
+
+  Conversely, suppose given~\ref{item:ct:ipc2}; then the object-parts of $G$, $\eta$, and $\epsilon$ together with~\eqref{eq:ct:ipctri} show that $F_0$ is an equivalence of types.
+  And for $a,a':A_0$, we define $\overline{G}_{a,a'}: \hom_B(Fa,Fa') \to \hom_A(a,a')$ by
+  \begin{equation}
+    \overline{G}_{a,a'}(g) \defeq \idtoiso(\opp{\eta})_{a'} \circ G(g) \circ \idtoiso(\eta)_a.\label{eq:ct:gbar}
+  \end{equation}
+  By naturality of $\idtoiso(\eta)$, for any $f:\hom_A(a,a')$ we have
+  \begin{align*}
+    \overline{G}_{a,a'}(F_{a,a'}(f))
+    &= \idtoiso(\opp{\eta})_{a'} \circ G(F(f)) \circ \idtoiso(\eta)_a\\
+    &= \idtoiso(\opp{\eta})_{a'} \circ \idtoiso(\eta)_{a'} \circ f \\
+    &= f.
+  \end{align*}
+  On the other hand, for $g:\hom_B(Fa,Fa')$ we have
+  \begin{align*}
+    F_{a,a'}(\overline{G}_{a,a'}(g))
+    &= F(\idtoiso(\opp{\eta})_{a'}) \circ F(G(g)) \circ F(\idtoiso(\eta)_a)\\
+    &= \idtoiso(\epsilon)_{Fa'}
+    \circ F(G(g))
+    \circ \idtoiso(\opp{\epsilon})_{Fa}\\
+    &= \idtoiso(\epsilon)_{Fa'}
+    \circ \idtoiso(\opp{\epsilon})_{Fa'}
+    \circ g\\
+    &= g.
+  \end{align*}
+  (There are lemmas needed here regarding the compatibility between \idtoiso and whiskering, which we leave it to the reader to state and prove.)
+  Thus, $F_{a,a'}$ is an equivalence, so $F$ is fully faithful; i.e.~\ref{item:ct:ipc1} holds.
+
+  Now the composite~\ref{item:ct:ipc1}$\to$\ref{item:ct:ipc2}$\to$\ref{item:ct:ipc1} is equal to the identity since~\ref{item:ct:ipc1} is a mere proposition.
+  On the other side, tracing through the above constructions we see that the composite~\ref{item:ct:ipc2}$\to$\ref{item:ct:ipc1}$\to$\ref{item:ct:ipc2} essentially preserves the object-parts $G_0$, $\eta_0$, $\epsilon_0$, and the object-part of~\eqref{eq:ct:isoprecattri}.
+  And in the latter three cases, the object-part is all there is, since hom-sets are sets.
+
+  Thus, it suffices to show that we recover the action of $G$ on hom-sets.
+  In other words, we must show that if $g:\hom_B(b,b')$, then
+  \[ G_{b,b'}(g) =
+  \overline{G}_{G_0b,G_0b'}\Big(\idtoiso(\opp{(\epsilon_0)}_{b'}) \circ g \circ \idtoiso((\epsilon_0)_b)\Big)
+  \]
+  where $\overline{G}$ is defined by~\eqref{eq:ct:gbar}.
+  However, this follows from functoriality of $G$ and the \emph{other} triangle identity, which we have seen in \S\ref{cha:equivalences} is equivalent to~\eqref{eq:ct:ipctri}.
+\end{proof}
+
+From \autoref{ct:isoprecat}\ref{item:ct:ipc2} and $\idtoiso$ in functor categories, we conclude immediately that any isomorphism of precategories is an equivalence.
+For precategories, the converse can fail.
+
+\begin{eg}\label{ct:chaotic}
+  Let $X$ be a type and $x_0:X$ an element, and let $X_{\mathrm{ch}}$ denote the \emph{chaotic} or \emph{indiscrete} precategory on $X$.
+  By definition, we have $(X_{\mathrm{ch}})_0\defeq X$, and $\hom_{X_{\mathrm{ch}}}(x,x') = 1$ for all $x,x'$.
+  Then the unique functor $X_{\mathrm{ch}}\to 1$ is an equivalence of precategories, but not an isomorphism unless $X$ is contractible.
+\end{eg}
+
+However, for categories, the two notions coincide.
+
 \begin{lem}\label{ct:eqv-levelwise}
-  For categories $A$ and $B$ and a functor $F:A\to B$, the type ``$F$ is an equivalence of categories'' is equivalent to ``$F$ is fully faithful, and $F_0:A_0\to B_0$ is an equivalence of types''.
+  For categories $A$ and $B$, a functor $F:A\to B$ is an equivalence of categories if and only if it is an isomorphism of categories.
 \end{lem}
 \begin{proof}
-  Since both are mere propositions, it suffices to show they are co-inhabited.
+  Since both are mere properties, it suffices to show they are co-inhabited.
   So first suppose $F$ is an equivalence of categories, with $(G,\eta,\epsilon)$ given.
   We have already seen that $F$ is fully faithful.
   By \autoref{ct:functor-cat}, the natural isomorphisms $\eta$ and $\epsilon$ yield identities $\id{1_A}{GF}$ and $\id{FG}{1_B}$, hence in particular identities $\id{\idfunc[A]}{G_0\circ F_0}$ and $\id{F_0\circ G_0}{\idfunc[B]}$.
@@ -433,13 +559,16 @@ Thus, $F_0$ is an equivalence of types.
   Thus, by \autoref{ct:ffeso}, $F$ is an equivalence of categories.
 \end{proof}
 
-Finally, we show that categories, functors, and natural transformations form, not just a pre-2-category, but a 2-category.
+Let $A\cong B$ denote the type of isomorphisms of (pre)categories from $A$ to $B$.
 
-\begin{thm}\label{ct:cat-2cat}
+Of course, there is yet a third notion of sameness for (pre)categories: equality.
+However, the univalence axiom implies that it coincides with isomorphism.
+
+\begin{lem}\label{ct:cat-eq-iso}
   If $A$ and $B$ are categories, then the function
-  \[(\id A B) \to (A\simeq B)\]
+  \[(\id A B) \to (A\cong B)\]
   (defined by induction from the identity functor) is an equivalence of types.
-\end{thm}
+\end{lem}
 \begin{proof}
   As usual for dependent sum types, to give an element of $\id A B$ is equivalent to giving
   \begin{itemize}
@@ -456,12 +585,25 @@ Finally, we show that categories, functors, and natural transformations form, no
     \[F_{a,b}:\eqv{\hom_A(a,b)}{\hom_B(F_0 (a),F_0 (b))},\]
   \item and identities $\id{F_{a,a}(1_a)}{1_{F_0 (a)}}$ and $\id{F_{a,c}(gf)}{F_{b,c} (g)\circ F_{a,b} (f)}$.
   \end{itemize}
-  But by \autoref{ct:eqv-levelwise}, this is equivalent to giving a functor $F:A\to B$ that is an equivalence of categories.
-  Finally, by induction on identity, this equivalence $\eqv{(\id A B)}{(A\simeq B)}$ is equal to the one obtained by induction.
+  But this consists exactly of a functor $F:A\to B$ that is an isomorphism of categories.
+  And by induction on identity, this equivalence $\eqv{(\id A B)}{(A\cong B)}$ is equal to the one obtained by induction.
+\end{proof}
+
+Thus, for categories, equality also coincides with equivalence.
+We can interpret this as saying that categories, functors, and natural transformations form, not just a pre-2-category, but a 2-category.
+
+\begin{thm}\label{ct:cat-2cat}
+  If $A$ and $B$ are categories, then the function
+  \[(\id A B) \to (A\simeq B)\]
+  (defined by induction from the identity functor) is an equivalence of types.
+\end{thm}
+\begin{proof}
+  By \autoref{ct:cat-eq-iso} and \autoref{ct:eqv-levelwise}.
 \end{proof}
 
 As a consequence, the type of categories is a 2-type.
 For since $A\simeq B$ is a subtype of the type of functors from $A$ to $B$, which are the objects of a category, it is a 1-type; hence the identity types $\id A B$ are also 1-types.
+
 
 \section{The Yoneda lemma}
 \label{sec:yoneda}

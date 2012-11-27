@@ -31,21 +31,19 @@ This leads us to the following definition.
   \item For each $a,b:A$, a set $\hom_A(a,b)$ of \emph{arrows} or \emph{morphisms}.
   \item For each $a:A$, a morphism $1_a:\hom_A(a,a)$.
   \item For each $a,b,c:A$, a function
-    \[  \hom_A(a,b) \to \hom_A(b,c) \to \hom_A(a,c) \]
-    denoted infix by $f\mapsto g\mapsto f;g$.
-  \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id f {f;1_b}$ and $\id f {1_a;f}$.
-  \item For each $a,b,c,d:A$ and $f:\hom_A(a,b)$, $g:\hom_A(b,c)$, $h:\hom_A(c,d)$, we have $\id {(f;g);h}{f;(g;h)}$.
+    \[  \hom_A(b,c) \to \hom_A(a,b) \to \hom_A(a,c) \]
+    denoted infix by $g\mapsto f\mapsto g\circ f$, or sometimes simply by $gf$.
+  \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id f {1_b\circ f}$ and $\id f {f\circ 1_a}$.
+  \item For each $a,b,c,d:A$ and $f:\hom_A(a,b)$, $g:\hom_A(b,c)$, $h:\hom_A(c,d)$, we have $\id {h\circ (g\circ f)}{(h\circ g)\circ f}$.
   \end{enumerate}
 \end{defn}
-
-Note that we are writing composition in ``diagrammatic'' order: $a\xrightarrow{f} b \xrightarrow{g}c$ yields $a \xrightarrow{f;g} c$.
 
 The problem with the notion of precategory is that for objects $a,b:A$, we have two possibly-different notions of ``sameness''.
 On the one hand, we have $\id[A_0]{a}{b}$.
 But on the other hand, there is the standard categorical notion of \emph{isomorphism}.
 
 \begin{defn}\label{ct:isomorphism}
-  A morphism $f:\hom_A(a,b)$ is an \textbf{isomorphism} if there is a morphism $g:\hom_A(b,a)$ such that $\id{f;g}{1_a}$ and $\id{g;f}{1_b}$.
+  A morphism $f:\hom_A(a,b)$ is an \textbf{isomorphism} if there is a morphism $g:\hom_A(b,a)$ such that $\id{g\circ f}{1_a}$ and $\id{f\circ g}{1_b}$.
   We write $a\cong b$ for the type of such isomorphisms.
 \end{defn}
 
@@ -54,11 +52,11 @@ But on the other hand, there is the standard categorical notion of \emph{isomorp
   Therefore, for any $a,b:A$ the type $a\cong b$ is a set.
 \end{lem}
 \begin{proof}
-  Suppose given $g:\hom_A(b,a)$ and $\eta:(\id{1_a}{f; g})$ and $\epsilon:(\id{g; f}{1_b})$, and similarly $g'$, $\eta'$, and $\epsilon'$.
+  Suppose given $g:\hom_A(b,a)$ and $\eta:(\id{1_a}{g\circ f})$ and $\epsilon:(\id{f\circ g}{1_b})$, and similarly $g'$, $\eta'$, and $\epsilon'$.
 We must show $\id{(g,\eta,\epsilon)}{(g',\eta',\epsilon')}$.
   But since all hom-sets are sets, their identity types are subsingletons, so it suffices to show $\id g {g'}$.
   For this we have
-  \[g' = g';1_a = g'; (f; g) = (g'; f); g = 1_b; g = g\]
+  \[g' = 1_a\circ g' = (g\circ f)\circ g' = g\circ (f\circ g') = g\circ 1_b = g\]
   using $\eta$ and $\epsilon'$.
 \end{proof}
 
@@ -109,20 +107,20 @@ The following relationship between the two is important.
   For $p:\id a a'$ and $q:\id b b'$ and $f:\hom_A(a,b)$, we have
   \begin{equation}\label{ct:idtoisocompute}
     \id{\trans{(p,q)}{f}}
-    {\inv{\idtoiso(p)};f;\idtoiso(q)}
+    {\idtoiso(q)\circ f \circ \inv{\idtoiso(p)}}
   \end{equation}
 \end{lem}
 \begin{proof}
   By induction, we may assume $p$ and $q$ are $\refl a$ and $\refl b$ respectively.
 Then the left-hand side of~\eqref{ct:idtoisocompute} is simply $f$.
-  But by definition, $\idtoiso(\refl a)$ is $1_a$, and $\idtoiso(\refl b)$ is $1_b$, so the right-hand side of~\eqref{ct:idtoisocompute} is $1_a;f;1_b$, which is identical to $f$.
+  But by definition, $\idtoiso(\refl a)$ is $1_a$, and $\idtoiso(\refl b)$ is $1_b$, so the right-hand side of~\eqref{ct:idtoisocompute} is $1_b\circ f\circ 1_a$, which is equal to $f$.
 \end{proof}
 
 Similarly, we can show
 \begin{gather}
   \id{\idtoiso(\rev p)}{\inv {(\idtoiso(p))}}\\
-  \id{\idtoiso(p\ct q)}{\idtoiso(p);\idtoiso(q)}\\
-  \id{\isotoid(e;f)}{\isotoid(e)\ct \isotoid(f)}
+  \id{\idtoiso(p\ct q)}{\idtoiso(q)\circ \idtoiso(p)}\\
+  \id{\isotoid(f\circ e)}{\isotoid(e)\ct \isotoid(f)}
 \end{gather}
 and so on.
 
@@ -139,7 +137,8 @@ The following definitions are fairly obvious, and need no modification.
   \item A function $F_0:A_0\to B_0$, generally also denoted $F$.
   \item For each $a,b:A$, a function $F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)$, generally also denoted $F$.
   \item For each $a:A$, we have $\id{F(1_a)}{1_{Fa}}$.
-  \item For each $a,b,c:A$ and $f:\hom_A(a,b)$ and $g:\hom_B(b,c)$, we have $\id{F(f;g)}{Ff;Fg}$.
+  \item For each $a,b,c:A$ and $f:\hom_A(a,b)$ and $g:\hom_B(b,c)$, we have
+    \[\id{F(g\circ f)}{Fg\circ Ff}.\]
   \end{enumerate}
 \end{defn}
 
@@ -149,7 +148,7 @@ Note that by induction on identity, a functor also preserves \idtoiso.
   For functors $F,G:A\to B$, a \textbf{natural transformation} $\gamma:F\to G$ consists of
   \begin{enumerate}
   \item For each $a:A$, a morphism $\gamma_a:\hom_B(Fa,Ga)$ (the ``components'').
-  \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id{\gamma_a;Gf}{Ff;\gamma_b}$ (the ``naturality axiom'').
+  \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id{Gf\circ \gamma_a}{\gamma_b\circ Ff}$ (the ``naturality axiom'').
   \end{enumerate}
 \end{defn}
 
@@ -168,7 +167,7 @@ Similarly, identity of functors is determined by identity of the functions $A_0\
 \end{defn}
 \begin{proof}
   We define $1_F$ by taking $(1_F)_a$ to be $1_{Fa}$; naturality follows by the unit axioms of a precategory.
-  For $\gamma:F\to G$ and $\delta:G\to H$, we define $\gamma;\delta$ by taking $(\gamma;\delta)_a$ to be $\gamma_a;\delta_a$; naturality follows by associativity.
+  For $\gamma:F\to G$ and $\delta:G\to H$, we define $\delta\circ \gamma$ by taking $(\delta\circ\gamma)_a$ to be $\delta_a\circ \gamma_a$; naturality follows by associativity.
   Similarly, the unit and associativity laws for $B^A$ follow from those for $B$.
 \end{proof}
 
@@ -177,13 +176,13 @@ Similarly, identity of functors is determined by identity of the functions $A_0\
 \end{lem}
 \begin{proof}
   If $\gamma$ is an isomorphism, then we have $\delta:G\to F$ that is its inverse.
-  By definition of composition in $B^A$, $(\gamma;\delta)_a$ is $\gamma_a;\delta_a$ and similarly.
-  Thus, $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$ imply $\id{\gamma_a;\delta_a}{1_{Fa}}$ and $\id{\delta_a;\gamma_a}{1_{Ga}}$, so $\gamma_a$ is an isomorphism.
+  By definition of composition in $B^A$, $(\delta\gamma)_a\jdeq \delta_a\gamma_a$ and similarly.
+  Thus, $\id{\delta\gamma}{1_F}$ and $\id{\gamma\delta}{1_G}$ imply $\id{\delta_a\gamma_a}{1_{Fa}}$ and $\id{\gamma_a\delta_a}{1_{Ga}}$, so $\gamma_a$ is an isomorphism.
 
   Conversely, suppose each $\gamma_a$ is an isomorphism, with inverse called $\delta_a$, say.
 We define a natural transformation $\delta:G\to F$ with components $\delta$; for the naturality axiom we have
-  \[ \delta_a;Ff = \delta_a;Ff;\gamma_b;\delta_b = \delta_a;\gamma_a;Gf;\delta_b = Gf;\delta_b. \]
-  Now since composition and identity of natural transformations is determined on their components, we have $\id{\gamma;\delta}{1_F}$ and $\id{\delta;\gamma}{1_G}$.
+  \[ Ff\circ \delta_a = \delta_b\circ \gamma_b\circ Ff \circ \delta_a = \delta_b\circ Gf\circ \gamma_a\circ \delta_a = \delta_b\circ Gf. \]
+  Now since composition and identity of natural transformations is determined on their components, we have $\id{\gamma\delta}{1_F}$ and $\id{\delta\gamma}{1_G}$.
 \end{proof}
 
 The following result is fundamental.
@@ -205,7 +204,7 @@ The following result is fundamental.
   \end{align*}
   become identical when transported along $\bar\gamma$.
   By computation for function extensionality, when applied to $a$, $\bar\gamma$ becomes identical to $\isotoid(\gamma_a)$.
-  But by \autoref{ct:idtoiso-trans}, transporting $Ff:\hom_B(Fa,Fb)$ along $\isotoid(\gamma_a)$ and $\isotoid(\gamma_b)$ is identical to the composite $\inv{(\gamma_a)};Ff;\gamma_b$, which by naturality of $\gamma$ is identical to $Gf$.
+  But by \autoref{ct:idtoiso-trans}, transporting $Ff:\hom_B(Fa,Fb)$ along $\isotoid(\gamma_a)$ and $\isotoid(\gamma_b)$ is identical to the composite $\gamma_b\circ Gf\circ \inv{(\gamma_a)}$, which by naturality of $\gamma$ is identical to $Gf$.
 
   This completes the definition of a function $(F\cong G) \to (\id F G)$.
   Now consider the composite
@@ -228,22 +227,22 @@ In particular, naturally isomorphic functors between categories (as opposed to p
 We now define all the usual ways to compose functors and natural transformations.
 
 \begin{defn}
-  For functors $F:A\to B$ and $G:B\to C$, their composite $F;G:A\to C$ is given by
+  For functors $F:A\to B$ and $G:B\to C$, their composite $G\circ F:A\to C$ is given by
   \begin{itemize}
-  \item The composite $(F_0;G_0) : A_0 \to C_0$
+  \item The composite $(G_0\circ F_0) : A_0 \to C_0$
   \item For each $a,b:A$, the composite
-    \[(F_{a,b};G_{Fa,Fb}):\hom_A(a,b) \to \hom_C(GFa,GFb).\]
+    \[(G_{Fa,Fb}\circ F_{a,b}):\hom_A(a,b) \to \hom_C(GFa,GFb).\]
   \end{itemize}
   It is easy to check the axioms.
 \end{defn}
 
 \begin{defn}
-  For functors $F:A\to B$ and $G,H:B\to C$ and a natural transformation $\gamma:G\to H$, the composite $(F;\gamma):F;G\to F;H$ is given by
+  For functors $F:A\to B$ and $G,H:B\to C$ and a natural transformation $\gamma:G\to H$, the composite $(\gamma F):GF\to HF$ is given by
   \begin{itemize}
   \item For each $a:A$, the component $\gamma_{Fa}$.
   \end{itemize}
   Naturality is easy to check.
-  Similarly, for $\gamma$ as above and $K:C\to D$, the composite $(\gamma;K):G;K\to H;K$ is given by
+  Similarly, for $\gamma$ as above and $K:C\to D$, the composite $(K\gamma):KG\to KH$ is given by
   \begin{itemize}
   \item For each $b:B$, the component $K(\gamma_b)$.
   \end{itemize}
@@ -251,27 +250,26 @@ We now define all the usual ways to compose functors and natural transformations
 
 \begin{lem}\label{ct:interchange}
   For functors $F,G:A\to B$ and $H,K:B\to C$ and natural transformations $\gamma:F\to G$ and $\delta:H\to K$, we have
-  \[\id{(\gamma;H);(G;\delta)}{(F;\delta);(\gamma;K)}.\]
+  \[\id{(\delta G)(H\gamma)}{(K\gamma)(\delta F)}.\]
 \end{lem}
 \begin{proof}
   It suffices to check componentwise: at $a:A$ we have
   \begin{align*}
-    ((\gamma;H);(G;\delta))_a
-    &= (\gamma;H)_a ; (G;\delta)_{a}\\
-    &= H(\gamma_a) ; \delta_{Ga}\\
-    &= \delta_{Fa} ; K(\gamma_a)\\
-    &= (F;\delta)_a ; (\gamma;K)_a\\
-    &= ((F;\delta);(\gamma;K))_a.
+    ((\delta G)(H\gamma))_a
+    &\jdeq (\delta G)_{a}(H\gamma)_a\\
+    &\jdeq \delta_{Ga}\circ H(\gamma_a)\\
+    &= K(\gamma_a) \circ \delta_{Fa} \hspace{2cm}\text{(by naturality of $\delta$)}\\
+    &\jdeq (K \gamma)_a\circ (\delta F)_a\\
+    &\jdeq ((K \gamma)(\delta F))_a.\qedhere
   \end{align*}
-  using naturality of $\delta$ at the middle step.
 \end{proof}
 
-Classically, one defines the ``horizontal composite'' of $\gamma:F\to G$ and $\delta:H\to K$ to be the common value of $(\gamma;H);(G;\delta)$ and $(F;\delta);(\gamma;K)$.
-We will refrain from doing this, because while identical, these two transformations are not \emph{definitionally} equal.
-This also has the consequence that we can use the symbol $;$ for all kinds of composition unambiguously: there is only one way to compose two natural transformations (as opposed to composing a natural transformation with a functor on either side).
+Classically, one defines the ``horizontal composite'' of $\gamma:F\to G$ and $\delta:H\to K$ to be the common value of ${(\delta G)(H\gamma)}$ and ${(K\gamma)(\delta F)}$.
+We will refrain from doing this, because while equal, these two transformations are not \emph{definitionally} equal.
+This also has the consequence that we can use the symbol $\circ$ (or juxtaposition) for all kinds of composition unambiguously: there is only one way to compose two natural transformations (as opposed to composing a natural transformation with a functor on either side).
 
 \begin{lem}\label{ct:functor-assoc}
-  Composition of functors is associative: $\id{(F;G);H}{F;(G;H)}$.
+  Composition of functors is associative: $\id{H(GF)}{(HG)F}$.
 \end{lem}
 \begin{proof}
   Since composition of functions is associative, this follows immediately for the actions on objects and on homs.
@@ -283,19 +281,19 @@ The identity in \autoref{ct:functor-assoc} is likewise not a definitional equali
 
 \begin{lem}\label{ct:pentagon}
   \autoref{ct:functor-assoc} is coherent, i.e.\ the following pentagon of identities commutes:
-  \[ \xymatrix{ & ((F;G);H);K \ar[dl] \ar[dr]\\
-    (F;G);(H;K) \ar[d] && (F;(G;H));K \ar[d]\\
-    F;(G;(H;K)) && F;((G;H);K) \ar[ll] }
+  \[ \xymatrix{ & K(H(GF)) \ar[dl] \ar[dr]\\
+    (KH)(GF) \ar[d] && K((HG)F) \ar[d]\\
+    ((KH)G)F && (K(HG))F \ar[ll] }
   \]
 \end{lem}
 \begin{proof}
   As in \autoref{ct:functor-assoc}, this is evident for the actions on objects, and the rest is automatic.
 \end{proof}
 
-We have a similar coherence result relating \autoref{ct:functor-assoc} to the evident identities $\id{(1_A;F)}{F}$ and $\id{(F;1_B)}{F}$.
+We have a similar coherence result relating \autoref{ct:functor-assoc} to the evident identities $\id{(1_A\circ F)}{F}$ and $\id{(F\circ 1_B)}{F}$.
 Thus, (pre)categories, functors, and natural transformations form a \emph{pre-2-category}.
 
-We will henceforth abuse notation by writing $F;G;H$ for either $(F;G);H$ or $F;(G;H)$, transporting along \autoref{ct:functor-assoc} whenever necessary.
+We will henceforth abuse notation by writing $H\circ G\circ F$ or $HGF$ for either $H(GF)$ or $(HG)F$, transporting along \autoref{ct:functor-assoc} whenever necessary.
 
 
 \section{Adjunctions}
@@ -305,10 +303,10 @@ We will henceforth abuse notation by writing $F;G;H$ for either $(F;G);H$ or $F;
   A functor $F:A\to B$ is a \textbf{left adjoint} if there exists
   \begin{itemize}
   \item A functor $G:B\to A$.
-  \item A natural transformation $\eta:1_A \to F;G$.
-  \item A natural transformation $\epsilon:G;F\to 1_B$.
-  \item $\id{(\eta;F);(F;\epsilon)}{1_F}$.
-  \item $\id{(G;\eta);(\epsilon;G)}{1_G}$.
+  \item A natural transformation $\eta:1_A \to GF$.
+  \item A natural transformation $\epsilon:FG\to 1_B$.
+  \item $\id{(\epsilon F)(F\eta)}{1_F}$.
+  \item $\id{(G\epsilon)(\eta G)}{1_G}$.
   \end{itemize}
 \end{defn}
 
@@ -317,25 +315,26 @@ We will henceforth abuse notation by writing $F;G;H$ for either $(F;G);H$ or $F;
 \end{lem}
 \begin{proof}
   Suppose given $(G,\eta,\epsilon)$ with the triangle identities and also $(G',\eta',\epsilon')$.
-  Define $\gamma:G\to G'$ to be $(G;\eta');(\epsilon;G')$, and $\delta:G'\to G$ to be $(G';\eta);(\epsilon';G)$.
-  Then we have
+  Define $\gamma:G\to G'$ to be $(G'\epsilon)(\eta' G)$, and $\delta:G'\to G$ to be $(G\epsilon')(\eta G')$.
+  Then
   \begin{align*}
-    \gamma;\delta &= (G;\eta');(\epsilon;G');(G';\eta);(\epsilon';G)\\
-    &= (G;\eta');(G;F;G';\eta);(\epsilon;G';F;G);(\epsilon';G)\\
-    &= (G;\eta);(G;\eta';F;G);(G;F;\epsilon';G);(\epsilon;G)\\
-    &= (G;\eta);(\epsilon;G)\\
+    \delta\gamma &=
+    (G\epsilon')(\eta G')(G'\epsilon)(\eta'G)\\
+    &= (G\epsilon')(G F G'\epsilon)(\eta G' F G)(\eta'G)\\
+    &= (G\epsilon)(G\epsilon'FG)(G F \eta' G)(\eta G)\\
+    &= (G\epsilon)(\eta G)\\
     &= 1_G
   \end{align*}
   using \autoref{ct:interchange} and the triangle identities.
-  Similarly, we show $\id{\delta;\gamma}{1_{G'}}$, so $\gamma$ is a natural isomorphism $G\cong G'$.
+  Similarly, we show $\id{\gamma\delta}{1_{G'}}$, so $\gamma$ is a natural isomorphism $G\cong G'$.
   By \autoref{ct:functor-cat}, we have an identity $\id G {G'}$.
 
   Now we need to know that when $\eta$ and $\epsilon$ are transported along this identity, they become identical to $\eta'$ and $\epsilon'$.
   By \autoref{ct:idtoiso-trans}, this transport is given by composing with $\gamma$ or $\delta$ as appropriate.
   For $\eta$, this yields
   \begin{equation*}
-    \eta;(F;G;\eta');(F;\epsilon;G')
-    = \eta';(\eta;F';G');(F;\epsilon;G')
+    (G'\epsilon F)(\eta'GF)\eta
+    = (G'\epsilon F)(G'F\eta)\eta'
     = \eta'
   \end{equation*}
   using \autoref{ct:interchange} and the triangle identity.
@@ -357,7 +356,7 @@ In \S\ref{sec:yoneda} we will give another proof of \autoref{ct:adjprop}.
 By \autoref{ct:adjprop} and \autoref{ct:isoprop}, if $A$ is a category, then the type ``$F$ is an equivalence of categories'' is a subsingleton.
 
 \begin{lem}\label{ct:adjointification}
-  If for $F:A\to B$ there exists $G:B\to A$ and isomorphisms $F;G\cong 1_A$ and $G;F\cong 1_B$, then $F$ is an equivalence of categories.
+  If for $F:A\to B$ there exists $G:B\to A$ and isomorphisms $GF\cong 1_A$ and $FG\cong 1_B$, then $F$ is an equivalence of categories.
 \end{lem}
 \begin{proof}
   Just like the ``adjointification'' theorem for equivalences of types.
@@ -374,30 +373,30 @@ We say a functor $F:A\to B$ is \textbf{fully faithful} if for all $a,b:A$, the f
   \begin{equation*}
     \begin{array}{rcl}
       \hom_B(Fa,Fb) &\to& \hom_A(a,b)\\
-      g &\mapsto&  \eta_a;G(g);\inv{\eta_b}.
+      g &\mapsto& \inv{\eta_b}\circ G(g)\circ \eta_a.
     \end{array}
   \end{equation*}
   For $f:\hom_A(a,b)$, we have
-  \[ \eta_{a};G(F(f));\inv{\eta_{b}} =
-  f ; \eta_{b}; \inv{\eta_{b}} =
+  \[ \inv{\eta_{b}}\circ G(F(f))\circ \eta_{a}  =
+  \inv{\eta_{b}} \circ \eta_{b} \circ f=
   f
   \]
   while for $g:\hom_B(Fa,Fb)$ we have
   \begin{align*}
-    F(\eta_a;G(g);\inv{\eta_b})
-    &= F(\eta_a);F(G(g)); F(\inv{\eta_b})\\
-    &= F(\eta_a);F(G(g)); \epsilon_{Fb}\\
-    &= F(\eta_a);\epsilon_{Fa};g\\
+    F(\inv{\eta_b} \circ G(g)\circ\eta_a)
+    &= F(\inv{\eta_b})\circ F(G(g))\circ F(\eta_a)\\
+    &= \epsilon_{Fb}\circ F(G(g))\circ F(\eta_a)\\
+    &= g\circ\epsilon_{Fa}\circ F(\eta_a)\\
     &= g
   \end{align*}
-  using the triangle identities twice.
+  using naturality of $\epsilon$, and the triangle identities twice.
   Thus, $F_{a,b}$ is an equivalence, so $F$ is fully faithful.
   Finally, for any $b:B$, we have $Gb:A$ and $\epsilon_b:FGb\cong b$.
 
   On the other hand, suppose $F$ is fully faithful, and that for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.
   Define $G_0:B_0\to A_0$ by sending $b:B$ to the specified $a:A$, and write $\epsilon_b$ for the specified isomorphism $FGb\cong b$.
 
-  Now for any $g:\hom_B(b,b')$, define $G(g):\hom_A(Gb,Gb')$ to be the unique morphism such that $\id{FG(g)}{\epsilon_b;g;\inv{\epsilon_{b'}}}$ (which exists since $F$ is fully faithful).
+  Now for any $g:\hom_B(b,b')$, define $G(g):\hom_A(Gb,Gb')$ to be the unique morphism such that $\id{FG(g)}{\inv{(\epsilon_{b'})}\circ g \circ \epsilon_b }$ (which exists since $F$ is fully faithful).
   Finally, for $a:A$ define $\eta_a:\hom_A(a,GFa)$ to be the unique morphism such that $\id{F\eta_a}{\inv{\epsilon_{Fa}}}$.
   It is easy to verify that $G$ is a functor and that $(G,\eta,\epsilon)$ exhibit $F$ as an equivalence of categories.
 
@@ -424,7 +423,7 @@ On the other hand, the following characterization of equivalences of categories 
   Since both are subsingletons, it suffices to show they are co-inhabited.
   So first suppose $F$ is an equivalence of categories, with $(G,\eta,\epsilon)$ given.
   We have already seen that $F$ is fully faithful.
-  By \autoref{ct:functor-cat}, the natural isomorphisms $\eta$ and $\epsilon$ yield identities $\id{1_A}{F;G}$ and $\id{G;F}{1_B}$, hence in particular identities $\id{\idfunc[A]}{G_0\circ F_0}$ and $\id{F_0\circ G_0}{\idfunc[B]}$.
+  By \autoref{ct:functor-cat}, the natural isomorphisms $\eta$ and $\epsilon$ yield identities $\id{1_A}{GF}$ and $\id{FG}{1_B}$, hence in particular identities $\id{\idfunc[A]}{G_0\circ F_0}$ and $\id{F_0\circ G_0}{\idfunc[B]}$.
 Thus, $F_0$ is an equivalence of types.
 
   Conversely, suppose $F$ is fully faithful and $F_0$ is an equivalence of types, with inverse $G_0$, say.
@@ -445,7 +444,7 @@ Finally, we show that categories, functors, and natural transformations form, no
   \item an identity $P_0:\id{A_0}{B_0}$,
   \item for each $a,b:A_0$, an identity
     \[P_{a,b}:\id{\hom_A(a,b)}{\hom_B(\trans {P_0} a,\trans {P_0} b)},\]
-  \item identities $\id{\trans {(P_{a,a})} {1_a}}{1_{\trans {P_0} a}}$ and $\id{\trans {(P_{a,c})} {f;g}}{\trans {(P_{a,b})} f;\trans {(P_{b,c})} g}$.
+  \item identities $\id{\trans {(P_{a,a})} {1_a}}{1_{\trans {P_0} a}}$ and $\id{\trans {(P_{a,c})} {gf}}{\trans {(P_{b,c})} g \circ \trans {(P_{a,b})} f}$.
   \end{itemize}
   (Again, we use the fact that the identity types of hom-sets are subsingletons.)
   However, by univalence, this is equivalent to giving
@@ -453,7 +452,7 @@ Finally, we show that categories, functors, and natural transformations form, no
   \item an equivalence of types $F_0:\eqv{A_0}{B_0}$,
   \item for each $a,b:A_0$, an equivalence of types
     \[F_{a,b}:\eqv{\hom_A(a,b)}{\hom_B(F_0 (a),F_0 (b))},\]
-  \item and identities $\id{F_{a,a}(1_a)}{1_{F_0 (a)}}$ and $\id{F_{a,c}(f;g)}{F_{a,b} (f);F_{b,c} (g)}$.
+  \item and identities $\id{F_{a,a}(1_a)}{1_{F_0 (a)}}$ and $\id{F_{a,c}(gf)}{F_{b,c} (g)\circ F_{a,b} (f)}$.
   \end{itemize}
   But by \autoref{ct:eqv-levelwise}, this is equivalent to giving a functor $F:A\to B$ that is an equivalence of categories.
   Finally, by induction on identity, this equivalence $\eqv{(\id A B)}{(A\simeq B)}$ is identical to the one obtained by induction.
@@ -476,7 +475,7 @@ First we need to define opposites and products of (pre)categories.
 \begin{defn}
   For precategories $A$ and $B$, their \textbf{product} $A\times B$ is a precategory with $(A\times B)_0 \defeq A_0 \times B_0$ and
   \[\hom_{A\times B}((a,b),(a',b')) \defeq \hom_A(a,a') \times \hom_B(b,b').\]
-  Identities are defined by $1_{(a,b)}\defeq (1_a,1_b)$ and composition by $(f,f');(g,g') \defeq ((f;g),(f';g'))$.
+  Identities are defined by $1_{(a,b)}\defeq (1_a,1_b)$ and composition by $(g,g')(f,f') \defeq ((gf),(g'f'))$.
 \end{defn}
 
 \begin{lem}\label{ct:functorexpadj}
@@ -497,7 +496,7 @@ First we need to define opposites and products of (pre)categories.
   Then for any $a:A$ and $b:B$ we have the object $G(a)(b):C$, giving a function $A_0 \times B_0 \to C_0$.
   And for $f:\hom_A(a,a')$ and $g:\hom_B(b,b')$, we have the morphism
   \begin{equation*}
-    G_{a,a'}(f)_b ; G(a')_{b,b'}(g) = G(a)_{b,b'}(g) ; G_{a,a'}(f)_{b'}
+     G(a')_{b,b'}(g)\circ G_{a,a'}(f)_b = G_{a,a'}(f)_{b'} \circ  G(a)_{b,b'}(g)
   \end{equation*}
   in $\hom_C(G(a)(b), G(a')(b'))$.
   Functoriality is again easy to check, so we have a functor $\check{F}:A\times B \to C$.
@@ -511,7 +510,7 @@ It takes a pair $(a,b): (A\op)_0 \times A_0 \jdeq A_0 \times A_0$ to the set $\h
 For a morphism $(f,f') : \hom_{A\op\times A}((a,b),(a',b'))$, by definition we have $f:\hom_A(a',a)$ and $f':\hom_A(b,b')$, so we can define 
 \begin{align*}
   (\hom_A)_{(a,b),(a',b')}(f,f')
-  &\defeq (g \mapsto (f;g;f'))\\
+  &\defeq (g \mapsto (f'gf))\\
   &: \hom_A(a,b) \to \hom_A(a',b').
 \end{align*}
 Functoriality is easy to check.
@@ -540,8 +539,8 @@ By \autoref{ct:functorexpadj}, therefore, we have an induced functor $\y:A\to \u
   \begin{align*}
     \alpha_{a'}(f)
     &= \alpha_{a'} (\y a_{a',a}(f))\\
-    &= (\y a_{a',a}(f);\alpha_{a'})(1_a)\\
-    &= (\alpha_a; F_{a',a}(f))(1_a)\\
+    &= (\alpha_{a'}\circ \y a_{a',a}(f))(1_a)\\
+    &= (F_{a',a}(f)\circ \alpha_a)(1_a)\\
     &= F_{a',a}(f)(\alpha_a(1_a))\\
     &= F_{a',a}(f)(x).
   \end{align*}

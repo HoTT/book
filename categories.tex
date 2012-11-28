@@ -401,22 +401,28 @@ In \S\ref{sec:yoneda} we will give another proof of \autoref{ct:adjprop}.
   We write $A\simeq B$ for the type of equivalences of categories from $A$ to $B$.
 \end{defn}
 
-By \autoref{ct:adjprop} and \autoref{ct:isoprop}, if $A$ is a category, then the type ``$F$ is an equivalence of categories'' is a mere proposition.
+By \autoref{ct:adjprop} and \autoref{ct:isoprop}, if $A$ is a category, then the type ``$F$ is an equivalence of precategories'' is a mere proposition.
 
 \begin{lem}\label{ct:adjointification}
-  If for $F:A\to B$ there exists $G:B\to A$ and isomorphisms $GF\cong 1_A$ and $FG\cong 1_B$, then $F$ is an equivalence of categories.
+  If for $F:A\to B$ there exists $G:B\to A$ and isomorphisms $GF\cong 1_A$ and $FG\cong 1_B$, then $F$ is an equivalence of precategories.
 \end{lem}
 \begin{proof}
   Just like the ``adjointification'' theorem for equivalences of types.
 \end{proof}
 
-We say a functor $F:A\to B$ is \textbf{fully faithful} if for all $a,b:A$, the function $F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)$ is an equivalence (of types, i.e.\ a bijection of sets).
+We say a functor $F:A\to B$ is \textbf{fully faithful} if for all $a,b:A$, the function
+\[F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)\]
+is an equivalence (of types, i.e.\ a bijection of sets).
 
 \begin{lem}\label{ct:ffeso}
-  The type ``$F$ is an equivalence of categories'' is equivalent to ``$F$ is fully faithful, and for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.''
+  For any precategories $A$ and $B$ and functor $F:A\to B$, the following types are equivalent.
+  \begin{enumerate}
+  \item $F$ is an equivalence of precategories.\label{item:ct:ffeso1}
+  \item $F$ is fully faithful, and for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.\label{item:ct:ffeso2}
+  \end{enumerate}
 \end{lem}
 \begin{proof}
-  Suppose $F$ is an equivalence of categories, with $G,\eta,\epsilon$ specified.
+  Suppose $F$ is an equivalence of precategories, with $G,\eta,\epsilon$ specified.
   Then we have the function
   \begin{equation*}
     \begin{array}{rcl}
@@ -442,16 +448,23 @@ We say a functor $F:A\to B$ is \textbf{fully faithful} if for all $a,b:A$, the f
   Finally, for any $b:B$, we have $Gb:A$ and $\epsilon_b:FGb\cong b$.
 
   On the other hand, suppose $F$ is fully faithful, and that for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.
-  Define $G_0:B_0\to A_0$ by sending $b:B$ to the specified $a:A$, and write $\epsilon_b$ for the specified isomorphism $FGb\cong b$.
+  Define $G_0:B_0\to A_0$ by sending $b:B$ to this $a:A$, and write $\epsilon_b$ for the isomorphism $FGb\cong b$.
 
-  Now for any $g:\hom_B(b,b')$, define $G(g):\hom_A(Gb,Gb')$ to be the unique morphism such that $\id{FG(g)}{\inv{(\epsilon_{b'})}\circ g \circ \epsilon_b }$ (which exists since $F$ is fully faithful).
+  Now for any $g:\hom_B(b,b')$, define $G(g):\hom_A(Gb,Gb')$ to be the unique morphism such that $\id{F(G(g))}{\inv{(\epsilon_{b'})}\circ g \circ \epsilon_b }$ (which exists since $F$ is fully faithful).
   Finally, for $a:A$ define $\eta_a:\hom_A(a,GFa)$ to be the unique morphism such that $\id{F\eta_a}{\inv{\epsilon_{Fa}}}$.
-  It is easy to verify that $G$ is a functor and that $(G,\eta,\epsilon)$ exhibit $F$ as an equivalence of categories.
+  It is easy to verify that $G$ is a functor and that $(G,\eta,\epsilon)$ exhibit $F$ as an equivalence of precategories.
 
-  %% TODO: This paragraph is impenetrable!
-  We thus have functions in either direction.
-  Moreover, by construction, the functor $G$ and the transformation $\epsilon$, on one hand, and the function specifying for each $b:B$ an $a:A$ and an isomorphism $Fa\cong b$, on the other hand, are preserved in both directions.
-  On the equivalence-of-categories side, therefore, it suffices to observe that $\eta$ is uniquely determined by $\epsilon$; while on the other side there is nothing to do, since being fully faithful is a mere proposition.
+  Now consider the composite~\ref{item:ct:ffeso1}$\to$\ref{item:ct:ffeso2}$\to$\ref{item:ct:ffeso1}.
+  We clearly recover the same function $G_0:B_0 \to A_0$.
+  For the action of $G$ on hom-sets, we must show that for $g:\hom_B(b,b')$, $G(g)$ is the (necessarily unique) morphism such that $F(G(g)) = \inv{(\epsilon_{b'})}\circ g \circ \epsilon_b$.
+  But this equation holds by the assumed naturality of $\epsilon$.
+  We also clearly recover $\epsilon$, while $\eta$ is uniquely characterized by $\id{F\eta_a}{\inv{\epsilon_{Fa}}}$ (which is one of the triangle identities assumed to hold in the structure of an equivalence of precategories).
+  Thus, this composite is equal to the identity.
+
+  Finally, consider the other composite~\ref{item:ct:ffeso2}$\to$\ref{item:ct:ffeso1}$\to$\ref{item:ct:ffeso2}.
+  Since being fully faithful is a mere proposition, it suffices to observe that we recover, for each $b:B$, the same $a:A$ and isomorphism $F a \cong b$.
+  But this is clear, since we used this function and isomorphism to define $G_0$ and $\epsilon$ in~\ref{item:ct:ffeso1}, which in turn are precisely what we used to recover~\ref{item:ct:ffeso2} again.
+  Thus, the composites in both directions are equal to identities, hence we have an equivalence \eqv{\ref{item:ct:ffeso1}}{\ref{item:ct:ffeso2}}.
 \end{proof}
 
 However, if $B$ is not a category, then neither type in \autoref{ct:ffeso} may necessarily be a mere proposition.

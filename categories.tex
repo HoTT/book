@@ -1,4 +1,5 @@
 \newcommand{\uset}{\ensuremath{\underline{\set}}\xspace}
+\newcommand{\ucat}{\ensuremath{\underline{\mathsf{Cat}}}\xspace}
 \newcommand{\inv}[1]{{#1}^{-1}}
 \newcommand{\idtoiso}{\ensuremath{\mathsf{idtoiso}}\xspace}
 \newcommand{\isotoid}{\ensuremath{\mathsf{isotoid}}\xspace}
@@ -145,6 +146,20 @@ and so on.
   This is equivalent to saying that every isomorphism in $A$ is an identity; thus it is rather stronger than the classical notion of ``skeletal'' category; one might call a category of this sort \textbf{rigid}.
   There is not really any notion of ``skeletality'' in our theory, unless one considers \autoref{ct:category} itself to be such.
 \end{eg}
+
+\begin{eg}\label{ct:discrete}
+  For any 1-type $X$, there is a category with $X$ as its type of objects and with $\hom(x,y) \defeq (x=y)$.
+  If $X$ is a set, we call this the \textbf{discrete} category on $X$.
+  In general, we call it a \textbf{groupoid} (see \autoref{ct:groupoids}).
+\end{eg}
+
+\begin{eg}\label{ct:fundgpd}
+  For \emph{any} type $X$, there is a precategory with $X$ as its type of objects and with $\hom(x,y) \defeq \pi_0(x=y)$.
+  We call this the \emph{fundamental pregroupoid} of $X$.
+\end{eg}
+
+In a textbook on category theory written for readers who had grown up with informal homotopy type theory, we would probably say very little about precategories from now on, restricting ourselves to the case of categories.
+However, since this book has a somewhat different purpose and audience, we will develop many concepts for precategories as well as categories, in order to emphasize how much better-behaved categories are, as compared both to precategories and to ordinary categories in classical mathematics.
 
 
 \section{Functors and transformations}
@@ -300,11 +315,11 @@ This also has the consequence that we can use the symbol $\circ$ (or juxtapositi
   And since hom-sets are sets, the rest of the data is automatic.
 \end{proof}
 
-The identity in \autoref{ct:functor-assoc} is likewise not a definitional equality.
-(Composition of functions is associative up to definitional equality, but the axioms that go into a functor must also be composed, and this breaks definitional associativity.)  For this reason, we need also to know about \emph{coherence} for \autoref{ct:functor-assoc}.
+The equality in \autoref{ct:functor-assoc} is likewise not definitional.
+(Composition of functions is definitionally associative, but the axioms that go into a functor must also be composed, and this breaks definitional associativity.)  For this reason, we need also to know about \emph{coherence} for associativity.
 
 \begin{lem}\label{ct:pentagon}
-  \autoref{ct:functor-assoc} is coherent, i.e.\ the following pentagon of identities commutes:
+  \autoref{ct:functor-assoc} is coherent, i.e.\ the following pentagon of equalities commutes:
   \[ \xymatrix{ & K(H(GF)) \ar[dl] \ar[dr]\\
     (KH)(GF) \ar[d] && K((HG)F) \ar[d]\\
     ((KH)G)F && (K(HG))F \ar[ll] }
@@ -314,10 +329,19 @@ The identity in \autoref{ct:functor-assoc} is likewise not a definitional equali
   As in \autoref{ct:functor-assoc}, this is evident for the actions on objects, and the rest is automatic.
 \end{proof}
 
-We have a similar coherence result relating \autoref{ct:functor-assoc} to the evident identities $\id{(1_A\circ F)}{F}$ and $\id{(F\circ 1_B)}{F}$.
-Thus, (pre)categories, functors, and natural transformations form a \emph{pre-2-category}.
-
 We will henceforth abuse notation by writing $H\circ G\circ F$ or $HGF$ for either $H(GF)$ or $(HG)F$, transporting along \autoref{ct:functor-assoc} whenever necessary.
+We have a similar coherence result for units.
+
+\begin{lem}\label{ct:units}
+  For a functor $F:A\to B$, we have equalities $\id{(1_B\circ F)}{F}$ and $\id{(F\circ 1_A)}{F}$, such that given also $G:B\to C$, the following triangle of equalities commutes.
+  \[ \xymatrix{
+    G\circ (1_B \circ F) \ar[rr] \ar[dr] &&
+    (G\circ 1_B)\circ F \ar[dl] \\
+    & G \circ F.}
+  \]
+\end{lem}
+
+See \autoref{ct:pre2cat} and \autoref{ct:2cat} for further development of these ideas.
 
 
 \section{Adjunctions}
@@ -765,11 +789,43 @@ The usefulness of a definition of categories of this sort, where the type of obj
 \label{sec:ct:exercises}
 
 \begin{ex}
-  Prove that a functor is an equivalence of categories if and only if it is a \emph{right} adjoint whose unit and counit are isomorphisms.
+  For a precategory $A$ and $a:A$, define the \emph{slice precategory} $A/a$.
+  Show that if $A$ is a category, so is $A/a$.
 \end{ex}
 
 \begin{ex}
-  Define pre-2-categories and 2-categories, and check that categories, functors, and natural transformations form a 2-category.
+  For any set $X$, prove that the slice category $\uset/X$ is equivalent to the functor category $\uset^X$, where in the latter case we regard $X$ as a discrete category.
+\end{ex}
+
+\begin{ex}
+  Prove that a functor is an equivalence of categories if and only if it is a \emph{right} adjoint whose unit and counit are isomorphisms.
+\end{ex}
+
+\begin{ex}\label{ct:pre2cat}
+  Define a \emph{pre-2-category} to consist of the structure formed by precategories, functors, and natural transformations in \S\ref{sec:transfors}.
+  Similarly, define a \emph{pre-bicategory} by replacing the equalities in \autoref{ct:functor-assoc} and \autoref{ct:units} with natural isomorphisms satisfying analogous coherence conditions.
+  Define a function from pre-2-categories to pre-bicategories, and show that it becomes an equivalence when restricted and corestricted to those whose hom-precategories are categories.
+\end{ex}
+
+\begin{ex}\label{ct:2cat}
+  Define a \emph{2-category} to be a pre-2-category satisfying a condition analogous to that of \autoref{ct:category}.
+  Verify that the pre-2-category of categories \ucat is a 2-category.
+  How much of this chapter can be done internally to an arbitrary 2-category?
+\end{ex}
+
+\begin{ex}\label{ct:groupoids}
+  Define a 2-category whose objects are 1-types, whose morphisms are functions, and whose 2-morphisms are homotopies.
+  Prove that it is equivalent, in an appropriate sense, to the full sub-2-category of \ucat spanned by the \emph{groupoids} (categories in which every arrow is an isomorphism).
+\end{ex}
+
+\begin{ex}\emph{(This requires the theory of Rezk completion, which hasn't been written yet.)}
+  A \emph{strict category} is a precategory whose type of objects is a set.
+  Prove that the pre-2-category of strict categories is equivalent to the following pre-2-category.
+  \begin{itemize}
+  \item Its objects are categories $A$ equipped with a surjection\footnote{Recall that a function $f:X\to Y$ is a \emph{surjection} if for every $y:Y$, there \emph{merely exists} an $x:X$ such that $f(x)=y$.  This is to be distinguished from a \emph{split surjection}, which has the property that for every $y:Y$ there \emph{exists} an $x:X$ such that $f(x)=y$.} $p_A:A_0'\to A_0$, where $A_0'$ is a set.
+  \item Its morphisms are functors $F:A\to B$ equipped with a function $F_0':A_0' \to B_0'$ such that $p_B \circ F_0' = F_0 \circ p_A$.
+  \item Its 2-morphisms are simply natural transformations.
+  \end{itemize}
 \end{ex}
 
 

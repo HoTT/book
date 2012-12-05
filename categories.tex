@@ -1,10 +1,12 @@
 \newcommand{\uset}{\ensuremath{\underline{\set}}\xspace}
 \newcommand{\ucat}{\ensuremath{\underline{\mathsf{Cat}}}\xspace}
+\newcommand{\urel}{\ensuremath{\underline{\mathsf{Rel}}}\xspace}
 \newcommand{\inv}[1]{{#1}^{-1}}
 \newcommand{\idtoiso}{\ensuremath{\mathsf{idtoiso}}\xspace}
 \newcommand{\isotoid}{\ensuremath{\mathsf{isotoid}}\xspace}
 \newcommand{\op}{^{\textrm{op}}}
 \newcommand{\y}{\ensuremath{\mathbf{y}}\xspace}
+\newcommand{\unitaryiso}{\mathrel{\cong^\dagger}}
 
 \chapter{Category theory}
 \label{cha:category-theory}
@@ -157,6 +159,37 @@ and so on.
 \begin{eg}\label{ct:fundgpd}
   For \emph{any} type $X$, there is a precategory with $X$ as its type of objects and with $\hom(x,y) \defeq \pi_0(x=y)$.
   We call this the \emph{fundamental pregroupoid} of $X$.
+\end{eg}
+
+\begin{eg}
+  Let \urel be the following precategory:
+  \begin{itemize}
+  \item Its objects are sets.
+  \item $\hom_{\urel}(X,Y) = X\to Y\to \prop$.
+  \item For a set $X$, we have $1_X(x,x') \defeq (x=x')$.
+  \item For $R:\hom_{\urel}(X,Y)$ and $S:\hom_{\urel}(Y,Z)$, their composite is defined by
+    \[ (S\circ R)(x,z) \defeq \Brck{\sm{y:Y} R(x,y) \times S(y,z)}.\]
+  \end{itemize}
+  Suppose $R:\hom_{\urel}(X,Y)$ is an isomorphism, with inverse $S$.
+  We observe the following.
+  \begin{enumerate}
+  \item If $R(x,y)$ and $S(y',x)$, then $(R\circ S)(y',y)$, and hence $y'=y$.
+    Similarly, if $R(x,y)$ and $S(y,x')$, then $x=x'$.\label{item:rel1}
+  \item For any $x$, we have $x=x$, hence $(S\circ R)(x,x)$.
+    Thus, there merely exists a $y:Y$ such that $R(x,y)$ and $S(y,x)$.\label{item:rel2}
+  \item Suppose $R(x,y)$.
+    By~\ref{item:rel2}, there merely exists a $y'$ with $R(x,y')$ and $S(y',x)$.
+    But then by~\ref{item:rel1}, merely $y'=y$, and hence $y'=y$ since $Y$ is a set.
+    Therefore, by transporting $S(y',x)$ along this equality, we have $S(y,x)$.
+    In conclusion, $R(x,y)\to S(y,x)$.
+    Similarly, $S(y,x) \to R(x,y)$.\label{item:rel3}
+  \item If $R(x,y)$ and $R(x,y')$, then by~\ref{item:rel3}, $S(y',x)$, so that by~\ref{item:rel1}, $y=y'$.
+    Thus, for any $x$ there is at most one $y$ such that $R(x,y)$.
+    And by~\ref{item:rel2}, there merely exists such a $y$, hence there exists such a $y$.
+  \end{enumerate}
+  In conclusion, if $R:\hom_{\urel}(X,Y)$ is an isomorphism, then for each $x:X$ there is exactly one $y:Y$ such that $R(x,y)$, and dually.
+  Thus, there is a function $f:X\to Y$ sending each $x$ to this $y$, which is an equivalence; hence $X=Y$.
+  With a little more work, we conclude that \urel is a category.
 \end{eg}
 
 In a textbook on category theory written for readers who had grown up with informal homotopy type theory, we would probably say very little about precategories from now on, restricting ourselves to the case of categories.

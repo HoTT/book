@@ -1,11 +1,13 @@
 \newcommand{\uset}{\ensuremath{\underline{\set}}\xspace}
 \newcommand{\ucat}{\ensuremath{\underline{\mathsf{Cat}}}\xspace}
 \newcommand{\urel}{\ensuremath{\underline{\mathsf{Rel}}}\xspace}
+\newcommand{\uhilb}{\ensuremath{\underline{\mathsf{Hilb}}}\xspace}
 \newcommand{\inv}[1]{{#1}^{-1}}
 \newcommand{\idtoiso}{\ensuremath{\mathsf{idtoiso}}\xspace}
 \newcommand{\isotoid}{\ensuremath{\mathsf{isotoid}}\xspace}
 \newcommand{\op}{^{\textrm{op}}}
 \newcommand{\y}{\ensuremath{\mathbf{y}}\xspace}
+\newcommand{\dgr}[1]{{#1}^{\dagger}}
 \newcommand{\unitaryiso}{\mathrel{\cong^\dagger}}
 
 \chapter{Category theory}
@@ -161,7 +163,7 @@ and so on.
   We call this the \emph{fundamental pregroupoid} of $X$.
 \end{eg}
 
-\begin{eg}
+\begin{eg}\label{ct:rel}
   Let \urel be the following precategory:
   \begin{itemize}
   \item Its objects are sets.
@@ -865,6 +867,67 @@ This example can be dualized, and generalized in various ways.
 \end{eg}
 
 
+\section{$\dagger$-categories}
+\label{sec:dagger-categories}
+
+Finally, we mention a useful kind of precategory whose type of objects is not a set, but which is not a category either.
+
+\begin{defn}
+  A \textbf{$\dagger$-precategory} is a precategory $A$ together with the following.
+  \begin{enumerate}
+  \item For each $x,y:A$, a function $\dgr{(-)}:\hom_A(x,y) \to \hom_A(y,x)$.
+  \item For all $x:A$, we have $\dgr{(1_x)} = 1_x$.
+  \item For all $f,g$ we have $\dgr{(g\circ f)} = \dgr f \circ \dgr g$.
+  \item For all $f$ we have $\dgr{(\dgr f)} = f$.
+  \end{enumerate}
+\end{defn}
+
+\begin{defn}
+  A morphism $f:\hom_A(x,y)$ in a $\dagger$-precategory is \textbf{unitary} if $\dgr f \circ f = 1_x$ and $f\circ \dgr f = 1_y$.
+\end{defn}
+
+Of course, every unitary morphism is an isomorphism, and being unitary is a mere proposition.
+Thus for each $x,y:A$ we have a set of unitary isomorphisms from $x$ to $y$, which we denote $(x\unitaryiso y)$.
+
+\begin{lem}\label{ct:idtounitary}
+  If $p:(x=y)$, then $\idtoiso(p)$ is unitary.
+\end{lem}
+\begin{proof}
+  By induction, we may assume $p$ is $\refl x$.
+  But then $\dgr{(1_x)} \circ 1_x = 1_x\circ 1_x = 1_x$ and similarly.
+\end{proof}
+
+\begin{defn}
+  A \textbf{$\dagger$-category} is a $\dagger$-precategory such that for all $x,y:A$, the function
+  \[ (x=y) \to (x \unitaryiso y) \]
+  from \autoref{ct:idtounitary} is an equivalence.
+\end{defn}
+
+\begin{eg}
+  The category \urel from \autoref{ct:rel} becomes a $\dagger$-precategory if we define $(\dgr R)(y,x) \defeq R(x,y)$.
+  The proof that \urel is a category actually shows that every isomorphism is unitary; hence \urel is also a $\dagger$-category.
+\end{eg}
+
+\begin{eg}
+  Any groupoid becomes a $\dagger$-category if we define $\dgr f \defeq \inv{f}$.
+\end{eg}
+
+\begin{eg}\label{ct:hilb}
+  Let \uhilb be the following precategory.
+  \begin{itemize}
+  \item Its objects are finite-dimensional vector spaces equipped with an inner product $\langle -,-\rangle$.
+  \item Its morphisms are arbitrary linear maps.
+  \end{itemize}
+  By standard linear algebra, any linear map $f:V\to W$ between finite dimensional inner product spaces has a uniquely defined adjoint $\dgr f:W\to V$, characterized by $\langle fv,w\rangle = \langle v,\dgr f w\rangle$.
+  In this way, \uhilb becomes a $\dagger$-precategory.
+  Moreover, a linear isomorphism is unitary precisely when it is an \emph{isometry}, i.e.\ $\langle fv,fw\rangle = \langle v,w\rangle$.
+  It follows from this that \uhilb is a $\dagger$-category, though it is not a category (not every linear isomorphism is unitary).
+\end{eg}
+
+There has been a good deal of general theory developed for $\dagger$-categories under classical foundations.
+It was observed early on that the unitary isomorphisms, not arbitrary isomorphisms, are the correct notion of ``sameness'' for objects of a $\dagger$-category, which has caused some consternation among category theorists.
+Homotopy type theory resolves this issue by identifying $\dagger$-categories, like strict categories, as simply a different kind of precategory.
+
 
 \section*{Notes}
 \label{sec:ct:notes}
@@ -917,6 +980,11 @@ The term ``gaunt'' (\autoref{ct:gaunt}) was introduced by Barwick and Schommer-P
   \item Its morphisms are functors $F:A\to B$ equipped with a function $F_0':A_0' \to B_0'$ such that $p_B \circ F_0' = F_0 \circ p_A$.
   \item Its 2-morphisms are simply natural transformations.
   \end{itemize}
+\end{ex}
+
+\begin{ex}
+  Define the pre-2-category of $\dagger$-categories, which has $\dagger$-structures on its hom-precategories.
+  Show that two $\dagger$-categories are equal precisely when they are ``unitarily equivalent'' in a suitable sense.
 \end{ex}
 
 

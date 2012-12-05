@@ -161,6 +161,7 @@ and so on.
 
 In a textbook on category theory written for readers who had grown up with informal homotopy type theory, we would probably say very little about precategories from now on, restricting ourselves to the case of categories.
 However, since this book has a somewhat different purpose and audience, we will develop many concepts for precategories as well as categories, in order to emphasize how much better-behaved categories are, as compared both to precategories and to ordinary categories in classical mathematics.
+We will also see in \S\ref{sec:strict-categories}--\ref{sec:dagger-categories} that in slightly more exotic contexts, there are uses for certain kinds of precategories other than categories.
 
 
 \section{Functors and transformations}
@@ -614,7 +615,7 @@ Of course, there is yet a third notion of sameness for (pre)categories: equality
 However, the univalence axiom implies that it coincides with isomorphism.
 
 \begin{lem}\label{ct:cat-eq-iso}
-  If $A$ and $B$ are categories, then the function
+  If $A$ and $B$ are precategories, then the function
   \[(\id A B) \to (A\cong B)\]
   (defined by induction from the identity functor) is an equivalence of types.
 \end{lem}
@@ -794,12 +795,53 @@ First we give a characterization of adjunctions in terms of representability.
 \end{proof}
 
 
+\section{Strict categories}
+\label{sec:strict-categories}
+
+\begin{defn}
+  A \textbf{strict category} is a precategory whose type of objects is a set.
+\end{defn}
+
+In accordance with the mathematical red herring principle, a strict category is not necessarily a category.
+In fact, a category is a strict category precisely when it is gaunt (\autoref{ct:gaunt}).
+Most of the time, category theory is about categories, not strict ones, but sometimes one wants to consider strict categories.
+The main advantage of this is that strict categories have a stricter notion of ``sameness'' than equivalence, namely isomorphism (or equivalently, by \autoref{ct:cat-eq-iso}, equality).
+
+Here is one origin of strict categories.
+
+\begin{eg}
+  Let $A$ be a precategory and $x:A$ an object.
+  Then there is a precategory $\mathsf{mono}(A,x)$ as follows:
+  \begin{itemize}
+  \item Its objects consist of an object $y:A$ and a monomorphism $m:\hom_A(y,x)$.
+  \item Its morphisms from $(y,m)$ to $(z,n)$ are arbitrary morphisms from $y$ to $z$ in $A$ (not necessarily respecting $m$ and $n$).
+  \end{itemize}
+  An equality $(y,m)=(z,n)$ of objects in $\mathsf{mono}(A,x)$ consists of an equality $p:y=z$ and an equality $\trans{p}{m}=n$, which by \autoref{ct:idtoiso-trans} is equivalently an equality $m=n\circ \idtoiso(p)$.
+  Since hom-sets are sets, the type of such equalities is a mere proposition.
+  But since $m$ and $n$ are monomorphisms, the type of morphisms $f$ such that $m = n\circ f$ is also a mere proposition.
+  Thus, if $A$ is a category, then $(y,m)=(z,n)$ is a mere proposition, and hence $\mathsf{mono}(A,x)$ is a strict category.
+\end{eg}
+
+This example can be dualized, and generalized in various ways.
+
+\begin{eg}\label{ct:galois}
+  Let $E/F$ be a finite Galois extension of fields, and $G$ its Galois group.
+  Then there is a strict category whose objects are intermediate fields $F\subseteq K\subseteq E$, and whose morphisms are field homomorphisms which fix $F$ pointwise (but need not commute with the inclusions into $E$).
+  There is another strict category whose objects are subgroups $H\subseteq G$, and whose morphisms are morphisms of $G$-sets $G/H \to G/K$.
+  The fundamental theorem of Galois theory says that these two precategories are isomorphic (not merely equivalent).
+\end{eg}
+
+
+
 \section*{Notes}
 \label{sec:ct:notes}
 
 The usefulness of a definition of categories of this sort, where the type of objects contains all the categorical isomorphisms, was first strongly emphasized (in the context of set-based definitions of higher categories) by Charles Rezk~\cite{rezk01css}.
 
 The term ``gaunt'' (\autoref{ct:gaunt}) was introduced by Barwick and Schommer-Pries~\cite{bsp12infncats}.
+
+\autoref{ct:galois} was brought up by Peter May on the categories mailing list in May 2010.
+
 
 \section*{Exercises}
 \label{sec:ct:exercises}

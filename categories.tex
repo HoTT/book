@@ -928,7 +928,76 @@ There has been a good deal of general theory developed for $\dagger$-categories 
 It was observed early on that the unitary isomorphisms, not arbitrary isomorphisms, are the correct notion of ``sameness'' for objects of a $\dagger$-category, which has caused some consternation among category theorists.
 Homotopy type theory resolves this issue by identifying $\dagger$-categories, like strict categories, as simply a different kind of precategory.
 
-\input{sip}
+
+\section{The Structure Identity Principle}
+\label{sec:sip}
+
+The \emph{Structure Identity Principle (SIP)} is an informal principle
+that expresses that isomorphic structures are identical.  We aim to
+prove a general abstract result which can be applied to a wide family
+of notions of structure, where structures may be many-sorted or even
+dependently-sorted, infinitary, or even higher order.
+
+The simplest kind of single-sorted structure consists of a type with
+no additional structure.  The Univalence Axiom expresses SIP for that
+notion of structure in a strong form: for types $A,B$, the
+canonical function $(A=B)\to (A\simeq B)$ is an equivalence.
+
+We start with a precategory $X$.  In application to SIP for
+single-sorted first order structures, $X$ will be the category \uset.
+
+\begin{defn}\label{ct:sig}
+  A \textbf{pre-signature} $\Omega$ over $X$ consists of the following.
+  \begin{enumerate}
+  \item A function $P:X_0 \to \type$.
+    The elements of $Px$ are called \emph{$\Omega$-structures} on $x$.
+  \item For each $(x,y:X)$, $(f:\hom_X(x,y))$, $(\alpha:Px)$, $(\beta:Py)$, a mere proposition $H_{\alpha\beta}(f)$.
+    If $H_{\alpha\beta}(f)$ is true, we say that $f$ is an \emph{$\Omega$-homomorphism} from $\alpha$ to $\beta$.
+  \item For all $x:X$ and $\alpha:Px$, we have $H_{\alpha\alpha}(1_x)$.\label{item:sigid}
+  \item For all $f:\hom_X(x,y)$ and $g:\hom_X(y,z)$, and $(\alpha:Px)$, $(\beta:Py)$, $(\gamma:Pz)$, we have $H_{\alpha\beta}(f)\to H_{\beta\gamma}(g)\ra H_{\alpha\gamma}(g\circ f)$.\label{item:sigcmp}
+  \end{enumerate}
+  When $\Omega$ is a pre-signature, for $\alpha,\beta:Px$ we define
+  \[ \alpha\leq_x\beta \defeq H_{\alpha\beta}(1_x).\]
+  By~\ref{item:sigid} and~\ref{item:sigcmp}, this is a preorder (\autoref{ct:orders}) with $Px$ its type of objects.
+  We say that $\Omega$ is a \textbf{signature} if this is in fact a partial order, for all $x:X$.
+\end{defn}
+
+Note that for a signature, each type $Px$ must actually be a set.
+We now define, for any pre-signature $\Omega$, a precategory of \textbf{$\Omega$-structures}, $A = \mathsf{Str}_\Omega(X)$.
+\begin{itemize}
+\item The type of objects of $A$ is the type $A_0 \defeq \sm{x:X} Px$.
+  If $a\jdeq (x,\alpha):A_0$, we may write $|a| \defeq x$.
+\item For $(x,\alpha):A_0$ and $(y,\beta):A_0$, we define
+  \[\hom_A((x,\alpha),(y,\beta)) \defeq \Big\{f:x \to y \;\Big|\; H_{\alpha\beta}(f)\Big\}.\]
+\end{itemize}
+The composition and identities are inherited from $X$; conditions~\ref{item:sigid} and~\ref{item:sigcmp} ensure that these lift to $A$.
+
+Our abstract form of SIP is the following result.
+
+\begin{thm}\label{thm:sip}
+  If $X$ is a category and $\Omega$ is a signature, then the precategory $\mathsf{Str}_\Omega(X)$ is a category.
+\end{thm}
+\begin{proof}
+  By the definition of equality in sum types, to give an equality $(x,\alpha)=(y,\beta)$ consists of
+  \begin{itemize}
+  \item An equality $p:x=y$, and
+  \item An equality $\trans{p}{\alpha}=\beta$.
+  \end{itemize}
+  Since $P$ is set-valued, the latter is a mere proposition.
+  On the other hand, it is easy to see that an isomorphism $(x,\alpha)\cong (y,\beta)$ in $\mathsf{Str}_\Omega(X)$ consists of
+  \begin{itemize}
+  \item An isomorphism $f:x\cong y$ in $X$, such that
+  \item $H_{\alpha\beta}(f)$ and $H_{\beta\alpha}(\inv f)$.
+  \end{itemize}
+  Of course, the second of these is also a mere proposition.
+  And since $X$ is a category, the function $(x=y) \to (x\cong y)$ is an equivalence.
+  Thus, it will suffice to show that for any $p:x=y$ and for any $(\alpha:Px)$, $(\beta:Py)$, we have $\trans{p}{\alpha}=\beta$ if and only if both  $H_{\alpha\beta}(\idtoiso (p))$ and $H_{\beta\alpha}(\inv{\idtoiso(p)})$.
+
+  The ``only if'' direction is just the existence of the function $\idtoiso$ for the category $\mathsf{Str}_\Omega(X)$.
+  For the ``if'' direction, by induction on $p$ we may assume that $y\jdeq x$ and $p\jdeq\refl x$.
+  However, in this case $\idtoiso (p)\jdeq 1_x$ and therefore $\inv{\idtoiso(p)}=1_x$.
+  Thus, $\alpha\leq_x \beta$ and $\beta\leq_x \alpha$, which implies $\alpha=\beta$ since $\Omega$ is a signature.
+\end{proof}
 
 
 \section*{Notes}
@@ -992,3 +1061,4 @@ The term ``gaunt'' (\autoref{ct:gaunt}) was introduced by Barwick and Schommer-P
 % Local Variables:
 % TeX-master: "main"
 % End:
+

@@ -21,11 +21,11 @@ The induction principle for identity types says that if
 then there exists an element $J_{D,d}(x,y,p):D(x,y,p)$ for \emph{every} $x,y:A$ and $p:\id[A]xy$, such that $J_{D,d}(a,a,\refl a) \jdeq d(a)$.
 In other words, given dependently typed functions
 \begin{align*}
-D & :\prod_{x,y:A}\, \prod_{p:\id{x}{y}} \,\type\\
-d & :\prod_{a:A} D(a,a,\refl{a})
+D & :\prd{x,y:A}{p:\id{x}{y}} \type\\
+d & :\prd{a:A} D(a,a,\refl{a})
 \end{align*}
 there is a dependently typed function
-\[J_{D,d}:\prod_{x,y:A} \,\prod_{p:\id{x}{y}} \,D(x,y,p)\]
+\[J_{D,d}:\prd{x,y:A}{p:\id{x}{y}} D(x,y,p)\]
 such that 
 \begin{equation}\label{eq:Jconv}
 J_{D,d}(a,a,\refl{a})\jdeq d(a)
@@ -45,10 +45,10 @@ In topological language, this means ``paths can be reversed''.
   denoted $p\mapsto \opp{p}$, such that $\opp{\refl{x}}\jdeq\refl{x}$ for each $x:A$.
 \end{lem}
 \begin{proof}[First proof]
-  Let $D:\prod_{x,y:A} \prod_{p:x= y} \type$ be the dependent type defined by $D(x,y,p)\defeq (y= x)$.
+  Let $D:\prd{x,y:A}{p:x= y} \type$ be the dependent type defined by $D(x,y,p)\defeq (y= x)$.
   Then we have
   \begin{equation*}
-    d\defeq \lambda x.\refl{x}:\prod_{x:A}\, D(x,x,\refl{x}).
+    d\defeq \lambda x.\refl{x}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
   Thus, $J$ gives us a term $J_{D,d}(x,y,p): (y= x)$ for each $p:(x= y)$.
   Thus, we can define the desired function by $\lambda p. J_{D,d}(x,y,p)$.
@@ -144,7 +144,7 @@ Topologically, they are \emph{paths of paths}, and we are familiar topologically
 \begin{proof}
   All the proofs use the induction principle for equalities.
   \begin{enumerate}
-  \item \emph{(First proof)} Let $D:\prod_{x,y:A}\prod_{p:x=y} \type$ be the dependent type given by 
+  \item \emph{(First proof)} Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by 
     \begin{equation*}
       D(x,y,p)\defeq (p= p\ct \refl{x}).
     \end{equation*}
@@ -152,7 +152,7 @@ Topologically, they are \emph{paths of paths}, and we are familiar topologically
     Since $\refl{x}\ct\refl{x}\jdeq\refl{x}$, it follows that $D(x,x,\refl{x})\jdeq (\refl{x}=\refl{x})$.
     Thus, there is a term
     \begin{equation*}
-      d\defeq\lambda x.\refl{\refl{x}}:\prod_{x:A} D(x,x,\refl{x}).
+      d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
     Now $J$ gives a term $J(D,d,p):(p= p\ct\refl{x})$ for each $p:x= y$.
     The other equality is proven similarly.
@@ -160,7 +160,7 @@ Topologically, they are \emph{paths of paths}, and we are familiar topologically
     \noindent
     \emph{(Second proof)} By induction, it suffices to assume that $y$ is $x$ and that $p$ is $\refl x$.
     But in this case, we have $\refl{x}\ct\refl{x}\jdeq\refl{x}$.
-  \item \emph{(First proof)} Let $D:\prod_{x,y:A}\prod_{p:x=y} \type$ be the dependent type given by 
+  \item \emph{(First proof)} Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by 
     \begin{equation*}
       D(x,y,p)\defeq (\opp{p}\ct p=  \refl{x}).
     \end{equation*}
@@ -168,14 +168,14 @@ Topologically, they are \emph{paths of paths}, and we are familiar topologically
     Since $\opp{\refl{x}}\jdeq\refl{x}$ and $\refl{x}\ct\refl{x}\jdeq\refl{x}$, we get that $D(x,x,\refl{x})\jdeq (\refl{x}=\refl{x})$.
     Hence we find the function
     \begin{equation*}
-      d\defeq\lambda x.\refl{\refl{x}}:\prod_{x:A} D(x,x,\refl{x}).
+      d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
     Now $J$ gives a term $J(D,d,p):\opp{p}\ct p=\refl{x}$ for each $p:x= y$ in $A$.
     The other equality is similar.
 
     \noindent \emph{(Second proof)} By induction, it suffices to assume $p$ is $\refl x$.
     But in this case, we have $\opp{p} \ct p \jdeq \opp{\refl x} \ct \refl x \jdeq \refl x$.
-  \item \emph{(First proof)} Let $D:\prod_{x,y:A} \prod_{p:x=y} \type$ be the dependent type given by
+  \item \emph{(First proof)} Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by
     \begin{equation*}
       D(x,y,p)\defeq (\opp{\opp{p}}= p).
     \end{equation*}
@@ -183,27 +183,27 @@ Topologically, they are \emph{paths of paths}, and we are familiar topologically
     Since $\opp{\refl{x}}\jdeq \refl{x}$ for each $x:A$, we see that $D(x,x,\refl{x})\jdeq(\refl{x}=\refl{x})$.
     Hence we find the function
     \begin{equation*}
-      d\defeq\lambda x.\refl{\refl{x}}:\prod_{x:A} D(x,x,\refl{x}).
+      d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
     Now $J$ gives a term $J(D,d,p):\opp{\opp{p}}= p$ for each $p:x= y$.
 
     \noindent \emph{(Second proof)} By induction, it suffices to assume $p$ is $\refl x$.
     But in this case, we have $\opp{\opp{p}}\jdeq \opp{\opp{\refl x}} \jdeq \refl x$.
-  \item \emph{(First proof)} Let $D:\prod_{z,w:A} \prod_{r:z=w} \type$ be the dependent type given by
+  \item \emph{(First proof)} Let $D:\prd{z,w:A}{r:z=w} \type$ be the dependent type given by
     \begin{equation*}
-      D(z,w,r)\defeq\prod_{x,y:A}\,\prod_{p:x= y}\,\prod_{q:y= z}\, \big(r\ct (q\ct p)=  (r\ct q)\ct p\big).
+      D(z,w,r)\defeq\prd{x,y:A}{p:x= y}{q:y= z} \big(r\ct (q\ct p)=  (r\ct q)\ct p\big).
     \end{equation*}
     Then $D(z,z,\refl{z})$ is
     \begin{equation*}
-      \prod_{x,y:A} \,\prod_{q:y= z} \,\prod_{p:x= y}\, \big(\refl{z}\ct(q\ct p)= (\refl{z}\ct q)\ct p\big),
+      \prd{x,y:A}{q:y= z}{p:x= y} \big(\refl{z}\ct(q\ct p)= (\refl{z}\ct q)\ct p\big),
     \end{equation*}
     which simplifies to
     \begin{equation*}
-      \prod_{x,y:A}\,\prod_{q:y= z} \,\prod_{p:x= y}\, (q\ct p= q\ct p).
+      \prd{x,y:A}{q:y= z}{p:x= y} (q\ct p= q\ct p).
     \end{equation*}
     Therefore, we find
     \begin{equation*}
-      d\defeq\lambda z.\lambda x,y,p,q.\refl{q\ct p}:\prod_{z:A} D(z,z,\refl{z}).
+      d\defeq\lambda z.\lambda x,y,p,q.\refl{q\ct p}:\prd{z:A} D(z,z,\refl{z}).
     \end{equation*}
     Now $J$ gives us an element $J(D,d,r,p,q):r\ct (q\ct p)= (r\ct q)\ct p$ for each $r:z= w$.
 
@@ -227,10 +227,10 @@ Topologically, this can be thought of as saying that every function is ``continu
 \end{lem}
 
 \begin{proof}[First proof]
-  Let $D:\prod_{x,y:A} \prod_{p:x=y}$ be $D(x,y,p)\defeq (f(x)= f(y))$.
+  Let $D:\prd{x,y:A}{p:x=y}\type$ be $D(x,y,p)\defeq (f(x)= f(y))$.
   Then we have
   \begin{equation*}
-    d\defeq\lambda x.\refl{f(x)}:\prod_{x:A} D(x,x,\refl{x}).
+    d\defeq\lambda x.\refl{f(x)}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
   Now $J$ gives us $\map f p\defeq f(x)= f(y)$ for each $p:x= y$.
   The conversion rule implies $\map f{\refl{x}}\jdeq\refl{f(x)}$ for each $x:A$.
@@ -241,7 +241,7 @@ Topologically, this can be thought of as saying that every function is ``continu
 \end{proof}
 
 Since \emph{dependently typed} functions are very important in type theory, we will also need a version of \autoref{lem:map} for these.
-However, this is not quite so simple to state, because if $f:\prod_{x:A} B(x)$ and $p:x=y$, then $f(x):B(x)$ and $f(y):B(y)$ are elements of distinct types, so that \emph{a priori} we cannot even ask whether they are equal.
+However, this is not quite so simple to state, because if $f:\prd{x:A} B(x)$ and $p:x=y$, then $f(x):B(x)$ and $f(y):B(y)$ are elements of distinct types, so that \emph{a priori} we cannot even ask whether they are equal.
 The missing ingredient is that $p$ itself gives us a way to relate the types $B(x)$ and $B(y)$.
 
 \begin{lem}[Transport]\label{lem:transport}
@@ -250,10 +250,10 @@ The missing ingredient is that $p$ itself gives us a way to relate the types $B(
 \end{lem}
 
 \begin{proof}[First proof]
-  Let $D:\prod_{x,y:A} \prod_{p:\id{x}{y}} \type$ be $D(x,y,p)\defeq P(x)\to P(y)$.
+  Let $D:\prd{x,y:A}{p:\id{x}{y}} \type$ be $D(x,y,p)\defeq P(x)\to P(y)$.
   Then we have the function
   \begin{equation*}
-    d\defeq\lambda x.\idfunc[P(x)]:\prod_{x:A} D(x,x,\refl{x}),
+    d\defeq\lambda x.\idfunc[P(x)]:\prd{x:A} D(x,x,\refl{x}),
   \end{equation*}
   so that the induction principle gives us $J_{D,d}(x,y,p):P(x)\to P(y)$ for $p:x= y$, which we define to be $\transf p$.
 \end{proof}
@@ -270,12 +270,12 @@ In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are 
 Now we can prove the dependent version of \autoref{lem:map}.
 
 \begin{lem}[Dependent map]\label{lem:mapdep}
-  Suppose $f:\prod_{x: A} P(x)$ and $p:\id[A]xy$.
+  Suppose $f:\prd{x: A} P(x)$ and $p:\id[A]xy$.
   Then we have $\mapdep fp:\id[P(y)]{\trans p{f(x)}}{f(y)}$.
 \end{lem}
 
 \begin{proof}[First proof]
-  Let $D:\prod_{x,y:A}\prod_{p:x=y} \type$ be the dependent type given by
+  Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by
   \begin{equation*}
     D(x,y,p)\defeq \trans p {f(x)}= f(y).
   \end{equation*}
@@ -283,7 +283,7 @@ Now we can prove the dependent version of \autoref{lem:map}.
   But since $\trans{(\refl{x})}{f(x)}\jdeq f(x)$, we get that $D(x,x,\refl{x})\jdeq (f(x)= f(x))$.
   Thus, we find the term
   \begin{equation*}
-    d\defeq\lambda x.\refl{f(x)}:\prod_{x:A} D(x,x,\refl{x})
+    d\defeq\lambda x.\refl{f(x)}:\prd{x:A} D(x,x,\refl{x})
   \end{equation*}
   and now $J$ gives us $\mapdep fp:\trans p{f(x)}= f(y)$ for each $p:x= y$.
 \end{proof}

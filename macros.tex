@@ -6,6 +6,24 @@
 \let\judgeq\jdeq
 \newcommand{\defeq}{\coloneqq}  % An equality currently being defined
 
+%%% Dependent products %%%
+%% Call the macro like \prd{x,y:A}{p:x=y} with any number of
+%% arguments.  Make sure that whatever comes *after* the call doesn't
+%% begin with an open-brace, or it will be parsed as another argument.
+\makeatletter
+%% This version does {\textstyle\prod}(x,y:A)(p:x=y),
+% \def\prd{{\textstyle\prod}\@prd}
+% \def\@prd#1{(#1)\@ifnextchar\bgroup{\@prd}{,}}
+%% This version does {\textstyle\prod}(x,y:A)\;{\textstyle\prod}(p:x=y),
+\def\prd#1{{\textstyle\prod}(#1)\@ifnextchar\bgroup{\;\prd}{,}}
+%% This version does \prod_{(x,y:A)} \prod_{(p:x=y)}
+% \def\prd#1{\prod_{(#1)}\@ifnextchar\bgroup{\prd}{}}
+%% This version does {\textstyle\prod}_{(x,y:A)} \prod_{(p:x=y)}
+% \def\prd#1{{\textstyle\prod}_{(#1)}\@ifnextchar\bgroup{\prd}{}}
+%% This one is Agda style
+% \def\prd#1{(#1)\to\@ifnextchar\bgroup{\prd}{}}
+\makeatother
+
 %%% Identity types %%%
 \newcommand{\id}[3][]{\ensuremath{#2 =_{#1} #3}\xspace}
 \newcommand{\idtype}[3][]{\ensuremath{\mathsf{Id}_{#1}(#2,#3)}\xspace}

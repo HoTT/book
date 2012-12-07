@@ -944,26 +944,27 @@ notion of structure in a strong form: for types $A,B$, the
 canonical function $(A=B)\to (A\simeq B)$ is an equivalence.
 
 We start with a precategory $X$.  In application to SIP for
-single-sorted first order structures, $X$ will be the category \uset.
+single-sorted first order structures, $X$ will be the category %\uset%
+of $\bbU$-small sets, where $\bbU$ is a univalent type universe.
 
 \begin{defn}\label{ct:sig}
-  A \textbf{pre-signature} $\Omega$ over $X$ consists of the following.
+  A \textbf{notion of structure} $(P,H)$ over $X$ consists of the following.
   \begin{enumerate}
   \item A function $P:X_0 \to \type$.
-    The elements of $Px$ are called \emph{$\Omega$-structures} on $x$.
+    The elements of $Px$ are called \emph{$(P,H)$-structures} on $x$.
   \item For each $(x,y:X)$, $(f:\hom_X(x,y))$, $(\alpha:Px)$, $(\beta:Py)$, a mere proposition $H_{\alpha\beta}(f)$.
-    If $H_{\alpha\beta}(f)$ is true, we say that $f$ is an \emph{$\Omega$-homomorphism} from $\alpha$ to $\beta$.
+    If $H_{\alpha\beta}(f)$ is true, we say that $f$ is an \emph{$(P,H)$-homomorphism} from $\alpha$ to $\beta$.
   \item For all $x:X$ and $\alpha:Px$, we have $H_{\alpha\alpha}(1_x)$.\label{item:sigid}
   \item For all $f:\hom_X(x,y)$ and $g:\hom_X(y,z)$, and $(\alpha:Px)$, $(\beta:Py)$, $(\gamma:Pz)$, we have $H_{\alpha\beta}(f)\to H_{\beta\gamma}(g)\ra H_{\alpha\gamma}(g\circ f)$.\label{item:sigcmp}
   \end{enumerate}
-  When $\Omega$ is a pre-signature, for $\alpha,\beta:Px$ we define
+  When $(P,H)$ is a notion of structure, for $\alpha,\beta:Px$ we define
   \[ \alpha\leq_x\beta \defeq H_{\alpha\beta}(1_x).\]
   By~\ref{item:sigid} and~\ref{item:sigcmp}, this is a preorder (\autoref{ct:orders}) with $Px$ its type of objects.
-  We say that $\Omega$ is a \textbf{signature} if this is in fact a partial order, for all $x:X$.
+  We say that $(P,H)$ is a \textbf{standard notion of structure} if this preorder is in fact a partial order, for all $x:X$.
 \end{defn}
 
-Note that for a signature, each type $Px$ must actually be a set.
-We now define, for any pre-signature $\Omega$, a precategory of \textbf{$\Omega$-structures}, $A = \mathsf{Str}_\Omega(X)$.
+Note that for a standard notion of structure, each type $Px$ must actually be a set.
+We now define, for any notion of structure $(P,H)$, a precategory of \textbf{$(P,H)$-structures}, $A = \mathsf{Str}_{(P,H)}(X)$.
 \begin{itemize}
 \item The type of objects of $A$ is the type $A_0 \defeq \sm{x:X} Px$.
   If $a\jdeq (x,\alpha):A_0$, we may write $|a| \defeq x$.
@@ -975,7 +976,7 @@ The composition and identities are inherited from $X$; conditions~\ref{item:sigi
 Our abstract form of SIP is the following result.
 
 \begin{thm}[Abstract SIP Theorem]\label{thm:sip}
-  If $X$ is a category and $\Omega$ is a signature, then the precategory $\mathsf{Str}_\Omega(X)$ is a category.
+  If $X$ is a category and $(P,H)$ is a standard notion of structure over $X$, then the precategory $\mathsf{Str}_{(P,H)}(X)$ is a category.
 \end{thm}
 \begin{proof}
   By the definition of equality in sum types, to give an equality $(x,\alpha)=(y,\beta)$ consists of
@@ -984,7 +985,7 @@ Our abstract form of SIP is the following result.
   \item An equality $\trans{p}{\alpha}=\beta$.
   \end{itemize}
   Since $P$ is set-valued, the latter is a mere proposition.
-  On the other hand, it is easy to see that an isomorphism $(x,\alpha)\cong (y,\beta)$ in $\mathsf{Str}_\Omega(X)$ consists of
+  On the other hand, it is easy to see that an isomorphism $(x,\alpha)\cong (y,\beta)$ in $\mathsf{Str}_{(P,H)}(X)$ consists of
   \begin{itemize}
   \item An isomorphism $f:x\cong y$ in $X$, such that
   \item $H_{\alpha\beta}(f)$ and $H_{\beta\alpha}(\inv f)$.
@@ -993,25 +994,65 @@ Our abstract form of SIP is the following result.
   And since $X$ is a category, the function $(x=y) \to (x\cong y)$ is an equivalence.
   Thus, it will suffice to show that for any $p:x=y$ and for any $(\alpha:Px)$, $(\beta:Py)$, we have $\trans{p}{\alpha}=\beta$ if and only if both  $H_{\alpha\beta}(\idtoiso (p))$ and $H_{\beta\alpha}(\inv{\idtoiso(p)})$.
 
-  The ``only if'' direction is just the existence of the function $\idtoiso$ for the category $\mathsf{Str}_\Omega(X)$.
+  The ``only if'' direction is just the existence of the function $\idtoiso$ for the category $\mathsf{Str}_{(P,H)}(X)$.
   For the ``if'' direction, by induction on $p$ we may assume that $y\jdeq x$ and $p\jdeq\refl x$.
   However, in this case $\idtoiso (p)\jdeq 1_x$ and therefore $\inv{\idtoiso(p)}=1_x$.
-  Thus, $\alpha\leq_x \beta$ and $\beta\leq_x \alpha$, which implies $\alpha=\beta$ since $\Omega$ is a signature.
+  Thus, $\alpha\leq_x \beta$ and $\beta\leq_x \alpha$, which implies $\alpha=\beta$ since $(P,H)$ is a standard notion of structure.
 \end{proof}
 
-\subsection{Categories of First Order Structures}
-Given a signature for single-sorted first order (FO) structures that may have both function symbols and relation symbols, each of them possibly taking infinitely many arguments, we show, using the Abstract SIP Theorem, that the precategory of structures of that signature is a category.
+\subsection{Categories of First Order Structures over a univalent type universe}
+Given a signature for single-sorted first order (FO) structures that may have both function symbols and relation symbols, each of them possibly taking infinitely many arguments we show, using the Abstract SIP Theorem, that the precategory of structures of that signature is a category.
 
-So we define an {\em FO-signature} to be a set of symbols, each symbol $\omega$, being either a function symbol or a relation symbol and each having an arity $|\omega |$ that is a set.  A {\em structure} $a$ for the signature is a set $|a|$ together with an assignment of an $|\omega|$-ary function $\omega^a:|a|^{|\omega|}\ra |a|$ on $|a|$ for each function symbol $\omega$ and an $|\omega|$-ary relation $\omega^a$ on $|a|$ assigning a mere proposition $\omega^ax$ to each $x:|a|^{|\omega|}$. Given structures $a,b$, a function $f:|a|\ra |b|$ is a {\em homomorphism $a\ra b$} if it preserves the structure; i.e. for each symbol $\omega$ of the signature and each $x:|a|^{|\omega|}$,
+So we define an {\em FO-signature}, $\Omega$, to consist of a set $|\Omega|$ of symbols, each symbol $\omega:|\Omega|$, being either a function symbol or a relation symbol and each having an arity $|\omega |$ that is a set.  An {\em $\Omega$-structure} $a$ consists of a set $|a|$ together with an assignment of an $|\omega|$-ary function $\omega^a:|a|^{|\omega|}\ra |a|$ on $|a|$ for each function symbol $\omega$ and an $|\omega|$-ary relation $\omega^a$ on $|a|$ assigning a mere proposition $\omega^ax$ to each $x:|a|^{|\omega|}$. Given $\Omega$-structures $a,b$, a function $f:|a|\ra |b|$ is a {\em homomorphism $a\ra b$} if it preserves the structure; i.e. for each symbol $\omega$ of the signature and each $x:|a|^{|\omega|}$,
 \begin{enumerate}
 \item $f(\omega^ax) = \omega^b(f\circ x)$ if $\omega$ is a function symbol, and
 \item $\omega^ax\ra\omega^b(f\circ x)$ if $\omega$ is a relation symbol.
 \end{enumerate}
 Note that each $x:|a|^{|\omega|}$ is a function $x:|\omega|\ra |a|$ so that $f\circ x : b^\omega$.
 
-We describe this notion of FO signature and its structures in our abstract terms.  
+We assume given a univalent universe $\bbU$ and a $\bbU$-small signature $\Omega$; i.e. $|\Omega|$ is a $\bbU$-small set and, for each $\omega:|\Omega|$, the set $|\omega|$ is $\bbU$-small.  We form the precategory $\uset_\bbU$ of $\bbU$-small sets, which is a category because $\bbU$ is univalent.  We want to define the precategory of $\bbU$-small $\Omega$-structures over $\uset_\bbU$ and use the abstract SIP theorem to show that it is a category.
+
+We use the FO-signature $\Omega$ to give us a standard notion of structure $(P,H)$ over $\uset_\bbU$.  We assume given a function $fsymbol :|\Omega|\ra\bbB$, where $\bbB$ is the type of boolean values, having canonical elements $\bbt,\bbf$, so that if $\omega :\Omega$ then we take
+\begin{center}
+($\omega$ is a function symbol) 
+\end{center}
+to be the proposition $(fsymbol(x)=\bbt)$.  
+\begin{defn}\label{defn:fo-notion-of-structure}
+$\;$
+\begin{enumerate}
+\item Let $\omega:|\Omega|$
+\begin{enumerate}
+\item
+For each $\bbU$-small set $x$ define
+  \[ P^\omega x := \left\{
+         \begin{array}{ll}
+x^{|\omega|}\ra x &\mbox{ if } fsymbol(x)=\bbt\\
+x^{|\omega|}\ra \bbP_\bbU &\mbox{ if } fsymbol(x)=\bbf
+         \end{array}\right.
+  \]
+where $\bbP_\bbU$ is the set of $\bbU$-small propositions, and
+\item For $\bbU$-small sets $x,y$ and 
+$\alpha:P^\omega x,\;\beta:P^\omega y,\; f:x\ra y$, define
+  \[ H^\omega_{\alpha\beta}(f) := \left\{
+         \begin{array}{ll}
+\forall_{u:x^{|\omega|}}\; [f(\alpha u)=\beta(f\circ u)]  &\mbox{ if } fsymbol(x)=\bbt\\
+\forall_{u:x^{|\omega|}}\; [\alpha u\ra\beta(f\circ u)] &\mbox{ if } fsymbol(x)=\bbf
+         \end{array}\right.
+  \]
+\end{enumerate}
+\item 
+\begin{enumerate}
+\item For each $\bbU$-small set $x$ define $Px := \Pi_{\omega :|\Omega|}P^\omega x$, and
+\item for $\bbU$-small sets $x,y$ and $\alpha :Px,\; \beta :Py,\; f:x\ra y$
+define 
+  \[ H_{\alpha\beta}(f) := \forall_{\omega :|\Omega|}\; H^\omega_{(\alpha\omega)(\beta\omega)}(f).\]
+\end{enumerate}
+\end{enumerate}
+\end{defn}
+It is now routine to check that $(P,H)$ is a standard notion of structure over $\uset_\bbU$ and hence we may use the Abstract SIP Theorem to get that the precategory $Str_{(P,H)}(\uset_\bbU)$ is a category.  It only remains to observe that this is essentially the same as the precategory of $\bbU$-small $\Omega$-structures over $\uset_\bbU$.
 
 
+\newpage
 
 \section*{Notes}
 \label{sec:ct:notes}

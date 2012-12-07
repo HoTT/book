@@ -9,6 +9,8 @@
 \newcommand{\y}{\ensuremath{\mathbf{y}}\xspace}
 \newcommand{\dgr}[1]{{#1}^{\dagger}}
 \newcommand{\unitaryiso}{\mathrel{\cong^\dagger}}
+\newcommand{\bbU}{\ensuremath{\mathbb{U}}\xspace}
+\newcommand{\bbP}{\ensuremath{\mathbb{P}}\xspace}
 
 \chapter{Category theory}
 \label{cha:category-theory}
@@ -962,7 +964,7 @@ of $\bbU$-small sets, where $\bbU$ is a univalent type universe.
   \item For $x:X_0$ and $\alpha:Px$, we have $H_{\alpha\alpha}(1_x)$.\label{item:sigid}
   \item For $x,y,z:X_0$ and $\alpha:Px$, $\;\beta:Py$, $\;\gamma:Pz$, 
 if $f:\hom_X(x,y)$, we have 
-  \[ H_{\alpha\beta}(f)\to H_{\beta\gamma}(g)\ra H_{\alpha\gamma}(g\circ   f).\]\label{item:sigcmp}  
+  \[ H_{\alpha\beta}(f)\to H_{\beta\gamma}(g)\to H_{\alpha\gamma}(g\circ   f).\]\label{item:sigcmp}  
    \end{enumerate}
   When $(P,H)$ is a notion of structure, for $\alpha,\beta:Px$ we define
   \[ \alpha\leq_x\beta \defeq H_{\alpha\beta}(1_x).\]
@@ -1013,24 +1015,24 @@ Our abstract form of SIP is the following result.
 
 Given a signature for single-sorted first order (FO) structures that may have both function symbols and relation symbols, each of them possibly taking infinitely many arguments we show, using the Abstract SIP Theorem, that the precategory of structures of that signature is a category.
 
-So we define an {\em FO-signature}, $\Omega$, to consist of sets $\Omega_0$ and $\Omega_1$ of function symbols, $\omega:\Omega_0$, and relation symbols, $\omega:\Omega_1$, each having an arity $|\omega|$ that is a set.  An {\em $\Omega$-structure} $a$ consists of a set $|a|$ together with an assignment of an $|\omega|$-ary function $\omega^a:|a|^{|\omega|}\ra |a|$ on $|a|$ to each function symbol, $\omega$, and an assignment of an $|\omega|$-ary relation $\omega^a$ on $|a|$, assigning a mere proposition $\omega^ax$ to each $x:|a|^{|\omega|}$, to each relation symbol.  Given $\Omega$-structures $a,b$, a function $f:|a|\ra |b|$ is a {\em homomorphism $a\ra b$} if it preserves the structure; i.e. for each symbol $\omega$ of the signature and each $x:|a|^{|\omega|}$,
+So we define an {\em FO-signature}, $\Omega$, to consist of sets $\Omega_0$ and $\Omega_1$ of function symbols, $\omega:\Omega_0$, and relation symbols, $\omega:\Omega_1$, each having an arity $|\omega|$ that is a set.  An {\em $\Omega$-structure} $a$ consists of a set $|a|$ together with an assignment of an $|\omega|$-ary function $\omega^a:|a|^{|\omega|}\to |a|$ on $|a|$ to each function symbol, $\omega$, and an assignment of an $|\omega|$-ary relation $\omega^a$ on $|a|$, assigning a mere proposition $\omega^ax$ to each $x:|a|^{|\omega|}$, to each relation symbol.  Given $\Omega$-structures $a,b$, a function $f:|a|\to |b|$ is a {\em homomorphism $a\to b$} if it preserves the structure; i.e. for each symbol $\omega$ of the signature and each $x:|a|^{|\omega|}$,
 \begin{enumerate}
 \item $f(\omega^ax) = \omega^b(f\circ x)$ if $\omega:\Omega_0$, and
-\item $\omega^ax\ra\omega^b(f\circ x)$ if $\omega:\Omega_1$.
+\item $\omega^ax\to\omega^b(f\circ x)$ if $\omega:\Omega_1$.
 \end{enumerate}
-Note that each $x:|a|^{|\omega|}$ is a function $x:|\omega|\ra |a|$ so that $f\circ x : b^\omega$.
+Note that each $x:|a|^{|\omega|}$ is a function $x:|\omega|\to |a|$ so that $f\circ x : b^\omega$.
 
 We assume given a univalent universe $\bbU$ and a $\bbU$-small signature $\Omega$; i.e. $|\Omega|$ is a $\bbU$-small set and, for each $\omega:|\Omega|$, the set $|\omega|$ is $\bbU$-small.  We form the precategory $\uset_\bbU$ of $\bbU$-small sets, which is a category because $\bbU$ is univalent.  We want to define the precategory of $\bbU$-small $\Omega$-structures over $\uset_\bbU$ and use the abstract SIP theorem to show that it is a category.
 
 We use the FO-signature $\Omega$ to give us a standard notion of structure $(P,H)$ over $\uset_\bbU$.  
 
-\comment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%We assume given a function $fsymbol :|\Omega|\ra\bbB$, where $\bbB$ is the %type of boolean values, having canonical elements $\bbt,\bbf$, so that if %$\omega :\Omega$ then we take
-\begin{center}
-($\omega$ is a function symbol) 
-\end{center}
-to be the proposition $(fsymbol(x)=\bbt)$.  
-}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%We assume given a function $fsymbol :|\Omega|\to\bbB$, where $\bbB$ is the %type of boolean values, having canonical elements $\bbt,\bbf$, so that if %$\omega :\Omega$ then we take
+% \begin{center}
+% ($\omega$ is a function symbol) 
+% \end{center}
+% to be the proposition $(fsymbol(x)=\bbt)$.  
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{defn}\label{defn:fo-notion-of-structure}
 $\;$
 \begin{enumerate}
@@ -1038,13 +1040,13 @@ $\;$
   \[ Px := P_0x\times P_1x.\]  
 Here
   \[ \begin{array}{ll}
- P_0x &:= \Pi_{\omega:\Omega_0}\; x^{|\omega|}\ra x,
+ P_0x &:= \Pi_{\omega:\Omega_0}\; x^{|\omega|}\to x,
 \mbox{ and } \\
-     P_1x &:= \Pi_{\omega:\Omega_1}\; x^{|\omega|}\ra \bbP_\bbU,
+     P_1x &:= \Pi_{\omega:\Omega_1}\; x^{|\omega|}\to \bbP_\bbU,
   \end{array}\]
 where $\bbP_\bbU$ is the set of $\bbU$-small propositions.
 \item For $\bbU$-small sets $x,y$ and 
-$\alpha:P^\omega x,\;\beta:P^\omega y,\; f:x\ra y$, define
+$\alpha:P^\omega x,\;\beta:P^\omega y,\; f:x\to y$, define
   \[ H_{\alpha\beta}(f) := H_{0,\alpha\beta}(f)\wedge H_{1,\alpha\beta}(f).\]
 Here
   \[ \begin{array}{ll}
@@ -1052,39 +1054,39 @@ H_{0,\alpha\beta}(f) &:=
 \forall_{\omega:\Omega_0}\forall_{u:x^{|\omega|}}\;\; f(\alpha u)=\;\beta(f\circ u),
 \mbox{ and }\\
 H_{1,\alpha\beta}(f) &:= 
-  \forall_{\omega:\Omega_1}\forall_{u:x^{|\omega|}}\;\;\;\;\;\;\;\alpha u\ra\beta(f\circ u).
+  \forall_{\omega:\Omega_1}\forall_{u:x^{|\omega|}}\;\;\;\;\;\;\;\alpha u\to\beta(f\circ u).
   \end{array}\]
 
 
-\comment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\item Let $\omega:|\Omega|$
-\begin{enumerate}
-\item
-For each $\bbU$-small set $x$ define
-  \[ P^\omega x := \left\{
-         \begin{array}{ll}
-x^{|\omega|}\ra x &\mbox{ if } fsymbol(x)=\bbt\\
-x^{|\omega|}\ra \bbP_\bbU &\mbox{ if } fsymbol(x)=\bbf
-         \end{array}\right.
-  \]
-where $\bbP_\bbU$ is the set of $\bbU$-small propositions, and
-\item For $\bbU$-small sets $x,y$ and 
-$\alpha:P^\omega x,\;\beta:P^\omega y,\; f:x\ra y$, define
-  \[ H^\omega_{\alpha\beta}(f) := \left\{
-         \begin{array}{ll}
-\forall_{u:x^{|\omega|}}\; [f(\alpha u)=\beta(f\circ u)]  &\mbox{ if } fsymbol(x)=\bbt\\
-\forall_{u:x^{|\omega|}}\; [\alpha u\ra\beta(f\circ u)] &\mbox{ if } fsymbol(x)=\bbf
-         \end{array}\right.
-  \]
-\end{enumerate}
-\item 
-\begin{enumerate}
-\item For each $\bbU$-small set $x$ define $Px := \Pi_{\omega :|\Omega|}P^\omega x$, and
-\item for $\bbU$-small sets $x,y$ and $\alpha :Px,\; \beta :Py,\; f:x\ra y$
-define 
-  \[ H_{\alpha\beta}(f) := \forall_{\omega :|\Omega|}\; H^\omega_{(\alpha\omega)(\beta\omega)}(f).\]
-\end{enumerate}
-}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% {%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \item Let $\omega:|\Omega|$
+% \begin{enumerate}
+% \item
+% For each $\bbU$-small set $x$ define
+%   \[ P^\omega x := \left\{
+%          \begin{array}{ll}
+% x^{|\omega|}\to x &\mbox{ if } fsymbol(x)=\bbt\\
+% x^{|\omega|}\to \bbP_\bbU &\mbox{ if } fsymbol(x)=\bbf
+%          \end{array}\right.
+%   \]
+% where $\bbP_\bbU$ is the set of $\bbU$-small propositions, and
+% \item For $\bbU$-small sets $x,y$ and 
+% $\alpha:P^\omega x,\;\beta:P^\omega y,\; f:x\to y$, define
+%   \[ H^\omega_{\alpha\beta}(f) := \left\{
+%          \begin{array}{ll}
+% \forall_{u:x^{|\omega|}}\; [f(\alpha u)=\beta(f\circ u)]  &\mbox{ if } fsymbol(x)=\bbt\\
+% \forall_{u:x^{|\omega|}}\; [\alpha u\to\beta(f\circ u)] &\mbox{ if } fsymbol(x)=\bbf
+%          \end{array}\right.
+%   \]
+% \end{enumerate}
+% \item 
+% \begin{enumerate}
+% \item For each $\bbU$-small set $x$ define $Px := \Pi_{\omega :|\Omega|}P^\omega x$, and
+% \item for $\bbU$-small sets $x,y$ and $\alpha :Px,\; \beta :Py,\; f:x\to y$
+% define 
+%   \[ H_{\alpha\beta}(f) := \forall_{\omega :|\Omega|}\; H^\omega_{(\alpha\omega)(\beta\omega)}(f).\]
+% \end{enumerate}
+% }%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{enumerate}
 \end{defn}
 It is now routine to check that $(P,H)$ is a standard notion of structure over $\uset_\bbU$ and hence we may use the Abstract SIP Theorem to get that the precategory $Str_{(P,H)}(\uset_\bbU)$ is a category.  It only remains to observe that this is essentially the same as the precategory of $\bbU$-small $\Omega$-structures over $\uset_\bbU$.

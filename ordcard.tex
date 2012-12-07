@@ -182,6 +182,101 @@ Finally, we can reproduce Cantor's theorem, showing that for every cardinal ther
   By \autoref{thm:injsurj}, since we have $(\lambda x.\bot):A\to \mathbf{2}$ and excluded middle, there would then be a surjection $A \to (A\to \mathbf{2})$, contradicting Cantor's theorem.
 \end{proof}
 
+\section{Ordinal numbers}
+\label{sec:ordinals}
+
+\newcommand{\acc}{\ensuremath{\mathsf{acc}}}
+
+\begin{defn}
+  Let $A$ be a set and
+  \[\blank<\blank:A\to A\to \prop\]
+  a binary relation on $A$.
+  We define by induction what it means for an element $a:A$ to be \textbf{accessible} by $<$:
+  \begin{itemize}
+  \item If $b$ is accessible for every $b<a$, then $a$ is accessible.
+  \end{itemize}
+  We write $\acc(a)$ to mean that $a$ is accessible.
+\end{defn}
+
+It may seem like such an inductive definition can never get off the ground, but of course if $a$ has the property that there are \emph{no} $b$ such that $b<a$, then $a$ is vacuously accessible.
+
+\begin{lem}
+  Accessibility is a mere property.
+\end{lem}
+\begin{proof}
+  We claim that for any $a_1,a_2:A$, any $p:a_1=a_2$, and any $s_1:\acc(a_1)$ and $s_2:\acc(a_2)$, we have $\trans{p}{s_1}=s_2$.
+  By induction, we may assume that $s_1$ is given by a function assigning to each $b_1<a_1$ a proof $s_1(b_1):\acc(b_1)$, and moreover that for any $b_2:A$, any $q:b_1=b_2$, and $t_2:\acc(b_2)$, we have $\trans{q}{s_1(b_1)}=t_2$.
+  Similarly, we may assume that $s_2$ is given by a function assigning to each $b_2<a_2$ a proof $s_2(b_2):\acc(b_2)$, and that for any $b_1:A$, any $q:b_1=b_2$, and $t_1:\acc(b_1)$, we have $\trans{q}{t_1}=s_2(b_2)$.
+  
+  Now by function extensionality, to show $\trans{p}{s_1}=s_2$ it suffices to show that for any $b_2<a_2$ we have $\trans{p}{s_1}(b_2) = s_2(b_2)$.
+  However, we can obtain this from the induction hypothesis for $s_2$ with $q\defeq \refl{b_2}$ and $t_1 \defeq \trans{p}{s_1}(b_2)$.
+  This proves the claim.
+
+  Finally, we instantiate the claim with $a_2\defeq a_1\defeq a$ and $p\defeq \refl{a}$.
+  Thus, for any $a:A$ and $s_1,s_2:\acc(a)$, we have $s_1=s_2$, as desired.
+\end{proof}
+
+\begin{defn}
+  A binary relation $<$ on a set $A$ is \textbf{well-founded} if every element of $A$ is accessible.
+\end{defn}
+
+\begin{lem}
+  Well-foundedness is a mere property.
+\end{lem}
+\begin{proof}
+  Well-foundedness of $<$ is the type $\prd{a:A} \acc(a)$, which is a mere proposition since each $\acc(a)$ is.
+\end{proof}
+
+Well-foundedness allows us to define functions by recursion and prove statements by induction, such as for instance the following.
+
+\begin{lem}
+  Suppose $B$ is a set and we have a function
+  \[ g : \mathcal{P}B \to B \]
+  Then if $<$ is a well-founded relation on $A$, there is a function $f:A\to B$ such that for all $a:A$ we have
+  \begin{equation*}
+    f(a) = g\Big(\big\{ f(a') \;\big|\; a'<a \big\}\Big).
+  \end{equation*}
+\end{lem}
+\begin{proof}
+  We first define, for every $a:A$ and $s:\acc(a)$, an element $\bar f(a,s):B$.
+  By induction, it suffices to assume that $s$ is a function assigning to each $a'<a$ a proof $s(a'):\acc(a')$, and that moreover for each such $a'$ we have an element $\bar f(a',s(a')):B$.
+  In this case, we define
+  \begin{equation*}
+    \bar f(a,s) \defeq g\Big(\big\{ \bar f(a',s(a')) \;\big|\; a'<a \big\}\Big).
+  \end{equation*}
+
+  Now since $<$ is well-founded, we have a function $w:\prd{a:A} \acc(a)$.
+  Thus, we can define $f(a)\defeq \bar f (a,w(a))$.
+\end{proof}
+
+In classical logic, well-foundedness has a more well-known reformulation.
+
+\begin{lem}
+  Assuming excluded middle, $<$ is well-founded if and only if every nonempty subset $B\subseteq A$ merely has a minimal element.
+\end{lem}
+\begin{proof}
+  Suppose first $<$ is well-founded, and suppose $B\subseteq A$ is a subset with no minimal element.
+  That is, for any $a:A$ with $a\in B$, there merely exists a $b:A$ with $b<a$ and $b\in B$.
+
+  We claim that for any $a:A$ and $s:\acc(a)$, we have $a\notin B$.
+  By induction, we may assume $s$ is a function assigning to each $a'<a$ a proof $s(a'):\acc(a)$, and that moreover for each such $a'$ we have $a'\notin B$.
+  If $a\in B$, then by assumption, there would merely exist a $b<a$ with $b\in B$, which contradicts this assumption.
+  Thus, $a\notin B$; this completes the induction.
+  Since $<$ is well-founded, we have $a\notin B$ for all $a:A$, i.e. $B$ is empty.
+
+  Now suppose each nonempty subset merely has a minimal element.
+  Let $B = \{ a:A \;|\; \neg \acc(a) \}$.
+  Then if $B$ is nonempty, it has a minimal element.
+  Thus there merely exists an $a:A$ with $a\in B$ such that for all $b<a$, we have $\acc(b)$.
+  But then by definition (and induction on truncation), $a$ is merely accessible, and hence accessible, contradicting $a\in B$.
+  Thus, $B$ is empty, so $<$ is well-founded.
+\end{proof}
+
+\begin{defn}
+  An \textbf{ordinal} is a set $A$ equipped with a well-founded and transitive relation.
+\end{defn}
+
+
 % Local Variables:
 % TeX-master: "main"
 % End:

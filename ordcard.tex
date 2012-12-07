@@ -1,0 +1,127 @@
+\newcommand{\card}{\ensuremath{\mathsf{Card}}\xspace}
+\newcommand{\cd}[1]{\left|#1\right|}
+\newcommand{\inj}{\ensuremath{\mathsf{inj}}}
+
+\section{Cardinal numbers}
+\label{sec:cardinals}
+
+\begin{defn}
+  The \textbf{type of cardinal numbers} is the 0-truncation of \set:
+  \[ \card \defeq \pizero{\set} \]
+  Thus, a \textbf{cardinal number}, or \textbf{cardinal}, is an inhabitant of $\card\jdeq \pizero\set$.
+\end{defn}
+
+If $A$ is a set, we write $\cd{A}$ for its image under the canonical projection $\set \to \card$.
+Of course, by definition, \card is a set.
+It also inherits the structure of a semiring from \set.
+
+\begin{defn}
+  The operation of \textbf{cardinal addition}
+  \[ \blank+\blank : \card \to \card \to \card \]
+  is defined by induction on truncation:
+  \[ \cd{A} + \cd{B} \defeq \cd{A+B} .\]
+\end{defn}
+\begin{proof}
+  Since $\card\to\card$ is a set, to define $\alpha+\blank:\card\to\card$ for all $\alpha:\card$, by induction it suffices to assume that $\alpha$ is $\cd{A}$ for some $A:\set$.
+  Now we want to define $\cd{A}+\blank :\card\to\card$, i.e.\ we want to define $\cd{A}+\beta :\card$ for all $\beta:\card$.
+  However, since $\card$ is a set, by induction it suffices to assume that $\beta$ is $\cd{B}$ for some $B:\set$.
+  But now we can define $\cd{A}+\cd{B}$ to be $\cd{A+B}$.
+\end{proof}
+
+\begin{defn}
+  Similarly, the operation of \textbf{cardinal multiplication}
+  \[ \blank\cdot\blank : \card \to \card \to \card \]
+  is defined by induction on truncation:
+  \[ \cd{A} \cdot \cd{B} \defeq \cd{A\times B} \]
+\end{defn}
+
+\begin{lem}\label{card:semiring}
+  \card is a commutative semiring, i.e.\ for $\alpha,\beta,\gamma:\card$ we have the following.
+  \begin{align*}
+    (\alpha+\beta)+\gamma &= \alpha+(\beta+\gamma)\\
+    \alpha+0 &= \alpha\\
+    \alpha + \beta &= \beta + \alpha\\
+    (\alpha \cdot \beta) \cdot \gamma &= \alpha \cdot (\beta\cdot\gamma)\\
+    \alpha \cdot 1 &= \alpha\\
+    \alpha\cdot\beta &= \beta\cdot\alpha\\
+    \alpha\cdot(\beta+\gamma) &= \alpha\cdot\beta + \alpha\cdot\gamma
+  \end{align*}
+  where $0 \defeq \cd{\emptyset}$ and $1\defeq\cd{\unit}$.
+\end{lem}
+\begin{proof}
+  We prove the commutativity of multiplication, $\alpha\cdot\beta = \beta\cdot\alpha$; the others are exactly analogous.
+  Since \card is a set, the type $\alpha\cdot\beta = \beta\cdot\alpha$ is a mere proposition, and in particular a set.
+  Thus, by induction it suffices to assume $\alpha$ and $\beta$ are of the form $\cd{A}$ and $\cd{B}$ respectively, for some $A,B:\set$.
+  Now $\cd{A}\cdot \cd{B} \jdeq \cd{A\times B}$ and $\cd{B}\times\cd{A} \jdeq \cd{B\times A}$, so it suffices to show $A\times B = B\times A$.
+  Finally, by univalence, it suffices to give an equivalence $A\times B \simeq B\times A$.
+  But this is easy: take $(a,b) \mapsto (b,a)$ and its obvious inverse.
+\end{proof}
+
+\begin{defn}
+  The operation of \textbf{cardinal exponentiation} is also defined by induction on truncation:
+  \[ \cd{A}^{\cd{B}} \defeq \cd{B\to A}. \]
+\end{defn}
+
+\begin{lem}\label{card:exp}
+  For $\alpha,\beta,\gamma:\card$ we have
+  \begin{align*}
+    \alpha^0 &= 1\\
+    1^\alpha &= 1\\
+    \alpha^1 &= \alpha\\
+    \alpha^{\beta+\gamma} &= \alpha^\beta \cdot \alpha^\gamma\\
+    \alpha^{\beta\cdot \gamma} &= (\alpha^{\beta})^\gamma\\
+    (\alpha\cdot\beta)^\gamma &= \alpha^\gamma \cdot \beta^\gamma
+  \end{align*}
+\end{lem}
+\begin{proof}
+  Exactly like \autoref{card:semiring}.
+\end{proof}
+
+\begin{defn}
+  The relation of \textbf{cardinal inequality}
+  \[ \blank\le\blank : \card\to\card\to\prop \]
+  is defined by induction on truncation:
+  \[ \cd{A} \le \cd{B} \defeq \brck{\inj(A,B)} \]
+  where $\inj(A,B)$ is the type of injections from $A$ to $B$.
+  In other words, $\cd{A} \le \cd{B}$ means that there merely exists an injection from $A$ to $B$.
+\end{defn}
+
+\begin{lem}
+  Cardinal inequality is a preorder, i.e.\ for $\alpha,\beta:\card$ we have
+  \begin{gather*}
+    \alpha \le \alpha\\
+    (\alpha \le \beta) \to (\beta\le\gamma) \to (\alpha\le\gamma)
+  \end{gather*}
+\end{lem}
+\begin{proof}
+  As before, by induction on truncation.
+  For instance, since $(\alpha \le \beta) \to (\beta\le\gamma) \to (\alpha\le\gamma)$ is a mere proposition, by induction on 0-truncation we may assume $\alpha$, $\beta$, and $\gamma$ are $\cd{A}$, $\cd{B}$, and $\cd{C}$ respectively.
+  Now since $\cd{A} \le \cd{C}$ is a mere proposition, by induction on $(-1)$-truncation we may assume given injections $f:A\to B$ and $g:B\to C$.
+  But then $g\circ f$ is an injection from $A$ to $C$, so $\cd{A} \le \cd{C}$ holds.
+  Reflexivity is even easier.
+\end{proof}
+
+We may likewise show that cardinal inequality is compatible with the semiring operations.
+
+\begin{thm}[Schroeder-Bernstein]
+  Assuming excluded middle, for sets $A$ and $B$ we have
+  \[ \inj(A,B) \to \inj(B,A) \to (A\cong B) \]
+\end{thm}
+\begin{proof}
+  The usual ``back-and-forth'' argument applies without significant changes.
+  Note that it actually constructs an isomorphism $A\cong B$ (assuming excluded middle so that we can decide whether a given element belongs to a cycle, an infinite chain, a chain beginning in $A$, or a chain beginning in $B$).
+\end{proof}
+
+\begin{cor}
+  Assuming excluded middle, cardinal inequality is a partial order, i.e.\ for $\alpha,\beta:\card$ we have
+  \[ (\alpha\le\beta) \to (\beta\le\alpha) \to (\alpha=\beta). \]
+\end{cor}
+\begin{proof}
+  Since $\alpha=\beta$ is a mere proposition, by induction on truncation we may assume $\alpha$ and $\beta$ are $\cd{A}$ and $\cd{B}$, respectively, and that we have injections $f:A\to B$ and $g:B\to A$.
+  But then the Schroeder-Bernstein theorem gives an isomorphism $A\simeq B$, hence an equality $\cd{A}=\cd{B}$.
+\end{proof}
+
+
+% Local Variables:
+% TeX-master: "main"
+% End:

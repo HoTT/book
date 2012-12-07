@@ -103,6 +103,31 @@ It also inherits the structure of a semiring from \set.
 
 We may likewise show that cardinal inequality is compatible with the semiring operations.
 
+\begin{lem}\label{thm:injsurj}
+  Consider the following statements:
+  \begin{enumerate}
+  \item There is an injection $A\to B$.\label{item:cle-inj}
+  \item There is a surjection $B\to A$.\label{item:cle-surj}
+  \end{enumerate}
+  Then, assuming excluded middle:
+  \begin{itemize}
+  \item Given $a_0:A$, we have~\ref{item:cle-inj}$\to$\ref{item:cle-surj}.
+  \item Therefore, if $A$ is merely inhabited, we have~\ref{item:cle-inj} $\to$ merely \ref{item:cle-surj}.
+  \item Assuming the axiom of choice, we have~\ref{item:cle-surj} $\to$ merely \ref{item:cle-inj}.
+  \end{itemize}
+\end{lem}
+\begin{proof}
+  If $f:A\to B$ is an injection, define $g:B\to A$ at $b:B$ as follows.
+  Since $f$ is injective, the fiber of $f$ at $b$ is a mere proposition.
+  Therefore, by excluded middle, either there is an $a:A$ with $f(a)=b$, or not.
+  In the first case, define $g(b)\defeq a$; otherwise set $g(b)\defeq a_0$.
+  Then for any $a:A$, we have $a = g(f(a))$, so $g$ is surjective.
+
+  The second statement follows from this by induction on truncation.
+  For the third, if $g:B\to A$ is surjective, then by the axiom of choice, there merely exists a function $f:A\to B$ with $g(f(a)) = a$ for all $a$.
+  But then $f$ must be injective.
+\end{proof}
+
 \begin{thm}[Schroeder-Bernstein]
   Assuming excluded middle, for sets $A$ and $B$ we have
   \[ \inj(A,B) \to \inj(B,A) \to (A\cong B) \]
@@ -121,6 +146,36 @@ We may likewise show that cardinal inequality is compatible with the semiring op
   But then the Schroeder-Bernstein theorem gives an isomorphism $A\simeq B$, hence an equality $\cd{A}=\cd{B}$.
 \end{proof}
 
+Finally, we can reproduce Cantor's theorem, showing that for every cardinal there is a greater one.
+
+\begin{thm}[Cantor]
+  For $A:\set$, there is no surjection $A \to (A\to \mathbf{2})$.
+\end{thm}
+\begin{proof}
+  Suppose $f:A \to (A\to \mathbf{2})$ is any function, and define $g:A\to \mathbf{2}$ by $g(a) \defeq \neg f(a)(a)$.
+  If $g = f(a_0)$, then $g(a_0) = f(a_0)(a_0)$ but $g(a_0) = \neg f(a_0)(a_0)$, a contradiction.
+  Thus, $f$ is not surjective.
+\end{proof}
+
+\begin{cor}
+  Assuming excluded middle, for any $\alpha:\card$, there is a cardinal $\beta$ such that $\alpha\le\beta$ and $\alpha\neq\beta$.
+\end{cor}
+\begin{proof}
+  Let $\beta = 2^\alpha$.
+  Now we want to show a mere propositon, so by induction we may assume $\alpha$ is $\cd{A}$, so that $\beta\jdeq \cd{A\to \mathbf{2}}$.
+  Using excluded middle, we have a function $f:A\to (A\to \mathbf{2})$ defined by
+  \[f(a)(a') \defeq
+  \begin{cases}
+    \top &\quad a=a'\\
+    \bot &\quad a\neq a'.
+  \end{cases}
+  \]
+  And if $f(a)=f(a')$, then $f(a')(a) = f(a)(a) = \top$, so $a=a'$; hence $f$ is injective.
+  Thus, $\alpha \jdeq \cd{A} \le \cd{A\to \mathbf{2}} \jdeq 2^\alpha$.
+
+  On the other hand, if $2^\alpha \le \alpha$, then we would have an injection $(A\to\mathbf{2})\to A$.
+  By \autoref{thm:injsurj}, since we have $(\lambda x.\bot):A\to \mathbf{2}$ and excluded middle, there would then be a surjection $A \to (A\to \mathbf{2})$, contradicting Cantor's theorem.
+\end{proof}
 
 % Local Variables:
 % TeX-master: "main"

@@ -1,4 +1,6 @@
 \newcommand{\card}{\ensuremath{\mathsf{Card}}\xspace}
+\newcommand{\ord}{\ensuremath{\mathsf{Ord}}\xspace}
+\newcommand{\ordsl}[2]{{#1}_{/#2}}
 \newcommand{\cd}[1]{\left|#1\right|}
 \newcommand{\inj}{\ensuremath{\mathsf{inj}}}
 
@@ -234,7 +236,7 @@ Well-foundedness allows us to define functions by recursion and prove statements
   \[ g : \mathcal{P}B \to B \]
   Then if $<$ is a well-founded relation on $A$, there is a function $f:A\to B$ such that for all $a:A$ we have
   \begin{equation*}
-    f(a) = g\Big(\big\{ f(a') \;\big|\; a'<a \big\}\Big).
+    f(a) = g\Big(\setof{ f(a') | a'<a }\Big).
   \end{equation*}
 \end{lem}
 \begin{proof}
@@ -242,7 +244,7 @@ Well-foundedness allows us to define functions by recursion and prove statements
   By induction, it suffices to assume that $s$ is a function assigning to each $a'<a$ a proof $s(a'):\acc(a')$, and that moreover for each such $a'$ we have an element $\bar f(a',s(a')):B$.
   In this case, we define
   \begin{equation*}
-    \bar f(a,s) \defeq g\Big(\big\{ \bar f(a',s(a')) \;\big|\; a'<a \big\}\Big).
+    \bar f(a,s) \defeq g\Big(\setof{ \bar f(a',s(a')) | a'<a }\Big).
   \end{equation*}
 
   Now since $<$ is well-founded, we have a function $w:\prd{a:A} \acc(a)$.
@@ -265,7 +267,7 @@ In classical logic, well-foundedness has a more well-known reformulation.
   Since $<$ is well-founded, we have $a\notin B$ for all $a:A$, i.e. $B$ is empty.
 
   Now suppose each nonempty subset merely has a minimal element.
-  Let $B = \{ a:A \;|\; \neg \acc(a) \}$.
+  Let $B = \setof{ a:A | \neg \acc(a) }$.
   Then if $B$ is nonempty, it merely has a minimal element.
   Thus there merely exists an $a:A$ with $a\in B$ such that for all $b<a$, we have $\acc(b)$.
   But then by definition (and induction on truncation), $a$ is merely accessible, and hence accessible, contradicting $a\in B$.
@@ -329,6 +331,10 @@ In particular, this implies that the word ``merely'' in \autoref{def:simulation}
   Since $f$ is injective, $\sm{a:A} (f(a)=b)$ is a mere proposition.
 \end{proof}
 
+We say that a subset $C :\mathcal{P}B$ is an \textbf{initial segment} if $c\in C$ and $b<c$ imply $b\in C$.
+The image of a simulation must be an initial segment, while the inclusion of any initial segment is a simulation.
+Thus, by univalence, every simulation $A\to B$ is \emph{equal} to the inclusion of some initial segment of $B$.
+
 \begin{thm}
   For a set $A$, let $P(A)$ be the type of extensional well-founded relations on $A$.
   If $\mathord{<_A} : P(A)$ and $\mathord{<_B} : P(B)$ and $f:A\to B$, let $H_{\mathord{<_A}\mathord{<_B}}(f)$ be the mere proposition that $f$ is a simulation.
@@ -369,6 +375,97 @@ Thus, if $A$ and $B$ are equipped with extensional and well-founded relations, w
   An \textbf{ordinal} is a set $A$ with an extensional well-founded relation which is \emph{transitive}, i.e.\ $\prd{a,b,c:A}(a<b)\to (b<c) \to (a<c)$.
 \end{defn}
 
+Let \ord denote the type of ordinals.
+By the previous results, \ord is a set and has a natural partial order.
+We now show that \ord also admits a well-founded relation.
+
+If $A$ is an ordinal and $a:A$, let $\ordsl A a$ denote the initial segment $\setof{ b:A | b<a}$.
+Note that if $\ordsl A a = \ordsl A b$ as ordinals, then that isomorphisms must respect their inclusions into $A$ (since simulations form a poset), and hence they are equal as subsets of $A$.
+Therefore, since $A$ is extensional, $a=b$.
+Thus the function $a\mapsto \ordsl A a$ is an injection $A\to \ord$.
+
+\begin{defn}
+  For ordinals $A$ and $B$, a simulation $f:A\to B$ is said to be \textbf{bounded} if there exists $b:B$ such that $A = \ordsl B b$.
+\end{defn}
+
+The remarks above imply that such a $b$ is unique when it exists, so that boundedness is a mere property.
+
+We write $A<B$ if there exists a bounded simulation from $A$ to $B$.
+Since simulations are unique, $A<B$ is also a mere proposition.
+
+\begin{thm}\label{thm:ordord}
+  $(\ord,<)$ is an ordinal.
+\end{thm}
+
+\begin{rmk}
+  Note the use of universe polymorphism and typical ambiguity.
+  If universe levels were made explicit, this theorem would state that the set of ordinals in one universe is an ordinal in the next higher universe.
+\end{rmk}
+
+\begin{proof}
+  Let $A$ be an ordinal; we first show that $\ordsl A a$ is accessible (in \ord) for all $a:A$.
+  By induction, suppose $\ordsl A b$ is accessible for all $b:A$.
+  By definition of accessibility, we must show that $B$ is accessible in \ord for all $B<\ordsl A a$.
+  However, if $B<\ordsl A a$ then there is some $b<a$ such that $B = \ordsl{(\ordsl A a)}{b} = \ordsl A b$, which is accessible by the inductive hypothesis.
+  Thus, $\ordsl A a$ is accessible for all $a:A$.
+
+  Now to show that $A$ is accessible in \ord, by definition we must show $B$ is accessible for all $B<A$.
+  But as before, $B<A$ means $B=\ordsl A a$ for some $a:A$, which is accessible as we just proved.
+  Thus, \ord is well-founded.
+
+  For extensionality, suppose $A$ and $B$ are ordinals such that $\prd{C:\ord} (C<A) \leftrightarrow (C<B)$.
+  Then for every $a:A$, since $\ordsl A a<A$, we have $\ordsl A a<B$, hence there is $b:B$ with $\ordsl A a = \ordsl B b$.
+  Define $f:A\to B$ to take each $a$ to the corresponding $b$; it is straightforward to verify that $f$ is an isomorphism.
+  Thus $A\cong B$, hence $A=B$ by univalence.
+
+  Finally, it is easy to see that $<$ is transitive.
+\end{proof}
+
+Treating \ord as an ordinal is often very convenient, but it has its pitfalls as well.
+For instance, consider the following lemma, for whose statement we drop briefly into \emph{explicit} universe polymorphism.
+
+\begin{lem}\label{thm:ordsucc}
+  Let \bbU be a universe.
+  For any $A:\ord_\bbU$, there is a $B:\ord_\bbU$ such that $A<B$.
+\end{lem}
+\begin{proof}
+  Let $B=A+\unit$, with the element $\star:\unit$ being greater than all elements of $A$.
+  Then $B$ is an ordinal and it is easy to see that $A\cong \ordsl B \star$.
+\end{proof}
+
+This lemma illustrates a potential pitfall of typical ambiguity.
+Consider the following alternative proof of it.
+
+\begin{proof}[Another putative proof of \autoref{thm:ordsucc}]
+  Note that $C<A$ if and only if $C=\ordsl A a$ for some $a:A$.
+  This gives an isomorphism $A \cong \ordsl \ord A$, so that $A<\ord$.
+  Thus we may take $B\defeq\ord$.
+\end{proof}
+
+The second proof would be valid if we had stated \autoref{thm:ordsucc} in a typically ambiguous style.
+But the resulting lemma would be less useful, because the second proof would constrain the second ``\ord'' in the lemma statement to refer to a higher universe level than the first one.
+The first proof allows both universes to be the same.
+
+Similar remarks apply to the next lemma, which could be proved in a less useful way by observing that $A\le \ord$ for any $A:\ord$.
+
+\begin{lem}\label{thm:ordunion}
+  Let \bbU be a universe.
+  For any $X:\type_\bbU$ and $F:X\to \ord_\bbU$, there exists $B:\ord_\bbU$ such that $Fx\le B$ for all $x:X$.
+\end{lem}
+\begin{proof}
+  Let $B$ be the quotient of the equivalence relation on $\sm{x:X} Fx$ defined as follows:
+  \[ (x,y) \sim (x',y')
+  \;\defeq\;
+  \Big(\ordsl{(Fx)}{y} \cong \ordsl{(Fx')}{y'}\Big).
+  \]
+  Define $(x,y)<(x',y')$ if $\ordsl{(Fx)}{y} < \ordsl{(Fx')}{y'}$.
+  This clearly descends to the quotient, and can be seen to make $B$ into an ordinal.
+  Moreover, for each $x:X$ the induced map $Fx\to B$ is a simulation.
+\end{proof}
+
+\section{Classical well-orderings}
+\label{sec:wellorderings}
+
 We now show the equivalence of our ordinals with the more familiar classical well-orderings.
 
 \begin{lem}
@@ -407,14 +504,108 @@ We now show the equivalence of our ordinals with the more familiar classical wel
   But trichotomy implies that any minimal element is a least element.
   Moreover, least elements are unique when they exist, so merely having one is as good as having one.
 
-  Conversely, if every nonempty subset has a least element, then by \autoref{thm:wfmin} $A$ is well-founded.
-  We also have trichotomy, since for any $a,b$ the set $\{a,b\}$ merely has a least element, which must be either $a$ or $b$.
+  Conversely, if every nonempty subset has a least element, then $A$ is well-founded by \autoref{thm:wfmin}.
+  We also have trichotomy, since for any $a,b$ the set $\setof{a,b}$ merely has a least element, which must be either $a$ or $b$.
   This implies transitivity, since if $a<b$ and $a<c$, then either $a=c$ or $c<a$ would produce a cycle.
   Similarly, it implies extensionality, for if $\prd{c:A}(c<a)\leftrightarrow (c<b)$, then $a<b$ implies (letting $c$ be $a$) that $a<a$, which is a cycle, and similarly if $b<a$; hence $a=b$.
 \end{proof}
 
 In classical mathematics, the characterization of \autoref{thm:wellorder} is taken as the definition of a \textbf{well-ordering}, with the \emph{ordinals} being a canonical set of representatives of isomorphism classes for well-orderings.
 In our context, the Structure Identity Principle means that there is no need to look for such representatives: any well-ordering is as good as any other.
+
+We now move on to consider consequences of the axiom of choice.
+
+\begin{thm}\label{thm:wop}
+  Assuming excluded middle, the following are equivalent.
+  \begin{enumerate}
+  \item For every set $X$, there merely exists a function
+    $ f: \mathcal{P}_+X \to X $
+    such that $f(Y)\in Y$ for all $Y:\mathcal{P}X$.\label{item:wop1}
+  \item Every set merely admits the structure of an ordinal.\label{item:wop2}
+  \end{enumerate}
+\end{thm}
+
+Of course,~\ref{item:wop1} is a standard classical version of the axiom of choice.
+
+\begin{proof}
+  One direction is easy: suppose~\ref{item:wop2}.
+  Since we aim to prove the mere proposition~\ref{item:wop1}, we may assume $A$ is an ordinal.
+  But then we can define $f(B)$ to be the least element of $B$.
+
+  Now suppose~\ref{item:wop1}.
+  As before, since~\ref{item:wop2} is a mere proposition, we may assume given such an $f$.
+  We extend $f$ to a function
+  \[ \bar f:\mathcal{P}X \cong (\mathcal{P}_+ X) + \unit \longrightarrow X+\unit
+  \]
+  in the obvious way.
+  Now for any ordinal $A$, we can define $g_A:A\to X+\unit$ by well-founded recursion:
+  \[ g_A(a) \defeq 
+    \bar f\Big(X \setminus \setof{ g_A(b) | \rule{0pt}{1em} (b<a) \wedge (g_A(b) \in X) }\Big)
+  \]
+  (regarding $X$ as a subset of $X+\unit$ in the obvious way).
+
+  Let $A'$ be the preimage of $X$; then we claim the restriction $g_A':A' \to X$ is injective.
+  For if $a,a':A$ with $a\neq a'$, then by trichotomy and without loss of generality, we may assume $a'<a$.
+  Thus $g_A(a') \in \setof{ g_A(b) | b<a }$, so since $f(Y)\in Y$ for all $Y$ we have $g_A(a) \neq g_A(a')$.
+
+  Moreover, $A'$ is an initial segment of $A$.
+  For $g_A(a)$ lies in \unit if and only if $\setof{g_A(b)|b<a} = X$, and if this holds then it also holds for any $a'>a$.
+  Thus, $A'$ is itself an ordinal.
+
+  Finally, since \ord is an ordinal, we can take $A\defeq\ord$.
+  Let $X'$ be the image of $g_\ord':\ord' \to X$; then the inverse of $g_\ord'$ yields an injection $H:X'\to \ord$.
+  By \autoref{thm:ordunion}, there is an ordinal $C$ such that $Hx\le C$ for all $x:X'$.
+  Then by \autoref{thm:ordsucc}, there is a further ordinal $D$ such that $C<D$, hence $Hx<D$ for all $x:X'$.
+  Now we have
+  \begin{align*}
+    g_{\ord}(D) &= \bar f\Big( X \setminus \setof{ g_\ord(B) | \rule{0pt}{1em} B<D \wedge (g_\ord(B) \in X)} \Big)\\
+    &=\bar f\Big( X \setminus \setof{ g_\ord(B) | \rule{0pt}{1em} B:\ord \wedge (g_\ord(B) \in X)} \Big)
+  \end{align*}
+  since if $B:\ord$ and $(g_\ord(B) \in X)$, then $B = Hx$ for some $x:X'$, hence $B<D$.
+  Now if
+  \[\setof{ g_\ord(B) | \rule{0pt}{1em} B:\ord \wedge (g_\ord(B) \in X)}\]
+  is nonempty, then $g_\ord(D)$ would lie in $X$ but not in this subset, which would be a contradiction since $D$ is itself a potential value for $B$.
+  So this set must be empty, hence $g_\ord'$ is surjective as well as injective.
+  Thus, we can transport the ordinal structure on $\ord'$ to $X$.
+\end{proof}
+
+\begin{rmk}
+  If we had given the wrong proof of \autoref{thm:ordsucc} or \ref{thm:ordunion}, then the resulting proof of \autoref{thm:wop} would be invalid: there would be no way to consistently assign universe levels.
+\end{rmk}
+
+\begin{cor}
+  Assuming the axiom of choice, the function $\ord\to\set$ (which forgets the order structure) is a surjection.
+\end{cor}
+
+Note that \ord is a set, while \set is a 1-type.
+In general, there is no reason for a 1-type to admit any surjective function from a set.
+Even the axiom of choice does not appear to imply that \emph{every} 1-type does so, but it readily implies that this is so for 1-types constructed out of \set, such as the types of objects of categories of structures as in \S\ref{sec:fosturct}.
+The following corollary also applies to such categories.
+
+\begin{cor}
+  Assuming AC, \uset admits a weak equivalence functor from a strict category.
+\end{cor}
+\begin{proof}
+  Let $X_0\defeq \ord$, and for $A,B:X_0$ let $\hom_X(A,B) \defeq (A\to B)$.
+  Then $X$ is a strict category, since \ord is a set, and the above surjection $X_0 \to \set$ extends to a weak equivalence functor $X\to \uset$.
+\end{proof}
+
+Now recall from \S\ref{sec:cardinals} that we have a further surjection $\cd{-}:\set\to\card$, and hence a composite surjection $\ord\to\card$ which sends each ordinal to its cardinality.
+
+\begin{thm}
+  Assuming AC, the surjection $\ord\to\card$ has a section.
+\end{thm}
+\begin{proof}
+  There is an easy and wrong proof of this: since \ord and \card are both sets, AC implies that any surjection between them \emph{merely} has a section.
+  However, we actually have a canonical \emph{specified} section: because \ord is an ordinal, every nonempty subset of it has a uniquely specified least element.
+  Thus, we can map each cardinal to the least element in the corresponding fiber.
+\end{proof}
+
+It is traditional in set theory to identify cardinals with their image in \ord: the least ordinal having that cardinality.
+
+It follows that \card also canonically admits the structure of an ordinal: in fact, one isomorphic to \ord.
+Specifically, we define by well-founded recursion a function $\aleph:\ord\to\ord$, such that $\aleph(A)$ is the least ordinal having cardinality greater than $\aleph({\ordsl A a})$ for all $a:A$.
+Then (assuming AC) the image of $\aleph$ is exactly the image of \card.
 
 
 \section*{Exercises}

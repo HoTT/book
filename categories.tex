@@ -457,15 +457,22 @@ By \autoref{ct:adjprop} and \autoref{ct:isoprop}, if $A$ is a category, then the
   Just like the ``adjointification'' theorem for equivalences of types.
 \end{proof}
 
-We say a functor $F:A\to B$ is \textbf{fully faithful} if for all $a,b:A$, the function
-\[F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)\]
-is an equivalence (of types, i.e.\ a bijection of sets).
+\begin{defn}
+  We say a functor $F:A\to B$ is \textbf{faithful} if for all $a,b:A$, the function
+  \[F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)\]
+  is injective, and \textbf{full} if for all $a,b:A$ this function is surjective.
+  If it is both (hence each $F_{a,b}$ is an equivalence) we say $F$ is \textbf{fully faithful}.
+\end{defn}
+
+\begin{defn}
+  We say a functor $F:A\to B$ is \textbf{split essentially surjective} if for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.
+\end{defn}
 
 \begin{lem}\label{ct:ffeso}
   For any precategories $A$ and $B$ and functor $F:A\to B$, the following types are equivalent.
   \begin{enumerate}
   \item $F$ is an equivalence of precategories.\label{item:ct:ffeso1}
-  \item $F$ is fully faithful, and for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.\label{item:ct:ffeso2}
+  \item $F$ is fully faithful and split essentially surjective.\label{item:ct:ffeso2}
   \end{enumerate}
 \end{lem}
 \begin{proof}
@@ -494,8 +501,8 @@ is an equivalence (of types, i.e.\ a bijection of sets).
   Thus, $F_{a,b}$ is an equivalence, so $F$ is fully faithful.
   Finally, for any $b:B$, we have $Gb:A$ and $\epsilon_b:FGb\cong b$.
 
-  On the other hand, suppose $F$ is fully faithful, and that for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.
-  Define $G_0:B_0\to A_0$ by sending $b:B$ to this $a:A$, and write $\epsilon_b$ for the isomorphism $FGb\cong b$.
+  On the other hand, suppose $F$ is fully faithful and split essentially surjective.
+  Define $G_0:B_0\to A_0$ by sending $b:B$ to the $a:A$ given by the specified essential splitting, and write $\epsilon_b$ for the likewise specified isomorphism $FGb\cong b$.
 
   Now for any $g:\hom_B(b,b')$, define $G(g):\hom_A(Gb,Gb')$ to be the unique morphism such that $\id{F(G(g))}{\inv{(\epsilon_{b'})}\circ g \circ \epsilon_b }$ (which exists since $F$ is fully faithful).
   Finally, for $a:A$ define $\eta_a:\hom_A(a,GFa)$ to be the unique morphism such that $\id{F\eta_a}{\inv{\epsilon_{Fa}}}$.
@@ -515,8 +522,29 @@ is an equivalence (of types, i.e.\ a bijection of sets).
 \end{proof}
 
 However, if $B$ is not a category, then neither type in \autoref{ct:ffeso} may necessarily be a mere proposition.
-Thus, for precategories we might study an additional notion of ``weak equivalence'', meaning a fully faithful functor such that for all $b:B$ there \emph{merely} exists an $a:A$ such that $Fa\cong b$.
-With categories, however, there is no need for such a thing.
+This suggests considering as well the following notions.
+
+\begin{defn}
+  A functor $F:A\to B$ is \textbf{essentially surjective} if for all $b:B$, there \emph{merely} exists an $a:A$ such that $Fa\cong b$.
+  We say $F$ is a \textbf{weak equivalence} if it is fully faithful and essentially surjective.
+\end{defn}
+
+Being a weak equivalence is \emph{always} a mere proposition.
+For categories, however, there is no difference between equivalences and weak ones.
+
+\begin{lem}
+  If $F:A\to B$ is fully faithful and $A$ is a category, then for any $b:B$ the type $\sm{a:A} (Fa\cong b)$ is a mere proposition.
+  Hence a functor between categories is an equivalence if and only if it is a weak equivalence.
+\end{lem}
+\begin{proof}
+  Suppose given $(a,f)$ and $(a',f')$ in $\sm{a:A} (Fa\cong b)$.
+  Then $\inv{f'}\circ f$ is an isomorphism $Fa \cong Fa'$.
+  Since $F$ is fully faithful, we have $g:a\cong a'$ with $Fg = \inv{f'}\circ f$.
+  And since $A$ is a category, we have $p:a=a'$ with $\idtoiso(p)=g$.
+  Now $Fg = \inv{f'}\circ f$ implies $\trans{(\map{(F_0)}{p})}{f} = f'$, hence (by the characterization of equalities in dependent sums) $(a,f)=(a',f')$.
+
+  Thus, for fully faithful functors whose domain is a category, essential surjectivity is equivalent to split essential surjectivity, and so being a weak equivalence is equivalent to being an equivalence.
+\end{proof}
 
 This is an important advantage of our category theory over set-based approaches.
 With a purely set-based definition of category, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the mere axiom of choice (that is, the strong one, not the trivial one).

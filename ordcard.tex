@@ -251,7 +251,7 @@ Well-foundedness allows us to define functions by recursion and prove statements
 
 In classical logic, well-foundedness has a more well-known reformulation.
 
-\begin{lem}
+\begin{lem}\label{thm:wfmin}
   Assuming excluded middle, $<$ is well-founded if and only if every nonempty subset $B\subseteq A$ merely has a minimal element.
 \end{lem}
 \begin{proof}
@@ -266,16 +266,192 @@ In classical logic, well-foundedness has a more well-known reformulation.
 
   Now suppose each nonempty subset merely has a minimal element.
   Let $B = \{ a:A \;|\; \neg \acc(a) \}$.
-  Then if $B$ is nonempty, it has a minimal element.
+  Then if $B$ is nonempty, it merely has a minimal element.
   Thus there merely exists an $a:A$ with $a\in B$ such that for all $b<a$, we have $\acc(b)$.
   But then by definition (and induction on truncation), $a$ is merely accessible, and hence accessible, contradicting $a\in B$.
   Thus, $B$ is empty, so $<$ is well-founded.
 \end{proof}
 
 \begin{defn}
-  An \textbf{ordinal} is a set $A$ equipped with a well-founded and transitive relation.
+  A well-founded relation $<$ on a set $A$ is \textbf{extensional} if for any $a,b:A$, we have
+  \[ \Big(\prd{c:A} (c<a) \leftrightarrow (c<b)\Big) \to (a=b). \]
 \end{defn}
 
+Note that since $A$ is a set, extensionality is a mere proposition.
+This notion of ``extensionality'' is unrelated to function extensionality, and also unrelated to the extensionality of identity types.
+Rather, it is a ``local'' counterpart of the axiom of extensionality in classical set theory.
+
+\begin{thm}
+  The type of extensional well-founded relations is a set.
+\end{thm}
+\begin{proof}
+  By the univalence axiom, it suffices to show that if $(A,<)$ is extensional and well-founded and $f:(A,<) \cong (A,<)$, then $f=\idfunc[A]$.
+  We prove by induction on $<$ that $f(a)=a$ for all $a:A$.
+  The inductive hypothesis is that for all $a'<a$, we have $f(a')=a'$.
+
+  Now by extensionality, to conclude $f(a)=a$ it is sufficient to show $\prd{c:A}(c<f(a)) \leftrightarrow (c<a)$.
+  However, since $f$ is an automorphism, we have $(c<a) \leftrightarrow (f(c)<f(a))$.
+  But $c<a$ implies $f(c)=c$ by the induction hypothesis, so $(c<a) \to (c<f(a))$.
+  On the other hand, if $c<f(a)$, then $f^{-1}(c)<a$, and so $c = f(f^{-1}(c)) = f^{-1}(c)$ by the induction hypothesis again; thus $c<a$.
+  Therefore, we have $(c<a) \leftrightarrow (c<f(a))$ for any $c:A$, so $f(a)=a$.
+\end{proof}
+
+\begin{defn}\label{def:simulation}
+  If $(A,<)$ and $(B,<)$ are extensional and well-founded, a \textbf{simulation} is a function $f:A\to B$ such that
+  \begin{enumerate}
+  \item if $a<a'$, then $f(a)<f(a')$, and\label{item:sim1}
+  \item for all $a:A$ and $b:B$, if $b<f(a)$, then there merely exists an $a'<a$ with $f(a')=b$.\label{item:sim2}
+  \end{enumerate}
+\end{defn}
+
+\begin{lem}
+  Any simulation is injective.
+\end{lem}
+\begin{proof}
+  We prove by double well-founded induction that for any $a,b:A$, if $f(a)=f(b)$ then $a=b$.
+  The induction hypothesis for $a:A$ says that for any $a'<a$, and any $b:B$, if $f(a')=f(b)$ then $a=b$.
+  The inner induction hypothesis for $b:A$ says that for any $b'<b$, if $f(a')=f(b')$ then $a'=b'$.
+
+  Suppose $f(a)=f(b)$; we must show $a=b$.
+  By extensionality, it suffices to show that for any $c:A$ we have $(c<a)\leftrightarrow (c<b)$.
+  If $c<a$, then $f(c)<f(a)$ by \autoref{def:simulation}\ref{item:sim1}.
+  Hence $f(c)<f(b)$, so by \autoref{def:simulation}\ref{item:sim2} there merely exists $c':A$ with $c'<b$ and $f(c)=f(c')$.
+  By the induction hypothesis for $a$, we have $c=c'$, hence $c<b$.
+  The dual argument is symmetrical.
+\end{proof}
+
+In particular, this implies that the word ``merely'' in \autoref{def:simulation}\ref{item:sim2} could be omitted without change of sense.
+
+\begin{cor}
+  If $f:A\to B$ is a simulation, then for all $a:A$ and $b:B$, if $b<f(a)$, there \emph{purely} exists an $a'<a$ with $f(a')=b$.
+\end{cor}
+\begin{proof}
+  Since $f$ is injective, $\sm{a:A} (f(a)=b)$ is a mere proposition.
+\end{proof}
+
+\begin{thm}
+  For a set $A$, let $P(A)$ be the type of extensional well-founded relations on $A$.
+  If $\mathord{<_A} : P(A)$ and $\mathord{<_B} : P(B)$ and $f:A\to B$, let $H_{\mathord{<_A}\mathord{<_B}}(f)$ be the mere proposition that $f$ is a simulation.
+  Then $(P,H)$ is a standard notion of structure over \uset in the sense of \S\ref{sec:sip}.
+\end{thm}
+\begin{proof}
+  We leave it to the reader to verify that identities are simulations, and that composites of simulations are simulations.
+  Thus, we have a notion of structure.
+  For standardness, we must show that if $<$ and $\prec$ are two extensional well-founded relations on $A$, and $\idfunc[A]$ is a simulation in both directions, then $<$ and $\prec$ are equal.
+  Since extensionality and well-foundedness are mere propositions, for this it suffices to have $\prd{a,b:A} (a<b) \leftrightarrow (a\prec b)$.
+  But this follows from \autoref{def:simulation}\ref{item:sim1} for $\idfunc[A]$.
+\end{proof}
+
+\begin{cor}\label{thm:wfcat}
+  There is a category whose objects are sets equipped with extensional well-founded relations, and whose morphisms are simulations.
+\end{cor}
+
+In fact, this category is a poset.
+
+\begin{lem}
+  For extensional and well-founded $(A,<)$ and $(B,<)$, there is at most one simulation $f:A\to B$.
+\end{lem}
+\begin{proof}
+  Suppose $f,g:A\to B$ are simulations.
+  Since being a simulation is a mere property, it suffices to show $\prd{a:A}(f(a)=g(a))$.
+  By induction on $<$, we may suppose $f(a')=g(a')$ for all $a'<a$.
+  And by extensionality of $B$, to have $f(a)=g(a)$ it suffices to have $\prd{b:B}(b<f(a)) \leftrightarrow (b<g(a))$.
+
+  But since $f$ is a simulation, if $b<f(a)$, then we have $a'<a$ with $f(a')=b$.
+  By the inductive hypothesis, we have also $g(a')=b$, hence $b<g(a)$.
+  The dual argument is symmetrical.
+\end{proof}
+
+Thus, if $A$ and $B$ are equipped with extensional and well-founded relations, we may write $A\le B$ to mean there exists a simulation $f:A\to B$.
+\autoref{thm:wfcat} implies that if $A\le B$ and $B\le A$, then $A=B$.
+
+\begin{defn}
+  An \textbf{ordinal} is a set $A$ with an extensional well-founded relation which is \emph{transitive}, i.e.\ $\prd{a,b,c:A}(a<b)\to (b<c) \to (a<c)$.
+\end{defn}
+
+We now show the equivalence of our ordinals with the more familiar classical well-orderings.
+
+\begin{lem}
+  Assuming excluded middle, every ordinal is trichotomous:
+  \[ \prd{a,b:A} (a<b) \vee (a=b) \vee (b<a). \]
+\end{lem}
+\begin{proof}
+  By induction on $a$, we may assume that for every $a'<a$ and every $b':B$, we have $(a'<b') \vee (a'=b') \vee (b'<a')$.
+  Now by induction on $b$, we may assume that for every $b'<b$, we have $(a<b') \vee (a=b') \vee (b'<a)$.
+
+  By excluded middle, either there exists a $b'<b$ such that $a<b'$, or there exists a $b'<b$ such that $a=b'$, or for every $b'<b$ we have $b'<a$.
+  In the first case, $a<b$ by transitivity.
+  In the second case, $a<b$ by transport.
+  So suppose $\prd{b':A}(b'<b)\to (b'<a)$.
+
+  Similarly, either there exists $a'<a$ such that $b<a'$, or there exists $a'<a$ such that $a'=b$, or for every $a'<a$ we have $a'<b$.
+  In the first and second cases, $b<a$, so we may suppose $\prd{a':A}(a'<a)\to (a'<b)$.
+  However, by extensionality, our two suppositions imply $a=b$.
+\end{proof}
+
+\begin{lem}
+  A well-founded relation contains no cycles, i.e.\
+  \[ \prd{n:\mathbb{N}}{a:\mathbb{N}_n\to A} \neg\Big((a_0<a_1) \wedge \dots \wedge (a_{n-1}<a_n)\wedge (a_n<a_0)\Big). \]
+\end{lem}
+\begin{proof}
+  We prove by induction on $a:A$ that there is no cycle containing $a$.
+  Thus, suppose by induction that for all $a'<a$, there is no cycle containing $a'$.
+  But in any cycle containing $a$, there is some element less than $a$ and contained in the same cycle.
+\end{proof}
+
+\begin{thm}\label{thm:wellorder}
+  Assuming excluded middle, $(A,<)$ is an ordinal if and only if every nonempty subset $B\subseteq A$ has a least element.
+\end{thm}
+\begin{proof}
+  If $A$ is an ordinal, then by \autoref{thm:wfmin} every nonempty subset merely has a minimal element.
+  But trichotomy implies that any minimal element is a least element.
+  Moreover, least elements are unique when they exist, so merely having one is as good as having one.
+
+  Conversely, if every nonempty subset has a least element, then by \autoref{thm:wfmin} $A$ is well-founded.
+  We also have trichotomy, since for any $a,b$ the set $\{a,b\}$ merely has a least element, which must be either $a$ or $b$.
+  This implies transitivity, since if $a<b$ and $a<c$, then either $a=c$ or $c<a$ would produce a cycle.
+  Similarly, it implies extensionality, for if $\prd{c:A}(c<a)\leftrightarrow (c<b)$, then $a<b$ implies (letting $c$ be $a$) that $a<a$, which is a cycle, and similarly if $b<a$; hence $a=b$.
+\end{proof}
+
+In classical mathematics, the characterization of \autoref{thm:wellorder} is taken as the definition of a \textbf{well-ordering}, with the \emph{ordinals} being a canonical set of representatives of isomorphism classes for well-orderings.
+In our context, the Structure Identity Principle means that there is no need to look for such representatives: any well-ordering is as good as any other.
+
+
+\section*{Exercises}
+
+\begin{ex}
+  Prove that if $(A,<_A)$ and $(B,<_B)$ are well-founded, extensional, or ordinals, then so is $A+B$, with $<$ defined by
+  \begin{alignat*}{2}
+    (a<a') &\defeq (a<_A a') &\qquad\text{for }& a,a':A\\
+    (b<b') &\defeq (b<_B b') &\qquad\text{for }& b,b':B\\
+    (a<b) &\defeq \unit &\qquad\text{for }& (a:A),(b:B)\\
+    (b<a) &\defeq \emptyset &\qquad\text{for } &(a:A),(b:B)
+  \end{alignat*}
+\end{ex}
+% \begin{proof}
+%   We first prove by induction on $<_A$ that every element of $A$ is accessible in $A+B$.
+%   This is easy since the only elements less than $a:A$ in $A+B$ are also in $A$.
+%   We then prove by induction on $<_B$ that every element of $B$ is accessible in $A+B$.
+%   This is easy since we have already proven that every element of $A$ is accessible.
+% \end{proof}
+
+\begin{ex}
+  Prove that if $(A,<_A)$ and $(B,<_B)$ are well-founded, extensional, or ordinals, then so is $A\times B$, with $<$ defined by
+  \[ ((a,b) <(a',b')) \defeq (a<_A a') \vee ((a=a') \wedge (b<_B b')). \]
+\end{ex}
+% \begin{proof}
+%   We prove by induction on $<_A$ that for every $a:A$, every element of the form $(a,b)$ is accessible in $A\times B$.
+%   The induction hypothesis is that for all $a'<_A a$, every pair $(a',b)$ is accessible.
+%   Inside this induction, we prove by induction on $<_B$ that for every $b:B$, the element $(a,b)$ is accessible.
+%   The nested induction hypothesis is that for every $b'<_B b$, the element $(a,b')$ is accessible.
+%   But now, if $(a',b')< (a,b)$, then either $a<_A a'$ in which case $(a',b')$ is accessible by the first induction hypothesis, or $a=a'$ and $b'<_B b$, in which case $(a,b')$ is accessible by the second induction hypothesis.
+%   Thus, by definition of accessibility, $(a,b)$ is accessible.
+%   This completes both inductions.
+% \end{proof}
+
+\begin{ex}
+  Define the usual algebraic operations on ordinals, and prove that they satisfy the usual properties.
+\end{ex}
 
 % Local Variables:
 % TeX-master: "main"

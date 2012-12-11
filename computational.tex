@@ -1,6 +1,352 @@
+%%FIXME: what to say about resp
 
-\chapter{Types as Groupoids}
+\chapter{Programming in HoTT}
 
-$\map f M$
+One of the central strengths of type theory is that it is simultaneously
+a formalism for doing math and a programming language.  While we don't
+understand the programming interpretation of HoTT in full generality
+yet, it's important to realize how it's different than the standard
+operational interpretation of type theory.
 
-\cite{martinlof71itt}
+\newcommand\ua[1]{\ensuremath{\mathsf{ua}} \: #1}
+
+For example, consider the term 
+\[
+\transport{X \mapsto X}{(\ua{f})} : A \to B
+\]
+where $f : \eqv{A}{B}$ and 
+$\mathsf{ua} : (\eqv A B) \to \id A B$ follows from the univalence axiom.  
+Consider closed types $A$ and $B$ and a closed equivalence that is
+not the identity; for example, take $A$ and $B$ to be $\mathsf{bool}$ and
+$f$ to be the negation function.  Then the above term is \emph{stuck}:
+there's no way to run it as a program.  The reason is that the only
+computation step for $\mathsf{transport}$ applies when $f$ is the
+identity: $\transport{X \mapsto A(X)}{\refl{}} \jdeq \idfunc$.  
+
+While we do not yet understand the operational semantics for all of
+HoTT, what we understand about low dimensions provides some useful tools
+for doing proofs:
+
+\begin{itemize}
+
+\item Types have the structure of groupoids: for each type $A$, the
+  type \id[A]{x}{y} should often be thought of as a \emph{defined notion}: it
+  will usually turn out to be equivalent to some other type in theory.  
+  
+  Moreover, the operations 
+  \[
+  \begin{array}{l}
+    \refl{x} : \id[A]{x}{x} \\
+    \opp{-} : \id[A]{x}{y} \to \id[A]{y}{x} \\
+    - \ct - : \id[A]{x}{y} \to \id[A]{y}{z} \to \id[A]{x}{z} \\ 
+  \end{array}
+  \]
+  should be thought of as defined operations, that reduce depending on
+  the type $A$ and the terms being equated.  
+
+\item Families are functors: given $p : \id[A]{x}{y}$ and a dependent type
+  $C : A \to \type$,
+  \[
+    \transport{C}{p} : C(x) \to C(y)
+  \]
+  should be thought of as a defined operation, which computes depending
+  on the structure of $C$.  
+
+  Similarly, given function $f : A \to B$
+  \[
+    \mapdep{f}{p} : \id[C y]{\transport{C}{p} \: (f x)}{f y}
+  \]
+  should be thought of as a defined operation, which computes for each
+  $f$.  
+
+\end{itemize}
+
+In full generality, types are $\infty$-groupoids, and similar ideas will
+apply to the higher-dimensional structure (e.g., the associator, the
+pentagon for the associator, etc.).  But these low-dimensional
+operations are already very useful for proofs: expanding these
+``definitions'' is often a good way to proceed.  At present, the
+relevant equations are not taken as definitional equalities (though this
+could change in future versions of HoTT), so we will need to provide
+proof terms for them.  
+
+Let's go through some type constructors and see what their groupoid
+structure looks like.
+
+\section{Type-Specific Rules}
+
+\subsection{Product Types}
+
+Given types $A$ and $B$, consider the product type $A \times B$.  
+A path in $A \times B$ is a pair of componentwise paths:
+
+\[
+\eqv{(\id[A \times B] p q)}{(\id[A]{\proj{1} p}{\proj{1} q}) \times (\id[B]{\proj{1} p}{\proj{1} q})}
+\]
+
+Read logically, this says that two pairs are equal if they are equal
+componentwise.  Read category-theoretically, this says that the
+morphisms in a product category are pairs of morphisms.  Read
+homotopy-theoretically, this says that the paths in a direct product
+space are pairs of paths.  
+
+From a programming perspective, it's useful to unpack the above
+equivalence into 
+
+\newcommand{\pairpath}{\mathsf{pair}^{\mathord{=}}}
+\newcommand{\projpath}[1]{\proj{#1}^{\mathord{=}}}
+
+\begin{itemize}
+\item An introduction rule for \id[A \times B]{p}{q}:
+  \[
+  \pairpath : (\id{\proj{1} p}{\proj{1} q}) \times (\id{\proj{1} p}{\proj{1} q}) \to {(\id p q)}
+  \]
+\item Elimination rules:
+  \[
+  \projpath{i} : \id{p}{q} \to (\id{\proj{i} p}{\proj{i} q})
+  \]
+\item $\beta$-reduction:
+  \[
+  \begin{array}{l}
+  \id[(\id{\proj{1} p}{\proj{1} q})]
+       {\projpath{1}{(\pairpath \: \alpha \: \beta})}
+       {\alpha} \\
+  \id[(\id{\proj{2} p}{\proj{2} q})]
+       {\projpath{2}{(\pairpath \: \alpha \: \beta})}
+       {\beta}
+  \end{array}
+  \]
+\item $\eta$-equivalence: For any $\alpha : \id[A \times B] p q$
+  \[
+  \id{\alpha}{\pairpath \: (\projpath{1} \alpha) \: (\projpath{2} \alpha) }
+  \]
+\end{itemize}
+All of these equations can be derived by using path induction on the given
+paths and then returning reflexivity.  
+
+Moreover, reflexivity, inverses, and composition are defined
+componentwise:
+\[
+\begin{array}{l}
+\id {\refl{(p : A \times B)}} {\pairpath \: (\refl{\proj{1} p}) \: (\refl{\proj{2} p})} \\
+\id {\opp{\alpha}} {\pairpath \: (\opp{\projpath{1} \alpha}) \: (\opp{\projpath{2} \alpha})}  \\
+\id {{\alpha \ct \beta}} {\pairpath \: 
+  ({\projpath{1} \alpha} \ct
+   {\projpath{1} \beta})
+   \: 
+   ({\projpath{2} \alpha} \ct {\projpath{2} \beta})}
+\end{array}
+\]
+
+Given $ A, B : A_0 \to \type$ and $\alpha : \id[A_0]{x}{y}$ 
+and $p : A(x) \times B(x)$
+
+\[
+\id[A(y) \times B(y)]{\transport{x_0:A_0 \mapsto A(x_0) \times B(x_0)}
+  \: \alpha \: {p}}
+   {(\transport{x_0 \mapsto A(x_0)} \alpha \: (\proj{1} p), 
+       \transport{x_0 \mapsto B(x_0)} \alpha \: (\proj{2} p))}
+\]
+
+Similarly, 
+
+(equations for map?)
+
+\subsection{$\Sigma$-types}
+
+With a little more work, this generalizes to $\Sigma$-types. 
+
+Material from Egbert?
+
+\subsection{$\Pi$-types}
+
+Given $A$ and $B : A \to \type$, consider the dependent function type $\prd{x:A}B(x)$.
+A path in $\prd{x:A} B(x)$ is given by a homotopy:  
+
+\[
+\eqv{(\id[\prd{x:A} B(x)]{f}{g})}{\prd{x:A} \id[B(x)]{(f x)}{(g x)}}
+\]
+
+Again it is useful to break this into 
+
+\begin{itemize}
+\item An introduction rule for {(\id[\prd{x:A} B(x)]{f}{g})}, function extensionality
+  \[
+  \funext : (\prd{x:A} \id[B(x)]{(f x)}{(g x)}) \to {(\id[\prd{x:A} B(x)]{f}{g})}
+  \]
+\item An elimination rule: for all $f,g : \prd{x:A} B(x)$
+  \[
+  \happly{-}{-} : \id{f}{g} \to \prd{\alpha : \id{x}{y}} \id{\transport{B}{\alpha} \: {(f x)}}{(g y)}
+  \]
+\item $\beta$-reduction: 
+  \[
+  \begin{array}{l}
+  \id{\happly \: {\funext{(x \mapsto \alpha(x))}} \: {\refl{a}}}{\alpha(a)}
+  \end{array}
+  \]
+\item $\eta$-equivalence: For any $\alpha : \id[\prd{x:A} B(x)] f g$
+  \[
+  \id{\alpha}{\funext (x \mapsto \happly \: \alpha \: x)}
+  \]
+\end{itemize}
+
+%% FIXME: where do the rules for \alpha[\delta] go in this style?
+
+Identity, inverses, and composition:
+\[
+\begin{array}{l}
+\refl{(f : \prd{x:A} B)} = \funext(x \mapsto \refl{f x}) \\
+\opp{\alpha} = \funext (x \mapsto \opp{(\happly \: {\alpha} \: {\refl x})})  \\
+{\alpha} \ct \beta = \funext (x \mapsto {(\happly \: {\alpha} \: {\refl x}) \ct (\happly \: {\beta} \: {\refl x})})  \\
+\end{array}
+\]
+
+\newcommand{\fcomp}{\circ}
+
+Transport, first for non-dependent functions: given $\alpha : \id {a_0} {a_0'}$
+and $f : A(a_0) \to B(a_0)$, 
+\[
+\begin{array}{l}
+\transport{x_0:A_0 \mapsto A(x_0) \to B(x_0)}{\alpha} \: f = 
+   (\transport{x_0:A_0 \mapsto B(x_0)}{\alpha}) \fcomp f \fcomp (\transport{x:A_0 \mapsto A(x_0)}{\opp \alpha})
+\end{array}
+\]
+
+Transport for $\Pi$:  
+\[
+\begin{array}{l}
+\transport{x_0:A_0 \mapsto \prd{x : A(x_0)} B(x_0)}{\alpha} \: f =  \\
+   x \mapsto 
+   \transport{(p : \sm {x_0:A_0} A) \mapsto B(\proj{1} \: p, \proj{2} \: p)}{\alpha^{\mathord{-}}(x) } 
+      \: (f (\transport{x:A_0 \mapsto A(x)}{\opp \alpha}\:  x))
+\end{array}
+\]
+where 
+\[
+\alpha^-(x) : \id[\sm {x_0:A_0} A(x_0)] {(a_0 , \transport{x_0 \mapsto A(x_0)} {\opp \alpha} \: x)} {(a_0' , x)}
+\]
+can be defined by path induction on $\alpha$.  
+%%FIXME: should discuss this with sigma types
+
+\subsection{The Universe}
+
+A path in $\type$ is given by univalence
+
+\[
+\eqv{(\id[\type]{A}{B})}{\eqv A B}
+\]
+
+Again it is useful to break this into 
+
+\newcommand\isequiv{\mathsf{isEquiv}}
+
+\begin{itemize}
+\item An introduction rule for {(\id[\type]{A}{B})}:
+  \[
+  \ua{} : {\eqv A B} \to (\id[\type]{A}{B})
+  \]
+\item The elimination rule is transport at $X:\type \mapsto X$:
+  \[
+  \transport{X \mapsto X}{} : \id{A}{B} \to (A \to B)
+  \]
+\item $\beta$-reduction: 
+  \[
+  \begin{array}{l}
+  \id{\transport{X \mapsto X} \: (\ua {(f, fIsEquiv)})}{f}
+  \end{array}
+  \]
+\item $\eta$-equivalence: For any $\alpha : \id A B$
+  \[
+  \id{\alpha}{\ua {(\transport{X \mapsto X}(\alpha) , \beta)}}
+  \]
+  where $\mathsf{transportIsEquiv} : \isequiv{\transport{X \mapsto X}(\alpha)}$ can be
+  defined by doing path induction on $\alpha$, at which point it
+  suffices to show that the identity function is an equivalence.  
+\end{itemize}
+
+Identity, inverses, and composition: (FIXME: pick a specific definition
+of equivalence?)
+\[
+\begin{array}{l}
+\refl{A} = \ua{\idfunc} \\
+\opp{\alpha} = \ua {(\transport {X \mapsto X} {\opp \alpha}, \mathsf{transportIsEquiv} \: (\opp \alpha))} \\ 
+{\alpha} \ct \beta = ? \\
+\end{array}
+\]
+
+\subsection{Identity Type}
+
+When we know what \id[A]{}{} is, \id[ {\id[A]{}{}} ]{}{} follows:
+
+Transport, when $A$ is non-dependent:
+\[
+\begin{array}{l}
+\transport{x_0:A_0 \mapsto \id[A] {a_1(x_0)}{a_2(x_0)}} {\alpha_0}{\alpha} = 
+\opp{(\map{a_1}{\alpha_0})} \ct \alpha \ct \map{a_2}{\alpha_0}
+\end{array}
+\]
+
+Useful special cases:
+\[
+\begin{array}{l}
+\transport{x:A \mapsto \id[A] {a}{x}} {\alpha_0} \: {\alpha} = \alpha \ct \alpha_0 \\
+\transport{x:A \mapsto \id[A] {x_0}{a}} {\alpha_0} \: {\alpha} = \opp {\alpha_0} \ct \alpha \\
+\end{array}
+\]
+
+Transport, when $A$ is dependent:
+\[
+\begin{array}{l}
+\transport{x_0:A_0 \mapsto \id[A(x_0)] {a_1(x_0)}{a_2(x_0)}} {\alpha_0} \: {\alpha} = \\
+\opp{(\map{a_1}{\alpha_0})} \ct \mapdep{(\transport{A}{\alpha_0})}{\alpha} \ct \map{a_2}{\alpha_0}
+\end{array}
+\]
+
+\subsection{Higher Inductives}
+
+\newcommand{\sone}{\mathsf{S^1}}
+
+Consider a higher inductive type such as $\sone$.  The definition of the
+higher inductive type does not immediately characterize
+\id[\sone]{x}{y}---which is good, because the calculation of higher
+homotopy groups can be a significant theorem, so we don't want it to be
+baked into the definitons.  However, we will often be able to prove a
+theorem characterizing the loop space, which follows the above form.
+For example, the proof in Chapter~\ref{sec:pi1s1} that the fundamental
+group of the circle is the integers plays this role:
+
+\begin{itemize}
+\item An introduction rule for \id[\sone]{\mathsf{base}}{\mathsf{base}}:
+  \[
+  \mathsf{loopToThe} : \mathbb{Z} \to \id{\mathsf{base}}{\mathsf{base}}
+  \]
+\item An elimination rule:
+  \[
+  \mathsf{encode} : \id{\mathsf{base}}{\mathsf{base}} \to \mathbb{Z}
+  \]
+\item With $\beta$ and $\eta$ rules stating that these are mutually inverse.
+\end{itemize}
+
+It's less clear that you want to think about identity, inverses, and
+composition as being defined through this encoding (rather than thinking
+of them as constructors), but you can:
+
+\[
+\begin{array}{l}
+\refl{\mathsf{base}} = \mathsf{loopToThe} \: 0 \\
+\opp{\alpha} = \mathsf{loopToThe} \: (- (\mathsf{encode} \: \alpha)) \\
+\alpha \ct \beta = \mathsf{loopToThe} \: ((\mathsf{encode} \: \alpha) + (\mathsf{encode} \: \beta)) \\
+\end{array}
+\]
+
+This changes the representation of the group structure
+from the identity type to an explicit representation, as the free group
+on one generator (the additive group on the integers).  
+
+FIXME: say something about map
+
+\section{Examples}
+
+\subsection{Monoid}
+
+

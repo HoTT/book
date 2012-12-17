@@ -1,7 +1,171 @@
 \chapter{Equivalences}
 \label{cha:equivalences}
 
+\section{(Weak) Equivalences and Homotopies}
+\begin{defn}\label{defn:contractible} A type $A$ is {\em contractible} if there is $a:A$, called the {\em center of contraction} such that $a=x$ for all $x:A$.
+\end{defn}
+\begin{defn}\label{defn:equivalence} A map $f:A\ra B$ is a {\em (weak) equivalence}
+if, for $y:B$, its {\em fiber}, $\{x:A\mid fx = y\}$, is contractible.
+We write $A\simeq B$ if  there is an equivalence $A\ra B$.
+\end{defn}
 
+
+\begin{lem}\label{lem:id-map}  For each type $A$, the identity map 
+$1_A:= \lambda_{x:A}x :A\ra A$ is an equivalence.
+\end{lem}
+\begin{proof}  Let $a:A$ and let $\{ a\}_A:= \{ x:A\mid x=a\}$ be its fiber with respect to $1_A$.  We show that $\{ a\}_A$ is contractible.  Then, discharging $a:A$ we get that $\forall_{x:A}(\{ x\}_A$ is contractible); i.e. $1_A$ is an equivalence.
+
+Let $\oa =(a,\refl{a}):\{ a\}_A$.  As $(a,\refl{a}) = \oa$ we can use Id-induction \`{a} la Christine-Paulin to get
+  \[\forall_{x:A}\forall_{z:(x=a)}\; (x,z)=\oa.\]
+Hence, by $\Sigma$-folding, $\forall_{u:\{ a\}_A}\; u=\oa$ so that $\{ a\}_A$ is contractible, as desired.
+\end{proof}
+\begin{defn}\label{defn:homotopy-between-functions} A {\em homotopy, $f\simeq f'$} between maps $f,f':A\ra B$ is a function $h:\prod_{x:A}\; f(x)=f'(x)$.  
+\end{defn}
+\begin{lem}\label{lem:homotopy-props} $\;$
+\begin{enumerate}
+\item $\simeq$ is an equivalence relation on each function type $A\ra B$.
+\item If $f:A\ra B$ then $f\circ 1_A\simeq f\simeq 1_B\circ f$.
+\item If $f:A\ra B, g:B\ra C$ and $h:c\ra D$ then $h\circ (g\circ f)\;\simeq\; (h\circ g)\circ f$.
+\end{enumerate}
+\end{lem}
+\newpage
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Bijections and Isomorphisms}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{defn} \label{defn:isos}
+Let $f:A\ra B$.
+\begin{enumerate}
+\item $f$ is a {\em bijection} if it is both injective and surjective, where
+\begin{itemize}
+\item $f$ is {\em injective} if $\forall_{x,x':A}\; \; fx=fx'\;\ra\; x=x'$,
+\item $f$ is {\em surjective} if $\forall_{y:B}\exists_{x:A}\;\; fx=y$,
+\end{itemize}
+\item $f$ is {\em an isomorphism} if it has $g:B\ra A$ that is both a left and a right
+inverse where,
+\begin{itemize} \item $g:B\ra A$ is a {\em left/right inverse} to $f$ if 
+$g\circ f\simeq 1_A$/$f\circ g\simeq 1_B$.
+\end{itemize}
+\item $f$ is {\em (left/right)-invertible} if it has a (left/right) inverse.
+\item $f$ is a {\em weak isomorphism} if it is both left invertible and right invertible.
+\item We write $A\cong B/A\cong_w B$ if there is a(n) isomorphism/weak isomorphism $A\ra B$.
+\end{enumerate}
+\end{defn}
+
+
+\begin{thm}\label{thm:isos-id-and-composition} $\;$
+\begin{enumerate}
+\item $f:A\ra B$ is a surjection iff it is right-invertible.
+\item If $f:A\ra B$ is left-invertible then it is injective.
+\item $1_A:A\ra A$ is an isomorphism.
+\item If $f:A\ra B$ and $g:B\ra C$ are isomorphisms then so is $g\circ f:A\ra C$.
+\end{enumerate}
+\end{thm}
+\begin{proof} Routine
+\end{proof}
+\begin{thm}\label{thm:bijections-isos}
+The following are logically equivalent for $f:A\ra B$.
+\begin{enumerate}
+\item $f$ is a bijection.
+\item $\forall_{y:B}\exists_{x:A}\;\; (fx=y\;\wedge \forall_{x':A}\;\; (fx'=y\;\ra\; x=x'))$.
+\item $f$ is an isomorphism.
+\item $f$ is a weak isomorphism.
+\end{enumerate}
+\end{thm}
+\begin{proof}
+The proof of this proposition in type theory can be done by proving the implications $(i)\ra (ii)\ra (iii)\ra (iv)\ra (i)$.  $(i)\ra (ii)$ and $(iii)\ra (i)$ are the same as in set theory.  The proof that $(ii)\ra (iii)$ requires, given $(ii)$, the proof of the existence of a function $g$ inverse to $f$.  In set theory this uses the fact that functions are defined to be total single-valued relations.  Instead, in type theory the proof of the existence of $g$
+uses the non-dependent version of the type theoretic axiom of choice.  This axiom holds in the propositions as types interpretation of logic because of the strong form of the existential quantifier.  For $(iv)\ra (i)$ let $f$ be left be both left and right invertible.  By (i) and (ii) of Theorem~\ref{thm:isos-id-and-composition}, $f$ is both injective and surjective and hence a bijection.  
+\end{proof}
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Adjoint  Isomorphisms}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\comment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+In order to define the notion of an adjoint isomorphism we need the following definition.
+\begin{defn} $\;$
+If $f:A\ra B$ define, by Id-induction, $fz:fx=fx'$ for $x,x':A, z:x=x'$ such that $f\refl{x} = \refl{fx}$ for $x:A$.
+\end{defn}
+}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{defn} A function $f:A\ra B$ is an {\em adjoint isomorphism} if there are $g:B\ra A$, $\eta:\forall_{x:A}\; [x=g(fx)]$ and $\epsilon:\forall_{y:B}\; [f(gy)=y]$ such that 
+  \[\forall_{x:A}\;[(\map{f}{\eta x}\; \ct\;\epsilon(fx))=1_{fx}].\]
+We write $A\cong_a B$ if there is an adjoint isomorphism $A\ra B$.
+\end{defn}
+\begin{thm}\label{thm:equiv-iso-adj} The following are logically equivalent for $f:A\ra B$.
+\begin{enumerate}
+\item $f$ is an equivalence.
+\item $f$ is a weak isomorphism
+\item $f$ is an adjoint isomorphism
+\end{enumerate}
+\end{thm}
+\begin{proof} $\;$
+
+\begin{description}
+\item[$(i)\ra (ii)$] 
+Let $f:A\ra B$ be an equivalence.  So each type $Cy$ is contractible, where for $y:B$, $Cy := \Sigma_{x:A}\; fx=y$.  This means that
+  \[ \forall_{y:B}\exists_{u:Cy}\forall_{u':Cy}\; u'=u.\]
+By $\Sigma$-unfolding we get
+  \[ \forall_{y:B}\exists_{x:A}\exists_{z:(fx=y)}
+                            \forall_{x':A}\forall_{z':(fx'=y)}\; (x,z)=(x',z').
+  \]
+It follows that
+  \[ \forall_{y:B}\exists_{x:A}[fx=y\wedge\forall_{x':A}(fx'=y\ra  x=x')].
+  \]
+Hence, by $(ii)\ra (iv)$ of \autoref{thm:bijections-isos} , $f$ is a weak isomorphism.
+\item[$(ii)\ra (iii)$] ??
+\item[$(iii)\ra (i)$] ??
+\end{description}
+\end{proof}
+\begin{cor}\label{cor:equivs-equiv}
+For types $A,B$ we have the following sequence of two equivalences and a logical equivalence
+between our four equivalence relations.
+  \[ (A\simeq B) \simeq (A\cong_a B) \simeq (A\cong_w B) \lra (A\cong B).\]
+\end{cor}
+\begin{proof} ??
+
+\end{proof}
+
+\section{Identity Systems on a Type Universe}
+\newcommand{\sfr}[1]{{{\sf r}_{#1}}}
+Let $\bbU$ be a type universe.
+
+\begin{defn} An {\em identity system $(R,\sfr{})$ on $\bbU$} consists of a type $R_{A,B}$ for $A,B:\bbU$, together with $\sfr{A}:R_{A,A}$ for $A:\bbU$, such that the following holds.  
+\be{quote}
+If $D_{A,B}(e)$ is a type for $A,B:\bbU$ and $e:R_{A,B}$ then there is   
+  \[ J_{A,B}(e):D_{A,B}(e)\mbox{ for } A,B:\bbU \mbox{ and } e:R_{A,B},\] 
+such that
+  \[ J_{A,A}(\sfr{A})=d_A\mbox{ for } A:\bbU.\]
+\en{quote}
+\end{defn}
+\begin{eg}
+$(Id_\bbU,\refl{\bbU})$ is an identity system on $\bbU$.
+\end{eg}
+\be{thm}
+If $(R,\sfr{})$ is an identity system on $\bbU$ then
+\be{enumerate}
+\item $R_{A,B}\ra \eqv{A}{B}$ for $A,B:\bbU$
+\item If $f_e:A\ra B$ and $g_e:B\ra A$ for $A,B:\bbU$ and $e:R_{A,B}$ such that 
+  \[ f_{\sfr{A}} = g_{\sfr{A}}=1_A\mbox{ for } A:\bbU\] 
+then
+  \[ g_e\circ f_e =1_A\mbox{ and } f_e\circ g_e = 1_B
+      \mbox{ for }  A,B:\bbU \mbox{ and } e:R_{A,B} \]
+\en{enumerate}
+\en{thm}
+\newcommand{\sfequiv}[1]{{\sf reflequiv}^\bbU_{#1}}
+\be{rmk} Once we have the notion of a univalent type universe we can get the following result. 
+\en{rmk}
+\be{thm}
+$\bbU$ is a univalent type universe iff $(Equiv^\bbU,\sfequiv{})$ is an identity system on $\bbU$, where
+  \[ Equiv^\bbU_{A,B}\defeq (\eqv{A}{B})\mbox{ for } A,B:\bbU\]
+and, if $s_A: (1_A\mbox{ is an equivalence }A\ra A)$,
+  \[ \sfequiv{A}\defeq (1_A,s_A):\eqv{A}{A}\mbox{ for } A:\bbU.\]
+\en{thm}
+
+
+Using the two theorems I believe (from a still mysterious coq proof of Assia and Cyril) that we can get a quick proof of function extensionality on a univalent universe.
 % Local Variables:
 % TeX-master: "main"
 % End:

@@ -74,29 +74,34 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{lem}\label{lem:concat}
   For every type $A$ and every $x,y,z:A$ there is a function
   \begin{equation*}
-    {(-)}\ct{(-)}:(y= z)\to (x= y)\to (x=  z)
+    {(-)}\ct{(-)}:(x= y) \to (y= z)\to (x=  z)
   \end{equation*}
   which satisfies $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
 \end{lem}
 
 \begin{proof}[First proof]
-  Fix a particular $x:A$.
-  Now let $D:\prd{y,z:A}{q:y=z} \type$ be the dependent type
+  Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type
   \begin{equation*}
-    D(y,z,q)\defeq \prd{x:A}{p:x=y} (x=z).
+    D(x,y,p)\defeq \prd{z:A}{q:y=z} (x=z).
   \end{equation*}
-  In order to apply the induction principle for identity types to this $D$, we need a function of type
+  Note that $D(x,x,\refl x) \jdeq \prd{z:A}{q:x=z} (x=z)$.
+  Thus, in order to apply the induction principle for identity types to this $D$, we need a function of type
+  \begin{equation}\label{eq:concatD}
+    \prd{x:A} D(x,y,\refl{x})
+    \jdeq \prd{x,z:A}{q:x=z} (x=z).
+  \end{equation}
+  Now let $E:\prd{x,z:A}{q:x=z}\type$ be the dependent type $E(x,z,q)\defeq (x=z)$.
+  Note that $E(x,x,\refl x) \jdeq (x=x)$.
+  Thus, we have the function
   \begin{equation*}
-    \prd{y:A} D(y,y,\refl{y})
-    \jdeq \prd{y,x:A}{p:x=y} (x=y).
+    e(x) \defeq \refl{x} : E(x,x,\refl{x}).
   \end{equation*}
-  Now let $E:\prd{x,y:A}{p:x=y}\type$ be the dependent type $E(x,y,p)\defeq (x=y)$.
-  Then we have the function $e(x) \defeq \refl{x} : E(x,x,\refl{x})$.
-  Thus, by the induction principle for identity types applied to $E$, we have a function
+  By the induction principle for identity types applied to $E$, we obtain have a function
   \begin{equation*}
-    d(x,y,p) : \prd{y,x:A}{p:x=y} (x=y) \jdeq \prd{y:A} D(y,y,\refl{y}).
+    d(x,z,q) : \prd{x,z:A}{q:x=z} E(x,z,q) \jdeq \prd{x,z:A}{q:x=z} (x=z)
   \end{equation*}
-  Thus, we can use this function and apply the induction principle for identity types to $D$, to obtain our desired function of type
+  which is~\eqref{eq:concatD}.
+  Thus, we can use this function $d$ and apply the induction principle for identity types to $D$, to obtain our desired function of type
   \begin{equation*}
     \prd{x,y,z:A}{q:y=z}{p:x=y} (x=z).
   \end{equation*}
@@ -105,15 +110,15 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 
 \begin{proof}[Second proof]
   We want to construct, for every $x,y,z:A$ and every $p:x=y$ and $q:y=z$, an element of $x=z$.
-  By induction on $q$, it suffices to assume that $z$ is $y$ and $q$ is $\refl{y}$.
-  In this case, $x=z$ is $x=y$.
-  Now by induction on $p$, it suffices to assume also that $y$ is $x$ and $p$ is $\refl{x}$.
-  But in this case, we have $\refl{x}:(x=x)$.
+  By induction on $p$, it suffices to assume that $y$ is $x$ and $p$ is $\refl{x}$.
+  In this case, $y=z$ is $x=z$.
+  Now by induction on $q$, it suffices to assume also that $z$ is $x$ and $q$ is $\refl{x}$.
+  But in this case, $x=z$ is $x=x$, and we have $\refl{x}:(x=x)$.
 \end{proof}
 
 The reader may well feel that we have given an overly convoluted proof of this lemma.
-In fact, we could stop after the induction on $q$, since at that point what we want to produce is an equality $x=y$, and we already have such an equality, namely $p$.
-Why do we go on to do another induction on $p$?
+In fact, we could stop after the induction on $p$, since at that point what we want to produce is an equality $x=z$, and we already have such an equality, namely $q$.
+Why do we go on to do another induction on $q$?
 
 The answer is that, as described in the introduction, we are doing \emph{proof-relevant} mathematics.
 When we prove a lemma, we are defining an inhabitant of some type, and it can matter what \emph{specific} element we defined in the course of the proof, not merely the type that that element inhabits (that is, the \emph{statement} of the lemma).
@@ -122,10 +127,10 @@ If we proved it three different ways, we would have three different elements of 
 It's not hard to show that these three elements would be (provably) \emph{equal} (see \autoref{ex:basics:concat}), but there can still be reasons to prefer a particular definition over a provably equal one.
 
 In the case of \autoref{lem:concat}, the difference hinges on the computation rule.
-If we proved the lemma using a single induction over $q$, then we would end up with a computation rule of the form $\refl{y} \ct p \jdeq p$.
-If we proved it with a single induction over $p$, we would have instead $q\ct\refl{x}\jdeq q$, while proving it with a double induction (as we did) gives only $\refl{x}\ct\refl{x} \jdeq \refl{x}$.
-The asymmetrical computation rules can sometimes be convenient when doing formalized mathematics, as they allow the computer to reduce some things automatically.
+If we proved the lemma using a single induction over $p$, then we would end up with a computation rule of the form $\refl{y} \ct q \jdeq q$.
+If we proved it with a single induction over $q$, we would have instead $p\ct\refl{x}\jdeq p$, while proving it with a double induction (as we did) gives only $\refl{x}\ct\refl{x} \jdeq \refl{x}$.
 
+The asymmetrical computation rules can sometimes be convenient when doing formalized mathematics, as they allow the computer to reduce some things automatically.
 However, in informal mathematics, and arguably even in the formalized case, it is confusing to have a concatenation operation which behaves asymmetrically and to have to remember which side is the ``special'' one.
 Treating both sides equally makes for more robust proofs; this is why we have given the proof that we did.
 (However, this is admittedly a stylistic choice.)
@@ -149,10 +154,10 @@ This is clear from the topological point of view, where these are regarded as \e
   Suppose $A:\type$, that $x,y,z,w:A$ and that $p:x= y$ and $q:y = z$ and $r:z=w$.
   We have the following:
   \begin{enumerate}
-  \item $p= p\ct \refl{x}$ and $p = \refl{y} \ct p$.\label{item:omg1}
-  \item $\opp{p}\ct p=  \refl{x}$ and $p\ct \opp{p}= \refl{y}$.
+  \item $p= p\ct \refl{y}$ and $p = \refl{x} \ct p$.\label{item:omg1}
+  \item $\opp{p}\ct p=  \refl{y}$ and $p\ct \opp{p}= \refl{x}$.
   \item $\opp{\opp{p}}= p$.
-  \item $r\ct (q\ct p)=  (r\ct q)\ct p$.\label{item:omg4}
+  \item $p\ct (q\ct r)=  (p\ct q)\ct r$.\label{item:omg4}
   \end{enumerate}
 \end{lem}
 
@@ -166,7 +171,7 @@ However, for most purposes it is unnecessary to make the whole infinite-dimensio
   \begin{enumerate}
   \item \emph{(First proof)} Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by 
     \begin{equation*}
-      D(x,y,p)\defeq (p= p\ct \refl{x}).
+      D(x,y,p)\defeq (p= p\ct \refl{y}).
     \end{equation*}
     Then $D(x,x,\refl{x})$ is $\refl{x}=\refl{x}\ct\refl{x}$.
     Since $\refl{x}\ct\refl{x}\jdeq\refl{x}$, it follows that $D(x,x,\refl{x})\jdeq (\refl{x}=\refl{x})$.
@@ -174,7 +179,7 @@ However, for most purposes it is unnecessary to make the whole infinite-dimensio
     \begin{equation*}
       d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now $J$ gives a term $J(D,d,p):(p= p\ct\refl{x})$ for each $p:x= y$.
+    Now $J$ gives a term $J(D,d,p):(p= p\ct\refl{y})$ for each $p:x= y$.
     The other equality is proven similarly.
 
     \noindent
@@ -182,7 +187,7 @@ However, for most purposes it is unnecessary to make the whole infinite-dimensio
     But in this case, we have $\refl{x}\ct\refl{x}\jdeq\refl{x}$.
   \item \emph{(First proof)} Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by 
     \begin{equation*}
-      D(x,y,p)\defeq (\opp{p}\ct p=  \refl{x}).
+      D(x,y,p)\defeq (\opp{p}\ct p=  \refl{y}).
     \end{equation*}
     Then $D(x,x,\refl{x})$ is $\opp{\refl{x}}\ct\refl{x}=\refl{x}$.
     Since $\opp{\refl{x}}\jdeq\refl{x}$ and $\refl{x}\ct\refl{x}\jdeq\refl{x}$, we get that $D(x,x,\refl{x})\jdeq (\refl{x}=\refl{x})$.
@@ -190,7 +195,7 @@ However, for most purposes it is unnecessary to make the whole infinite-dimensio
     \begin{equation*}
       d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now $J$ gives a term $J(D,d,p):\opp{p}\ct p=\refl{x}$ for each $p:x= y$ in $A$.
+    Now $J$ gives a term $J(D,d,p):\opp{p}\ct p=\refl{y}$ for each $p:x= y$ in $A$.
     The other equality is similar.
 
     \noindent \emph{(Second proof)} By induction, it suffices to assume $p$ is $\refl x$.
@@ -209,39 +214,51 @@ However, for most purposes it is unnecessary to make the whole infinite-dimensio
 
     \noindent \emph{(Second proof)} By induction, it suffices to assume $p$ is $\refl x$.
     But in this case, we have $\opp{\opp{p}}\jdeq \opp{\opp{\refl x}} \jdeq \refl x$.
-  \item \emph{(First proof)} Let $D:\prd{z,w:A}{r:z=w} \type$ be the dependent type given by
+  \item \emph{(First proof)} Let $D_1:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by
     \begin{equation*}
-      D(z,w,r)\defeq\prd{x,y:A}{p:x= y}{q:y= z} \big(r\ct (q\ct p)=  (r\ct q)\ct p\big).
+      D_1(x,y,p)\defeq\prd{z,w:A}{q:y= z}{r:z= w} \big(p\ct (q\ct r)=  (p\ct q)\ct r\big).
     \end{equation*}
-    Then $D(z,z,\refl{z})$ is
+    Then $D_1(x,x,\refl{x})$ is
     \begin{equation*}
-      \prd{x,y:A}{q:y= z}{p:x= y} \big(\refl{z}\ct(q\ct p)= (\refl{z}\ct q)\ct p\big),
+      \prd{z,w:A}{q:x= z}{r:z= w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
-    which simplifies to
+    To construct a term in this type, let $D_2:\prd{x,z:A}{q:x=z} \type$ be the dependent type
     \begin{equation*}
-      \prd{x,y:A}{q:y= z}{p:x= y} (q\ct p= q\ct p).
+      D_2 (x,z,q) \defeq \prd{w:A}{r:z=w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
-    Therefore, we find
+    Then $D_2(x,x,\refl{x})$ is
     \begin{equation*}
-      d\defeq\lambda z.\lambda x,y,p,q.\refl{q\ct p}:\prd{z:A} D(z,z,\refl{z}).
+      \prd{w:A}{r:x=w} \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
     \end{equation*}
-    Now $J$ gives us an element $J(D,d,r,p,q):r\ct (q\ct p)= (r\ct q)\ct p$ for each $r:z= w$.
+    To construct a term in \emph{this} type, let $D_3:\prd{x,w:A}{r:x=w} \type$ be the dependent type
+    \begin{equation*}
+      D_3(x,w,r) \defeq \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
+    \end{equation*}
+    Then $D_3(x,x,\refl{x})$ is
+    \begin{equation*}
+      \big(\refl{x}\ct(\refl{x}\ct \refl{x})= (\refl{x}\ct \refl{x})\ct \refl{x}\big)
+    \end{equation*}
+    which is definitionally equal to the type $(\refl{x} = \refl{x})$, and is therefore inhabited by $\refl{\refl{x}}$.
+    Applying the identity elimination rule three times, therefore, we obtain a term of the overall desired type.
 
-    \noindent \emph{(Second proof)} By induction, it suffices to assume $r$ is $\refl z$.
+    \noindent \emph{(Second proof)} By induction, it suffices to assume $p$, $q$, and $r$ are all $\refl x$.
     But in this case, we have
     \begin{align*}
-      r\ct (q\ct p)
-      &\jdeq \refl{z}\ct(q\ct p)\\
-      &= q\ct p\\
-      &= (\refl{z}\ct q)\ct p\\
-      &\jdeq (r\ct q)\ct p.\qedhere
-  \end{align*}
+      p\ct (q\ct r)
+      &\jdeq \refl{x}\ct(\refl{x}\ct \refl{x})\\
+      &\jdeq \refl{x}
+      &\jdeq (\refl{x}\ct \refl x)\ct \refl x\\
+      &\jdeq (p\ct q)\ct r.
+    \end{align*}
+    Thus, we have $\refl{\refl{x}}$ inhabiting this type.\qedhere
   \end{enumerate}
 \end{proof}
 
 \begin{rmk}
-  If we were going on to prove higher coherence properties of these paths, then we might want to define them more carefully.
-  For instance, just as in the proof of \autoref{lem:concat} we did induction over both $p$ and $q$, in the proof of \autoref{thm:omg}\ref{item:omg4} we might want to do induction over $p$, $q$, and $r$, rather than just over $r$.
+  There are other ways to define all of these higher paths.
+  For instance, in \autoref{thm:omg}\ref{item:omg4} we might do induction only over one or two paths rather than all three.
+  All possibilities will produce \emph{definitionally} different proofs, but they will always be propositionally the same.
+  Such an equality between any two particular proofs can, again, be proven by induction, reducing all the paths in question to reflexivities and then observing that both proofs reduce themselves to reflexivities.
 \end{rmk}
 
 Now we wish to establish that functions $f:A\to B$ behave functorially on paths, or equivalently that they respect equality.
@@ -293,6 +310,10 @@ The missing ingredient is that $p$ itself gives us a way to relate the types $B(
   But in this case, we can take $\transf{(\refl x)}:P(x)\to P(x)$ to be the identity function.
 \end{proof}
 
+Sometimes, it is necessary to notate the dependent type $P$ in which the transport operation happens.
+In this case, we may write
+\[\transfib P p - : P(x) \to P(y).\]
+
 Recall that a dependent type $P$ over a type $A$ can be seen as a property of elements of $A$, which holds at $x$ in $A$ if $P(x)$ is inhabited.
 Then the transportation lemma says that if $x$ is propositionally equal to $y$, then $P(x)$ holds if and only if $P(y)$ holds.
 In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are \emph{equivalent}.
@@ -340,22 +361,25 @@ From now on, we will stick to the second, more concise, style of proof by induct
 \begin{ex}
   Give a fourth, different, proof of \autoref{lem:concat}, and prove that it is equal to the others.
 \end{ex}
+
 \section{Summary of  some Basic HoTT Definitions}
-\begin{defn} $\;$
+\label{sec:basics-summary}
+
+Here we summarize the basic definitions made in this chapter.
+
 \begin{itemize}
-\item $\opp{p} : y=x$, for $p:x=y$, such that 
+\item $\opp{p} : y=x$, for $p:x=y$, defined by
   \[\opp{\;\refl{x}}\jdeq \refl{x}.\]
-\item $p\ct q :y=z$, for $p:x=y$ and $q:y=z$, such that 
+\item $p\ct q :y=z$, for $p:x=y$ and $q:y=z$, defined by
   \[ \refl{x}\ct\refl{x}\jdeq\refl{x}.\]
-\item If $P$ is a dependent type over $A$ then $\transf{p}:P(x)\ra P(y)$, for $p:x=y$, such that 
-  \[\transf{(\refl{x})}\jdeq 1_{P(x)}.\]
-\item If $f:A\ra B$ then $\map{f}{p}:f(x)=f(y)$, for $p:x=y$, such that   \[\map{f}{\refl{x}}\jdeq \refl{f(x)}.\]
-\item If $f:\prod_{x:A}P(x)$ then $\mapdep{f}{p}:\trans{p}{f(x)}=f(y)$, for $p:x=y$, such that 
+\item If $P$ is a dependent type over $A$ then $\transf{p}:P(x)\ra P(y)$, for $p:x=y$, defined by
+  \[\transf{(\refl{x})}\jdeq \idfunc[P(x)].\]
+\item If $f:A\ra B$ then $\map{f}{p}:f(x)=f(y)$, for $p:x=y$, defined by
+  \[\map{f}{\refl{x}}\jdeq \refl{f(x)}.\]
+\item If $f:\prod_{x:A}P(x)$ then $\mapdep{f}{p}:\trans{p}{f(x)}=f(y)$, for $p:x=y$, defined by
   \[\mapdep{f}{\refl{x}}\jdeq \refl{f(x)}.\]
-
-
 \end{itemize}
-\end{defn}
+
 % Local Variables:
 % TeX-master: "main"
 % End:

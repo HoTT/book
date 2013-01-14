@@ -14,6 +14,8 @@
 \chapter{Induction}
 \label{cha:induction}
 
+\section{Booleans and natural numbers}
+
 % Local Variables:
 % TeX-master: "main"
 % End:
@@ -62,12 +64,12 @@ The variable $y$ represents our inductive hypothesis. As for Booleans, we also h
 \item The proof $\rec_\nat(E,e_z,e_s,\z) : E(\z)$ is identical to $e_z$.
 \item For any $n : \nat$, the proof $\rec_\nat(E,e_z,e_s,\s(n)) : E(\s(n))$ is identical to $e_s(n,\rec_\nat(E,e_z,e_s,n))$.
 \end{itemize}
-The dependent function $\rec_\nat(E,e_z,e_s)$ can thus be understood as being defined recursively on the argument $x : \nat$, via the recurrence determined by $e_z$ and $e_s$: When $x$ is zero, the function simply returns $e_z$. When $x$ is the successor of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and plugging in the specific predecessor $n$ and the recursive call value $\rec_\nat(E,e_z,e_s,n)$.
+The dependent function $\rec_\nat(E,e_z,e_s)$ can thus be understood as being defined recursively on the argument $x : \nat$, via the recurrences $e_z$ and $e_s$: When $x$ is zero, the function simply returns $e_z$. When $x$ is the successor of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and plugging in the specific predecessor $n$ and the recursive call value $\rec_\nat(E,e_z,e_s,n)$.
 
-This induction principle is rather strong and allows us to prove a variety of interesting theorems. For example, by specifying the terms $e_z$ and $e_s$, we  uniquely determine how the recursor behaves on canonical terms, and thus on all natural numbers. If we now have another function which obeys the same recurrence, then our intuition suggests these two functions should be pointwise equal. It turns out this is indeed the case and we have the following \emph{uniqueness principle}:
+This induction principle is rather strong and allows us to prove a variety of interesting theorems. For example, by specifying the terms $e_z$ and $e_s$, we  uniquely determine how the recursor behaves on canonical terms, and thus on all natural numbers. If we now have another function which obeys the same recurrence, then our intuition suggests these two functions should be equal. It turns out this is indeed the case and we have the following \emph{uniqueness principle}:
 
 \begin{thm}
-Let $f,g : \prd{x:\nat} E(x)$ be two functions which satisfy the recurrences $e_z$ and $e_s$ up to propositional equality, i.e., such that
+Let $f,g : \prd{x:\nat} E(x)$ be two functions which satisfy the recurrences $e_z : E(\z)$ and $e_s : \prd{n : \nat}{y : E(n)} E(\s(n))$ up to propositional equality, i.e., such that
 \begin{align*}
 \id{f(\z)}{e_z} \\ 
 \id{g(\z)}{e_z}
@@ -77,14 +79,39 @@ and
 \prd{n : \nat} \id{f(\s(n))}{e_s(n, f(n))} \\
 \prd{n : \nat} \id{g(\s(n))}{e_s(n, g(n))}
 \end{align*}
-Then $f$ and $g$ are pointwise equal, i.e., we have a term $\alpha : \prd{x : \nat} \idtype{f(x)}{g(x)}$.
+Then $f$ and $g$ are equal, i.e., we have $\alpha : \id[\prd{x :\nat} E(x)]{f}{g}$. 
 \end{thm}
 
 \begin{proof}
 We use dependent elimination with the type $E(x) \defeq \id{f(x)}{g(x)}$. For the base case, we have \[f(\z) = e_z = g(\z)\]
-For the inductive case, assume we have $n : \nat$ such that $f(n) = g(n)$. Then
+For the inductive case, assume $n : \nat$ such that $f(n) = g(n)$. Then
 \[ f(\s(n)) = e_s(n, f(n)) = e_s(n, g(n)) = g(\s(n)) \]
-The first and last equality follow from the assumptions on $f$ and $g$. The middle equality follows from the inductive hypothesis and the fact that application preserves equality.
+The first and last equality follow from the assumptions on $f$ and $g$. The middle equality follows from the inductive hypothesis and the fact that application preserves equality. This gives us pointwise equality between $f$ and $g$; invoking function extensionality finishes the proof.
 \end{proof}
-Analogous uniqueness theorem can generally be shown for any other inductive type.
+We note that the function $f$ is only required to satisfy the recurrences \emph{up to propositional equality}. The theorem itself only asserts propositional equality between functions - indeed, it is possible to construct functions which satisfy the same recurrence but are not definitionally equal (exercise). 
 
+Similar uniqueness theorems can generally be formulated and shown for other inductive types as well. Such uniqueness results are a very useful tool; for instance, using uniqueness we can show that a certain class of inductive types gives rise to \emph{homotopy-initial algebras}. Taking Booleans as the simplest example, we define a \emph{$\two$-algebra} to be any type $C$ with two terms $c_0, c_1 : C$. Thus,
+
+\begin{align*}
+\mathtt{2Alg} \defeq \sm {C : \type} C \times C
+\end{align*}
+Given $\two$-algebras $(C,c_0,c_1)$ and $(D,d_0,d_1)$, we define a $\two$-homomorphism between them as a function $h : C \to D$ mapping $c_0$ to $d_0$ and
+$c_1$ to $d_1$ (up to propositional equality). Thus,
+\begin{align*}
+\mathtt{2Hom \; (C,c_0,c_1) \; (D,d_0,d_1)} \defeq \sm {h : C \to D} \; \id{h(c_0)}{d_0} \times \id{h(c_1)}{d_1}
+\end{align*}
+A $\two$-algebra $\chi^*$ is then called \emph{homotopy-initial} if for any other $\two$-algebra $\chi$, the type of $\two$-homomorphisms from $\chi^*$ to $\chi$ is contractible. Thus,
+\begin{align*}
+\mathtt{is\_hinitial \; \chi^* \defeq \fall{\chi : 2Alg} \; is\_contr \; (2Hom \; \chi^*\; \chi)}
+\end{align*}
+
+We now have the following theorem; the proof is only sketched as it involves a large amount of technical detail.
+\begin{thm}
+The $\two$-algebra $(\two, \true, \false)$ is homotopy initial.
+\end{thm}
+\begin{proof}
+(Rough sketch) Fix an arbitrary $\two$-algebra $(C,c_0,c_1)$. Using elimination on $\two$ it is easy to construct a $\two$-homomorphism into $C$. This will be our
+center of contraction. To show that any other homomorphism is equal to the chosen one, we appeal to the uniqueness theorem for $\two$.
+\end{proof}
+
+\section{Dependent and disjoint sums; W-types}

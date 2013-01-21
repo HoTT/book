@@ -42,13 +42,20 @@
 
 \section{Definition and First Properties}
 
-\begin{defn}
- The {\em h-level} of a type $X$ is defined recursively as follows:
- \begin{itemize}
-  \item $X$ is of h-level $0$, if it is contractible.
-  \item $X$ is of h-level $n+1$, if for all $x, y : X$ the type $(x =_X y)$ is of h-level $n$.
- \end{itemize}
- This defines a predicate $\isofhlevel(n)(X)$.
+\begin{defn}\label{def:hlevel}
+  Define the predicate $\isofhlevel(n) : \Type \to \Type$ for $n : \Nat$ by recursion as follows:
+  
+\[ \isofhlevel(n)(X) := \begin{cases}
+                         \iscontr(X) & \text{ if } n = 0 , \\
+                         \prod\limits_{x,y : X}\isofhlevel(n')(\idtype[X]{x}{y}) & \text{ if } n = S(n') .
+                        \end{cases}
+\]
+%   
+%  \begin{itemize}
+%   \item $\isofhlevel(0)(X) := \iscontr(X)$, %if  $X$ is of h-level $0$, if it is contractible.
+%   \item $\isofhlevel(S (n))(X) := \prod\limits_{x,y : X}\isofhlevel(n)(\idtype[X]{x}{y})$ %is of h-level $n+1$, if for all $x, y : X$ the type $(x =_X y)$ is of h-level $n$.
+%  \end{itemize}
+Given a natural number $n$ and a type $X$, we say that $X$ is of h-level $n$, if the type $\isofhlevel(n)(X)$ is inhabited.
 \end{defn}
 
 The h-levels are therefore an axiomatization of finite homotopy types.
@@ -57,8 +64,16 @@ Similarly, as in homotopy theory a type does not have to be of any finite h-leve
 in the section on higher inductive types we shall see that one can describe the types (such as, for example, the $2$-sphere)
 that are of no finite h-level.
 
-We start by showing the preservation of h-levels under certain operations and various logical constructors.
+\begin{rmk}
+ We shall note that in \autoref{def:hlevel} we could alternatively declare $n$ as a variable of the metatheory rather than 
+ as a variable of type $\Nat$ within the type theory.
+ We chose to use the type-theoretic natural numbers in order to be able to use the type-theoretic induction principle, which, as we 
+ will later see, is our main tool for computation of h-levels.
+\end{rmk}
 
+
+We start by showing the preservation of h-levels under certain operations and various logical constructors.
+For the remainder of the section, let $X, Y : \Type$ and $n : \Nat$.
 \begin{thm}\label{thm:h-level-retracts}
  Let $p \colon X \to Y$ be a retraction and suppose that $X$ is of h-level $n$. Then $Y$ is also of h-level $n$.
 \end{thm}
@@ -239,7 +254,7 @@ provided that the target space $B$ is of h-level $n$.
 \begin{egs}
  \begin{itemize}
   \item Trivially, the empty type $\emptyset$ is an h-prop.
-  \item For any type $X$, its negation $\neq X := X \to \emptyset$ is an h-prop. This follows from the previous example by the preservation of h-levels under dependent products.
+  \item For any type $X$, its negation $\neg X := X \to \emptyset$ is an h-prop. This follows from the previous example by the preservation of h-levels under dependent products.
  \end{itemize}
 \end{egs}
 
@@ -261,7 +276,7 @@ provided that the target space $B$ is of h-level $n$.
 We next turn towards giving some less obvious examples of h-propositions:
 
 \begin{thm}\label{thm:isaprop_isofhlevel}
- For any $n : \Nat$ and any type $X$, the type:
+ For any $n : \Nat$ and any type $X$, the type
  \[ \isofhlevel(n)(X) \]
  is an h-proposition.
 \end{thm}
@@ -366,11 +381,11 @@ Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Le
  We will show that $\Nat$ has decidable equality that is for all $x, y : \Nat$, we have $(x =_X y) + \neg (x =_X y)$.
  We proceed by induction on $x$ and case analysis on $y$.
 
- If $x = 0$ and $y = 0$, we take $\inl(\refl(0))$. If $x = 0$ and $y = \S(n)$,
- then by injectivity of the constructors we get $\neg (0 = \S (n))$.
+ If $x = 0$ and $y = 0$, we take $\inl(\refl(0))$. If $x = 0$ and $y = S(n)$,
+ then by injectivity of the constructors we get $\neg (0 = S (n))$.
 
- For the inductive step let $x = \S (n)$. If $y = 0$, we use injectivity of the constructors again.
- If $y = \S (m)$, using the induction hypothesis we may determine whether $(m = n)$ or $\neg(m = n)$ and proceed accordingly.
+ For the inductive step let $x = S (n)$. If $y = 0$, we use injectivity of the constructors again.
+ If $y = S (m)$, using the induction hypothesis we may determine whether $(m = n)$ or $\neg(m = n)$ and proceed accordingly.
 \end{proof}
 
 \section{H-Level of types of h-level $n$}

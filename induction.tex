@@ -3,11 +3,13 @@
 \newcommand{\two}{\ensuremath{\mathbf{2}}\xspace}
 \newcommand{\three}{\ensuremath{\mathbf{3}}\xspace}
 \newcommand{\nat}{\ensuremath{\mathbf{N}}\xspace}
+\newcommand{\lst}{\ensuremath{\mathbf{List}}\xspace}
 \newcommand{\true}{\ensuremath{\mathbf{true}}\xspace}
 \newcommand{\false}{\ensuremath{\mathbf{false}}\xspace}
 \newcommand{\rec}{\ensuremath{\mathbf{rec}}\xspace}
+\newcommand{\supp}{\ensuremath{\mathbf{sup}}\xspace}
 \newcommand{\z}{\ensuremath{0}\xspace}
-\newcommand{\wtype}[1]{\ensuremath{W}(#1)\xspace}
+\newcommand{\wtype}[1]{\ensuremath{W}(#1),\xspace}
 %\newcommand{\inl}{\ensuremath{\mathbf{inl}}\xspace}
 %\newcommand{\inr}{\ensuremath{\mathbf{inr}}\xspace}
 \newcommand{\s}{\ensuremath{\mathbf{s}}\xspace}
@@ -175,30 +177,31 @@ Using the elimination operator, it is very easy to construct the well-know proje
 \section{W-types}
 Martin-L{\"o}f's W-types, also known as the types of well-founded trees, are a generalization of such types as natural numbers, lists, and binary trees. A particular W-type is specified by giving two parameters $A : \type$ and $B : A \to \type$, written $\wtype{a:A} B(a)$.
 
-The type $A$ represents the type of constructors for $\wtype{a :A} B(a)$. For instance, when defining natural numbers as a W-type the type $A$ would be the type $\two$ inhabited by the two terms $\true$ and $\false$, since there are precisely two ways how to construct a natural number - either it will be zero or a successor of another natural number. 
+The type $A$ represents the type of \emph{labels} for $\wtype{a :A} B(a)$, which function as constructors (however, we reserve that word for use in schematic definitions of inductive types). For instance, when defining natural numbers as a W-type the type $A$ would be the type $\two$ inhabited by the two terms $\true$ and $\false$, since there are precisely two ways how to obtain a natural number - either it will be zero or a successor of another natural number. 
 
-The dependent type family $B : A \to \type$ is used to record the arity of constructors: a constructor $a : A$ will take $B(a)$-many inductive arguments. These arguments are represented as a function $f : B(a) \to \wtype{a :A} B(a)$, with the understanding that for any $b : B(a)$, $f(b)$ is the $b$-th argument to the constructor $a$. 
+The dependent type family $B : A \to \type$ is used to record the arity of labels: a label $a : A$ will take $B(a)$-many inductive arguments. These arguments are represented as a function $f : B(a) \to \wtype{a :A} B(a)$, with the understanding that for any $b : B(a)$, $f(b)$ is the $b$-th argument to the label $a$. The W-type $\wtype{a :A} B(a)$ can thus be thought of as the type of well-founded trees, where nodes are labeled by terms of $A$ and each node labeled by $a : A$ has $B(a)$ branches.
 
-In the case of natural numbers, the constructor $\true $ has arity 0, since it constucts the constant zero; the constructor $\false$ has arity 1, since it constructs the successor of its argument. We can capture this by using elimination on $\two$ to define a function into a universe of types:
+In the case of natural numbers, the label $\true $ has arity 0, since it constructs the constant zero; the label $\false$ has arity 1, since it constructs the successor of its argument. We can capture this by using simple elimination on $\two$ to define a function $\rec_\two(\bbU,\zero,\one)$ into a universe of types; this function returns the empty type $\zero$ for $\true$ and the unit type $\one$ for $\false$. We can thus define
+\[ \nat \defeq \wtype{b:\two} \rec_\two(\bbU,\zero,\one) \]
+Similarly, we can define the type of lists over $A$ as a W-type with $\disj{\one}{A}$ many labels: one nullary label for the empty list, plus one unary label for each $a : A$, corresponding to appending the term $a$ to the head of a list:
 
-\[ B \defeq \rec_\two(\lambda(b:\two), \; \bbU,\zero,\one) \]
+\[ \lst \; A \defeq \wtype{x:\disj{\one}{A}} \rec_{\disj{\one}{A}}(\bbU, \; \zero, \; \lambda{(a:A)}, \one) \]
 
- 
+Schematically, we define a W-type as follows:
+\begin{align*}
+  \wtype{x:A} B(x) \defeq \; \supp : & \; \prd{a:A}{f : B(a) \to \wtype{a:A} B(a)} \\ & \; \wtype{x:A} B(x)         
+\end{align*}
+The constructor $\supp$ (short for supremum) takes a label $a : A$ and a function $f : B(a) \to \wtype{a:A} B(a)$ representing the arguments to $a$, and constructs a new term of $\wtype{x:A} B(x)$. Using our previous encoding of natural numbers as W-types, we can for instance define
+\begin{align*}
+0 \defeq \supp(\true, \; \lambda(x : \zero), \rec_\zero(\nat,x))
+\end{align*}
+In other words, to construct $\z$ we use the label $\true$. Now $\rec_\two(\bbU,\zero,\one, \true)$ evaluates to $\zero$, as it should since $\true$ is a nullary label. Thus, we need to construct a function $f : \zero \to \nat$, which represents the (zero) arguments supplied to $\true$. This is of course trivial, using simple elimination on $\zero$. Similarly, we can define
+\begin{align*}
+1 \defeq \supp(\false, \; \lambda(x : \one), 0) \\
+2 \defeq \supp(\false, \; \lambda(x : \one), 1)
+\end{align*}
+and so on.
 
-
-The ``dependent`` type $E \defeq 
-
-%\[\nat \stackrel{\text{def}}{=} \wtype{x}{\two}{\ifte{x}{\zero}{\one}} \]
-%It is also possible to express parametrized types such as $\listt{\nat}$ as W-types. In this case we would have infinitely many constructors - one for the empty list plus a separate constructor for each $n : \nat$, corresponding to
-%the $\mathbf{cons} \; n$ operation. Thus the type of constructors would be $\one + \nat$, with the arities defined in the obvious way.
-%
-%\subsection{Introduction Rule}
-%We have the following introduction rule for W types:
-%\begin{mathpar}
-%\inferrule{ }{\entails{\Gamma, \term{x}{A}, \term{f}{B \to \wtype{x}{A}{B}}}{\term{\supp{x}{f}}{\wtype{x}{A}{B}}}}(\WI)
-%\end{mathpar}
-%By substitution, for any two terms $\entails{\Gamma}{\term{a}{A}}$ and $\entails{\Gamma}{\term{h}{\subst{B}{x}{a} \to {\wtype{x}{A}{B}}}}$ we get a term $\entails{\Gamma}{\term{\supp{a}{h}}{\wtype{x}{A}{B}}}$. Intuitively, $a$ determines a constructor for ${\wtype{x}{A}{B}}$ and $h$ determines the arguments for $a$ by mapping each argument index to an element of ${\wtype{x}{A}{B}}$. In the case of natural numbers, for instance, we would have $0 \stackrel{\text{def}}{=} \supp{\true}{\lam{x}{\zero}{\abort{x}}}$, $1 \stackrel{\text{def}}{=} \supp{\false}{\lam{x}{\one}{0}}$, $2 \stackrel{\text{def}}{=} \supp{\false}{\lam{x}{\one}{1}}$, etc.  
-%
 %\subsection{Elimination Rule}
 %We have the following elimination rule for W types, referred to as dependent elimination:
 %\begin{mathpar}

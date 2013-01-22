@@ -71,17 +71,22 @@ The variable $y$ represents our inductive hypothesis. As for Booleans, we also h
 \end{itemize}
 The dependent function $\rec_\nat(E,e_z,e_s)$ can thus be understood as being defined recursively on the argument $x : \nat$, via the recurrences $e_z$ and $e_s$: When $x$ is zero, the function simply returns $e_z$. When $x$ is the successor of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and plugging in the specific predecessor $n$ and the recursive call value $\rec_\nat(E,e_z,e_s,n)$.
 
-As an example we look at how to define a function on natural numbers which doubles its argument. We wish to apply dependent elimination with the constant type family $E \defeq \lambda(x : \nat), \nat$ since the intended type of $\dbl$ is $\nat \to \nat$. We first need to supply the value of $\dbl(\z)$, which is easy: we put $e_z \defeq \z$. Next, to compute the value of $\dbl(\s(n))$ for a natural number $n$, we first compute the value of $\dbl(n)$ and then perform the successor operation twice. This is captured by the recurrence $e_s(n,y) \defeq \s(\s(n))$; the variable $y$ stands for the result of the recursive call $\dbl(n)$. Thus, we define
-\[ \dbl \defeq \rec_\nat(\nat, \z, \lambda(n: \nat) \lambda (y:\nat), \s(\s(n))) \]
-where 
+As an example we look at how to define a function on natural numbers which doubles its argument. We wish to apply dependent elimination with the constant type family $E \defeq \lambda(x : \nat), \nat$ since the intended type of $\dbl$ is $\nat \to \nat$. We first need to supply the value of $\dbl(\z)$, which is easy: we put $e_z \defeq \z$. Next, to compute the value of $\dbl(\s(n))$ for a natural number $n$, we first compute the value of $\dbl(n)$ and then perform the successor operation twice. This is captured by the recurrence $e_s(n,y) \defeq \s(\s(y))$; the variable $y$ stands for the result of the recursive call $\dbl(n)$. Thus, we define
+\[ \dbl \defeq \rec_\nat(\lambda(x :\nat), \nat, \;  \z, \;  \lambda(n: \nat) \lambda (y:\nat), \s(\s(y))) \]
+This indeed has the correct computational behavior: for example, we have 
+\begin{align*}
+\dbl(\s(\s(\z))) & \equiv e_s(\s(\z), \dbl(\s(\z))) \\
+                 & \equiv \s(\s(\dbl(\s(\z)))) \\
+                 & \equiv \s(\s(e_s(\z,\dbl(\z)))) \\
+                 & \equiv \s(\s(\s(\s(\dbl(\z))))) \\
+                 & \equiv \s(\s(\s(\s(e_z)))) \\
+                 & \equiv \s(\s(\s(\s(\z))))
+\end{align*}
+as desired.
 
+There are many similar cases when one wants to use dependent elimination with a constant family term. This is referred to as \emph{simple elimination}, which corresponds to recursion. In this case, we omit the $\lambda$-binder for simplicity and write $\dbl \defeq \rec_\nat(\nat, \z, \ldots)$.
 
-
-We note that we are using dependent elimination with a constant function (since $\bbU$ does not depend on $b$). This gives rise to \emph{simple elimination}, also known as recursion: instead of having a different statement $E(b)$ to prove for each $b : \two$, we are simply constructing 
-
-We note that in many cases we might want to use dependent elimination with a 
-
-This induction principle is rather strong and allows us to prove a variety of interesting theorems. For example, by specifying the terms $e_z$ and $e_s$, we  uniquely determine how the recursor behaves on canonical terms, and thus on all natural numbers. If we now have another function which obeys the same recurrence, then our intuition suggests these two functions should be equal. It turns out this is indeed the case and we have the following \emph{uniqueness principle}:
+The depndent elimination principle is quite strong and allows us to prove a variety of interesting theorems. For example, by specifying the terms $e_z$ and $e_s$, we  uniquely determine how the recursor behaves on canonical terms, and thus on all natural numbers. If we now have another function which obeys the same recurrence, then our intuition suggests these two functions should be equal. It turns out this is indeed the case and we have the following \emph{uniqueness principle}:
 
 \begin{thm}
 Let $f,g : \prd{x:\nat} E(x)$ be two functions which satisfy the recurrences $e_z : E(\z)$ and $e_s : \prd{n : \nat}{y : E(n)} E(\s(n))$ up to propositional equality, i.e., such that

@@ -361,7 +361,7 @@ Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Le
 \end{proof}
 
 \begin{defn}
- A type $X$ has {\em decidable equality}, if for all $x, y : X$ we have:
+ A type $X$ has {\em decidable equality}, if for all $x, y : X$ we have
  \[(x =_X y) + \neg (x =_X y).\]
 \end{defn}
 
@@ -370,7 +370,33 @@ Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Le
 \end{thm}
 
 \begin{proof}
- By \autoref{thm:h-set-uip-K} it suffices to show that $X$ satisfies Axiom K. This is so trivial that I can't even write it!
+Fix $x : X$ and assume that for all $y : Y$ we have 
+  \[\alpha : (x = y) + \neg (x = y). \]
+  For any $y : Y$ we define
+      $  \eta_y : (x = y) \to (x = y) $
+    by
+    \[ \eta_y(p) := \begin{cases}
+                     q & \text{ if } \alpha(p) = \inl(q) \\
+                     \mathsf{elim}(f(p)) & \text{ if } \alpha(p) = \inr(f).
+                    \end{cases}
+\]
+
+TODO : explain elimination $\mathsf{elim}$ on False 
+
+\noindent
+ By case analysis we see that for any $p, p' : x = y$ we have 
+ \begin{equation}\eta_y(p) = \eta_y(p') . \label{eq:eqdec_eta}\end{equation}
+
+ \noindent
+ Next, we prove that for any $y : Y$, the map $\eta_y$ has a left inverse $\theta_y$. 
+   Once we have this left inverse $\theta_y$, we obtain the desired result as follows: given 
+     $p, p' : x = y$, we have
+   \[ p = \theta_y (\eta_y(p)) \stackrel{\ref{eq:eqdec_eta}}{=} \theta_y (\eta_y(p')) = p' . \]
+ Define $\theta_y$ by 
+     $\theta_y(q) \defeq \opp{\eta_y(\refl{}(x))} \ct q$.
+  Finally, we prove $\theta_y(\eta_y(p)) = p$ by path induction on $p$:
+   \[\theta_y(\eta_y(\refl{}(x))) = \opp{\eta_y(\refl{}(x))} \ct \eta_y(\refl{}(x)) = \refl{}(x). \]
+
 \end{proof}
 
 \begin{thm}\label{prop:nat-is-set}

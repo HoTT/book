@@ -343,7 +343,7 @@ As an immediate corollary we obtain:
  Let $X : \type$. We say that $X$
  \begin{itemize}
   \item has {\em uniqueness of identity proofs} (UIP, for short), if for all $x, y : X$ and $p, q : x =_X y$ we have $p = q$.
-  \item satisfies {\em Axiom K}, if for all $x : X$ and $p : (x =_A x)$ we have $p = \refl(x)$.
+  \item satisfies {\em Axiom K}, if for all $x : X$ and $p : (x =_A x)$ we have $p = \refl{}(x)$.
  \end{itemize}
 \end{defn}
 
@@ -361,7 +361,7 @@ Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Le
 \end{proof}
 
 \begin{defn}
- A type $X$ has {\em decidable equality}, if for all $x, y : X$ we have:
+ A type $X$ has {\em decidable equality}, if for all $x, y : X$ we have
  \[(x =_X y) + \neg (x =_X y).\]
 \end{defn}
 
@@ -370,7 +370,33 @@ Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Le
 \end{thm}
 
 \begin{proof}
- By \autoref{thm:h-set-uip-K} it suffices to show that $X$ satisfies Axiom K. This is so trivial that I can't even write it!
+Fix $x : X$ and assume that for all $y : Y$ we have 
+  \[\alpha : (x = y) + \neg (x = y). \]
+  For any $y : Y$ we define
+      $  \eta_y : (x = y) \to (x = y) $
+    by
+    \[ \eta_y(p) := \begin{cases}
+                     q & \text{ if } \alpha(p) = \inl(q) \\
+                     \mathsf{elim}(f(p)) & \text{ if } \alpha(p) = \inr(f).
+                    \end{cases}
+\]
+
+TODO : explain elimination $\mathsf{elim}$ on False 
+
+\noindent
+ By case analysis we see that for any $p, p' : x = y$ we have 
+ \begin{equation}\eta_y(p) = \eta_y(p') . \label{eq:eqdec_eta}\end{equation}
+
+ \noindent
+ Next, we prove that for any $y : Y$, the map $\eta_y$ has a left inverse $\theta_y$. 
+   Once we have this left inverse $\theta_y$, we obtain the desired result as follows: given 
+     $p, p' : x = y$, we have
+   \[ p = \theta_y (\eta_y(p)) \stackrel{\ref{eq:eqdec_eta}}{=} \theta_y (\eta_y(p')) = p' . \]
+ Define $\theta_y$ by 
+     $\theta_y(q) \defeq \opp{\eta_y(\refl{}(x))} \ct q$.
+  Finally, we prove $\theta_y(\eta_y(p)) = p$ by path induction on $p$:
+   \[\theta_y(\eta_y(\refl{}(x))) = \opp{\eta_y(\refl{}(x))} \ct \eta_y(\refl{}(x)) = \refl{}(x). \]
+
 \end{proof}
 
 \begin{thm}\label{prop:nat-is-set}
@@ -419,6 +445,6 @@ We start with a lemma that can be seen as a version of Univalence for propositio
 
 \begin{proof}[Proof of \autoref{thm:hleveln_of_hlevelSn}]
  Let $(X, p), (X', p') : \HLevel(n)$. We need to show that the type $\idtype{(X, p)}{(X', p')}$ is of h-level $n$. Since for any natural number $n$ and any type $X$ the type: $\isofhlevel(n)(X)$ is an h-prop, we may apply \autoref{lem:sig-id-h-prop} with $P := \isofhlevel(n)$. Next we observe that it suffices to show that $X \rightarrow X'$ is of h-level $n$ because the projection:
- \[(\eqv{X}{X'} \hookrightarrow (X \rightarrow X').\]
+ \[(\eqv{X}{X'}) \hookrightarrow (X \rightarrow X').\]
  is an inclusion (i.e. a map of h-level $1$). Since h-levels are preserved under $\prod$ and hence under the arrow type, this reduces to an assumption that $X'$ is of h-level $n$.
 \end{proof}

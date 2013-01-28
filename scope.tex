@@ -1,0 +1,56 @@
+\documentclass[openany]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{amssymb,amsmath,amsthm,stmaryrd,mathrsfs}
+\usepackage{enumitem,mathtools,xspace,xcolor}
+\definecolor{darkgreen}{rgb}{0,0.45,0}
+\usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen]{hyperref}
+\usepackage[all,2cell]{xy}
+\UseAllTwocells
+\usepackage{natbib}
+\usepackage{braket}
+\input{macros}
+
+\newcommand{\stype}{{\;\sf type}}
+%\newcommand{\nat}{\mathbb{N}}
+\newcommand{\nat}{{\bf N}}
+\newcommand{\rec}{{\sf rec}}
+%\newcommand{\bool}{\bbB}
+\newcommand{\bool}{{\bf B}}
+\newcommand{\app}{{\sf app}}
+\newcommand{\pair}{{\sf pair}}
+\newcommand{\suc}{{\sf succ}}
+\newcommand{\inleft}{{\sf inleft}}
+\newcommand{\inright}{{\sf inright}}
+%\newcommand{\bbzero}{{0\hspace*{-4pt} 0}}
+\newcommand{\emptyt}{{\bf 0}}
+%\newcommand{\bbone}{{1\hspace*{-4pt} 1}}
+\newcommand{\unitt}{{\bf 1}}
+\begin{document}
+\section*{Some Remarks on Mathematical Discourse}
+
+Mathematical discourse uses symbols and identifiers (atoms for short) in expressions and assertions.  Some of these atoms are global; i.e. have a fixed role throughout the discourse.  Others are introduced with their particular role for a limited part of the discourse; i.e. they have a scope within which they are used in that role.  The same atom may then get reused, possibly playing a different role, in another part of the discourse.  
+
+So we have the concept of scope in mathematical discourse.  When a scope is opened some atoms may be introduced and then later discharged when the scope is closed.  The opening and closing of scopes is often left fairly implicit by mathematicians.  Scopes can be nested or disjoint, but should not overlap.  So we can have (1 ... (2 ... 2) ...1) and (1 ... 1) ... (2 ... 2) but not 
+(1 ... (2 ... 1) ... 2).  
+
+A key example of atoms with scope are bound variables within expressions.  For example the logical formula
+  \[ (\forall x) (A(x)\ra (\exists y) B(x,y))\]
+has the two variables $x$ and $y$ with the scope of $y$ nested inside the scope of $x$.  But we may also use free variables local to definitions and assertions.  For example we may wish to define
+  \[ double(x)\defeq2x\mbox{ for } x:\nat.\]
+where the scope of the variable $x$ is local to the definition.  Another example is the assertion
+  \[ x+y = y+x \mbox{ for } x,y:\nat.\]
+In general a scope may include many definitions and assertions.  We may then declare the atoms first at the start of the scope.  For example we may open a scope by declaring
+  \[ \mbox{ Let $A$ be a type and let $a:A$}.\]
+I prefer to use letters such as $`x,y,z'$ for free variables, which usually have a fairly local scope such as when they become bound in an expression, and `$A,B,a,b$' for parameters that are not to be bound and usually have a more extensive scope over many assertions.  Both variables and parameters can be substituted for.
+For example if we have derived the assertions
+  \[ (1)\hspace{.5in}\mbox{$B[x]$ is a type for $x:A$}\] 
+and $(2)\; a:A$ then we may derive the assertion  (3)\; $B[a]$ is a type,
+by substituting $a$ for $x$ in $B[x]$.  Now it may be that this inference step has been made within the scope of a declaration that $A$ is a parameter for a type and $a$ is a parameter for an object of that type.  We might then discharge these parameters by substituting,a type, perhaps $\nat\ra\nat$, for $A$ and a function $double$ for $a$.  I prefer to talk about instantiating a parameter
+
+In general a definition or assertion may be inside the scopes of many declared atoms, parameters or variables.  A list of these declaration form the context of the definition or assertion.  In formal type theory an assertion, $\cal A$, together with its context, $\Gamma$, form what is usually called a judgment that may be written $\Gamma\gives \cal A$ or something similar, the two parts of the judgment playing a similar role to the two parts of a sequent in Gentzen's sequent calculus formulation of logic.  So the rules of inference of the type theory are rules for deriving such judgments.
+
+At each step of an informal mathematical discourse it is more natural to only make explicit those parts of a context that are actually playing an immediate role at that step, as in Gentzen's natural deduction formulation of logic.
+
+
+
+\end{document}

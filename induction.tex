@@ -1,9 +1,11 @@
 \newcommand{\zero}{\ensuremath{\mathbf{0}}\xspace}
 \newcommand{\one}{\ensuremath{\mathbf{1}}\xspace}
 \newcommand{\two}{\ensuremath{\mathbf{2}}\xspace}
+\newcommand{\twoh}{\ensuremath{\mathbf{2^h}}\xspace}
 \newcommand{\three}{\ensuremath{\mathbf{3}}\xspace}
 \newcommand{\nat}{\ensuremath{\mathbf{N}}\xspace}
 \newcommand{\natw}{\ensuremath{\mathbf{N^w}}\xspace}
+\newcommand{\nath}{\ensuremath{\mathbf{N^h}}\xspace}
 \newcommand{\lst}{\ensuremath{\mathbf{List}}\xspace}
 \newcommand{\true}{\ensuremath{\mathbf{true}}\xspace}
 \newcommand{\false}{\ensuremath{\mathbf{false}}\xspace}
@@ -12,10 +14,10 @@
 \newcommand{\z}{\ensuremath{0}\xspace}
 \newcommand{\zw}{\ensuremath{0^\mathbf{w}}\xspace}
 \newcommand{\wtype}[1]{\ensuremath{W}(#1),\xspace}
+\newcommand{\wtypeh}[1]{\ensuremath{W^h}(#1),\xspace}
 \newcommand{\ind}{\ensuremath{\mathbf{Ind \;}}\xspace}
-%\newcommand{\inl}{\ensuremath{\mathbf{inl}}\xspace}
-%\newcommand{\inr}{\ensuremath{\mathbf{inr}}\xspace}
 \newcommand{\s}{\ensuremath{\mathbf{s}}\xspace}
+\newcommand{\sw}{\ensuremath{\mathbf{s^w}}\xspace}
 \newcommand{\alt}{\;|\;\;}
 \newcommand{\disj}[2]{#1 + #2}
 \newcommand{\der}{\vdash}
@@ -403,8 +405,48 @@ By the above computation rule, the function $\dbl$ behaves as expected:
 \end{align*}
 and so on.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Homotopy-inductive types}
+In the previous section we showed how to encode natural numbers as W-types, with 
+\begin{align*}
+\natw & \defeq \wtype{b:\two} \rec_\two(\bbU;\zero;\one) \\
+\zw & \defeq \supp(\true, (\lambda (x : \zero), \; \rec_\zero(\natw;x))) \\
+\sw & \defeq \lambda (n : \natw), \; \supp(\false, (\lambda (x : \one), \; n))
+\end{align*}
+We also showed how one can define a $\dbl$ function on $\natw$ using simple elimination. When it comes to dependent elimination, however, this encoding is no longer satisfactory: given $E : \natw \to \type$ and recurrences $e_z : E(\zw)$ and $e_s : \prd{n : \natw}{y : E(n)} E(\sw(n))$, we can only construct a dependent function $r(E,e_z,e_s) : \prd{n : \natw} E(n)$ satisfying the given recurrences \emph{propositionally}. This means that the computation rules for natural numbers, which assert definitional equalities, cannot be derived from the rules for W-types.
+
+This problem goes away if instead of the conventional inductive types we consider \emph{homotopy-inductive types}, where all computation rules are stated up to a path, i.e., the symbol $\equiv$ is replaced by $=$. For instance, the computation rule for the homotopy version of W-types $\mathbf{W^h}$ becomes:
+\begin{itemize}
+\item For any $x : A$ and $f : B(x) \to \wtypeh{a:A} B(a)$ we have 
+\begin{align*}
+& \rec_{\wtypeh{a:A} B(a)}(E;\supp(x,f)) = \\ & e(x,f,\big(\lambda (b : B(x)), \; \rec_{\wtypeh{a:A} B(a)}(E;f(b))\big))
+\end{align*}
+\end{itemize}
+
+It is interesting to note that all the properties established so far for inductive types - e.g., the uniqueness principle, homotopy-initiality - hold for homotopy-inductive types as well. For instance, the type $\twoh$ with propositional computation rules for $\true$ and $\false$ gives rise to a homotopy-initial $\two$-algebra $(\nath, \true, \false)$. Furthermore, it can be shown that now we also have the converse: any homotopy-initial $2$-algebra $(\nat',t',f')$ necessarily satisfies the elimination and propositional computation rules for Booleans. We thus have the following stronger theorem:
+
+\begin{thm}
+The types satisfying the formation, introduction, elimination, and propositional computation rules are precisely the homotopy-initial $\two$-algebras.
+\end{thm}
+
+Finally, as desired, it can be shown that homotopy-natural numbers can be encoded as homotopy-W-types:
+
+\begin{thm}
+The rules for natural numbers with propositional computation rules can be derived from the rules for W-types with propositional computation rules.
+\end{thm}
 
 
-
-
+%\section{Exercises}
+%
+%
+%let the statement $E : \natw \to \type$ and the recurrences $e_z : E(\zw)$ and $e_s : \prd{n : \natw}{y : E(n)} E(\sw(n))$ be given. We want to construct a function $r(E,e_z,e_s) : \prd{n : \natw} E(n)$, which satisfies the given recurrences. 
+%
+%We can proceed in the same fashion as when defining the $\dbl$ function, with our desired definition having the form
+%\[ r(E,e_z,e_s) \defeq \rec_\natw(E, \big(\lambda(a : \two), \; \rec_\two(\ldots,e_t,e_f,a)\big)) \]
+%for suitable proofs
+%\begin{align*}
+%e_t & : \prd{f : \zero \to \natw}{g : \prd{x : \zero} E(f(x))} E(\supp(\true, f)) \\
+%e_f & : \prd{f : \one \to \natw}{g : \prd{x : \one} E(f(x))} E(\supp(\false, f))
+%\end{align*}
 

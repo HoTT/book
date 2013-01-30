@@ -42,6 +42,11 @@ Informally, the induction principle for identity types says that if we want to c
 When writing informally, we may express this with a phrase such as ``by induction, it suffices to assume\dots''.
 This reduction to the ``reflexivity case'' is analogous to the reduction to the ``base case'' and ``inductive step'' in an ordinary proof by induction on the natural numbers.
 
+The ``conversion rule''~\eqref{eq:Jconv} is less familiar in the context of proof by induction on natural numbers, but there is an analogous notion in the related concept of definition by recursion.
+If a sequence $(a_n)_{n\in \mathbb{N}}$ is defined by giving $a_0$ and specifying $a_{n+1}$ in terms of $a_n$, then in fact the $0^{\mathrm{th}}$ term of the resulting sequence \emph{is} the given one, and the given recurrence relation relating $a_{n+1}$ to $a_n$ holds for the resulting sequence.
+(This may seem so obvious as to not be worth saying, but if we view a definition by recursion as an algorithm for calculating values of a sequence, then it is precisely the process of executing that algorithm.)
+The rule~\eqref{eq:Jconv} is analogous: it says that if we define an object $f(p)$ for all $p:x=y$ by specifying what the value should be when $p$ is $\refl{x}:x=x$, then the value we specified is in fact the value of $f(\refl{x})$.
+
 We now derive from this induction principle all the structure of a higher groupoid.
 We begin with symmetry of equality, which, in topological language, means that ``paths can be reversed''.
 
@@ -54,12 +59,13 @@ We begin with symmetry of equality, which, in topological language, means that `
 \end{lem}
 \begin{proof}[First proof]
   Let $D:\prd{x,y:A}{p:x= y} \type$ be the dependent type defined by $D(x,y,p)\defeq (y= x)$.
+  In other words, $D$ is a function assigning to any $x,y:A$ and $p:x=y$ a type, namely the type $y=x$.
   Then we have
   \begin{equation*}
     d\defeq \lambda x.\refl{x}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
-  Thus, $J$ gives us a term $J_{D,d}(x,y,p): (y= x)$ for each $p:(x= y)$.
-  Thus, we can define the desired function by $\lambda p. J_{D,d}(x,y,p)$.
+  Thus, the eliminator $J$ for identity types gives us a term $J_{D,d}(x,y,p): (y= x)$ for each $p:(x= y)$.
+  We can now define the desired function $\opp{(-)}$ to be $\lambda p. J_{D,d}(x,y,p)$, i.e.\ we set $\opp{p} \defeq J_{D,d}(x,y,p)$.
   The conversion rule~\eqref{eq:Jconv} gives $\opp{\refl{x}}\jdeq \refl{x}$.
 \end{proof}
 
@@ -69,8 +75,9 @@ However, eventually we prefer to use more natural language, such as in the follo
 \begin{proof}[Second proof]
   We want to construct, for each $x,y:A$ and $p:x=y$, an element $\opp{p}:y=x$.
   By induction, it suffices to do this in the case when $y$ is $x$ and $p$ is $\refl{x}$.
-  But in this case, $y=x$ and $x=y$ are both $x=x$, so we can take $\opp{\refl{x}}$ to be $\refl{x}$ again.
-  The conversion rule follows by definition.
+  But in this case, the type $x=y$ of $p$ and the type $y=x$ in which we are trying to construct $\opp{p}$ are both simply $x=x$.
+  Thus, in the ``reflexivity case'', we can define $\opp{\refl{x}}$ to be simply $\refl{x}$.
+  The general case then follows by the induction principle, and the conversion rule $\opp{\refl{x}}\jdeq\refl{x}$ is precisely the proof in the reflexivity case that we gave.
 \end{proof}
 
 We will write out the next few proofs in both styles, to help the reader become accustomed to the latter one.
@@ -79,9 +86,9 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{lem}\label{lem:concat}
   For every type $A$ and every $x,y,z:A$ there is a function
   \begin{equation*}
-    {(-)}\ct{(-)}:(x= y) \to (y= z)\to (x=  z)
+    (x= y) \to (y= z)\to (x=  z)
   \end{equation*}
-  which satisfies $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
+  written $(p,q)\mapsto p\ct q$, such that $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
 \end{lem}
 
 \begin{proof}[First proof]
@@ -92,7 +99,7 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   Note that $D(x,x,\refl x) \jdeq \prd{z:A}{q:x=z} (x=z)$.
   Thus, in order to apply the induction principle for identity types to this $D$, we need a function of type
   \begin{equation}\label{eq:concatD}
-    \prd{x:A} D(x,y,\refl{x})
+    \prd{x:A} D(x,x,\refl{x})
     \jdeq \prd{x,z:A}{q:x=z} (x=z).
   \end{equation}
   Now let $E:\prd{x,z:A}{q:x=z}\type$ be the dependent type $E(x,z,q)\defeq (x=z)$.
@@ -116,7 +123,7 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{proof}[Second proof]
   We want to construct, for every $x,y,z:A$ and every $p:x=y$ and $q:y=z$, an element of $x=z$.
   By induction on $p$, it suffices to assume that $y$ is $x$ and $p$ is $\refl{x}$.
-  In this case, $y=z$ is $x=z$.
+  In this case, the type $y=z$ of $q$ is $x=z$.
   Now by induction on $q$, it suffices to assume also that $z$ is $x$ and $q$ is $\refl{x}$.
   But in this case, $x=z$ is $x=x$, and we have $\refl{x}:(x=x)$.
 \end{proof}
@@ -136,8 +143,8 @@ If we proved the lemma using a single induction over $p$, then we would end up w
 If we proved it with a single induction over $q$, we would have instead $p\ct\refl{x}\jdeq p$, while proving it with a double induction (as we did) gives only $\refl{x}\ct\refl{x} \jdeq \refl{x}$.
 
 The asymmetrical computation rules can sometimes be convenient when doing formalized mathematics, as they allow the computer to reduce some things automatically.
-However, in informal mathematics, and arguably even in the formalized case, it is confusing to have a concatenation operation which behaves asymmetrically and to have to remember which side is the ``special'' one.
-Treating both sides equally makes for more robust proofs; this is why we have given the proof that we did.
+However, in informal mathematics, and arguably even in the formalized case, it can be confusing to have a concatenation operation which behaves asymmetrically and to have to remember which side is the ``special'' one.
+Treating both sides symmetrically makes for more robust proofs; this is why we have given the proof that we did.
 (However, this is admittedly a stylistic choice.)
 
 The table below summarizes the ``equality'' and ``homotopical'' points of view on what we have done so far.
@@ -151,9 +158,9 @@ The table below summarizes the ``equality'' and ``homotopical'' points of view o
 \end{center}
 
 However, proof-relevance also means that we can't stop after proving ``symmetry'' and  ``transitivity'' of equality: we need to know that these \emph{operations} on equalities are well-behaved.
-(This issue is invisible to set-level mathematics, where symmetry and transitivity are mere propositions.)
-For instance, we need to know that concatenation of equalities is \emph{associative}, and that inversion provides \emph{inverses} with respect to concatenation.
-This is clear from the topological point of view, where these are regarded as \emph{operations} on paths.
+(This issue is invisible to set-level mathematics, where symmetry and transitivity are mere \emph{properties} of equality, rather than structure on paths.)
+For instance, we need to know that concatenation is \emph{associative}, and that inversion provides \emph{inverses} with respect to concatenation.
+This is to be expected from the topological point of view, where these are regarded as \emph{operations} on paths.
 
 \begin{lem}\label{thm:omg}%[The $\omega$-groupoid structure of types]
   Suppose $A:\type$, that $x,y,z,w:A$ and that $p:x= y$ and $q:y = z$ and $r:z=w$.
@@ -161,7 +168,7 @@ This is clear from the topological point of view, where these are regarded as \e
   \begin{enumerate}
   \item $p= p\ct \refl{y}$ and $p = \refl{x} \ct p$.\label{item:omg1}
   \item $\opp{p}\ct p=  \refl{y}$ and $p\ct \opp{p}= \refl{x}$.
-  \item $\opp{\opp{p}}= p$.
+  \item $\opp{(\opp{p})}= p$.
   \item $p\ct (q\ct r)=  (p\ct q)\ct r$.\label{item:omg4}
   \end{enumerate}
 \end{lem}
@@ -169,7 +176,10 @@ This is clear from the topological point of view, where these are regarded as \e
 Note, in particular, that~\ref{item:omg1}--\ref{item:omg4} are themselves propositional equalities, living in the identity types of the identity types $x=y$.
 Topologically, they are \emph{paths of paths}, and we are familiar topologically with the idea that concatenating a path with the reversed path only gives a constant path \emph{up to homotopy}, i.e.\ up to a higher path.
 The paths~\ref{item:omg1}--\ref{item:omg4} also satisfy their own higher coherence laws, which are themselves higher paths, and so on all the way up.
+
 However, for most purposes it is unnecessary to make the whole infinite-dimensional structure explicit.
+One of the nice things about homotopy type theory is that all of this structure can be \emph{proven} starting from only the inductive property of identity types, so we can make explicit as much or as little of it as we need.
+In particular, often we don't need the complicated combinatorics involved in making precise notions such as ``coherent structure at all higher levels''.
 
 \begin{proof}[Proof of~\autoref{thm:omg}]
   All the proofs use the induction principle for equalities.
@@ -188,7 +198,7 @@ However, for most purposes it is unnecessary to make the whole infinite-dimensio
     The other equality is proven similarly.
 
     \noindent
-    \emph{(Second proof)} By induction, it suffices to assume that $y$ is $x$ and that $p$ is $\refl x$.
+    \emph{(Second proof)} By induction on $p$, it suffices to assume that $y$ is $x$ and that $p$ is $\refl x$.
     But in this case, we have $\refl{x}\ct\refl{x}\jdeq\refl{x}$.
   \item \emph{(First proof)} Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by 
     \begin{equation*}
@@ -351,6 +361,25 @@ Now we can prove the dependent version of \autoref{lem:map}.
 
 From now on, we will stick to the second, more concise, style of proof by induction on identity types.
 
+\subsection{Summary of the basic higher structure}
+\label{sec:basics-summary}
+
+Here we summarize the basic definitions made in this section.
+
+\begin{itemize}
+\item $\opp{p} : y=x$, for $p:x=y$, defined by
+  \[\opp{\;\refl{x}}\jdeq \refl{x}.\]
+\item $p\ct q :y=z$, for $p:x=y$ and $q:y=z$, defined by
+  \[ \refl{x}\ct\refl{x}\jdeq\refl{x}.\]
+\item If $P$ is a dependent type over $A$ then $\transf{p}:P(x)\ra P(y)$, for $p:x=y$, defined by
+  \[\transf{(\refl{x})}\jdeq \idfunc[P(x)].\]
+\item If $f:A\ra B$ then $\map{f}{p}:f(x)=f(y)$, for $p:x=y$, defined by
+  \[\map{f}{\refl{x}}\jdeq \refl{f(x)}.\]
+\item If $f:\prod_{x:A}P(x)$ then $\mapdep{f}{p}:\trans{p}{f(x)}=f(y)$, for $p:x=y$, defined by
+  \[\mapdep{f}{\refl{x}}\jdeq \refl{f(x)}.\]
+\end{itemize}
+
+
 
 \section*{Exercises}
 \label{basics:exercises}
@@ -367,23 +396,6 @@ From now on, we will stick to the second, more concise, style of proof by induct
   Give a fourth, different, proof of \autoref{lem:concat}, and prove that it is equal to the others.
 \end{ex}
 
-\section{Summary of  some Basic HoTT Definitions}
-\label{sec:basics-summary}
-
-Here we summarize the basic definitions made in this chapter.
-
-\begin{itemize}
-\item $\opp{p} : y=x$, for $p:x=y$, defined by
-  \[\opp{\;\refl{x}}\jdeq \refl{x}.\]
-\item $p\ct q :y=z$, for $p:x=y$ and $q:y=z$, defined by
-  \[ \refl{x}\ct\refl{x}\jdeq\refl{x}.\]
-\item If $P$ is a dependent type over $A$ then $\transf{p}:P(x)\ra P(y)$, for $p:x=y$, defined by
-  \[\transf{(\refl{x})}\jdeq \idfunc[P(x)].\]
-\item If $f:A\ra B$ then $\map{f}{p}:f(x)=f(y)$, for $p:x=y$, defined by
-  \[\map{f}{\refl{x}}\jdeq \refl{f(x)}.\]
-\item If $f:\prod_{x:A}P(x)$ then $\mapdep{f}{p}:\trans{p}{f(x)}=f(y)$, for $p:x=y$, defined by
-  \[\mapdep{f}{\refl{x}}\jdeq \refl{f(x)}.\]
-\end{itemize}
 
 % Local Variables:
 % TeX-master: "main"

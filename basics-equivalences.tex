@@ -5,15 +5,15 @@
 Let $f,g:\prd{x:A}{P(x)}$ be two sections of a dependent type $P:A\to\type$. A
 homotopy from $f$ to $g$ is a term of type
 \begin{equation*}
-f\htpy g\defeq \prd{x:A}{f(x)=g(x)}
+f\htpy g\defeq \prd{x:A}f(x)=g(x)
 \end{equation*}
 \end{defn}
 
 Homotopies are always natural with respect to paths:
 
-\begin{lem}
+\begin{lem}\label{lem:htpy_natural}
 Suppose $H:f\htpy g$ is a homotopy between functions $f,g:A\to B$
- and let $p:x=y$. Then
+ and let $p:x=y$. Then there is a term of type
  \begin{equation*}
  H(y)\ct\ap{f}{p}=\ap{g}{p}\ct H(x).
  \end{equation*}
@@ -21,8 +21,8 @@ Suppose $H:f\htpy g$ is a homotopy between functions $f,g:A\to B$
 
 \begin{defn}
 Consider a function $f:A\to B$. A quasi-inverse of $f$ is a triple 
-$(g,\eta,\epsilon)$ consisting of a function $g:B\to A$ and homotopies
-$\eta:\idfunc[A]\htpy g\circ f$ and $\epsilon:f\circ g\htpy \idfunc[B]$.
+$(g,\eta,\varepsilon)$ consisting of a function $g:B\to A$ and homotopies
+$\eta:\idfunc[A]\htpy g\circ f$ and $\varepsilon:f\circ g\htpy \idfunc[B]$.
 \end{defn}
 
 \begin{rm}
@@ -34,10 +34,10 @@ In other words, $f:A\to B$ has a quasi-inverse if there is a term of type
 
 \begin{defn}
 A function $f:A\to B$ is said to be a (coherent) equivalence if there is a
-quadruple $(g,\eta,\epsilon,c)$ consisting of $g:B\to A$, $\eta:\idfunc[A]\htpy
-g\circ f$, $\epsilon f\circ g\htpy\idfunc[B]$ and
+quadruple $(g,\eta,\varepsilon,c)$ consisting of $g:B\to A$, $\eta:
+g\circ f\htpy\idfunc[A]$, $\varepsilon: f\circ g\htpy\idfunc[B]$ and
 \begin{equation*}
-c(a):\epsilon(f(a))\ct f(\eta(a))=\refl{f(a)}
+c(a):f(\eta(a))=\varepsilon(f(a))
 \end{equation*}
 for every $a:A$. 
 \end{defn}
@@ -45,9 +45,9 @@ for every $a:A$.
 \begin{rm}
 In other words, $f:A\to B$ is an equivalence if there is a term of type
 \begin{equation*}
-\sm{g:B\to A}{\eta:\idfunc[A]\htpy g\circ f}
-{\epsilon:f\circ g\htpy \idfunc[B]}\prd{a:A}(\epsilon(f(a))\ct \ap{f}{\eta(a)}=
-\refl{f(a)})
+\sm{g:B\to A}{\eta:g\circ f\htpy\idfunc[A]}
+{\varepsilon:f\circ g\htpy \idfunc[B]}(\apfunc{f}\circ\eta\htpy\varepsilon
+\circ f)
 \end{equation*}
 \end{rm}
 
@@ -56,16 +56,29 @@ A function $f:A\to B$ is an equivalence whenever it has a quasi-inverse.
 \end{thm}
 
 \begin{proof}
-Suppose that $(g,\eta,\epsilon)$ is a quasi-inverse for $f$. We have to provide
-a quadruple $(g',\eta',\epsilon',c)$ witnessing that $f$ is an equivalence. To
+Suppose that $(g,\eta,\varepsilon)$ is a quasi-inverse for $f$. We have to provide
+a quadruple $(g',\eta',\varepsilon',c)$ witnessing that $f$ is an equivalence. To
 define $g'$ and $\eta'$, we can just make the obvious choice by setting $g'
-\defeq g$ and $\eta'\defeq \eta$. However, in the definition of $\epsilon'$ we
-need to worry about the construction of $c$, so we cannot just follow our nose
-and take $\epsilon'$ to be $\epsilon$. Instead, we take
+\defeq g$ and $\eta'\defeq \eta$. However, in the definition of $\varepsilon'$ we
+need start worrying about the construction of $c$, so we cannot just follow our nose
+and take $\varepsilon'$ to be $\varepsilon$. Instead, we take
 \begin{equation*}
-\epsilon'(b) \defeq (\epsilon(b)\ct f(\eta(g(a))^{-1}))\ct \epsilon(f(g(b)))
+\varepsilon'(b) \defeq (\varepsilon(b)\ct \ap{f}{\eta(g(b))})\ct \varepsilon(f(g(b)))^{-1}
 \end{equation*}
-To find $c$, 
+Now we need to find
+\begin{equation*}
+c(a):(\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))})\ct \varepsilon(f(g(f(a))))^{-1}=\ap{f}{\eta(a)}
+\end{equation*}
+Note first that by lemma \ref{lem:htpy_natural}, we have 
+$\eta(g(f(a)))\ct\eta(a)=\ap{g}{\ap{f}{\eta(a)}}\ct\eta(a)$ and hence it follows
+that $\eta(g(f(a)))=\ap{g}{\ap{f}{\eta(a)}}$. Therefore, we can apply lemma
+\ref{lem:htpy_natural} once more to compute
+\begin{align*}
+\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))}
+& = \varepsilon(f(a))\ct \ap{f}{\ap{g}{\ap{f}{\eta(a)}}}\\
+& = \ap{f}{\eta(a)}\ct\varepsilon(f(g(f(a))))
+\end{align*}
+from which we get the desired path $c(a)$.
 \end{proof}
 
 

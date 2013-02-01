@@ -109,11 +109,38 @@ Similarly,
 (equations for map?)
 
 \subsection{$\Sigma$-types}
+To find out what it means to be a path in a $\Sigma$-type suppose that we have a path $p:w=w'$ in $\sm{x:A}P(x)$. Then we get $\ap{\proj{1}}{p}:\proj{1}(w)=\proj{1}(w')$. We cannot directly ask whether $\proj{2}(w)$ is identical to $\proj{2}(w')$ since they don't have to be in the same type. However, we can transport $\proj{2}(w)$ along the path $\ap{\proj{1}}(p)$, which does give us a term of the same type as $\proj{2}(w')$. By path induction, we see that we also obtain a path $\trans{\ap{\proj{1}}{p}}{\proj{2}(w)}=\proj{2}(w')$. The next theorem states that we can reverse this process.
 
-With a little more work, this generalizes to $\Sigma$-types. 
+\begin{thm}
+Suppose that $P:A\to\type$ is a dependent type over a type $A$ and let $w,w^\prime:\sm{x:A}P(x)$. Then there is an equivalence
+\begin{equation*}
+\eqv{w=w'}{\sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime)}.
+\end{equation*}
+\end{thm}
 
-Material from Egbert?
-
+\begin{proof}
+We define for any $w,w':\sm{x:A}P(x)$ a function $f(w,w')$ of type
+\begin{equation*}
+(w=w')\to\sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime)
+\end{equation*}
+by path induction, with 
+\begin{equation*}
+f(w,w,\refl{w})\defeq(\refl{\proj{1}(w)},\refl{\proj{2}(w)}).
+\end{equation*}
+We want to show that $f$ is an isomorphism, so we can find a section $g(w,w')$ of $f(w,w')$ by finding a function $G(w,w')$ of type
+\begin{equation*}
+\prd{p:\proj 1(w)=\proj 1(w')}{q:\trans p{\proj 2(w)}=\proj 2(w')}\mathsf{hFiber}(f(w,w'),(p,q))
+\end{equation*}
+for each $w,w':\sm{x:A}P(x)$. To do this we will first use the induction principle of dependent sums, i.e.\ it is enough to find a function $G((x,u),(y,v))$ of type
+\begin{equation*}
+\prd{p:x=y}{q:\trans{p}{u}=v}\hfiber{f((x,u),(y,v))}{(p,q)}
+\end{equation*}
+This is obvious by induction on $p$ followed by induction on $q$ and we get
+\begin{equation*}
+G((x,u),(x,u),(\refl{x},\refl{u}))\defeq(\refl{(x,u)},\refl{(\refl{x},\refl{u})}).
+\end{equation*}
+This gives the function $g(w,w')\defeq\proj{1}\circ G(w,w')$ which is a section of $f(w,w')$ by construction. To show that there is a path $g(w,w',f(w,w',\alpha))=\alpha$ for any $\alpha:w=w'$ we use path induction on $\alpha$ and destruction on $w$. The result follows immediately.
+\end{proof}
 \subsection{$\Pi$-types}
 
 Given $A$ and $B : A \to \type$, consider the dependent function type $\prd{x:A}B(x)$.

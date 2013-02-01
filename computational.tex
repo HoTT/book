@@ -1,95 +1,37 @@
+\newcommand\ua[1]{\ensuremath{\mathsf{ua}} \: #1}
+
 \section{The identity structure of specific types}
+\label{sec:computational}
 
 In Chapter~\ref{cha:introduction} we introduced many ways to form new types: cartesian products, disjoint unions, dependent products, dependent sums, etc.
 In the previous sections of this chapter, we have seen that \emph{all} types in homotopy type theory behave like spaces or higher groupoids.
 Our goal in this section is to make explicit how this higher structure behaves, for particular types defined as in Chapter~\ref{cha:introduction}.
 
 It turns out that for many types $A$, the equality types $\id[A]xy$ can be characterized, up to equivalence, in terms of whatever data was used to construct $A$.
-For instance, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and $y\jdeq(b',c')$, then the equality type $(b,c)=(b',c')$ is equivalent to the cartesian product $(b=b')\times (c=c')$.
+For instance, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and $y\jdeq(b',c')$, then we have an equivalence
+\begin{equation}\label{eq:prodeqv}
+  \eqv{\Big((b,c)=(b',c')\Big)}{\Big((b=b')\times (c=c')\Big)}.
+\end{equation}
 In more traditional language, two ordered pairs are equal just when their components are equal.
+The higher structure of the identity types can also be expressed in terms of these equivalences; for instance, concatenating two equalities between pairs corresponds to pairwise concatenation.
 
 Similarly, when a dependent type $P:A\to\type$ is built up fiberwise using the type forming rules from Chapter~\ref{cha:introduction}, the operation $\transfib{P}{p}{-}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
 For instance, if $P(x) \jdeq B(x)\times C(x)$, then we have
 \[\transfib{P}{p}{(b,c)} = \left(\transfib{B}{p}{b},\transfib{C}{p}{c}\right).\]
 
 Finally, the type forming rules are also functorial, and if a function $f$ is built from this functoriality, then the operations $\apfunc f$ and $\apdfunc f$ can be computed based on the corresponding ones on the data going into $f$.
+For instance, if $g:B\to B'$ and $h:C\to C'$ and we define $f:B\times C \to B'\times C'$ by $f(b,c)\defeq (g(b),h(c))$, then modulo the equivalence~\eqref{eq:prodeqv}, we can identify $\apfunc f$ with ``$(\apfunc g,\apfunc h)$''.
 
-\dots
+In this section, we will state and prove theorems of this sort for all the basic type forming rules.
 
-One of the central strengths of type theory is that it is simultaneously
-a formalism for doing math and a programming language.  While we don't
-understand the programming interpretation of HoTT in full generality
-yet, it's important to realize how it's different than the standard
-operational interpretation of type theory.
+\begin{rmk}
+  In the type theory we are working with, identity types are defined simultaneously for all types by the inductive $J$-rule.
+  The characterizations for particular types to be discussed in this chapter are then theorems which we have to discover and prove.
+  An alternative presentation of type theory might take these characterizations as \emph{definitions} of the identity types (by induction over the construction of types), with the inductive $J$-rule then being provable.
+  While such a type theory has not yet been made precise except in very simple cases, it is still helpful to think of the rules to be presented in this section as ``computation'' rules for ``evaluating'' identity types, transport, and function application.
+\end{rmk}
 
-\newcommand\ua[1]{\ensuremath{\mathsf{ua}} \: #1}
-
-For example, consider the term 
-\[
-\transport{X \mapsto X}{(\ua{f})} : A \to B
-\]
-where $f : \eqv{A}{B}$ and 
-$\mathsf{ua} : (\eqv A B) \to \id A B$ follows from the univalence axiom.  
-Consider closed types $A$ and $B$ and a closed equivalence that is
-not the identity; for example, take $A$ and $B$ to be $\mathsf{bool}$ and
-$f$ to be the negation function.  Then the above term is \emph{stuck}:
-there's no way to run it as a program.  The reason is that the only
-computation step for $\mathsf{transport}$ applies when $f$ is the
-identity: $\transport{X \mapsto A(X)}{\refl{}} \jdeq \idfunc$.  
-
-While we do not yet understand the operational semantics for all of
-HoTT, what we understand about low dimensions provides some useful tools
-for doing proofs:
-
-\begin{itemize}
-
-\item Types have the structure of groupoids: for each type $A$, the
-  type \id[A]{x}{y} should often be thought of as a \emph{defined notion}: it
-  will usually turn out to be equivalent to some other type in theory.  
-  
-  Moreover, the operations 
-  \[
-  \begin{array}{l}
-    \refl{x} : \id[A]{x}{x} \\
-    \opp{-} : \id[A]{x}{y} \to \id[A]{y}{x} \\
-    - \ct - : \id[A]{x}{y} \to \id[A]{y}{z} \to \id[A]{x}{z} \\ 
-  \end{array}
-  \]
-  should be thought of as defined operations, that reduce depending on
-  the type $A$ and the terms being equated.  
-
-\item Families are functors: given $p : \id[A]{x}{y}$ and a dependent type
-  $C : A \to \type$,
-  \[
-    \transport{C}{p} : C(x) \to C(y)
-  \]
-  should be thought of as a defined operation, which computes depending
-  on the structure of $C$.  
-
-  Similarly, given function $f : A \to B$
-  \[
-    \mapdep{f}{p} : \id[C y]{\transport{C}{p} \: (f x)}{f y}
-  \]
-  should be thought of as a defined operation, which computes for each
-  $f$.  
-
-\end{itemize}
-
-In full generality, types are $\infty$-groupoids, and similar ideas will
-apply to the higher-dimensional structure (e.g., the associator, the
-pentagon for the associator, etc.).  But these low-dimensional
-operations are already very useful for proofs: expanding these
-``definitions'' is often a good way to proceed.  At present, the
-relevant equations are not taken as definitional equalities (though this
-could change in future versions of HoTT), so we will need to provide
-proof terms for them.  
-
-Let's go through some type constructors and see what their groupoid
-structure looks like.
-
-\section{Type-Specific Rules}
-
-\subsection{Product Types}
+\subsection{Cartesian product types}
 
 Given types $A$ and $B$, consider the product type $A \times B$.  
 A path in $A \times B$ is a pair of componentwise paths:
@@ -324,9 +266,9 @@ Consider a higher inductive type such as $\sone$.  The definition of the
 higher inductive type does not immediately characterize
 \id[\sone]{x}{y}---which is good, because the calculation of higher
 homotopy groups can be a significant theorem, so we don't want it to be
-baked into the definitons.  However, we will often be able to prove a
+baked into the definitions.  However, we will often be able to prove a
 theorem characterizing the loop space, which follows the above form.
-For example, the proof in Chapter~\ref{sec:pi1s1} that the fundamental
+For example, the proof in Chapter~\ref{cha:homotopy} that the fundamental
 group of the circle is the integers plays this role:
 
 \begin{itemize}

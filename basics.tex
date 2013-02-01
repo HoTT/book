@@ -284,31 +284,37 @@ In traditional type theory, this is equivalently the statement that functions re
 Topologically, this corresponds to saying that every function is ``continuous'', i.e.\ preserves paths.
 
 \begin{lem}\label{lem:map}
-  Suppose that $f:A\to B$ is a function and that $p:(\id[A]xy)$. Then there is an equality
+  Suppose that $f:A\to B$ is a function and that $p:(\id[A]xy)$.
+  Then for any $x,y:A$ there is an operation
   \begin{equation*}
-    \map f p : f(x)= f(y)
+    \apfunc f : (x=y) \to (f(x)= f(y)).
   \end{equation*}
-  Moreover, for each $x:A$ we have $\map {f}{\refl{x}}\jdeq \refl{f(x)}$.
+  Moreover, for each $x:A$ we have $\apfunc{f}(\refl{x})\jdeq \refl{f(x)}$.
 \end{lem}
 
-Note that we are defining a new \emph{operation} on paths.
+The notation $\apfunc f$ can be read either as the \underline{ap}plication of $f$ to a path, or as the \underline{a}ction on \underline{p}aths of $f$.
 
 \begin{proof}[First proof]
-  Let $D:\prd{x,y:A}{p:x=y}\type$ be $D(x,y,p)\defeq (f(x)= f(y))$.
+  Let $D:\prd{x,y:A}{p:x=y}\type$ be the dependent type defined by
+  \[D(x,y,p)\defeq (f(x)= f(y)).\]
   Then we have
   \begin{equation*}
     d\defeq\lambda x.\refl{f(x)}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
-  Now $J$ gives us $\map f p\defeq f(x)= f(y)$ for each $p:x= y$.
-  The conversion rule implies $\map f{\refl{x}}\jdeq\refl{f(x)}$ for each $x:A$.
+  Applying $J$, we obtain $\apfunc f : \prd{x,y:A}{p:x=y}(f(x)=g(x))$.
+  The conversion rule implies $\apfunc f({\refl{x}})\jdeq\refl{f(x)}$ for each $x:A$.
 \end{proof}
 
 \begin{proof}[Second proof]
   By induction, it suffices to assume $p$ is $\refl{x}$.
-  In this case, we may define $\map f p \defeq \refl{f(x)}:f(x)\jdeq f(x)$.
+  In this case, we may define $\apfunc f(p) \defeq \refl{f(x)}:f(x)\jdeq f(x)$.
 \end{proof}
 
-Since \emph{dependently typed} functions are very important in type theory, we will also need a version of \autoref{lem:map} for these.
+We will often write $\apfunc f (p)$ as simply $\ap f p$.
+This is strictly speaking ambiguous, but generally no confusion arises.
+It matches the common convention in category theory of using the same symbol for the application of a functor to objects and to morphisms.
+
+Now, since \emph{dependently typed} functions are very important in type theory, we will also need a version of \autoref{lem:map} for these.
 However, this is not quite so simple to state, because if $f:\prd{x:A} B(x)$ and $p:x=y$, then $f(x):B(x)$ and $f(y):B(y)$ are elements of distinct types, so that \emph{a priori} we cannot even ask whether they are equal.
 The missing ingredient is that $p$ itself gives us a way to relate the types $B(x)$ and $B(y)$.
 
@@ -318,7 +324,8 @@ The missing ingredient is that $p$ itself gives us a way to relate the types $B(
 \end{lem}
 
 \begin{proof}[First proof]
-  Let $D:\prd{x,y:A}{p:\id{x}{y}} \type$ be $D(x,y,p)\defeq P(x)\to P(y)$.
+  Let $D:\prd{x,y:A}{p:\id{x}{y}} \type$ be the dependent type defined by
+  \[D(x,y,p)\defeq P(x)\to P(y).\]
   Then we have the function
   \begin{equation*}
     d\defeq\lambda x.\idfunc[P(x)]:\prd{x:A} D(x,x,\refl{x}),
@@ -342,35 +349,68 @@ In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are 
 Now we can prove the dependent version of \autoref{lem:map}.
 
 \begin{lem}[Dependent map]\label{lem:mapdep}
-  Suppose $f:\prd{x: A} P(x)$ and $p:\id[A]xy$.
-  Then we have $\mapdep f p:\id[P(y)]{\trans p{f(x)}}{f(y)}$.
+  Suppose $f:\prd{x: A} P(x)$; then we have
+  \[\apdfunc f :(x=y) \to \big(\id[P(y)]{\trans p{f(x)}}{f(y)}\big).\]
 \end{lem}
 
 \begin{proof}[First proof]
-  Let $D:\prd{x,y:A}{p:x=y} \type$ be the dependent type given by
+  Let $D:\prd{x,y:A}{p:\id{x}{y}} \type$ be the dependent type defined by
   \begin{equation*}
     D(x,y,p)\defeq \trans p {f(x)}= f(y).
   \end{equation*}
-  Then $D(x,x,\refl{x})$ is $\trans{\refl{x}}{f(x)}= f(x)$.
+  Then $D(x,x,\refl{x})$ is $\trans{(\refl{x})}{f(x)}= f(x)$.
   But since $\trans{(\refl{x})}{f(x)}\jdeq f(x)$, we get that $D(x,x,\refl{x})\jdeq (f(x)= f(x))$.
   Thus, we find the term
   \begin{equation*}
     d\defeq\lambda x.\refl{f(x)}:\prd{x:A} D(x,x,\refl{x})
   \end{equation*}
-  and now $J$ gives us $\mapdep fp:\trans p{f(x)}= f(y)$ for each $p:x= y$.
+  and now $J$ gives us $\apdfunc f(p):\trans p{f(x)}= f(y)$ for each $p:x= y$.
 \end{proof}
 
 \begin{proof}[Second proof]
   By induction, it suffices to assume $p$ is $\refl x$.
-  But in this case, we have $\trans{(\refl{x})}{f(x)}\jdeq f(x)$.
+  But in this case, we have $\trans{(\refl{x})}{f(x)}\jdeq f(x)$ judgmentally.
 \end{proof}
 
-From now on, we will stick to the second, more concise, style of proof by induction on identity types.
+Recall that a non-dependently typed function $f:A\to B$ is just the special case of a dependently typed function $f:\prd{x:A} P(x)$ when $P$ is a constant dependent type, $P(x) \defeq B$.
+In this case, $\apdfunc{f}$ and $\apfunc{f}$ are closely related, because of the following lemma:
 
-\subsection{Summary of the basic higher structure}
+\begin{lem}\label{thm:trans-trivial}
+  If $P:A\to\type$ is defined by $P(x) \defeq B$ for a fixed $B:\type$, then for any $x,y:A$ and $p:x=y$ and $b:B$ we have $\transfib P p b = b$.
+\end{lem}
+\begin{proof}[First proof]
+  Fix a $b:B$, and let $D:\prd{x,y:A}{p:\id{x}{y}} \type$ be the dependent type defined by
+  \[ D(x,y,p) \defeq (\transfib P p b = b). \]
+  Then $D(x,x,\refl x)$ is $(\transfib P{\refl{x}}{b} = b)$, which is judgmentally equal to $(b=b)$ by the computation rule for transporting.
+  Thus, we have the term
+  \[ d \defeq \lambda x.\refl{b} : \prd{x:A} D(x,x,\refl x). \]
+  Now $J$ gives us a term in $\prd{x,y:A}{p:x=y}(\transfib P p b = b)$, as desired.
+\end{proof}
+\begin{proof}[Second proof]
+  By induction, it suffices to assume $y$ is $x$ and $p$ is $\refl x$.
+  But $\transfib P {\refl x} b \jdeq b$, so in this case what we have to prove is $b=b$, and we have $\refl{b}$ for this.
+\end{proof}
+
+Thus, by concatenating with the path defined in \autoref{thm:trans-trivial}, for any $x,y:A$ and $p:x=y$ and $f:A\to B$ we have functions
+\begin{align}
+  \big(f(x) = f(y)\big) &\to \big(\trans{p}{f(x)} = f(y)\big)\label{eq:ap-to-apd}
+  \qquad\text{and} \\
+  \big(\trans{p}{f(x)} = f(y)\big) &\to \big(f(x) = f(y)\big).\label{eq:apd-to-ap}
+\end{align}
+In fact, these functions are inverse equivalences (in the sense to be introduced in \S\ref{sec:basics-equivalences}), and they relate $\apfunc f (p)$  to $\apdfunc f (p)$.
+But because their types are different, it is often clearer to use the different notations $\apdfunc{f}$ and $\apfunc{f}$.
+We may sometimes use a notation $\apd f p$ for $\apdfunc{f}(p)$, which is similar to the notation $\ap f p$ for $\apfunc{f}$.
+
+\medskip
+
+At this point, we hope the reader is starting to get a feel for proofs by induction on identity types.
+From now on we desist from giving both styles of proofs, allowing ourselves to use whatever is most clear and convenient (and often the second, more concise one).
+
+
+\section{Summary of the basic higher structure}
 \label{sec:basics-summary}
 
-Here we summarize the basic definitions made in this section.
+Here we summarize the basic definitions made in the previous two sections.
 
 \begin{itemize}
 \item $\opp{p} : y=x$, for $p:x=y$, defined by
@@ -402,6 +442,9 @@ Here we summarize the basic definitions made in this section.
   Give a fourth, different, proof of \autoref{lem:concat}, and prove that it is equal to the others.
 \end{ex}
 
+\begin{ex}
+  Prove that the functions~\eqref{eq:ap-to-apd} and~\eqref{eq:apd-to-ap} are inverse equivalences, and that they take $\apfunc f(p)$ to $\apdfunc f (p)$ and vice versa.
+\end{ex}
 
 % Local Variables:
 % TeX-master: "main"

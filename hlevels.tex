@@ -91,7 +91,7 @@ Before giving a proof of the theorem we gather some useful facts about retractio
      \[e' \defeq y \stackrel{\opp{\epsilon_y}}{=} p(s(y)) \stackrel{\map{p}{e}}{=} p(x)  .\]
 
   \item \label{enum:section_paths_2}
-      Given $e : s(y) = s(y')$, we have $\vec e : y = y$.
+      Given $e : s(y) = s(y')$, we have $\vec e : y = y'$.
      \begin{proof}
 	By \ref{enum:section_paths_1} we obtain $e' : y = p(s(y'))$.
         Postcomposing with $\epsilon_{y'}$ we get
@@ -172,8 +172,8 @@ Note that the converse of this implication is always true.
 Before proving the theorem, we prove an auxiliary lemma:
 
 \begin{lem}\label{lem:hlevel_if_inhab_hlevel}
- Given $n \geq 1$ and $X : \type$, $X$ is of h-level $n$ if, given any inhabitant of $X$ it follows that $X$ is
-   of h-level $n$.
+ Given $n \geq 1$ and $X : \type$. If, given any inhabitant of $X$ it follows that $X$ is
+   of h-level $n$, then $X$ is of h-level $n$.
 \end{lem}
 
 \begin{proof}
@@ -219,7 +219,7 @@ Before proving the theorem, we prove an auxiliary lemma:
 \end{proof}
 
 
-\begin{thm}
+\begin{thm}\label{thm:hlevel_prod}
  Let $n$ be a natural number, and let $A : \type$ and $B \colon A \to \type$.
      If for all $a : A$, $B(a)$ is of h-level $n$, then so is $\prod\limits_{x : A} B(x)$.
 \end{thm}
@@ -270,8 +270,8 @@ provided that the target space $B$ is of h-level $n$.
   We choose its center of contraction in order to provide the desired equality.
 \end{proof}
 
-\begin{rmk}
- The converse of \autoref{thm:hprop_inhab_contr} is also true; it follows from \autoref{lem:hlevel_if_inhab_hlevel} and cumulativity of h-levels (\autoref{thm:hlevel_cumulative}).
+\begin{rmk}\label{rem:is_contr_implies_isaprop_and_element}
+ The converse of \autoref{thm:hprop_inhab_contr} is also true; this follows from cumulativity of h-levels (\autoref{thm:hlevel_cumulative}).
 \end{rmk}
 
 We next turn towards giving some less obvious examples of h-propositions:
@@ -299,10 +299,10 @@ The theorem will be proven by induction. We start with a lemma, which contains t
 
  The path $e : \pi_1(c) = \pi_1 (c')$ in the base space is given by contractibility of $X$.
  It remains to show:
- \[ \trans{e}{\pi_2(c)} = \pi_2 (c') : \prod_{x' : X} \idtype[X]{\pi_2 (c)} {x'}  .  \]
- Since $X$ is contractible and thus $\idtype[X]{\pi_2 (c)} {x'}$ is as well.
- We know that $\prod_{x' : X} \idtype[X]{\pi_2 (c)} {x'}$
- is also contractible, so by presevation of h-levels under products, we obtain the desired equality.
+ \[ \trans{e}{\pi_2(c)} = \pi_2 (c') : \prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}  .  \]
+ The type $X$ is contractible and thus $\idtype[X]{\pi_1 (c')} {x'}$ is contractible as well by cumulativity.
+From presevation of h-levels under products it follows that the type $\prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}$ 
+  is contractible as well. Its center of contraction gives the desired equality.
 \end{proof}
 
 \begin{proof}[Proof of \autoref{thm:isaprop_isofhlevel}]
@@ -314,12 +314,13 @@ The theorem will be proven by induction. We start with a lemma, which contains t
         But since $X$ is contractible, the type $\iscontr(X)$ is contractible by \autoref{lem:contr_contr_is_contr},
           thus in particular it is an h-proposition by cumulativity.
  
- For the inductive step, we need to show, by \autoref{lem:hlevel_if_inhab_hlevel}, that if
-        $X$ is of h-level $n+1$, then the type $\isofhlevel(n+1)(X)$ is contractible.
-        By the definition of h-levels, we must show that
-     \[  \prod_{x,y:X} \isofhlevel(n)(\idtype{x}{y}) \]
-    is contractible. Using (weak) function extensionality, it suffices to show that for any $x,y : X$,
-     the type $\isofhlevel(n)(\idtype{x}{y})$ is contractible, which follows from the induction hypothesis.
+For the inductive step we need to show 
+\[\prod_{X : \Type} \isofhlevel(1) (\isofhlevel(n)(X)) \to \prod_{X : \Type} \isofhlevel (1) (\isofhlevel(n+1)(X)) \]
+To show the conclusion of this implication, we need to show that for any type $X$, 
+    \[\isofhlevel(1)(\prod_{x, x' : X}\isofhlevel(n)(x = x')).\]
+By \autoref{thm:hlevel_prod} it suffices to show that for any $x, x' : X$, we have 
+   \[ \isofhlevel(1) (\isofhlevel(n)(x = x')).\]
+But this follows from the induction hypothesis.
 \end{proof}
 
 As an immediate corollary we obtain:

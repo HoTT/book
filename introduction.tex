@@ -1,0 +1,139 @@
+\chapter*{Introduction}
+\label{cha:introduction}
+
+\addcontentsline{toc}{chapter}{Introduction}
+
+{%%%%%%% macros local to this file, discharged at the end of the file
+
+%\newcommand{\stype}{{\;\sf type}}
+%%\newcommand{\nat}{\mathbb{N}}
+%\newcommand{\nat}{{\bf N}}
+%\newcommand{\rec}{{\sf rec}}
+%%\newcommand{\bool}{\bbB}
+%\newcommand{\bool}{{\bf B}}
+%\newcommand{\app}{{\sf app}}
+%\newcommand{\pair}{{\sf pair}}
+%\newcommand{\suc}{{\sf succ}}
+%\newcommand{\inleft}{{\sf inleft}}
+%\newcommand{\inright}{{\sf inright}}
+%%\newcommand{\bbzero}{{0\hspace*{-4pt} 0}}
+%\newcommand{\emptyt}{{\bf 0}}
+%%\newcommand{\bbone}{{1\hspace*{-4pt} 1}}
+%\newcommand{\unitt}{{\bf 1}}
+
+\newcommand{\UU}{{\mathcal U}}
+\newcommand{\idtypevar}{{{\sf Id}}}
+\newcommand{\eq}{{{\sf Eq}}}
+
+
+%%% Outline
+%%	- The idea of HoTT and the special role of Identity
+
+%
+%%	- The idea of informal type theory
+%
+%%	- Brief history - ok
+%
+%%	- Constructive math vs. general: no proof by contradiction/ proof relevance/ -- still need to do
+%
+%%	- How is type theory different from set theory? - ok
+%
+%%	- How is HoTT different from type theory? -ok
+%
+%%	- Different readers of these notes: -ok 
+%%		- Working mathematicians
+%%		- ... CS
+%%		- ... Logicians
+%%		- homotopy theorists and higher category theorists
+%
+%%	- weak points and work to do -- still needs to be done
+%
+%%	- Coq development, new proof assistant, etc. - ok
+%%
+
+
+
+\subsection*{Type theory}
+
+Type theory was originally invented by Bertrand Russell in 1908 \cite{Russell:1908}, as a device for blocking the paradoxes in the logical foundations of mathematics then being developed. It was later developed as a rigorous formal system by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  It now has numerous applications, especially in computer science and the theory of programming languages \cite{Pierce:2002tp}.   Per Martin-L\"{o}f \cite{MartinLof:1998tw,MartinLof:1975tb,MartinLof:1982bn,MartinLof:1984tr}, among others,
+developed a generalization of Church's system which is now usually called dependent, constructive, or simply {\bf Martin\--L\"of type theory}; this is the basis of the system that we consider here. It was originally intended as a rigorous framework for the formalization of constructive mathematics. 
+
+In type theory, unlike set theory, objects are classified using a primitive notion of \emph{type}, similar to the data-types used in programming languages.  These elaborately structured types can be used to express detailed specifications of the objects classified, giving rise to principles of reasoning about these objects.  To take a very simple example, the objects of a product type $A\times B$ are known to be of the form $\langle a, b\rangle$, and so one automatically knows how to construct them and how to decompose them. This is one aspect of type theory that has led to its extensive use in verifying the correctness of computer programs.  The clear reasoning principles associated with the construction of types also form the basis of modern {\bf computer proof assistants}, which are used for formalizing mathematics and verifying the correctness of formalized proofs.  We return to this aspect of type theory below.
+
+%For example, the powerful Coq proof assistant \cite{coq} has recently been used to formalize and verify the correctness of the proof of the celebrated Feit-Thompson Odd-Order theorem \cite{gonthier}.
+
+One problem with understanding type theory from a mathematical point of view, however, has always been that the basic concept of \emph{type} is unlike that of \emph{set} in ways that have been hard to make precise. This difficulty, we believe, has now been solved by the idea of regarding types, not as strange sets (perhaps constructed without using classical logic), but as spaces or, more precisely, as homotopy types of spaces.
+
+In homotopy theory one is concerned with spaces and continuous mappings between them, 
+up to homotopy; a \emph{homotopy} between a pair of continuous maps $f \colon X	\to Y$
+and  $g \colon X	\to Y$ is 
+a continuous map $H \colon X \times [0, 1]	\to Y$ satisfying
+$H(x, 0) = f (x)$  and $H(x, 1) = g(x)$. The homotopy $H$ may be thought of as a ``continuous deformation" of $f$ into $g$. The spaces $X$ and $Y$ are said to be \emph{homotopy equivalent}, $X\simeq Y$, if there are continuous maps going back and forth, the composites of which are homotopical to the respective identity mappings, i.e.\ if they are isomorphic ``up to homotopy".  Homotopy equivalent spaces have the same algebraic invariants (e.g.\ homology, or the fundamental group), and are said to have the same \emph{homotopy type}.
+
+\subsection*{Homotopy type theory}
+
+Homotopy type theory (``HoTT") is a new field of mathematics which interprets type theory from a homotopical perspective.
+In homotopy type theory, one regards the types as spaces, or homotopy types, and the logical constructions (such as the product $A\times B$) as homotopy-invariant constructions on spaces.   In this way, one is able to manipulate spaces directly without first having to develop point-set topology.
+To briefly explain this perspective, consider the basic concept of type theory, namely that
+the \emph{term} $a$ is of \emph{type} $A$, which is written:
+$$
+  a:A.
+$$
+This expression is traditionally thought of as akin to:
+\begin{center}
+``$a$ is an element of the set $A$."
+\end{center}
+However, in HoTT we think of it instead as:
+\begin{center}
+``$a$ is a point of the space $A$."
+\end{center}
+Similarly, every term $f : B^A$ in the theory is regarded as a continuous function $f : A \to B$. This perspective clarifies features of type theory which were puzzling
+from the perspective of types as sets; for instance, that one can have non-trivial types $D$ such that $D\cong D^D$.  But the key new idea of the homotopy interpretation is that the logical notion of identity $a = b$ of two objects $a, b: A$ of the same type $A$ can be understood as the existence of a \emph{path} $p : a = b$ from point $a$ to point $b$ in the space $A$.  This also means that two functions $f, g: A\to B$ are identical just in case they are homotopic, since a homotopy is just a family of paths $p_x: f(x) = g(x)$ in $B$, one for each $x:A$.  In type theory, for every type $A$ there is a (formerly somewhat mysterious) type $\idtypevar_{A}$ of identities between objects of $A$; in HoTT, this is just the \emph{path space} $A^I$ of all continuous maps $I\to A$ from the unit interval.  
+
+The idea of homotopy type theory arose around 2006 in independent work by Awodey and Warren (\cite{AW}) and Voevodsky (\cite{VV}), but it was inspired by 
+Hofmann and Streicher's earlier groupoid interpretation~\cite{HofmannM:gromtt}.  Indeed, there is a precise sense in which HoTT relates type theory not only to homotopy theory, but also to  higher-dimensional category theory, and in particular to weak $\infty$-groupoids --- corresponding to the close connections between those two subjects now under investigation in algebraic topology.  For instance, Awodey and Warren used the machinery of Quillen model categories, but Voevodsky  modelled type theory using Kan simplicial sets, which are one concept of $\infty$-groupoids.  Voevodsky moreover recognized that this simplicial interpretation satisfies a further crucial property, dubbed \emph{univalence},  which is not usually assumed in type theory.  Adding univalence  to type theory in the form of a new axiom has far-reaching consequences, many of which are natural, simplifying and compelling.  The Univalence Axiom thus further strengthens the homotopical view of type theory, since it holds in the simplicial model, while failing in the view of types as sets.  
+
+\subsection*{Univalent Foundations}
+
+Very briefly, the basic idea of the Univalence Axiom can be explained as follows.  In type theory, one can have a universe $\UU$, the terms of which are themselves types, $A : \UU$, etc.  Of course, we do not have $\UU:\UU$, so only some types are terms of $\UU$ -- call these the \emph{small} types.  Like any type, $\UU$ has an identity type $\idtypevar_{\UU}$ which expresses the identity relation $A = B$ among small types.  Thinking of  types as spaces, $\UU$ is a space, the points of which are spaces; to understand its identity type, we must ask, what is a path $p : A = B$ between spaces in $\UU$?  The univalence axiom says that such paths correspond to homotopy equivalences $A\simeq B$, as explained above.  A bit more precisely, given any (small) types $A$ and $B$, in addition to the type $\idtypevar_{\UU}(A,B)$ of identities between $A$ and $B$ there is the type $\eq(A,B)$ of equivalences from $A$ to $B$.  Since the identity map on any object is an equivalence, there is a canonical map,
+$$\idtypevar_{\UU}(A,B)\to\eq_{\UU}(A,B).$$
+The univalence axiom states that this map is itself an equivalence.  At the risk of oversimplifying, we can state this succinctly as follows:
+
+\begin{description}
+\item[Univalence Axiom]  $(A = B)\ \simeq\ (A\simeq B)$.
+\end{description}
+%
+In other words, identity is equivalent to equivalence. 
+
+From the homotopical point of view, this says that the universe $\UU$ is something like a classifying space for (small) homotopy types, which is a practical and natural assumption.  From the  logical point of view, however, it is revolutionary: it says that isomorphic things are identical!  Mathematicians are of course used to identifying isomorphic structures in practice, but they generally do so with a wink, knowing that the identification is not ``officially" justified by foundations.  But in this new foundational scheme, not only are such structures formally identified, but the different ways in which such an identification may be made themselves become a structure that one can (and should!) take into account.
+
+Voevodsky has christened this new foundational scheme, consisting of the combination of homotopy type theory with the univalence axiom, and possibly some further logical principles, together with an implementation in a computer proof assistant, the {\bf Univalent Foundations of Mathematics}.
+
+\subsection*{Informal type theory}
+
+One difficulty often encountered by the classical mathematician when faced with learning about type theory is that it is usually presented as a fully or partially formalized deductive system.  This style, which is very useful for  proof-theoretic investigations, is not particularly convenient for use in applied, informal reasoning, nor is it even familiar to most working mathematicians, even those who might be interested in foundations of mathematics.  One objective of the present work is to develop an informal style of working \emph{in} HoTT that is at once rigorous and precise, but is also closer to the language and style of presentation of everyday mathematics.    In mathematics, one usually constructs and reasons about mathematical objects in a way that could in principle, one presumes, be formalized in a system of elementary set theory like ZFC -- at least given enough ingenuity and patience.  For the most part, one does not even need to be aware of this possibility, since it largely coincides with the condition that a proof be fully rigorous.  But there are a few aspects of working in ``informal set theory" that one does need to learn to be careful about: the use of collections too large or inchoate to  be sets, the axiom of choice and its equivalents,  the method of proof by contradiction, and so on.  Adopting a new foundational system such as HoTT as the \emph{implicit formal basis} of informal reasoning will require adjusting some of ones instincts and practices, even when reasoning informally.  The present text is intended to serve as an example of this ``new kind of mathematics", which is still informal, but could now in principle be formalized in HoTT, rather than ZFC, again given enough ingenuity and patience.
+
+It is worth emphasizing that in the new system, however, such formalization has a real practical benefit, increasing the likelihood that one will actually want to carry it out: namely, the implementation of the formal system in a computer proof assistant.  In practical terms, this means that it is possible to use currently available proof assistants based on type theory to develop mathematics, to verify the correctness of proofs, to provide some degree of automation, and even to extract numerical algorithms from formal proofs.  We believe that this aspect of the univalent foundations program distinguishes it from other approaches to foundations by providing a real practical utility for the working mathematician.  One can imagine a not too distant future when it will be possible for mathematicians  to verify the correctness of their own papers by working within the system of univalent foundations, formalized in a proof assistant, and that doing so will become as natural as typesetting their own papers in Tex. (Whether this proves to be the publishers' dream or their nightmare  remains to be seen.) 
+
+%We refer the reader to \cite{Simpson:2004bt,Hales:2008ud} for two accounts of the use of computer proof assistants in general.   
+
+
+\subsection*{Constructivity} 
+
+Constructive math vs. general: no proof by contradiction/ proof relevance/
+- Proof relevance and classical logic
+
+\subsection*{Weak points and open problems} 
+
+For those interested in contributing to this new branch of mathematics, it may be encouraging to know that there are many interesting open questions.  The most pressing of them is the ``constructivity'' of the Univalence Axiom itself, posed by Voevodsky in \cite{Vo2012}.  
+
+
+\subsection*{Some references?}
+
+Some other surveys and introductions?
+
+}%%%%%%%%%%%%% end of scope of local macros
+
+% Local Variables:
+% TeX-master: "main"
+% End:

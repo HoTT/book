@@ -45,13 +45,13 @@
 
 \begin{defn}\label{def:hlevel}
   Define the predicate $\isofhlevel(n) : \Type \to \Type$ for $n : \Nat$ by recursion as follows:
-  
+
 \[ \isofhlevel(n)(X) := \begin{cases}
                          \iscontr(X) & \text{ if } n = 0 , \\
                          \prod\limits_{x,y : X}\isofhlevel(n')(\idtype[X]{x}{y}) & \text{ if } n = S(n') .
                         \end{cases}
 \]
-%   
+%
 %  \begin{itemize}
 %   \item $\isofhlevel(0)(X) := \iscontr(X)$, %if  $X$ is of h-level $0$, if it is contractible.
 %   \item $\isofhlevel(S (n))(X) := \prod\limits_{x,y : X}\isofhlevel(n)(\idtype[X]{x}{y})$ %is of h-level $n+1$, if for all $x, y : X$ the type $(x =_X y)$ is of h-level $n$.
@@ -66,9 +66,9 @@ in the section on higher inductive types we shall see that one can describe the 
 that are of no finite h-level.
 
 \begin{rmk}
- We shall note that in \autoref{def:hlevel} we could alternatively declare $n$ as a variable of the metatheory rather than 
+ We shall note that in \autoref{def:hlevel} we could alternatively declare $n$ as a variable of the metatheory rather than
  as a variable of type $\Nat$ within the type theory.
- We chose to use the type-theoretic natural numbers in order to be able to use the type-theoretic induction principle, which, as we 
+ We chose to use the type-theoretic natural numbers in order to be able to use the type-theoretic induction principle, which, as we
  will later see, is our main tool for computation of h-levels.
 \end{rmk}
 
@@ -115,7 +115,7 @@ Before giving a proof of the theorem we gather some useful facts about retractio
 
 \begin{proof}[Proof of Theorem \autoref{thm:h-level-retracts}]
  We proceed by induction on $n$.
- 
+
  For $n=0$, we know that $X$ is contractible and let $x_0 : X$ be the center of contraction.
  We claim that $y_0 \defeq p(x_0) : Y$ is the center of contraction for $Y$.
  Let $y : Y$, we need a path $y = y_0$. We have $\epsilon_y : p(s(y)) = y$ and $\contr_{s(y)} : s(y) = x_0$.
@@ -200,12 +200,12 @@ Before proving the theorem, we prove an auxiliary lemma:
 
 \begin{proof}
  We proceed by induction on $n$.
- 
+
  For $n = 0$, we choose the center of contraction for $\sum\limits_{x : A} B(x)$ to be the pair
        $(a_0, b_0)$, where $a_0 : A$ is the center of contraction of $A$ and $b_0 : B(a_0)$ is the center of contraction of $B(a_0)$.
        Given any other element $(a,b)$ of $\sum\limits_{x : A} B(x)$, we provide a path $\id{(a, b)}{(a_0,b_0)}$
        by contractibility of $A$ and $B(a_0)$, respectively.
- 
+
  For the inductive step, suppose that $A$ is of h-level $n+1$ and
          for any $a : A$, $B(a)$ is of h-level $n + 1$. We show that $\sum\limits_{x : A} B(x)$ is
          of h-level $n + 1$:
@@ -232,7 +232,7 @@ and strong Functional Extensionality as
 
 \begin{proof}
  We proceed by induction on $n$. For $n = 0$ the result is precisely the statement of weak function extensionality.
- 
+
  For the inductive step, let $f, g : \prod\limits_{a:A}B(a)$. We need to show that
       $\idtype{f}{g}$ is of h-level $n$. By (strong) function extensionality and closure
       under weak equivalences of h-levels it suffices to show that
@@ -277,9 +277,7 @@ provided that the target space $B$ is of h-level $n$.
 We next turn towards giving some less obvious examples of h-propositions:
 
 \begin{thm}\label{thm:isaprop_isofhlevel}
- For any $n : \Nat$ and any type $X$, the type
- \[ \isofhlevel(n)(X) \]
- is an h-proposition.
+ For any $n : \Nat$ and any type $X$, the type $\isofhlevel(n)(X)$ is an h-proposition.
 \end{thm}
 
 The theorem will be proven by induction. We start with a lemma, which contains the crucial observation needed in the proof of the base case.
@@ -301,32 +299,31 @@ The theorem will be proven by induction. We start with a lemma, which contains t
  It remains to show:
  \[ \trans{e}{\pi_2(c)} = \pi_2 (c') : \prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}  .  \]
  The type $X$ is contractible and thus $\idtype[X]{\pi_1 (c')} {x'}$ is contractible as well by cumulativity.
-From presevation of h-levels under products it follows that the type $\prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}$ 
+From presevation of h-levels under products it follows that the type $\prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}$
   is contractible as well. Its center of contraction gives the desired equality.
 \end{proof}
 
 \begin{proof}[Proof of \autoref{thm:isaprop_isofhlevel}]
   We proceed by induction with respect to $n$.
-  
+
  For the base case, we need to show that for any type $X$, the type $\iscontr(X)$ is an
         h-proposition. By applying \autoref{lem:hlevel_if_inhab_hlevel}, it suffices to show that
         if $X$ is contractible, then $\iscontr(X)$ is an h-proposition.
         But since $X$ is contractible, the type $\iscontr(X)$ is contractible by \autoref{lem:contr_contr_is_contr},
           thus in particular it is an h-proposition by cumulativity.
- 
-For the inductive step we need to show 
-\[\prod_{X : \Type} \isofhlevel(1) (\isofhlevel(n)(X)) \to \prod_{X : \Type} \isofhlevel (1) (\isofhlevel(n+1)(X)) \]
-To show the conclusion of this implication, we need to show that for any type $X$, 
-    \[\isofhlevel(1)(\prod_{x, x' : X}\isofhlevel(n)(x = x')).\]
-By \autoref{thm:hlevel_prod} it suffices to show that for any $x, x' : X$, we have 
-   \[ \isofhlevel(1) (\isofhlevel(n)(x = x')).\]
-But this follows from the induction hypothesis.
+
+For the inductive step we need to show
+\[\prod_{X : \Type} \ishProp (\isofhlevel(n)(X)) \to \prod_{X : \Type} \ishProp (\isofhlevel(n+1)(X)) \]
+To show the conclusion of this implication, we need to show that for any type $X$, the type
+    \[\prod_{x, x' : X}\isofhlevel(n)(x = x')\]
+is an h-proposition. By \autoref{thm:hlevel_prod} it suffices to show that for any $x, x' : X$, the type $\isofhlevel(n)(x =_X x')$ is an h-proposition.
+But this follows from the induction hypothesis applied to the type $(x =_X x')$.
 \end{proof}
 
 As an immediate corollary we obtain:
 
 \begin{cor}
- For any function $f \colon A \to B$ between two types, the type $\isweq(f)$ is an h-prop.
+ For any function $f \colon A \to B$ between two types, the type $\isweq(f)$ is an h-proposition.
 \end{cor}
 
 \begin{thm}
@@ -372,7 +369,7 @@ Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Le
 \end{thm}
 
 \begin{proof}
-Fix $x : X$ and assume that for all $y : Y$ we have 
+Fix $x : X$ and assume that for all $y : Y$ we have
   \[\alpha(y) : (x = y) + \neg (x = y). \]
   For any $y : Y$ we define
       $  \eta_y : (x = y) \to (x = y) $
@@ -383,18 +380,18 @@ Fix $x : X$ and assume that for all $y : Y$ we have
                     \end{cases}
 \]
 
-TODO : explain elimination $\mathsf{elim}$ on False 
+TODO : explain elimination $\mathsf{elim}$ on False
 
 \noindent
- By case analysis we see that for any $p, p' : x = y$ we have 
+ By case analysis we see that for any $p, p' : x = y$ we have
  \begin{equation}\eta_y(p) = \eta_y(p') . \label{eq:eqdec_eta}\end{equation}
 
  \noindent
- Next, we prove that for any $y : Y$, the map $\eta_y$ has a left inverse $\theta_y$. 
-   Once we have this left inverse $\theta_y$, we obtain the desired result as follows: given 
+ Next, we prove that for any $y : Y$, the map $\eta_y$ has a left inverse $\theta_y$.
+   Once we have this left inverse $\theta_y$, we obtain the desired result as follows: given
      $p, p' : x = y$, we have
    \[ p = \theta_y (\eta_y(p)) \stackrel{\ref{eq:eqdec_eta}}{=} \theta_y (\eta_y(p')) = p' . \]
- Define $\theta_y$ by 
+ Define $\theta_y$ by
      $\theta_y(q) \defeq \opp{\eta_x(\refl{}(x))} \ct q$.
   Finally, we prove $\theta_y(\eta_y(p)) = p$ by path induction on $p$:
    \[\theta_x(\eta_x(\refl{}(x))) = \opp{\eta_x(\refl{}(x))} \ct \eta_x(\refl{}(x)) = \refl{}(x). \]
@@ -448,5 +445,5 @@ We start with a lemma that can be seen as a version of Univalence for propositio
 \begin{proof}[Proof of \autoref{thm:hleveln_of_hlevelSn}]
  Let $(X, p), (X', p') : \HLevel(n)$. We need to show that the type $\idtype{(X, p)}{(X', p')}$ is of h-level $n$. Since for any natural number $n$ and any type $X$ the type: $\isofhlevel(n)(X)$ is an h-prop, we may apply \autoref{lem:sig-id-h-prop} with $P := \isofhlevel(n)$. Next we observe that it suffices to show that $X \rightarrow X'$ is of h-level $n$ because the projection:
  \[(\eqv{X}{X'}) \hookrightarrow (X \rightarrow X').\]
- is an inclusion (i.e. a map of h-level $1$). Since h-levels are preserved under $\prod$ and hence under the arrow type, this reduces to an assumption that $X'$ is of h-level $n$.
-\end{proof}
+ is an inclusion (i.e.~its fibers are h-propositions). Since h-levels are preserved under $\prod$ and hence under the arrow type, this reduces to an assumption that $X'$ is of h-level $n$.
+\end{proof} 

@@ -12,9 +12,20 @@
   We write $\eqv A B$ for the type of equivalences $A\ra B$.
 \end{defn}
 
-
+\begin{lem}\label{lem:eq-rel}
+The relation $\eqv A B$ is an equivalence relation on any universe $\bbU$:
+\begin{enumerate}
+\item For any type $A : \bbU$, we have $\eqv A A$
+\item For any types $A, B : \bbU$, we have $\eqv A B \to \eqv B A$.
+\item For any types $A, B, C : \bbU$, we have $\eqv A B \times \eqv B C \to \eqv A C$.
+\end{enumerate}
+\end{lem}
+\begin{proof}
+We can obtain a very concise proof using univalence. For example, in order to show symmetry we observe that by univalence, $\eqv {(\eqv A B)} {(A = B)}$ and of course also $\eqv {(\eqv B A)} {(B = A)}$. Thus it suffices to exhibit a function of type $A = B \to B = A$. However, this is trivial since we have already shown that equality is symmetric.
+\end{proof}
+We remark that univalence is not necessary to prove the above lemma but it simplifies the proof considerably. For comparison, we have the following direct proof of reflexivity:
 \begin{lem}\label{lem:id-map}
-  For each type $A$, the identity map $\idfunc[A]\defeq \lambda_{x:A}x :A\ra A$ is an equivalence.
+For each type $A$, the identity map $\idfunc[A]\defeq \lambda_{x:A}x :A\ra A$ is an equivalence.
 \end{lem}
 \begin{proof}
   Let $a:A$ and let $\{a\}_A\defeq \setof{ x:A | x=a }$ be its fiber with respect to $\idfunc[A]$.
@@ -111,6 +122,82 @@ If $f:A\ra B$ define, by Id-induction, $fz:fx=fx'$ for $x,x':A, z:x=x'$ such tha
   \[\forall_{x:A}\;[(\map{f}{\eta x}\; \ct\;\epsilon(fx))=\refl{fx}].\]
 We write $A\cong_a B$ if there is an adjoint isomorphism $A\ra B$.
 \end{defn}
+We note that in the above definition, the coherence condition relating $\eta$ and $\epsilon$ only involves $f$. There is an analogous coherence condition involving $g$:
+  \[\forall_{y:B}\;[(\eta(gy) \; \ct\;\map{g}{\epsilon y})=\refl{gy}].\]
+It turns out each of these conditions implies the other, as shown in Lemma $\ref{lem:coh-equiv}$ below. First we need a couple of auxiliary lemmas:
+
+\begin{lem}\label{lem:natur}
+Let us have an endofunctor $P : A \to A$ such that $\eta : \forall_{x:A}\; [x=g(fx)]$, i.e., $\eta : \idfunc[A] \sim g \circ f$. Then for any path $p : x = x'$ in $A$, the following square commutes:
+
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{x \ar^p[r] \ar_{\eta x}[d] & x' \ar^{\eta x'}[d] \\ gfx \ar_{gfp}[r] & gfx'
+  }\]
+We call this property the naturality of $\eta$.
+\end{lem}
+\begin{proof}
+Induction on $p$.
+\end{proof}
+
+\begin{cor}\label{cor:nat-equiv}
+Let $f:A\ra B$, $g:B\ra A$, $\eta:\forall_{x:A}\; [x=g(fx)]$, and $\epsilon:\forall_{y:B}\; [f(gy)=y]$ be given. Then for any $p : \id[A]{x}{x'}$ and $q : \id[B]{y}{y'}$ the following diagrams commute:
+
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{x \ar^{p}[r] \ar_{\eta x}[d] & x' \ar^{\eta x'}[d] \\ gfx \ar_{gf(p)}[r] & gfx'
+  }\]
+ 
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{fgy \ar^{fg(q)}[r] \ar_{\epsilon y}[d] & fgy' \ar^{\epsilon y'}[d] \\ y \ar_{q}[r] & y'
+  }\]
+\end{cor}
+\begin{proof}
+The first diagram is obtained by applying Lemma \ref{lem:natur} with $P \defeq g \circ f$ and $\eta \defeq \eta$. The second one is obtained by the same lemma, with $P \defeq f \circ g$ and $\eta \defeq \epsilon^{-1}$, with $\epsilon^{-1} : \forall_{y:B}\; [y=f(gy)]$ the opposite homotopy of $\epsilon$. 
+\end{proof}
+
+\begin{cor}\label{cor:fg}
+Let $f:A\ra B$, $g:B\ra A$, $\eta:\forall_{x:A}\; [x=g(fx)]$, and $\epsilon:\forall_{y:B}\; [f(gy)=y]$ be given. Then for any $x:A$, $y : B$ we have 
+\begin{itemize}
+\item $gf(\eta x) = \eta(gfx)$
+\item $fg(\epsilon y) = \epsilon (fgy)$
+\end{itemize}
+\end{cor}
+\begin{proof}
+Use Lemma \ref{cor:nat-equiv} with $p \defeq \eta x$ and $q \defeq \epsilon y$.
+\end{proof}
+
+\begin{lem}\label{lem:coh-equiv}
+Let $f:A\ra B$, $g:B\ra A$, $\eta:\forall_{x:A}\; [x=g(fx)]$, and $\epsilon:\forall_{y:B}\; [f(gy)=y]$ be given. Then the following coherence conditions are logically equivalent:
+\begin{enumerate}
+\item $\forall_{x:A}\;[(\map{f}{\eta x}\; \ct\;\epsilon(fx))=\refl{fx}].$
+\item $\forall_{y:B}\;[(\eta(gy) \; \ct\;\map{g}{\epsilon y})=\refl{gy}].$
+\end{enumerate}
+\end{lem}
+\begin{proof}
+We show $(i)\ra (ii)$; the other direction is analogous. Using Corollary \ref{cor:nat-equiv} and applying $g$, the following diagram commutes:
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{g(\epsilon (fgy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
+  }\]
+By assumption $i)$ we have $\epsilon (fgy) = \opp{f (\eta (gy))}$, thus
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] \ar^{gf(\eta (gy))}[u] & gy
+  }\]
+By Corollary \ref{cor:fg} we have $gf(\eta(gy)) = \eta(gfgy)$, thus
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] \ar^{\eta (gfgy)}[u] & gy
+  }\]
+However, by Lemma \ref{cor:nat-equiv} we also have
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] & gfgy  \\ gfgy \ar_{g(\epsilon y)}[r] \ar^{\eta (gfgy)}[u] & gy \ar_{\eta(gy)}[u]
+  }\]
+Thus we have $g(\epsilon y) = \opp{\eta(g y)}$ as desired.
+\end{proof}
+
+\begin{lem}\label{lem:hfib}
+Let $f : A \to B$ and $y : B$. For any $(x,p), (x',p') : \mathtt{hfiber} \; f \;y$, giving a path $(x,p) = (x',p')$ is equivalent to giving a path $\gamma : x = x'$ such that $p = f\gamma \ct p' $. 
+\end{lem}
+\begin{proof}
+Use the known interactions between $\Sigma$-types, identity types, and transports.
+\end{proof}
+
 \begin{thm}\label{thm:equiv-iso-adj} The following are logically equivalent for $f:A\ra B$.
 \begin{enumerate}
 \item $f$ is an equivalence.
@@ -132,8 +219,17 @@ It follows that
   \[ \forall_{y:B}\exists_{x:A}[fx=y\wedge\forall_{x':A}(fx'=y\ra  x=x')].
   \]
 Hence, by $(ii)\ra (iv)$ of \autoref{thm:bijections-isos} , $f$ is a weak isomorphism.
-\item[$(ii)\ra (iii)$] ??
-\item[$(iii)\ra (i)$] ??
+\item[$(ii)\ra (iii)$] By Theorem \ref{thm:bijections-isos}, $f$ is an isomorphism. Thus by Theorem ?? (in section Basics, does not have a label) it is an adjoint isomorphism.
+
+\item[$(iii)\ra (i)$] Let $(f,g,\eta,\epsilon,\theta)$ be an ajoint isomorphism. We intend to show that every homotopy fiber of $f$ is contractible. Fix $y : B$.
+As our center of contraction for $\mathtt{hfiber} \; f \;y$ we put $c \defeq (gy, \epsilon y)$. Now take any $c' \defeq (x, p)$ in $\mathtt{hfiber} \; f \;y$. We want to show that $c = c'$. According to Lemma \ref{lem:hfib}, it suffices to give a path $\gamma : \id{gy}{x}$ such that $\epsilon y = f(\gamma) \ct p$. We put $\gamma \defeq {\opp{gp}} \ct {\eta x}$. Then we have 
+\begin{align*}
+f(\gamma) \ct p & = \opp{fgp} \ct {f (\eta x)} \ct p \\
+& = \opp{fgp} \ct {\epsilon(f x)} \ct p \\
+& = \epsilon y
+\end{align*}
+where the last equality follows by the naturality of $\epsilon$.
+
 \end{description}
 \end{proof}
 \begin{cor}\label{cor:equivs-equiv}

@@ -5,17 +5,17 @@
 
 In Chapter~\ref{cha:introduction} we introduced many ways to form new types: cartesian products, disjoint unions, dependent products, dependent sums, etc.
 In the previous sections of this chapter, we have seen that \emph{all} types in homotopy type theory behave like spaces or higher groupoids.
-Our goal in this section is to make explicit how this higher structure behaves, for particular types defined as in Chapter~\ref{cha:introduction}.
+Our goal in this section is to make explicit how this higher structure behaves, for particular types defined as in Chapter~\ref{cha:typetheory}.
 
 It turns out that for many types $A$, the equality types $\id[A]xy$ can be characterized, up to equivalence, in terms of whatever data was used to construct $A$.
 For instance, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and $y\jdeq(b',c')$, then we have an equivalence
 \begin{equation}\label{eq:prodeqv}
   \eqv{\Big((b,c)=(b',c')\Big)}{\Big((b=b')\times (c=c')\Big)}.
 \end{equation}
-In more traditional language, two ordered pairs are equal just when their components are equal.
+In more traditional language, two ordered pairs are equal just when their components are equal (but the equivalence~\eqref{eq:prodeqv} says rather more than this).
 The higher structure of the identity types can also be expressed in terms of these equivalences; for instance, concatenating two equalities between pairs corresponds to pairwise concatenation.
 
-Similarly, when a dependent type $P:A\to\type$ is built up fiberwise using the type forming rules from Chapter~\ref{cha:introduction}, the operation $\transfib{P}{p}{-}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
+Similarly, when a dependent type $P:A\to\type$ is built up fiberwise using the type forming rules from Chapter~\ref{cha:typetheory}, the operation $\transfib{P}{p}{-}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
 For instance, if $P(x) \jdeq B(x)\times C(x)$, then we have
 \[\transfib{P}{p}{(b,c)} = \left(\transfib{B}{p}{b},\transfib{C}{p}{c}\right).\]
 
@@ -32,83 +32,134 @@ In this section, we will state and prove theorems of this sort for all the basic
 \end{rmk}
 
 \subsection{Cartesian product types}
+\label{sec:compute-cartprod}
 
-Given types $A$ and $B$, consider the product type $A \times B$.  
-A path in $A \times B$ is a pair of componentwise paths:
+Given types $A$ and $B$, consider the cartesian product type $A \times B$.  
+For any elements $x,y:A\times B$ and a path $p:\id[A\times B]{x}{y}$, by functoriality we can extract paths $\ap{\proj1}p:\id[A]{\proj1(x)}{\proj1(y)}$ and $\ap{\proj2}p:\id[B]{\proj2(x)}{\proj2(y)}$.
+Thus, we have a function
+\begin{equation}
+  (\id[A\times B]{x}{y}) \;\to\; (\id[A]{\proj1(x)}{\proj1(y)}) \times (\id[B]{\proj2(x)}{\proj2(y)}).\label{eq:path-prod}
+\end{equation}
 
-\[
-\eqv{(\id[A \times B] p q)}{(\id[A]{\proj{1} p}{\proj{1} q}) \times (\id[B]{\proj{1} p}{\proj{1} q})}
-\]
+\begin{thm}\label{thm:path-prod}
+  For any $x$ and $y$, the function~\eqref{eq:path-prod} is an equivalence.
+\end{thm}
 
 Read logically, this says that two pairs are equal if they are equal
 componentwise.  Read category-theoretically, this says that the
-morphisms in a product category are pairs of morphisms.  Read
-homotopy-theoretically, this says that the paths in a direct product
-space are pairs of paths.  
+morphisms in a product groupoid are pairs of morphisms.  Read
+homotopy-theoretically, this says that the paths in a product
+space are pairs of paths.
 
-From a programming perspective, it's useful to unpack the above
-equivalence into 
+\begin{proof}
+  We need a function in the other direction:
+  \begin{equation}
+    (\id[A]{\proj1(x)}{\proj1(y)}) \times (\id[B]{\proj2(x)}{\proj2(y)}) \;\to\; (\id[A\times B]{x}{y}) .\label{eq:path-prod-inverse}
+  \end{equation}
+  By the induction rule for cartesian products, we may assume that $x$ and $y$ are both pairs, i.e.\ $x\jdeq (a,b)$ and $y\jdeq (a',b')$ for some $a,a':A$ and $b,b':B$.
+  In this case, what we want is a function
+  \begin{equation*}
+    (\id[A]{a}{a'}) \times (\id[B]{b}{b'}) \;\to\; \big(\id[A\times B]{(a,b)}{(a',b')}\big).
+  \end{equation*}
+  Now by induction for the cartesian product in its domain, we may assume given $p:a=a'$ and $q:b=b'$.
+  And by two path inductions, we may assume that $a\jdeq a'$ and $b\jdeq b'$ and both $p$ and $q$ are reflexivity.
+  But in this case, we have $(a,b)\jdeq(a',b')$ and so we can take the output to also be reflexivity.
+
+  It remains to prove that~\eqref{eq:path-prod-inverse} is quasi-inverse to~\eqref{eq:path-prod}.
+  This is a simple sequence of inductions, but they have to be done in the right order.
+
+  If we start with $r:\id[A\times B]{x}{y}$, then we first do a path induction on $r$ in order to assume that $x\jdeq y$ and $r$ is reflexivity.
+  In this case, since $\apfunc{\proj1}$ and $\apfunc{\proj2}$ are defined by path induction,~\eqref{eq:path-prod} takes $r\jdeq \refl{x}$ to the pair $(\refl{\proj1x},\refl{\proj2x})$.
+  Now by induction on $x$, we may assume $x\jdeq (a,b)$, so that this is $(\refl a, \refl b)$.
+  Thus,~\eqref{eq:path-prod-inverse} takes it by definition to $\refl{(a,b)}$, which (under our current assumptions) is $r$.
+  
+  In the other direction, if we start with $s:(\id[A]{\proj1(x)}{\proj1(y)}) \times (\id[B]{\proj2(x)}{\proj2(y)})$, then we first do induction on $x$ and $y$ to assume that they are pairs $(a,b)$ and $(a',b')$, and then induction on $s:(\id[A]{a}{a'}) \times (\id[B]{b}{b'})$ to reduce it to a pair $(p,q)$ where $p:a=a'$ and $q:b=b'$.
+  Now by induction on $p$ and $q$, we may assume they are reflexivities $\refl a$ and $\refl b$, in which case~\eqref{eq:path-prod-inverse} yields $\refl{(a,b)}$ and then~\eqref{eq:path-prod} returns us to $(\refl a,\refl b)\jdeq (p,q)\jdeq s$.
+\end{proof}
+
+From a programming perspective, it's useful to unpack this equivalence into the following data:
 
 \newcommand{\pairpath}{\mathsf{pair}^{\mathord{=}}}
 \newcommand{\projpath}[1]{\proj{#1}^{\mathord{=}}}
 
 \begin{itemize}
-\item An introduction rule for \id[A \times B]{p}{q}:
+\item An introduction rule for $(\id[A \times B]{x}{y})$ (this is~\eqref{eq:path-prod-inverse})
   \[
-  \pairpath : (\id{\proj{1} p}{\proj{1} q}) \times (\id{\proj{1} p}{\proj{1} q}) \to {(\id p q)}
+  \pairpath : (\id{\proj{1} x}{\proj{1} y}) \times (\id{\proj{1} x}{\proj{1} y}) \to {(\id x y)}
   \]
-\item Elimination rules:
-  \[
-  \projpath{i} : \id{p}{q} \to (\id{\proj{i} p}{\proj{i} q})
-  \]
+\item Elimination rules (these are the two components of~\eqref{eq:path-prod}):
+  \begin{align*}
+    \projpath{1} &: (\id{x}{y}) \to (\id{\proj{1} x}{\proj{1} y})\\
+    \projpath{2} &: (\id{x}{y}) \to (\id{\proj{2} x}{\proj{2} y})
+  \end{align*}
 \item $\beta$-reduction:
+  \begin{align*}
+    {\projpath{1}{(\pairpath(p, q)})}
+    &=_{(\id{\proj{1} x}{\proj{1} y})}
+    {p} \\
+    {\projpath{2}{(\pairpath(p,q)})}
+    &=_{(\id{\proj{2} x}{\proj{2} y})}
+    {q}
+  \end{align*}
+\item $\eta$-equivalence: For any $r : \id[A \times B] x y$
   \[
-  \begin{array}{l}
-  \id[(\id{\proj{1} p}{\proj{1} q})]
-       {\projpath{1}{(\pairpath \: \alpha \: \beta})}
-       {\alpha} \\
-  \id[(\id{\proj{2} p}{\proj{2} q})]
-       {\projpath{2}{(\pairpath \: \alpha \: \beta})}
-       {\beta}
-  \end{array}
-  \]
-\item $\eta$-equivalence: For any $\alpha : \id[A \times B] p q$
-  \[
-  \id{\alpha}{\pairpath \: (\projpath{1} \alpha) \: (\projpath{2} \alpha) }
+  \id{r}{\pairpath(\projpath{1} (r), \projpath{2} (r)) }
   \]
 \end{itemize}
-All of these equations can be derived by using path induction on the given
-paths and then returning reflexivity.  
+Moreover, reflexivity, inverses, and composition are defined componentwise:
+\begin{align*}
+  {\refl{(z : A \times B)}}
+  &= {\pairpath (\refl{\proj{1} z},\refl{\proj{2} z})} \\
+  {\opp{p}}
+  &= {\pairpath \big(\opp{(\projpath{1} p)},\, \opp{(\projpath{2} p)}\big)} \\
+  {{p \ct q}}
+  &= {\pairpath \big({\projpath{1} p} \ct {\projpath{1} q},\,{\projpath{2} p} \ct {\projpath{2} q}\big)}
+\end{align*}
+The same is true for all the higher groupoid structure considered in \S\ref{sec:equality}.
+All of these equations can be derived by using path induction on the given paths and then returning reflexivity.  
 
-Moreover, reflexivity, inverses, and composition are defined
-componentwise:
-\[
-\begin{array}{l}
-\id {\refl{(p : A \times B)}} {\pairpath \: (\refl{\proj{1} p}) \: (\refl{\proj{2} p})} \\
-\id {\opp{\alpha}} {\pairpath \: (\opp{\projpath{1} \alpha}) \: (\opp{\projpath{2} \alpha})}  \\
-\id {{\alpha \ct \beta}} {\pairpath \: 
-  ({\projpath{1} \alpha} \ct
-   {\projpath{1} \beta})
-   \: 
-   ({\projpath{2} \alpha} \ct {\projpath{2} \beta})}
-\end{array}
-\]
+We now consider transport in a product of dependent types.
+Given dependent types $ A, B : Z \to \type$, we abusively write $A\times B:Z\to \type$ for the dependent type defined by $(A\times B)(z) \defeq A(z) \times B(z)$.
+Now given $p : \id[Z]{z}{w}$ and $x : A(z) \times B(z)$, we can transport $x$ along $p$ to obtain an element of $A(w)\times B(w)$.
 
-Given $ A, B : A_0 \to \type$ and $\alpha : \id[A_0]{x}{y}$ 
-and $p : A(x) \times B(x)$
+\begin{thm}\label{thm:trans-prod}
+  In the above situation, we have
+  \[
+  \id[A(y) \times B(y)]
+  {\transfib{A\times B}px}
+  {(\transfib{A}{p}{\proj{1}x}, \transfib{B}{p}{\proj{2}x})}
+  \]
+\end{thm}
+\begin{proof}
+  By path induction, we may assume $p$ is reflexivity, in which case we have
+  \begin{align*}
+    \transfib{A\times B}px&\jdeq x\\
+    \transfib{A}{p}{\proj{1}x}&\jdeq \proj1x\\
+    \transfib{A}{p}{\proj{2}x}&\jdeq \proj2x.
+  \end{align*}
+  Thus, it remains to show $x = (\proj1 x, \proj2x)$, which follows by induction on $x$.
+\end{proof}
 
-\[
-\id[A(y) \times B(y)]{\transport{x_0:A_0 \mapsto A(x_0) \times B(x_0)}
-  \: \alpha \: {p}}
-   {(\transport{x_0 \mapsto A(x_0)} \alpha \: (\proj{1} p), 
-       \transport{x_0 \mapsto B(x_0)} \alpha \: (\proj{2} p))}
-\]
+Finally, we consider the functoriality of $\apfunc{}$ under cartesian products.
+Suppose given types $A,B,A',B'$ and functions $g:A\to A'$ and $h:B\to B'$; then we can define a function $f:A\times B\to A'\times B'$ by $f(x) \defeq (g(\proj1x),h(\proj2x))$.
 
-Similarly, 
+\begin{thm}\label{thm:ap-prod}
+  In the above situation, given $x,y:A\times B$ and $p:\proj1x=\proj1y$ and $q:\proj2x=\proj2y$, we have
+  \[ \id[(f(x)=f(y))]{\ap{f}{\pairpath(p,q)}} {\pairpath(\ap{g}{p},\ap{h}{q})}. \]
+\end{thm}
+\begin{proof}
+  Note first that the above equation is well-typed.
+  On the one hand, since $\pairpath(p,q):x=y$ we have $\ap{f}{\pairpath(p,q)}:f(x)=f(y)$.
+  On the other hand, since $\proj1(f(x))\jdeq g(\proj1x)$ and $\proj2(f(x))\jdeq h(\proj2x)$, we also have $\pairpath(\ap{g}{p},\ap{h}{q}):f(x)=f(y)$.
 
-(equations for map?)
+  Now, by induction, we may assume $x\jdeq(a,b)$ and $y\jdeq(a',b')$, in which case we have $p:a=a'$ and $q:b=b'$.
+  Thus, by path induction, we may assume $p$ and $q$ are reflexivity, in which case the desired equation holds judgmentally.
+\end{proof}
+
 
 \subsection{$\Sigma$-types}
+\label{sec:compute-sigma}
+
 To find out what it means to be a path in a $\Sigma$-type suppose that we have a path $p:w=w'$ in $\sm{x:A}P(x)$. Then we get $\ap{\proj{1}}{p}:\proj{1}(w)=\proj{1}(w')$. We cannot directly ask whether $\proj{2}(w)$ is identical to $\proj{2}(w')$ since they don't have to be in the same type. However, we can transport $\proj{2}(w)$ along the path $\ap{\proj{1}}(p)$, which does give us a term of the same type as $\proj{2}(w')$. By path induction, we see that we also obtain a path $\trans{\ap{\proj{1}}{p}}{\proj{2}(w)}=\proj{2}(w')$. The next theorem states that we can reverse this process.
 
 \begin{thm}

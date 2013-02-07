@@ -279,7 +279,7 @@ It is useful to break the equivalence~\eqref{eq:path-forall} into:
 \end{itemize}
 %% FIXME: where do the rules for \alpha[\delta] go in this style?
 
-We can also compute the identity, inverses, and composition in $\Pi$-types:
+We can also compute the identity, inverses, and composition in $\Pi$-types; they are simply given by pointwise operations.
 \begin{align*}
 \refl{f} &= \funext(x \mapsto \refl{f(x)}) \\
 \opp{\alpha} &= \funext (x \mapsto \opp{(\happly \: {\alpha} \: {\refl x})})  \\
@@ -288,15 +288,18 @@ We can also compute the identity, inverses, and composition in $\Pi$-types:
 
 Since the non-dependent function type $A\to B$ is a special case of the dependent function type $\prd{x:A} B(x)$ when $B$ is independent of $x$, all of the above applies essentially verbating in the non-dependent case as well.
 The rules for transport, however, are somewhat simpler in the non-dependent case.
-Given a type $X$, a path $p:\id[X]{y}{z}$, dependent types $A,B:X\to \type$, and a function $f : A(y) \to B(y)$,  we have
+Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, dependent types $A,B:X\to \type$, and a function $f : A(x_1) \to B(x_1)$,  we have
 \begin{align*}
   \transfib{A\to B}{p}{f} &=
   \; \Big(x \mapsto \transfib{B}{p}{f(\transfib{A}{\opp p}{x})}\Big)
 \end{align*}
-where $A\to B$ denotes abusively the dependent type $X\to \type$ defined by $(A\to B)(x) \defeq (A(x)\to B(x))$.
+where $A\to B$ denotes abusively the dependent type $X\to \type$ defined by
+\[(A\to B)(x) \defeq (A(x)\to B(x)).\]
+In other words, when we transport a function $f:A(x_1)\to B(x_1)$ along a path $p:x_1=x_2$, we obtain the function $A(x_2)\to B(x_2)$ which transports its argument backwards along $p$ (in the dependent type $A$), applies $f$, and then transports the result forwards along $p$ (in the dependent type $B$).
+This can be proven easily by path induction.
 
-The dependent case is similar, but more complicated.
-Suppose given $X$ and $p$ as before, a dependent type $A:X\to \type$, and a doubly dependent type $B:\prd{x:X} (A(x)\to\type)$, and suppose $f : \prd{a:A(y)} B(y,a)$.
+Transporting dependent functions is similar, but more complicated.
+Suppose given $X$ and $p$ as before, a dependent type $A:X\to \type$, and a doubly dependent type $B:\prd{x:X} (A(x)\to\type)$, and also a dependent function $f : \prd{a:A(x_1)} B(x_1,a)$.
 Then
 \begin{align*}
   \transfib{\Pi_A(B)}{p}{f} =
@@ -309,7 +312,8 @@ where $\Pi_A(B)$ and $\hat{B}$ denote the dependent types
 \hat{B} &\defeq& \big(w \mapsto B(\proj1w,\proj2w) \big) &:& \sm{x:X} A(x) \to \type.
 \end{array}
 \]
-All of this can be proven easily by path induction.
+If these formulas look a bit intimidating, don't worry about the details.
+The basic idea is just the same as for the non-dependent function type: we transport the argument backwards, apply the function, and then transport the result forwards again.
 
 
 \subsection{The Universe}

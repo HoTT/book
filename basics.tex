@@ -444,9 +444,93 @@ Here we summarize the basic definitions made in the previous two sections.
   \[\mapdep{f}{\refl{x}}\jdeq \refl{f(x)}.\]
 \end{itemize}
 
+
 \input{basics-equivalences}
 
 \input{computational}
+
+
+\section{Sets}
+\label{sec:basics-sets}
+
+While types in general behave like higher groupoids, there is a subclass of them that behave more like the sets in a traditional set-theoretic system.
+Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms and higher morphisms, while topologically we may consider sets with the discrete topology.
+More generally, we may consider groupoids or spaces that are \emph{equivalent} to ones of this sort; since everything we do is up to homotopy, it makes no difference.
+
+Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopy information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
+Fortunately, because everything in homotopy type theory is automatically functorial/continuous, it turns out to be sufficient to ask this at the bottom level.
+
+\begin{defn}
+  A type $A$ is a \textbf{set} if for all $x,y:A$ and all $p,q:x=y$, we have $p=q$.
+\end{defn}
+
+More precisely, the proposition $\isset(A)$ is defined to be the type
+\[ \isset(A) \defeq \prd{x,y:A}{p,q:x=y} (p=q). \]
+In Chapter~\ref{cha:hlevels} we will make precise the sense in which this ``suffices for all higher levels'', but as an example, we observe that it suffices for the next level up.
+
+\begin{lem}\label{thm:isset-is1type}
+  If $A$ is a set (that is, $\isset(A)$ is inhabited), then for any $x,y:A$ and $p,q:x=y$ and $r,s:p=q$, we have $r=s$.
+\end{lem}
+\begin{proof}
+  Suppose $f:\isset(A)$; then for any $x,y:A$ and $p,q:x=y$ we have $f(x,y,p,q):p=q$.
+  Fix $x$, $y$, and $p$, and define $g: \prd{q:x=y} (p=q)$ by $g(q) \defeq f (x,y,p,q)$.
+  Then for any $r:q=q'$, we have $\apdfunc{g}(r) : \trans{r}{g(q)} = g(q')$.
+  By \autoref{thm:transport-paths}, therefore, we have $g(q) \ct r = g(q')$.
+
+  In particular, suppose given $x,y,p,q,r,s$ as in the lemma statement, and define $g$ as above.
+  Then $g(p) \ct r = g(q)$ and also $g(p) \ct s = g(q)$, hence by cancellation we have $r=s$.
+\end{proof}
+
+The sets in homotopy type theory are not like the sets in ZF set theory, in that there is no global ``membership predicate'' $\in$.
+They are more like the sets used in structural mathematics and in category theory, whose elements are ``abstract points'' to which we give structure with functions and relations.
+This is all we need in order to use them as a foundational system for most set-based mathematics; we will see some examples in Chapter~\ref{cha:set-math}.
+
+What types are sets?
+In Chapter~\ref{cha:hlevels} we will study a more general form of this question in depth, but for now we can observe some easy examples.
+
+\begin{eg}
+  The type \unit is a set.
+  For by \autoref{thm:path-unit}, for any $x,y:\unit$ we have $\eqv{(x=y)}{\unit}$.
+  Since any two elements of \unit are equal, this implies that any two elements of $x=y$ are equal.
+\end{eg}
+
+\begin{eg}
+  The type $\emptyset$ is a set, for given any $x,y:\emptyset$ we may deduce anything we like by contradiction.
+\end{eg}
+
+The type \nat of natural numbers is also a set; we defer the proof of this fact to Chapter \S\ref{cha:hlevels}.
+Most of the type forming operations we have considered so far also preserve sets.
+
+\begin{eg}
+  If $A$ and $B$ are sets, then so is $A\times B$.
+  For given $x,y:A\times B$ and $p,q:x=y$, by \autoref{thm:path-prod} we have $p= \pairpath(\projpath1(p),\projpath2(p))$ and $q= \pairpath(\projpath1(q),\projpath2(q))$.
+  But $\projpath1(p)=\projpath1(q)$ since $A$ is a set, and $\projpath2(p)=\projpath2(q)$ since $B$ is a set; hence $p=q$.
+\end{eg}
+
+\begin{eg}
+  If $A$ is \emph{any} type and $B:A\to \type$ is such that for each $x:A$, the type $B(x)$ is a set, then the type $\prd{x:A} B(x)$ is a set.
+  For suppose $f,g:\prd{x:A} B(x)$ and $p,q:f=g$.
+  By function extensionality, we have $p = {\funext (x \mapsto \happly(p,x))}$ and likewise $q = {\funext (x \mapsto \happly(q,x))}$.
+  But for any $x:A$, we have $\happly(p,x):f(x)=g(x)$ and also $\happly(q,x):f(x)=g(x)$, so since $B(x)$ is a set we have $\happly(p,x) = \happly(q,x)$.
+  Now using function extensionality again, we conclude that the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are $p$ and $q$.
+\end{eg}
+
+For more examples, see Exercises~\ref{ex:isset-coprod} and~\ref{ex:isset-sigma}.
+However, not all types are sets.
+
+\begin{eg}
+  The universe \type is not a set.
+  To prove this, it suffices to exhibit a type $A$ and a path $p:A=A$ which is not equal to $\refl A$.
+  Take $A=\unit+\unit$, and let $f:A\to A$ be defined by $f(\inl(\ttt))\defeq \inr(\ttt)$ and $f(\inr(\ttt))\defeq \inl(\ttt)$.
+  Then $f(f(x))=x$ for all $x$ (by an easy case analysis), so $f$ is an equivalence.
+  Hence, by univalence, $f$ gives rise to a path $p:A=A$.
+
+  If $p$ were equal to $\refl A$, then (again by univalence) $f$ would equal the identity function of $A$.
+  But this would imply that $\inl(\ttt)=\inr(\ttt)$, contradicting the disjointness of injections from \S\ref{sec:compute-coprod}.
+\end{eg}
+
+We will study other types that are not sets in more detail starting in Chapter~\ref{cha:hits}.
+
 
 \section*{Notes}
 \label{sec:notes}
@@ -498,6 +582,14 @@ It was originally motivated by semantic considerations; see~\cite{klv:ssetmodel}
 
 \begin{ex}\label{ex:ap-sigma}
   State and prove a generalization of \autoref{thm:ap-prod} from cartesian products to $\Sigma$-types.
+\end{ex}
+
+\begin{ex}\label{ex:isset-coprod}
+  Prove that if $A$ and $B$ are sets, then so is $A+B$.
+\end{ex}
+
+\begin{ex}\label{ex:isset-sigma}
+  Prove that if $A$ is a set and $B:A\to \type$ is a dependent type such that $B(x)$ is a set for all $x:A$, then $\sm{x:A} B(x)$ is a set.
 \end{ex}
 
 % Local Variables:

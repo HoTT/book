@@ -51,15 +51,19 @@
 %%	- Coq development, new proof assistant, etc. - ok
 %%
 
-Homotopy type theory is a new field of mathematics combining  aspects of algebraic topology and mathematical logic in a surprising way.  It is based on a recently discovered connection between homotopy theory, a branch of algebraic topology, and type theory, a branch of mathematical logic and theoretical computer science.  Although currently the focus of intense investigation, it is becoming increasingly clear that these connections are just the beginning of a subject that will take more time and more hard work to fully understand.  It touches on topics as seemingly distant as the homotopy groups of the spheres and the decidability of type checking algorithms for computational proof assistants.  It includes a new definition of a weak $\infty$-groupoid and a new axiom at the very foundation of mathematics -- Voevodsky's beautiful and subtle Univalence Axiom.  One consequence of that axiom is that isomorphic structures are logically identical, a principle that mathematicians have been happily using on workdays, despite its incompatibility with the ``official" doctrines of conventional foundations.  Another application is in working smoothly with higher inductive types, which provide direct, logical descriptions of some of the basic spaces and constructions of topology: spheres, cylinders, truncations, etc., permitting an entirely new kind of ``type theory of homotopy types".   Add in the ever-improving  implementations of type theory in computer proof assistants, and we arrive at a new conception of foundations of mathematics, with intrinsic homotopical content, an ``invariant" conception of the objects of mathematics, and a machine implementation which can serve as a practical aid to the working mathematician.  This is the \emph{univalent foundations program}, and this book is intended as a first systematic exposition of its basics, and an example of this new style of reasoning. 
+Homotopy type theory is a new field of mathematics combining aspects of several different areas in a surprising way.  It is based on a recently discovered connection between homotopy theory, a branch of algebraic topology, and type theory, a branch of mathematical logic and theoretical computer science.  Although currently the focus of intense investigation, it is increasingly clear that these connections are just the beginning of a subject that will take more time and more hard work to fully understand.  It touches on topics as seemingly distant as the homotopy groups of  spheres and the decidability of type checking algorithms for computational proof assistants.  It includes a new definition of a weak $\infty$-groupoid and a new axiom at the very foundation of mathematics -- Voevodsky's subtle and beautiful Univalence Axiom.  One consequence of that axiom is that isomorphic structures are logically identical, a principle that mathematicians have been happily using on workdays, despite its incompatibility with the ``official" doctrines of conventional foundations.  Another application is in working smoothly with higher inductive types, which provide direct, logical descriptions of some of the basic spaces and constructions of topology: spheres, cylinders, truncations, etc., permitting an entirely new kind of ``type theory of homotopy types".   Add in the ever-improving  implementations of type theory in computer proof assistants, and we arrive at a new conception of foundations of mathematics, with intrinsic homotopical content, an ``invariant" conception of the objects of mathematics, and a machine implementation which can serve as a practical aid to the working mathematician.  This is the \emph{univalent foundations program}, and this book is intended as a first systematic exposition of its basics, and an example of this new style of reasoning. 
 
 
 \subsection*{Type theory}
 
-Type theory was originally invented by Bertrand Russell in 1908 \cite{Russell:1908}, as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. It was later developed as a rigorous formal system  in its own right (under the name ``$\lambda$-calculus") by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, it still has numerous applications, especially in computer science and the theory of programming languages \cite{Pierce:2002tp}.   Per Martin-L\"{o}f \cite{MartinLof:1998tw,MartinLof:1975tb,MartinLof:1982bn,MartinLof:1984tr}, among others,
-developed a generalization of Church's system which is now usually called dependent, constructive, or simply {\bf Martin\--L\"of type theory}; this is the basis of the system that we consider here. It was originally intended as a rigorous framework for the formalization of constructive mathematics.  Over the last 40 years it has also become clear that there are close connections between type theory and category theoretic approaches to logic and foundations, particularly topos theory \cite{elephant}
+Type theory was originally invented by Bertrand Russell in 1908 \cite{Russell:1908}, as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. It was later developed as a rigorous formal system  in its own right (under the name ``$\lambda$-calculus") by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory still has numerous applications, especially in computer science and the theory of programming languages \cite{Pierce:2002tp}.   Per Martin-L\"{o}f \cite{MartinLof:1998tw,MartinLof:1975tb,MartinLof:1982bn,MartinLof:1984tr}, among others,
+developed a generalization of Church's system which is now usually called dependent, constructive, or simply {\bf Martin\--L\"of type theory}; this is the basis of the system that we consider here. It was originally intended as a rigorous framework for the formalization of constructive mathematics.  
 
-In type theory, unlike set theory, objects are classified using a primitive notion of \emph{type}, similar to the data-types used in programming languages.  These elaborately structured types can be used to express detailed specifications of the objects classified, giving rise to principles of reasoning about these objects.  To take a very simple example, the objects of a product type $A\times B$ are known to be of the form $\langle a, b\rangle$, and so one automatically knows how to construct them and how to decompose them. This is one aspect of type theory that has led to its extensive use in verifying the correctness of computer programs.  The clear reasoning principles associated with the construction of types also form the basis of modern {\bf computer proof assistants}, which are used for formalizing mathematics and verifying the correctness of formalized proofs.  We return to this aspect of type theory below.  (From the point of view of category theory, this is like saying that a product is determined by its universal property.)
+%Over the last 40 years it has also become clear that there are close connections between type theory and category theoretic approaches to logic and foundations, particularly topos theory \cite{elephant}
+
+In type theory, unlike set theory, objects are classified using a primitive notion of \emph{type}, similar to the data-types used in programming languages.  These elaborately structured types can be used to express detailed specifications of the objects classified, giving rise to principles of reasoning about these objects.  To take a very simple example, the objects of a product type $A\times B$ are known to be of the form $\langle a, b\rangle$, and so one automatically knows how to construct them and how to decompose them. Similarly, an object of function type $A\to B$ can be acquired from an object of type $B$ parametrized by objects of type $A$, and can be evaluated at an argument of type $A$.  This rigidly predictable behavior of all objects (as opposed to set theory's more liberal formation principles, allowing inhomogeneous sets) is one aspect of type theory that has led to its extensive use in verifying the correctness of computer programs.  The clear reasoning principles associated with the construction of types also form the basis of modern {\bf computer proof assistants}, which are used for formalizing mathematics and verifying the correctness of formalized proofs.  We return to this aspect of type theory below.  
+
+%(From the point of view of category theory, this is like saying that a product is determined by its universal property.)
 
 %For example, the powerful Coq proof assistant \cite{coq} has recently been used to formalize and verify the correctness of the proof of the celebrated Feit-Thompson Odd-Order theorem \cite{gonthier}.
 
@@ -75,7 +79,7 @@ $H(x, 0) = f (x)$  and $H(x, 1) = g(x)$. The homotopy $H$ may be thought of as a
 
 Homotopy type theory (``HoTT") is a new field of mathematics which interprets type theory from a homotopical perspective.
 In homotopy type theory, one regards the types as spaces, or homotopy types, and the logical constructions (such as the product $A\times B$) as homotopy-invariant constructions on spaces.   In this way, one is able to manipulate spaces directly without first having to develop point-set topology.
-To briefly explain this perspective, consider the basic concept of type theory, namely that
+To briefly explain this perspective, consider first the basic concept of type theory, namely that
 the \emph{term} $a$ is of \emph{type} $A$, which is written:
 $$
   a:A.
@@ -120,19 +124,47 @@ It is worth emphasizing that in the new system, however, such formalization has 
 
 \subsection*{Constructivity} 
 
-Constructive math vs. general: no proof by contradiction/ proof relevance/
-- Proof relevance and classical logic
 
-- table relating props as types as spaces
+One of the most striking differences between classical foundations and type theory is the idea of \emph{proof relevance}, according to which mathematical statements, and even their proofs, become first-class mathematical objects.  In type theory, one represents mathematical statements by types, which can be regarded simultaneously as both mathematical constructions and mathematical assertions, a conception also known as \emph{propositions as types}.  Accordingly, a term $a : A$ can be regarded as both an element of the type $A$ (or in HoTT, a point of the space), and at the same time, a proof of the proposition $A$.  To take an example, suppose we have sets $A$ and $B$ (discrete homotopy types), and consider the statement ``$A$ is isomorphic to $B$."  In type theory, this can be rendered as:
+\[
+\mathsf{Iso}(A,B)\ :=\ \Sigma_{f : A\to B}\Sigma_{g : B\to A}\left(\, \left(\Pi_{x:A}\, gf(x) = x\right) \times \left(\Pi_{y:B}\, fg(y) = y\right)\, \right)
+\]
 
-\subsection*{Weak points and open problems} 
+Reading the type constructors $\Sigma, \Pi, \times$  here  as ``there exists'', ``for all", and ``and" respectively yields the usual formulation of ``$A$ and $B$ are isomorphic"; on the other hand, reading them as sums and products yields the \emph{type of all isomorphisms} between $A$ and $B$ !  To prove that $A$ and $B$ are isomorphic, one  constructs a proof $p : \mathsf{Iso}(A,B)$, which is therefore the same  as constructing an isomorphism between $A$ and $B$, i.e. exhibiting a pair of functions $f, g$ together with \emph{proofs} that their composites are the respective identity maps.  The latter proofs, in turn, are nothing but homotopies of the appropriate sorts.  In this way, \emph{proving a proposition is the same as constructing a term of some particular type.}
 
-For those interested in contributing to this new branch of mathematics, it may be encouraging to know that there are many interesting open questions.  The most pressing of them is the ``constructivity'' of the Univalence Axiom itself, posed by Voevodsky in \cite{Vo2012}.  
+Similarly, to prove a statement of the form ``$A$ and $B$" is just to prove $A$ and to prove $B$, i.e.\ to give a term of type $A\times B$.  And to prove that $A$ implies $B$ is just to find a term $A\to B$, i.e.\ a function from $A$ to $B$ (determining a mapping of proofs of $A$ to proofs of $B$).  This ``constructive" conception is what gives type theory its good computational character, for every proof that something exists, for example, carries with it enough information to actually find such an object; and from a proof that  ``$A$ or $B$" holds, one can obtain either a proof that $A$ holds or one that $B$ holds.  
+
+Among other things, this conception has the advantage that the {\bf axiom of choice} becomes a provable principle of reasoning: the type theoretic notion of ``there exists" is strong enough to ensure that, if for every $x: A$ there exists a $y:B$ such that $R(x,y)$, then there is a function $f : A\to B$ such that, for all $x:A$, we have $R(x, f(x))$.  On the other hand, the conception of ``or" is so strong that the usual {\bf law of excluded middle} fails: for if we always had a proof of ``$A$ or not $A$", then for \emph{every} proposition $A$ we would either have a proof of it or a refutation -- which would of course be nice, but is unfortunately not the case.  This implies in particular that the usual method of \emph{proof by contradiction} cannot in general be used to establish a positive statement, but only one of the form ``it's not the case that ...".  
+
+Thus the general logic of ``proposition as types" is not classical; however, it is not exactly the usual ``intuitionistic" logic either, since it does have e.g.\ the axiom of choice.  This combination, sometimes called ``constructive logic", differs from those others in interesting and subtle ways.  One very recent contribution of HoTT is the discovery by Voevodsky of the different levels of so-called \emph{homotopy $n$-types}, which are logically definable classes of types that behave more like logical propositions, sets, $1$-truncated spaces, and so on.  Recognition of this hierarchy leads to a much finer analysis of the relation between logic and type theory than the propositions-as-types conception, the further investigation of which is one of our objects of study.
+
+We summarize the different points of view of the type-theoretic operations in the following table.
+
+\begin{center}
+  \begin{tabular}{c|c|c|c}
+  	Type Theory & Logic & Set Theory & HoTT\\\hline
+  	$A$ & proposition & set & space\\
+    	$a:A$ & proof & element & point \\
+    	$x:A \vdash B(x)$ & predicate & family of sets & fibration \\
+    	$x:A \vdash b(x) : B(x)$ & conditional proof & family of elements & section\\
+	$\Sigma_{x:A}B(x)$ &  $\exists_{x:A}B(x)$ & disjoint sum & total space\\
+	$\Pi_{x:A}B(x)$ &  $\forall_{x:A}B(x)$ & product & space of sections\\
+	$\mathsf{Id}_{A}$ & identity relation & $\{\langle x,x\rangle | x\in A\}$ & path space $A^I$
+  \end{tabular}
+\end{center}
 
 
-\subsection*{Some references?}
+\subsection*{Open problems} 
 
-Some other surveys and introductions?
+For those interested in contributing to this new branch of mathematics, it may be encouraging to know that there are many interesting open questions.  Perhaps the most pressing of them is the ``constructivity'' of the Univalence Axiom, posed by Voevodsky in \cite{Vo2012}.  The basic system of type theory has the important property of \emph{strong normalization}, which yields a decision procedure for equality of terms, as well as an algorithm for determining whether a term has a specified type and thus ``whether a purported proof is really a proof".  Does the system still have this property, or an equally useful one, if one adds the Univalence Axiom?  What about if one adds other homotopically motivated constructions, like the \emph{higher inductive types} used to introduce the spheres $S^n$?  These questions remain open at the present time --- although methods are currently being developed to try to find answers.
+
+Another basic issue is the difficulty of working with types, like the natural numbers, which are essentially sets (i.e.\ discrete homotopy types) with only trivial paths, and which nonetheless possess many non-reflexivity identity terms, albeit essentially trivial ones.  These ``meaningless" identity terms introduce needless complications into arguments and constructions, and so it would be convenient to have a systematic way of eliminating or collapsing them to judgmental equalities.  In some cases (like the definition of a simplicial type), the proliferation of such superfluous identity terms makes it very difficult, if not impossible, to formulate what should be a straightforward concept.
+
+But by far the largest field of work to be done is in the on-going formalization of everyday mathematics in this new system.  Recent successes in formalizing some facts from basic homotopy theory have been encouraging, but, obviously, much work remains to be done.
+
+%\subsection*{Some references?}
+%
+%Some other surveys and introductions?
 
 }%%%%%%%%%%%%% end of scope of local macros
 

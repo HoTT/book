@@ -1,3 +1,5 @@
+\newcommand{\com}[3]{\mathtt{swap}_{#1,#2}(#3)}
+
 \chapter{Equivalences}
 \label{cha:equivalences}
 
@@ -56,6 +58,31 @@ For each type $A$, the identity map $\idfunc[A]\defeq \lambda_{x:A}x :A\ra A$ is
 \end{enumerate}
 \end{lem}
 
+\begin{lem}\label{lem:hom-nat}
+(Naturality of homotopies) Let $h : f \sim g$ be a homotopy between $f,g : A \to B$. For any path $p : \id[A]{x}{y}$, the following diagram commutes:
+\begin{align*}
+\xymatrix{
+fx \ar[r]^{fp} \ar[d]_{hx} & fy \ar[d]^{hy} \\
+gx \ar[r]_{gp} & gy
+}
+\end{align*}
+The higher path witnessing this will be denoted by $h(p)$.
+\end{lem}
+
+\begin{cor}\label{cor:hom-fg}
+Let $h : P \sim \idfunc[A]$ be a homotopy, with $f : A \to A$. Then for any $x : A$ we have \[ h(fx) = f(hx) \] The above path will be denoted by $\com{h}{P}{x}$.
+\end{cor}
+\begin{proof}
+By naturality of $h$ the following diagram commutes:
+\begin{align*}
+\xymatrix{
+ffx \ar[r]^{f(hx)} \ar[d]_{h(fx)} & fx \ar[d]^{hx} \\
+fx \ar[r]_{hx} & x
+}
+\end{align*}
+Thus $h(fx) = f(hx)$ as desired.
+\end{proof}
+
 %% TODO: This should probably be folded into wherever we discuss function extensionality, so that $(f\sim g)\eqv (f=g)$.
 
 
@@ -97,7 +124,7 @@ $g\circ f\sim \idfunc[A]$/$f\circ g\sim \idfunc[B]$.
 The following are logically equivalent for $f:A\ra B$.
 \begin{enumerate}
 \item $f$ is a bijection.
-\item $\forall_{y:B}\exists_{x:A}\;\; (fx=y\;\wedge \forall_{x':A}\;\; (fx'=y\;\ra\; x=x'))$.
+\item $\forall_{y:B}\exists_{x:A}\;\; (fx=y\;\wedge \forall_{x':A}\;\; (fx'=y\;\ra\; x=x'))$.\footnote{One could consider calling this notion ``bijection`` and the other one ``weak bijection``, to match the terminology for isomorphism and weak isomorphism.}
 \item $f$ is an isomorphism.
 \item $f$ is a weak isomorphism.
 \end{enumerate}
@@ -118,27 +145,31 @@ uses the non-dependent version of the type theoretic axiom of choice.  This axio
 %\end{defn}
 %}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{defn} A function $f:A\ra B$ is an {\em adjoint isomorphism} if there are $g:B\ra A$, $\eta:\forall_{x:A}\; [g(fx)=x]$ and $\epsilon:\forall_{y:B}\; [f(gy)=y]$ such that 
-  \[\forall_{x:A}\;[\map{f}{\eta x} = \epsilon(fx)]\]
+\begin{defn} A function $f:A\ra B$ is an {\em adjoint isomorphism} if there are $g:B\ra A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \circ g = \idfunc[B]$ such that there exists a path
+  \[\tau : \forall_{x:A}\;\map{f}{\eta x} = \epsilon(fx)\]
 We write $A\cong^f_a B$ if there is an adjoint isomorphism $A\ra B$.
 \end{defn}
 We note that in the above definition, the coherence condition relating $\eta$ and $\epsilon$ only involves $f$. There is an analogous coherence condition involving $g$:
-  \[\forall_{y:B}\;[\map{g}{\epsilon y} = \eta(gy)]\]
-We write $A\cong^g_a B$ for the notion of adjoint isomorphism which uses the above condition instead. Fortunately, it turns out each of the conditions implies the other one: 
+  \[\upsilon : \forall_{y:B}\; \map{g}{\epsilon y} = \eta(gy)\]
+We write $A\cong^g_a B$ for the notion of adjoint isomorphism which uses the above condition instead. Fortunately, it turns out each of the conditions implies the other one:
 
-\begin{thm}\label{thm:coh-equiv}
-For any types $A, B$, we have $(A\cong^f_a B) \leftrightarrow (A\cong^g_a B)$.
-\end{thm}
+\begin{lem}\label{lem:coh-equiv}
+For $f : A \to B$, $g:B\ra A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \circ g = \idfunc[B]$, the following conditions are equivalent:
+\begin{itemize}
+\item $\forall_{x:A}\;\map{f}{\eta x} = \epsilon(fx)$
+\item $\forall_{y:B}\; \map{g}{\epsilon y} = \eta(gy)$
+\end{itemize}
+\end{lem}
 \begin{proof}
-Since the definition is symmetric, it suffices to prove one direction. Let $(f,g,\eta,\epsilon,\tau)$ be an element of $A\cong^f_a B$. In order to prove $A\cong^g_a B$, it suffices to exhibit an element $\theta : \forall_{y:B}\;[\map{g}{\epsilon y} = \eta(gy)]$. Fix $y : B$. Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram :
+It suffices to show one direction; the other one is obtained by swapping $A/B$, $f/g$, and $\eta/\epsilon$. Let $\tau : \forall_{x:A}\;\map{f}{\eta x} = \epsilon(fx)$. Fix $y : B$. Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram :
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{g(\epsilon (fgy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
-Using $\tau$, we have $\epsilon (fgy) = f (\eta (gy))$, thus
+Using $\tau(gy)$ gives us
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{gf(\eta (gy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
-Now we have $gf(\eta(gy)) = \eta(gfgy)$, thus
+Since $\eta$ commutes with $f \circ g$, we have
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{\eta (gfgy)}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
@@ -149,7 +180,52 @@ However, by naturality of $\eta$ we also have
 Thus we have $g(\epsilon y) = \eta(g y)$ as desired.
 \end{proof}
 
-Now we want to show that the various forms of equivalence introduced are in fact equivalent. The following lemma will be useful.
+Now we want to show that the various forms of equivalence introduced are in fact equivalent. The following lemmas will be useful.
+
+\begin{cor}\label{lem:higher-hom}
+For any adjoint isomorphism $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ and any $p : \id[A]{x}{x'}$ the following diagram commutes:
+\begin{align*}
+\xymatrix{
+f(\eta x') \ar[dd]_{\tau x'} \ar[r]^{\mathit{via \;} \eta(p) \;\;\;\;\; \; \;\;\;\;\;\;} & f(\opp{gf(p)} \ct \eta x \ct p) \ar[d] \\
+& \opp{fgf(p)} \ct f(\eta x) \ct f(p) \ar[d]_{\mathit{via \;} \tau x} \\
+\epsilon(f x') \ar[r]_{\mathit{via \;} \epsilon(fp)\;\;\;\;\; \; \;\;\;\;\;\;\;\;\;\;}  & \opp{fgf(p)} \ct \epsilon (fx) \ct f(p)}
+\end{align*}
+Similarly, for any $(f,g,\eta,\epsilon,\upsilon) : A \cong_a^g B$ and any $p : \id[A]{y}{y'}$ the following diagram commutes:
+\begin{align*}
+\xymatrix{
+g(\epsilon y') \ar[dd]_{\upsilon y'} \ar[r]^{\mathit{via \;} \epsilon(p) \;\;\;\;\; \; \;\;\;\;\;\;} & g(\opp{fg(p)} \ct \eta y \ct p) \ar[d] \\
+& \opp{gfg(p)} \ct g(\epsilon y) \ct g(p) \ar[d]_{\mathit{via \;} \upsilon y} \\
+\eta(g y') \ar[r]_{\mathit{via \;} \eta(gp)\;\;\;\;\; \; \;\;\;\;\;\;\;\;\;\;}  & \opp{gfg(p)} \ct \eta (gy) \ct g(p)}
+\end{align*}
+\end{cor}
+\begin{proof}
+TODO
+\end{proof}
+
+\begin{lem}\label{lem:coh-fg}
+For any adjoint isomorphism $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ the following diagram commutes for each $x : A$:
+
+\begin{align*}
+\xymatrix{
+f(\eta (g f x)) \ar[d]_{\mathit{via \; } \com{\eta}{g \circ f}{x}} \ar[r]^{\tau(gfx)} &
+\epsilon (fgfx) \ar[d]^{\com{\epsilon}{f\circ g}{fx}} \\
+fgf (\eta x) \ar[r]_{\mathit{via \;} \tau x} &
+fg(\epsilon (f x))} 
+\end{align*}
+
+Similarly, for any $(f,g,\eta,\epsilon,\upsilon) : A \cong_a^g B$ the following diagram commutes for each $y : B$:
+
+\begin{align*}
+\xymatrix{
+g(\epsilon (f g y)) \ar[d]_{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \ar[r]^{\upsilon(fgy)} &
+\eta (gfgy) \ar[d]^{\com{\eta}{g\circ f}{gy}} \\
+gfg (\epsilon y) \ar[r]_{\mathit{via \;} \upsilon y} &
+gf(\eta (g y))} 
+\end{align*}
+\end{lem}
+\begin{proof}
+TODO
+\end{proof}
 
 \begin{lem}\label{lem:hfib}
 Let $f : A \to B$ and $y : B$. For any $p, p' : \mathtt{hfiber} \; f \;y$, we have
@@ -159,33 +235,36 @@ Let $f : A \to B$ and $y : B$. For any $p, p' : \mathtt{hfiber} \; f \;y$, we ha
 We use the known interactions between $\Sigma$-types, identity types, and transports.
 \end{proof}
 
+We can now establish equivalence among the various equivalences encountered thus far.
+
 \begin{thm}\label{thm:equivs-equiv}
 For any types $A, B$, we have 
 \begin{align*}
 (A = B) & \simeq (A \simeq B) \\
        & \simeq (A\cong^f_a B) \\
-       & \simeq (A\cong^g_a B) \\ 
+       & \simeq (A\cong^g_a B) \\
+       & \simeq (A \cong_w B) \\
+       & \simeq (B \cong_w A) \\
         & \simeq (B\cong^g_a A) \\
         & \simeq (B\cong^f_a A) \\
         & \simeq (B \simeq A) \\
         & \simeq (B = A)
 \end{align*}
-TODO: Do we also want to add $A \cong_w B$ to this list?
 \end{thm}
 
 \begin{proof}
-We have the following equivalences.
+It suffices to exhibit isomorphisms among the various types.
 \begin{description}
-\item [$\mathit{0)} \; (A = B) \simeq (B = A)$]
+\item [$\mathit{0)} \; (A = B) \cong (B = A)$]
 Basic properties of paths.
 
-\item[$\mathit{1)} \; (A = B) \simeq (A \simeq B)$]
+\item[$\mathit{1)} \; (A = B) \cong (A \simeq B)$]
 Univalence.
 
-\item[$\mathit{2)} \; (B = A) \simeq (B \simeq A)$]
-Univalence.
+\item[$\mathit{2)} \; (B = A) \cong (B \simeq A)$]
+Follows from $\mathit{2)}$ by swapping $A$ and $B$.
 
-\item[$\mathit{3)} \; (A \simeq B) \simeq (A \cong^f_a B)$] We proceed in 4 steps:
+\item[$\mathit{3)} \; (A \simeq B) \cong (A \cong^f_a B)$] We proceed in 4 steps:
 \begin{enumerate}
 \item Define a function $F : (A \simeq B) \to (A \cong^f_a B)$. Fix a function $f : A \to B$ and a proof $P(y) := (c(y), h(y))$ that every homotopy fiber of $f$ is contractible.
 We define an inverse mapping $g : B \to A$ by mapping each $y : B$ to the center of contraction of the h-fiber at $y$:
@@ -206,13 +285,12 @@ Let $E'(p,x)$ denote the above equivalence, defined in the obvious way by concat
 \medskip
 
 We can then define $\eta$ and $\tau$ (roughly) by constructing a path from $(gfx,\epsilon(fx))$ to $(x,\refl{fx})$ in the h-fiber at $fx$. More precisely, we put
-and put
 \begin{align*}
-\eta(x) & \defeq \proj{1} \chi \\
-\tau(x) & \defeq \proj{2} \chi
+\eta(x) & \defeq \proj{1} (\chi(x)) \\
+\tau(x) & \defeq \proj{2} (\chi(x))
 \end{align*}
 where
-\begin{align*} \chi \defeq E'(c(fx), x) \; (E(fx, c(fx), (x,\refl{fx})) \; [h(fx)(x, \refl{fx})]) \end{align*} \\
+\begin{align*} \chi(x) \defeq E'(c(fx), x) \; (E(fx, c(fx), (x,\refl{fx})) \; (h(fx)(x, \refl{fx}))) \end{align*} \\
 
 
 \item Define a function $G : (A \cong^f_a B) \to (A \simeq B)$. Fix an adjoint isomorphism $(f,g,\eta,\epsilon,\tau)$. We want to show that every homotopy fiber of $f$ is contractible. Fix $y : B$. As our center of contraction for $\mathtt{hfiber} \; f \;y$ we put 
@@ -272,40 +350,142 @@ f(\refl{gfx} \ct \eta x) \ar[d] \\
 f(\eta x) \ar[d] _{\tau x} \\
 \epsilon (f x)}
 \end{align*}
-Thus $(n'x,\tau' x) = (\refl{gfx} \ct \eta x, \theta'')$. All that remains is to show that $(\eta x, \tau x) = (\refl{gfx} \ct \eta x, \theta'')$. Now it is easy to see that for any $\delta : \id{\gamma_1}{\gamma_2}$ in $gfx = x$, $\delta_*$ acts by precomposition with $\delta$. If we let $\delta$ be the obvious path from $\eta x$ to $\refl{gfx} \ct \eta x$, then $\trans{\delta}{\tau}$ is precisely $\theta''$. This finishes the proof.
+Thus $(n'x,\tau' x) = (\refl{gfx} \ct \eta x, \theta'')$. All that remains is to show that $(\eta x, \tau x) = (\refl{gfx} \ct \eta x, \theta'')$. Now it is easy to see that for any $\delta : \id{\gamma_1}{\gamma_2}$ in $gfx = x$, $\delta^*$\footnote{What is the notation for contravariant transport?} acts by precomposition with $f(\delta)$. If we let $\delta$ be the obvious path from $\refl{gfx} \ct \eta x$ to $\eta x$, then $\delta^*(\tau)$ is precisely $\theta''$. This finishes the proof.
 \end{enumerate}
 
-\item[$\mathit{4)} \; (B \simeq A) \simeq (B \cong^f_a A)$] Follows from $\mathit{3)}$ by swapping $A$ and $B$.
+\item[$\mathit{4)} \; (B \simeq A) \cong (B \cong^f_a A)$] Follows from $\mathit{3)}$ by swapping $A$ and $B$.
 
-\item[$\mathit{5)} \; (A \cong^g_a B) \simeq (B \cong^f_a A)$] We simply swap $f$ vs. $g$, and $\eta$ vs. $\epsilon$.
+\item[$\mathit{5)} \; (A \cong^f_a B) \cong (B \cong^g_a A)$] We simply swap $f/g$, and $\eta/\epsilon$.
 
-\item[$\mathit{5)} \; (A \cong^f_a B) \simeq (B \cong^g_a A)$] Same as above.
+\item[$\mathit{6)} \; (B \cong^f_a A) \cong (A \cong^g_a B)$] Follows from $\mathit{5)}$ by swapping $A$ and $B$.
 
+\item[$\mathit{7)} \; (A \cong^g_a B) \cong  (A \cong_w B)$] We proceed in 4 steps:
+\begin{enumerate}
+\item Define a function $F : (A \cong^g_a B) \to (A \cong_w B)$. This is very simple: given an adjoint isomorphism $(f,g,\eta,\epsilon,\upsilon) : A \cong^g_a B$, 
+we take $(f,g,g,\eta,\epsilon)$ to be our desired weak isomorphism. \\
+
+
+
+\item Define a function $G : (A \cong_w B) \to (A \cong^g_a B)$. Given a weak isomorphism $(f,g,h,\eta,\epsilon)$, our adjoint isomorphism will be $(f,g,\eta,\epsilon',\upsilon')$, for suitable $\epsilon'$ and $\upsilon'$. 
+Namely, we put
+\begin{align*}
+\epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (h y)) \ct \epsilon y
+\end{align*}
+Then for any $y : B$ we have
+\begin{align*}
+g(\epsilon'(y)) & = \opp{gfg(\epsilon y)} \ct gf(\eta (h y)) \ct g(\epsilon y) \\
+& = \opp{gfg(\epsilon y)} \ct \eta (gfhy) \ct g(\epsilon y) \\
+& = \eta(gy)
+\end{align*}
+where the second equality follows since $\eta$ commutes with $g \circ f$ and the third equality follows by naturality of $\eta$. We let $\upsilon'(y)$ be the above chain of equalities. \\
+
+
+
+\item Show that $G \circ F \sim \idfunc[A \cong^g_a B]$. Fix an adjoint isomorphism $(f,g,\eta,\epsilon,\upsilon)$. It is easy to see that $G(F(f,g,\eta,\epsilon,\upsilon)) \equiv (f,g,\eta, \epsilon', \upsilon')$, where
+\begin{align*}
+\epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (g y)) \ct \epsilon y
+\end{align*}
+and $\upsilon'(y)$ is the following chain of paths:
+
+\begin{align*}
+\xymatrix{
+g(\opp{fg(\epsilon y)} \ct f(\eta (g y)) \ct \epsilon y) \ar[d] \\
+\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
+\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
+\eta(g y)}
+\end{align*}
+It thus suffices to show that for each $y : B$, we have $(\epsilon y,\upsilon y) = (\epsilon' y,\upsilon' y)$ in the type $\sm{\gamma : fgy = y} g(\gamma) = \eta(g y)$. It is easy to see that for any $\delta : \gamma_1 = \gamma_2 : fgy = y$, $\delta^*$ acts by precomposition with $g(\delta)$. Now let $\delta : \epsilon y = \epsilon' y$ be the path 
+
+\begin{align*}
+\xymatrix{
+\epsilon y \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
+\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\
+\opp{fg(\epsilon y)} \ct fg (\epsilon y) \ct \epsilon y \ar[d]^{\mathit{via \;} \upsilon y} \\
+\opp{fg(\epsilon y)} \ct f (\eta(g y)) \ct \epsilon y}
+\end{align*}
+It thus remains to show that $\upsilon y$ is equal to the path
+
+\begin{align*}
+\xymatrix{
+g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
+g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\
+g(\opp{fg(\epsilon y)} \ct fg (\epsilon y) \ct \epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \\
+g(\opp{fg(\epsilon y)} \ct f (\eta(g y)) \ct \epsilon y) \ar[d] \\
+\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
+\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
+\eta(g y)}
+\end{align*}
+Now the following diagram clearly commutes:
+
+\begin{align*}
+\xymatrix{
+g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} & \\
+g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \ar[r] &
+\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\  
+g(\opp{fg(\epsilon y)} \ct fg (\epsilon y) \ct \epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \ar[r] &
+\opp{gfg(\epsilon y)} \ct gfg (\epsilon y) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \\
+g(\opp{fg(\epsilon y)} \ct f (\eta(g y)) \ct \epsilon y) \ar[r] &
+\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
+ & \opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
+ & \eta(g y)}
+\end{align*}
+This means it suffices to show that $\upsilon y$ is equal to the path
+
+\begin{align*}
+\xymatrix{
+g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
+g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d] \\
+\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\
+\opp{gfg(\epsilon y)} \ct gfg (\epsilon y) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \\
+\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
+\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
+\eta(g y)}
+\end{align*}
+Now by Lem.\ref{lem:coh-fg} we have
+
+\begin{align*}
+\xymatrix{
+\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]_{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \ar[r]^{\mathit{via \; } \upsilon(fgy)} &
+\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
+\opp{gfg(\epsilon y)} \ct gfg (\epsilon y) \ct g(\epsilon y) \ar[r]_{\mathit{via \;} \upsilon y} &
+\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y)} 
+\end{align*}
+Thus it suffices to show that $\upsilon y$ is equal to the path
+
+\begin{align*}
+\xymatrix{
+g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
+g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d] \\
+\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via \; \upsilon(fgy)}}  \\
+\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
+\eta(g y)}
+\end{align*}
+However, this follows at once from Lem.~\ref{lem:higher-hom}. \\
+
+
+
+\item Show that $F \circ G \sim \idfunc[A \cong_w B]$. Fix a weak isomorphism $(f,g,h,\eta,\epsilon)$. It is easy to see that $F(G(f,g,h,\eta,\epsilon)) \equiv (f,g,g,\eta,\epsilon')$, where
+\begin{align*}
+\epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (h y)) \ct \epsilon y
+\end{align*}
+Thus it suffices to show that for each $y : B$, we have $(h y, \epsilon y) = (g y, \epsilon' y)$ in the type $\sm{k : A \to B} 
+
+
+
+
+
+\end{enumerate}
+
+
+\item[$\mathit{8)} \; (B \cong^g_a A) \cong  (B \cong_w A)$]  Follows from $\mathit{7)}$ by swapping $A$ and $B$.
 \end{description}
 \end{proof}
 
-\begin{thm}\label{thm:equiv-iso-adj} The following are logically equivalent for $f:A\ra B$.
-\begin{enumerate}
-\item $f$ is an equivalence.
-\item $f$ is a weak isomorphism
-\item $f$ is an adjoint isomorphism
-\end{enumerate}
+\begin{thm}\label{thm:equiv-iso-adj} For any $A$ and $B$ we have
+\[ (A \cong^f_a B) \leftrightarrow (A \cong B) \]
 \end{thm}
-\begin{proof} $\;$
-
-\begin{description}
-\item[$(i)\ra (ii)$] 
-Let $f:A\ra B$ be an equivalence.  So each type $Cy$ is contractible, where for $y:B$, $Cy \defeq \Sigma_{x:A}\; fx=y$.  This means that
-  \[ \forall_{y:B}\exists_{u:Cy}\forall_{u':Cy}\; u'=u.\]
-By $\Sigma$-unfolding we get
-  \[ \forall_{y:B}\exists_{x:A}\exists_{z:(fx=y)}
-                            \forall_{x':A}\forall_{z':(fx'=y)}\; (x,z)=(x',z').
-  \]
-It follows that
-  \[ \forall_{y:B}\exists_{x:A}[fx=y\wedge\forall_{x':A}(fx'=y\ra  x=x')].
-  \]
-Hence, by $(ii)\ra (iv)$ of \autoref{thm:bijections-isos} , $f$ is a weak isomorphism.
-\item[$(ii)\ra (iii)$] Suppose that $(g,\eta,\varepsilon)$ is a quasi-inverse for $f$. We have to provide
+\begin{proof}
+One direction is obvious. For the other one, suppose that $(g,\eta,\varepsilon)$ is a quasi-inverse for $f$. We have to provide
 a quadruple $(g',\eta',\varepsilon',c)$ witnessing that $f$ is an equivalence. To
 define $g'$ and $\eta'$, we can just make the obvious choice by setting $g'
 \defeq g$ and $\eta'\defeq \eta$. However, in the definition of $\varepsilon'$ we
@@ -328,19 +508,36 @@ that $\eta(g(f(a)))=\ap{g}{\ap{f}{\eta(a)}}$. Therefore, we can apply lemma
 & = \ap{f}{\eta(a)}\ct\varepsilon(f(g(f(a))))
 \end{align*}
 from which we get the desired path $c(a)$.
-
-\item[$(iii)\ra (i)$] Done above.
-
-\end{description}
 \end{proof}
+
+
+
+\comment{
+\begin{enumerate}
+\item $f$ is an equivalence.
+\item $f$ is a weak isomorphism
+\item $f$ is an adjoint isomorphism
+\end{enumerate}
+\begin{proof} 
+Let $f:A\ra B$ be an equivalence.  So each type $Cy$ is contractible, where for $y:B$, $Cy \defeq \Sigma_{x:A}\; fx=y$.  This means that
+  \[ \forall_{y:B}\exists_{u:Cy}\forall_{u':Cy}\; u'=u.\]
+By $\Sigma$-unfolding we get
+  \[ \forall_{y:B}\exists_{x:A}\exists_{z:(fx=y)}
+                            \forall_{x':A}\forall_{z':(fx'=y)}\; (x,z)=(x',z').
+  \]
+It follows that
+  \[ \forall_{y:B}\exists_{x:A}[fx=y\wedge\forall_{x':A}(fx'=y\ra  x=x')].
+  \]
+Hence, by $(ii)\ra (iv)$ of \autoref{thm:bijections-isos} , $f$ is a weak isomorphism.
+
 \begin{cor}\label{cor:equivs-equiv}
-For types $A,B$ we have the following sequence of two equivalences and a logical equivalence
+For types $A,B$ we have the following relationships among the various equivalences:
 between our four equivalence relations.
-  \[ (\eqv A B) \simeq (A\cong_a B) \simeq (A\cong_w B) \leftrightarrow (A\cong B).\]
+  \[ (\eqv A B) \simeq (A\cong_a^f B) \simeq (A\cong_w B) \leftrightarrow (A\cong B).\]
 \end{cor}
 \begin{proof} ??
 
-\end{proof}
+\end{proof}}
 
 \section{Identity Systems on a Type Universe}
 \newcommand{\sfr}[1]{{{\sf r}_{#1}}}

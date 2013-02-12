@@ -1,4 +1,5 @@
 \newcommand{\com}[3]{\mathtt{swap}_{#1,#2}(#3)}
+\newcommand{\coh}[3]{\mathtt{coh} \; #1 \; #2 \; #3}
 
 \chapter{Equivalences}
 \label{cha:equivalences}
@@ -180,7 +181,28 @@ However, by naturality of $\eta$ we also have
 Thus we have $g(\epsilon y) = \eta(g y)$ as desired.
 \end{proof}
 
-Now we want to show that the various forms of equivalence introduced are in fact equivalent. The following lemmas will be useful.
+Now we want to show that the various forms of equivalence introduced are in fact equivalent. The following definition and lemmas will be useful.
+
+\begin{defn}
+For $f : A \to B$, $g : B \to A$, and $\eta : g \circ f \sim \idfunc[A]$, we denote
+\[ \coh{f}{g}{\eta} \defeq \prd{y : B} \sm{\gamma : fgy = y} g(\gamma) = \eta y \]
+\end{defn}
+
+\begin{lem}\label{lem:hfib}
+Let $f : A \to B$ and $y : B$. For any $p, p' : \mathtt{hfiber} \; f \;y$, we have
+\[ \big(p = p'\big) \simeq \sm{\gamma : \proj{1}(p) = \proj{1}(p')} f\gamma \ct \proj{2}(p') = \proj{2}(p) \]
+\end{lem}
+\begin{proof}
+We use the known interactions between $\Sigma$-types, identity types, and transports.
+\end{proof}
+
+\begin{lem}\label{lem:coheq}
+Let $f : A \to B$, $g : B \to A$, and $\eta : g \circ f \sim \idfunc[A]$. For any $y : B$ and $p, p' :\coh{f}{g}{\eta} \; y$, we have
+\[ \big(p = p'\big) \simeq \sm{\delta : \proj{1}(p) = \proj{1}(p')} g \delta \ct \proj{2}(p') = \proj{2}(p) \]
+\end{lem}
+\begin{proof}
+We use the known interactions between function types, $\Sigma$-types, identity types, and transports.
+\end{proof}
 
 \begin{cor}\label{lem:higher-hom}
 For any adjoint isomorphism $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ and any $p : \id[A]{x}{x'}$ the following diagram commutes:
@@ -225,14 +247,6 @@ gf(\eta (g y))}
 \end{lem}
 \begin{proof}
 TODO
-\end{proof}
-
-\begin{lem}\label{lem:hfib}
-Let $f : A \to B$ and $y : B$. For any $p, p' : \mathtt{hfiber} \; f \;y$, we have
-\[ \big(p = p'\big) \simeq \big(\sm{\gamma : \proj{1}(p) = \proj{1}(p')} f\gamma \ct \proj{2}(p') = \proj{2}(p) \big) \]
-\end{lem}
-\begin{proof}
-We use the known interactions between $\Sigma$-types, identity types, and transports.
 \end{proof}
 
 We can now establish equivalence among the various equivalences encountered thus far.
@@ -301,7 +315,7 @@ f(\gamma(y,p)) \ct \proj{2}(p) & = \opp{fg(\proj{2}(p))} \ct {f (\eta(\proj{1}(p
 & = \opp{fg(\proj{2}(p))} \ct {\epsilon(f(\proj{1}(p)))} \ct \proj{2}(p) \\
 & = \epsilon y
 \end{align*}
-where the last equality follows by the naturality of $\epsilon$. We let $\theta(y,p)$ be the path obtained by concatenating the above chain of equalities and put 
+where the second equality follows by $\tau(\proj{1}(p))$ and the third equality follows by the naturality of $\epsilon$. We let $\theta(y,p)$ be the path obtained by concatenating the above chain of equalities and put 
 \begin{align*}
  h(y,p) \defeq \opp{E(y,c(y),p)} (\gamma(y,p), \theta(y,p))
 \end{align*} \\
@@ -311,7 +325,7 @@ where the last equality follows by the naturality of $\epsilon$. We let $\theta(
 
 
 
-\item Show that $F \circ G \sim \idfunc[A \cong_a^f B]$. Fix an adjoint isomorphism $(f,g,\eta,\epsilon,\tau)$. Using definitional $\eta$-expansion for functions, we have \[F(G(f,g,\eta,\epsilon,\tau)) \equiv (f, g, \eta', \epsilon, \tau')\] for some $\eta'$ and $\tau'$. It thus suffices to show that for each $x : A$, we have $(n'x,\tau' x) = (nx,\tau x)$ in the type $\sm{\gamma : gfx = x} f\gamma = \epsilon(fx)$. Fix $x : A$. It is easy to see that
+\item Show that $F \circ G \sim \idfunc[A \cong_a^f B]$. Fix an adjoint isomorphism $(f,g,\eta,\epsilon,\tau)$. Using definitional $\eta$-expansion for functions, we have \[F(G(f,g,\eta,\epsilon,\tau)) \equiv (f, g, \eta', \epsilon, \tau')\] for some $\eta'$ and $\tau'$. It thus suffices to show that for each $x : A$, we have $(n'x,\tau' x) = (nx,\tau x)$ in the type $\sm{\gamma : gfx = x} f\gamma = \epsilon(fx)$, i.e., in $\coh{g}{f}{\eta} \; x$. Fix $x : A$. It is easy to see that
 \begin{align*}
 (n'x,\tau' x) = E'((gfx, \eta(fx)),x) \; (\refl{gfx} \ct \eta x, \theta)
 \end{align*}
@@ -350,7 +364,7 @@ f(\refl{gfx} \ct \eta x) \ar[d] \\
 f(\eta x) \ar[d] _{\tau x} \\
 \epsilon (f x)}
 \end{align*}
-Thus $(n'x,\tau' x) = (\refl{gfx} \ct \eta x, \theta'')$. All that remains is to show that $(\eta x, \tau x) = (\refl{gfx} \ct \eta x, \theta'')$. Now it is easy to see that for any $\delta : \id{\gamma_1}{\gamma_2}$ in $gfx = x$, $\delta^*$\footnote{What is the notation for contravariant transport?} acts by precomposition with $f(\delta)$. If we let $\delta$ be the obvious path from $\refl{gfx} \ct \eta x$ to $\eta x$, then $\delta^*(\tau)$ is precisely $\theta''$. This finishes the proof.
+Thus $(n'x,\tau' x) = (\refl{gfx} \ct \eta x, \theta'')$. All that remains is to show that $(\eta x, \tau x) = (\refl{gfx} \ct \eta x, \theta'')$ in $\coh{g}{f}{\epsilon} \; x$. By Lem.~\ref{lem:coheq}, it suffices to exhibit a path $\delta : \refl{gfx} \ct \eta x = \eta x$ such that $f(\delta) \ct \tau(x) = \theta''$. It is clear that the obvious path from $\refl{gfx} \ct \eta x$ to $\eta x$ does the job. \\
 \end{enumerate}
 
 \item[$\mathit{4)} \; (B \simeq A) \cong (B \cong^f_a A)$] Follows from $\mathit{3)}$ by swapping $A$ and $B$.
@@ -394,7 +408,9 @@ g(\opp{fg(\epsilon y)} \ct f(\eta (g y)) \ct \epsilon y) \ar[d] \\
 \opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
 \eta(g y)}
 \end{align*}
-It thus suffices to show that for each $y : B$, we have $(\epsilon y,\upsilon y) = (\epsilon' y,\upsilon' y)$ in the type $\sm{\gamma : fgy = y} g(\gamma) = \eta(g y)$. It is easy to see that for any $\delta : \gamma_1 = \gamma_2 : fgy = y$, $\delta^*$ acts by precomposition with $g(\delta)$. Now let $\delta : \epsilon y = \epsilon' y$ be the path 
+It thus suffices to show that for each $y : B$, we have $(\epsilon y,\upsilon y) = (\epsilon' y,\upsilon' y)$ in the type $\sm{\gamma : fgy = y} g(\gamma) = \eta(g y)$, i.e., in the type $\coh{f}{g}{\eta} \; y$. By Lem.~\ref{lem:coheq}, it suffices to exhibit a path $\delta : \epsilon y = \epsilon' y$ such that $g(\delta) \ct \upsilon' y = \upsilon y$.
+
+Let $\delta : \epsilon y = \epsilon' y$ be the path 
 
 \begin{align*}
 \xymatrix{
@@ -468,12 +484,7 @@ However, this follows at once from Lem.~\ref{lem:higher-hom}. \\
 \begin{align*}
 \epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (h y)) \ct \epsilon y
 \end{align*}
-Thus it suffices to show that for each $y : B$, we have $(h y, \epsilon y) = (g y, \epsilon' y)$ in the type $\sm{k : A \to B}$
-
-
-
-
-
+Thus it suffices to show that for each $y : B$, we have $(g y, \epsilon' y) = (h y, \epsilon y)$ in the type $\sm{x : A} f x = y$, i.e., in $\mathtt{hfiber \;} f \; y$. By Lem.~\ref{lem:hfib} it suffices to give a path $\gamma : gy = hy$ such that $f(\gamma) \ct \epsilon y = e' y$. This is obviously satisfied if we take  $\gamma \defeq \opp{g(\epsilon y)} \ct \eta(h y)$. \\
 \end{enumerate}
 
 

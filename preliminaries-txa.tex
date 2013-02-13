@@ -15,40 +15,39 @@
 \chapter{Type theory}
 \label{cha:typetheory}
 
-Type Theory is fundamentally different from set theory because it is
-not based on predicate logic. Instead it can be understood in terms of
-its basic judgements:
-\[ A\stype,\;\;\; a:A,\;\;\; A\jdeq A',\;\;\; a\jdeq a':A\]
-\begin{itemize}
-\item $A\stype$ expresses that $A$ is a type, for example $\Nat
-  \stype$. Note that this is not always trivial but may depend on
-  other judgements --- for examble to know 
-that $3 = 2 \stype$ we need no observe that both $2,3 : \Nat$.
-\item $a:A$ expresses that $a$ is an object of type $A$, for example 
-$3 : \Nat$.  We emphasize
-  that unlike $a \in A$ in set theory this is not a proposition, hence
-  it cannot be used within a proposition. 
-\item $A\jdeq A'$ expresses that $A$ and $A'$ are definitionally equal types, and
-\item $a\jdeq a':A$ expresses that $a$ and $a'$ are definitionally equal objects of type $A$.
-\end{itemize}
-We can form a judgement depending on  assumptions of the form $x : A$ which
-presumes that $A \stype$ wrt the assumptions given so far. For
-example we can say that given $x : \Nat$ it is the case that $x + 0 =_\Nat
-x$. Here $x + 0 =_\Nat x$ is a type which is well-formed wrt the assumption
-$x : \Nat$. When writing a type we interpret it as the proposition
-that this type is inhabited - in this case we don't give a name to the
-element. Indeed, we could say $\Nat$ to express the trivial fact that
-there is a natural number but we will refrain to use types like $\Nat$
-a propositions. We emphasize that the order of assumptions is
-important because one assumption may only be well typed wrt to the
-once made previously. For example, we may say given $A : \UU$ (A is a
-type in the universe), $x, y : A$ and $x = y$ it is true that $y = x$.
-In this case the 2nd and 3rd assumption rely on the first and the 4th
-rely on the first 3. 
+Before we go on to introduce Homotopy Type Theory we will have a look at
+the basic notions of Type Theory. Keep in mind that Type Theory is a
+foundational language an alternative to Zermelo-Fraenkel set theory
+and at the same time it can be viewed as a programming language not to
+dissimilar to modern functional programming languages like Haskell. In
+particular the notion of a type is very different from the notion of a
+set in set theory and resembles more the types of strongly typed
+programming languages. When we write $3 : \Nat$ then this is a
+judgement in Type Theory while the similar looking statement $3 \in
+\Nat$ in set theory is a proposition. 
 
-We emphasize the difference between propositional equality which is a
-type which we denote $a =_A b$ under the assumptions
-that $A:\UU$ and $a,b : A$ and the judgment $a \jdeq b : A$. The
+For the purpose of this book we consider two judgements:
+\begin{description}
+\item[$a : A$] $a$ is an object of type $A$.
+\item[$a \equiv_A b$] $a$ and $b$ are definitionally equal 
+  objects of type $A$.
+\end{description}
+Judgements may depend on assumptions of the form $x:A$ where $x$ is a
+variable. When using $A$ as a type we need to know that $A:\UU$ for
+some universe $\UU$. As an example we may construct an object $m + n :
+\Nat$ under the assumptions that $m,n : \Nat$. Another example is that
+we assume that $A : \UU$, $x,y : A$ and $p : x =_A y$ and from this we
+construct $p^{-1} : y =_A x$. Here we use types to represent
+propositions whose inhabitants are proofs. We may omit the names of
+proofs and instead say that from $x =_A y$ we can infer $y =_A x$ but
+since we are doing proof-relevant mathematics we will frequently refer
+back to proofs as objects, e.g. in this case we may want to establish
+that $p^{-1}$ together with the proofs of transitivity and reflexivity
+behave like a group or more precisely a groupoid.
+
+
+We emphasize the difference between propositional equality $a =_A b : \UU$ under the assumptions
+that $A:\UU$ and $a,b : A$ and the judgment $a \jdeq_A b$. The
 statement $a =_A b$ requires a proof, i.e. the construction of an
 inhabitant $p : a =_A b$. In contrast $a \jdeq b$ can be
 decided mechanically just by exapanding definitions. So if we define 
@@ -66,22 +65,50 @@ then $0 + n \jdeq n$ but $n + 0 \not\jdeq n$. However we can construct
 a proof of $n + 0 = n$. As for $a : A$ the judgement $a \jdeq b$
 cannot be used within a proposition. In particular the statement if $a
 \jdeq b$ then $b \jdeq a$ is not a proposition in type theory. In
-contrast if $a = b$ then $a = b$ (omitting some assumptions, see
-above) is a proposition.
+contrast if $a = b$ then $a = b$.
 
-Given a type $A$, if from assuming $x:A$ we can deduce $B[x]$ (we make
-the occurence of the variable $x$ explicit) then we say $B[x]$ is a
-family of types indexed by $x:A$. An example is the type $Vec(A,n)$ of
+Given a type $A:\UU$, if from assuming $x:A$ we can deduce $B[x]:\UU$ 
+(here we write $B[x]$ to make it clear that $B$ may contain the
+variable $x$ then we say $B[x]$ is a
+family of types in $\UU$ indexed by $x:A$. An example is the type $Vec(A,n)$ of
 vectors ($n$-tuples) of elements of type $A$ which is family indexed
 over $n : \Nat$. Another example is the type $x =_A x$ which is a
 family indexed over $x : A$.
 
 We now introduce the basic type formers of Type Theory.
 
-\section{The dependent function type}
+\section{Universes}
+\label{sec:universes}
 
-If $A$ and $B$ are types then $A \to B$ is the type of non-dependent
-functions with domain $A$ and codomain $B$. In Type Theory we
+Above we already started to use the type $\UU$ (a universe) whose objects are
+types. This naive use of a type theoretic universe suggests that $\UU
+: \UU$ which is unsound since we can construct a version of Russell's
+paradox in Type Theory. Instead we view $\UU$ as a convenient notion
+for any universe in the hierarchy of universes 
+\[ \UU_0 : \UU_1 : \UU_2 : \dots \]
+We assume that the hierarchy of universes is cummulative, i.e. if
+$A:\UU_i$ then $A : \UU_{i+1}$. Hence the difference between
+$\UU_0$ and $\UU_1$ is that $\UU_1$ contains the type $\UU_0:\UU_1$
+types build from $\UU_0$. Similarily $\UU_2$ contains all the tyes
+from $\UU_1$ and additionally $\UU_1$ and types build using $\UU_1$. 
+
+The constructions we introduce here are predicative that is when
+constructing objects in a universe $\UU_i$ we only refer to other
+objects in the same or lower universes but not to higher universes.
+
+In the book we will often refer to an arbitrary universe $\UU$ to
+avoid having to deal explicitely with universe indices. However, we
+always assume that indices can be assigned in a consistent way.,
+i.e. $\UU : \UU$ can be read as $\UU_i : \UU_{i+1}$.
+
+We will say $A$ is a type meaning that $A : \UU$ for some universe
+$\UU$. 
+
+\section{The dependent function types ($\Pi$-types)}
+
+The non-dependent function type $A \to B$ assuming $A,B$ are types is
+more familiar because it resembles function sets in set theory.
+In Type Theory we
 introduce the more general concept of the dependent function type
 where the codomain is allowed to vary dependent on $A$. That is
 assuming $A$ a type and $B[x]$ a family indexed over $x:A$ we can form 
@@ -103,6 +130,58 @@ Assuming $a:A$ an example of a dependent function of type $\Pi_{n:\Nat}Vec(A,n)$
 is the function which constructs an n-tuple of $a$s. Another example
 of a dependent function is the proof of reflexivity which has the type
 $\Pi_{x:A}x = x$.
+
+Dependent function types are used to represent:
+\begin{itemize}
+\item Conventional (non-dependent) functions as in $\Nat \to \Nat$,
+\item Implication as in $x =_A y \to y =_A x$,
+\item Universal quantification as in $\Pi_{n:\Nat}m+0 =_\Nat m$.
+\end{itemize}
+
+\section{The dependent pair types ($\Sigma$-types)}
+
+As before in the case of functions the dependent pair type is a
+generalisation of the ordinary cartesian product $A \times B$. 
+As in the case of $\Pi$ we assume that $B[x]$ is a family indexed by
+$x:A$ to form $\Sigma_{x:A}B[x]$. Elements of $\Sigma_{x:A}B[x]$ are
+pairs $(a,b) : \Sigma_{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
+family $B$ does not depend on $A$ we write $A \times B$.
+
+If $C$ is a family of types on $p:\Sigma_{x:A}B(x)$ and 
+$c:\Pi (x:A)(y:B(x),C((x,y))$ then we may define 
+$f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
+  \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
+
+As special cases we can derive the projections: to derive the 1st
+projection let $C_1(p) \defeq A$ be the constant family and $c_1 : \Pi (x:A)(y:B(x),A$
+defined as $c_1(x)(y) \defeq x$ to derive $\pi_1 : \Sigma_{x:A}B(x)) \to A$
+with the defining equation $\pi_1 (x,y) \defeq x$. To derive the 2nd
+projection we use $C_2(p) \defeq B (\pi_1(p))$ and $c_2 : \Pi
+(x:A)(y:B(x)),B(\pi_1(x,y))$ note that the codomain $B(\pi_1(x,y))$ is
+definitionally equal to $B(x)$ and hence we can use $c_2(x)(y) \defeq
+y$ to construct $\pi_2 : \Pi(p : \Sigma_{x:A}{B(x)}),B(\pi_1 p)$ with
+the defining equation $\pi_2(x,y) \defeq y$.
+
+As an example consider the type $\Sigma_{n:\Nat}Vec(A,n)$ of tuples of
+arbitrary length - this type is isomorphic to the type of lists or
+finite sequences over $A$. Another example is the type
+$\Sigma_{n:\Nat}n+n = n$ which expresses the (true) proposition that
+there exists a natural number which is equal to its doubling.
+
+A more involved example is the type-theoretic axiom of choice. Assume
+there are types $A,B$ and a family $R(x,y)$ indexed over $x:A$ and
+$y:B$. Then we can show that from assuming $p : \Pi(x:A)\Sigma(y :
+B),R(x,y)$ we can derive $ac(p) : \Sigma(f : A \to B)(\Pi x:A,R(x,(f
+x))$. We leave the details to the reader. Also note that we can also
+make $B$ dependent on $A$.
+
+Dependent pair types are used to represent:
+\begin{itemize}
+\item Conventional (non-dependent) pairs as in $\Nat \times \bool$,
+\item Conjunction as in $x =_A y \times y =_A z$,
+\item Existential quantification as in $\Sigma_{n:\Nat}n+n = n$.
+\end{itemize}
+
 
 
 % % Things to discuss:

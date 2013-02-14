@@ -15,19 +15,20 @@
 \chapter{Type theory}
 \label{cha:typetheory}
 
-Before we go on to introduce Homotopy Type Theory we will have a look at
-the basic notions of Type Theory. Keep in mind that Type Theory is a
-foundational language, i.e. an alternative to Zermelo-Fraenkel set theory
-and at the same time it can be viewed as a programming language not to
-dissimilar to modern functional programming languages like Haskell. In
-particular the notion of a type is very different from the notion of a
-set in set theory and resembles more the types of strongly typed
-programming languages. When we write $3 : \Nat$ then this is a
-judgement in Type Theory while the similar looking statement $3 \in
-\Nat$ in set theory is a proposition. As a consequence we cannot talk
-about objects in isolation of their type. While this may seem to be a
-restriction at the first glance it is precisely this aspect which
-makes the homotopy interpretation possible.
+Before we go on to discuss the specific aspects of Homotopy Type
+Theory we will have a look at the basic notions of Type Theory. Keep
+in mind that Type Theory is a foundational language, i.e. an
+alternative to Zermelo-Fraenkel set theory and at the same time it can
+be viewed as a programming language not to dissimilar to modern
+functional programming languages like Haskell. In particular the
+notion of a type is very different from the notion of a set in set
+theory and resembles more the types of strongly typed programming
+languages. When we write $3 : \Nat$ then this is a judgement in Type
+Theory while the similar looking statement $3 \in \Nat$ in set theory
+is a proposition. As a consequence we cannot talk about objects in
+isolation of their type. While this may seem to be a restriction at
+the first glance it is precisely this aspect which makes the homotopy
+interpretation possible.
 
 We attempt here to give an informal presentation of Type Theory,
 sufficient for the purposes of this book, more formal accounts can be
@@ -40,7 +41,7 @@ For the purpose of this book we consider two judgements:
   objects of type $A$.
 \end{description}
 Judgements may depend on assumptions of the form $x:A$ where $x$ is a
-variable. As an example we may
+variable and $A$ is a type. As an example we may
 construct an object $m + n : \Nat$ under the assumptions that $m,n :
 \Nat$. Another example is that we assume that $A $ is a type, $x,y : A$ and
 $p : x =_A y$ and from this we construct $p^{-1} : y =_A x$. Here we
@@ -52,28 +53,20 @@ we may want to establish that $p^{-1}$ together with the proofs of
 transitivity and reflexivity behave like a group or more precisely a
 groupoid.
 
-We emphasize the difference between propositional equality type $a =_A
+We emphasize the difference between equality type $a =_A
 b$ and the judgment $a \jdeq_A b$. The statement $a =_A b$ requires a
 proof, i.e. the construction of an inhabitant $p : a =_A b$. In
 contrast $a \jdeq b$ can be decided mechanically just by expanding
 definitions. So if we define $c \defeq 1$ then $c\jdeq 1$. Another
 source of definitional equality is the application of a function. If
 we define a function $f : \Nat \to \Nat$ as $f(n) \defeq n + n$ then
-$f(3) \jdeq 3+3$ (this is called $\beta$-equality in
-$\lambda$-calculus. Definitional equalities also arise from the
-recursive definition of functions: If we define $m + n : \Nat$
-assuming $m,n : \Nat$ using
-\begin{eqnarray*}
-  0 + n & \defeq & \\
-  \suc(m) + n & \defeq & \suc(m + n)
-\end{eqnarray*}
-then $0 + n \jdeq n$ but $n + 0 \not\jdeq n$. However we can construct
-a proof of $n + 0 = n$. As for $a : A$ the judgement $a \jdeq b$
-cannot be used within a proposition. In particular the statement if $a
-\jdeq b$ then $b \jdeq a$ is not a proposition in type theory. In
-contrast if $a = b$ then $a = b$.
+$f(3) \jdeq 3+3$ (this corresponds to $\beta$-equality in
+$\lambda$-calculus). As for $a : A$ the judgement $a \jdeq b$
+cannot be used within a proposition. In particular  $a
+\jdeq b \to b \jdeq a$ is not a proposition (i.e. a type) in type theory. In
+contrast if $a =_A b \to b =_A a$ is a type and hence a proposition.
 
-Given a type $A$, if from assuming $x:A$ we can deduce $B[x]:\UU$ 
+Given a type $A$, if from assuming $x:A$ we can deduce $B[x]$ is a type.
 (here we write $B[x]$ to make it clear that $B$ may contain the
 variable $x$ then we say $B[x]$ is a
 family of types in $\UU$ indexed by $x:A$. An example is the type $Vec(A,n)$ of
@@ -86,41 +79,42 @@ We now introduce the basic type formers of Type Theory.
 \section{Universes}
 \label{sec:universes}
 
-Above we already started to use the type $\UU$ (a universe) whose objects are
-types. This naive use of a type theoretic universe suggests that $\UU
-: \UU$ which is unsound since we can construct a version of Russell's
-paradox in Type Theory. Instead we view $\UU$ as a convenient notion
-for any universe in the hierarchy of universes 
+We introduce a sequence of symbols $\UU_0,\UU_1,\UU_2, \dots$ which
+stand for type theoretic universes, i.e. types whose elements are
+types. In a way it would be nice if we just had one universe $\UU$ of
+all types including $\UU : \UU$. However, we can encode Russell's
+paradox in Type Theory and such a universe makes the type theory
+inconsistent (every type is inhbited). Instead we introduce a
+hierarchy of universes
 \[ \UU_0 : \UU_1 : \UU_2 : \dots \]
 We assume that the hierarchy of universes is cummulative, i.e. if
 $A:\UU_i$ then $A : \UU_{i+1}$. Hence the difference between
 $\UU_0$ and $\UU_1$ is that $\UU_1$ contains the type $\UU_0:\UU_1$
-types build from $\UU_0$. Similarily $\UU_2$ contains all the tyes
+types build from $\UU_0$. Similarily $\UU_2$ contains all the types
 from $\UU_1$ and additionally $\UU_1$ and types build using $\UU_1$. 
 
-The constructions we introduce here are predicative that is when
-constructing objects in a universe $\UU_i$ we only refer to other
-objects in the same or lower universes but not to higher universes.
+We say that our type theory is predicative if types in a universe
+$\UU_i$ are introduced only with reference to types in the same or
+lower universes. Most (all ?) constructions introduced in this book
+are predicative. 
 
-In the book we will often refer to an arbitrary universe $\UU$ to
-avoid having to deal explicitely with universe indices. However, we
-always assume that indices can be assigned in a consistent way.,
-i.e. $\UU : \UU$ can be read as $\UU_i : \UU_{i+1}$.
-
-When we say that $A$ is a type meaning that $A : \UU$ for some universe
-$\UU$. 
+When we say $A$ is a type we mean that it is an element of some
+universe $\UU_i$. To avoid having to clutter up the text with indices
+we use the metavariable $\UU$ to stand for any universe. That is $A$
+is a type is the same as saying $A : \UU$.
 
 \section{The dependent function types ($\Pi$-types)}
 
-The non-dependent function type $A \to B$ assuming $A,B$ are types
-looks familiar because it resembles function sets in set theory.  In
-Type Theory we introduce the more general concept of the dependent
-function type where the codomain is allowed to vary dependent on
-$A$. That is assuming $A$ a type and $B[x]$ a family indexed over
-$x:A$ we can form the type $\Pi_{x:A}B[x]$ of dependent functions. Non
-dependent-functions arise in the special case when $B$ is a constant
-family (i.e. $B$ does not dependent on $x$) in which case we write $A
-\to B$.
+Functions are a primitive concept in Type Theory, they are not reduced
+to relations as in set theory. The dependent function type is a
+generalisation of non-dependent function type $A \to B$ which allow
+the codomain to vary over the codomain over the domain. Thus using the
+proposition as types principle we can use function types to model not
+only implication but also universal quantification. Given a type $A$
+and a family $B[x]$ indexed over $x:A$ we can form the type
+$\Pi_{x:A}B[x]$ of dependent functions. Non dependent-functions arise
+in the special case when $B$ is a constant family (i.e. $B$ does not
+dependent on $x$) in which case we write $A \to B$.
 
 Given a dependent function $f : \Pi_{x:A}B[x]$ and $a : A$ we can
 apply $f$ to $a$ which we write as $f(a) : B[a]$.  Such a function $f$ may be introduced by a defining equation
@@ -245,8 +239,10 @@ B$ : either as a non-dependent $\Sigma$-type or as a special case of
 $\Pi$ where the domain is boolean. 
 
 \section{The identity types on a type}
-If $A:\UU$ is a type and $a,a':A$ then $Id_A(a,a')$ is the identity type on $A$.  
-In constructive intensional type theory objects in this type are intended to represent proofs of the proposition that $a$ and $a'$ are identical.  So, in particular there is an object $\refl{a}:Id_A(a,a)$ whenever $a:A$.  In Homotopy Type Theory, when $A$ is understood as a space and $a,a'$ are understood as points of the space the type $Id_A(a,a')$ is to be understood as the type of paths from the point $a$ to the point $a'$.
+If $A:\UU$ is a type and $a,a':A$ then $a =_A a'$ is the identity type on $A$.  
+In constructive intensional type theory objects in this type are
+intended to represent proofs of the proposition that $a$ and $a'$ are
+identical.  So, in particular there is an object $\refl{a}: a =_A a'$ whenever $a:A$.  In Homotopy Type Theory, when $A$ is understood as a space and $a,a'$ are understood as points of the space the type $Id_A(a,a')$ is to be understood as the type of paths from the point $a$ to the point $a'$.
 
 We now give two rules for defining functions on paths, both of which are useful.  Given the other rules of our type theory, when suitably understood, each rule can be derived from the other. 
 
@@ -257,7 +253,21 @@ We now give two rules for defining functions on paths, both of which are useful.
     \[ f(a,\refl{a})\defeq c.\]
 \end{description}
 
-\section{The type of natural numbers}
+We are going to use the Paulin-Mohring rule to show that $=$ is an
+equivalence relation. Assuming a type $A$ we show that there is a function
+$p^{-1} : b = a$ given $p : a = b$ using the family $b = a$ and
+the defining equation
+\[ (\refl{a})^{-1} = \refl{a} \]
+Similarily we can show transitivity: assume there is $p : a = b$ and
+we want to derive $p \ct - : b = c \to a = b$ by
+\[ p \ct \refl{b} \defeq p.\]
+Since we already have the constructor $\refl{}$ we have shown that $=_A$
+is an equivalence relation. 
+
+
+\textbf{Todo:} Derive transport and ap.
+
+\section{Inductive types}
 The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
   \[ 0:\nat\]
 and
@@ -270,9 +280,31 @@ If $C$ is a family on $\nat$, $c_0:C(0)$ and $c_\suc(x,y):C(\suc(x))$ for $x:\na
 f(0)\defeq& c_0, \mbox{ and}\\
 f(\suc(x))\defeq& c_\suc(x,f(x))\mbox{ for } x:\nat
   \end{array}\right.\]
-It is sometimes convenient to make explicit the dependence of $f$ on $c_0$ and $c_\suc$ by using the primitive recursive operator $\rec_\nat$.  So we have
-  \[ \rec_\nat(x,c_0,c_\suc):C(x)\mbox{ for } x:\nat\]
-with the defining equations
+
+As an example we define the function $m + - : \nat \to \nat$ for any
+$m : \nat$ using the constant family $\nat$ and the defining
+equations:
+\begin{eqnarray*}
+  m + 0 & \defeq & m \\
+  m + \suc(n) & \defeq & \suc(m + n)
+\end{eqnarray*}
+By abstracting $m$ using the rules for $\Pi$-types we can derive the
+binary function $- + - : \nat \to (\nat \to nat)$.
+
+We use the same principle to prove properties by induction. While it
+is trivial to see that $+$ is right neutral because $m + 0 \jdeq m$
+we need to prove that $0 + m =_\Nat m$ is inhabited. We do this by
+constructing a function $f : \Pi_{n : \nat} 0 + n =_\Nat n$. 
+The family is $0 + n =_\Nat n$ over $n : \Nat$. In the case
+for $0$ we have that $0 + 0 \jdeq 0$ hence we can define
+\[ f(0) \defeq \refl{0} \]
+For $\suc(n)$ we have that $0 + \suc(n) \jdeq \suc(0 +
+n)$ hence we define 
+\[ f(\suc(n)) \defeq \mapfunc{\suc}(f(n)). \]
+In this case we can show that the type is propositional, that is that
+all elements of the type are equal. In this situation we may omit any
+explicit reference to proof objects and the type-theoretic proof does
+not look different to a conventional one in predicate logic. 
 
 
 % % Things to discuss:

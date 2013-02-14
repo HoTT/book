@@ -1,0 +1,411 @@
+\chapter{Type theory}
+\label{cha:typetheory}
+
+% Things to discuss:
+% - Type theory versus set theory, propositions as type
+% - Dependent types as predicates, versus subsets as sigma-types
+% - Definitional versus propositional equality
+% - Ordinary vs.\ Paulin-M\"ohring elimination, why you can't prove K
+% - Universe polymorphism and typical ambiguity
+
+{%%%%%%% macros local to this file, discharged at the end of the file
+
+
+\newcommand{\stype}{{\;\sf type}}
+\newcommand{\rec}{{\sf rec}}
+%\newcommand{\bool}{\bbB}
+\newcommand{\bool}{{\bf B}}
+\newcommand{\app}{{\sf app}}
+\newcommand{\pair}{{\sf pair}}
+\newcommand{\inleft}{{\sf inleft}}
+\newcommand{\inright}{{\sf inright}}
+%\newcommand{\bbzero}{{0\hspace*{-4pt} 0}}
+\newcommand{\emptyt}{{\bf 0}}
+%\newcommand{\bbone}{{1\hspace*{-4pt} 1}}
+\newcommand{\unitt}{{\bf 1}}
+\section*{Some Remarks on Mathematical Discourse}
+
+Mathematical discourse uses symbols and identifiers (atoms for short) in expressions and assertions.  Some of these atoms are global; i.e. have a fixed role throughout the discourse.  Others are introduced with their particular role for a limited part of the discourse; i.e. they have a scope within which they are used in that role.  The same atom may then get reused, possibly playing a different role, in another part of the discourse.  
+
+So we have the concept of scope in mathematical discourse.  When a scope is opened some atoms may be introduced and then later discharged when the scope is closed.  The opening and closing of scopes is often left fairly implicit by mathematicians.  Scopes can be nested or disjoint, but should not overlap.  So we can have (1 ... (2 ... 2) ...1) and (1 ... 1) ... (2 ... 2) but not 
+(1 ... (2 ... 1) ... 2).  
+
+A key example of atoms with scope are bound variables within expressions.  For example the logical formula
+  \[ (\forall x) (A(x)\ra (\exists y) B(x,y))\]
+has the two variables $x$ and $y$ with the scope of $y$ nested inside the scope of $x$.  But we may also use free variables local to definitions and assertions.  For example we may wish to define
+  \[ double(x)\defeq2x\mbox{ for } x:\nat.\]
+where the scope of the variable $x$ is local to the definition.  Another example is the assertion
+  \[ x+y = y+x \mbox{ for } x,y:\nat.\]
+In general a scope may include many definitions and assertions.  We may then declare the atoms first at the start of the scope.  For example we may open a scope by declaring
+  \[ \mbox{ Let $A$ be a type and let $a:A$}.\]
+I prefer to use letters such as $`x,y,z'$ for free variables, which usually have a fairly local scope such as when they become bound in an expression, and `$A,B,a,b$' for parameters that are not to be bound and usually have a more extensive scope over many assertions.  Both variables and parameters can be substituted for.
+For example if we have derived the assertions
+  \[ (1)\hspace{.5in}\mbox{$B[x]$ is a type for $x:A$}\] 
+and $(2)\; a:A$ then we may derive the assertion  (3)\; $B[a]$ is a type,
+by substituting $a$ for $x$ in $B[x]$.  Now it may be that this inference step has been made within the scope of a declaration that $A$ is a parameter for a type and $a$ is a parameter for an object of that type.  We might then discharge these parameters by substituting,a type, perhaps $\nat\ra\nat$, for $A$ and a function $double$ for $a$.  I prefer to talk about instantiating a parameter
+
+In general a definition or assertion may be inside the scopes of many declared atoms, parameters or variables.  A list of these declaration form the context of the definition or assertion.  In formal type theory an assertion, $\cal A$, together with its context, $\Gamma$, form what is usually called a judgment that may be written $\Gamma\gives \cal A$ or something similar, the two parts of the judgment playing a similar role to the two parts of a sequent in Gentzen's sequent calculus formulation of logic.  So the rules of inference of the type theory are rules for deriving such judgments.
+
+At each step of an informal mathematical discourse it is more natural to only make explicit those parts of a context that are actually playing an immediate role at that step, as in Gentzen's natural deduction formulation of logic.
+
+The most fundamental notions of type theory are {\em type} and, for a type $A$, {\em object of type $A$}.  We will make use of the following four standard forms of assertion or judgment, where we have left implicit 
+a possible context of variable declarations, to be explained later.
+  \[ A\stype,\;\;\; a:A,\;\;\; A\jdeq A',\;\;\; a\jdeq a':A\]
+\begin{itemize}
+\item $A\stype$ expresses that $A$ is a type, 
+\item $a:A$ expresses that $a$ is an object of type $A$, 
+\item $A\jdeq A'$ expresses that $A$ and $A'$ are definitionally equal types, and
+\item $a\jdeq a':A$ expresses that $a$ and $a'$ are definitionally equal objects of type $A$.
+\end{itemize}
+Definitional equalities between types and between objects of a type are equivalence relations that are congruence relations, with respect to the various constructors of type theory, that are generated from various defining equations.  We will use $\defeq$ when we introduce a defining equation.
+For example, if $A,B$ are types and $b:B$ we may wish to define the constant function $f$, defined on $A$ with constant value $b$.  We can use the defining equation
+  \[ f(x)\defeq b\mbox{ for } x:A.\]
+Then, whenever $a:A$ we will have the definitional equality $f(a)\jdeq b:B$, and if we also have a function $g$ defined on $B$ with values in a type $C$, then we will have $g(f(a))\jdeq g(b):C$.  
+
+In general we will make assertions in a context where certain variables may have been declared.  For example, having the above defining equation for $f$ we may make the assertion
+  \[ f(x)\jdeq b:B\mbox{ for } x:A,\]
+which is the assertion of a definitional equality in the context where $x$ is a variable declared to be of type $A$.  We may then infer
+  \[ g(f(x))\jdeq g(b):C\mbox{ for } x:A\]
+and hence, if $a:A$ we can infer, by making  a substitution, that
+  \[ g(f(a))\jdeq g(b):C.\]
+
+A {\em family} $B$ of types on a type $A$ is an association of a type $B(a)$ to each $a:A$.  We may express that $B$ is such a family by making the assertion
+  \[\begin{array}{lll}
+   & (1) &  B(x)\stype\mbox{ for } x:A,\\
+\mbox{ and given } &&\\
+& (2) & a:A\\
+\mbox{ we may infer } &&\\
+& (3)  & B(a)\stype .
+  \end{array}\]
+
+It is important to distinguish between the assertion (1) and the inference step from the premiss (2) to the conclusion (3), when also given the premiss (1).  In (1) the letter `$x$' is playing the role of a variable declared to range over the type $A$ while in (2) the letter `$a$' is playing the role of a term for an object asserted to be of type $A$.  We prefer to use letters like `$x,y,z$' etc. for variables and `$a,b,c$' etc. for terms.
+
+\section{The Cartesian Product of a family of types}
+  Given a family $B$ of types on a type $A$ we may form the cartesian product type $\Pi_{x:A}B(x)$
+of functions $f$ defined on the type $A$ such that if $a:A$ then $f(a)$ is an object of type $B(a)$.  Such a function $f$ may be introduced by a defining equation
+  \[ f(x)\defeq b[x]\mbox{ for } x:A,\]
+where $b[x]$ is a term for an object of type $B(x)$ for $x:A$ that may depend on the variable $x$ ranging over objects of $A$.  So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
+  \[ f(a)\jdeq b[a]:B[a]\]
+and we have $f(a):B[a]$.  As usual we use the lambda abstraction notation 
+$\lambda_{x:A}b[x]$ to name the function $f$ so that if $a:A$ then
+  \[\lambda_{x:A}b[x](a)\jdeq b[a]: B(a).\]
+Here $\lambda$ binds any free occurences of the variable $x$ in $b[x]$.
+
+If the family $B$ on $A$ is such that $B(a)$ is a fixed type $A'$, whatever the object $a:A$, then $\Pi_{x:A}B(x)$ will be abbreviated $A\ra A'$.  It is the type of functions from $A$ to $A'$.
+
+
+\paragraph{Remarks:}
+\begin{enumerate}
+\item When making a substitution $E'[E]$, of an expression $E$ for a variable $x$ in an expression $E'[x]$ we take for granted standard conventions for dealing with variable clashes in case there are free variables in $E$ that become bound by variable binding operations occuring in the term $E'[x]$.
+
+\item Some alternative notations can be convenient.  For example, instead of writing $\Pi_{x:A}B[x]$ one might write $(\Pi x:A)B[x]$ or $\Pi (x:A),B[x]$.  The same applies to other variable binding operations such as $\lambda$.
+
+\end{enumerate}
+
+\newpage
+
+\section{Some inductive types}
+\subsection{The type of natural numbers}
+The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
+  \[ 0:\nat\]
+and
+  \[ \mbox{ from $n:\nat$ infer $\suc(n):\nat$}.\]
+The inductive character of $\nat$ is captured by the, so called, elimination and computation rules for $\nat$.  We prefer to call them the rules for defining a function on $\nat$ by primitive recursion. 
+
+If $C$ is a family on $\nat$, $c_0:C(0)$ and $c_\suc(x,y):C(\suc(x))$ for $x:\nat,y:C(x)$ then we may introduce a function $f:\Pi_{x:\nat}C(x)$ by the following primitive recursion defining equations; one defining equation for each introduction rule.
+
+  \[\left\{\begin{array}{rl}
+f(0)\defeq& c_0, \mbox{ and}\\
+f(\suc(x))\defeq& c_\suc(x,f(x))\mbox{ for } x:\nat
+  \end{array}\right.\]
+It is sometimes convenient to make explicit the dependence of $f$ on $c_0$ and $c_\suc$ by using the primitive recursive operator $\rec_\nat$.  So we have
+  \[ \rec_\nat(x,c_0,c_\suc):C(x)\mbox{ for } x:\nat\]
+with the defining equations
+
+  \[\left\{\begin{array}{rl}
+\rec_\nat(0,c_0,c_\suc)\defeq& c_0, \mbox{ and }\\
+\rec_\nat(\suc(x),c_0,c_\suc)\defeq& c_\suc(x,\rec_\nat(x,c_0,c_\suc))\mbox{ for } x:\nat
+  \end{array}\right.\]
+\subsection{The standard empty, singleton  and boolean types}
+We use $\emptyt$, $\unitt$ and $\bbB$ for the standard {\bf empty type}, the standard {\bf singleton type} and the standard {\bf boolean type}, respectively.  So $\emptyt$ is not intended to have any elements, we have $\star:\unitt$ and
+$0_\bool,1_\bool:\bool$.  
+\begin{itemize}
+\item If $C$ is a family on $\emptyt$ then we have $f:\Pi_{z:\emptyt}(z)$ with no defining equation.
+\item If $C$ is a family on $\unitt$ and $c:C(\star)$ then we have $f:\Pi_{z:\unitt}(z)$ with defining equation
+  \[ f(\star)\defeq c.\]
+\item If $C$ is a family on $\bool$, $c_0:C(0_\bool)$ 
+and $c_1:C(1_\bool)$ then we have $f:\Pi_{z:\bool}C(z)$ with the defining equations
+ \[ \begin{array}{rl}
+f(0_\bool) \defeq& c_0, \mbox{ and}\\
+f(1_\bool) \defeq& c_1.
+  \end{array}\]
+\end{itemize}
+
+\subsection{The disjoint union of a family of types}
+Let $B$ be a family of types on a type $A$.  Then $\Sigma_{x:A}B(x)$ is the 
+disjoint union type of ordered pairs $(a,b)$ such that $a:A$ and $b:B(a)$.
+
+If $C$ is a family of types on $\Sigma_{x:A}B(x)$ and 
+$c:\Pi (x:A)(y:B(x),C((x,y))$ then we may define 
+$f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
+  \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
+
+If the family $B$ on $A$ is such that $B(a)$ is a fixed type $A'$, whatever the object $a:A$, then $\Sigma_{x:A}B(x)$ will be abbreviated $A\times A'$.  It is the binary cartesian product type of the types $A$ and $A'$.
+
+\paragraph{Remarks:}
+In future we will prefer to write $C(a,b)$ rather than $C((a,b))$ and $d'(a,b)$ rather than $d'((a,b))$.  Also we might prefer to use the alternative\linebreak notation $\Pi_{x:A,y:B[x]}C(x,y)$ rather than either of the notations 
+\[\mbox{ $(\Pi x:A)(\Pi y:B(x))C(x,y)$ or $\Pi (x:A)(y:B(x),C(x,y)$.}\]
+
+\subsection{The disjoint union of two types}
+
+If $A$ and $A'$ are types then $A+A'$ is their disjoint union.  If $a:A$ then there is a copy $\inleft(a):A+A'$ and if $a':A'$ there is a copy $\inright(a'):A+A'$.
+
+If $C$ is a family on $A+A'$, $c_\inleft:\Pi_{x:A}C(\inleft(x))$ and $c_\inright:\Pi_{x':A'}C(\inright(x'))$ then $f:\Pi_{z:A+A'}C(z)$ with defining equations
+  \[\left\{\begin{array}{rll} 
+f(\inleft(x))\defeq& c_\inleft(x)&\mbox{ for } x:A \mbox{ and}\\
+f(\inright(x'))\defeq& c_\inright(x')&\mbox{ for } x':A'\\
+\end{array}\right.\]
+
+
+
+
+
+\subsection{The identity types on a type}
+If $A$ is a type and $a,a':A$ then $Id_A(a,a')$ is the identity type on $A$.  
+In constructive intensional type theory objects in this type are intended to represent proofs of the proposition that $a$ and $a'$ are identical.  So, in particular there is an object $\refl{a}:Id_A(a,a)$ whenever $a:A$.  In Homotopy Type Theory, when $A$ is understood as a space and $a,a'$ are understood as points of the space the type $Id_A(a,a')$ is to be understood as the type of paths from the point $a$ to the point $a'$.
+
+We now give two rules for defining functions on paths, both of which are useful.  Given the other rules of our type theory, when suitably understood, each rule can be derived from the other. 
+
+\begin{description}
+\item[Martin-L\"{o}f Rule:] Let $Path_A$ be the type $\Sigma_{x,x':A}Id_A(x,x')$, let $C$ be a family on $Path_A$ and let $c:\Pi_{x:A}C(x,x,\refl{x})$.  Then we have $f:\Pi_{u:Path_A}C(u)$ with defining equation
+  \[ f(x,x,\refl{x})\defeq c(x)\mbox{ for } x:A.\]
+\item[Paulin-Mohring Rule:] If $a:A$ let $Path_A(a)$ be the type $\Sigma_{y:A}Id_A(a,y)$, let $C$ be a family on $Path_A(a)$ and let $c:C(a,\refl{a})$. Then we have\\ $f:\Pi_{u:Path_A(a)}C(u)$ with defining equation
+    \[ f(a,\refl{a})\defeq c.\]
+\end{description}
+
+\comment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%rest of file discarded for the moment
+\section{The Standard Forms of Judgment}
+  Formal type theory consists of rules for deriving {\em judgments} such as `$A \stype$', to express that $A$ is a type, and `$a:A$' to express that $a$ is an object of type $A$.  In general expressions for types and objects of a type can depend on variables.  A judgement will have a {\em context}, 
+  \[ x_1:A_1,x_2:A_2,\ldots, x_n:A_n,\]  
+consisting of a list of {\em variable declarations}, $x_i:A_i$ for $i=1,\ldots,n$, where $n\geq 0$.  So we have, among the forms of judgment, the forms
+  \[\Gamma \gives A[x_1,\ldots, x_n]\stype
+  \]
+and
+  \[\Gamma\gives a[x_1,\ldots,x_n]:A[x_1,\ldots, x_n]
+  \]
+where $\Gamma$ is the context
+  \[ x_1:A_1,x_2:A_2[x_1],\ldots, x_n:A_n[x_1,x_2,\ldots, x_{n-1}],\]
+and we have made explicit the possible dependence of expressions on variables.
+Note that, for these judgments to be well formed, it is presupposed that the context is well formed; i.e. that for $i=1,\ldots,n$,
+  \[ \Gamma_{\!\! <i}\gives A_i[x_1,\ldots, x_{i-1}]\stype\]
+is a well-formed judgement where $\Gamma_{\!\! <i}$ is the context
+  \[ x_1:A_1,x_2:A_2[x_1],\ldots, x_i:A_i[x_1,x_2,\ldots, x_{i-1}].\]
+Note that it is not always necessary to make explicit all the variables that a type or object expression may depend on.  A main purpose for having explicit displayed variables in expressions when presenting rules is that it gives a convenient notation for substitution.  
+
+
+So if, for example, we have a type  $B[x]$ for $x:A$  and also we have $a:A$ then we can write $B[a]$ for the type expression obtained from $B[x]$ by substituting $a$ for all free occurences of $x$.  We take for granted some standard way to deal with variable clashes when making substitutions.  If $C[x,y]$ is a type and $c[x,y]:C[x,y]$ for $x:A,y:B[x]$ and also $a:A$ and $b:B[a]$ then we will get the type $C[a,b]$ and the object $c[a,b]:C[a,b]$ by making the simultaneous substitutions of $a$ for $x$ and $b$ for $y$.  Later we will give explicit rules that will allow such substitutions.
+
+There are two other forms of judgment that need to be mentioned.  These are
+the judgemental equalities
+  \[ \Gamma\gives A\jdeq A'\]
+and
+  \[ \Gamma\gives a\jdeq a':A,\]
+the first one presupposing that $A,A'$ are types in the context $\Gamma$ and the second presupposing that $a,a'$ are objects of type $A$ in the context $\Gamma$.  Later we will give explicit rules involving judgmental equalities.  These will arise when we make definitions such as the recursion/induction definitions used in the rules for the inductive types.  So judgmental equality is also called definitional equality.  Later it will be important to distinguish between judgmental equalities and propositional equalities that involve identity types.
+
+So, in summary we have the forms of judgment
+  \[\Gamma\gives\cal B\]
+where $\Gamma$ is a context and the body of the judgment, $\cal B$, has one of the forms 
+  \[ A\stype,\;\;\; a:A,\;\;\; A\jdeq A',\;\;\; a\jdeq a':A.\]
+It can be convenient to introduce other forms of judgment, but these will do for now.
+
+\section{The Basic Non-dependent Forms of Type}
+Here we first introduce rules for the following basic simple non-dependent forms of type.
+  \[ A\ra A',\;\; A\times A',\;\; A+A'\;\; \nat,\;\; \bool,\;\;\emptyt,\unitt\] 
+Note that for each form of type the rules are arrasnged as a list of three items corresponding to the following three kinds of rules.  There is a
+{\bf formation rule}, {\bf introduction rules} and {\bf recursion/introduction rules}.
+\begin{description}
+\item[The types $A\ra A'$;] $\;$
+\begin{itemize}
+\item If $A$ and $A'$ are types then $A\ra A'$ is a type, the {\bf function type} from $A$ to $A'$.
+\item If $f:A\ra A'$ and $a:A$ then $\app(f,a):A'$.
+\item If $b[x]:A'$ for $x:A$ then $\lambda(\hat{b}):A\ra A'$,
+where $\hat{b}$ is $(x:A)b[x]$,
+such that if $a:A$ then
+  \[ \app(\lambda(\hat{b}),a)\defeq b[a].\]
+\end{itemize}
+
+\item[The types $A\times A'$;] $\;$
+\begin{itemize}
+\item If $A$ and $A'$ are types then $A\times A'$ is a type, the {\bf cartesian product type} of $A$ and $A'$.
+%of ordered pairs $\pair(a,a')$ with $a:A$ and $a':A'$.
+\item If $a:A$ and $a':A'$ then $\pair(a,a'):A\times A'$.
+\item If $C$ is a type and $c[x,x']:C$ for $x:A,x':A'$ then $\rec_\times(\hat{c},z):C$ for $z:A\times A'$, where $\hat{c}$ is $(x:A,x':A')c[x,x']$, such that
+if $a:A$ and $a':A'$ then
+  \[ \rec_\times(\hat{c},\pair(a,a'))\defeq c[a,a'].\]
+\end{itemize}
+
+\item[The types $A+A'$:] $\;$
+\begin{itemize}
+\item If $A$ and $A'$ are types then $A+A'$ is a type, the {\bf disjoint union
+type} of $A$ and $A'$.
+\item If $a:A$ then $\inleft(a):A+A'$ and if $a':A'$ then $\inright(a'):A+A'$.
+\item If $C$ is a type, $c[x]:C$ for $x:A$ and $c'[x']:C$ for $x':A'$ then 
+$\rec_+(\hat{c},\hat{c'},z):C$ for $z:A+A'$ such that
+  \[\begin{array}{rll}
+\rec_+(\hat{c},\hat{c'},\inleft(x))  \defeq& c[x]  &\mbox{ for }x:A\\
+\rec_+(\hat{c},\hat{c'},\inright(x)) \defeq& c'[x']&\mbox{ for }x':A'
+  \end{array}\]
+\end{itemize}
+
+\item[The type $\nat$:] $\;$
+\begin{itemize}
+\item $\nat$ is the {\bf natural numbers type}.
+\item $0:\nat$ and if $a:\nat$ then $\suc(a):\nat$.
+\item If $C$ is a type, $c_0:C$ and $c[x,y]:C$ for $x:\nat,y:C$ then
+$\rec_\nat(\hat{c},z):C$ for $z:\nat$, where $\hat{c}$ is $(x:\nat,y:C)c[x,y]$,
+such that
+  \[ \begin{array}{rll}
+\rec_\nat(\hat{c},0) \defeq& c_0, &\mbox{ and}\\
+\rec_\nat(\hat{c},\suc(z))\defeq& c[z,\rec_\nat(\hat{c},z)], &\mbox{ for } z:\nat .
+  \end{array}\]
+\end{itemize}
+
+\newpage
+
+\item[The type $\bool$:] $\;$
+\begin{itemize}
+\item $\bool$ is the {\bf Boolean type}.
+\item $0_\bool:\bool$ and $1_\bool:\bool$.
+\item If $C$ is a type, $c_0:C$ and $c_1:C$ then $\rec_\bool(c_0,c_1,z):C$ for $z:\bool$ such that
+ \[ \begin{array}{rl}
+\rec_\bool(c_0,c_1,0_\bool) \defeq& c_0\\
+\rec_\bool(c_0,c_1,1_\bool) \defeq& c_1
+  \end{array}\]
+\end{itemize}
+
+\item[The types $\emptyt,\unitt$:] $\;$
+\begin{itemize}
+\item $\emptyt$ and $\unitt$ are the standard {\bf empty type} and standard 
+{\bf singleton type}, respectively.
+\item $\star :\unitt$.
+\item If $C$ is a type then $\rec_\emptyt(z):C$ for $z:\emptyt$, and if $c_0:C$ then $\rec_\unitt(c_0,z):C$ for $z:\unitt$ such that 
+  \[ \rec_\unitt(c_0,\star)\defeq c_0.\]
+\end{itemize}
+
+\end{description}
+
+\section{Some Basic Forms of type involving Dependent Types}
+We now introduce the following forms of type that involve type dependency.  The form of type $Id_A(a,a')$ is the first place where we see type dependency introduced, as $Id_A(a,a')$ is a type that {\it depends} on the values $a$ and $a'$ that are objects of type $A$.
+  \[ Id_A(a,a'),\;\; (\Pi x:A)B[x],\;\; (\Sigma x:A)B[x]\]
+The other two forms of type exploit type dependency, as they allow the type $B[x]$ to depend on the variable $x$ of type $A$.
+
+\begin{description}
+\item[The types $Id_A(a,a')$:] $\;$
+\begin{itemize}
+\item If $A$ is a type, $a:A$ and $a':A$ then $Id_A(a,a')$ is a type, the {\bf Identity type} on $A$.
+\item If $a:A$ then $\refl{a}:Id_A(a,a)$.
+\item If $a:A$, $C[y,z]$ is a type for $y:A, z:Id_A(a,y)$ and $c:C[a,\refl{a}]$ then $\rec_{Id}(c,y,z):C[y,z]$ for $y:A,z:Id_A(a,y)$ such that
+  \[ \rec_{Id}(c,a,\refl{a})\defeq c.\]
+\end{itemize}
+\newcommand{\bbb}{{]}}
+\item[The types $(\Pi x:A)$ $\!\! B[x\bbb$:] $\;$
+\begin{itemize}
+\item If $A$ is a type and $B[x]$ is a type for $x:A$ then $(\Pi x:A)B[x]$ is a type, the {\bf dependent product type}.
+\item If $f:(\Pi x:A)B[x]$ and $a:A$ then $\app(f,a):B[a]$.
+\item If $b[x]:B[x]$ for $x:A$ then $\lambda(\hat{b}):(\Pi x:A)B[x]$, 
+where $\hat{b}$ is $(x:A)b[x]$, such that if $a:A$ then 
+  \[ \app(\lambda(\hat{b}),a)\defeq b[a].\]
+\end{itemize}
+\item\item[The types $(\Sigma x:A)$ $\!\! B[x\bbb$:] $\;$ 
+\begin{itemize}
+\item If $A$ is a type and $B[x]$ is a type for $x:A$ then $(\Sigma x:A)B[x]$ is a type, the {\bf dependent sum type}.
+\item If $a:A$ and $b:B[a]$ then $\pair(a,b):(\Sigma x:A)B[x]$.
+\item If $C[z]$ is a type for $z:(\Sigma x:A)B[x]$ and $c[x,y]:C[\pair(x,y)]$ for $x:A,y:B[x]$ then $\rec_\Sigma(\hat{c},z):C[z]$ for $z:(\Sigma x:A)B[x]$, where $\hat{c}$ is $(x:A,y:B[x])c[x,y]$ such that if $a:A$ and $b:B[a]$ then
+  \[ \rec_\Sigma(\hat{c},\pair(a,b))\defeq c[a,b].\] 
+
+\end{itemize}
+
+\end{description}
+
+\section{The dependent versions of the recursion/induction rules for the types $A\times A', A+A',\nat, \bool, \emptyt,\unitt$}
+
+For easy reference we repeat all the rules for the non-dependent types, except that, in each case, the recursion/induction rule allow for the type $C$ to be dependent.  Note that there is no change to the rules for the types $A\ra A'$.
+
+\begin{description}
+\item[The types $A\ra A'$;] $\;$
+\begin{itemize}
+\item If $A$ and $A'$ are types then $A\ra A'$ is a type, the {\bf function type} from $A$ to $A'$.
+\item If $f:A\ra A'$ and $a:A$ then $\app(f,a):A'$.
+\item If $b[x]:A'$ for $x:A$ then $\lambda(\hat{b}):A\ra A'$,
+where $\hat{b}$ is $(x:A)b[x]$,
+such that if $a:A$ then
+  \[ \app(\lambda(\hat{b}),a)\defeq b[a].\]
+\end{itemize}
+
+\item[The types $A\times A'$;] $\;$
+\begin{itemize}
+\item If $A$ and $A'$ are types then $A\times A'$ is a type, the {\bf cartesian product type} of $A$ and $A'$.
+%of ordered pairs $\pair(a,a')$ with $a:A$ and $a':A'$.
+\item If $a:A$ and $a':A'$ then $\pair(a,a'):A\times A'$.
+\item If $C[z]$ is a type for $z:A\times A'$ and $c[x,x']:C[\pair(x,x')]$ for $x:A,x':A'$ then $\rec_\times(\hat{c},z):C[z]$ for $z:A\times A'$, where $\hat{c}$ is $(x:A,x':A')c[x,x']$, such that
+if $a:A$ and $a':A'$ then
+  \[ \rec_\times(\hat{c},\pair(a,a'))\defeq c[a,a'].\]
+\end{itemize}
+
+\item[The types $A+A'$:] $\;$
+\begin{itemize}
+\item If $A$ and $A'$ are types then $A+A'$ is a type, the {\bf disjoint union
+type} of $A$ and $A'$.
+\item If $a:A$ then $\inleft(a):A+A'$ and if $a':A'$ then $\inright(a'):A+A'$.
+\item If $C[z]$ is a type for $z:A+A'$, $c[x]:C[\inleft(x)]$ for $x:A$ and $c'[x']:C[\inright(x')]$ for $x':A'$ then 
+$\rec_+(\hat{c},\hat{c'},z):C[z]$ for $z:A+A'$ such that
+  \[\begin{array}{rll}
+\rec_+(\hat{c},\hat{c'},\inleft(x))  \defeq& c[x]  &\mbox{ for }x:A\\
+\rec_+(\hat{c},\hat{c'},\inright(x)) \defeq& c'[x']&\mbox{ for }x':A'
+  \end{array}\]
+\end{itemize}
+
+\item[The type $\nat$:] $\;$
+\begin{itemize}
+\item $\nat$ is the {\bf natural numbers type}.
+\item $0:\nat$ and if $a:\nat$ then $\suc(a):\nat$.
+\item If $C[z]$ is a type for $z:\nat$, $c_0:C[0]$ and $c[x,y]:C[\suc(x)]$ for $x:\nat,y:C$ then
+$\rec_\nat(\hat{c},z):C[z]$ for $z:\nat$, where $\hat{c}$ is $(x:\nat,y:C)c[x,y]$,
+such that
+  \[ \begin{array}{rll}
+\rec_\nat(\hat{c},0)      \defeq& c_0,                   &\mbox{ and}\\
+\rec_\nat(\hat{c},\suc(z))\defeq& c[z,\rec_\nat(\hat{c},z)], &\mbox{ for } z:\nat .
+  \end{array}\]
+\end{itemize}
+
+
+\item[The type $\bool$:] $\;$
+\begin{itemize}
+\item $\bool$ is the {\bf Boolean type}.
+\item $0_\bool:\bool$ and $1_\bool:\bool$.
+\item If $C[z]$ is a type for $z:\bool$, $c_0:C[0_\bool]$ 
+and $c_1:C[1_\bool]$ then $\rec_\bool(c_0,c_1,z):C[z]$ for $z:\bool$ such that
+ \[ \begin{array}{rl}
+\rec_\bool(c_0,c_1,0_\bool) \defeq& c_0\\
+\rec_\bool(c_0,c_1,1_\bool) \defeq& c_1
+  \end{array}\]
+\end{itemize}
+
+\item[The types $\emptyt,\unitt$:] $\;$
+\begin{itemize}
+\item $\emptyt$ and $\unitt$ are the standard {\bf empty type} and standard 
+{\bf singleton type}, respectively.
+\item $\star :\unitt$.
+\item If $C[z]$ is a type for $z:\emptyt$ then $\rec_\emptyt(z):C[z]$ for $z:\emptyt$.\\  If $C[z]$ is a type for $z:\unitt$ and $c_0:C$ then $\rec_\unitt(c_0,z):C$ for $z:\unitt$ such that 
+  \[ \rec_\unitt(c_0,\star)\defeq c_0.\]
+
+\end{itemize}
+
+\end{description}
+}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end of discarded part
+
+}%%%%%%%%%%%%% end of scope of local macros
+
+% Local Variables:
+% TeX-master: "main"
+% End:

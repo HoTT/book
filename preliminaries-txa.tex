@@ -17,14 +17,21 @@
 
 Before we go on to introduce Homotopy Type Theory we will have a look at
 the basic notions of Type Theory. Keep in mind that Type Theory is a
-foundational language an alternative to Zermelo-Fraenkel set theory
+foundational language, i.e. an alternative to Zermelo-Fraenkel set theory
 and at the same time it can be viewed as a programming language not to
 dissimilar to modern functional programming languages like Haskell. In
 particular the notion of a type is very different from the notion of a
 set in set theory and resembles more the types of strongly typed
 programming languages. When we write $3 : \Nat$ then this is a
 judgement in Type Theory while the similar looking statement $3 \in
-\Nat$ in set theory is a proposition. 
+\Nat$ in set theory is a proposition. As a consequence we cannot talk
+about objects in isolation of their type. While this may seem to be a
+restriction at the first glance it is precisely this aspect which
+makes the homotopy interpretation possible.
+
+We attempt here to give an informal presentation of Type Theory,
+sufficient for the purposes of this book, more formal accounts can be
+found in \cite{hofmann-traktat,...}.
 
 For the purpose of this book we consider two judgements:
 \begin{description}
@@ -33,30 +40,29 @@ For the purpose of this book we consider two judgements:
   objects of type $A$.
 \end{description}
 Judgements may depend on assumptions of the form $x:A$ where $x$ is a
-variable. When using $A$ as a type we need to know that $A:\UU$ for
-some universe $\UU$. As an example we may construct an object $m + n :
-\Nat$ under the assumptions that $m,n : \Nat$. Another example is that
-we assume that $A : \UU$, $x,y : A$ and $p : x =_A y$ and from this we
-construct $p^{-1} : y =_A x$. Here we use types to represent
-propositions whose inhabitants are proofs. We may omit the names of
-proofs and instead say that from $x =_A y$ we can infer $y =_A x$ but
-since we are doing proof-relevant mathematics we will frequently refer
-back to proofs as objects, e.g. in this case we may want to establish
-that $p^{-1}$ together with the proofs of transitivity and reflexivity
-behave like a group or more precisely a groupoid.
+variable. As an example we may
+construct an object $m + n : \Nat$ under the assumptions that $m,n :
+\Nat$. Another example is that we assume that $A $ is a type, $x,y : A$ and
+$p : x =_A y$ and from this we construct $p^{-1} : y =_A x$. Here we
+use types to represent propositions whose inhabitants are proofs. We
+may omit the names of proofs and instead say that from $x =_A y$ we
+can infer $y =_A x$ but since we are doing proof-relevant mathematics
+we will frequently refer back to proofs as objects, e.g. in this case
+we may want to establish that $p^{-1}$ together with the proofs of
+transitivity and reflexivity behave like a group or more precisely a
+groupoid.
 
-
-We emphasize the difference between propositional equality $a =_A b : \UU$ under the assumptions
-that $A:\UU$ and $a,b : A$ and the judgment $a \jdeq_A b$. The
-statement $a =_A b$ requires a proof, i.e. the construction of an
-inhabitant $p : a =_A b$. In contrast $a \jdeq b$ can be
-decided mechanically just by exapanding definitions. So if we define 
-$c \defeq 1$ then $c\jdeq 1$. Another source of definitional equality
-is the application of a function. If we define a function $f : \Nat \to
-\Nat$ as $f(n) \defeq n + n$ then $f(3) \jdeq 3+3$ (this is called
-$\beta$-equality in $\lambda$-calculus. Definitional equalities also
-arise from the recursive definition of functions: If we define $m + n
-: \Nat$ assuming $m,n : \Nat$ using
+We emphasize the difference between propositional equality type $a =_A
+b$ and the judgment $a \jdeq_A b$. The statement $a =_A b$ requires a
+proof, i.e. the construction of an inhabitant $p : a =_A b$. In
+contrast $a \jdeq b$ can be decided mechanically just by expanding
+definitions. So if we define $c \defeq 1$ then $c\jdeq 1$. Another
+source of definitional equality is the application of a function. If
+we define a function $f : \Nat \to \Nat$ as $f(n) \defeq n + n$ then
+$f(3) \jdeq 3+3$ (this is called $\beta$-equality in
+$\lambda$-calculus. Definitional equalities also arise from the
+recursive definition of functions: If we define $m + n : \Nat$
+assuming $m,n : \Nat$ using
 \begin{eqnarray*}
   0 + n & \defeq & \\
   \suc(m) + n & \defeq & \suc(m + n)
@@ -67,7 +73,7 @@ cannot be used within a proposition. In particular the statement if $a
 \jdeq b$ then $b \jdeq a$ is not a proposition in type theory. In
 contrast if $a = b$ then $a = b$.
 
-Given a type $A:\UU$, if from assuming $x:A$ we can deduce $B[x]:\UU$ 
+Given a type $A$, if from assuming $x:A$ we can deduce $B[x]:\UU$ 
 (here we write $B[x]$ to make it clear that $B$ may contain the
 variable $x$ then we say $B[x]$ is a
 family of types in $\UU$ indexed by $x:A$. An example is the type $Vec(A,n)$ of
@@ -101,21 +107,20 @@ avoid having to deal explicitely with universe indices. However, we
 always assume that indices can be assigned in a consistent way.,
 i.e. $\UU : \UU$ can be read as $\UU_i : \UU_{i+1}$.
 
-We will say $A$ is a type meaning that $A : \UU$ for some universe
+When we say that $A$ is a type meaning that $A : \UU$ for some universe
 $\UU$. 
 
 \section{The dependent function types ($\Pi$-types)}
 
-The non-dependent function type $A \to B$ assuming $A,B$ are types is
-more familiar because it resembles function sets in set theory.
-In Type Theory we
-introduce the more general concept of the dependent function type
-where the codomain is allowed to vary dependent on $A$. That is
-assuming $A$ a type and $B[x]$ a family indexed over $x:A$ we can form 
-the type $\Pi_{x:A}B(x)$ of dependent functions. Non
+The non-dependent function type $A \to B$ assuming $A,B$ are types
+looks familiar because it resembles function sets in set theory.  In
+Type Theory we introduce the more general concept of the dependent
+function type where the codomain is allowed to vary dependent on
+$A$. That is assuming $A$ a type and $B[x]$ a family indexed over
+$x:A$ we can form the type $\Pi_{x:A}B[x]$ of dependent functions. Non
 dependent-functions arise in the special case when $B$ is a constant
 family (i.e. $B$ does not dependent on $x$) in which case we write $A
-\to B$. 
+\to B$.
 
 Given a dependent function $f : \Pi_{x:A}B[x]$ and $a : A$ we can
 apply $f$ to $a$ which we write as $f(a) : B[a]$.  Such a function $f$ may be introduced by a defining equation
@@ -127,7 +132,7 @@ $\lambda_{x:A}b[x]$ to name the function $f$ so that if $a:A$ then
   \[\lambda_{x:A}b[x](a)\jdeq b[a]: B(a).\]
 
 Assuming $a:A$ an example of a dependent function of type $\Pi_{n:\Nat}Vec(A,n)$
-is the function which constructs an n-tuple of $a$s. Another example
+is the function which constructs an $n$-tuple of $a$s. Another example
 of a dependent function is the proof of reflexivity which has the type
 $\Pi_{x:A}x = x$.
 
@@ -163,17 +168,20 @@ y$ to construct $\pi_2 : \Pi(p : \Sigma_{x:A}{B(x)}),B(\pi_1 p)$ with
 the defining equation $\pi_2(x,y) \defeq y$.
 
 As an example consider the type $\Sigma_{n:\Nat}Vec(A,n)$ of tuples of
-arbitrary length - this type is isomorphic to the type of lists or
+arbitrary length - this type is equivalent to the type of lists or
 finite sequences over $A$. Another example is the type
 $\Sigma_{n:\Nat}n+n = n$ which expresses the (true) proposition that
 there exists a natural number which is equal to its doubling.
 
 A more involved example is the type-theoretic axiom of choice. Assume
 there are types $A,B$ and a family $R(x,y)$ indexed over $x:A$ and
-$y:B$. Then we can show that from assuming $p : \Pi(x:A)\Sigma(y :
-B),R(x,y)$ we can derive $ac(p) : \Sigma(f : A \to B)(\Pi x:A,R(x,(f
-x))$. We leave the details to the reader. Also note that we can also
-make $B$ dependent on $A$.
+$y:B$. Then we can show that from assuming 
+\[p : \Pi(x:A)\Sigma(y :B),R(x,y)\] 
+we can define 
+\begin{eqnarray*}
+a(p) & : & \Sigma(f : A \to B)(\Pi x:A,R(x,(fx)) \\
+a(p) & \defeq & (\lambda_{x:A} \pi_1(p(x)),\lambda_{x:A} \pi_2(p(x)))
+\end{eqnarray*}
 
 Dependent pair types are used to represent:
 \begin{itemize}
@@ -182,6 +190,89 @@ Dependent pair types are used to represent:
 \item Existential quantification as in $\Sigma_{n:\Nat}n+n = n$.
 \end{itemize}
 
+\section{Finite types}
+\label{sec:finite-types}
+
+We use $\emptyt$, $\unitt$ and $\bbB$ for the standard {\bf empty
+  type}, the standard {\bf singleton type} and the standard {\bf
+  boolean type}, respectively.  So $\emptyt$ is not intended to have
+any elements, we have $\star:\unitt$ and $0_\bool,1_\bool:\bool$.
+\begin{itemize}
+\item If $C$ is a family on $\emptyt$ then we have $f:\Pi_{z:\emptyt}(z)$ with no defining equation.
+\item If $C$ is a family on $\unitt$ and $c:C(\star)$ then we have $f:\Pi_{z:\unitt}(z)$ with defining equation
+  \[ f(\star)\defeq c.\]
+\item If $C$ is a family on $\bool$, $c_0:C(0_\bool)$ 
+and $c_1:C(1_\bool)$ then we have $f:\Pi_{z:\bool}C(z)$ with the defining equations
+ \[ \begin{array}{rl}
+f(0_\bool) \defeq& c_0, \mbox{ and}\\
+f(1_\bool) \defeq& c_1.
+  \end{array}\]
+\end{itemize}
+
+If $A$ and $A'$ are types then $A+A'$ is their disjoint union.  If
+$a:A$ then there is a copy $\inleft(a):A+A'$ and if $a':A'$ there is a
+copy $\inright(a'):A+A'$.
+If $C$ is a family on $A+A'$, $c_\inleft:\Pi_{x:A}C(\inleft(x))$ and $c_\inright:\Pi_{x':A'}C(\inright(x'))$ then $f:\Pi_{z:A+A'}C(z)$ with defining equations
+  \[\left\{\begin{array}{rll} 
+f(\inleft(x))\defeq& c_\inleft(x)&\mbox{ for } x:A \mbox{ and}\\
+f(\inright(x'))\defeq& c_\inright(x')&\mbox{ for } x':A'\\
+\end{array}\right.\]
+
+We can define the disjoint union of two types $A,B:\UU$ as
+\[A + B \defeq \Sigma_{x:\bool}F(x)\]
+where $F : \bool \to \UU$ is
+defined as $F(0_\bool) \defeq A$ and $F(1_\bool)\defeq B$. The
+injections can be defined as:
+\begin{align*}
+& \inleft :  A \to A+B\\
+& \inleft(a) \defeq (0_\bool,a)
+& \inright :  B \to A+B\\
+& \inright(b) \defeq (1_\bool,b)
+\end{align*}
+
+\textbf{Todo:} Derive eliminator.
+
+Clearly, using $+$, $0$ and $1$ we can define all finite types.
+
+Our technique to derive $+$ from $\Sigma$ can also be used to derive
+$\times$ form $\Pi$ namely given $A,B:\UU$ we can define 
+\[ A \times B \defeq \Pi_{x:\bool}F(x)\]
+where $F$ is defined as for $+$ above. The projections can be derived
+by applications to $0_\bool$ and $1_\bool$. However, the general
+eliminator requires the principle of functional extensionality which
+we haven't introduced yet. Hence there are two ways to derive $A\times
+B$ : either as a non-dependent $\Sigma$-type or as a special case of
+$\Pi$ where the domain is boolean. 
+
+\section{The identity types on a type}
+If $A:\UU$ is a type and $a,a':A$ then $Id_A(a,a')$ is the identity type on $A$.  
+In constructive intensional type theory objects in this type are intended to represent proofs of the proposition that $a$ and $a'$ are identical.  So, in particular there is an object $\refl{a}:Id_A(a,a)$ whenever $a:A$.  In Homotopy Type Theory, when $A$ is understood as a space and $a,a'$ are understood as points of the space the type $Id_A(a,a')$ is to be understood as the type of paths from the point $a$ to the point $a'$.
+
+We now give two rules for defining functions on paths, both of which are useful.  Given the other rules of our type theory, when suitably understood, each rule can be derived from the other. 
+
+\begin{description}
+\item[Martin-L\"{o}f Rule:] Let $Path_A$ be the type $\Sigma_{x,x':A}Id_A(x,x')$, let $C$ be a family on $Path_A$ and let $c:\Pi_{x:A}C(x,x,\refl{x})$.  Then we have $f:\Pi_{u:Path_A}C(u)$ with defining equation
+  \[ f(x,x,\refl{x})\defeq c(x)\mbox{ for } x:A.\]
+\item[Paulin-Mohring Rule:] If $a:A$ let $Path_A(a)$ be the type $\Sigma_{y:A}Id_A(a,y)$, let $C$ be a family on $Path_A(a)$ and let $c:C(a,\refl{a})$. Then we have\\ $f:\Pi_{u:Path_A(a)}C(u)$ with defining equation
+    \[ f(a,\refl{a})\defeq c.\]
+\end{description}
+
+\section{The type of natural numbers}
+The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
+  \[ 0:\nat\]
+and
+  \[ \mbox{ from $n:\nat$ infer $\suc(n):\nat$}.\]
+The inductive character of $\nat$ is captured by the, so called, elimination and computation rules for $\nat$.  We prefer to call them the rules for defining a function on $\nat$ by primitive recursion. 
+
+If $C$ is a family on $\nat$, $c_0:C(0)$ and $c_\suc(x,y):C(\suc(x))$ for $x:\nat,y:C(x)$ then we may introduce a function $f:\Pi_{x:\nat}C(x)$ by the following primitive recursion defining equations; one defining equation for each introduction rule.
+
+  \[\left\{\begin{array}{rl}
+f(0)\defeq& c_0, \mbox{ and}\\
+f(\suc(x))\defeq& c_\suc(x,f(x))\mbox{ for } x:\nat
+  \end{array}\right.\]
+It is sometimes convenient to make explicit the dependence of $f$ on $c_0$ and $c_\suc$ by using the primitive recursive operator $\rec_\nat$.  So we have
+  \[ \rec_\nat(x,c_0,c_\suc):C(x)\mbox{ for } x:\nat\]
+with the defining equations
 
 
 % % Things to discuss:
@@ -342,18 +433,7 @@ Dependent pair types are used to represent:
 
 
 
-% \subsection{The identity types on a type}
-% If $A$ is a type and $a,a':A$ then $Id_A(a,a')$ is the identity type on $A$.  
-% In constructive intensional type theory objects in this type are intended to represent proofs of the proposition that $a$ and $a'$ are identical.  So, in particular there is an object $\refl{a}:Id_A(a,a)$ whenever $a:A$.  In Homotopy Type Theory, when $A$ is understood as a space and $a,a'$ are understood as points of the space the type $Id_A(a,a')$ is to be understood as the type of paths from the point $a$ to the point $a'$.
 
-% We now give two rules for defining functions on paths, both of which are useful.  Given the other rules of our type theory, when suitably understood, each rule can be derived from the other. 
-
-% \begin{description}
-% \item[Martin-L\"{o}f Rule:] Let $Path_A$ be the type $\Sigma_{x,x':A}Id_A(x,x')$, let $C$ be a family on $Path_A$ and let $c:\Pi_{x:A}C(x,x,\refl{x})$.  Then we have $f:\Pi_{u:Path_A}C(u)$ with defining equation
-%   \[ f(x,x,\refl{x})\defeq c(x)\mbox{ for } x:A.\]
-% \item[Paulin-Mohring Rule:] If $a:A$ let $Path_A(a)$ be the type $\Sigma_{y:A}Id_A(a,y)$, let $C$ be a family on $Path_A(a)$ and let $c:C(a,\refl{a})$. Then we have\\ $f:\Pi_{u:Path_A(a)}C(u)$ with defining equation
-%     \[ f(a,\refl{a})\defeq c.\]
-% \end{description}
 
 % \comment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%rest of file discarded for the moment
 % \section{The Standard Forms of Judgment}

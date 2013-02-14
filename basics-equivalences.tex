@@ -1,37 +1,85 @@
-\section{Quasi-inverses and (coherent) equivalences}
+\section{Homotopies and equivalences}
 \label{sec:basics-equivalences}
 
+So far, we have seen how the identity type $\id[A]xy$ can be regarded as a type of \emph{identifications}, \emph{paths}, or \emph{equivalences} between two elements $x$ and $y$ of a type $A$.
+Now we investigate the appropriate notions of ``identification'' or ``sameness'' between \emph{functions} and between \emph{types}.
+In \S\ref{sec:computational}, we will see that homotopy type theory allows us to identify these with instances of the identity type, but before we can do that we need to understand them in their own right.
+
+Traditionally, we regard two functions as the same if they take equal values on all inputs.
+Under the propositions-as-types interpretation, this suggests that two functions $f$ and $g$ should be the same if the type $\prd{x:A} (f(x)=g(x))$ is inhabited.
+Under the homotopical interpretation, this dependent function type consists of \emph{continuous} paths or \emph{functorial} equivalences, and thus may be regarded as the type of \emph{homotopies} or of \emph{natural isomorphisms}.
+We will adopt the topological terminology for this.
+Note that it makes perfect sense even when $f$ and $g$ are dependent functions.
+
 \begin{defn}
-Let $f,g:\prd{x:A}{P(x)}$ be two sections of a dependent type $P:A\to\type$. A
-homotopy from $f$ to $g$ is a term of type
-\begin{equation*}
-f\htpy g\defeq \prd{x:A}f(x)=g(x)
-\end{equation*}
+  Let $f,g:\prd{x:A}{P(x)}$ be two sections of a dependent type $P:A\to\type$.  A \textbf{homotopy} from $f$ to $g$ is a term of type
+  \begin{equation*}
+    (f\htpy g)\;\defeq\; \prd{x:A}f(x)=g(x)
+  \end{equation*}
 \end{defn}
 
-Homotopies are always natural with respect to paths:
+Note that a homotopy is not the same as an identification $(f=g)$.
+In \S\ref{sec:compute-pi} we will show that they are nevertheless ``equivalent''.
+
+The first level of the continuity/naturality of homotopies can be expressed as follows:
 
 \begin{lem}\label{lem:htpy_natural}
-Suppose $H:f\htpy g$ is a homotopy between functions $f,g:A\to B$
- and let $p:x=y$. Then there is a term of type
- \begin{equation*}
- H(y)\ct\ap{f}{p}=\ap{g}{p}\ct H(x).
- \end{equation*}
+  Suppose $H:f\htpy g$ is a homotopy between functions $f,g:A\to B$ and let $p:\id[A]xy$.  Then there is a term of type
+  \begin{equation*}
+    H(x)\ct\ap{g}{p}=\ap{f}{p}\ct H(y).
+  \end{equation*}
 \end{lem}
+\begin{proof}
+  By induction, we may assume $p$ is $\refl x$.
+  Since $\apfunc{f}$ and $\apfunc g$ compute on reflexivity, in this case what we must show is
+  \[ H(x) \ct \refl{g(x)} = \refl{f(x)} \ct H(x). \]
+  But this follows since both sides are equal to $H(x)$.
+\end{proof}
+
+Moving on to types, from a traditional perspective one may say that a function $f:A\to B$ is an \emph{isomorphism} if there is a function $g:B\to A$ such that both composites $f\circ g$ and $g\circ f$ are pointwise equal to the identity, i.e.\ such that $f \circ g \htpy \idfunc[B]$ and $g\circ f \htpy \idfunc[A]$.
+A homotopical perspective suggests that this should be called a \emph{homotopy equivalence}, and from a categorical one, it should be called an \emph{equivalence of (higher) groupoids}.
+However, when doing proof-relevant mathematics, the corresponding type
+\begin{equation}
+  \sm{g:B\to A} \big((f \circ g \htpy \idfunc[B]) \times (g\circ f \htpy \idfunc[A])\big)\label{eq:qinvtype}
+\end{equation}
+is poorly behaved.
+For instance, for a single function $f:A\to B$ there may be multiple inhabitants of~\eqref{eq:qinvtype} which are not provably equal.
+(This is closely related to the observation in higher category theory that often one needs to consider \emph{adjoint} equivalences rather than plain equivalences.)
+For this reason, we give~\eqref{eq:qinvtype} the following historically accurate, but slightly derogatory-sounding name instead.
 
 \begin{defn}
-Consider a function $f:A\to B$. A quasi-inverse of $f$ is a triple 
-$(g,\eta,\varepsilon)$ consisting of a function $g:B\to A$ and homotopies
-$\eta:\idfunc[A]\htpy g\circ f$ and $\varepsilon:f\circ g\htpy \idfunc[B]$.
+  For a function $f:A\to B$, a \textbf{quasi-inverse} of $f$ is a triple $(g,\alpha,\beta)$ consisting of a function $g:B\to A$ and homotopies
+$\alpha:f\circ g\htpy \idfunc[B]$ and $\beta:g\circ f\htpy \idfunc[A]$.
 \end{defn}
 
-\begin{rm}
-In other words, $f:A\to B$ has a quasi-inverse if there is a term of type
-\begin{equation*}
-\sm{g:B\to A}((\idfunc[A]\htpy g\circ f)\times(f\circ g\htpy\idfunc[B])).
-\end{equation*}
-\end{rm}
+Thus,~\eqref{eq:qinvtype} is \emph{the type of quasi-inverses of $f$}; we may denote it by $\mathsf{qinv}(f)$.
 
+In general, we will only use the word \emph{isomorphism} (and similar words such as \emph{bijection}) in the special case when the types $A$ and $B$ ``behave like sets'' (see \S\ref{sec:basics-sets}).
+In this case, the type~\eqref{eq:qinvtype} is unproblematic.
+We will reserve the word \emph{equivalence} for an improved notion with the following properties:
+\begin{enumerate}
+\item For each $f:A\to B$ there is a type $\isequiv(f)$.\label{item:be1}
+\item There are functions $\mathsf{qinv}(f) \to \isequiv (f)$ and $\isequiv (f) \to \mathsf{qinv}(f)$, so that the two are ``logically equivalent''.\label{item:be2}
+\item For any two inhabitants $e_1,e_2:\isequiv(f)$ we have $e_1=e_2$.\label{item:be3}
+\end{enumerate}
+In Chapter~\ref{cha:equivalences} we will see that there are many different definitions of $\isequiv(f)$ which satisfy these three properties, but that all of them are equivalent.
+For now, to convince the reader that such things exist, we mention only the easiest such definition (though it is not the one we will eventually settle on in Chapter~\ref{cha:equivalences}):
+\[ \isequiv(f) \;\defeq\;
+\big(\sm{g:B\to A} (f\circ g \htpy \idfunc[B])\big)
+\times
+\big(\sm{h:B\to A} (h\circ f \htpy \idfunc[A])\big)
+\]
+We can show~\ref{item:be2} now.
+A function $\mathsf{qinv}(f) \to \isequiv (f)$ is easy to define by taking $(g,\alpha,\beta)$ to $(g,\alpha,g,\beta)$.
+In the other direction, given $(g,\alpha,h,\beta)$, let $\gamma$ be the composite homotopy
+\[ g \overset{\beta}{\htpy} h\circ f\circ g \overset{\alpha}{\htpy} h \]
+and let $\beta':g\circ f\htpy \idfunc[A]$ be obtained from $\gamma$ and $\beta$.
+Then $(g,\alpha,\beta'):\mathsf{qinv}(f)$.
+
+Property~\ref{item:be3} for this definition is not too hard to prove either, but it requires knowing how to identify tuples in products and dependent sum types, which we will discuss in \S\ref{sec:computational}.
+Thus, we postpone it as well.
+At this point, the main thing to take away is that there is a well-behaved type which we can pronounce as ``$f$ is an equivalence'', and that we can prove $f$ to be an equivalence by exhibiting a quasi-inverse to it.
+In practice, this is the most common approach.
 
 % Local Variables:
 % TeX-master: "main"

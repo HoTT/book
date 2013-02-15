@@ -1,4 +1,4 @@
-\newcommand\ua[1]{\ensuremath{\mathsf{ua}} \: #1}
+\newcommand\ua{\ensuremath{\mathsf{ua}}}
 \newcommand{\fcomp}{\circ}
 
 \section{The identity structure of specific types}
@@ -346,60 +346,67 @@ The basic idea is just the same as for the non-dependent function type: we trans
 \label{sec:compute-universe}
 
 Given two types $A$ and $B$, we may consider them as elements of some universe type \type, and thereby form the identity type $\id[\type]AB$.
-As mentioned in the introduction, \emph{univalence} is the identification of $\id[\type]AB$ with the type $(A\eqv B)$ of equivalences from $A$ to $B$, which we described in \S\ref{sec:basics-equivalences}.
+As mentioned in the introduction, \emph{univalence} is the identification of $\id[\type]AB$ with the type $(\eqv AB)$ of equivalences from $A$ to $B$, which we described in \S\ref{sec:basics-equivalences}.
 We perform this identification by way of the following canonical function.
 
 \begin{lem}
   For types $A,B:\type$, there is a function
-  \[ (\id[\type]AB) \to (A\eqv B). \]
+  \begin{equation}\label{eq:uidtoeqv}
+    \mathsf{idtoeqv} : (\id[\type]AB) \to (\eqv A B).
+  \end{equation}
 \end{lem}
 \begin{proof}
-  Given $p:A=B$, we need to construct an equivalence $A\eqv B$.
-  By induction, it suffices to assume that $p$ is $\refl A$, in which case we require an equivalence $A\eqv A$.
-  But it is easy to show that the identity function is an equivalence.
+  We could construct this directly by induction on equality, but the following description is more convenient.
+  Note that the identity function $\idfunc[\type]:\type\to\type$ may be regarded as a dependent type over the universe \type; it assigns to each type $X:\type$ the type $X$ itself.
+  Thus, given a path $p:A =_\type B$, we have a transport function $\transf{p}:A \to B$.
+  We claim that $\transf{p}$ is an equivalence.
+  But by induction, it suffices to assume that $p$ is $\refl A$, in which case $\transf{p} \jdeq \idfunc[A]$, which is an equivalence by \autoref{eg:idequiv}.
+  Thus, we can define $\mathsf{idtoeqv}(p)$ to be $\transf{p}$ (together with the above proof that it is an equivalence).
 \end{proof}
 
-A path in $\type$ is given by univalence
+\begin{axiom}[Univalence]
+  For any $A,B:\type$, the function~\eqref{eq:uidtoeqv} is an equivalence.
+\end{axiom}
 
+Thus, we have
 \[
 \eqv{(\id[\type]{A}{B})}{\eqv A B}
 \]
+As with function extensionality, the univalence axiom should eventually be built into a more computational version of homotopy type theory.
 
-Again it is useful to break this into 
+In particular, univalence means that \emph{equivalent types may be identified}.
+As for other type formers, it is useful to break this equivalence into:
 
 \begin{itemize}
 \item An introduction rule for {(\id[\type]{A}{B})}:
   \[
-  \ua{} : {\eqv A B} \to (\id[\type]{A}{B})
+  \ua : ({\eqv A B}) \to (\id[\type]{A}{B})
   \]
-\item The elimination rule is transport at $X:\type \mapsto X$:
+\item The elimination rule, which is transport at the identity function $X\mapsto X$:
   \[
-  \transport{X \mapsto X}{} : \id{A}{B} \to (A \to B)
+  \transfibf{X \mapsto X} : (\id{A}{B}) \to (\eqv A B)
   \]
 \item $\beta$-reduction: 
   \[
   \begin{array}{l}
-  \id{\transport{X \mapsto X} \: (\ua {(f, fIsEquiv)})}{f}
+  \transfib{X \mapsto X}{\ua(f)}{x} = f(x)
   \end{array}
   \]
-\item $\eta$-equivalence: For any $\alpha : \id A B$
+\item $\eta$-equivalence: For any $p : \id A B$
   \[
-  \id{\alpha}{\ua {(\transport{X \mapsto X}(\alpha) , \beta)}}
+  \id{p}{\ua(\transfibf{X \mapsto X}(p))}
   \]
-  where $\mathsf{transportIsEquiv} : \isequiv{\transport{X \mapsto X}(\alpha)}$ can be
-  defined by doing path induction on $\alpha$, at which point it
-  suffices to show that the identity function is an equivalence.  
 \end{itemize}
 
-Identity, inverses, and composition: (FIXME: pick a specific definition
-of equivalence?)
-\[
-\begin{array}{l}
-\refl{A} = \ua{\idfunc} \\
-\opp{\alpha} = \ua {(\transport {X \mapsto X} {\opp \alpha}, \mathsf{transportIsEquiv} \: (\opp \alpha))} \\ 
-{\alpha} \ct \beta = ? \\
-\end{array}
-\]
+We can also identify the reflexivity, inverses, and concatenation of equalities in the universe with the corresponding operations on equivalences:
+\begin{align*}
+  \refl{A} &= \ua(\idfunc[A]) \\
+  \opp{\ua(f)} &= \ua(f^{-1}) \\ 
+  \ua(f) \ct \ua(g) &= \ua(g\circ f)
+\end{align*}
+Proving these formally requires knowing how to invert and compose equivalences, which in turn requires having an actual definition of equivalences.
+Thus, we postpone them until Chapter~\ref{cha:equivalences}.
+
 
 \subsection{Identity Type}
 \label{sec:compute-paths}

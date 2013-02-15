@@ -1,5 +1,8 @@
 \newcommand\ua{\ensuremath{\mathsf{ua}}}
 \newcommand{\fcomp}{\circ}
+\newcommand{\code}{\ensuremath{\mathsf{code}}}
+\newcommand{\encode}{\ensuremath{\mathsf{encode}}}
+\newcommand{\decode}{\ensuremath{\mathsf{decode}}}
 
 \section{The identity structure of specific types}
 \label{sec:computational}
@@ -439,6 +442,107 @@ Transport, when $A$ is dependent:
 
 \subsection{Coproducts}
 \label{sec:compute-coprod}
+
+So far, most of the type formers we have considered have been what are called \emph{negative}.
+Intuitively, this means that their elements are determined by their behavior under the elimination rules: a (dependent) pair is determined by its projections, and a (dependent) function is determined by its values.
+The identity types of negative types can almost always be characterized straightforwardly, along with all of their higher structure, as we have done in \S\S\ref{sec:compute-cartprod}--\ref{sec:compute-pi}.
+The universe is not exactly a negative type, but its identity types behave similarly: we have a straightforward characterization (univalence) and a description of the higher structure.
+Identity types themselves, of course, are a special case.
+
+We now consider our first example of a \emph{positive} type former.
+A positive type is one which is ``presented'' by certain constructors, with the universal property of a presentation being expressed by its elimination rule.
+(Categorically speaking, a positive type has a ``mapping out'' universal property, while a negative type has a ``mapping in'' universal property.)
+Because computing with presentations is, in general, an uncomputable problem, for positive types we cannot always expect a straightforward characterization of the identity type.
+However, in many particular cases, a characterization or partial characterization does exist, and can be obtained by the general method we describe here and in later sections.
+
+(Technically, our chosen presentation of cartesian products and $\Sigma$-types is also positive.
+However, because these types also admit a negative presentation which differs only slightly, their identity types have a direct characterization that does not require the method to be described here.)
+
+Consider the coproduct type $A+B$, which is ``presented'' by the injections $\inl:A\to A+B$ and $\inr:B\to A+B$.
+Intuitively, we expect that $A+B$ contains exact copies of $A$ and $B$ disjointly, so that we should have
+\begin{gather}
+  \eqv{(\inl(a_1)=\inl(a_2))}{(a_1=a_2)} \label{eq:inlinj}\\
+  \eqv{(\inr(b_1)=\inr(b_2))}{(b_1=b_2)}\\
+  \eqv{(\inl(a)= \inr(b))}{\emptyt} \label{eq:inlrdj}
+\end{gather}
+We prove this as follows.
+Fix an element $a_0:A$; our goal is to characterize the dependent type
+\[(x\mapsto (\inl(a)=x)) : A+B \to \type.\]
+In order to do this, we will define a dependent type $\code:A+B\to\type$ and show that $\prd{x:A+B} (\eqv{(\inl(a)=x)}{\code(x)})$.
+Since we want to conclude~\eqref{eq:inlinj} from this, we should have $\code(\inl(a)) = (a_0=a)$, and since we also want to conclude~\eqref{eq:inlrdj}, we should have $\code (\inr(b)) = \emptyt$.
+The essential insight is that we can use the elimination property of $A+B$ to \emph{define} $\code:A+B\to\type$ by these two equations:
+\begin{align*}
+  \code(\inl(a)) &\defeq (a_0=a)\\
+  \code(\inr(b)) &\defeq \emptyt
+\end{align*}
+We can now show:
+
+\begin{thm}\label{thm:path-coprod}
+  For all $x:A+B$ we have $\eqv{(\inl(a)=x)}{\code(x)}$.
+\end{thm}
+\begin{proof}
+  The key to the following proof is that we do it for all points $x$ together, enabling us to use the elimination principle for the coproduct.
+  We first define a function
+  \[ \encode : \prd{x:A+B}{p:\inl(a_0)=x} \code(x) \]
+  by transporting reflexivity along $p$:
+  \[ \encode(x,p) \defeq \transfib{\code}{p}{\refl{a_0}}. \]
+  Note that $\refl{a_0} : \code(\inl(a_0))$, since $\code(\inl(a_0))\jdeq (a_0=a_0)$ by definition of \code.
+  Next, we define a function
+  \[ \decode : \prd{x:A+B}{c:\code(x)} (\inl(a_0)=x) \]
+  To define $\decode(x,c)$, we may first use the elimination principle of $A+B$ to divide into cases based on whether $x$ is of the form $\inl(a)$ or the form $\inr(b)$.
+
+  In the first case, where $x\jdeq \inl(a)$, then $\code(x)\jdeq (a_0=a)$, so that $c$ is an identification between $a_0$ and $a$.
+  Thus, $\ap{\inl}{c}:(\inl(a_0)=\inl(a))$ so we can define this to be $\decode(\inl(a),c)$.
+
+  In the second case, where $x\jdeq \inr(b)$, then $\code(x)\jdeq \emptyt$, so that $c$ inhabits the empty type.
+  Thus, the elimination rule of $\emptyt$ yields a value for $\decode(\inr(b),c)$.
+
+  This completes the definition of \decode; we now show that $\encode(x,-)$ and $\decode(x,-)$ are quasi-inverses for all $x$.
+  On the one hand, suppose given $x:A+B$ and $p:\inl(a_0)=x$; we want to show $\decode(x,\encode(x,p))=p$.
+  But now by path induction (in the Paulin-Mohring style), we may assume that $x\jdeq\inl(a_0)$ and $p\jdeq \refl{\inl(a_0)}$.
+  In this case we have
+  \begin{align*}
+    \decode(x,\encode(x,p))
+    &\jdeq \decode(\inl(a_0),\encode(\inl(a_0),\refl{\inl(a_0)}))\\
+    &\jdeq \decode(\inl(a_0),\transfib{\code}{\refl{\inl(a_0)}}{\refl{a_0}})\\
+    &\jdeq \decode(\inl(a_0),\refl{a_0})\\
+    &\jdeq \ap{\inl}{\refl{a_0}}\\
+    &\jdeq \refl{\inl(a_0)}\\
+    &\jdeq p.
+  \end{align*}
+  On the other hand, suppose given $x:A+B$ and $c:\code(x)$; we want to show $\encode(x,\decode(x,c))=c$.
+  We may again divide into cases based on $x$.
+  If $x\jdeq\inl(a)$, then $c:a_0=a$ and $\decode(x,c)\jdeq \ap{\inl}{c}$, so that
+  \begin{align*}
+    \encode(x,\decode(x,c))
+    &\jdeq \transfib{\code}{\ap{\inl}{c}}{\refl{a_0}}\\
+    &= \transfib{a\mapsto (a_0=a)}{c}{\refl{a_0}}\\
+    &= \refl{a_0} \ct c\\
+    &= c.
+  \end{align*}
+  In the penultimate line, we have used \autoref{thm:path-paths}.
+  (Is the lemma we used in the second line stated anywhere?)
+\end{proof}
+
+Of course, there is a corresponding theorem if we fix $b_0:B$ instead of $a_0:A$.
+
+In particular, for any $a:A$ we have the function
+\[ \encode(a,-) : (\inl(a_0)=\inl(a)) \to (a_0=a).\]
+Traditionally, with identity types viewed as propositions, this is stated as ``$\inl$ is injective''.
+The homotopical version gives more information: the types $\inl(a_0)=\inl(a)$ and $a_0=a$ are actually equivalent.
+Similarly, for any $b:B$ we have
+\[ \encode(b,-) : (\inl(a_0)=\inr(b)) \to \emptyt \]
+which can be stated as ``$\inl(a_0)$ is not equal to $\inr(b)$'', i.e.\ the images of \inl and \inr are disjoint.
+
+As usual, we can also characterize the action of transport in coproduct types.
+Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, and dependent types $A,B:X\to\type$, we have
+\begin{align*}
+  \transfib{A+B}{p}{\inl(a)} &= \inl (\transfib{A}{p}{a})\\
+  \transfib{A+B}{p}{\inr(b)} &= \inr (\transfib{B}{p}{b})
+\end{align*}
+where as usual, $A+B$ denotes abusively the dependent type $x\mapsto A(x)+B(x)$.
+The proof is easy using path induction.
+
 
 \subsection{Natural numbers}
 \label{sec:compute-nat}

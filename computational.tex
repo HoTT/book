@@ -547,7 +547,72 @@ The proof is easy using path induction.
 \subsection{Natural numbers}
 \label{sec:compute-nat}
 
+The same technique we used for coproducts applies to the natural numbers, which are also a positive type.
+In this case the codes for identities are a doubly dependent type
+\[\code:\N\to\N\to\type,\]
+defined by double recursion over \N as follows:
+\begin{align*}
+  \code(0,0) &= \unit\\
+  \code(\suc(m),0) &= \emptyt\\
+  \code(0,\suc(n)) &= \emptyt\\
+  \code(\suc(m),\suc(n)) &= \code(m,n).
+\end{align*}
+We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
+\begin{align*}
+  r(0) &= \ttt\\
+  r(\suc(n)) &= r(n).
+\end{align*}
 
+\begin{thm}\label{thm:path-nat}
+  For all $m,n:\N$ we have $\eqv{(m=n)}{\code(m,n)}$.
+\end{thm}
+\begin{proof}
+  We define
+  \[ \encode : \prd{m,n:\N} (m=n) \to \code(m,n) \]
+  by transporting, $\encode(m,n,p) \defeq \transfib{\code(m,-)}{p}{r(m)}$.
+  And we define
+  \[ \decode : \prd{m,n:\N} \code(m,n) \to (m=n) \]
+  by double induction on $m,n$.
+  When $m$ and $n$ are both $0$, we need a function $\unit \to (0=0)$, which we define to send everything to $\refl{0}$.
+  When $m$ is a successor and $n$ is $0$ or vice versa, the domain $\code(m,n)$ is \emptyt, so the eliminator for \emptyt suffices.
+  And when both are successors, we can define $\decode(\suc(m),\suc(n))$ to be the composite
+  \[ \code(\suc(m),\suc(n))\jdeq\code(m,n) \xrightarrow{\decode(m,n)} (m=n) \xrightarrow{\apfunc{\suc}} (\suc(m)=\suc(n)). \]
+  Next we show that $\encode(m,n)$ and $\decode(m,n)$ are quasi-inverses for all $m,n$.
+
+  On one hand, if we start with $p:m=n$, then by induction on $p$ it suffices to show $\decode(n,n,\encode(n,n,\refl{n}))=\refl{n}$.
+  But $\encode(n,n,\refl{n}) \jdeq r(n)$, so it suffices to show that $\decode(n,n,r(n)) =\refl{n}$.
+  We can prove this by induction on $n$.
+  If $n\jdeq 0$, then $\decode(0,0,r(0)) =\refl{0}$ by definition of \decode.
+  And in the case of a successor, by the inductive hypothesis we have $\decode(n,n,r(n)) = \refl{n}$, so it suffices to observe that $\apfunc{\suc}(\refl{n}) \jdeq \refl{\suc(n)}$.
+
+  On the other hand, if we start with $c:\code(m,n)$, then we proceed by double induction on $m$ and $n$.
+  If both are $0$, then $\decode(0,0,c) \jdeq \refl{0}$, while $\encode(0,0,\refl{0})\jdeq r(0) \jdeq \ttt$.
+  Thus, it suffices to recall from \S\ref{sec:compute-unit} that every inhabitant of $\unit$ is equal to \ttt.
+  If $m$ is $0$ but $n$ is a successor, or vice versa, then $c:\emptyt$, so we are done.
+  And in the case of two successors, we have
+  \begin{multline*}
+    \encode(\suc(m),\suc(n),\decode(\suc(m),\suc(n),c))\\
+    \begin{split}
+    &= \encode(\suc(m),\suc(n),\apfunc{\suc}(\decode(m,n,c)))\\
+    &= \transfib{\code(\suc(m),-)}{\apfunc{\suc}(\decode(m,n,c))}{r(\suc(m))}\\
+    &= \transfib{\code(\suc(m),\suc(-))}{\decode(m,n,c)}{r(\suc(m))}\\
+    &= \transfib{\code(m,-)}{\decode(m,n,c)}{r(m)}\\
+    &= \encode(m,n,\decode(m,n,c))\\
+    &= c
+  \end{split}
+  \end{multline*}
+  using the inductive hypothesis.
+\end{proof}
+
+In particular, we have
+\[ \encode(\suc(m),0) : (\suc(m)=0) \to \emptyt \]
+which shows that ``$0$ is not the successor of any natural number''.
+We also have the composite
+\[ (\suc(m)=\suc(n)) \xrightarrow{\encode} \code(\suc(m),\suc(n)) \jdeq \code(m,n) \xrightarrow{\decode} (m=n) \]
+which shows that the function $\suc$ is injective.
+
+We will study more general positive types in Chapters~\ref{cha:induction} and~\ref{cha:hits}.
+In Chapter~\ref{cha:homotopy} we will see that the same technique used here to characterize the identity types of coproducts and \nat can also be used to calculate homotopy groups of spheres.
 
 % \subsection{Higher Inductives}
 % \label{sec:compute-hits}

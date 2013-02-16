@@ -460,7 +460,7 @@ More generally, we may consider groupoids or spaces that are \emph{equivalent} t
 Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopy information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
 Fortunately, because everything in homotopy type theory is automatically functorial/continuous, it turns out to be sufficient to ask this at the bottom level.
 
-\begin{defn}
+\begin{defn}\label{defn:set}
   A type $A$ is a \textbf{set} if for all $x,y:A$ and all $p,q:x=y$, we have $p=q$.
 \end{defn}
 
@@ -537,6 +537,65 @@ However, not all types are sets.
 
 We will study other types that are not sets in more detail starting in Chapter~\ref{cha:hits}.
 
+\section{Propositions and subsets}
+\label{sec:prop-subset}
+
+Just as there are some types which behave more like sets than others, so there are some types which behave more like propositions than others.
+In set-theoretic foundations, a proposition can be true or false, but contains no additional data, whereas when we regard a type as a proposition, it can contain many different elements or ``proofs''.
+Sometimes this is desirable, but other times we would like to consider only ``propositions'' which carry no additional information beyond a truth value.
+
+In classical mathematics, the truth values ``false'' and ``true'' can be usefully identified with the zero- and one-element sets.
+In intuitionistic and constructive mathematics, this is no longer true, but we can still identify truth values with sets that have \emph{at most one element}.
+Category-theoretically, these sets are called \emph{subterminal objects}; set-theoretically we may call them \emph{subsingletons}.
+
+Thus, in type theory it is natural to consider those types $P$ which are sets (in the sense of \S\ref{sec:basics-sets}) and which furthermore have at most one element, i.e.\ satisfy $\prd{x,y:P} (x=y)$.
+However, analogously to how \autoref{defn:set} suffices to collapse all higher homotopy, it turns out to be unnecessary to assume explicitly that such a type is a set.
+
+\begin{defn}
+  A type $P$ is a \textbf{mere proposition} if for all $x,y:P$ we have $x=y$.
+\end{defn}
+
+More precisely, the type $\isprop(P)$ is defined to be
+\[ \isprop(P) \defeq \prd{x,y:P} (x=y). \]
+We add the word \emph{mere} when pronouncing this type, because it is common in type theory to allow \emph{arbitrary} types to be regarded as propositions, simply by declaring one's intent to do so.
+In proof-relevant mathematics, this is entirely sensible; but it is nevertheless important to know which types are mere propositions.
+
+\begin{thm}
+  Every mere proposition is a set.
+\end{thm}
+\begin{proof}
+  Just like \autoref{thm:isset-is1type}.
+\end{proof}
+
+Note that a type $A$ is a set if and only if for all $x,y:A$, the identity type $\id[A]xy$ is a mere proposition.
+Of course, the types \unit and \emptyt are mere propositions; under classical logic every mere proposition would be equivalent to one of these.
+We have seen one other example so far: condition~\ref{item:be3} in \S\ref{sec:basics-equivalences} asserts that for any function $f$, the type $\isequiv (f)$ should be a mere proposition.
+
+One reason it can be helpful to know that a type is a mere proposition is for the construction of \emph{subsets} (and, more generally, subtypes).
+Suppose $P:A\to\type$ is a dependent type, with each type $P(x)$ regarded as a proposition.
+Then $P$ itself is a \emph{predicate} on $A$, or a \emph{property} of elements of $A$.
+
+In set theory, whenever we have a predicate on $P$ on a set $A$, we may form the subset $\setof{x\in A | P(x)}$.
+In type theory, the obvious analogue is the $\Sigma$-type $\sm{x:A} P(x)$.
+An inhabitant of $\sm{x:A} P(x)$ is, of course, a pair $(x,p)$ where $x:A$ and $p$ is a proof of $P(x)$.
+However, for general $P$, an element $a:A$ might give rise to more than one distinct element of $\sm{x:A} P(x)$, if the proposition $P(a)$ has more than one distinct proof.
+This is counter to the usual intuition of a \emph{subset}.
+If $P$ is a mere proposition, however, then this cannot happen.
+
+\begin{lem}
+  Suppose $P:A\to\type$ is a dependent type such that $P(x)$ is a mere proposition for all $x:A$.
+  If $u,v:\sm{x:A} P(x)$ are such that $\proj1(u) = \proj1(v)$, then $u=v$.
+\end{lem}
+\begin{proof}
+  Suppose $p:\proj1(u) = \proj1(v)$.
+  By \autoref{thm:path-sigma}, to show $u=v$ it suffices to show $\trans{p}{\proj2(u)} = \proj2(v)$.
+  But $\trans{p}{\proj2(u)}$ and $\proj2(v)$ are both elements of $P(\proj1(v))$, which is a mere proposition; hence they are equal.
+\end{proof}
+
+For instance, recall that in \S\ref{sec:basics-equivalences} we defined
+\[(\eqv A B) \;\defeq\; \sm{f:A\to B} \isequiv (f),\]
+and that each type $\isequiv (f)$ is a mere proposition.
+It follows that if two equivalences have equal underlying functions, then they are equal as equivalences.
 
 
 \section*{Notes}

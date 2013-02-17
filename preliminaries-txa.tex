@@ -1,80 +1,102 @@
-{\newcommand{\stype}{{\;\sf type}}
-\newcommand{\rec}{{\sf rec}}
-%\newcommand{\bool}{\bbB}
-\newcommand{\bool}{{\bf B}}
-\newcommand{\app}{{\sf app}}
-\newcommand{\pair}{{\sf pair}}
-\newcommand{\inleft}{{\sf inleft}}
-\newcommand{\inright}{{\sf inright}}
-%\newcommand{\bbzero}{{0\hspace*{-4pt} 0}}
-\newcommand{\emptyt}{{\bf 0}}
-%\newcommand{\bbone}{{1\hspace*{-4pt} 1}}
-\newcommand{\unitt}{{\bf 1}}
-\newcommand{\UU}{{\mathcal U}}
-
 \chapter{Type theory}
 \label{cha:typetheory}
 
-Before we go on to discuss the specific aspects of Homotopy Type
-Theory we will have a look at the basic notions of Type Theory. Keep
-in mind that Type Theory is a foundational language, i.e. an
-alternative to Zermelo-Fraenkel set theory and at the same time it can
-be viewed as a programming language not to dissimilar to modern
-functional programming languages like Haskell. In particular the
-notion of a type is very different from the notion of a set in set
-theory and resembles more the types of strongly typed programming
-languages. When we write $3 : \Nat$ then this is a judgement in Type
-Theory while the similar looking statement $3 \in \Nat$ in set theory
-is a proposition. As a consequence we cannot talk about objects in
-isolation of their type. While this may seem to be a restriction at
-the first glance it is precisely this aspect which makes the homotopy
-interpretation possible.
+\section{Type theory versus set theory}
+\label{sec:types-vs-sets}
 
-We attempt here to give an informal presentation of Type Theory,
-sufficient for the purposes of this book, more formal accounts can be
-found in \cite{hofmann-traktat,...}.
+Type theory in general, and homotopy type theory in particular, is (among other things) a foundational language for mathematics, i.e.\ an alternative to Zermelo-Fraenkel set theory.
+However, it behaves differently from the latter in several important ways, which can take some getting used to.
+Explaining these differences carefully requires us to be a little bit more formal here than we will be in the rest of the book.
+As stated in the introduction, our goal is to write type theory \emph{informally}; but for a mathematician accustomed to set theory, a little bit more precision at the beginning can help avoid some common misconceptions and mistakes.
 
-For the purpose of this book we consider two judgements:
-\begin{description}
-\item[$a : A$] $a$ is an object of type $A$.
-\item[$a \equiv_A b$] $a$ and $b$ are definitionally equal 
-  objects of type $A$.
-\end{description}
-Judgements may depend on assumptions of the form $x:A$ where $x$ is a
-variable and $A$ is a type. As an example we may
-construct an object $m + n : \Nat$ under the assumptions that $m,n :
-\Nat$. Another example is that we assume that $A $ is a type, $x,y : A$ and
-$p : x =_A y$ and from this we construct $p^{-1} : y =_A x$. Here we
-use types to represent propositions whose inhabitants are proofs. We
-may omit the names of proofs and instead say that from $x =_A y$ we
-can infer $y =_A x$ but since we are doing proof-relevant mathematics
-we will frequently refer back to proofs as objects, e.g. in this case
-we may want to establish that $p^{-1}$ together with the proofs of
-transitivity and reflexivity behave like a group or more precisely a
-groupoid.
+First of all, we note that a set-theoretic foundation has two ``layers'': first there is the deductive system of first-order logic, and then formulated inside this system there are the axioms of a particular theory (such as ZFC).
+Thus, set theory is not only about sets, but rather about the interplay between sets (the objects of the second layer) and propositions (the objects of the first layer).
 
-We emphasize the difference between equality type $a =_A
-b$ and the judgment $a \jdeq_A b$. The statement $a =_A b$ requires a
-proof, i.e. the construction of an inhabitant $p : a =_A b$. In
-contrast $a \jdeq b$ can be decided mechanically just by expanding
-definitions. So if we define $c \defeq 1$ then $c\jdeq 1$. Another
-source of definitional equality is the application of a function. If
-we define a function $f : \Nat \to \Nat$ as $f(n) \defeq n + n$ then
-$f(3) \jdeq 3+3$ (this corresponds to $\beta$-equality in
-$\lambda$-calculus). As for $a : A$ the judgement $a \jdeq b$
-cannot be used within a proposition. In particular  $a
-\jdeq b \to b \jdeq a$ is not a proposition (i.e. a type) in type theory. In
-contrast if $a =_A b \to b =_A a$ is a type and hence a proposition.
+By contrast, type theory is its own deductive system: it need not be formulated inside any superstructure such as first-order logic.
+In particular, rather than having two basic notions (sets and propositions), type theory has one basic notion, namely \emph{types}.
+Propositions (statements which we can prove, disprove, assume, negate, and so on) are identified with particular types, via the correspondence shown in Table~\ref{tab:pov} on page~\pageref{tab:pov}.
+Thus, the mathematical activity of \emph{proving a theorem} is identified with a special case of the mathematical activity of \emph{constructing an object}---in this case, an inhabitant of a type that represents a proposition.
 
-Given a type $A$, if from assuming $x:A$ we can deduce $B[x]$ is a type.
-(here we write $B[x]$ to make it clear that $B$ may contain the
-variable $x$ then we say $B[x]$ is a
-family of types in $\UU$ indexed by $x:A$. An example is the type $Vec(A,n)$ of
-vectors ($n$-tuples) of elements of type $A$ which is family indexed
-over $n : \Nat$. Another example is the type $x =_A x$ which is a
-family indexed over $x : A$.
+This leads us to another difference between type theory and set theory, but to explain it we must say a little about deductive systems in general.
+Informally, a deductive system is a collection of rules for deriving things called \emph{judgments}.
+If we think of a deductive system as a formal game, then the judgments are the ``positions'' in the game which we reach by following the game rules.
+We can also think of a deductive system as a sort of algebraic theory, in which case the judgments are the elements (like the elements of a group) and the deductive rules are the operations (like the group multiplication).
 
-We now introduce the basic type formers of Type Theory.
+In the deductive system of first-order logic (on which set theory is based), there is only one judgment: that a given proposition has a proof.
+A rule of first-order logic such as ``from $A$ and $B$ infer $A\wedge B$'' is actually a rule of ``proof construction'' which says that given the judgments ``$A$ has a proof'' and ``$B$ has a proof'', we may deduce that ``$A\wedge B$ has a proof''.
+Note that the judgment ``$A$ has a proof'' exists at a different level from the \emph{proposition} $A$ itself.
+% In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
+
+The basic judgment of type theory, analogous to ``$A$ has a proof'', is writen ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, a ``point'' of $A$).
+When $A$ is a type representing a proposition, then $a$ is a \emph{proof term}, a ``witness'' to the provability of $A$.
+In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
+% (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
+
+On the other hand, if the type $A$ is being treated more like a set than like a proposition (although as we will see, the distinction can become blurry), then ``$a:A$'' may be regarded as analogous to the set-theoretic statement ``$a\in A$''.
+However, there is an essential difference in that ``$a:A$'' is a \emph{judgment} whereas ``$a\in A$'' is a \emph{proposition}.
+In particular, we cannot make statements such as ``if $a:A$ then it is not the case that $b:B$'', nor can we ``disprove'' the judgment ``$a:A$''.
+
+A good way to think about this is that in set theory, ``membership'' is a relation which may or may not hold between two pre-existing objects ``$a$'' and ``$A$'', while in type theory we cannot talk about an element ``$a$'' in isolation: every element \emph{by its very nature} is an element of some type, and that type is (generally speaking) uniquely determined.
+Thus, when we say informally ``let $x$ be a natural number'', in set theory this is shorthand for ``let $x$ be a thing and assume that $x\in\nat$'', whereas in type theory ``let $x:\nat$'' is an atomic statement: we cannot introduce a variable without specifying its type.
+
+At first glance, this may seem an uncomfortable restriction, but it is precisely this aspect which makes the homotopy interpretation possible.
+Moreover, the type-theoretic version is arguably closer to the intuitive mathematical meaning of ``let $x$ be a natural number''.
+In practice, it seems that whenever we actually \emph{need} ``$a\in A$'' to be a proposition rather than a judgment, there is always an ambient set $B$ of which $a$ is known to be an element and $A$ is known to be a subset.
+This situation is also easy to represent in type theory, by taking $a$ to be an element of the type $B$, and $A$ to be a predicate on $B$; see \S\ref{sec:prop-subset}.
+
+A last difference between type theory and set theory, which is fundamental to the homotopy interpretation, is the treatment of equality.
+In set theory, and in mathematics more generally, equality is a proposition: e.g.\ we can disprove an equality or assume an equality as a hypothesis.
+This is likewise the case in type theory, and since propositions are types, this means that equality is a type: for elements $a,b:A$ (that is, both $a:A$ and $b:A$) we have a type ``$\id[A]ab$''.
+(In \emph{homotopy} type theory, of course, the equality proposition can behave in unfamiliar ways: see \S\ref{sec:identity-types}, Chapter~\ref{cha:basics}, and the rest of the book).
+
+However, there is also a need for an equality \emph{judgment}, existing at the same level as the judgment ``$x:A$''.
+This is called \emph{judgmental equality} or \emph{definitional equality}, and we write it as $a\jdeq b$ or $a \jdeq_A b$.
+It is helpful to think of this as meaning ``equal by definition''.
+For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
+It does not make sense to negate or assume an equality-by-definition; we cannot say ``if $x$ is equal to $y$ by definition, then $z$ is not equal to $w$ by definition''.
+Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically decidable.
+
+As type theory becomes more complicated, judgmental equality can get more subtle than this, but it is a good intuition to start from.
+Alternatively, if we regard a deductive system as an algebraic theory, then judgmental equality is simply the equality in that theory, analogous to the equality between elements of a group---the only potential for confusion is that there is \emph{also} an object \emph{inside} the deductive system of type theory (namely the type ``$a=b$'') which behaves internally as a notion of ``equality''.
+
+The reason we \emph{need} a judgmental notion of equality is so that it can control the other form of judgment, ``$a:A$''.
+For instance, suppose we have given a proof that $3^2=9$, i.e.\ we have derived the judgment $p:(3^2=9)$ for some term $p$.
+Then the same proof $p$ ought to count as a proof that $f(3)=9$, since $f(3)$ is $3^2$ \emph{by definition}.
+The best way to represent this is with a rule saying that given the judgments $a:A$ and $A\jdeq B$, we can derive the judgment $a:B$.
+
+Thus, for us, type theory will be a deductive system based on two forms of judgment:
+\begin{center}
+\begin{tabular}{c|l}
+  \textbf{Judgment} & \textbf{Meaning}\\\hline
+  $a : A$ & $a$ is an object of type $A$.\\
+  $a \jdeq_A b$ & $a$ and $b$ are definitionally equal objects of type $A$.
+\end{tabular}
+\end{center}
+When introducing a definitional equality, i.e.\ defining one thing to equal another, we will use the symbol ``$\defeq$''.
+Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
+
+Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.
+Thus, for instance, ``$p:x=y$'' should be parsed as ``$p:(x=y)$'', which makes sense since ``$x=y$'' is a type, and not as ``$(p:x)=y$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
+Similarly, ``$A\jdeq x=y$'' can only be parsed as ``$A\jdeq(x=y)$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
+This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, if we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (which is standard practice in type theory; see \S\ref{sec:pi-types}).
+
+Judgements may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
+For example, we may construct an object $m + n : \Nat$ under the assumptions that $m,n : \Nat$.
+Another example is that assuming $A$ is a type, $x,y : A$, and $p : x =_A y$, we may construct an element $p^{-1} : y =_A x$.
+The collection of all such assumptions is called the \emph{context}; from a topological point of view it may be thought of as a ``parameter space''.
+
+If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
+When types are regarded as propositions, we may omit the names of their proofs.
+Thus, in the second example above we may instead say that assuming $x =_A y$, we can prove $y =_A x$.
+However, since we are doing proof-relevant mathematics, we will frequently refer back to proofs as objects.
+In the example, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see Chapter~\ref{cha:basics}.
+
+In the rest of this chapter, we attempt to give an informal presentation of Type Theory, sufficient for the purposes of this book
+(more formal accounts can be found in \cite{hofmann-traktat,...}).
+Aside from some fairly obvious rules (such as the fact that definitionally equal things can always be substituted for each other), the rules of type theory can be grouped into \emph{type formers}.
+Each type former consists of a way to construct types (possibly making use of already-constructed types), together with rules for the construction and behavior of elements of that type.
+In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
+
 
 \section{Universes}
 \label{sec:universes}
@@ -103,7 +125,21 @@ universe $\UU_i$. To avoid having to clutter up the text with indices
 we use the metavariable $\UU$ to stand for any universe. That is $A$
 is a type is the same as saying $A : \UU$.
 
+
+\section{Dependent types}
+\label{sec:dependent-types}
+
+Given a type $A$, if from assuming $x:A$ we can deduce $B[x]$ is a type.
+Here we write $B[x]$ to make it clear that $B$ may contain the
+variable $x$ then we say $B[x]$ is a
+family of types in $\UU$ indexed by $x:A$. An example is the type $Vec(A,n)$ of
+vectors ($n$-tuples) of elements of type $A$ which is family indexed
+over $n : \Nat$. Another example is the type $x =_A x$ which is a
+family indexed over $x : A$.
+
+
 \section{The dependent function types ($\Pi$-types)}
+\label{sec:pi-types}
 
 Functions are a primitive concept in Type Theory, they are not reduced
 to relations as in set theory. The dependent function type is a
@@ -138,6 +174,7 @@ Dependent function types are used to represent:
 \end{itemize}
 
 \section{The dependent pair types ($\Sigma$-types)}
+\label{sec:sigma-types}
 
 As before in the case of functions the dependent pair type is a
 generalisation of the ordinary cartesian product $A \times B$. 
@@ -147,7 +184,7 @@ pairs $(a,b) : \Sigma_{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
 family $B$ does not depend on $A$ we write $A \times B$.
 
 If $C$ is a family of types on $p:\Sigma_{x:A}B(x)$ and 
-$c:\Pi (x:A)(y:B(x),C((x,y))$ then we may define 
+$c:\Pi(x:A)(y:B(x)),C((x,y))$ then we may define 
 $f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
   \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
 
@@ -173,7 +210,7 @@ $y:B$. Then we can show that from assuming
 \[p : \Pi(x:A)\Sigma(y :B),R(x,y)\] 
 we can define 
 \begin{eqnarray*}
-a(p) & : & \Sigma(f : A \to B)(\Pi x:A,R(x,(fx)) \\
+a(p) & : & \sm{f : A \to B} \prd{x:A} R(x,(fx)) \\
 a(p) & \defeq & (\lambda_{x:A} \pi_1(p(x)),\lambda_{x:A} \pi_2(p(x)))
 \end{eqnarray*}
 
@@ -187,13 +224,13 @@ Dependent pair types are used to represent:
 \section{Finite types}
 \label{sec:finite-types}
 
-We use $\emptyt$, $\unitt$ and $\bbB$ for the standard {\bf empty
+We use $\emptyt$, $\unit$ and $\bbB$ for the standard {\bf empty
   type}, the standard {\bf singleton type} and the standard {\bf
   boolean type}, respectively.  So $\emptyt$ is not intended to have
-any elements, we have $\star:\unitt$ and $0_\bool,1_\bool:\bool$.
+any elements, we have $\star:\unit$ and $0_\bool,1_\bool:\bool$.
 \begin{itemize}
 \item If $C$ is a family on $\emptyt$ then we have $f:\Pi_{z:\emptyt}(z)$ with no defining equation.
-\item If $C$ is a family on $\unitt$ and $c:C(\star)$ then we have $f:\Pi_{z:\unitt}(z)$ with defining equation
+\item If $C$ is a family on $\unit$ and $c:C(\star)$ then we have $f:\Pi_{z:\unit}(z)$ with defining equation
   \[ f(\star)\defeq c.\]
 \item If $C$ is a family on $\bool$, $c_0:C(0_\bool)$ 
 and $c_1:C(1_\bool)$ then we have $f:\Pi_{z:\bool}C(z)$ with the defining equations
@@ -204,12 +241,12 @@ f(1_\bool) \defeq& c_1.
 \end{itemize}
 
 If $A$ and $A'$ are types then $A+A'$ is their disjoint union.  If
-$a:A$ then there is a copy $\inleft(a):A+A'$ and if $a':A'$ there is a
-copy $\inright(a'):A+A'$.
-If $C$ is a family on $A+A'$, $c_\inleft:\Pi_{x:A}C(\inleft(x))$ and $c_\inright:\Pi_{x':A'}C(\inright(x'))$ then $f:\Pi_{z:A+A'}C(z)$ with defining equations
+$a:A$ then there is a copy $\inl(a):A+A'$ and if $a':A'$ there is a
+copy $\inr(a'):A+A'$.
+If $C$ is a family on $A+A'$, $c_\inl:\Pi_{x:A}C(\inl(x))$ and $c_\inr:\Pi_{x':A'}C(\inr(x'))$ then $f:\Pi_{z:A+A'}C(z)$ with defining equations
   \[\left\{\begin{array}{rll} 
-f(\inleft(x))\defeq& c_\inleft(x)&\mbox{ for } x:A \mbox{ and}\\
-f(\inright(x'))\defeq& c_\inright(x')&\mbox{ for } x':A'\\
+f(\inl(x))\defeq& c_\inl(x)&\mbox{ for } x:A \mbox{ and}\\
+f(\inr(x'))\defeq& c_\inr(x')&\mbox{ for } x':A'\\
 \end{array}\right.\]
 
 We can define the disjoint union of two types $A,B:\UU$ as
@@ -218,10 +255,10 @@ where $F : \bool \to \UU$ is
 defined as $F(0_\bool) \defeq A$ and $F(1_\bool)\defeq B$. The
 injections can be defined as:
 \begin{align*}
-& \inleft :  A \to A+B\\
-& \inleft(a) \defeq (0_\bool,a)
-& \inright :  B \to A+B\\
-& \inright(b) \defeq (1_\bool,b)
+& \inl :  A \to A+B\\
+& \inl(a) \defeq (0_\bool,a)
+& \inr :  B \to A+B\\
+& \inr(b) \defeq (1_\bool,b)
 \end{align*}
 
 \textbf{Todo:} Derive eliminator.
@@ -239,6 +276,8 @@ B$ : either as a non-dependent $\Sigma$-type or as a special case of
 $\Pi$ where the domain is boolean. 
 
 \section{The identity types on a type}
+\label{sec:identity-types}
+
 If $A:\UU$ is a type and $a,a':A$ then $a =_A a'$ is the identity type on $A$.  
 In constructive intensional type theory objects in this type are
 intended to represent proofs of the proposition that $a$ and $a'$ are
@@ -268,6 +307,8 @@ is an equivalence relation.
 \textbf{Todo:} Derive transport and ap.
 
 \section{Inductive types}
+\label{sec:inductive-types}
+
 The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
   \[ 0:\nat\]
 and
@@ -306,390 +347,6 @@ all elements of the type are equal. In this situation we may omit any
 explicit reference to proof objects and the type-theoretic proof does
 not look different to a conventional one in predicate logic. 
 
-
-% % Things to discuss:
-% % - Type theory versus set theory, propositions as type
-% % - Dependent types as predicates, versus subsets as sigma-types
-% % - Definitional versus propositional equality
-% % - Ordinary vs.\ Paulin-M\"ohring elimination, why you can't prove K
-% % - Universe polymorphism and typical ambiguity
-
-% {%%%%%%% macros local to this file, discharged at the end of the file
-
-
-
-% \section*{Some Remarks on Mathematical Discourse}
-
-% Mathematical discourse uses symbols and identifiers (atoms for short) in expressions and assertions.  Some of these atoms are global; i.e. have a fixed role throughout the discourse.  Others are introduced with their particular role for a limited part of the discourse; i.e. they have a scope within which they are used in that role.  The same atom may then get reused, possibly playing a different role, in another part of the discourse.  
-
-% So we have the concept of scope in mathematical discourse.  When a scope is opened some atoms may be introduced and then later discharged when the scope is closed.  The opening and closing of scopes is often left fairly implicit by mathematicians.  Scopes can be nested or disjoint, but should not overlap.  So we can have (1 ... (2 ... 2) ...1) and (1 ... 1) ... (2 ... 2) but not 
-% (1 ... (2 ... 1) ... 2).  
-
-% A key example of atoms with scope are bound variables within expressions.  For example the logical formula
-%   \[ (\forall x) (A(x)\ra (\exists y) B(x,y))\]
-% has the two variables $x$ and $y$ with the scope of $y$ nested inside the scope of $x$.  But we may also use free variables local to definitions and assertions.  For example we may wish to define
-%   \[ double(x)\defeq2x\mbox{ for } x:\nat.\]
-% where the scope of the variable $x$ is local to the definition.  Another example is the assertion
-%   \[ x+y = y+x \mbox{ for } x,y:\nat.\]
-% In general a scope may include many definitions and assertions.  We may then declare the atoms first at the start of the scope.  For example we may open a scope by declaring
-%   \[ \mbox{ Let $A$ be a type and let $a:A$}.\]
-% I prefer to use letters such as $`x,y,z'$ for free variables, which usually have a fairly local scope such as when they become bound in an expression, and `$A,B,a,b$' for parameters that are not to be bound and usually have a more extensive scope over many assertions.  Both variables and parameters can be substituted for.
-% For example if we have derived the assertions
-%   \[ (1)\hspace{.5in}\mbox{$B[x]$ is a type for $x:A$}\] 
-% and $(2)\; a:A$ then we may derive the assertion  (3)\; $B[a]$ is a type,
-% by substituting $a$ for $x$ in $B[x]$.  Now it may be that this inference step has been made within the scope of a declaration that $A$ is a parameter for a type and $a$ is a parameter for an object of that type.  We might then discharge these parameters by substituting,a type, perhaps $\nat\ra\nat$, for $A$ and a function $double$ for $a$.  I prefer to talk about instantiating a parameter
-
-% In general a definition or assertion may be inside the scopes of many declared atoms, parameters or variables.  A list of these declaration form the context of the definition or assertion.  In formal type theory an assertion, $\cal A$, together with its context, $\Gamma$, form what is usually called a judgment that may be written $\Gamma\gives \cal A$ or something similar, the two parts of the judgment playing a similar role to the two parts of a sequent in Gentzen's sequent calculus formulation of logic.  So the rules of inference of the type theory are rules for deriving such judgments.
-
-% At each step of an informal mathematical discourse it is more natural to only make explicit those parts of a context that are actually playing an immediate role at that step, as in Gentzen's natural deduction formulation of logic.
-
-% The most fundamental notions of type theory are {\em type} and, for a type $A$, {\em object of type $A$}.  We will make use of the following four standard forms of assertion or judgment, where we have left implicit 
-% a possible context of variable declarations, to be explained later.
-%   \[ A\stype,\;\;\; a:A,\;\;\; A\jdeq A',\;\;\; a\jdeq a':A\]
-% \begin{itemize}
-% \item $A\stype$ expresses that $A$ is a type, 
-% \item $a:A$ expresses that $a$ is an object of type $A$, 
-% \item $A\jdeq A'$ expresses that $A$ and $A'$ are definitionally equal types, and
-% \item $a\jdeq a':A$ expresses that $a$ and $a'$ are definitionally equal objects of type $A$.
-% \end{itemize}
-% Definitional equalities between types and between objects of a type are equivalence relations that are congruence relations, with respect to the various constructors of type theory, that are generated from various defining equations.  We will use $\defeq$ when we introduce a defining equation.
-% For example, if $A,B$ are types and $b:B$ we may wish to define the constant function $f$, defined on $A$ with constant value $b$.  We can use the defining equation
-%   \[ f(x)\defeq b\mbox{ for } x:A.\]
-% Then, whenever $a:A$ we will have the definitional equality $f(a)\jdeq b:B$, and if we also have a function $g$ defined on $B$ with values in a type $C$, then we will have $g(f(a))\jdeq g(b):C$.  
-
-% In general we will make assertions in a context where certain variables may have been declared.  For example, having the above defining equation for $f$ we may make the assertion
-%   \[ f(x)\jdeq b:B\mbox{ for } x:A,\]
-% which is the assertion of a definitional equality in the context where $x$ is a variable declared to be of type $A$.  We may then infer
-%   \[ g(f(x))\jdeq g(b):C\mbox{ for } x:A\]
-% and hence, if $a:A$ we can infer, by making  a substitution, that
-%   \[ g(f(a))\jdeq g(b):C.\]
-
-% A {\em family} $B$ of types on a type $A$ is an association of a type $B(a)$ to each $a:A$.  We may express that $B$ is such a family by making the assertion
-%   \[\begin{array}{lll}
-%    & (1) &  B(x)\stype\mbox{ for } x:A,\\
-% \mbox{ and given } &&\\
-% & (2) & a:A\\
-% \mbox{ we may infer } &&\\
-% & (3)  & B(a)\stype .
-%   \end{array}\]
-
-% It is important to distinguish between the assertion (1) and the inference step from the premiss (2) to the conclusion (3), when also given the premiss (1).  In (1) the letter `$x$' is playing the role of a variable declared to range over the type $A$ while in (2) the letter `$a$' is playing the role of a term for an object asserted to be of type $A$.  We prefer to use letters like `$x,y,z$' etc. for variables and `$a,b,c$' etc. for terms.
-
-% \section{The Cartesian Product of a family of types}
-%   Given a family $B$ of types on a type $A$ we may form the cartesian product type $\Pi_{x:A}B(x)$
-% of functions $f$ defined on the type $A$ such that if $a:A$ then $f(a)$ is an object of type $B(a)$.  Such a function $f$ may be introduced by a defining equation
-%   \[ f(x)\defeq b[x]\mbox{ for } x:A,\]
-% where $b[x]$ is a term for an object of type $B(x)$ for $x:A$ that may depend on the variable $x$ ranging over objects of $A$.  So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
-%   \[ f(a)\jdeq b[a]:B[a]\]
-% and we have $f(a):B[a]$.  As usual we use the lambda abstraction notation 
-% $\lambda_{x:A}b[x]$ to name the function $f$ so that if $a:A$ then
-%   \[\lambda_{x:A}b[x](a)\jdeq b[a]: B(a).\]
-% Here $\lambda$ binds any free occurences of the variable $x$ in $b[x]$.
-
-% If the family $B$ on $A$ is such that $B(a)$ is a fixed type $A'$, whatever the object $a:A$, then $\Pi_{x:A}B(x)$ will be abbreviated $A\ra A'$.  It is the type of functions from $A$ to $A'$.
-
-
-% \paragraph{Remarks:}
-% \begin{enumerate}
-% \item When making a substitution $E'[E]$, of an expression $E$ for a variable $x$ in an expression $E'[x]$ we take for granted standard conventions for dealing with variable clashes in case there are free variables in $E$ that become bound by variable binding operations occuring in the term $E'[x]$.
-
-% \item Some alternative notations can be convenient.  For example, instead of writing $\Pi_{x:A}B[x]$ one might write $(\Pi x:A)B[x]$ or $\Pi (x:A),B[x]$.  The same applies to other variable binding operations such as $\lambda$.
-
-% \end{enumerate}
-
-% \newpage
-
-% \section{Some inductive types}
-% \subsection{The type of natural numbers}
-% The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
-%   \[ 0:\nat\]
-% and
-%   \[ \mbox{ from $n:\nat$ infer $\suc(n):\nat$}.\]
-% The inductive character of $\nat$ is captured by the, so called, elimination and computation rules for $\nat$.  We prefer to call them the rules for defining a function on $\nat$ by primitive recursion. 
-
-% If $C$ is a family on $\nat$, $c_0:C(0)$ and $c_\suc(x,y):C(\suc(x))$ for $x:\nat,y:C(x)$ then we may introduce a function $f:\Pi_{x:\nat}C(x)$ by the following primitive recursion defining equations; one defining equation for each introduction rule.
-
-%   \[\left\{\begin{array}{rl}
-% f(0)\defeq& c_0, \mbox{ and}\\
-% f(\suc(x))\defeq& c_\suc(x,f(x))\mbox{ for } x:\nat
-%   \end{array}\right.\]
-% It is sometimes convenient to make explicit the dependence of $f$ on $c_0$ and $c_\suc$ by using the primitive recursive operator $\rec_\nat$.  So we have
-%   \[ \rec_\nat(x,c_0,c_\suc):C(x)\mbox{ for } x:\nat\]
-% with the defining equations
-
-%   \[\left\{\begin{array}{rl}
-% \rec_\nat(0,c_0,c_\suc)\defeq& c_0, \mbox{ and }\\
-% \rec_\nat(\suc(x),c_0,c_\suc)\defeq& c_\suc(x,\rec_\nat(x,c_0,c_\suc))\mbox{ for } x:\nat
-%   \end{array}\right.\]
-% \subsection{The standard empty, singleton  and boolean types}
-% We use $\emptyt$, $\unitt$ and $\bbB$ for the standard {\bf empty type}, the standard {\bf singleton type} and the standard {\bf boolean type}, respectively.  So $\emptyt$ is not intended to have any elements, we have $\star:\unitt$ and
-% $0_\bool,1_\bool:\bool$.  
-% \begin{itemize}
-% \item If $C$ is a family on $\emptyt$ then we have $f:\Pi_{z:\emptyt}(z)$ with no defining equation.
-% \item If $C$ is a family on $\unitt$ and $c:C(\star)$ then we have $f:\Pi_{z:\unitt}(z)$ with defining equation
-%   \[ f(\star)\defeq c.\]
-% \item If $C$ is a family on $\bool$, $c_0:C(0_\bool)$ 
-% and $c_1:C(1_\bool)$ then we have $f:\Pi_{z:\bool}C(z)$ with the defining equations
-%  \[ \begin{array}{rl}
-% f(0_\bool) \defeq& c_0, \mbox{ and}\\
-% f(1_\bool) \defeq& c_1.
-%   \end{array}\]
-% \end{itemize}
-
-% \subsection{The disjoint union of a family of types}
-% Let $B$ be a family of types on a type $A$.  Then $\Sigma_{x:A}B(x)$ is the 
-% disjoint union type of ordered pairs $(a,b)$ such that $a:A$ and $b:B(a)$.
-
-% If $C$ is a family of types on $\Sigma_{x:A}B(x)$ and 
-% $c:\Pi (x:A)(y:B(x),C((x,y))$ then we may define 
-% $f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
-%   \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
-
-% If the family $B$ on $A$ is such that $B(a)$ is a fixed type $A'$, whatever the object $a:A$, then $\Sigma_{x:A}B(x)$ will be abbreviated $A\times A'$.  It is the binary cartesian product type of the types $A$ and $A'$.
-
-% \paragraph{Remarks:}
-% In future we will prefer to write $C(a,b)$ rather than $C((a,b))$ and $d'(a,b)$ rather than $d'((a,b))$.  Also we might prefer to use the alternative\linebreak notation $\Pi_{x:A,y:B[x]}C(x,y)$ rather than either of the notations 
-% \[\mbox{ $(\Pi x:A)(\Pi y:B(x))C(x,y)$ or $\Pi (x:A)(y:B(x),C(x,y)$.}\]
-
-% \subsection{The disjoint union of two types}
-
-% If $A$ and $A'$ are types then $A+A'$ is their disjoint union.  If $a:A$ then there is a copy $\inleft(a):A+A'$ and if $a':A'$ there is a copy $\inright(a'):A+A'$.
-
-% If $C$ is a family on $A+A'$, $c_\inleft:\Pi_{x:A}C(\inleft(x))$ and $c_\inright:\Pi_{x':A'}C(\inright(x'))$ then $f:\Pi_{z:A+A'}C(z)$ with defining equations
-%   \[\left\{\begin{array}{rll} 
-% f(\inleft(x))\defeq& c_\inleft(x)&\mbox{ for } x:A \mbox{ and}\\
-% f(\inright(x'))\defeq& c_\inright(x')&\mbox{ for } x':A'\\
-% \end{array}\right.\]
-
-
-
-
-
-
-
-% \comment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%rest of file discarded for the moment
-% \section{The Standard Forms of Judgment}
-%   Formal type theory consists of rules for deriving {\em judgments} such as `$A \stype$', to express that $A$ is a type, and `$a:A$' to express that $a$ is an object of type $A$.  In general expressions for types and objects of a type can depend on variables.  A judgement will have a {\em context}, 
-%   \[ x_1:A_1,x_2:A_2,\ldots, x_n:A_n,\]  
-% consisting of a list of {\em variable declarations}, $x_i:A_i$ for $i=1,\ldots,n$, where $n\geq 0$.  So we have, among the forms of judgment, the forms
-%   \[\Gamma \gives A[x_1,\ldots, x_n]\stype
-%   \]
-% and
-%   \[\Gamma\gives a[x_1,\ldots,x_n]:A[x_1,\ldots, x_n]
-%   \]
-% where $\Gamma$ is the context
-%   \[ x_1:A_1,x_2:A_2[x_1],\ldots, x_n:A_n[x_1,x_2,\ldots, x_{n-1}],\]
-% and we have made explicit the possible dependence of expressions on variables.
-% Note that, for these judgments to be well formed, it is presupposed that the context is well formed; i.e. that for $i=1,\ldots,n$,
-%   \[ \Gamma_{\!\! <i}\gives A_i[x_1,\ldots, x_{i-1}]\stype\]
-% is a well-formed judgement where $\Gamma_{\!\! <i}$ is the context
-%   \[ x_1:A_1,x_2:A_2[x_1],\ldots, x_i:A_i[x_1,x_2,\ldots, x_{i-1}].\]
-% Note that it is not always necessary to make explicit all the variables that a type or object expression may depend on.  A main purpose for having explicit displayed variables in expressions when presenting rules is that it gives a convenient notation for substitution.  
-
-
-% So if, for example, we have a type  $B[x]$ for $x:A$  and also we have $a:A$ then we can write $B[a]$ for the type expression obtained from $B[x]$ by substituting $a$ for all free occurences of $x$.  We take for granted some standard way to deal with variable clashes when making substitutions.  If $C[x,y]$ is a type and $c[x,y]:C[x,y]$ for $x:A,y:B[x]$ and also $a:A$ and $b:B[a]$ then we will get the type $C[a,b]$ and the object $c[a,b]:C[a,b]$ by making the simultaneous substitutions of $a$ for $x$ and $b$ for $y$.  Later we will give explicit rules that will allow such substitutions.
-
-% There are two other forms of judgment that need to be mentioned.  These are
-% the judgemental equalities
-%   \[ \Gamma\gives A\jdeq A'\]
-% and
-%   \[ \Gamma\gives a\jdeq a':A,\]
-% the first one presupposing that $A,A'$ are types in the context $\Gamma$ and the second presupposing that $a,a'$ are objects of type $A$ in the context $\Gamma$.  Later we will give explicit rules involving judgmental equalities.  These will arise when we make definitions such as the recursion/induction definitions used in the rules for the inductive types.  So judgmental equality is also called definitional equality.  Later it will be important to distinguish between judgmental equalities and propositional equalities that involve identity types.
-
-% So, in summary we have the forms of judgment
-%   \[\Gamma\gives\cal B\]
-% where $\Gamma$ is a context and the body of the judgment, $\cal B$, has one of the forms 
-%   \[ A\stype,\;\;\; a:A,\;\;\; A\jdeq A',\;\;\; a\jdeq a':A.\]
-% It can be convenient to introduce other forms of judgment, but these will do for now.
-
-% \section{The Basic Non-dependent Forms of Type}
-% Here we first introduce rules for the following basic simple non-dependent forms of type.
-%   \[ A\ra A',\;\; A\times A',\;\; A+A'\;\; \nat,\;\; \bool,\;\;\emptyt,\unitt\] 
-% Note that for each form of type the rules are arrasnged as a list of three items corresponding to the following three kinds of rules.  There is a
-% {\bf formation rule}, {\bf introduction rules} and {\bf recursion/introduction rules}.
-% \begin{description}
-% \item[The types $A\ra A'$;] $\;$
-% \begin{itemize}
-% \item If $A$ and $A'$ are types then $A\ra A'$ is a type, the {\bf function type} from $A$ to $A'$.
-% \item If $f:A\ra A'$ and $a:A$ then $\app(f,a):A'$.
-% \item If $b[x]:A'$ for $x:A$ then $\lambda(\hat{b}):A\ra A'$,
-% where $\hat{b}$ is $(x:A)b[x]$,
-% such that if $a:A$ then
-%   \[ \app(\lambda(\hat{b}),a)\defeq b[a].\]
-% \end{itemize}
-
-% \item[The types $A\times A'$;] $\;$
-% \begin{itemize}
-% \item If $A$ and $A'$ are types then $A\times A'$ is a type, the {\bf cartesian product type} of $A$ and $A'$.
-% %of ordered pairs $\pair(a,a')$ with $a:A$ and $a':A'$.
-% \item If $a:A$ and $a':A'$ then $\pair(a,a'):A\times A'$.
-% \item If $C$ is a type and $c[x,x']:C$ for $x:A,x':A'$ then $\rec_\times(\hat{c},z):C$ for $z:A\times A'$, where $\hat{c}$ is $(x:A,x':A')c[x,x']$, such that
-% if $a:A$ and $a':A'$ then
-%   \[ \rec_\times(\hat{c},\pair(a,a'))\defeq c[a,a'].\]
-% \end{itemize}
-
-% \item[The types $A+A'$:] $\;$
-% \begin{itemize}
-% \item If $A$ and $A'$ are types then $A+A'$ is a type, the {\bf disjoint union
-% type} of $A$ and $A'$.
-% \item If $a:A$ then $\inleft(a):A+A'$ and if $a':A'$ then $\inright(a'):A+A'$.
-% \item If $C$ is a type, $c[x]:C$ for $x:A$ and $c'[x']:C$ for $x':A'$ then 
-% $\rec_+(\hat{c},\hat{c'},z):C$ for $z:A+A'$ such that
-%   \[\begin{array}{rll}
-% \rec_+(\hat{c},\hat{c'},\inleft(x))  \defeq& c[x]  &\mbox{ for }x:A\\
-% \rec_+(\hat{c},\hat{c'},\inright(x)) \defeq& c'[x']&\mbox{ for }x':A'
-%   \end{array}\]
-% \end{itemize}
-
-% \item[The type $\nat$:] $\;$
-% \begin{itemize}
-% \item $\nat$ is the {\bf natural numbers type}.
-% \item $0:\nat$ and if $a:\nat$ then $\suc(a):\nat$.
-% \item If $C$ is a type, $c_0:C$ and $c[x,y]:C$ for $x:\nat,y:C$ then
-% $\rec_\nat(\hat{c},z):C$ for $z:\nat$, where $\hat{c}$ is $(x:\nat,y:C)c[x,y]$,
-% such that
-%   \[ \begin{array}{rll}
-% \rec_\nat(\hat{c},0) \defeq& c_0, &\mbox{ and}\\
-% \rec_\nat(\hat{c},\suc(z))\defeq& c[z,\rec_\nat(\hat{c},z)], &\mbox{ for } z:\nat .
-%   \end{array}\]
-% \end{itemize}
-
-% \newpage
-
-% \item[The type $\bool$:] $\;$
-% \begin{itemize}
-% \item $\bool$ is the {\bf Boolean type}.
-% \item $0_\bool:\bool$ and $1_\bool:\bool$.
-% \item If $C$ is a type, $c_0:C$ and $c_1:C$ then $\rec_\bool(c_0,c_1,z):C$ for $z:\bool$ such that
-%  \[ \begin{array}{rl}
-% \rec_\bool(c_0,c_1,0_\bool) \defeq& c_0\\
-% \rec_\bool(c_0,c_1,1_\bool) \defeq& c_1
-%   \end{array}\]
-% \end{itemize}
-
-% \item[The types $\emptyt,\unitt$:] $\;$
-% \begin{itemize}
-% \item $\emptyt$ and $\unitt$ are the standard {\bf empty type} and standard 
-% {\bf singleton type}, respectively.
-% \item $\star :\unitt$.
-% \item If $C$ is a type then $\rec_\emptyt(z):C$ for $z:\emptyt$, and if $c_0:C$ then $\rec_\unitt(c_0,z):C$ for $z:\unitt$ such that 
-%   \[ \rec_\unitt(c_0,\star)\defeq c_0.\]
-% \end{itemize}
-
-% \end{description}
-
-% \section{Some Basic Forms of type involving Dependent Types}
-% We now introduce the following forms of type that involve type dependency.  The form of type $Id_A(a,a')$ is the first place where we see type dependency introduced, as $Id_A(a,a')$ is a type that {\it depends} on the values $a$ and $a'$ that are objects of type $A$.
-%   \[ Id_A(a,a'),\;\; (\Pi x:A)B[x],\;\; (\Sigma x:A)B[x]\]
-% The other two forms of type exploit type dependency, as they allow the type $B[x]$ to depend on the variable $x$ of type $A$.
-
-% \begin{description}
-% \item[The types $Id_A(a,a')$:] $\;$
-% \begin{itemize}
-% \item If $A$ is a type, $a:A$ and $a':A$ then $Id_A(a,a')$ is a type, the {\bf Identity type} on $A$.
-% \item If $a:A$ then $\refl{a}:Id_A(a,a)$.
-% \item If $a:A$, $C[y,z]$ is a type for $y:A, z:Id_A(a,y)$ and $c:C[a,\refl{a}]$ then $\rec_{Id}(c,y,z):C[y,z]$ for $y:A,z:Id_A(a,y)$ such that
-%   \[ \rec_{Id}(c,a,\refl{a})\defeq c.\]
-% \end{itemize}
-% \newcommand{\bbb}{{]}}
-% \item[The types $(\Pi x:A)$ $\!\! B[x\bbb$:] $\;$
-% \begin{itemize}
-% \item If $A$ is a type and $B[x]$ is a type for $x:A$ then $(\Pi x:A)B[x]$ is a type, the {\bf dependent product type}.
-% \item If $f:(\Pi x:A)B[x]$ and $a:A$ then $\app(f,a):B[a]$.
-% \item If $b[x]:B[x]$ for $x:A$ then $\lambda(\hat{b}):(\Pi x:A)B[x]$, 
-% where $\hat{b}$ is $(x:A)b[x]$, such that if $a:A$ then 
-%   \[ \app(\lambda(\hat{b}),a)\defeq b[a].\]
-% \end{itemize}
-% \item\item[The types $(\Sigma x:A)$ $\!\! B[x\bbb$:] $\;$ 
-% \begin{itemize}
-% \item If $A$ is a type and $B[x]$ is a type for $x:A$ then $(\Sigma x:A)B[x]$ is a type, the {\bf dependent sum type}.
-% \item If $a:A$ and $b:B[a]$ then $\pair(a,b):(\Sigma x:A)B[x]$.
-% \item If $C[z]$ is a type for $z:(\Sigma x:A)B[x]$ and $c[x,y]:C[\pair(x,y)]$ for $x:A,y:B[x]$ then $\rec_\Sigma(\hat{c},z):C[z]$ for $z:(\Sigma x:A)B[x]$, where $\hat{c}$ is $(x:A,y:B[x])c[x,y]$ such that if $a:A$ and $b:B[a]$ then
-%   \[ \rec_\Sigma(\hat{c},\pair(a,b))\defeq c[a,b].\] 
-
-% \end{itemize}
-
-% \end{description}
-
-% \section{The dependent versions of the recursion/induction rules for the types $A\times A', A+A',\nat, \bool, \emptyt,\unitt$}
-
-% For easy reference we repeat all the rules for the non-dependent types, except that, in each case, the recursion/induction rule allow for the type $C$ to be dependent.  Note that there is no change to the rules for the types $A\ra A'$.
-
-% \begin{description}
-% \item[The types $A\ra A'$;] $\;$
-% \begin{itemize}
-% \item If $A$ and $A'$ are types then $A\ra A'$ is a type, the {\bf function type} from $A$ to $A'$.
-% \item If $f:A\ra A'$ and $a:A$ then $\app(f,a):A'$.
-% \item If $b[x]:A'$ for $x:A$ then $\lambda(\hat{b}):A\ra A'$,
-% where $\hat{b}$ is $(x:A)b[x]$,
-% such that if $a:A$ then
-%   \[ \app(\lambda(\hat{b}),a)\defeq b[a].\]
-% \end{itemize}
-
-% \item[The types $A\times A'$;] $\;$
-% \begin{itemize}
-% \item If $A$ and $A'$ are types then $A\times A'$ is a type, the {\bf cartesian product type} of $A$ and $A'$.
-% %of ordered pairs $\pair(a,a')$ with $a:A$ and $a':A'$.
-% \item If $a:A$ and $a':A'$ then $\pair(a,a'):A\times A'$.
-% \item If $C[z]$ is a type for $z:A\times A'$ and $c[x,x']:C[\pair(x,x')]$ for $x:A,x':A'$ then $\rec_\times(\hat{c},z):C[z]$ for $z:A\times A'$, where $\hat{c}$ is $(x:A,x':A')c[x,x']$, such that
-% if $a:A$ and $a':A'$ then
-%   \[ \rec_\times(\hat{c},\pair(a,a'))\defeq c[a,a'].\]
-% \end{itemize}
-
-% \item[The types $A+A'$:] $\;$
-% \begin{itemize}
-% \item If $A$ and $A'$ are types then $A+A'$ is a type, the {\bf disjoint union
-% type} of $A$ and $A'$.
-% \item If $a:A$ then $\inleft(a):A+A'$ and if $a':A'$ then $\inright(a'):A+A'$.
-% \item If $C[z]$ is a type for $z:A+A'$, $c[x]:C[\inleft(x)]$ for $x:A$ and $c'[x']:C[\inright(x')]$ for $x':A'$ then 
-% $\rec_+(\hat{c},\hat{c'},z):C[z]$ for $z:A+A'$ such that
-%   \[\begin{array}{rll}
-% \rec_+(\hat{c},\hat{c'},\inleft(x))  \defeq& c[x]  &\mbox{ for }x:A\\
-% \rec_+(\hat{c},\hat{c'},\inright(x)) \defeq& c'[x']&\mbox{ for }x':A'
-%   \end{array}\]
-% \end{itemize}
-
-% \item[The type $\nat$:] $\;$
-% \begin{itemize}
-% \item $\nat$ is the {\bf natural numbers type}.
-% \item $0:\nat$ and if $a:\nat$ then $\suc(a):\nat$.
-% \item If $C[z]$ is a type for $z:\nat$, $c_0:C[0]$ and $c[x,y]:C[\suc(x)]$ for $x:\nat,y:C$ then
-% $\rec_\nat(\hat{c},z):C[z]$ for $z:\nat$, where $\hat{c}$ is $(x:\nat,y:C)c[x,y]$,
-% such that
-%   \[ \begin{array}{rll}
-% \rec_\nat(\hat{c},0)      \defeq& c_0,                   &\mbox{ and}\\
-% \rec_\nat(\hat{c},\suc(z))\defeq& c[z,\rec_\nat(\hat{c},z)], &\mbox{ for } z:\nat .
-%   \end{array}\]
-% \end{itemize}
-
-
-% \item[The type $\bool$:] $\;$
-% \begin{itemize}
-% \item $\bool$ is the {\bf Boolean type}.
-% \item $0_\bool:\bool$ and $1_\bool:\bool$.
-% \item If $C[z]$ is a type for $z:\bool$, $c_0:C[0_\bool]$ 
-% and $c_1:C[1_\bool]$ then $\rec_\bool(c_0,c_1,z):C[z]$ for $z:\bool$ such that
-%  \[ \begin{array}{rl}
-% \rec_\bool(c_0,c_1,0_\bool) \defeq& c_0\\
-% \rec_\bool(c_0,c_1,1_\bool) \defeq& c_1
-%   \end{array}\]
-% \end{itemize}
-
-% \item[The types $\emptyt,\unitt$:] $\;$
-% \begin{itemize}
-% \item $\emptyt$ and $\unitt$ are the standard {\bf empty type} and standard 
-% {\bf singleton type}, respectively.
-% \item $\star :\unitt$.
-% \item If $C[z]$ is a type for $z:\emptyt$ then $\rec_\emptyt(z):C[z]$ for $z:\emptyt$.\\  If $C[z]$ is a type for $z:\unitt$ and $c_0:C$ then $\rec_\unitt(c_0,z):C$ for $z:\unitt$ such that 
-%   \[ \rec_\unitt(c_0,\star)\defeq c_0.\]
-
-% \end{itemize}
-
-% \end{description}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% end of discarded part
-
-%%%%%%%%%%%%% end of scope of local macros
-}
 % Local Variables:
 % TeX-master: "main"
 % End:

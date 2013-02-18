@@ -1,5 +1,8 @@
-\newcommand\ua[1]{\ensuremath{\mathsf{ua}} \: #1}
+\newcommand\ua{\ensuremath{\mathsf{ua}}}
 \newcommand{\fcomp}{\circ}
+\newcommand{\code}{\ensuremath{\mathsf{code}}}
+\newcommand{\encode}{\ensuremath{\mathsf{encode}}}
+\newcommand{\decode}{\ensuremath{\mathsf{decode}}}
 
 \section{The identity structure of specific types}
 \label{sec:computational}
@@ -346,60 +349,71 @@ The basic idea is just the same as for the non-dependent function type: we trans
 \label{sec:compute-universe}
 
 Given two types $A$ and $B$, we may consider them as elements of some universe type \type, and thereby form the identity type $\id[\type]AB$.
-As mentioned in the introduction, \emph{univalence} is the identification of $\id[\type]AB$ with the type $(A\eqv B)$ of equivalences from $A$ to $B$, which we described in \S\ref{sec:basics-equivalences}.
+As mentioned in the introduction, \emph{univalence} is the identification of $\id[\type]AB$ with the type $(\eqv AB)$ of equivalences from $A$ to $B$, which we described in \S\ref{sec:basics-equivalences}.
 We perform this identification by way of the following canonical function.
 
 \begin{lem}
   For types $A,B:\type$, there is a function
-  \[ (\id[\type]AB) \to (A\eqv B). \]
+  \begin{equation}\label{eq:uidtoeqv}
+    \mathsf{idtoeqv} : (\id[\type]AB) \to (\eqv A B).
+  \end{equation}
 \end{lem}
 \begin{proof}
-  Given $p:A=B$, we need to construct an equivalence $A\eqv B$.
-  By induction, it suffices to assume that $p$ is $\refl A$, in which case we require an equivalence $A\eqv A$.
-  But it is easy to show that the identity function is an equivalence.
+  We could construct this directly by induction on equality, but the following description is more convenient.
+  Note that the identity function $\idfunc[\type]:\type\to\type$ may be regarded as a dependent type over the universe \type; it assigns to each type $X:\type$ the type $X$ itself.
+  Thus, given a path $p:A =_\type B$, we have a transport function $\transf{p}:A \to B$.
+  We claim that $\transf{p}$ is an equivalence.
+  But by induction, it suffices to assume that $p$ is $\refl A$, in which case $\transf{p} \jdeq \idfunc[A]$, which is an equivalence by \autoref{eg:idequiv}.
+  Thus, we can define $\mathsf{idtoeqv}(p)$ to be $\transf{p}$ (together with the above proof that it is an equivalence).
 \end{proof}
 
-A path in $\type$ is given by univalence
+\begin{axiom}[Univalence]
+  For any $A,B:\type$, the function~\eqref{eq:uidtoeqv} is an equivalence.
+\end{axiom}
 
+Thus, we have
 \[
-\eqv{(\id[\type]{A}{B})}{\eqv A B}
+\eqv{(\id[\type]{A}{B})}{(\eqv A B)}
 \]
+As with function extensionality, the univalence axiom should eventually be built into a more computational version of homotopy type theory.
 
-Again it is useful to break this into 
+\begin{rmk}
+  It is important for the univalence axiom that we defined $\eqv AB$ using a ``good'' version of $\isequiv$ as described in \S\ref{sec:basics-equivalences}, rather than (say) as $\sm{f:A\to B} \mathsf{qinv}(f)$.
+\end{rmk}
+
+In particular, univalence means that \emph{equivalent types may be identified}.
+As for other type formers, it is useful to break this equivalence into:
 
 \begin{itemize}
 \item An introduction rule for {(\id[\type]{A}{B})}:
   \[
-  \ua{} : {\eqv A B} \to (\id[\type]{A}{B})
+  \ua : ({\eqv A B}) \to (\id[\type]{A}{B})
   \]
-\item The elimination rule is transport at $X:\type \mapsto X$:
+\item The elimination rule, which is transport at the identity function $X\mapsto X$:
   \[
-  \transport{X \mapsto X}{} : \id{A}{B} \to (A \to B)
+  \transfibf{X \mapsto X} : (\id{A}{B}) \to (\eqv A B)
   \]
 \item $\beta$-reduction: 
   \[
   \begin{array}{l}
-  \id{\transport{X \mapsto X} \: (\ua {(f, fIsEquiv)})}{f}
+  \transfib{X \mapsto X}{\ua(f)}{x} = f(x)
   \end{array}
   \]
-\item $\eta$-equivalence: For any $\alpha : \id A B$
+\item $\eta$-equivalence: For any $p : \id A B$
   \[
-  \id{\alpha}{\ua {(\transport{X \mapsto X}(\alpha) , \beta)}}
+  \id{p}{\ua(\transfibf{X \mapsto X}(p))}
   \]
-  where $\mathsf{transportIsEquiv} : \isequiv{\transport{X \mapsto X}(\alpha)}$ can be
-  defined by doing path induction on $\alpha$, at which point it
-  suffices to show that the identity function is an equivalence.  
 \end{itemize}
 
-Identity, inverses, and composition: (FIXME: pick a specific definition
-of equivalence?)
-\[
-\begin{array}{l}
-\refl{A} = \ua{\idfunc} \\
-\opp{\alpha} = \ua {(\transport {X \mapsto X} {\opp \alpha}, \mathsf{transportIsEquiv} \: (\opp \alpha))} \\ 
-{\alpha} \ct \beta = ? \\
-\end{array}
-\]
+We can also identify the reflexivity, inverses, and concatenation of equalities in the universe with the corresponding operations on equivalences:
+\begin{align*}
+  \refl{A} &= \ua(\idfunc[A]) \\
+  \opp{\ua(f)} &= \ua(f^{-1}) \\ 
+  \ua(f) \ct \ua(g) &= \ua(g\circ f)
+\end{align*}
+Proving these formally requires knowing how to invert and compose equivalences, which in turn requires having an actual definition of equivalences.
+Thus, we postpone them until Chapter~\ref{cha:equivalences}.
+
 
 \subsection{Identity Type}
 \label{sec:compute-paths}
@@ -433,10 +447,176 @@ Transport, when $A$ is dependent:
 \subsection{Coproducts}
 \label{sec:compute-coprod}
 
+So far, most of the type formers we have considered have been what are called \emph{negative}.
+Intuitively, this means that their elements are determined by their behavior under the elimination rules: a (dependent) pair is determined by its projections, and a (dependent) function is determined by its values.
+The identity types of negative types can almost always be characterized straightforwardly, along with all of their higher structure, as we have done in \S\S\ref{sec:compute-cartprod}--\ref{sec:compute-pi}.
+The universe is not exactly a negative type, but its identity types behave similarly: we have a straightforward characterization (univalence) and a description of the higher structure.
+Identity types themselves, of course, are a special case.
+
+We now consider our first example of a \emph{positive} type former.
+A positive type is one which is ``presented'' by certain constructors, with the universal property of a presentation being expressed by its elimination rule.
+(Categorically speaking, a positive type has a ``mapping out'' universal property, while a negative type has a ``mapping in'' universal property.)
+Because computing with presentations is, in general, an uncomputable problem, for positive types we cannot always expect a straightforward characterization of the identity type.
+However, in many particular cases, a characterization or partial characterization does exist, and can be obtained by the general method we describe here and in later sections.
+
+(Technically, our chosen presentation of cartesian products and $\Sigma$-types is also positive.
+However, because these types also admit a negative presentation which differs only slightly, their identity types have a direct characterization that does not require the method to be described here.)
+
+Consider the coproduct type $A+B$, which is ``presented'' by the injections $\inl:A\to A+B$ and $\inr:B\to A+B$.
+Intuitively, we expect that $A+B$ contains exact copies of $A$ and $B$ disjointly, so that we should have
+\begin{gather}
+  \eqv{(\inl(a_1)=\inl(a_2))}{(a_1=a_2)} \label{eq:inlinj}\\
+  \eqv{(\inr(b_1)=\inr(b_2))}{(b_1=b_2)}\\
+  \eqv{(\inl(a)= \inr(b))}{\emptyt} \label{eq:inlrdj}
+\end{gather}
+We prove this as follows.
+Fix an element $a_0:A$; our goal is to characterize the dependent type
+\[(x\mapsto (\inl(a)=x)) : A+B \to \type.\]
+In order to do this, we will define a dependent type $\code:A+B\to\type$ and show that $\prd{x:A+B} (\eqv{(\inl(a)=x)}{\code(x)})$.
+Since we want to conclude~\eqref{eq:inlinj} from this, we should have $\code(\inl(a)) = (a_0=a)$, and since we also want to conclude~\eqref{eq:inlrdj}, we should have $\code (\inr(b)) = \emptyt$.
+The essential insight is that we can use the elimination property of $A+B$ to \emph{define} $\code:A+B\to\type$ by these two equations:
+\begin{align*}
+  \code(\inl(a)) &\defeq (a_0=a)\\
+  \code(\inr(b)) &\defeq \emptyt
+\end{align*}
+We can now show:
+
+\begin{thm}\label{thm:path-coprod}
+  For all $x:A+B$ we have $\eqv{(\inl(a)=x)}{\code(x)}$.
+\end{thm}
+\begin{proof}
+  The key to the following proof is that we do it for all points $x$ together, enabling us to use the elimination principle for the coproduct.
+  We first define a function
+  \[ \encode : \prd{x:A+B}{p:\inl(a_0)=x} \code(x) \]
+  by transporting reflexivity along $p$:
+  \[ \encode(x,p) \defeq \transfib{\code}{p}{\refl{a_0}}. \]
+  Note that $\refl{a_0} : \code(\inl(a_0))$, since $\code(\inl(a_0))\jdeq (a_0=a_0)$ by definition of \code.
+  Next, we define a function
+  \[ \decode : \prd{x:A+B}{c:\code(x)} (\inl(a_0)=x) \]
+  To define $\decode(x,c)$, we may first use the elimination principle of $A+B$ to divide into cases based on whether $x$ is of the form $\inl(a)$ or the form $\inr(b)$.
+
+  In the first case, where $x\jdeq \inl(a)$, then $\code(x)\jdeq (a_0=a)$, so that $c$ is an identification between $a_0$ and $a$.
+  Thus, $\ap{\inl}{c}:(\inl(a_0)=\inl(a))$ so we can define this to be $\decode(\inl(a),c)$.
+
+  In the second case, where $x\jdeq \inr(b)$, then $\code(x)\jdeq \emptyt$, so that $c$ inhabits the empty type.
+  Thus, the elimination rule of $\emptyt$ yields a value for $\decode(\inr(b),c)$.
+
+  This completes the definition of \decode; we now show that $\encode(x,-)$ and $\decode(x,-)$ are quasi-inverses for all $x$.
+  On the one hand, suppose given $x:A+B$ and $p:\inl(a_0)=x$; we want to show $\decode(x,\encode(x,p))=p$.
+  But now by path induction (in the Paulin-Mohring style), we may assume that $x\jdeq\inl(a_0)$ and $p\jdeq \refl{\inl(a_0)}$.
+  In this case we have
+  \begin{align*}
+    \decode(x,\encode(x,p))
+    &\jdeq \decode(\inl(a_0),\encode(\inl(a_0),\refl{\inl(a_0)}))\\
+    &\jdeq \decode(\inl(a_0),\transfib{\code}{\refl{\inl(a_0)}}{\refl{a_0}})\\
+    &\jdeq \decode(\inl(a_0),\refl{a_0})\\
+    &\jdeq \ap{\inl}{\refl{a_0}}\\
+    &\jdeq \refl{\inl(a_0)}\\
+    &\jdeq p.
+  \end{align*}
+  On the other hand, suppose given $x:A+B$ and $c:\code(x)$; we want to show $\encode(x,\decode(x,c))=c$.
+  We may again divide into cases based on $x$.
+  If $x\jdeq\inl(a)$, then $c:a_0=a$ and $\decode(x,c)\jdeq \ap{\inl}{c}$, so that
+  \begin{align*}
+    \encode(x,\decode(x,c))
+    &\jdeq \transfib{\code}{\ap{\inl}{c}}{\refl{a_0}}\\
+    &= \transfib{a\mapsto (a_0=a)}{c}{\refl{a_0}}\\
+    &= \refl{a_0} \ct c\\
+    &= c.
+  \end{align*}
+  In the penultimate line, we have used \autoref{thm:path-paths}.
+  (Is the lemma we used in the second line stated anywhere?)
+\end{proof}
+
+Of course, there is a corresponding theorem if we fix $b_0:B$ instead of $a_0:A$.
+
+In particular, for any $a:A$ we have the function
+\[ \encode(a,-) : (\inl(a_0)=\inl(a)) \to (a_0=a).\]
+Traditionally, with identity types viewed as propositions, this is stated as ``$\inl$ is injective''.
+The homotopical version gives more information: the types $\inl(a_0)=\inl(a)$ and $a_0=a$ are actually equivalent.
+Similarly, for any $b:B$ we have
+\[ \encode(b,-) : (\inl(a_0)=\inr(b)) \to \emptyt \]
+which can be stated as ``$\inl(a_0)$ is not equal to $\inr(b)$'', i.e.\ the images of \inl and \inr are disjoint.
+
+As usual, we can also characterize the action of transport in coproduct types.
+Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, and dependent types $A,B:X\to\type$, we have
+\begin{align*}
+  \transfib{A+B}{p}{\inl(a)} &= \inl (\transfib{A}{p}{a})\\
+  \transfib{A+B}{p}{\inr(b)} &= \inr (\transfib{B}{p}{b})
+\end{align*}
+where as usual, $A+B$ denotes abusively the dependent type $x\mapsto A(x)+B(x)$.
+The proof is easy using path induction.
+
+
 \subsection{Natural numbers}
 \label{sec:compute-nat}
 
+The same technique we used for coproducts applies to the natural numbers, which are also a positive type.
+In this case the codes for identities are a doubly dependent type
+\[\code:\N\to\N\to\type,\]
+defined by double recursion over \N as follows:
+\begin{align*}
+  \code(0,0) &= \unit\\
+  \code(\suc(m),0) &= \emptyt\\
+  \code(0,\suc(n)) &= \emptyt\\
+  \code(\suc(m),\suc(n)) &= \code(m,n).
+\end{align*}
+We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
+\begin{align*}
+  r(0) &= \ttt\\
+  r(\suc(n)) &= r(n).
+\end{align*}
 
+\begin{thm}\label{thm:path-nat}
+  For all $m,n:\N$ we have $\eqv{(m=n)}{\code(m,n)}$.
+\end{thm}
+\begin{proof}
+  We define
+  \[ \encode : \prd{m,n:\N} (m=n) \to \code(m,n) \]
+  by transporting, $\encode(m,n,p) \defeq \transfib{\code(m,-)}{p}{r(m)}$.
+  And we define
+  \[ \decode : \prd{m,n:\N} \code(m,n) \to (m=n) \]
+  by double induction on $m,n$.
+  When $m$ and $n$ are both $0$, we need a function $\unit \to (0=0)$, which we define to send everything to $\refl{0}$.
+  When $m$ is a successor and $n$ is $0$ or vice versa, the domain $\code(m,n)$ is \emptyt, so the eliminator for \emptyt suffices.
+  And when both are successors, we can define $\decode(\suc(m),\suc(n))$ to be the composite
+  \[ \code(\suc(m),\suc(n))\jdeq\code(m,n) \xrightarrow{\decode(m,n)} (m=n) \xrightarrow{\apfunc{\suc}} (\suc(m)=\suc(n)). \]
+  Next we show that $\encode(m,n)$ and $\decode(m,n)$ are quasi-inverses for all $m,n$.
+
+  On one hand, if we start with $p:m=n$, then by induction on $p$ it suffices to show $\decode(n,n,\encode(n,n,\refl{n}))=\refl{n}$.
+  But $\encode(n,n,\refl{n}) \jdeq r(n)$, so it suffices to show that $\decode(n,n,r(n)) =\refl{n}$.
+  We can prove this by induction on $n$.
+  If $n\jdeq 0$, then $\decode(0,0,r(0)) =\refl{0}$ by definition of \decode.
+  And in the case of a successor, by the inductive hypothesis we have $\decode(n,n,r(n)) = \refl{n}$, so it suffices to observe that $\apfunc{\suc}(\refl{n}) \jdeq \refl{\suc(n)}$.
+
+  On the other hand, if we start with $c:\code(m,n)$, then we proceed by double induction on $m$ and $n$.
+  If both are $0$, then $\decode(0,0,c) \jdeq \refl{0}$, while $\encode(0,0,\refl{0})\jdeq r(0) \jdeq \ttt$.
+  Thus, it suffices to recall from \S\ref{sec:compute-unit} that every inhabitant of $\unit$ is equal to \ttt.
+  If $m$ is $0$ but $n$ is a successor, or vice versa, then $c:\emptyt$, so we are done.
+  And in the case of two successors, we have
+  \begin{multline*}
+    \encode(\suc(m),\suc(n),\decode(\suc(m),\suc(n),c))\\
+    \begin{split}
+    &= \encode(\suc(m),\suc(n),\apfunc{\suc}(\decode(m,n,c)))\\
+    &= \transfib{\code(\suc(m),-)}{\apfunc{\suc}(\decode(m,n,c))}{r(\suc(m))}\\
+    &= \transfib{\code(\suc(m),\suc(-))}{\decode(m,n,c)}{r(\suc(m))}\\
+    &= \transfib{\code(m,-)}{\decode(m,n,c)}{r(m)}\\
+    &= \encode(m,n,\decode(m,n,c))\\
+    &= c
+  \end{split}
+  \end{multline*}
+  using the inductive hypothesis.
+\end{proof}
+
+In particular, we have
+\[ \encode(\suc(m),0) : (\suc(m)=0) \to \emptyt \]
+which shows that ``$0$ is not the successor of any natural number''.
+We also have the composite
+\[ (\suc(m)=\suc(n)) \xrightarrow{\encode} \code(\suc(m),\suc(n)) \jdeq \code(m,n) \xrightarrow{\decode} (m=n) \]
+which shows that the function $\suc$ is injective.
+
+We will study more general positive types in Chapters~\ref{cha:induction} and~\ref{cha:hits}.
+In Chapter~\ref{cha:homotopy} we will see that the same technique used here to characterize the identity types of coproducts and \nat can also be used to calculate homotopy groups of spheres.
 
 % \subsection{Higher Inductives}
 % \label{sec:compute-hits}

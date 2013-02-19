@@ -7,11 +7,12 @@
 Recall that for any type $A$, and any $x,y:A$, we have a identity type $\id[A]{x}{y}$, also written $\idtype[A]{x}{y}$ or just $x=y$.
 We can think of inhabitants of $x=y$ as either
 \begin{enumerate}
-\item proofs that $x$ and $y$ are equal,
+\item proofs or evidence that $x$ and $y$ are equal,
+\item identifications of $x$ with $y$,
 \item paths from $x$ to $y$, or
 \item isomorphisms/equivalences from $x$ to $y$.
 \end{enumerate}
-The first is more traditional in type theory; but in homotopy type theory we often take the latter two perspectives as well.
+The first is more traditional in type theory; but in homotopy type theory we often take the latter perspectives as well.
 It turns out that the defining rules of identity types, as described in the previous chapter, give them structure which corresponds precisely to that of a space or a higher groupoid.
 
 Recall that the induction principle for the identity types $\id[A]{x}{y}$ (with $A$ a fixed type) says that if
@@ -23,12 +24,12 @@ then
 \begin{itemize}
 \item there exists an element $J_{D,d}(x,y,p):D(x,y,p)$ for \emph{every} two elements $x,y:A$ and $p:\id[A]xy$, such that $J_{D,d}(a,a,\refl a) \jdeq d(a)$.
 \end{itemize}
-In other words, given dependently typed functions
+In other words, given dependent functions
 \begin{align*}
 D & :\prd{x,y:A}{p:\id{x}{y}} \type\\
 d & :\prd{a:A} D(a,a,\refl{a})
 \end{align*}
-there is a dependently typed function
+there is a dependent function
 \[J_{D,d}:\prd{x,y:A}{p:\id{x}{y}} D(x,y,p)\]
 such that 
 \begin{equation}\label{eq:Jconv}
@@ -40,7 +41,7 @@ Usually, every time we apply this induction rule we will either not care about t
 
 Informally, the induction principle for identity types says that if we want to construct an object (or prove a statement) which depends on an inhabitant $p:\id[A]xy$ of an identity type, then it suffices to perform the construction (or the proof) in the special case when $x$ and $y$ are the same (judgmentally) and $p$ is a reflexivity term $\refl{x}$ (judgmentally).
 When writing informally, we may express this with a phrase such as ``by induction, it suffices to assume\dots''.
-This reduction to the ``reflexivity case'' is analogous to the reduction to the ``base case'' and ``inductive step'' in an ordinary proof by induction on the natural numbers.
+This reduction to the ``reflexivity case'' is analogous to the reduction to the ``base case'' and ``inductive step'' in an ordinary proof by induction on the natural numbers, and also to the ``left case'' and ``right case'' in a proof by case analysis on a disjoint union or disjunction.
 
 The ``conversion rule''~\eqref{eq:Jconv} is less familiar in the context of proof by induction on natural numbers, but there is an analogous notion in the related concept of definition by recursion.
 If a sequence $(a_n)_{n\in \mathbb{N}}$ is defined by giving $a_0$ and specifying $a_{n+1}$ in terms of $a_n$, then in fact the $0^{\mathrm{th}}$ term of the resulting sequence \emph{is} the given one, and the given recurrence relation relating $a_{n+1}$ to $a_n$ holds for the resulting sequence.
@@ -142,7 +143,7 @@ In the case of \autoref{lem:concat}, the difference hinges on the computation ru
 If we proved the lemma using a single induction over $p$, then we would end up with a computation rule of the form $\refl{y} \ct q \jdeq q$.
 If we proved it with a single induction over $q$, we would have instead $p\ct\refl{x}\jdeq p$, while proving it with a double induction (as we did) gives only $\refl{x}\ct\refl{x} \jdeq \refl{x}$.
 
-The asymmetrical computation rules can sometimes be convenient when doing formalized mathematics, as they allow the computer to reduce some things automatically.
+The asymmetrical computation rules can sometimes be convenient when doing formalized mathematics, as they allow the computer to simplify more things automatically.
 However, in informal mathematics, and arguably even in the formalized case, it can be confusing to have a concatenation operation which behaves asymmetrically and to have to remember which side is the ``special'' one.
 Treating both sides symmetrically makes for more robust proofs; this is why we have given the proof that we did.
 (However, this is admittedly a stylistic choice.)
@@ -261,7 +262,7 @@ In particular, often we don't need the complicated combinatorics involved in mak
     \begin{align*}
       p\ct (q\ct r)
       &\jdeq \refl{x}\ct(\refl{x}\ct \refl{x})\\
-      &\jdeq \refl{x}
+      &\jdeq \refl{x}\\
       &\jdeq (\refl{x}\ct \refl x)\ct \refl x\\
       &\jdeq (p\ct q)\ct r.
     \end{align*}
@@ -398,7 +399,7 @@ Thus, by concatenating with the path defined in \autoref{thm:trans-trivial}, for
   \big(\trans{p}{f(x)} = f(y)\big) &\to \big(f(x) = f(y)\big).\label{eq:apd-to-ap}
 \end{align}
 In fact, these functions are inverse equivalences (in the sense to be introduced in \S\ref{sec:basics-equivalences}), and they relate $\apfunc f (p)$  to $\apdfunc f (p)$.
-But because their types are different, it is often clearer to use the different notations $\apdfunc{f}$ and $\apfunc{f}$.
+But because the types of $\apdfunc{f}$ and $\apfunc{f}$ are different, it is often clearer to use different notations for them.
 We may sometimes use a notation $\apd f p$ for $\apdfunc{f}(p)$, which is similar to the notation $\ap f p$ for $\apfunc{f}$.
 
 \begin{thm}[Path lifting property]\label{thm:path_lifting}
@@ -406,7 +407,7 @@ Let $P:A\to\type$ be a dependent type over $A$ and assume we have $u:P(x)$ for $
 \begin{equation*}
 \mathsf{lift}(u,p):(x,u)=(y,\trans{p}{u})
 \end{equation*}
-in $\sm{x:A}P(x)$ for any $p:x=y$
+in $\sm{x:A}P(x)$ for any $p:x=y$.
 \end{thm}
 
 \begin{proof}[First proof]
@@ -417,7 +418,9 @@ D(x,y,p)\defeq (x,u)=(y,\trans{p}{u}).
 Then $D(x,x,\refl{x})\defeq (x,u)=(x,\trans{\refl{x}}{u})$. By the conversion rule we have $\trans{\refl{x}}{u}\defeq u$, so we see that $D(x,x,\refl{x})\defeq (x,u)=(x,u)$. Therefore we find $d(x)\defeq\refl{(x,u)}:D(x,x,\refl{x})$. Now $J$ gives a term of type $\prd{x,y:A}{p:x=y}(x,u)=(y,\trans{p}{u})$.
 \end{proof}
 \begin{proof}[Second proof] 
-By induction, it suffices to find a term of type $(x,u)=(x,\trans{\refl{x}}{u})$. Note that $\trans{\refl{x}}{u}\defeq u$, so we really need to find a term of type $(x,u)=(x,u)$. Here we take the reflexivity term.
+  By induction, it suffices to find a term of type $(x,u)=(x,\trans{\refl{x}}{u})$.
+  Note that $\trans{\refl{x}}{u}\jdeq u$, so we really need to find a term of type $(x,u)=(x,u)$.
+  But here we can take the reflexivity term.
 \end{proof}
 
 \medskip
@@ -450,12 +453,92 @@ Here we summarize the basic definitions made in the previous two sections.
 \input{computational}
 
 
+\section{Universal properties}
+\label{sec:universal-properties}
+
+By combining the path computation rules described in \S\ref{sec:computational}, we can show that various type forming operations satisfy the expected universal properties.
+For instance, given types $X,A,B$, we have a function
+\begin{equation}
+  (X\to A\times B) \;\to \; (X\to A)\times (X\to B)\label{eq:prod-ump-map}
+\end{equation}
+defined by $f \mapsto (\proj1 \circ f, \proj2\circ f)$.
+
+\begin{thm}\label{thm:prod-ump}
+  \eqref{eq:prod-ump-map} is an equivalence.
+\end{thm}
+\begin{proof}
+  We define a quasi-inverse to send $(g,h)$ to the function $x\mapsto (g(x),h(x))$.
+  (Technically, we have used the induction principle for the cartesian product $(X\to A)\times (X\to B)$, to reduce to the case of a pair.)
+
+  Now given $f:X\to A\times B$, the round-trip composite yields the function
+  \begin{equation}
+    x\mapsto (\proj1(f(x)),\proj2(f(x))).\label{eq:prod-ump-rt1}
+  \end{equation}
+  By \autoref{thm:path-prod}, for any $x:X$ we have $(\proj1(f(x)),\proj2(f(x))) = f(x)$.
+  Thus, by function extensionality, the function~\eqref{eq:prod-ump-rt1} is equal to $f$.
+
+  On the other hand, given $(g,h)$, the round-trip composite yields the pair $(x\mapsto g(x),x\mapsto h(x))$.
+  By function extensionaility, the two components of this are equal to $g$ and $h$ respectively, so by \autoref{thm:path-prod}, the pair is equal to $(g,h)$.
+\end{proof}
+
+In fact, we also have a dependently typed version of this universal property.
+Suppose given a type $X$ and dependent types $A,B:X\to \type$.
+Then we have a function
+\begin{equation}\label{eq:prod-umpd-map}
+  \Big(\prd{x:X} (A(x)\times B(x))\Big) \;\to\; \Big(\prd{x:X} A(x)\Big) \times \Big(\prd{x:X} B(x)\Big)
+\end{equation}
+defined as before by $f \mapsto (\proj1 \circ f, \proj2\circ f)$.
+
+\begin{thm}\label{thm:prod-umpd}
+  \eqref{eq:prod-umpd-map} is an equivalence.
+\end{thm}
+\begin{proof}
+  Left to the reader.
+\end{proof}
+
+Just as $\Sigma$-types are a generalization of cartesian products, they satisfy a generalized version of this universal property.
+Jumping right to the dependently typed version, suppose we have a type $X$, a dependent type $A:X\to \type$, and a doubly dependent type $P:\prd{x:X} A(x)\to\type$.
+Then we have a function
+\begin{multline}
+  \label{eq:sigma-ump-map}
+  \Big(\prd{x:X} \textstyle\sum_{a:A(x)} P(x,a)\Big) \\ \;\to\;
+  \Big(\sm{g:\textstyle\prod_{x:X} A(x)} \textstyle\prod_{x:X} P(x,g(x))\Big)
+\end{multline}
+Note that if we have $P(x,a) \defeq B(x)$ for some $B:X\to\type$, then~\eqref{eq:sigma-ump-map} reduces to~\eqref{eq:prod-umpd-map}.
+
+\begin{thm}\label{thm:ttac}
+  \eqref{eq:sigma-ump-map} is an equivalence.
+\end{thm}
+\begin{proof}
+  As before, we define a quasi-inverse to send $(g,h)$ to the function $x\mapsto (g(x),h(x))$.
+  Now given $f:\prd{x:X} \sm{a:A(x)} P(x,a)$, the round-trip composite yields the function
+  \begin{equation}
+    x\mapsto (\proj1(f(x)),\proj2(f(x))).\label{eq:prod-ump-rt1}
+  \end{equation}
+  Now for any $x:X$, by \autoref{thm:eta-sigma} ($\eta$-equivalence for $\Sigma$-types) we have $(\proj1(f(x)),\proj2(f(x))) = f(x)$.
+  Thus, by function extensionality,~\eqref{eq:prod-ump-rt1} is equal to $f$.
+
+  On the other hand, given $(g,h)$, the round-trip composite yields the pair $(x\mapsto g(x),x\mapsto h(x))$.
+  But $x\mapsto g(x)$ and $x\mapsto h(x)$ are judgmentally equal to $g$ and $h$, respectively, and hence this pair of functions is also equal to $(g,h)$.
+\end{proof}
+
+This is noteworthy because the propositions-as-types interpretation of~\eqref{eq:sigma-ump-map} is ``the axiom of choice''.
+If we read $\Sigma$ as ``there exists'' and $\Pi$ (sometimes) as ``for all'', we can pronounce:
+\begin{itemize}
+\item $\prd{x:X} \sm{a:A(x)} P(x,a)$ as ``for all $x:X$ there exists an $a:A(x)$ such that $P(x,a)$'', and
+\item $\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))$ as ``there exists a choice function $g:\prd{x:X} A(x)$ such that for all $x:X$ we have $P(x,g(x))$''.
+\end{itemize}
+Thus, \autoref{thm:ttac} says that not only is the axiom of choice ``true'', it hypotheses are equivalent to its conclusion.
+(On the other hand, it should also be clear to the classical mathematician that~\eqref{eq:sigma-ump-map} does not carry the intended meaning of the axiom of choice, since we have specified the values of $g$ already and there are no choices left to be made.
+We will return to this point in \S\ref{sec:prop-subset} and [wherever we discuss truncations].)
+
+
 \section{Sets}
 \label{sec:basics-sets}
 
 While types in general behave like higher groupoids, there is a subclass of them that behave more like the sets in a traditional set-theoretic system.
 Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms and higher morphisms, while topologically we may consider sets with the discrete topology.
-More generally, we may consider groupoids or spaces that are \emph{equivalent} to ones of this sort; since everything we do is up to homotopy, it makes no difference.
+More generally, we may consider groupoids or spaces that are \emph{equivalent} to ones of this sort; since everything we do in type theory is up to homotopy, we can't expect to tell the difference.
 
 Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopy information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
 Fortunately, because everything in homotopy type theory is automatically functorial/continuous, it turns out to be sufficient to ask this at the bottom level.
@@ -507,13 +590,13 @@ In Chapter~\ref{cha:hlevels} we will study a more general form of this question 
 
 Most of the type forming operations we have considered so far also preserve sets.
 
-\begin{eg}
+\begin{eg}\label{thm:isset-prod}
   If $A$ and $B$ are sets, then so is $A\times B$.
   For given $x,y:A\times B$ and $p,q:x=y$, by \autoref{thm:path-prod} we have $p= \pairpath(\projpath1(p),\projpath2(p))$ and $q= \pairpath(\projpath1(q),\projpath2(q))$.
   But $\projpath1(p)=\projpath1(q)$ since $A$ is a set, and $\projpath2(p)=\projpath2(q)$ since $B$ is a set; hence $p=q$.
 \end{eg}
 
-\begin{eg}
+\begin{eg}\label{thm:isset-forall}
   If $A$ is \emph{any} type and $B:A\to \type$ is such that for each $x:A$, the type $B(x)$ is a set, then the type $\prd{x:A} B(x)$ is a set.
   For suppose $f,g:\prd{x:A} B(x)$ and $p,q:f=g$.
   By function extensionality, we have $p = {\funext (x \mapsto \happly(p,x))}$ and likewise $q = {\funext (x \mapsto \happly(q,x))}$.
@@ -537,6 +620,7 @@ However, not all types are sets.
 
 We will study other types that are not sets in more detail starting in Chapter~\ref{cha:hits}.
 
+
 \section{Propositions and subsets}
 \label{sec:prop-subset}
 
@@ -545,7 +629,7 @@ In set-theoretic foundations, a proposition can be true or false, but contains n
 Sometimes this is desirable, but other times we would like to consider only ``propositions'' which carry no additional information beyond a truth value.
 
 In classical mathematics, the truth values ``false'' and ``true'' can be usefully identified with the zero- and one-element sets.
-In intuitionistic and constructive mathematics, this is no longer true, but we can still identify truth values with sets that have \emph{at most one element}.
+In intuitionistic mathematics, this is no longer true, but we can still identify truth values with sets that have \emph{at most one element}.
 Category-theoretically, these sets are called \emph{subterminal objects}; set-theoretically we may call them \emph{subsingletons}.
 
 Thus, in type theory it is natural to consider those types $P$ which are sets (in the sense of \S\ref{sec:basics-sets}) and which furthermore have at most one element, i.e.\ satisfy $\prd{x,y:P} (x=y)$.
@@ -560,7 +644,7 @@ More precisely, the type $\isprop(P)$ is defined to be
 We add the word \emph{mere} when pronouncing this type, because it is common in type theory to allow \emph{arbitrary} types to be regarded as propositions, simply by declaring one's intent to do so.
 In proof-relevant mathematics, this is entirely sensible; but it is nevertheless important to know which types are mere propositions.
 
-\begin{thm}
+\begin{thm}\label{thm:isset-prop}
   Every mere proposition is a set.
 \end{thm}
 \begin{proof}
@@ -580,7 +664,7 @@ In type theory, the obvious analogue is the $\Sigma$-type $\sm{x:A} P(x)$.
 An inhabitant of $\sm{x:A} P(x)$ is, of course, a pair $(x,p)$ where $x:A$ and $p$ is a proof of $P(x)$.
 However, for general $P$, an element $a:A$ might give rise to more than one distinct element of $\sm{x:A} P(x)$, if the proposition $P(a)$ has more than one distinct proof.
 This is counter to the usual intuition of a \emph{subset}.
-If $P$ is a mere proposition, however, then this cannot happen.
+But if $P$ is a mere proposition, then this cannot happen.
 
 \begin{lem}
   Suppose $P:A\to\type$ is a dependent type such that $P(x)$ is a mere proposition for all $x:A$.
@@ -596,6 +680,42 @@ For instance, recall that in \S\ref{sec:basics-equivalences} we defined
 \[(\eqv A B) \;\defeq\; \sm{f:A\to B} \isequiv (f),\]
 and that each type $\isequiv (f)$ is a mere proposition.
 It follows that if two equivalences have equal underlying functions, then they are equal as equivalences.
+
+A good number of type-forming operations preserve mere propositions, but fewer than preserve sets.
+
+\begin{eg}
+  If $A$ and $B$ are mere propositions, so is $A\times B$.
+  This is easy to show using the characterization of paths in products, just like \autoref{thm:isset-prod} but simpler.
+\end{eg}
+
+\begin{eg}\label{thm:isprop-forall}
+  If $A$ is any type and $B:A\to \type$ is such that for all $x:A$, the type $B(x)$ is a mere proposition, then $\prd{x:A} B(x)$ is a mere proposition.
+  This is just like \autoref{thm:isset-forall} but simpler: given $f,g:\prd{x:A} B(x)$, for any $x:A$ we have $f(x)=g(x)$ since $B(x)$ is a mere proposition.
+  But then by function extensionality, we have $f=g$.
+
+  In particular, if $B$ is a mere proposition, then so is $A\to B$ regardless of what $A$ is.
+  In even more particular, since \emptyt is a mere proposition, so is $\neg A \jdeq (A\to\emptyt)$.
+\end{eg}
+
+\autoref{thm:isprop-forall} implies that ``being a mere proposition'' is itself always a mere proposition (regardless of whether or not it is \emph{true}).
+
+\begin{cor}
+  For any type $A$, the type $\isprop(A)$ is a mere proposition.
+\end{cor}
+\begin{proof}
+  Suppose $f,g:\isprop(A)$; we must show $f=g$.
+  Since $A$ is a mere proposition (by, say, $f$), \autoref{thm:isset-prop} implies that $A$ is a set.
+  Thus, for every $x,y:A$ the type $x=y$ is a mere proposition, so by \autoref{thm:isprop-forall} (applied twice), the type $\isprop(A)\jdeq \prd{x,y:A}(x=y)$ is also a mere proposition.
+  Since $f$ and $g$ are both elements of this type, they are equal.
+\end{proof}
+
+On the other hand, some type formers do not preserve mere propositions.
+Even if $A$ and $B$ are mere propositions, $A+B$ will not in general be.
+As a very special case, \unit is a mere proposition, but $\unit+\unit$ is not, since $\inl(\ttt)$ and $\inr(\ttt)$ are not equal.
+Logically speaking, the coproduct $A+B$ is a ``purely constructive'' sort of ``or'', which remembers exactly which disjunct is true.
+Sometimes this is very useful, but if we want a more classical sort of ``or'' which does not retain this information, we need an operation which ``truncates'' any type into a mere proposition.
+The same issue arises with existential quantification: the $\Sigma$-type $\sm{x:A} P(x)$ is a purely constructive interpretation of ``there exists an $x:A$ such that $P(x)$'' which remembers the witness $x$, and hence is not generally a mere proposition even if each type $P(x)$ is.
+We will come back to this in [where?].
 
 
 \section*{Notes}
@@ -627,6 +747,11 @@ It was originally motivated by semantic considerations; see~\cite{klv:ssetmodel}
 The simple conclusions in \S\S\ref{sec:compute-coprod}--\ref{sec:compute-nat} such as ``coproduct injections are injective and disjoint'' are well-known in type theory, and the construction of the function \encode is the usual way to prove them.
 The more refined approach we have described, which characterizing the entire identity type of a positive type (up to equivalence), is a more recent development; see e.g.~\cite{ls:pi1s1}.
 
+The type-theoretic axiom of choice~\eqref{eq:sigma-ump-map} was first observed to be true by Martin-L\"of.
+
+The fact that it is possible to define sets and (mere) propositions in type theory using finitely many data, with all higher homotopies automatically taken care of as in \S\ref{sec:basics-sets} and \S\ref{sec:prop-subset}, was first observed by Voevodsky.
+His original definitions of $\isset$ and $\isprop$ were a bit more complicated than ours, but have the advantage of fitting neatly into an infinite hierarchy; see Chapter~\ref{cha:hlevels}.
+
 
 \section*{Exercises}
 \label{basics:exercises}
@@ -651,6 +776,20 @@ The more refined approach we have described, which characterizing the entire ide
   State and prove a generalization of \autoref{thm:ap-prod} from cartesian products to $\Sigma$-types.
 \end{ex}
 
+\begin{ex}
+  State and prove an analogue of \autoref{thm:ap-prod} for coproducts.
+\end{ex}
+
+\begin{ex}
+  Prove that coproducts have the expected universal property:
+  \[ \eqv{(A+B \to X)}{(A\to X)\times (B\to X)} \]
+  Can you generalize this to an equivalence involving dependent functions?
+\end{ex}
+
+\begin{ex}
+  Prove that if $\eqv A B$ and $A$ is a set or a mere proposition, then so is $B$.
+\end{ex}
+
 \begin{ex}\label{ex:isset-coprod}
   Prove that if $A$ and $B$ are sets, then so is $A+B$.
 \end{ex}
@@ -658,6 +797,17 @@ The more refined approach we have described, which characterizing the entire ide
 \begin{ex}\label{ex:isset-sigma}
   Prove that if $A$ is a set and $B:A\to \type$ is a dependent type such that $B(x)$ is a set for all $x:A$, then $\sm{x:A} B(x)$ is a set.
 \end{ex}
+
+\begin{ex}
+  A type is called \textbf{contractible} if it is a mere proposition which contains an element.
+  That is, we define
+  \[ \iscontr(A) \defeq A\times \isprop(A). \]
+  Show that $A$ is contractible if and only if it is equivalent to \unit.
+\end{ex}
+
+\begin{eg}
+  Show that for any type $A$, the type $\isset(A)$ is a mere proposition.
+\end{eg}
 
 % Local Variables:
 % TeX-master: "main"

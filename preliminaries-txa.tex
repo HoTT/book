@@ -4,7 +4,7 @@
 \section{Type theory versus set theory}
 \label{sec:types-vs-sets}
 
-Type theory in general, and homotopy type theory in particular, is (among other things) a foundational language for mathematics, i.e.\ an alternative to Zermelo-Fraenkel set theory.
+Type theory in general, and homotopy type theory in particular, is (among other things) a foundational language for mathematics, i.e., an alternative to Zermelo-Fraenkel set theory.
 However, it behaves differently from the latter in several important ways, which can take some getting used to.
 Explaining these differences carefully requires us to be a little bit more formal here than we will be in the rest of the book.
 As stated in the introduction, our goal is to write type theory \emph{informally}; but for a mathematician accustomed to set theory, a little bit more precision at the beginning can help avoid some common misconceptions and mistakes.
@@ -21,35 +21,35 @@ This leads us to another difference between type theory and set theory, but to e
 Informally, a deductive system is a collection of rules for deriving things called \emph{judgments}.
 If we think of a deductive system as a formal game, then the judgments are the ``positions'' in the game which we reach by following the game rules.
 We can also think of a deductive system as a sort of algebraic theory, in which case the judgments are the elements (like the elements of a group) and the deductive rules are the operations (like the group multiplication).
+From a logical point of view, the judgments can be considered to be the ``external'' statements, living in the metatheory, as opposed to the ``internal'' statements of the theory itself.
 
 In the deductive system of first-order logic (on which set theory is based), there is only one judgment: that a given proposition has a proof.
 A rule of first-order logic such as ``from $A$ and $B$ infer $A\wedge B$'' is actually a rule of ``proof construction'' which says that given the judgments ``$A$ has a proof'' and ``$B$ has a proof'', we may deduce that ``$A\wedge B$ has a proof''.
-Note that the judgment ``$A$ has a proof'' exists at a different level from the \emph{proposition} $A$ itself.
+Note that the judgment ``$A$ has a proof'' exists at a different level from the \emph{proposition} $A$ itself, which is an internal statement of the theory.
 % In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
 
 The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, a ``point'' of $A$).
-When $A$ is a type representing a proposition, then $a$ is a \emph{proof term}, a ``witness'' to the provability of $A$.
+When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness} to the provability of $A$, or \emph{evidence} of the truth of $A$.
 In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
 % (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
 
 On the other hand, if the type $A$ is being treated more like a set than like a proposition (although as we will see, the distinction can become blurry), then ``$a:A$'' may be regarded as analogous to the set-theoretic statement ``$a\in A$''.
 However, there is an essential difference in that ``$a:A$'' is a \emph{judgment} whereas ``$a\in A$'' is a \emph{proposition}.
-In particular, we cannot make statements such as ``if $a:A$ then it is not the case that $b:B$'', nor can we ``disprove'' the judgment ``$a:A$''.
+In particular, when working internally in type theory, we cannot make statements such as ``if $a:A$ then it is not the case that $b:B$'', nor can we ``disprove'' the judgment ``$a:A$''.
 
 A good way to think about this is that in set theory, ``membership'' is a relation which may or may not hold between two pre-existing objects ``$a$'' and ``$A$'', while in type theory we cannot talk about an element ``$a$'' in isolation: every element \emph{by its very nature} is an element of some type, and that type is (generally speaking) uniquely determined.
 Thus, when we say informally ``let $x$ be a natural number'', in set theory this is shorthand for ``let $x$ be a thing and assume that $x\in\nat$'', whereas in type theory ``let $x:\nat$'' is an atomic statement: we cannot introduce a variable without specifying its type.
 
-At first glance, this may seem an uncomfortable restriction, but it is precisely this aspect which makes the homotopy interpretation possible.
-Moreover, the type-theoretic version is arguably closer to the intuitive mathematical meaning of ``let $x$ be a natural number''.
+At first glance, this may seem an uncomfortable restriction, but it is arguably closer to the intuitive mathematical meaning of ``let $x$ be a natural number''.
 In practice, it seems that whenever we actually \emph{need} ``$a\in A$'' to be a proposition rather than a judgment, there is always an ambient set $B$ of which $a$ is known to be an element and $A$ is known to be a subset.
 This situation is also easy to represent in type theory, by taking $a$ to be an element of the type $B$, and $A$ to be a predicate on $B$; see \S\ref{sec:prop-subset}.
 
-A last difference between type theory and set theory, which is fundamental to the homotopy interpretation, is the treatment of equality.
-In set theory, and in mathematics more generally, equality is a proposition: e.g.\ we can disprove an equality or assume an equality as a hypothesis.
-This is likewise the case in type theory, and since propositions are types, this means that equality is a type: for elements $a,b:A$ (that is, both $a:A$ and $b:A$) we have a type ``$\id[A]ab$''.
-(In \emph{homotopy} type theory, of course, the equality proposition can behave in unfamiliar ways: see \S\ref{sec:identity-types}, Chapter~\ref{cha:basics}, and the rest of the book).
+A last difference between type theory and set theory is the treatment of equality.
+The familiar notion of equality in mathematics is a proposition: e.g.\ we can disprove an equality or assume an equality as a hypothesis.
+Since in type theory, propositions are types, this means that equality is a type: for elements $a,b:A$ (that is, both $a:A$ and $b:A$) we have a type ``$\id[A]ab$''.
+(In \emph{homotopy} type theory, of course, this equality proposition can behave in unfamiliar ways: see \S\ref{sec:identity-types}, Chapter~\ref{cha:basics}, and the rest of the book).
 
-However, there is also a need for an equality \emph{judgment}, existing at the same level as the judgment ``$x:A$''.
+However, in type theory there is also a need for an equality \emph{judgment}, existing at the same level as the judgment ``$x:A$''.
 This is called \emph{judgmental equality} or \emph{definitional equality}, and we write it as $a\jdeq b$ or $a \jdeq_A b$.
 It is helpful to think of this as meaning ``equal by definition''.
 For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
@@ -59,7 +59,7 @@ Whether or not two expressions are equal by definition is just a matter of expan
 As type theory becomes more complicated, judgmental equality can get more subtle than this, but it is a good intuition to start from.
 Alternatively, if we regard a deductive system as an algebraic theory, then judgmental equality is simply the equality in that theory, analogous to the equality between elements of a group---the only potential for confusion is that there is \emph{also} an object \emph{inside} the deductive system of type theory (namely the type ``$a=b$'') which behaves internally as a notion of ``equality''.
 
-The reason we \emph{need} a judgmental notion of equality is so that it can control the other form of judgment, ``$a:A$''.
+The reason we \emph{want} a judgmental notion of equality is so that it can control the other form of judgment, ``$a:A$''.
 For instance, suppose we have given a proof that $3^2=9$, i.e.\ we have derived the judgment $p:(3^2=9)$ for some term $p$.
 Then the same proof $p$ ought to count as a proof that $f(3)=9$, since $f(3)$ is $3^2$ \emph{by definition}.
 The best way to represent this is with a rule saying that given the judgments $a:A$ and $A\jdeq B$, we can derive the judgment $a:B$.
@@ -72,7 +72,7 @@ Thus, for us, type theory will be a deductive system based on two forms of judgm
   $a \jdeq_A b$ & $a$ and $b$ are definitionally equal objects of type $A$.
 \end{tabular}
 \end{center}
-When introducing a definitional equality, i.e.\ defining one thing to equal another, we will use the symbol ``$\defeq$''.
+When introducing a definitional equality, i.e., defining one thing to equal another, we will use the symbol ``$\defeq$''.
 Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
 
 Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.\footnote{In formalized type theory, commas and turnstiles can bind even more loosely.
@@ -93,8 +93,7 @@ Thus, in the second example above we may instead say that assuming $x =_A y$, we
 However, since we are doing proof-relevant mathematics, we will frequently refer back to proofs as objects.
 In the example, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see Chapter~\ref{cha:basics}.
 
-In the rest of this chapter, we attempt to give an informal presentation of Type Theory, sufficient for the purposes of this book
-(more formal accounts can be found in \cite{hofmann-traktat,...}).
+In the rest of this chapter, we attempt to give an informal presentation of Type Theory, sufficient for the purposes of this book; we will give a more formal account in an Appendix.
 Aside from some fairly obvious rules (such as the fact that definitionally equal things can always be substituted for each other), the rules of type theory can be grouped into \emph{type formers}.
 Each type former consists of a way to construct types (possibly making use of already-constructed types), together with rules for the construction and behavior of elements of that type.
 In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
@@ -104,14 +103,13 @@ In most cases, these rules follow a fairly predictable pattern, but we will not 
 \label{sec:universes}
 
 We introduce a sequence of symbols $\UU_0,\UU_1,\UU_2, \dots$ which
-stand for type theoretic universes, i.e. types whose elements are
+stand for type theoretic universes, i.e., types whose elements are
 types. In a way it would be nice if we just had one universe $\UU$ of
-all types including $\UU : \UU$. However, we can encode Russell's
-paradox in Type Theory and such a universe makes the type theory
-inconsistent (every type is inhbited). Instead we introduce a
-hierarchy of universes
+all types including $\UU : \UU$.
+However, we can encode Burali--Forti's paradox in Type Theory, so such a universe makes the type theory inconsistent (in the sense that every type is inhabited, including ``false'').
+Instead, we introduce a hierarchy of universes
 \[ \UU_0 : \UU_1 : \UU_2 : \dots \]
-We assume that the hierarchy of universes is cummulative, i.e. if
+We assume that the hierarchy of universes is cummulative, i.e., if
 $A:\UU_i$ then $A : \UU_{i+1}$. Hence the difference between
 $\UU_0$ and $\UU_1$ is that $\UU_1$ contains the type $\UU_0:\UU_1$
 types build from $\UU_0$. Similarily $\UU_2$ contains all the types
@@ -128,13 +126,17 @@ we use the metavariable $\UU$ to stand for any universe. That is $A$
 is a type is the same as saying $A : \UU$.
 
 
-\section{Dependent types}
-\label{sec:dependent-types}
+\section{Function types}
+\label{sec:function-types}
 
-Given a type $A$, if from assuming $x:A$ we can deduce $B[x]$ is a type.
-Here we write $B[x]$ to make it clear that $B$ may contain the
-variable $x$ then we say $B[x]$ is a
-family of types in $\UU$ indexed by $x:A$. An example is the type $Vec(A,n)$ of
+TODO.
+
+
+\section{Families of types}
+\label{sec:families-of-types}
+
+A \textbf{family of types} (in a universe \UU) is a function $B:A\to\UU$.
+An example is the type $Vec(A,n)$ of
 vectors ($n$-tuples) of elements of type $A$ which is family indexed
 over $n : \Nat$. Another example is the type $x =_A x$ which is a
 family indexed over $x : A$.
@@ -151,7 +153,7 @@ proposition as types principle we can use function types to model not
 only implication but also universal quantification. Given a type $A$
 and a family $B[x]$ indexed over $x:A$ we can form the type
 $\Pi_{x:A}B[x]$ of dependent functions. Non dependent-functions arise
-in the special case when $B$ is a constant family (i.e. $B$ does not
+in the special case when $B$ is a constant family (i.e., $B$ does not
 dependent on $x$) in which case we write $A \to B$.
 
 Given a dependent function $f : \Pi_{x:A}B[x]$ and $a : A$ we can
@@ -186,7 +188,7 @@ pairs $(a,b) : \Sigma_{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
 family $B$ does not depend on $A$ we write $A \times B$.
 
 If $C$ is a family of types on $p:\Sigma_{x:A}B(x)$ and 
-$c:\Pi(x:A)(y:B(x)),C((x,y))$ then we may define 
+$c:\Pi(x:A)(y:B(x)),C((x,y))$, then we may define 
 $f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
   \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
 
@@ -277,7 +279,7 @@ we haven't introduced yet. Hence there are two ways to derive $A\times
 B$ : either as a non-dependent $\Sigma$-type or as a special case of
 $\Pi$ where the domain is boolean. 
 
-\section{The identity types on a type}
+\section{The identity type on a type}
 \label{sec:identity-types}
 
 If $A:\UU$ is a type and $a,a':A$ then $a =_A a'$ is the identity type on $A$.  
@@ -293,6 +295,8 @@ We now give two rules for defining functions on paths, both of which are useful.
 \item[Paulin-Mohring Rule:] If $a:A$ let $Path_A(a)$ be the type $\Sigma_{y:A}Id_A(a,y)$, let $C$ be a family on $Path_A(a)$ and let $c:C(a,\refl{a})$. Then we have\\ $f:\Pi_{u:Path_A(a)}C(u)$ with defining equation
     \[ f(a,\refl{a})\defeq c.\]
 \end{description}
+
+\textbf{TODO:} Explain the meaning of these.
 
 We are going to use the Paulin-Mohring rule to show that $=$ is an
 equivalence relation. Assuming a type $A$ we show that there is a function
@@ -348,6 +352,13 @@ In this case we can show that the type is propositional, that is that
 all elements of the type are equal. In this situation we may omit any
 explicit reference to proof objects and the type-theoretic proof does
 not look different to a conventional one in predicate logic. 
+
+\section{Propositions as types}
+\label{sec:pat}
+
+\textbf{TODO:} A discussion of how to speak type formers in English, e.g.\ ``for all $x:A$, something or other'' means ``$\prd{x:A}$ something or other'', and so on.
+For now, we will use ``$A$ or $B$'' to mean $A+B$ and ``there exists $x:A$'' to mean $\sm{x:A}$, but perhaps we should mention that we will refine it further later on.
+For instance, sometimes classical statements involving these connectives need to be interpreted differently (see \S\ref{sec:prop-subset} and wherever we discuss $(-1)$-truncations).
 
 % Local Variables:
 % TeX-master: "main"

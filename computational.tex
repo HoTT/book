@@ -22,7 +22,7 @@ For instance, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and 
 In more traditional language, two ordered pairs are equal just when their components are equal (but the equivalence~\eqref{eq:prodeqv} says rather more than this).
 The higher structure of the identity types can also be expressed in terms of these equivalences; for instance, concatenating two equalities between pairs corresponds to pairwise concatenation.
 
-Similarly, when a dependent type $P:A\to\type$ is built up fiberwise using the type forming rules from Chapter~\ref{cha:typetheory}, the operation $\transfib{P}{p}{-}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
+Similarly, when a type family $P:A\to\type$ is built up fiberwise using the type forming rules from Chapter~\ref{cha:typetheory}, the operation $\transfib{P}{p}{-}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
 For instance, if $P(x) \jdeq B(x)\times C(x)$, then we have
 \[\transfib{P}{p}{(b,c)} = \left(\transfib{B}{p}{b},\transfib{C}{p}{c}\right).\]
 
@@ -125,8 +125,8 @@ We can also characterize the reflexivity, inverses, and composition of $A\times 
 The same is true for the rest of the higher groupoid structure considered in \S\ref{sec:equality}.
 All of these equations can be derived by using path induction on the given paths and then returning reflexivity.  
 
-We now consider transport in a product of dependent types.
-Given dependent types $ A, B : Z \to \type$, we abusively write $A\times B:Z\to \type$ for the dependent type defined by $(A\times B)(z) \defeq A(z) \times B(z)$.
+We now consider transport in a pointwise product of type families.
+Given type families $ A, B : Z \to \type$, we abusively write $A\times B:Z\to \type$ for the type family defined by $(A\times B)(z) \defeq A(z) \times B(z)$.
 Now given $p : \id[Z]{z}{w}$ and $x : A(z) \times B(z)$, we can transport $x$ along $p$ to obtain an element of $A(w)\times B(w)$.
 
 \begin{thm}\label{thm:trans-prod}
@@ -168,7 +168,7 @@ Suppose given types $A,B,A',B'$ and functions $g:A\to A'$ and $h:B\to B'$; then 
 \subsection{$\Sigma$-types}
 \label{sec:compute-sigma}
 
-Let $A$ be a type and $B:A\to\type$ a dependent type.
+Let $A$ be a type and $B:A\to\type$ a type family.
 Recall that the $\Sigma$-type, or dependent pair type, $\sm{x:A} B(x)$ is a generalization of the cartesian product type.
 Thus, we expect its higher groupoid structure to also be a generalization of the previous section.
 In particular, its paths should be pairs of paths, but it takes a little thought to give the correct types of these paths.
@@ -183,7 +183,7 @@ The next theorem states that we can also reverse this process.
 Since it is a direct generalization of \autoref{thm:path-prod}, we will be more concise.
 
 \begin{thm}\label{thm:path-sigma}
-Suppose that $P:A\to\type$ is a dependent type over a type $A$ and let $w,w^\prime:\sm{x:A}P(x)$. Then there is an equivalence
+Suppose that $P:A\to\type$ is a type family over a type $A$ and let $w,w^\prime:\sm{x:A}P(x)$. Then there is an equivalence
 \begin{equation*}
 \eqvspaced{(w=w')}{\sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime)}.
 \end{equation*}
@@ -227,7 +227,7 @@ As for cartesian products, we have $\eta$-equivalence as a special case.
 As we did for binary cartesian products, we can also compute the action of transport on $\Sigma$-types.
 
 \begin{thm}
-Suppose we have a dependent type $P:A\to\type$ and a dependent type $Q:\big(\sm{x:A} P(x)\big)\to\type$. Then we get the dependent type
+Suppose we have a type family $P:A\to\type$ and a type family $Q:\big(\sm{x:A} P(x)\big)\to\type$. Then we get the type family
 \begin{equation*}
 x:A\vdash \sm{u:P(x)} Q(x,u):\type
 \end{equation*}
@@ -274,7 +274,7 @@ The transport lemma for \unit is simply the transport lemma for constant type fa
 \subsection{$\Pi$-types}
 \label{sec:compute-pi}
 
-Given a type $A$ and a dependent type $B : A \to \type$, consider the dependent function type $\prd{x:A}B(x)$.
+Given a type $A$ and a type family $B : A \to \type$, consider the dependent function type $\prd{x:A}B(x)$.
 A path in $\prd{x:A} B(x)$ is given by a pointwise path:
 \begin{equation}
   \eqvspaced{(\id{f}{g})}{\prd{x:A} (\id[B(x)]{f(x)}{g(x)})}\label{eq:path-forall}
@@ -323,24 +323,24 @@ We can also compute the identity, inverses, and composition in $\Pi$-types; they
 
 Since the non-dependent function type $A\to B$ is a special case of the dependent function type $\prd{x:A} B(x)$ when $B$ is independent of $x$, all of the above applies essentially verbatim in the non-dependent case as well.
 The rules for transport, however, are somewhat simpler in the non-dependent case.
-Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, dependent types $A,B:X\to \type$, and a function $f : A(x_1) \to B(x_1)$,  we have
-\begin{align*}
+Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, type families $A,B:X\to \type$, and a function $f : A(x_1) \to B(x_1)$,  we have
+\begin{align}\label{eq:transport-arrow}
   \transfib{A\to B}{p}{f} &=
   \; \Big(x \mapsto \transfib{B}{p}{f(\transfib{A}{\opp p}{x})}\Big)
-\end{align*}
-where $A\to B$ denotes abusively the dependent type $X\to \type$ defined by
+\end{align}
+where $A\to B$ denotes abusively the type family $X\to \type$ defined by
 \[(A\to B)(x) \defeq (A(x)\to B(x)).\]
-In other words, when we transport a function $f:A(x_1)\to B(x_1)$ along a path $p:x_1=x_2$, we obtain the function $A(x_2)\to B(x_2)$ which transports its argument backwards along $p$ (in the dependent type $A$), applies $f$, and then transports the result forwards along $p$ (in the dependent type $B$).
+In other words, when we transport a function $f:A(x_1)\to B(x_1)$ along a path $p:x_1=x_2$, we obtain the function $A(x_2)\to B(x_2)$ which transports its argument backwards along $p$ (in the type family $A$), applies $f$, and then transports the result forwards along $p$ (in the type family $B$).
 This can be proven easily by path induction.
 
 Transporting dependent functions is similar, but more complicated.
-Suppose given $X$ and $p$ as before, a dependent type $A:X\to \type$, and a doubly dependent type $B:\prd{x:X} (A(x)\to\type)$, and also a dependent function $f : \prd{a:A(x_1)} B(x_1,a)$.
+Suppose given $X$ and $p$ as before, type families $A:X\to \type$ and $B:\prd{x:X} (A(x)\to\type)$, and also a dependent function $f : \prd{a:A(x_1)} B(x_1,a)$.
 Then
 \begin{align*}
   \transfib{\Pi_A(B)}{p}{f} =
   \;\Big(x \mapsto \transfib{\hat{B}}{\opp{(\mathsf{lift}(x,\opp{p}))}}{f (\transfib{A}{\opp p}x)}\Big)
 \end{align*}
-where $\Pi_A(B)$ and $\hat{B}$ denote the dependent types
+where $\Pi_A(B)$ and $\hat{B}$ denote respectively the type families
 \[
 \begin{array}{rclcl}
 \Pi_A(B) &\defeq& \big(x\mapsto \prd{a:A(x)} B(x,a) \big) &:& X\to \type\\
@@ -366,7 +366,7 @@ We perform this identification by way of the following canonical function.
 \end{lem}
 \begin{proof}
   We could construct this directly by induction on equality, but the following description is more convenient.
-  Note that the identity function $\idfunc[\type]:\type\to\type$ may be regarded as a dependent type over the universe \type; it assigns to each type $X:\type$ the type $X$ itself.
+  Note that the identity function $\idfunc[\type]:\type\to\type$ may be regarded as a type family indexed by the universe \type; it assigns to each type $X:\type$ the type $X$ itself.
   Thus, given a path $p:A =_\type B$, we have a transport function $\transf{p}:A \to B$.
   We claim that $\transf{p}$ is an equivalence.
   But by induction, it suffices to assume that $p$ is $\refl A$, in which case $\transf{p} \jdeq \idfunc[A]$, which is an equivalence by \autoref{eg:idequiv}.
@@ -476,9 +476,9 @@ Intuitively, we expect that $A+B$ contains exact copies of $A$ and $B$ disjointl
   \eqv{(\inl(a)= \inr(b))}{\emptyt} \label{eq:inlrdj}
 \end{gather}
 We prove this as follows.
-Fix an element $a_0:A$; our goal is to characterize the dependent type
+Fix an element $a_0:A$; our goal is to characterize the type family
 \[(x\mapsto (\inl(a)=x)) : A+B \to \type.\]
-In order to do this, we will define a dependent type $\code:A+B\to\type$ and show that $\prd{x:A+B} (\eqv{(\inl(a)=x)}{\code(x)})$.
+In order to do this, we will define a type family $\code:A+B\to\type$ and show that $\prd{x:A+B} (\eqv{(\inl(a)=x)}{\code(x)})$.
 Since we want to conclude~\eqref{eq:inlinj} from this, we should have $\code(\inl(a)) = (a_0=a)$, and since we also want to conclude~\eqref{eq:inlrdj}, we should have $\code (\inr(b)) = \emptyt$.
 The essential insight is that we can use the elimination property of $A+B$ to \emph{define} $\code:A+B\to\type$ by these two equations:
 \begin{align*}
@@ -545,12 +545,12 @@ Similarly, for any $b:B$ we have
 which can be stated as ``$\inl(a_0)$ is not equal to $\inr(b)$'', i.e.\ the images of \inl and \inr are disjoint.
 
 As usual, we can also characterize the action of transport in coproduct types.
-Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, and dependent types $A,B:X\to\type$, we have
+Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, and type families $A,B:X\to\type$, we have
 \begin{align*}
   \transfib{A+B}{p}{\inl(a)} &= \inl (\transfib{A}{p}{a})\\
   \transfib{A+B}{p}{\inr(b)} &= \inr (\transfib{B}{p}{b})
 \end{align*}
-where as usual, $A+B$ denotes abusively the dependent type $x\mapsto A(x)+B(x)$.
+where as usual, $A+B$ denotes abusively the type family $x\mapsto A(x)+B(x)$.
 The proof is easy using path induction.
 
 
@@ -558,7 +558,7 @@ The proof is easy using path induction.
 \label{sec:compute-nat}
 
 The same technique we used for coproducts applies to the natural numbers, which are also a positive type.
-In this case the codes for identities are a doubly dependent type
+In this case the codes for identities are a type family
 \[\code:\N\to\N\to\type,\]
 defined by double recursion over \N as follows:
 \begin{align*}

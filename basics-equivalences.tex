@@ -22,6 +22,27 @@ Note that it makes perfect sense even when $f$ and $g$ are dependent functions.
 Note that a homotopy is not the same as an identification $(f=g)$.
 In \S\ref{sec:compute-pi} we will show that homotopies and identifications are nevertheless ``equivalent''.
 
+The following proofs are left to the reader.
+
+\begin{lem}\label{lem:homotopy-props}
+  Homotopy is an equivalence relation on each function type $A\ra B$.
+  That is, we have elements of the types
+  \begin{gather*}
+    \prd{f:A\to B} (f\htpy f)\\
+    \prd{f,g:A\to B} (f\htpy g) \to (g\htpy f)\\
+    \prd{f,g,h:A\to B} (f\htpy g) \to (g\htpy h) \to (f\htpy h).
+  \end{gather*}
+\end{lem}
+
+\begin{lem}
+  Composition is associative and unital up to homotopy.
+  That is:
+  \begin{enumerate}
+  \item If $f:A\ra B$ then $f\circ \idfunc[A]\htpy f\htpy \idfunc[B]\circ f$.
+  \item If $f:A\ra B, g:B\ra C$ and $h:C\ra D$ then $h\circ (g\circ f)\;\htpy\; (h\circ g)\circ f$.
+  \end{enumerate}
+\end{lem}
+
 The first level of the continuity/naturality of homotopies can be expressed as follows:
 
 \begin{lem}\label{lem:htpy_natural}
@@ -29,12 +50,33 @@ The first level of the continuity/naturality of homotopies can be expressed as f
   \begin{equation*}
     H(x)\ct\ap{g}{p}=\ap{f}{p}\ct H(y).
   \end{equation*}
+  We may also draw this as a commutative diagram:
+  \begin{align*}
+    \xymatrix{
+      f(x) \ar[r]^{\ap fp} \ar[d]_{H(x)} & f(y) \ar[d]^{H(y)} \\
+      g(x) \ar[r]_{\ap gp} & g(y)
+    }
+  \end{align*}
 \end{lem}
 \begin{proof}
   By induction, we may assume $p$ is $\refl x$.
   Since $\apfunc{f}$ and $\apfunc g$ compute on reflexivity, in this case what we must show is
   \[ H(x) \ct \refl{g(x)} = \refl{f(x)} \ct H(x). \]
   But this follows since both sides are equal to $H(x)$.
+\end{proof}
+
+\begin{cor}\label{cor:hom-fg}
+Let $H : f \htpy \idfunc[A]$ be a homotopy, with $f : A \to A$. Then for any $x : A$ we have \[ H(f(x)) = \ap f{H(x)}. \] The above path will be denoted by $\com{h}{f}{x}$.
+\end{cor}
+\begin{proof}
+By naturality of $H$, the following diagram commutes:
+\begin{align*}
+\xymatrix{
+ffx \ar[r]^{\ap f{Hx}} \ar[d]_{H(fx)} & fx \ar[d]^{Hx} \\
+fx \ar[r]_{Hx} & x
+}
+\end{align*}
+Canceling $H(x)$, we see that $h(fx) = f(hx)$ as desired.
 \end{proof}
 
 Moving on to types, from a traditional perspective one may say that a function $f:A\to B$ is an \emph{isomorphism} if there is a function $g:B\to A$ such that both composites $f\circ g$ and $g\circ f$ are pointwise equal to the identity, i.e.\ such that $f \circ g \htpy \idfunc[B]$ and $g\circ f \htpy \idfunc[A]$.
@@ -53,7 +95,7 @@ For this reason, we give~\eqref{eq:qinvtype} the following historically accurate
 $\alpha:f\circ g\htpy \idfunc[B]$ and $\beta:g\circ f\htpy \idfunc[A]$.
 \end{defn}
 
-Thus,~\eqref{eq:qinvtype} is \emph{the type of quasi-inverses of $f$}; we may denote it by $\mathsf{qinv}(f)$.
+Thus,~\eqref{eq:qinvtype} is \emph{the type of quasi-inverses of $f$}; we may denote it by $\qinv(f)$.
 
 \begin{eg}\label{eg:idequiv}
   The identity function $\idfunc[A]:A\to A$ has a quasi-inverse given by $\idfunc[A]$ itself, together with homotopies defined by $\alpha(y) \defeq \refl{y}$ and $\beta(x) \defeq \refl{x}$.
@@ -63,8 +105,8 @@ In general, we will only use the word \emph{isomorphism} (and similar words such
 In this case, the type~\eqref{eq:qinvtype} is unproblematic.
 We will reserve the word \emph{equivalence} for an improved notion with the following properties:
 \begin{enumerate}
-\item For each $f:A\to B$ there is a type $\isequiv(f)$.\label{item:be1}
-\item There are functions $\mathsf{qinv}(f) \to \isequiv (f)$ and $\isequiv (f) \to \mathsf{qinv}(f)$, so that the two are ``logically equivalent''.\label{item:be2}
+\item For each $f:A\to B$ there is a function $\qinv(f) \to \isequiv (f)$.\label{item:be1}
+\item Similarly, for each $f$ we have $\isequiv (f) \to \qinv(f)$; thus the two are ``logically equivalent''.\label{item:be2}
 \item For any two inhabitants $e_1,e_2:\isequiv(f)$ we have $e_1=e_2$.\label{item:be3}
 \end{enumerate}
 In Chapter~\ref{cha:equivalences} we will see that there are many different definitions of $\isequiv(f)$ which satisfy these three properties, but that all of them are equivalent.
@@ -75,12 +117,12 @@ For now, to convince the reader that such things exist, we mention only the easi
   \times
   \big(\sm{h:B\to A} (h\circ f \htpy \idfunc[A])\big)\label{eq:isequiv-invertible}
 \end{equation}
-We can show~\ref{item:be2} now.
-A function $\mathsf{qinv}(f) \to \isequiv (f)$ is easy to define by taking $(g,\alpha,\beta)$ to $(g,\alpha,g,\beta)$.
+We can show~\ref{item:be1} and~\ref{item:be2} for this definition now.
+A function $\qinv(f) \to \isequiv (f)$ is easy to define by taking $(g,\alpha,\beta)$ to $(g,\alpha,g,\beta)$.
 In the other direction, given $(g,\alpha,h,\beta)$, let $\gamma$ be the composite homotopy
 \[ g \overset{\beta}{\htpy} h\circ f\circ g \overset{\alpha}{\htpy} h \]
 and let $\beta':g\circ f\htpy \idfunc[A]$ be obtained from $\gamma$ and $\beta$.
-Then $(g,\alpha,\beta'):\mathsf{qinv}(f)$.
+Then $(g,\alpha,\beta'):\qinv(f)$.
 
 Property~\ref{item:be3} for this definition is not too hard to prove either, but it requires identifying the identity types of cartesian products and dependent pair types, which we will discuss in \S\ref{sec:computational}.
 Thus, we postpone it as well.
@@ -91,6 +133,27 @@ In accord with the proof-relevant philosophy, \emph{an equivalence} from $A$ to 
 We write $(\eqv A B)$ for the type of equivalences from $A$ to $B$, i.e.\ the type
 \[ (\eqv A B) \;\defeq \; \sm{f:A\to B} \isequiv(f). \]
 Property~\ref{item:be3} above will ensure that if two equivalences are equal as functions (that is, the underlying elements of $A\to B$ are equal), then they are also equal as equivalences (see \S\ref{sec:compute-sigma}).
+
+We conclude by observing:
+
+\begin{lem}\label{thm:equiv-eqrel}
+  Type equivalence is an equivalence relation on \type.
+  More specifically:
+  \begin{enumerate}
+  \item For any $A$, the identity function $\idfunc[A]$ is an equivalence; hence $\eqv A A$.
+  \item For any $f:\eqv A B$, we have an equivalence $f^{-1} : \eqv B A$.
+  \item For any $f:\eqv A B$ and $g:\eqv B C$, we have $g\circ f : \eqv A C$.
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  The identity function is clearly its own quasi-inverse; hence it is an equivalence.
+
+  If $f:A\to B$ is an equivalence, then it has a quasi-inverse, say $f^{-1}:B\to A$.
+  Then $f$ is also a quasi-inverse of $f^{-1}$, so $f^{-1}$ is an equivalence $B\to A$.
+
+  Finally, given $f:\eqv A B$ and $g:\eqv B C$ with quasi-inverses $f^{-1}$ and $g^{-1}$, say, then for any $a:A$ we have $f^{-1} g^{-1} g f a = f^{-1} f a = a$, and for any $c:C$ we have $g f f^{-1} g^{-1} c = g g^{-1} c = c$.
+  Thus $f^{-1} \circ g^{-1}$ is a quasi-inverse to $g\circ f$, hence the latter is an equivalence.
+\end{proof}
 
 % Local Variables:
 % TeX-master: "main"

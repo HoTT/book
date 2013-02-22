@@ -1,7 +1,5 @@
 %%% Macros that should probably be defined before
 
-% Type of truncated types
-\newcommand{\typele}[1]{\ensuremath{\type_{\le #1}}\xspace}
 % Function definition with domain and codomain
 \newcommand{\function}[4]{\left\{\begin{array}{rcl}#1 &
       \longrightarrow & #2 \\ #3 & \longmapsto & #4 \end{array}\right.}
@@ -28,7 +26,6 @@
 \newcommand{\project}{\mathsf{p}}
 \newcommand{\ext}{\mathsf{ext}}
 % Projection and extension for truncations
-\newcommand{\tproj}{\mathsf{proj}}
 \newcommand{\extendsmb}{\mathsf{ext}}
 \newcommand{\extend}[1]{\extendsmb(#1)}
 % Apply a function to a cocone
@@ -879,55 +876,55 @@ say that every coherence condition is always satisfied.
 
 \section{Truncations}
 
-Given an integer $n\ge-2$, we recall that $\typele{n}$ is the type of all
-$n$-truncated types (in the universe $\type$). For instance $\typele{-2}$ is
-contractible (there is only one $(-2)$-truncated type, the point), $\typele{-1}$
+Given an integer $n\ge-2$, we recall that $\typeleU{n}$ (or just $\typele{n}$) is the type of all
+$n$-truncated types (in the universe $\type$). For instance $\typelep{-2}$ is
+contractible (there is only one $(-2)$-truncated type, the point), $\typelep{-1}$
 is also known as $\prop$, and $\typele{0}$ is also known as $\set$.
 
 Given a type $A:\type$ and an integer $n\ge-2$ we define an $n$-truncated type
-$\tau_nA:\typele{n}$, called the \emph{$n$-truncation} of $A$, by a
+$\trunc n A:\typele{n}$, called the \emph{$n$-truncation} of $A$, by a
 \emph{truncated inductive type}:
 \begin{align*}
-  \tau_nA&:\typele{n}\\
-  &\coloneqq\ |\ \tproj_n:A\to\tau_nA
+  \trunc nA&:\typele{n}\\
+  &\coloneqq\ |\ \tprojf n:A\to\trunc nA
 \end{align*}
 
 This means that we have
-\[\tau_nA:\typele{n}\]
-\[\tproj_n:A\to\tau_nA\]
-and for every dependent type $P$ over $\tau_nA$ and $d:\prod_{a:A}P(\tproj_na)$,
-we can define a section $\extend{d}$ of $P$ by $\extend{d}(\tproj_n(a))=d(a)$.
+\[\trunc nA:\typele{n}\]
+\[\tprojf n:A\to\trunc nA\]
+and for every type family $P$ over $\trunc nA$ and $d:\prod_{a:A}P(\tproj na)$,
+we can define a section $\extend{d}$ of $P$ by $\extend{d}(\tproj na)=d(a)$.
 
 The nondependent elimination rule says that if $E$ is $n$-truncated, then every
-map $f:A\to{}E$ can be extended to a map $\extend{f}:\tau_nA\to{}E$ defined by
-$\extend{f}(\tproj_n(a))=f(a)$.
+map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by
+$\extend{f}(\tproj na)=f(a)$.
 
-The nondependent $\eta$-rule says that if two maps $g,g':\tau_nA\to{}E$ are
-such that $g(\tproj_n(a))=g'(\tproj_n(a))$ for every $a:A$, then $g(x)=g'(x)$
-for all $x:\tau_nA$ (and then $g=g'$ using function extensionality).
+The nondependent $\eta$-rule says that if two maps $g,g':\trunc nA\to{}E$ are
+such that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$
+for all $x:\trunc nA$ (and then $g=g'$ using function extensionality).
 
 \begin{lem}
   [Universal property of truncations]
 
   Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
   equivalence:
-  \[\function{(\tau_nA\to{}B)}{A\to{}B}{g}{g\circ\tproj_n}\]
+  \[\function{(\trunc nA\to{}B)}{A\to{}B}{g}{g\circ\tprojf n}\]
 
   In particular, $\typele{n}$ is a reflective subuniverse of $\type$.
 \end{lem}
 
 \begin{proof}
-  Any $f:A\to{}B$ can be extended to a map $\extend{f}:\tau_nA\to{}B$ (because
+  Any $f:A\to{}B$ can be extended to a map $\extend{f}:\trunc nA\to{}B$ (because
   $B$ is assumed to be $n$-truncated).
 
-  The map $\extend{f}\circ\tproj_n$ is equal to $f$ because for every $a:A$ we
-  have $\extend{f}(\tproj_n(a))=f(a)$ by definition and the map
-  $\extend{g\circ\tproj_n}$ is equal to $g$ because they both send $\tproj_n(a)$
-  to $g(\tproj_n(a))$.
+  The map $\extend{f}\circ\tprojf n$ is equal to $f$ because for every $a:A$ we
+  have $\extend{f}(\tproj na)=f(a)$ by definition and the map
+  $\extend{g\circ\tprojf n}$ is equal to $g$ because they both send $\tproj na$
+  to $g(\tproj na)$.
 \end{proof}
 
 \begin{defn}
-  A type $A$ is called \emph{$n$-connected} if $\tau_nA$ is contractible.
+  A type $A$ is called \emph{$n$-connected} if $\trunc nA$ is contractible.
 \end{defn}
 
 \begin{lem}
@@ -942,34 +939,34 @@ for all $x:\tau_nA$ (and then $g=g'$ using function extensionality).
 \end{lem}
 \begin{proof}
   This is just an application of the universal property. Note that
-  \[(\tau_nA\to{}B)=(\unit\to{}B)=B\]
+  \[(\trunc nA\to{}B)=(\unit\to{}B)=B \qedhere\]
 \end{proof}
 
 \begin{lem}
   Let $k,n\ge-2$ with $k\le{}n$ and $A:\type$. Then
-  $\tau_k(\tau_nA)=\tau_kA$.
+  $\trunc k{\trunc nA}=\trunc kA$.
 \end{lem}
 \begin{proof}
-  We define two maps $f:\tau_k(\tau_nA)\to\tau_kA$ and
-  $g:\tau_kA\to\tau_k(\tau_nA)$ in the following way:
+  We define two maps $f:\trunc k{\trunc nA}\to\trunc kA$ and
+  $g:\trunc kA\to\trunc k{\trunc nA}$ in the following way:
 
-  \[f(\tproj_k(\tproj_n(a)))=\tproj_k(a)\]
-  \[g(\tproj_k(a))=\tproj_k(\tproj_n(a))\]
+  \[f(\tproj k{\tproj na})=\tproj ka\]
+  \[g(\tproj ka)=\tproj k{\tproj na}\]
 
-  The map $f$ is well-defined because $\tau_kA$ is $k$-truncated and also
+  The map $f$ is well-defined because $\trunc kA$ is $k$-truncated and also
   $n$-truncated (because $k\le{}n$), and the map $g$ is well-defined because
-  $\tau_k(\tau_nA)$ is $k$-truncated.
+  $\trunc k{\trunc nA}$ is $k$-truncated.
 
-  The composition $f\circ{}g:\tau_kA\to\tau_kA$ satisfy
-  $(f\circ{}g)(\tproj_k(a))=\tproj_k(a)$ hence $f\circ{}g=\idfunc[\tau_kA]$, and
-  we also have $g\circ{}f=\idfunc[\tau_k(\tau_nA)]$ in the same way.
+  The composition $f\circ{}g:\trunc kA\to\trunc kA$ satisfy
+  $(f\circ{}g)(\tproj ka)=\tproj ka$ hence $f\circ{}g=\idfunc[\trunc kA]$, and
+  we also have $g\circ{}f=\idfunc[\trunc k{\trunc nA}]$ in the same way.
 \end{proof}
 
 \begin{lem}
-  We have $\tau_n(\unit)=\unit$.
+  We have $\trunc n{\unit}=\unit$.
 \end{lem}
 \begin{proof}
-  Indeed, $\unit$ is $n$-truncated for every $n$ hence $\tau_n(\unit)=\unit$ by
+  Indeed, $\unit$ is $n$-truncated for every $n$ hence $\trunc n{\unit}=\unit$ by
   \autoref{reflectPequiv}.
 \end{proof}
 
@@ -988,42 +985,42 @@ connectedness.
   By definition, the suspension of $A$ is $\unit\sqcup^A\unit$, so we need to
   prove that the following type is contractible:
 
-  \[\tau_{n+1}(\unit\sqcup^A\unit)\]
+  \[\trunc{n+1}{\unit\sqcup^A\unit}\]
 
   By \autoref{reflectcommutespushout} we know that
-  $\tau_{n+1}(\unit\sqcup^A\unit)$ is a pushout in $\typele{n+1}$ of the diagram
-  \[\xymatrix{\tau_{n+1}(A) \ar[d] \ar[r] & \tau_{n+1}(\unit) \\
-    \tau_{n+1}(\unit) & }\]
+  $\trunc{n+1}{\unit\sqcup^A\unit}$ is a pushout in $\typelep{n+1}$ of the diagram
+  \[\xymatrix{\trunc{n+1}A \ar[d] \ar[r] & \trunc{n+1}{\unit} \\
+    \trunc{n+1}{\unit} & }\]
 
-  Given that $\tau_{n+1}(\unit)=\unit$, the type
-  $\tau_{n+1}(\unit\sqcup^A\unit)$ is also a pushout of the following diagram in
-  $\typele{n+1}$ (because both diagrams are equal)
-  \[\Ddiag=\xymatrix{\tau_{n+1}(A) \ar[d] \ar[r] & \unit \\
+  Given that $\trunc{n+1}{\unit}=\unit$, the type
+  $\trunc{n+1}{\unit\sqcup^A\unit}$ is also a pushout of the following diagram in
+  $\typelep{n+1}$ (because both diagrams are equal)
+  \[\Ddiag=\xymatrix{\trunc{n+1}A \ar[d] \ar[r] & \unit \\
     \unit & }\]
 
   We will now prove that $\unit$ is also a pushout of $\Ddiag$ in
-  $\typele{n+1}$.
+  $\typelep{n+1}$.
 
   \bigskip
 
   Let $E$ be an $(n+1)$-truncated type, we need to prove that the following map
   is an equivalence
   \[\function{(\unit\to{}E)}{\cocone{\Ddiag}{E}}{y}
-  {(y,y,\lambda{}u^{\tau_{n+1}A}.\refl{y(\ttt)})}\]
+  {(y,y,\lambda{}u^{\trunc{n+1}A}.\refl{y(\ttt)})}\]
 
   where we recall that $\cocone{\Ddiag}{E}$ is the type
-  \[\sum_{f:\unit\to{}E}\sum_{g:\unit\to{}E}(\tau_{n+1}A\to
+  \[\sum_{f:\unit\to{}E}\sum_{g:\unit\to{}E}(\trunc{n+1}A\to
   (f(\ttt)=_E{}g(\ttt)))\]
 
   The map $\function{(\unit\to{}E)}{E}{f}{f(\ttt)}$ is an equivalence, hence
   we also have
-  \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(\tau_{n+1}A\to(x=_Ey))\]
+  \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(\trunc{n+1}A\to(x=_Ey))\]
 
-  Now $A$ is $n$-connected hence so is $\tau_{n+1}A$ because
-  $\tau_n(\tau_{n+1}A)=\tau_nA=\unit$, and $(x=_Ey)$ is $n$-truncated because
+  Now $A$ is $n$-connected hence so is $\trunc{n+1}A$ because
+  $\trunc n{\trunc{n+1}A}=\trunc nA=\unit$, and $(x=_Ey)$ is $n$-truncated because
   $E$ is $(n+1)$-connected. Hence by \autoref{connectedtotruncated} the
   following map is an equivalence
-  \[\function{(x=_Ey)}{(\tau_{n+1}A\to(x=_Ey))}{p}{\lambda{}z.p}\]
+  \[\function{(x=_Ey)}{(\trunc{n+1}A\to(x=_Ey))}{p}{\lambda{}z.p}\]
 
   Hence we have
   \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(x=_Ey)\]
@@ -1043,8 +1040,8 @@ connectedness.
 
   \bigskip
 
-  Hence we proved that $\unit$ in a pushout of $\Ddiag$ in $\typele{n+1}$. Using
-  uniqueness of pushouts we get that $\tau_{n+1}(\unit\sqcup^A\unit)=\unit$
+  Hence we proved that $\unit$ in a pushout of $\Ddiag$ in $\typelep{n+1}$. Using
+  uniqueness of pushouts we get that $\trunc{n+1}{\unit\sqcup^A\unit}=\unit$
   which proves that the suspension of $A$ is $(n+1)$-connected.
 \end{proof}
 
@@ -1084,7 +1081,7 @@ connectedness.
 \begin{defn}
   Given $n:\N$ and $(A,a)$ a pointed type, we define the homotopy groups of $A$
   at $a$ by
-  \[\pi_n(A,a)=\tau_0(\Omega^n(A,a))\]
+  \[\pi_n(A,a)=\trunc0{\Omega^n(A,a)}\]
 \end{defn}
 
 \begin{lem}
@@ -1111,7 +1108,7 @@ $n$-connected types.
   $(n-1)$-truncated type, hence $\Omega^k(A,a)$ is $(n-k)$-truncated and we have
   $(n-k)\le-1$ so $\Omega^k(A,a)$ is \anhprop. But $\Omega^k(A,a)$ is inhabited,
   so it is actually contractible and
-  $\pi_k(A,a)=\tau_0(\Omega^k(A,a))=\tau_0(\unit)=\unit$.
+  $\pi_k(A,a)=\trunc0{\Omega^k(A,a)}=\trunc0{\unit}=\unit$.
 \end{proof}
 
 In order to compute the homotopy groups of $n$-connected types we will need the
@@ -1119,10 +1116,10 @@ following lemma about commutation of truncation and path spaces.
 
 \begin{lem}
   Let $n\ge-2$, $A:\type$ and $x,y:A$. There is a canonical map
-  \[f:\tau_n(x=_Ay)\to\tproj_{n+1}x=_{\tau_{n+1}A}\tproj_{n+1}y\]
+  \[f:\trunc n{x=_Ay}\to\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\]
   defined by
-  \[f(\tproj_n(\refl{A}(x)))=\refl{\tau_{n+1}A}(\tproj_{n+1}(x))\]
-  This definition is correct because $\tau_{n+1}A$ is $(n+1)$-truncated hence
+  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
+  This definition is correct because $\trunc {n+1}A$ is $(n+1)$-truncated hence
   the right hand side of the arrow is $n$-truncated.
 
   The lemma says that this map is an equivalence.
@@ -1130,43 +1127,43 @@ following lemma about commutation of truncation and path spaces.
 
 \begin{proof}
   We cannot directly define an inverse to $f$ because there is no way to induct
-  on an equality between $\tproj_{n+1}x$ and $\tproj_{n+1}y$. We will instead
+  on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$. We will instead
   generalize the type of $f$ in order to have general elements of the type
-  $\tau_{n+1}A$ instead of $\tproj_{n+1}x$ and $\tproj_{n+1}y$.
+  $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
 
-  Let $P:\tau_{n+1}A\to\tau_{n+1}A\to\typele{n}$ defined by
-  \[P(\tproj_{n+1}(x),\tproj_{n+1}(y))=\tau_n(x=_Ay)\]
+  Let $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ defined by
+  \[P(\tproj {n+1}x,\tproj {n+1}y)=\trunc n{x=_Ay}\]
 
-  This definition is correct because $\tau_n(x=_Ay)$ is $n$-truncated and
+  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated and
   $\typele{n}$ is $(n+1)$-truncated (here we are using the univalence axiom in a
   very nontrivial way).
 
-  We can now generalize the result we want to prove. For every $u,v:\tau_{n+1}A$
+  We can now generalize the result we want to prove. For every $u,v:\trunc{n+1}A$
   there is a map
-  \[f:P(u,v)\to{}u=_{\tau_{n+1}A}v\]
-  defined for $u=\tproj_{n+1}x$ and $v=\tproj_{n+1}y$ by
-  \[f(\tproj_n(\refl{A}(x)))=\refl{\tau_{n+1}A}(\tproj_{n+1}(x))\]
+  \[f:P(u,v)\to{}u=_{\trunc{n+1}A}v\]
+  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ by
+  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
 
   The type of $f$ being $n$-truncated, we are allowed to define it only for $u$
   and $v$ of this form, and then it’s just the same definition as before.
 
   But now we can define an inverse map
-  \[g:u=_{\tau_{n+1}A}v\to{}P(u,v)\]
+  \[g:u=_{\trunc{n+1}A}v\to{}P(u,v)\]
   by
-  \[g(\refl{\tau_{n+1}A}(\tproj_{n+1}(x))) = \tproj_n(\refl{A}(x))\]
+  \[g(\refl{\trunc{n+1}A}(\tproj {n+1}x)) = \tproj n{\refl{A}(x)}\]
 
-  because $u$ and $v$ are general elements of $\tau_{n+1}A$, and the output type
+  because $u$ and $v$ are general elements of $\trunc{n+1}A$, and the output type
   is $n$-truncated so we can moreover assume that $u$ and $v$ of the form
-  $\tproj_{n+1}(x)$.
+  $\tproj {n+1}x$.
 
   It is clear that $g$ and $f$ are inverse to each other, which prove that they
   are both equivalences. The result stated in the lemma is then the special case
-  where $u=\tproj_{n+1}x$ and $v=\tproj_{n+1}y$.
+  where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
 \end{proof}
 
 \begin{cor}
   Let $n\ge-2$ and $(A,a)$ be a pointed type. Then
-  \[\tau_n(\Omega(A,a))=\Omega(\tau_{n+1}(A,a))\]
+  \[\trunc n{\Omega(A,a)}=\Omega(\trunc{n+1}{(A,a)})\]
 \end{cor}
 \begin{proof}
   This is a special case of the previous lemma where $x=y=a$.
@@ -1181,16 +1178,16 @@ following lemma about commutation of truncation and path spaces.
   We have the following sequence of equalities:
 
   \begin{align*}
-    \pi_k(A,a) &= \tau_0(\Omega^k(A,a)) \\
-    &= \Omega^k(\tau_k(A,a)) \\
-    &= \Omega^k(\tau_k(\tau_n(A,a))) \\
-    &= \Omega^k(\tau_k(\unit)) \\
+    \pi_k(A,a) &= \trunc0{\Omega^k(A,a)} \\
+    &= \Omega^k(\trunc k{(A,a)}) \\
+    &= \Omega^k(\trunc k{\trunc n{(A,a)}}) \\
+    &= \Omega^k(\trunc k{\unit}) \\
     &= \Omega^k(\unit) \\
     &= \unit
   \end{align*}
 
   The third line uses the fact that $k\le{}n$ in order to use that
-  $\tau_k\circ\tau_n=\tau_k$ and the fourth line uses the fact that $A$ is
+  $\truncf k\circ\truncf n=\truncf k$ and the fourth line uses the fact that $A$ is
   $n$-connected.
 \end{proof}
 

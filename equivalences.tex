@@ -298,7 +298,71 @@ We give two proofs of this theorem.
 The first is a high-level argument obtained by repeatedly interchanging $\Sigma$- and $\Pi$-types; the second is more computational.
 
 \begin{proof}
-  TODO.
+  We will make heavy use of the fact that all type formers respect equivalences.
+  For instance, if $P,Q:A\to\type$ and for all $x:A$ we have $\eqv{P(x)}{Q(x)}$, it follows that
+  \begin{align*}
+    \sm{x:A}P(x) &\;\simeq\; \sm{x:A}Q(x)\mathrlap{\qquad\text{and}}\\
+    \prd{x:A}P(x) &\;\simeq\; \prd{x:A}Q(x).
+  \end{align*}
+  Similarly, given $P:B\to\type$ and an equivalence $f:\eqv A B$, we have
+  \begin{align}
+    \sm{x:A}P(fx) &\;\simeq\; \sm{y:B}P(y)\mathrlap{\qquad\text{and}}\label{eq:sigma-baseequiv}\\
+    \prd{x:A}P(fx) &\;\simeq\; \prd{y:B}P(y).\label{eq:pi-baseequiv}
+  \end{align}
+  These facts follow immediately from function extensionality and univalence, but can also be proven more directly.
+  A direct proof is perhaps to be preferred in the long run, since it has more explicit computational content, but for our purposes here this does not matter.
+
+  We will construct a chain of equivalences whose composite yields the desired result.
+  We begin by applying \autoref{thm:ttac} twice, once by way of~\eqref{eq:sigma-baseequiv}.
+  \begin{align*}
+    \iscontr(f)
+    &\jdeq \prod_{b:B} \; \sum_{c:\sum_{a:A}(fa=b)}\; \prod_{d:\sum_{a:A}(fa=b)} (c=d)\\
+    &\simeq \sum_{k:\prod_{b:B}\sum_{a:A} (fa=b)} \;\prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} (k(b)=d)\\
+    &\simeq \sum_{k:\sum_{g:B\to A}\;\prod_{b:B} (fgb=b)} \;\prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((\proj1 k(b),\proj2 k(b))=d)\\
+    &\simeq \sum_{g:B\to A} \; \sum_{\epsilon:\prod_{b:B} (fgb=b)} \;\prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((gb,\epsilon b)=d).
+    % &\simeq \sum_{k:\prod_{b:B}\sum_{a:A} (fa=b)} \;\prod_{b:B}\;\prod_{a:A}\; \prod_{\gamma:fa=b} (kb = (a,\gamma))\\
+    % &\simeq \sum_{k:\prod_{b:B}\sum_{a:A} (fa=b)} \;\prod_{b:B}\;\prod_{a:A}\; \prod_{\gamma:fa=b} (kb = (a,\gamma))\\
+  \end{align*}
+  The equivalence in the last line uses an easy-to-prove ``associativity'' of dependent pair types:
+  \[\sum_{x:X} \; \sum_{y:Y(x)} Z(x,y) \;\simeq\; \sum_{w:\sum_{x:X} Y(x)} Z(w).\]
+  Thus, to show that $\iscontr(f)$ is equivalent to
+  \begin{equation*}
+    \ishae(f) \jdeq \sum_{g:B\to A} \;\sum_{\eta: g \circ f \htpy \idfunc[A]} \; \sum_{\epsilon:f \circ g \htpy \idfunc[B]} \;
+    \prod_{x:A} (\map{f}{\eta x} = \epsilon(fx)),
+  \end{equation*}
+  it will suffice to fix $g:B\to A$ and $\epsilon:g\circ f \htpy \idfunc[A]$, and show that
+  \begin{equation}\label{eq:ech-part2}
+    \prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((gb,\epsilon b)=d)
+    \;\simeq \;
+    \sum_{\eta: g \circ f \htpy \idfunc[A]} \;
+    \prod_{x:A} (\map{f}{\eta x} = \epsilon(fx)).
+  \end{equation}
+  We have used an evident commutativity between unrelated $\Sigma$-types to switch the order of $\eta$ and $\epsilon$ in $\ishae(f)$.
+  Now, using the universal properties~\eqref{eq:sigma-lump} and~\eqref{eq:path-lump} of $\Sigma$-types and identity types, along with a analogous commutativity for unrelated $\Pi$-types, we have
+  \begin{align*}
+    \prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((gb,\epsilon b)=d)
+    &\simeq \prod_{b:B} \;\prod_{a:A} \;\prod_{\gamma:fa=b} ((gb,\epsilon b)= (a,\gamma))\\
+    &\simeq \prod_{a:A} \;\prod_{b:B} \;\prod_{\gamma:fa=b} ((gb,\epsilon b)= (a,\gamma))\\
+    &\simeq \prod_{a:A}  ((gfa,\epsilon (fa))= (a,\refl {fa})).
+  \end{align*}
+  The equality $((gfa,\epsilon (fa))= (a,\refl a))$ is in $\sm{x:A} (fx = fa)$.
+  Thus, by the identification of paths in $\Sigma$-types, and \autoref{thm:ttac} again, we have
+  \begin{align*}
+    \prod_{a:A}  ((gfa,\epsilon (fa))= (a,\refl {fa}))
+    &\simeq \prod_{a:A}\; \sum_{\alpha:gfa = a} (\trans{\alpha}{\epsilon(fa)} = \refl{fa})\\
+    &\simeq \sum_{\eta:\prod_{a:A} (gfa = a)} \; \prod_{a:A} (\trans{\eta(a)}{\epsilon(fa)} = \refl{fa})
+  \end{align*}
+  Recalling our goal~\eqref{eq:ech-part2}, we see that it will suffice to fix ${\eta: g \circ f \htpy \idfunc[A]}$ and $a:A$, and show that
+  \begin{equation}
+    \label{eq:ech-part3}
+    (\trans{(\eta a)}{\epsilon(fa)} = \refl{fa})
+    \;\simeq\;
+    (\map{f}{\eta a} = \epsilon(fa)).
+  \end{equation}
+  Now the transport along $\eta a : gfa = a$ on the left-hand side takes place with respect to the type family $x\mapsto (fx=fa)$.
+  Thus, by [TODO: the pullback transport lemma] and \autoref{thm:path-paths}, we have
+  \[\trans{(\eta a)}{\epsilon(fa)} = \opp{\ap f {\eta a}} \ct \epsilon(fa).\]
+  But clearly $\opp{\ap f {\eta a}} \ct \epsilon(fa) = \refl{fa}$ if and only if $\map{f}{\eta a} = \epsilon(fa)$, and it is easy to show that this logical equivalence is actually an equivalence, yielding~\eqref{eq:ech-part3}.
 \end{proof}
 
 For the second proof, the following definition and lemmas will be useful.

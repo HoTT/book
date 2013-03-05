@@ -744,7 +744,7 @@ Specifically, for any $P:\type$, the type $\isprop(P)$ is defined to be
 Thus, to assert that ``$P$ is a mere proposition'' means to exhibit an inhabitant of $\isprop(P)$, which is a dependent function connecting any two elements of $P$ by a path.
 The continuity/naturality of this function implies that not only are any two elements of $P$ equal, but $P$ contains no higher homotopy either.
 
-\begin{lem}
+\begin{lem}\label{thm:inhabprop-eqvunit}
   If $P$ is a mere proposition and $x_0:P$, then $\eqv P \unit$.
 \end{lem}
 \begin{proof}
@@ -753,7 +753,7 @@ The continuity/naturality of this function implies that not only are any two ele
 \end{proof}
 
 In homotopy theory, a space that is homotopy equivalent to \unit is said to be \emph{contractible}.
-Thus, any mere proposition which is inhabited is contractible.
+Thus, any mere proposition which is inhabited is contractible (see also \S\ref{sec:contractibility}).
 On the other hand, the uninhabited type \emptyt is also (vacuously) a mere proposition.
 In classical mathematics, at least, these are the only two possibilities.
 
@@ -982,6 +982,67 @@ In this book we will continue using untruncated logic as the default convention,
   This useful fact is more clumsy to express if propositional truncation is applied to all statements by default.
 \item Finally, truncations are not very useful for most of the mathematics we will be doing in this book, so it is simpler to notate them explicitly when they occur.
 \end{enumerate}
+
+\section{Contractibility}
+\label{sec:contractibility}
+
+In \autoref{thm:inhabprop-eqvunit} we observed that a mere proposition which is inhabited must be equivalent to unit, and it is not hard to see that the converse also holds.
+Another equivalent definition, which is also sometimes convenient, is the following.
+
+\begin{defn}\label{defn:contractible}
+  A type $A$ is \textbf{contractible}, or a \textbf{singleton}, if there is $a:A$, called the \textbf{center of contraction}, such that $a=x$ for all $x:A$.
+\end{defn}
+
+In other words, the type $\iscontr(A)$ is defined to be
+\[ \iscontr(A) \defeq \sm{a:A} \prd{x:A}(a=x). \]
+
+\begin{lem}\label{thm:contr-paths}
+  For a type $A$, the following are logically equivalent.
+  \begin{enumerate}
+  \item $A$ is contractible.\label{item:contr}
+  \item $A$ is a mere proposition, and there is a point $a:A$.\label{item:contr-inhabited-prop}
+  \item $A$ is equivalent to \unit.\label{item:contr-eqv-unit}
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  If $A$ is contractible, then it certainly has a point $a:A$ (the center of contraction), while for any $x,y:A$ we have $x=a=y$; thus $A$ is a mere proposition.
+  Conversely, if we have $a:A$ and $A$ is a mere proposition, then for any $x:A$ we have $x=a$; thus $A$ is contractible.
+  And we showed~\ref{item:contr-inhabited-prop}$\Rightarrow$\ref{item:contr-eqv-unit} in \autoref{thm:inhabprop-eqvunit}, while the converse follows since \unit easily has properties~\ref{item:contr} and~\ref{item:contr-inhabited-prop}.
+\end{proof}
+
+\begin{lem}\label{thm:isprop-iscontr}
+  For any type $A$, the type $\iscontr(A)$ is a mere proposition.
+\end{lem}
+\begin{proof}
+  Suppose given $c,c':\iscontr(A)$.
+  We may assume $c\jdeq(a,p)$ and $c'\jdeq(a',p')$ for $a,a':A$ and $p:\prd{x:A} (a=x)$ and $p':\prd{x:A} (a'=x)$.
+  By the characterization of paths in $\Sigma$-types, to show $c=c'$ it suffices to exhibit $q:a=a'$ such that $\trans{q}{p}=p'$.
+
+  We choose $q\defeq p(a')$.
+  For the other equality, by function extensionality we must show that $(\trans q p)(x)=p'(x)$ for any $x:A$.
+  For this, it will suffice to show that for any $x,y:A$ and $u:x=y$ we have $u= \opp{p(x)} \ct p(y)$, since then we would have $(\trans q p)(x) = \opp{p(x)} \ct p(y) = p'(x)$.
+  But now we can invoke path induction to assume that $x\jdeq y$ and $u\jdeq \refl{x}$.
+  In this case our goal is to show that $\refl x = \opp{p(x)} \ct p(x)$, which is just the inversion law for paths.
+\end{proof}
+
+\begin{cor}\label{thm:contr-contr}
+  If $A$ is contractible, then so is $\iscontr(A)$.
+\end{cor}
+\begin{proof}
+  By \autoref{thm:isprop-iscontr} and \autoref{thm:contr-paths}\ref{item:contr-inhabited-prop}.
+\end{proof}
+
+\begin{lem}\label{thm:contr-forall}
+  If $P:A\to\type$ is a type family such that each $P(a)$ is contractible, then $\prd{x:A} P(x)$ is contractible.
+\end{lem}
+\begin{proof}
+  By \autoref{thm:isprop-forall}, $\prd{x:A} P(x)$ is a mere proposition since each $P(x)$ is.
+  But it also has an element, namely the function sending each $x:A$ to the center of contraction of $P(x)$.
+  Thus by \autoref{thm:contr-paths}\ref{item:contr-inhabited-prop}, $\prd{x:A} P(x)$ is contractible.
+\end{proof}
+
+(In fact, the statement of \autoref{thm:contr-forall} is equivalent to the function extensionality axiom.
+See Appendix~[?].)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%

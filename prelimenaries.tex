@@ -1,0 +1,470 @@
+{%%%%%%% macros local to this file, discharged at the end of the file
+
+\newcommand{\stype}{{\;\sf type}}
+\newcommand{\rec}{{\sf rec}}
+%\newcommand{\bool}{\bbB}
+\newcommand{\bool}{{\bf B}}
+\newcommand{\app}{{\sf app}}
+\newcommand{\pair}{{\sf pair}}
+\newcommand{\inleft}{{\sf inleft}}
+\newcommand{\inright}{{\sf inright}}
+%\newcommand{\bbzero}{{0\hspace*{-4pt} 0}}
+\newcommand{\emptyt}{{\bf 0}}
+%\newcommand{\bbone}{{1\hspace*{-4pt} 1}}
+\newcommand{\unitt}{{\bf 1}}
+\newcommand{\UU}{{\mathcal U}}
+
+\chapter{Type theory}
+\label{cha:typetheory}
+
+Before we go on to introduce Homotopy Type Theory we will have a look at
+the basic notions of Type Theory. Keep in mind that Type Theory is a
+foundational language, i.e. an alternative to Zermelo-Fraenkel set theory
+and at the same time it can be viewed as a programming language not to
+dissimilar to modern functional programming languages like Haskell. In
+particular the notion of a type is very different from the notion of a
+set in set theory and resembles more the types of strongly typed
+programming languages. When we write $3 : \Nat$ then this is a
+judgement in Type Theory while the similar looking statement $3 \in
+\Nat$ in set theory is a proposition. As a consequence we cannot talk
+about objects in isolation of their type. While this may seem to be a
+restriction at the first glance it is precisely this aspect which
+makes the homotopy interpretation possible.
+
+We attempt here to give an informal presentation of Type Theory,
+sufficient for the purposes of this book, more formal accounts can be
+found in \cite{hofmann-traktat,...}.
+
+For the purpose of this book we consider two judgements:
+\begin{description}
+\item[$a : A$] $a$ is an object of type $A$.
+\item[$a \equiv_A b$] $a$ and $b$ are definitionally equal 
+  objects of type $A$.
+\end{description}
+Judgements may depend on assumptions of the form $x:A$ where $x$ is a
+variable and $A$ is a type. When we say that $A$ is a type we mean
+that $A : \UU$ for some universe which is introduced below.
+
+As an example we may
+construct an object $m + n : \Nat$ under the assumptions that $m,n :
+\Nat$. 
+
+Another example is that we assume that $A:\UU$ is a type, $x,y : A$
+and $p : x =_A y$ that is $p$ is a proof that $a$ and $b$ are
+equal. From this we construct $p^{-1} : y =_A x$. Here we use types to
+represent propositions whose inhabitants are proofs. We may omit the
+names of proofs and instead say that from $x =_A y$ we can infer $y
+=_A x$ but since we are doing proof-relevant mathematics we will
+frequently refer back to proofs as objects, e.g. in this case we may
+want to establish that $p^{-1}$ together with the proofs of
+transitivity and reflexivity behave like a group or more precisely a
+groupoid.
+
+We emphasize the difference between propositional equality type $a =_A
+b$ and the judgment $a \jdeq_A b$. The statement $a =_A b$ requires a
+proof, i.e. the construction of an inhabitant $p : a =_A b$. In
+contrast $a \jdeq b$ can be decided mechanically just by expanding
+definitions. So if we define $c \defeq 1$ then $c\jdeq 1$. Another
+source of definitional equality is the application of a function. If
+we define a function $f : \Nat \to \Nat$ as $f(n) \defeq n + n$ then
+$f(3) \jdeq 3+3$ (this is called $\beta$-equality in
+$\lambda$-calculus. Definitional equalities also arise from the
+recursive definition of functions: If we define $m + n : \Nat$
+assuming $m,n : \Nat$ using
+\begin{eqnarray*}
+  0 + n & \defeq & \\
+  \suc(m) + n & \defeq & \suc(m + n)
+\end{eqnarray*}
+then $0 + n \jdeq n$ but $n + 0 \not\jdeq n$. However we can construct
+a proof of $n + 0 = n$. As for $a : A$ the judgement $a \jdeq b$
+cannot be used within a proposition. In particular the statement if $a
+\jdeq b$ then $b \jdeq a$ is not a proposition in type theory. In
+contrast if $a = b$ then $a = b$.
+
+Given a type $A$, if from assuming $x:A$ we can deduce $B[x]:\UU$ 
+(here we write $B[x]$ to make it clear that $B$ may contain the
+variable $x$) then we say $B[x]$ is a
+family of types in $\UU$ indexed by $x:A$. An example is the type $Vec(A,n)$ of
+vectors ($n$-tuples) of elements of type $A$ which is family indexed
+over $n : \Nat$. Another example is the type $x =_A x$ which is a
+family indexed over $x : A$.
+=======
+\chapter{Type theory}
+\label{cha:typetheory}
+
+\section{Type theory versus set theory}
+\label{sec:types-vs-sets}
+
+Type theory in general, and homotopy type theory in particular, is (among other things) a foundational language for mathematics, i.e., an alternative to Zermelo-Fraenkel set theory.
+However, it behaves differently from the latter in several important ways, which can take some getting used to.
+Explaining these differences carefully requires us to be a little bit more formal here than we will be in the rest of the book.
+As stated in the introduction, our goal is to write type theory \emph{informally}; but for a mathematician accustomed to set theory, a little bit more precision at the beginning can help avoid some common misconceptions and mistakes.
+
+First of all, we note that a set-theoretic foundation has two ``layers'': first there is the deductive system of first-order logic, and then formulated inside this system there are the axioms of a particular theory (such as ZFC).
+Thus, set theory is not only about sets, but rather about the interplay between sets (the objects of the second layer) and propositions (the objects of the first layer).
+
+By contrast, type theory is its own deductive system: it need not be formulated inside any superstructure such as first-order logic.
+In particular, rather than having two basic notions (sets and propositions), type theory has one basic notion, namely \emph{types}.
+Propositions (statements which we can prove, disprove, assume, negate, and so on) are identified with particular types, via the correspondence shown in Table~\ref{tab:pov} on page~\pageref{tab:pov}.
+Thus, the mathematical activity of \emph{proving a theorem} is identified with a special case of the mathematical activity of \emph{constructing an object}---in this case, an inhabitant of a type that represents a proposition.
+
+This leads us to another difference between type theory and set theory, but to explain it we must say a little about deductive systems in general.
+Informally, a deductive system is a collection of rules for deriving things called \emph{judgments}.
+If we think of a deductive system as a formal game, then the judgments are the ``positions'' in the game which we reach by following the game rules.
+We can also think of a deductive system as a sort of algebraic theory, in which case the judgments are the elements (like the elements of a group) and the deductive rules are the operations (like the group multiplication).
+From a logical point of view, the judgments can be considered to be the ``external'' statements, living in the metatheory, as opposed to the ``internal'' statements of the theory itself.
+
+In the deductive system of first-order logic (on which set theory is based), there is only one judgment: that a given proposition has a proof.
+A rule of first-order logic such as ``from $A$ and $B$ infer $A\wedge B$'' is actually a rule of ``proof construction'' which says that given the judgments ``$A$ has a proof'' and ``$B$ has a proof'', we may deduce that ``$A\wedge B$ has a proof''.
+Note that the judgment ``$A$ has a proof'' exists at a different level from the \emph{proposition} $A$ itself, which is an internal statement of the theory.
+% In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
+
+The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, a ``point'' of $A$).
+When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness} to the provability of $A$, or \emph{evidence} of the truth of $A$.
+In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
+% (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
+
+On the other hand, if the type $A$ is being treated more like a set than like a proposition (although as we will see, the distinction can become blurry), then ``$a:A$'' may be regarded as analogous to the set-theoretic statement ``$a\in A$''.
+However, there is an essential difference in that ``$a:A$'' is a \emph{judgment} whereas ``$a\in A$'' is a \emph{proposition}.
+In particular, when working internally in type theory, we cannot make statements such as ``if $a:A$ then it is not the case that $b:B$'', nor can we ``disprove'' the judgment ``$a:A$''.
+
+A good way to think about this is that in set theory, ``membership'' is a relation which may or may not hold between two pre-existing objects ``$a$'' and ``$A$'', while in type theory we cannot talk about an element ``$a$'' in isolation: every element \emph{by its very nature} is an element of some type, and that type is (generally speaking) uniquely determined.
+Thus, when we say informally ``let $x$ be a natural number'', in set theory this is shorthand for ``let $x$ be a thing and assume that $x\in\nat$'', whereas in type theory ``let $x:\nat$'' is an atomic statement: we cannot introduce a variable without specifying its type.
+
+At first glance, this may seem an uncomfortable restriction, but it is arguably closer to the intuitive mathematical meaning of ``let $x$ be a natural number''.
+In practice, it seems that whenever we actually \emph{need} ``$a\in A$'' to be a proposition rather than a judgment, there is always an ambient set $B$ of which $a$ is known to be an element and $A$ is known to be a subset.
+This situation is also easy to represent in type theory, by taking $a$ to be an element of the type $B$, and $A$ to be a predicate on $B$; see \S\ref{sec:prop-subset}.
+
+A last difference between type theory and set theory is the treatment of equality.
+The familiar notion of equality in mathematics is a proposition: e.g.\ we can disprove an equality or assume an equality as a hypothesis.
+Since in type theory, propositions are types, this means that equality is a type: for elements $a,b:A$ (that is, both $a:A$ and $b:A$) we have a type ``$\id[A]ab$''.
+(In \emph{homotopy} type theory, of course, this equality proposition can behave in unfamiliar ways: see \S\ref{sec:identity-types}, Chapter~\ref{cha:basics}, and the rest of the book).
+
+However, in type theory there is also a need for an equality \emph{judgment}, existing at the same level as the judgment ``$x:A$''.
+This is called \emph{judgmental equality} or \emph{definitional equality}, and we write it as $a\jdeq b$ or $a \jdeq_A b$.
+It is helpful to think of this as meaning ``equal by definition''.
+For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
+It does not make sense to negate or assume an equality-by-definition; we cannot say ``if $x$ is equal to $y$ by definition, then $z$ is not equal to $w$ by definition''.
+Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically decidable.
+
+As type theory becomes more complicated, judgmental equality can get more subtle than this, but it is a good intuition to start from.
+Alternatively, if we regard a deductive system as an algebraic theory, then judgmental equality is simply the equality in that theory, analogous to the equality between elements of a group---the only potential for confusion is that there is \emph{also} an object \emph{inside} the deductive system of type theory (namely the type ``$a=b$'') which behaves internally as a notion of ``equality''.
+
+The reason we \emph{want} a judgmental notion of equality is so that it can control the other form of judgment, ``$a:A$''.
+For instance, suppose we have given a proof that $3^2=9$, i.e.\ we have derived the judgment $p:(3^2=9)$ for some term $p$.
+Then the same proof $p$ ought to count as a proof that $f(3)=9$, since $f(3)$ is $3^2$ \emph{by definition}.
+The best way to represent this is with a rule saying that given the judgments $a:A$ and $A\jdeq B$, we can derive the judgment $a:B$.
+
+Thus, for us, type theory will be a deductive system based on two forms of judgment:
+\begin{center}
+\begin{tabular}{c|l}
+  \textbf{Judgment} & \textbf{Meaning}\\\hline
+  $a : A$ & $a$ is an object of type $A$.\\
+  $a \jdeq_A b$ & $a$ and $b$ are definitionally equal objects of type $A$.
+\end{tabular}
+\end{center}
+When introducing a definitional equality, i.e., defining one thing to equal another, we will use the symbol ``$\defeq$''.
+Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
+
+Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.\footnote{In formalized type theory, commas and turnstiles can bind even more loosely.
+  For instance, $x:A,y:B\vdash c:C$ is parsed as $((x:A),(y:B))\vdash (c:C)$.
+  However, in this book we will not use any notation of this sort.}
+Thus, for instance, ``$p:x=y$'' should be parsed as ``$p:(x=y)$'', which makes sense since ``$x=y$'' is a type, and not as ``$(p:x)=y$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
+Similarly, ``$A\jdeq x=y$'' can only be parsed as ``$A\jdeq(x=y)$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
+This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, if we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (which is standard practice in type theory; see \S\ref{sec:pi-types}).
+
+Judgements may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
+For example, we may construct an object $m + n : \Nat$ under the assumptions that $m,n : \Nat$.
+Another example is that assuming $A$ is a type, $x,y : A$, and $p : x =_A y$, we may construct an element $p^{-1} : y =_A x$.
+The collection of all such assumptions is called the \emph{context}; from a topological point of view it may be thought of as a ``parameter space''.
+
+If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
+When types are regarded as propositions, we may omit the names of their proofs.
+Thus, in the second example above we may instead say that assuming $x =_A y$, we can prove $y =_A x$.
+However, since we are doing proof-relevant mathematics, we will frequently refer back to proofs as objects.
+In the example, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see Chapter~\ref{cha:basics}.
+
+In the rest of this chapter, we attempt to give an informal presentation of Type Theory, sufficient for the purposes of this book; we will give a more formal account in an Appendix.
+Aside from some fairly obvious rules (such as the fact that definitionally equal things can always be substituted for each other), the rules of type theory can be grouped into \emph{type formers}.
+Each type former consists of a way to construct types (possibly making use of already-constructed types), together with rules for the construction and behavior of elements of that type.
+In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
+>>>>>>> a26801a698b380a3da2e24fa80d13a64990d11f4
+
+
+\section{Universes}
+\label{sec:universes}
+
+We introduce a sequence of symbols $\UU_0,\UU_1,\UU_2, \dots$ which
+stand for type theoretic universes, i.e., types whose elements are
+types. In a way it would be nice if we just had one universe $\UU$ of
+all types including $\UU : \UU$.
+However, we can encode Burali--Forti's paradox in Type Theory, so such a universe makes the type theory inconsistent (in the sense that every type is inhabited, including ``false'').
+Instead, we introduce a hierarchy of universes
+\[ \UU_0 : \UU_1 : \UU_2 : \dots \]
+We assume that the hierarchy of universes is cummulative, i.e., if
+$A:\UU_i$ then $A : \UU_{i+1}$. Hence the difference between
+$\UU_0$ and $\UU_1$ is that $\UU_1$ contains the type $\UU_0:\UU_1$
+types build from $\UU_0$. Similarily $\UU_2$ contains all the types
+from $\UU_1$ and additionally $\UU_1$ and types build using $\UU_1$. 
+
+We say that our type theory is predicative if types in a universe
+$\UU_i$ are introduced only with reference to types in the same or
+lower universes. Most (all ?) constructions introduced in this book
+are predicative. 
+
+When we say $A$ is a type we mean that it is an element of some
+universe $\UU_i$. To avoid having to clutter up the text with indices
+we use the metavariable $\UU$ to stand for any universe. That is $A$
+is a type is the same as saying $A : \UU$.
+
+<<<<<<< HEAD
+When we say that $A$ is a type meaning that $A : \UU$ for some universe
+$\UU_i$. 
+=======
+>>>>>>> a26801a698b380a3da2e24fa80d13a64990d11f4
+
+\section{Function types}
+\label{sec:function-types}
+
+TODO.
+
+
+\section{Families of types}
+\label{sec:families-of-types}
+
+A \textbf{family of types} (in a universe \UU) is a function $B:A\to\UU$.
+An example is the type $Vec(A,n)$ of
+vectors ($n$-tuples) of elements of type $A$ which is family indexed
+over $n : \Nat$. Another example is the type $x =_A x$ which is a
+family indexed over $x : A$.
+
+
+\section{The dependent function types ($\Pi$-types)}
+\label{sec:pi-types}
+
+Functions are a primitive concept in Type Theory, they are not reduced
+to relations as in set theory. The dependent function type is a
+generalisation of non-dependent function type $A \to B$ which allow
+the codomain to vary over the codomain over the domain. Thus using the
+proposition as types principle we can use function types to model not
+only implication but also universal quantification. Given a type $A$
+and a family $B[x]$ indexed over $x:A$ we can form the type
+$\Pi_{x:A}B[x]$ of dependent functions. Non dependent-functions arise
+in the special case when $B$ is a constant family (i.e., $B$ does not
+dependent on $x$) in which case we write $A \to B$.
+
+Given a dependent function $f : \Pi_{x:A}B[x]$ and $a : A$ we can
+apply $f$ to $a$ which we write as $f(a) : B[a]$.  Such a function $f$ may be introduced by a defining equation
+  \[ f(x)\defeq b[x]\mbox{ for } x:A,\]
+where $b[x]$ is a term for an object of type $B(x)$ for $x:A$ that may depend on the variable $x$ ranging over objects of $A$.  So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
+  \[ f(a)\jdeq b[a]:B[a]\]
+and we have $f(a):B[a]$.  As usual we use the lambda abstraction notation 
+$\lambda_{x:A}b[x]$ to name the function $f$ so that if $a:A$ then
+  \[\lambda_{x:A}b[x](a)\jdeq b[a]: B(a).\]
+
+Assuming $a:A$ an example of a dependent function of type $\Pi_{n:\Nat}Vec(A,n)$
+is the function which constructs an $n$-tuple of $a$s. Another example
+of a dependent function is the proof of reflexivity which has the type
+$\Pi_{x:A}x = x$.
+
+Dependent function types are used to represent:
+\begin{itemize}
+\item Conventional (non-dependent) functions as in $\Nat \to \Nat$,
+\item Implication as in $x =_A y \to y =_A x$,
+\item Universal quantification as in $\Pi_{n:\Nat}m+0 =_\Nat m$.
+\end{itemize}
+
+\section{The dependent pair types ($\Sigma$-types)}
+\label{sec:sigma-types}
+
+As before in the case of functions the dependent pair type is a
+generalisation of the ordinary cartesian product $A \times B$. 
+As in the case of $\Pi$ we assume that $B[x]$ is a family indexed by
+$x:A$ to form $\Sigma_{x:A}B[x]$. Elements of $\Sigma_{x:A}B[x]$ are
+pairs $(a,b) : \Sigma_{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
+family $B$ does not depend on $A$ we write $A \times B$.
+
+If $C$ is a family of types on $p:\Sigma_{x:A}B(x)$ and 
+$c:\Pi(x:A)(y:B(x)),C((x,y))$, then we may define 
+$f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
+  \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
+
+As special cases we can derive the projections: to derive the 1st
+projection let $C_1(p) \defeq A$ be the constant family and $c_1 : \Pi (x:A)(y:B(x),A$
+defined as $c_1(x)(y) \defeq x$ to derive $\pi_1 : \Sigma_{x:A}B(x)) \to A$
+with the defining equation $\pi_1 (x,y) \defeq x$. To derive the 2nd
+projection we use $C_2(p) \defeq B (\pi_1(p))$ and $c_2 : \Pi
+(x:A)(y:B(x)),B(\pi_1(x,y))$ note that the codomain $B(\pi_1(x,y))$ is
+definitionally equal to $B(x)$ and hence we can use $c_2(x)(y) \defeq
+y$ to construct $\pi_2 : \Pi(p : \Sigma_{x:A}{B(x)}),B(\pi_1 p)$ with
+the defining equation $\pi_2(x,y) \defeq y$.
+
+As an example consider the type $\Sigma_{n:\Nat}Vec(A,n)$ of tuples of
+arbitrary length - this type is equivalent to the type of lists or
+finite sequences over $A$. Another example is the type
+$\Sigma_{n:\Nat}n+n = n$ which expresses the (true) proposition that
+there exists a natural number which is equal to its doubling.
+
+A more involved example is the type-theoretic axiom of choice. Assume
+there are types $A,B$ and a family $R(x,y)$ indexed over $x:A$ and
+$y:B$. Then we can show that from assuming 
+\[p : \Pi(x:A)\Sigma(y :B),R(x,y)\] 
+we can define 
+\begin{eqnarray*}
+a(p) & : & \sm{f : A \to B} \prd{x:A} R(x,(fx)) \\
+a(p) & \defeq & (\lambda_{x:A} \pi_1(p(x)),\lambda_{x:A} \pi_2(p(x)))
+\end{eqnarray*}
+
+Dependent pair types are used to represent:
+\begin{itemize}
+\item Conventional (non-dependent) pairs as in $\Nat \times \bool$,
+\item Conjunction as in $x =_A y \times y =_A z$,
+\item Existential quantification as in $\Sigma_{n:\Nat}n+n = n$.
+\end{itemize}
+
+\section{Finite types}
+\label{sec:finite-types}
+
+We use $\emptyt$, $\unit$ and $\bbB$ for the standard {\bf empty
+  type}, the standard {\bf singleton type} and the standard {\bf
+  boolean type}, respectively.  So $\emptyt$ is not intended to have
+any elements, we have $\star:\unit$ and $0_\bool,1_\bool:\bool$.
+\begin{itemize}
+\item If $C$ is a family on $\emptyt$ then we have $f:\Pi_{z:\emptyt}(z)$ with no defining equation.
+\item If $C$ is a family on $\unit$ and $c:C(\star)$ then we have $f:\Pi_{z:\unit}(z)$ with defining equation
+  \[ f(\star)\defeq c.\]
+\item If $C$ is a family on $\bool$, $c_0:C(0_\bool)$ 
+and $c_1:C(1_\bool)$ then we have $f:\Pi_{z:\bool}C(z)$ with the defining equations
+ \[ \begin{array}{rl}
+f(0_\bool) \defeq& c_0, \mbox{ and}\\
+f(1_\bool) \defeq& c_1.
+  \end{array}\]
+\end{itemize}
+
+If $A$ and $A'$ are types then $A+A'$ is their disjoint union.  If
+$a:A$ then there is a copy $\inl(a):A+A'$ and if $a':A'$ there is a
+copy $\inr(a'):A+A'$.
+If $C$ is a family on $A+A'$, $c_\inl:\Pi_{x:A}C(\inl(x))$ and $c_\inr:\Pi_{x':A'}C(\inr(x'))$ then $f:\Pi_{z:A+A'}C(z)$ with defining equations
+  \[\left\{\begin{array}{rll} 
+f(\inl(x))\defeq& c_\inl(x)&\mbox{ for } x:A \mbox{ and}\\
+f(\inr(x'))\defeq& c_\inr(x')&\mbox{ for } x':A'\\
+\end{array}\right.\]
+
+We can define the disjoint union of two types $A,B:\UU$ as
+\[A + B \defeq \Sigma_{x:\bool}F(x)\]
+where $F : \bool \to \UU$ is
+defined as $F(0_\bool) \defeq A$ and $F(1_\bool)\defeq B$. The
+injections can be defined as:
+\begin{align*}
+& \inl :  A \to A+B\\
+& \inl(a) \defeq (0_\bool,a)
+& \inr :  B \to A+B\\
+& \inr(b) \defeq (1_\bool,b)
+\end{align*}
+
+\textbf{Todo:} Derive eliminator.
+
+Clearly, using $+$, $0$ and $1$ we can define all finite types.
+
+Our technique to derive $+$ from $\Sigma$ can also be used to derive
+$\times$ form $\Pi$ namely given $A,B:\UU$ we can define 
+\[ A \times B \defeq \Pi_{x:\bool}F(x)\]
+where $F$ is defined as for $+$ above. The projections can be derived
+by applications to $0_\bool$ and $1_\bool$. However, the general
+eliminator requires the principle of functional extensionality which
+we haven't introduced yet. Hence there are two ways to derive $A\times
+B$ : either as a non-dependent $\Sigma$-type or as a special case of
+$\Pi$ where the domain is boolean. 
+
+\section{The identity type on a type}
+\label{sec:identity-types}
+
+If $A:\UU$ is a type and $a,a':A$ then $a =_A a'$ is the identity type on $A$.  
+In constructive intensional type theory objects in this type are
+intended to represent proofs of the proposition that $a$ and $a'$ are
+identical.  So, in particular there is an object $\refl{a}: a =_A a'$ whenever $a:A$.  In Homotopy Type Theory, when $A$ is understood as a space and $a,a'$ are understood as points of the space the type $Id_A(a,a')$ is to be understood as the type of paths from the point $a$ to the point $a'$.
+
+We now give two rules for defining functions on paths, both of which are useful.  Given the other rules of our type theory, when suitably understood, each rule can be derived from the other. 
+
+\begin{description}
+\item[Martin-L\"{o}f Rule:] Let $Path_A$ be the type $\Sigma_{x,x':A}Id_A(x,x')$, let $C$ be a family on $Path_A$ and let $c:\Pi_{x:A}C(x,x,\refl{x})$.  Then we have $f:\Pi_{u:Path_A}C(u)$ with defining equation
+  \[ f(x,x,\refl{x})\defeq c(x)\mbox{ for } x:A.\]
+\item[Paulin-Mohring Rule:] If $a:A$ let $Path_A(a)$ be the type $\Sigma_{y:A}Id_A(a,y)$, let $C$ be a family on $Path_A(a)$ and let $c:C(a,\refl{a})$. Then we have\\ $f:\Pi_{u:Path_A(a)}C(u)$ with defining equation
+    \[ f(a,\refl{a})\defeq c.\]
+\end{description}
+
+\textbf{TODO:} Explain the meaning of these.
+
+We are going to use the Paulin-Mohring rule to show that $=$ is an
+equivalence relation. Assuming a type $A$ we show that there is a function
+$p^{-1} : b = a$ given $p : a = b$ using the family $b = a$ and
+the defining equation
+\[ (\refl{a})^{-1} = \refl{a} \]
+Similarily we can show transitivity: assume there is $p : a = b$ and
+we want to derive $p \ct - : b = c \to a = b$ by
+\[ p \ct \refl{b} \defeq p.\]
+Since we already have the constructor $\refl{}$ we have shown that $=_A$
+is an equivalence relation. 
+
+
+\textbf{Todo:} Derive transport and ap.
+
+\section{Inductive types}
+\label{sec:inductive-types}
+
+The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
+  \[ 0:\nat\]
+and
+  \[ \mbox{ from $n:\nat$ infer $\suc(n):\nat$}.\]
+The inductive character of $\nat$ is captured by the, so called, elimination and computation rules for $\nat$.  We prefer to call them the rules for defining a function on $\nat$ by primitive recursion. 
+
+If $C$ is a family on $\nat$, $c_0:C(0)$ and $c_\suc(x,y):C(\suc(x))$ for $x:\nat,y:C(x)$ then we may introduce a function $f:\Pi_{x:\nat}C(x)$ by the following primitive recursion defining equations; one defining equation for each introduction rule.
+
+  \[\left\{\begin{array}{rl}
+f(0)\defeq& c_0, \mbox{ and}\\
+f(\suc(x))\defeq& c_\suc(x,f(x))\mbox{ for } x:\nat
+  \end{array}\right.\]
+<<<<<<< HEAD
+It is sometimes convenient to make explicit the dependence of $f$ on $c_0$ and $c_\suc$ by using the primitive recursive operator $\rec_\nat$.  So we have
+  \[ \rec_\nat(x,c_0,c_\suc):C(x)\mbox{ for } x:\nat\]
+with the defining equations
+
+
+}%%%%%%%%%%%%% end of scope of local macros
+=======
+
+As an example we define the function $m + - : \nat \to \nat$ for any
+$m : \nat$ using the constant family $\nat$ and the defining
+equations:
+\begin{eqnarray*}
+  m + 0 & \defeq & m \\
+  m + \suc(n) & \defeq & \suc(m + n)
+\end{eqnarray*}
+By abstracting $m$ using the rules for $\Pi$-types we can derive the
+binary function $- + - : \nat \to (\nat \to \nat)$.
+
+We use the same principle to prove properties by induction. While it
+is trivial to see that $+$ is right neutral because $m + 0 \jdeq m$
+we need to prove that $0 + m =_\Nat m$ is inhabited. We do this by
+constructing a function $f : \Pi_{n : \nat} 0 + n =_\Nat n$. 
+The family is $0 + n =_\Nat n$ over $n : \Nat$. In the case
+for $0$ we have that $0 + 0 \jdeq 0$ hence we can define
+\[ f(0) \defeq \refl{0} \]
+For $\suc(n)$ we have that $0 + \suc(n) \jdeq \suc(0 +
+n)$ hence we define 
+\[ f(\suc(n)) \defeq \mapfunc{\suc}(f(n)). \]
+In this case we can show that the type is propositional, that is that
+all elements of the type are equal. In this situation we may omit any
+explicit reference to proof objects and the type-theoretic proof does
+not look different to a conventional one in predicate logic. 
+
+\section{Propositions as types}
+\label{sec:pat}
+
+\textbf{TODO:} A discussion of how to speak type formers in English, e.g.\ ``for all $x:A$, something or other'' means ``$\prd{x:A}$ something or other'', and so on.
+For now, we will use ``$A$ or $B$'' to mean $A+B$ and ``there exists $x:A$'' to mean $\sm{x:A}$, but perhaps we should mention that we will refine it further later on.
+For instance, sometimes classical statements involving these connectives need to be interpreted differently (see \S\ref{sec:prop-subset} and wherever we discuss $(-1)$-truncations).
+
+% Local Variables:
+% TeX-master: "main"
+% End:

@@ -4,7 +4,11 @@
 %%% Definitional equality (used infix) %%%
 \newcommand{\jdeq}{\equiv}      % An equality judgment
 \let\judgeq\jdeq
-\newcommand{\defeq}{\coloneqq}  % An equality currently being defined
+%\newcommand{\defeq}{\coloneqq}  % An equality currently being defined
+
+\newcommand{\defeq}{\vcentcolon\equiv}  % An equality currently being defined
+
+
 
 %%% Dependent products %%%
 %% Call the macro like \prd{x,y:A}{p:x=y} with any number of
@@ -32,6 +36,7 @@
 \def\sm#1{{\textstyle\sum}(#1)\@ifnextchar\bgroup{\;\sm}{,\ }}
 \makeatother
 \let\setof\Set    % from package 'braket', write \setof{ x:A | P(x) }.
+\newcommand{\pair}{\ensuremath{\mathsf{pair}}\xspace}
 
 %%% Identity types %%%
 \newcommand{\id}[3][]{\ensuremath{#2 =_{#1} #3}\xspace}
@@ -52,6 +57,7 @@
 \newcommand{\transf}[1]{\ensuremath{{#1}_{*}}\xspace} % Without argument
 \newcommand{\transport}[2]{\ensuremath{\mathsf{transport}_{*} \: {#2}\xspace}}
 \newcommand{\transfib}[3]{\ensuremath{\mathsf{transport}^{#1}(#2,#3)\xspace}}
+\newcommand{\transfibf}[1]{\ensuremath{\mathsf{transport}^{#1}\xspace}}
 
 %%% Map on paths %%%
 \newcommand{\mapfunc}[1]{\ensuremath{\mathsf{ap}_{#1}}\xspace} % Without argument
@@ -72,15 +78,36 @@
 %%% Equivalence types %%%
 \newcommand{\eqv}[2]{\ensuremath{#1 \simeq #2}\xspace}
 \newcommand{\eqvspaced}[2]{\ensuremath{#1 \;\simeq\; #2}\xspace}
+\newcommand{\isequiv}{\ensuremath{\mathsf{isequiv}}}
+\newcommand{\qinv}{\ensuremath{\mathsf{qinv}}}
+\newcommand{\ishae}{\ensuremath{\mathsf{ishae}}}
+\newcommand{\linv}{\ensuremath{\mathsf{linv}}}
+\newcommand{\rinv}{\ensuremath{\mathsf{rinv}}}
+\newcommand{\biinv}{\ensuremath{\mathsf{biinv}}}
 
 %%% Universe types %%%
-\newcommand{\type}{\ensuremath{\mathsf{Type}}\xspace}
+%\newcommand{\type}{\ensuremath{\mathsf{Type}}\xspace}
+\newcommand{\UU}{\ensuremath{\mathcal{U}}\xspace}
+\let\bbU\UU
+\let\type\UU
+% Universes of truncated types
+\newcommand{\typele}[1]{\ensuremath{{#1}\text-\mathsf{Type}}\xspace}
+\newcommand{\typeleU}[1]{\ensuremath{{#1}\text-\mathsf{Type}_\UU}\xspace}
+\newcommand{\typelep}[1]{\ensuremath{{(#1)}\text-\mathsf{Type}}\xspace}
+\newcommand{\typelepU}[1]{\ensuremath{{(#1)}\text-\mathsf{Type}_\UU}\xspace}
+\let\ntype\typele
+\let\ntypeU\typeleU
+\let\ntypep\typelep
+\let\ntypepU\typelepU
 \renewcommand{\set}{\ensuremath{\mathsf{Set}}\xspace}
+\newcommand{\setU}{\ensuremath{\mathsf{Set}_\UU}\xspace}
 \newcommand{\prop}{\ensuremath{\mathsf{Prop}}\xspace}
+\newcommand{\propU}{\ensuremath{\mathsf{Prop}_\UU}\xspace}
 
 %%% Truncation levels
 \newcommand{\iscontr}{\ensuremath{\mathsf{isContr}}}
 \newcommand{\isset}{\ensuremath{\mathsf{isSet}}}
+\newcommand{\isprop}{\ensuremath{\mathsf{isProp}}}
 
 %%% Projections out of dependent sums %%%
 \newcommand{\proj}[1]{\ensuremath{\mathsf{pr}_{#1}}\xspace}
@@ -91,16 +118,36 @@
 %%% Bracket/squash/truncation types %%%
 % \newcommand{\brck}[1]{\textsf{mere}(#1)}
 % \newcommand{\Brck}[1]{\textsf{mere}\Big(#1\Big)}
-\newcommand{\trunc}[2]{\tau_{#1}(#2)}
-\newcommand{\Trunc}[2]{\tau_{#1}\Big(#2\Big)}
-\newcommand{\truncf}[1]{\tau_{#1}}
+% \newcommand{\trunc}[2]{\tau_{#1}(#2)}
+% \newcommand{\Trunc}[2]{\tau_{#1}\Big(#2\Big)}
+% \newcommand{\truncf}[1]{\tau_{#1}}
+\newcommand{\trunc}[2]{\Vert #2\Vert_{#1}}
+\newcommand{\Trunc}[2]{\Big\Vert #2\Big\Vert_{#1}}
+\newcommand{\truncf}[1]{\Vert -\Vert_{#1}}
+\newcommand{\tproj}[2]{|#2|_{#1}}
+\newcommand{\tprojf}[1]{|-|_{#1}}
 \def\pizero{\trunc0}
-\newcommand{\brck}[1]{\trunc0{#1}}
-\newcommand{\Brck}[1]{\Trunc0{#1}}
+%\newcommand{\brck}[1]{\trunc{-1}{#1}}
+%\newcommand{\Brck}[1]{\Trunc{-1}{#1}}
+%\newcommand{\bproj}[1]{\tproj{-1}{#1}}
+%\newcommand{\bprojf}{\tprojf{-1}}
+
+\newcommand{\brck}[1]{\trunc{}{#1}}
+\newcommand{\Brck}[1]{\Trunc{}{#1}}
+\newcommand{\bproj}[1]{\tproj{}{#1}}
+\newcommand{\bprojf}{\tprojf{}}
+
+
+%
+%%% The empty type
+\newcommand{\emptyt}{\ensuremath{\mathbf{0}}\xspace}
 
 %%% The unit type
 \newcommand{\unit}{\ensuremath{\mathbf{1}}\xspace}
 \newcommand{\ttt}{\ensuremath{\star}\xspace}
+
+%%% The two-element type
+\newcommand{\bool}{\ensuremath{\mathbf{2}}\xspace}
 
 %%% Injections into binary sums
 \newcommand{\inl}{\ensuremath{\mathsf{inl}}\xspace}
@@ -112,7 +159,7 @@
 %\newcommand{\blank}{(?)}
 
 %%% Some decorations
-\newcommand{\bbU}{\ensuremath{\mathbb{U}}\xspace}
+%\newcommand{\bbU}{\ensuremath{\mathbb{U}}\xspace}
 \newcommand{\bbB}{\ensuremath{\mathbb{B}}\xspace}
 \newcommand{\bbP}{\ensuremath{\mathbb{P}}\xspace}
 
@@ -131,11 +178,14 @@
 \let\nat\N
 \let\Nat\N
 \newcommand{\suc}{\mathsf{succ}}
+\newcommand{\rec}{\mathsf{succ}}
 
 %%% Function extensionality
 \newcommand{\funext}{\mathsf{funext}}
 \newcommand{\happly}{\mathsf{happly}}
 
+%%% A naturality lemma
+\newcommand{\com}[3]{\mathtt{swap}_{#1,#2}(#3)}
 
 
 %%%% THEOREM ENVIRONMENTS %%%%

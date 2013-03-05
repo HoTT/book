@@ -1,10 +1,16 @@
-\newcommand\ua[1]{\ensuremath{\mathsf{ua}} \: #1}
+\newcommand\ua{\ensuremath{\mathsf{ua}}}
 \newcommand{\fcomp}{\circ}
+\newcommand{\code}{\ensuremath{\mathsf{code}}}
+\newcommand{\encode}{\ensuremath{\mathsf{encode}}\xspace}
+\newcommand{\decode}{\ensuremath{\mathsf{decode}}\xspace}
+\newcommand{\pairpath}{\ensuremath{\mathsf{pair}^{\mathord{=}}}\xspace}
+% \newcommand{\projpath}[1]{\proj{#1}^{\mathord{=}}}
+\newcommand{\projpath}[1]{\ensuremath{\apfunc{\proj{#1}}}\xspace}
 
 \section{The identity structure of specific types}
 \label{sec:computational}
 
-In Chapter~\ref{cha:introduction} we introduced many ways to form new types: cartesian products, disjoint unions, dependent products, dependent sums, etc.
+In Chapter~\ref{cha:typetheory}, we introduced many ways to form new types: cartesian products, disjoint unions, dependent products, dependent sums, etc.
 In the previous sections of this chapter, we have seen that \emph{all} types in homotopy type theory behave like spaces or higher groupoids.
 Our goal in this section is to make explicit how this higher structure behaves, for particular types defined as in Chapter~\ref{cha:typetheory}.
 
@@ -16,7 +22,7 @@ For instance, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and 
 In more traditional language, two ordered pairs are equal just when their components are equal (but the equivalence~\eqref{eq:prodeqv} says rather more than this).
 The higher structure of the identity types can also be expressed in terms of these equivalences; for instance, concatenating two equalities between pairs corresponds to pairwise concatenation.
 
-Similarly, when a dependent type $P:A\to\type$ is built up fiberwise using the type forming rules from Chapter~\ref{cha:typetheory}, the operation $\transfib{P}{p}{-}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
+Similarly, when a type family $P:A\to\type$ is built up fiberwise using the type forming rules from Chapter~\ref{cha:typetheory}, the operation $\transfib{P}{p}{-}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
 For instance, if $P(x) \jdeq B(x)\times C(x)$, then we have
 \[\transfib{P}{p}{(b,c)} = \left(\transfib{B}{p}{b},\transfib{C}{p}{c}\right).\]
 
@@ -30,6 +36,7 @@ In this section, we will state and prove theorems of this sort for all the basic
   The characterizations for particular types to be discussed in this chapter are then theorems which we have to discover and prove.
   An alternative presentation of type theory might take these characterizations as \emph{definitions} of the identity types (by induction over the construction of types), with the inductive $J$-rule then being provable.
   While such a type theory has not yet been made precise except in very simple cases, it is still helpful to think of the rules to be presented in this section as ``computation'' rules for ``evaluating'' identity types, transport, and function application.
+  It is important to note, though, that not \emph{all} identity types can be ``defined'' by induction over the construction of types; counterexamples include most nontrivial higher inductive types (see Chapters~\ref{cha:hits} and~\ref{cha:homotopy}).
 \end{rmk}
 
 \subsection{Cartesian product types}
@@ -78,49 +85,48 @@ space are pairs of paths.
   Now by induction on $p$ and $q$, we may assume they are reflexivities $\refl a$ and $\refl b$, in which case~\eqref{eq:path-prod-inverse} yields $\refl{(a,b)}$ and then~\eqref{eq:path-prod} returns us to $(\refl a,\refl b)\jdeq (p,q)\jdeq s$.
 \end{proof}
 
-From a programming perspective, it's useful to unpack this equivalence into the following data:
+In particular, we have shown that~\eqref{eq:path-prod} has an inverse~\eqref{eq:path-prod-inverse}, which we may denote by
+\[
+\pairpath : (\id{\proj{1}(x)}{\proj{1}(y)}) \times (\id{\proj{1}(x)}{\proj{1}(y)}) \;\to\; {(\id x y)}
+\]
+Note that a special case of this yields the $\eta$-equivalence rule for products: $z = (\proj1(z),\proj2(z))$.
 
-\newcommand{\pairpath}{\mathsf{pair}^{\mathord{=}}}
-\newcommand{\projpath}[1]{\proj{#1}^{\mathord{=}}}
+It can be helpful to view \pairpath as a \emph{constructor} or \emph{introduction rule} for $\id x y$, analogous to the ``pairing'' constructor of $A\times B$ itself, which introduces the pair $(a,b)$ given $a:A$ and $b:B$.
+From this perspective, the two components of~\eqref{eq:path-prod}:
+\begin{align*}
+  \projpath{1} &: (\id{x}{y}) \to (\id{\proj{1}(x)}{\proj{1} (y)})\\
+  \projpath{2} &: (\id{x}{y}) \to (\id{\proj{2}(x)}{\proj{2} (y)})
+\end{align*}
+are \emph{elimination} rules.
+Similarly, the two homotopies which witness~\eqref{eq:path-prod-inverse} as quasi-inverse to~\eqref{eq:path-prod} consist respectively, of \emph{computation} or \emph{$\beta$-reduction} rules:
+\begin{align*}
+  {\projpath{1}{(\pairpath(p, q)})}
+  &= %_{(\id{\proj{1} x}{\proj{1} y})}
+  {p} \qquad\text{for } p:\id{\proj{1} x}{\proj{1} y} \\
+  {\projpath{2}{(\pairpath(p,q)})}
+  &= %_{(\id{\proj{2} x}{\proj{2} y})}
+  {q} \qquad\text{for } q:\id{\proj{2} x}{\proj{2} y}
+\end{align*}
+and an \emph{$\eta$-equivalence} rule:
+\[
+\id{r}{\pairpath(\projpath{1} (r), \projpath{2} (r)) }
+\qquad\text{for } r : \id[A \times B] x y
+\]
 
-\begin{itemize}
-\item An introduction rule for $(\id[A \times B]{x}{y})$ (this is~\eqref{eq:path-prod-inverse})
-  \[
-  \pairpath : (\id{\proj{1} x}{\proj{1} y}) \times (\id{\proj{1} x}{\proj{1} y}) \to {(\id x y)}
-  \]
-\item Elimination rules (these are the two components of~\eqref{eq:path-prod}):
-  \begin{align*}
-    \projpath{1} &: (\id{x}{y}) \to (\id{\proj{1} x}{\proj{1} y})\\
-    \projpath{2} &: (\id{x}{y}) \to (\id{\proj{2} x}{\proj{2} y})
-  \end{align*}
-\item $\beta$-reduction:
-  \begin{align*}
-    {\projpath{1}{(\pairpath(p, q)})}
-    &=_{(\id{\proj{1} x}{\proj{1} y})}
-    {p} \\
-    {\projpath{2}{(\pairpath(p,q)})}
-    &=_{(\id{\proj{2} x}{\proj{2} y})}
-    {q}
-  \end{align*}
-\item $\eta$-equivalence: For any $r : \id[A \times B] x y$
-  \[
-  \id{r}{\pairpath(\projpath{1} (r), \projpath{2} (r)) }
-  \]
-\end{itemize}
-Moreover, reflexivity, inverses, and composition are defined componentwise:
+We can also characterize the reflexivity, inverses, and composition of $A\times B$ componentwise:
 \begin{align*}
   {\refl{(z : A \times B)}}
   &= {\pairpath (\refl{\proj{1} z},\refl{\proj{2} z})} \\
   {\opp{p}}
-  &= {\pairpath \big(\opp{(\projpath{1} p)},\, \opp{(\projpath{2} p)}\big)} \\
+  &= {\pairpath \big(\opp{\projpath{1} (p)},\, \opp{\projpath{2} (p)}\big)} \\
   {{p \ct q}}
-  &= {\pairpath \big({\projpath{1} p} \ct {\projpath{1} q},\,{\projpath{2} p} \ct {\projpath{2} q}\big)}
+  &= {\pairpath \big({\projpath{1} (p)} \ct {\projpath{1} (q)},\,{\projpath{2} (p)} \ct {\projpath{2} (q)}\big)}
 \end{align*}
-The same is true for all the higher groupoid structure considered in \S\ref{sec:equality}.
+The same is true for the rest of the higher groupoid structure considered in \S\ref{sec:equality}.
 All of these equations can be derived by using path induction on the given paths and then returning reflexivity.  
 
-We now consider transport in a product of dependent types.
-Given dependent types $ A, B : Z \to \type$, we abusively write $A\times B:Z\to \type$ for the dependent type defined by $(A\times B)(z) \defeq A(z) \times B(z)$.
+We now consider transport in a pointwise product of type families.
+Given type families $ A, B : Z \to \type$, we abusively write $A\times B:Z\to \type$ for the type family defined by $(A\times B)(z) \defeq A(z) \times B(z)$.
 Now given $p : \id[Z]{z}{w}$ and $x : A(z) \times B(z)$, we can transport $x$ along $p$ to obtain an element of $A(w)\times B(w)$.
 
 \begin{thm}\label{thm:trans-prod}
@@ -138,7 +144,8 @@ Now given $p : \id[Z]{z}{w}$ and $x : A(z) \times B(z)$, we can transport $x$ al
     \transfib{A}{p}{\proj{1}x}&\jdeq \proj1x\\
     \transfib{A}{p}{\proj{2}x}&\jdeq \proj2x.
   \end{align*}
-  Thus, it remains to show $x = (\proj1 x, \proj2x)$, which follows by induction on $x$.
+  Thus, it remains to show $x = (\proj1 x, \proj2x)$.
+  But this is $\eta$-equivalence, which as we remarked above follows from \autoref{thm:path-prod}.
 \end{proof}
 
 Finally, we consider the functoriality of $\apfunc{}$ under cartesian products.
@@ -161,8 +168,8 @@ Suppose given types $A,B,A',B'$ and functions $g:A\to A'$ and $h:B\to B'$; then 
 \subsection{$\Sigma$-types}
 \label{sec:compute-sigma}
 
-Let $A$ be a type and $B:A\to\type$ a dependent type.
-Recall that the $\Sigma$-type, or pair type, $\sm{x:A} B(x)$ is a generalization of the cartesian product type.
+Let $A$ be a type and $B:A\to\type$ a type family.
+Recall that the $\Sigma$-type, or dependent pair type, $\sm{x:A} B(x)$ is a generalization of the cartesian product type.
 Thus, we expect its higher groupoid structure to also be a generalization of the previous section.
 In particular, its paths should be pairs of paths, but it takes a little thought to give the correct types of these paths.
 
@@ -176,22 +183,23 @@ The next theorem states that we can also reverse this process.
 Since it is a direct generalization of \autoref{thm:path-prod}, we will be more concise.
 
 \begin{thm}\label{thm:path-sigma}
-Suppose that $P:A\to\type$ is a dependent type over a type $A$ and let $w,w^\prime:\sm{x:A}P(x)$. Then there is an equivalence
+Suppose that $P:A\to\type$ is a type family over a type $A$ and let $w,w^\prime:\sm{x:A}P(x)$. Then there is an equivalence
 \begin{equation*}
 \eqvspaced{(w=w')}{\sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime)}.
 \end{equation*}
 \end{thm}
 
 \begin{proof}
-We define for any $w,w':\sm{x:A}P(x)$ a function $f(w,w')$ of type
+We define for any $w,w':\sm{x:A}P(x)$, a function
 \begin{equation*}
-(w=w')\to\sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime)
+f: (w=w') \;\to\; \sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime)
 \end{equation*}
-by path induction, with 
+by path induction, with
 \begin{equation*}
 f(w,w,\refl{w})\defeq(\refl{\proj{1}(w)},\refl{\proj{2}(w)}).
 \end{equation*}
-We want to show that $f$ is an isomorphism, so we can find a section $g(w,w')$ of $f(w,w')$ by finding a function $G(w,w')$ of type
+We want to show that $f$ is an equivalence.
+We can find a section $g(w,w')$ of $f(w,w')$ by finding a function $G(w,w')$ of type
 \begin{equation*}
 \prd{p:\proj 1(w)=\proj 1(w')}{q:\trans p{\proj 2(w)}=\proj 2(w')}\mathsf{hFiber}(f(w,w'),(p,q))
 \end{equation*}
@@ -206,10 +214,20 @@ G((x,u),(x,u),(\refl{x},\refl{u}))\defeq(\refl{(x,u)},\refl{(\refl{x},\refl{u})}
 This gives the function $g(w,w')\defeq\proj{1}\circ G(w,w')$ which is a section of $f(w,w')$ by construction. To show that there is a path $g(w,w',f(w,w',\alpha))=\alpha$ for any $\alpha:w=w'$ we use path induction on $\alpha$ and destruction on $w$. The result follows immediately.
 \end{proof}
 
-As for binary cartesian products, we can also compute the action of transport on $\Sigma$-types.
+As for cartesian products, we have $\eta$-equivalence as a special case.
+
+\begin{cor}\label{thm:eta-sigma}
+  For $z:\sm{x:A} P(x)$, we have $z = (\proj1(z),\proj2(z))$.
+\end{cor}
+\begin{proof}
+  We have $\refl{\proj1(z)} : \proj1(z) = \proj1(\proj1(z),\proj2(z))$, so by \autoref{thm:path-sigma} it will suffice to exhibit a path $\trans{(\refl{\proj1(z)})}{\proj2(z)} = \proj2(\proj1(z),\proj2(z))$.
+  But both sides are judgmentally equal to $\proj2(z)$.
+\end{proof}
+
+As we did for binary cartesian products, we can also compute the action of transport on $\Sigma$-types.
 
 \begin{thm}
-Suppose we have a dependent type $P:A\to\type$ and a dependent type $Q:\big(\sm{x:A} P(x)\big)\to\type$. Then we get the dependent type
+Suppose we have a type family $P:A\to\type$ and a type family $Q:\big(\sm{x:A} P(x)\big)\to\type$. Then we get the type family
 \begin{equation*}
 x:A\vdash \sm{u:P(x)} Q(x,u):\type
 \end{equation*}
@@ -224,7 +242,7 @@ The path $\mathsf{lift}(u,p)$ is defined in \autoref{thm:path_lifting}.
 Immediate by path induction.
 \end{proof}
 
-We leave it to the reader to state and prove generalizations of the other results from \S\ref{sec:compute-cartprod} (see \autoref{ex:ap-sigma}).
+We leave it to the reader to state and prove a generalization of \autoref{thm:ap-prod} (see \autoref{ex:ap-sigma}).
 
 
 \subsection{The unit type}
@@ -237,15 +255,15 @@ Trivial cases are sometimes important, so we mention briefly the case of the uni
 \end{thm}
 \begin{proof}
   A function $(x=y)\to\unit$ is easy to define by sending everything to \ttt.
-  Conversely, for any $x,y:\unit$ we may assume by induction that both $x$ and $y$ are \ttt, hence equal by definition.
-  This gives an element of $x=y$, hence a constant function $\unit\to(x=y)$.
+  Conversely, for any $x,y:\unit$ we may assume by induction that $x\jdeq \ttt\jdeq y$.
+  In this case we have $\refl{\ttt}:x=y$, yielding a constant function $\unit\to(x=y)$.
 
   To show that these are inverses, consider first an element $u:\unit$.
   We may assume that $u\jdeq\ttt$, but this is also the result of the composite $\unit \to (x=y)\to\unit$.
 
   On the other hand, suppose given $p:x=y$.
   By path induction, we may assume $x\jdeq y$ and $p$ is $\refl x$.
-  We may then assume that $x$ is \ttt, in which case the composite $(x=y) \to \unit\to(x=y)$ computes to $\refl x$, i.e.\ to $p$.
+  We may then assume that $x$ is \ttt, in which case the composite $(x=y) \to \unit\to(x=y)$ takes $p$ to $\refl x$, i.e.\ to $p$.
 \end{proof}
 
 In particular, any two elements of $\unit$ are equal.
@@ -256,7 +274,7 @@ The transport lemma for \unit is simply the transport lemma for constant type fa
 \subsection{$\Pi$-types}
 \label{sec:compute-pi}
 
-Given a type $A$ and a dependent type $B : A \to \type$, consider the dependent function type $\prd{x:A}B(x)$.
+Given a type $A$ and a type family $B : A \to \type$, consider the dependent function type $\prd{x:A}B(x)$.
 A path in $\prd{x:A} B(x)$ is given by a pointwise path:
 \begin{equation}
   \eqvspaced{(\id{f}{g})}{\prd{x:A} (\id[B(x)]{f(x)}{g(x)})}\label{eq:path-forall}
@@ -280,58 +298,49 @@ For the moment, therefore, we will assume:
 We will see in later chapters that this axiom follows either from univalence (see \S\ref{sec:compute-universe} and Chapter~\ref{cha:univalence}) or from an interval type (see \S\ref{sec:interval}).
 Moreover, it should be more naturally built into a computational version of homotopy type theory, as envisioned in \autoref{rmk:computational-hope}.
 
-It is useful to break the equivalence~\eqref{eq:path-forall} into:
-
-\begin{itemize}
-\item An introduction rule for {(\id{f}{g})}, \emph{function extensionality}
-  \[
-  \funext : \big(\prd{x:A} (\id{f(x)}{g(x)})\big) \to {(\id{f}{g})}
-  \]
-\item An elimination rule: for all $f,g : \prd{x:A} B(x)$
-  \[
-  \happly : (\id{f}{g}) \to \prd{\alpha : \id{x}{y}} (\id{\transfib{B}{\alpha}{f(x)}}{g(y)})
-  \]
-  Note that this has a more general type than~\eqref{eq:happly}; the latter is recoverable when $\alpha$ is reflexivity.
-\item $\beta$-reduction: for any $h:\prd{x:A} (\id{f(x)}{g(x)})$,
-  \[
-  \begin{array}{l}
-  \id{\happly({\funext{(h)}},{\refl{x}})}{h(x)}
-  \end{array}
-  \]
-\item $\eta$-equivalence: For any $p: (\id f g)$,
-  \[
-  \id{p}{\funext (x \mapsto \happly(p,\refl{x}))}
-  \]
-\end{itemize}
+In particular,~\eqref{eq:happly} has a quasi-inverse
+\[
+\funext : \big(\prd{x:A} (\id{f(x)}{g(x)})\big) \to {(\id{f}{g})}
+\]
+which is also called ``function extensionaility''.
+As we did with $\pairpath$ in \S\ref{sec:compute-cartprod}, we can regard $\funext$ as an \emph{introduction rule} for the type $\id f g$.
+From this point of view, $\happly$ is the \emph{elimination rule}, while the homotopies witnessing $\funext$ as quasi-inverse to $\happly$ become a $\beta$-reduction rule
+\[
+\id{\happly({\funext{(h)}},x)}{h(x)} \qquad\text{for }h:\prd{x:A} (\id{f(x)}{g(x)})
+\]
+and an $\eta$-equivalence rule:
+\[
+\id{p}{\funext (x \mapsto \happly(p,{x}))} \qquad\text{for } p: (\id f g)
+\]
 %% FIXME: where do the rules for \alpha[\delta] go in this style?
 
 We can also compute the identity, inverses, and composition in $\Pi$-types; they are simply given by pointwise operations.
 \begin{align*}
 \refl{f} &= \funext(x \mapsto \refl{f(x)}) \\
-\opp{\alpha} &= \funext (x \mapsto \opp{(\happly \: {\alpha} \: {\refl x})})  \\
-{\alpha} \ct \beta &= \funext (x \mapsto {(\happly \: {\alpha} \: {\refl x}) \ct (\happly \: {\beta} \: {\refl x})})
+\opp{\alpha} &= \funext (x \mapsto \opp{\happly (\alpha)(x)})  \\
+{\alpha} \ct \beta &= \funext (x \mapsto {\happly({\alpha})(x) \ct \happly({\beta})(x)})
 \end{align*}
 
-Since the non-dependent function type $A\to B$ is a special case of the dependent function type $\prd{x:A} B(x)$ when $B$ is independent of $x$, all of the above applies essentially verbating in the non-dependent case as well.
+Since the non-dependent function type $A\to B$ is a special case of the dependent function type $\prd{x:A} B(x)$ when $B$ is independent of $x$, all of the above applies essentially verbatim in the non-dependent case as well.
 The rules for transport, however, are somewhat simpler in the non-dependent case.
-Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, dependent types $A,B:X\to \type$, and a function $f : A(x_1) \to B(x_1)$,  we have
-\begin{align*}
+Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, type families $A,B:X\to \type$, and a function $f : A(x_1) \to B(x_1)$,  we have
+\begin{align}\label{eq:transport-arrow}
   \transfib{A\to B}{p}{f} &=
   \; \Big(x \mapsto \transfib{B}{p}{f(\transfib{A}{\opp p}{x})}\Big)
-\end{align*}
-where $A\to B$ denotes abusively the dependent type $X\to \type$ defined by
+\end{align}
+where $A\to B$ denotes abusively the type family $X\to \type$ defined by
 \[(A\to B)(x) \defeq (A(x)\to B(x)).\]
-In other words, when we transport a function $f:A(x_1)\to B(x_1)$ along a path $p:x_1=x_2$, we obtain the function $A(x_2)\to B(x_2)$ which transports its argument backwards along $p$ (in the dependent type $A$), applies $f$, and then transports the result forwards along $p$ (in the dependent type $B$).
+In other words, when we transport a function $f:A(x_1)\to B(x_1)$ along a path $p:x_1=x_2$, we obtain the function $A(x_2)\to B(x_2)$ which transports its argument backwards along $p$ (in the type family $A$), applies $f$, and then transports the result forwards along $p$ (in the type family $B$).
 This can be proven easily by path induction.
 
 Transporting dependent functions is similar, but more complicated.
-Suppose given $X$ and $p$ as before, a dependent type $A:X\to \type$, and a doubly dependent type $B:\prd{x:X} (A(x)\to\type)$, and also a dependent function $f : \prd{a:A(x_1)} B(x_1,a)$.
+Suppose given $X$ and $p$ as before, type families $A:X\to \type$ and $B:\prd{x:X} (A(x)\to\type)$, and also a dependent function $f : \prd{a:A(x_1)} B(x_1,a)$.
 Then
 \begin{align*}
   \transfib{\Pi_A(B)}{p}{f} =
   \;\Big(x \mapsto \transfib{\hat{B}}{\opp{(\mathsf{lift}(x,\opp{p}))}}{f (\transfib{A}{\opp p}x)}\Big)
 \end{align*}
-where $\Pi_A(B)$ and $\hat{B}$ denote the dependent types
+where $\Pi_A(B)$ and $\hat{B}$ denote respectively the type families
 \[
 \begin{array}{rclcl}
 \Pi_A(B) &\defeq& \big(x\mapsto \prd{a:A(x)} B(x,a) \big) &:& X\to \type\\
@@ -345,49 +354,72 @@ The basic idea is just the same as for the non-dependent function type: we trans
 \subsection{The Universe}
 \label{sec:compute-universe}
 
-A path in $\type$ is given by univalence
+Given two types $A$ and $B$, we may consider them as elements of some universe type \type, and thereby form the identity type $\id[\type]AB$.
+As mentioned in the introduction, \emph{univalence} is the identification of $\id[\type]AB$ with the type $(\eqv AB)$ of equivalences from $A$ to $B$, which we described in \S\ref{sec:basics-equivalences}.
+We perform this identification by way of the following canonical function.
 
+\begin{lem}
+  For types $A,B:\type$, there is a function
+  \begin{equation}\label{eq:uidtoeqv}
+    \mathsf{idtoeqv} : (\id[\type]AB) \to (\eqv A B).
+  \end{equation}
+\end{lem}
+\begin{proof}
+  We could construct this directly by induction on equality, but the following description is more convenient.
+  Note that the identity function $\idfunc[\type]:\type\to\type$ may be regarded as a type family indexed by the universe \type; it assigns to each type $X:\type$ the type $X$ itself.
+  Thus, given a path $p:A =_\type B$, we have a transport function $\transf{p}:A \to B$.
+  We claim that $\transf{p}$ is an equivalence.
+  But by induction, it suffices to assume that $p$ is $\refl A$, in which case $\transf{p} \jdeq \idfunc[A]$, which is an equivalence by \autoref{eg:idequiv}.
+  Thus, we can define $\mathsf{idtoeqv}(p)$ to be $\transf{p}$ (together with the above proof that it is an equivalence).
+\end{proof}
+
+\begin{axiom}[Univalence]
+  For any $A,B:\type$, the function~\eqref{eq:uidtoeqv} is an equivalence.
+\end{axiom}
+
+Thus, we have
 \[
-\eqv{(\id[\type]{A}{B})}{\eqv A B}
+\eqv{(\id[\type]{A}{B})}{(\eqv A B)}
 \]
+As with function extensionality, the univalence axiom should eventually be built into a more computational version of homotopy type theory.
 
-Again it is useful to break this into 
+\begin{rmk}
+  It is important for the univalence axiom that we defined $\eqv AB$ using a ``good'' version of $\isequiv$ as described in \S\ref{sec:basics-equivalences}, rather than (say) as $\sm{f:A\to B} \qinv(f)$.
+\end{rmk}
 
-\newcommand\isequiv{\mathsf{isEquiv}}
+In particular, univalence means that \emph{equivalent types may be identified}.
+As we did in \S\ref{sec:compute-cartprod} and \S\ref{sec:compute-pi}, it is useful to break this equivalence into:
 
 \begin{itemize}
 \item An introduction rule for {(\id[\type]{A}{B})}:
   \[
-  \ua{} : {\eqv A B} \to (\id[\type]{A}{B})
+  \ua : ({\eqv A B}) \to (\id[\type]{A}{B})
   \]
-\item The elimination rule is transport at $X:\type \mapsto X$:
+\item The elimination rule, which is $\mathsf{idtoeqv}$:
   \[
-  \transport{X \mapsto X}{} : \id{A}{B} \to (A \to B)
+  \mathsf{idtoeqv} \jdeq \transfibf{X \mapsto X} : (\id{A}{B}) \to (\eqv A B)
   \]
 \item $\beta$-reduction: 
   \[
   \begin{array}{l}
-  \id{\transport{X \mapsto X} \: (\ua {(f, fIsEquiv)})}{f}
+  \transfib{X \mapsto X}{\ua(f)}{x} = f(x)
   \end{array}
   \]
-\item $\eta$-equivalence: For any $\alpha : \id A B$
+\item $\eta$-equivalence: For any $p : \id A B$
   \[
-  \id{\alpha}{\ua {(\transport{X \mapsto X}(\alpha) , \beta)}}
+  \id{p}{\ua(\transfibf{X \mapsto X}(p))}
   \]
-  where $\mathsf{transportIsEquiv} : \isequiv{\transport{X \mapsto X}(\alpha)}$ can be
-  defined by doing path induction on $\alpha$, at which point it
-  suffices to show that the identity function is an equivalence.  
 \end{itemize}
 
-Identity, inverses, and composition: (FIXME: pick a specific definition
-of equivalence?)
-\[
-\begin{array}{l}
-\refl{A} = \ua{\idfunc} \\
-\opp{\alpha} = \ua {(\transport {X \mapsto X} {\opp \alpha}, \mathsf{transportIsEquiv} \: (\opp \alpha))} \\ 
-{\alpha} \ct \beta = ? \\
-\end{array}
-\]
+We can also identify the reflexivity, inverses, and concatenation of equalities in the universe with the corresponding operations on equivalences:
+\begin{align*}
+  \refl{A} &= \ua(\idfunc[A]) \\
+  \opp{\ua(f)} &= \ua(f^{-1}) \\ 
+  \ua(f) \ct \ua(g) &= \ua(g\circ f)
+\end{align*}
+Proving these formally requires knowing how to invert and compose equivalences, which in turn requires having an actual definition of equivalences.
+Thus, we postpone them until Chapter~\ref{cha:equivalences}.
+
 
 \subsection{Identity Type}
 \label{sec:compute-paths}
@@ -421,10 +453,176 @@ Transport, when $A$ is dependent:
 \subsection{Coproducts}
 \label{sec:compute-coprod}
 
+So far, most of the type formers we have considered have been what are called \emph{negative}.
+Intuitively, this means that their elements are determined by their behavior under the elimination rules: a (dependent) pair is determined by its projections, and a (dependent) function is determined by its values.
+The identity types of negative types can almost always be characterized straightforwardly, along with all of their higher structure, as we have done in \S\S\ref{sec:compute-cartprod}--\ref{sec:compute-pi}.
+The universe is not exactly a negative type, but its identity types behave similarly: we have a straightforward characterization (univalence) and a description of the higher structure.
+Identity types themselves, of course, are a special case.
+
+We now consider our first example of a \emph{positive} type former.
+A positive type is one which is ``presented'' by certain constructors, with the universal property of a presentation being expressed by its elimination rule.
+(Categorically speaking, a positive type has a ``mapping out'' universal property, while a negative type has a ``mapping in'' universal property.)
+Because computing with presentations is, in general, an uncomputable problem, for positive types we cannot always expect a straightforward characterization of the identity type.
+However, in many particular cases, a characterization or partial characterization does exist, and can be obtained by the general method we describe here and in later sections.
+
+(Technically, our chosen presentation of cartesian products and $\Sigma$-types is also positive.
+However, because these types also admit a negative presentation which differs only slightly, their identity types have a direct characterization that does not require the method to be described here.)
+
+Consider the coproduct type $A+B$, which is ``presented'' by the injections $\inl:A\to A+B$ and $\inr:B\to A+B$.
+Intuitively, we expect that $A+B$ contains exact copies of $A$ and $B$ disjointly, so that we should have
+\begin{gather}
+  \eqv{(\inl(a_1)=\inl(a_2))}{(a_1=a_2)} \label{eq:inlinj}\\
+  \eqv{(\inr(b_1)=\inr(b_2))}{(b_1=b_2)}\\
+  \eqv{(\inl(a)= \inr(b))}{\emptyt} \label{eq:inlrdj}
+\end{gather}
+We prove this as follows.
+Fix an element $a_0:A$; our goal is to characterize the type family
+\[(x\mapsto (\inl(a)=x)) : A+B \to \type.\]
+In order to do this, we will define a type family $\code:A+B\to\type$ and show that $\prd{x:A+B} (\eqv{(\inl(a)=x)}{\code(x)})$.
+Since we want to conclude~\eqref{eq:inlinj} from this, we should have $\code(\inl(a)) = (a_0=a)$, and since we also want to conclude~\eqref{eq:inlrdj}, we should have $\code (\inr(b)) = \emptyt$.
+The essential insight is that we can use the elimination property of $A+B$ to \emph{define} $\code:A+B\to\type$ by these two equations:
+\begin{align*}
+  \code(\inl(a)) &\defeq (a_0=a)\\
+  \code(\inr(b)) &\defeq \emptyt
+\end{align*}
+We can now show:
+
+\begin{thm}\label{thm:path-coprod}
+  For all $x:A+B$ we have $\eqv{(\inl(a)=x)}{\code(x)}$.
+\end{thm}
+\begin{proof}
+  The key to the following proof is that we do it for all points $x$ together, enabling us to use the elimination principle for the coproduct.
+  We first define a function
+  \[ \encode : \prd{x:A+B}{p:\inl(a_0)=x} \code(x) \]
+  by transporting reflexivity along $p$:
+  \[ \encode(x,p) \defeq \transfib{\code}{p}{\refl{a_0}}. \]
+  Note that $\refl{a_0} : \code(\inl(a_0))$, since $\code(\inl(a_0))\jdeq (a_0=a_0)$ by definition of \code.
+  Next, we define a function
+  \[ \decode : \prd{x:A+B}{c:\code(x)} (\inl(a_0)=x) \]
+  To define $\decode(x,c)$, we may first use the elimination principle of $A+B$ to divide into cases based on whether $x$ is of the form $\inl(a)$ or the form $\inr(b)$.
+
+  In the first case, where $x\jdeq \inl(a)$, then $\code(x)\jdeq (a_0=a)$, so that $c$ is an identification between $a_0$ and $a$.
+  Thus, $\ap{\inl}{c}:(\inl(a_0)=\inl(a))$ so we can define this to be $\decode(\inl(a),c)$.
+
+  In the second case, where $x\jdeq \inr(b)$, then $\code(x)\jdeq \emptyt$, so that $c$ inhabits the empty type.
+  Thus, the elimination rule of $\emptyt$ yields a value for $\decode(\inr(b),c)$.
+
+  This completes the definition of \decode; we now show that $\encode(x,-)$ and $\decode(x,-)$ are quasi-inverses for all $x$.
+  On the one hand, suppose given $x:A+B$ and $p:\inl(a_0)=x$; we want to show $\decode(x,\encode(x,p))=p$.
+  But now by path induction (in the Paulin-Mohring style), we may assume that $x\jdeq\inl(a_0)$ and $p\jdeq \refl{\inl(a_0)}$.
+  In this case we have
+  \begin{align*}
+    \decode(x,\encode(x,p))
+    &\jdeq \decode(\inl(a_0),\encode(\inl(a_0),\refl{\inl(a_0)}))\\
+    &\jdeq \decode(\inl(a_0),\transfib{\code}{\refl{\inl(a_0)}}{\refl{a_0}})\\
+    &\jdeq \decode(\inl(a_0),\refl{a_0})\\
+    &\jdeq \ap{\inl}{\refl{a_0}}\\
+    &\jdeq \refl{\inl(a_0)}\\
+    &\jdeq p.
+  \end{align*}
+  On the other hand, suppose given $x:A+B$ and $c:\code(x)$; we want to show $\encode(x,\decode(x,c))=c$.
+  We may again divide into cases based on $x$.
+  If $x\jdeq\inl(a)$, then $c:a_0=a$ and $\decode(x,c)\jdeq \ap{\inl}{c}$, so that
+  \begin{align*}
+    \encode(x,\decode(x,c))
+    &\jdeq \transfib{\code}{\ap{\inl}{c}}{\refl{a_0}}\\
+    &= \transfib{a\mapsto (a_0=a)}{c}{\refl{a_0}}\\
+    &= \refl{a_0} \ct c\\
+    &= c.
+  \end{align*}
+  In the penultimate line, we have used \autoref{thm:path-paths}.
+  (Is the lemma we used in the second line stated anywhere?)
+\end{proof}
+
+Of course, there is a corresponding theorem if we fix $b_0:B$ instead of $a_0:A$.
+
+In particular, for any $a:A$ we have the function
+\[ \encode(a,-) : (\inl(a_0)=\inl(a)) \to (a_0=a).\]
+Traditionally, with identity types viewed as propositions, this is stated as ``$\inl$ is injective''.
+The homotopical version gives more information: the types $\inl(a_0)=\inl(a)$ and $a_0=a$ are actually equivalent.
+Similarly, for any $b:B$ we have
+\[ \encode(b,-) : (\inl(a_0)=\inr(b)) \to \emptyt \]
+which can be stated as ``$\inl(a_0)$ is not equal to $\inr(b)$'', i.e.\ the images of \inl and \inr are disjoint.
+
+As usual, we can also characterize the action of transport in coproduct types.
+Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, and type families $A,B:X\to\type$, we have
+\begin{align*}
+  \transfib{A+B}{p}{\inl(a)} &= \inl (\transfib{A}{p}{a})\\
+  \transfib{A+B}{p}{\inr(b)} &= \inr (\transfib{B}{p}{b})
+\end{align*}
+where as usual, $A+B$ denotes abusively the type family $x\mapsto A(x)+B(x)$.
+The proof is easy using path induction.
+
+
 \subsection{Natural numbers}
 \label{sec:compute-nat}
 
+The same technique we used for coproducts applies to the natural numbers, which are also a positive type.
+In this case the codes for identities are a type family
+\[\code:\N\to\N\to\type,\]
+defined by double recursion over \N as follows:
+\begin{align*}
+  \code(0,0) &= \unit\\
+  \code(\suc(m),0) &= \emptyt\\
+  \code(0,\suc(n)) &= \emptyt\\
+  \code(\suc(m),\suc(n)) &= \code(m,n).
+\end{align*}
+We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
+\begin{align*}
+  r(0) &= \ttt\\
+  r(\suc(n)) &= r(n).
+\end{align*}
 
+\begin{thm}\label{thm:path-nat}
+  For all $m,n:\N$ we have $\eqv{(m=n)}{\code(m,n)}$.
+\end{thm}
+\begin{proof}
+  We define
+  \[ \encode : \prd{m,n:\N} (m=n) \to \code(m,n) \]
+  by transporting, $\encode(m,n,p) \defeq \transfib{\code(m,-)}{p}{r(m)}$.
+  And we define
+  \[ \decode : \prd{m,n:\N} \code(m,n) \to (m=n) \]
+  by double induction on $m,n$.
+  When $m$ and $n$ are both $0$, we need a function $\unit \to (0=0)$, which we define to send everything to $\refl{0}$.
+  When $m$ is a successor and $n$ is $0$ or vice versa, the domain $\code(m,n)$ is \emptyt, so the eliminator for \emptyt suffices.
+  And when both are successors, we can define $\decode(\suc(m),\suc(n))$ to be the composite
+  \[ \code(\suc(m),\suc(n))\jdeq\code(m,n) \xrightarrow{\decode(m,n)} (m=n) \xrightarrow{\apfunc{\suc}} (\suc(m)=\suc(n)). \]
+  Next we show that $\encode(m,n)$ and $\decode(m,n)$ are quasi-inverses for all $m,n$.
+
+  On one hand, if we start with $p:m=n$, then by induction on $p$ it suffices to show $\decode(n,n,\encode(n,n,\refl{n}))=\refl{n}$.
+  But $\encode(n,n,\refl{n}) \jdeq r(n)$, so it suffices to show that $\decode(n,n,r(n)) =\refl{n}$.
+  We can prove this by induction on $n$.
+  If $n\jdeq 0$, then $\decode(0,0,r(0)) =\refl{0}$ by definition of \decode.
+  And in the case of a successor, by the inductive hypothesis we have $\decode(n,n,r(n)) = \refl{n}$, so it suffices to observe that $\apfunc{\suc}(\refl{n}) \jdeq \refl{\suc(n)}$.
+
+  On the other hand, if we start with $c:\code(m,n)$, then we proceed by double induction on $m$ and $n$.
+  If both are $0$, then $\decode(0,0,c) \jdeq \refl{0}$, while $\encode(0,0,\refl{0})\jdeq r(0) \jdeq \ttt$.
+  Thus, it suffices to recall from \S\ref{sec:compute-unit} that every inhabitant of $\unit$ is equal to \ttt.
+  If $m$ is $0$ but $n$ is a successor, or vice versa, then $c:\emptyt$, so we are done.
+  And in the case of two successors, we have
+  \begin{multline*}
+    \encode(\suc(m),\suc(n),\decode(\suc(m),\suc(n),c))\\
+    \begin{split}
+    &= \encode(\suc(m),\suc(n),\apfunc{\suc}(\decode(m,n,c)))\\
+    &= \transfib{\code(\suc(m),-)}{\apfunc{\suc}(\decode(m,n,c))}{r(\suc(m))}\\
+    &= \transfib{\code(\suc(m),\suc(-))}{\decode(m,n,c)}{r(\suc(m))}\\
+    &= \transfib{\code(m,-)}{\decode(m,n,c)}{r(m)}\\
+    &= \encode(m,n,\decode(m,n,c))\\
+    &= c
+  \end{split}
+  \end{multline*}
+  using the inductive hypothesis.
+\end{proof}
+
+In particular, we have
+\[ \encode(\suc(m),0) : (\suc(m)=0) \to \emptyt \]
+which shows that ``$0$ is not the successor of any natural number''.
+We also have the composite
+\[ (\suc(m)=\suc(n)) \xrightarrow{\encode} \code(\suc(m),\suc(n)) \jdeq \code(m,n) \xrightarrow{\decode} (m=n) \]
+which shows that the function $\suc$ is injective.
+
+We will study more general positive types in Chapters~\ref{cha:induction} and~\ref{cha:hits}.
+In Chapter~\ref{cha:homotopy} we will see that the same technique used here to characterize the identity types of coproducts and \nat can also be used to calculate homotopy groups of spheres.
 
 % \subsection{Higher Inductives}
 % \label{sec:compute-hits}

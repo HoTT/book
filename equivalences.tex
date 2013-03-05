@@ -1,34 +1,143 @@
-\newcommand{\com}[3]{\mathtt{swap}_{#1,#2}(#3)}
 \newcommand{\coh}[3]{\mathtt{coh} \; #1 \; #2 \; #3}
 
 \chapter{Equivalences}
 \label{cha:equivalences}
 
-\section{Equivalences and Homotopies}
+We now study in more detail the notion of \emph{equivalence of types} that was introduced briefly in \S\ref{sec:basics-equivalences}.
+Specifically, we will give several different ways to define a type $\isequiv(f)$ having the properties mentioned there.
+Recall that we wanted $\isequiv(f)$ to have the following properties:
+\begin{enumerate}
+\item $\qinv(f) \to \isequiv (f)$.\label{item:beb1}
+\item $\isequiv (f) \to \qinv(f)$.\label{item:beb2}
+\item $\isequiv(f)$ is a mere proposition.\label{item:beb3}
+\end{enumerate}
+Here $\qinv(f)$ denotes the type of quasi-inverses to $f$:
+\begin{equation*}
+  \sm{g:B\to A} \big((f \circ g \htpy \idfunc[B]) \times (g\circ f \htpy \idfunc[A])\big)
+\end{equation*}
+By function extensionality, it follows that $\qinv(f)$ is equivalent to the type
+\begin{equation*}
+  \sm{g:B\to A} \big((f \circ g = \idfunc[B]) \times (g\circ f = \idfunc[A])\big).
+\end{equation*}
+We will define three different types having properties~\ref{item:beb1}--\ref{item:beb3}, which we call
+\begin{itemize}
+\item contractible functions,
+\item half adjoint equivalences, and
+\item bi-invertible maps.
+\end{itemize}
+We will also show that all these types are equivalent.
+These names are intentionally somewhat clunky, because after we know that they are all equivalent and have properties~\ref{item:beb1}--\ref{item:beb3}, we will revert to saying simply ``equivalence'' without needing to specify which specific definition we choose.
+But for purposes of the comparisons in this chapter, we need different names for each definition, to disambiguate them in our proofs.
+
+
+\section{Contractible fibers}
+\label{sec:contrf}
+
+Our first definition is that $f$ is an equivalence if all its fibers are contractible.
+We have said previously that a type is \emph{contractible} if it is equivalent to \unit, but to use such a definition of ``contractible'' in defining ``equivalence'' would be circular.
+Thus, we use instead the following definition.
 
 \begin{defn}\label{defn:contractible}
   A type $A$ is \textbf{contractible}, or a \textbf{singleton}, if there is $a:A$, called the \textbf{center of contraction}, such that $a=x$ for all $x:A$.
 \end{defn}
 
-\begin{defn}\label{defn:equivalence}
-  A map $f:A\ra B$ is an {\em equivalence} if, for $y:B$, its {\em fiber}, $\setof{x:A | fx = y}$, is contractible.
-  We write $\eqv A B$ for the type of equivalences $A\ra B$.
-\end{defn}
+In other words, the type $\iscontr(A)$ is defined to be
+\[ \iscontr(A) \defeq \sm{a:A} \prd{x:A}(a=x). \]
+We observe some basic properties of contractible types.
 
-\begin{lem}\label{lem:eq-rel}
-The relation $\eqv A B$ is an equivalence relation on any universe $\bbU$:
-\begin{enumerate}
-\item For any type $A : \bbU$, we have $\eqv A A$
-\item For any types $A, B : \bbU$, we have $(\eqv A B) \to (\eqv B A)$.
-\item For any types $A, B, C : \bbU$, we have $(\eqv A B) \times (\eqv B C) \to (\eqv A C)$.
-\end{enumerate}
+\begin{lem}\label{thm:contr-paths}
+  For a type $A$, the following are equivalent.
+  \begin{enumerate}
+  \item $A$ is contractible.
+  \item $A$ is a mere proposition, and there is a point $a:A$.\label{item:contr-inhabited-prop}
+  \item $A$ is equivalent to \unit.\label{item:contr-eqv-unit}
+  \end{enumerate}
 \end{lem}
 \begin{proof}
-We can obtain a very concise proof using univalence. For example, in order to show symmetry we observe that by univalence, $\eqv {(\eqv A B)} {(A = B)}$ and of course also $\eqv {(\eqv B A)} {(B = A)}$. Thus it suffices to exhibit a function of type $(A = B) \to (B = A)$. However, this is trivial since we have already shown that equality is symmetric.
+  If $A$ is contractible, then it certainly has a point $a:A$ (the center of contraction), while for any $x,y:A$ we have $x=a=y$; thus $A$ is a mere proposition.
+  Conversely, if we have $a:A$ and $A$ is a mere proposition, then for any $x:A$ we have $x=a$; thus $A$ is contractible.
+  We leave the equivalence with~\ref{item:contr-eqv-unit} as an exercise.
 \end{proof}
-We remark that univalence is not necessary to prove the above lemma but it simplifies the proof considerably. For comparison, we have the following direct proof of reflexivity:
+
+\begin{lem}\label{thm:isprop-iscontr}
+  For any type $A$, the type $\iscontr(A)$ is a mere proposition.
+\end{lem}
+\begin{proof}
+  Suppose given $c,c':\iscontr(A)$.
+  We may assume $c\jdeq(a,p)$ and $c'\jdeq(a',p')$ for $a,a':A$ and $p:\prd{x:A} (a=x)$ and $p':\prd{x:A} (a'=x)$.
+  By the characterization of paths in $\Sigma$-types, to show $c=c'$ it suffices to exhibit $q:a=a'$ such that $\trans{q}{p}=p'$.
+
+  We choose $q\defeq p(a')$.
+  For the other equality, by function extensionality we must show that $(\trans q p)(x)=p'(x)$ for any $x:A$.
+  For this, it will suffice to show that for any $x,y:A$ and $u:x=y$ we have $u= \opp{p(x)} \ct p(y)$, since then we would have $(\trans q p)(x) = \opp{p(x)} \ct p(y) = p'(x)$.
+  But now we can invoke path induction to assume that $x\jdeq y$ and $u\jdeq \refl{x}$.
+  In this case our goal is to show that $\refl x = \opp{p(x)} \ct p(x)$, which is just the inversion law for paths.
+\end{proof}
+
+\begin{cor}\label{thm:contr-contr}
+  If $A$ is contractible, then so is $\iscontr(A)$.
+\end{cor}
+\begin{proof}
+  By \autoref{thm:isprop-iscontr} and \autoref{thm:contr-paths}\ref{item:contr-inhabited-prop}.
+\end{proof}
+
+\begin{lem}\label{thm:contr-forall}
+  If $P:A\to\type$ is a type family such that each $P(a)$ is contractible, then $\prd{x:A} P(x)$ is contractible.
+\end{lem}
+\begin{proof}
+  By \autoref{thm:isprop-forall}, $\prd{x:A} P(x)$ is a mere proposition since each $P(x)$ is.
+  But it also has an element, namely the function sending each $x:A$ to the center of contraction of $P(x)$.
+  Thus by \autoref{thm:contr-paths}\ref{item:contr-inhabited-prop}, $\prd{x:A} P(x)$ is contractible.
+\end{proof}
+
+(In fact, the statement of \autoref{thm:contr-forall} is equivalent to the function extensionality axiom.
+See Appendix~[?].)
+
+We are now ready to define maps with contractible fibers.
+
+\begin{defn}
+  The \textbf{fiber} of a map $f:A\to B$ over a point $y:B$ is $\setof{x:A | f(x) = y}$.
+\end{defn}
+
+In homotopy theory, this is what would be called the \emph{homotopy fiber} of $f$.
+
+\begin{defn}\label{defn:equivalence}
+  A map $f:A\ra B$ is \textbf{contractible} if for all $y:B$, the fiber $\setof{x:A | f(x) = y}$ is contractible.
+\end{defn}
+
+Thus, the type $\iscontr(f)$ is defined to be
+\begin{equation}
+  \iscontr(f) \defeq \prd{y:B} \iscontr (\setof{x:A | f(x) = y}).\label{eq:iscontrf}
+\end{equation}
+This terminology follows the general homotopy-theoretic practice of saying that a map has a certain property if all of its (homotopy) fibers have that property.
+In Chapter~\ref{cha:hlevels} we will learn to also call such a map \emph{$(-2)$-truncated}.
+
+For this definition,~\ref{item:beb2} and~\ref{item:beb3} are easy to show.
+
+\begin{lem}
+  For any $f:A\to B$ we have $\iscontr(f)\to\qinv(f)$.
+\end{lem}
+\begin{proof}
+  Suppose $c:\iscontr(f)$, and define $g:B\to A$ by $g(y)\defeq \proj1(\proj1(c(y)))$.
+  Note that this makes sense, since $c(y):\iscontr (\setof{x:A | f(x) = y})$, therefore $\proj1(c(y)):\setof{x:A | f(x) = y}$, and thus $\proj1(\proj1(c(y))) : A$.
+  Moreover, we have $\proj2(\proj1(c(y))) : f(g(y))=y$, yielding a homotopy $\beta:f\circ g\htpy \idfunc[B]$.
+  On the other hand, for any $a:A$ we have $(a,\refl{f(a)}) : \setof{x:A | f(x) = f(a)}$, hence
+  \[\proj2(c(f(a)))(a,\refl{f(a)}) : (g(f(a)),\beta(f(a))) = (a,\refl{f(a)}).\]
+  Projecting to the first component of this equality, we have $g(f(a))=a$, yielding a homotopy $\alpha:g\circ f \htpy \idfunc[A]$.
+\end{proof}
+
+\begin{lem}
+  For any $f$, the type $\iscontr(f)$ is a mere proposition.
+\end{lem}
+\begin{proof}
+  By \autoref{thm:isprop-iscontr}, each type $\iscontr (\setof{x:A | f(x) = y})$ is a mere proposition.
+  Thus, by \autoref{thm:isprop-forall}, so is~\eqref{eq:iscontrf}.
+\end{proof}
+
+However, it is slightly tricky to prove that even the identity map satisfies this definition.
+
 \begin{lem}\label{lem:id-map}
-For each type $A$, the identity map $\idfunc[A]\defeq \lambda_{x:A}x :A\ra A$ is an equivalence.
+For each type $A$, the identity map $\idfunc[A]\defeq \lambda_{x:A}x :A\ra A$ is contractible.
 \end{lem}
 \begin{proof}
   Let $a:A$ and let $\{a\}_A\defeq \setof{ x:A | x=a }$ be its fiber with respect to $\idfunc[A]$.
@@ -41,103 +150,56 @@ For each type $A$, the identity map $\idfunc[A]\defeq \lambda_{x:A}x :A\ra A$ is
   Thus $\{ a\}_A$ is contractible, as desired.
 \end{proof}
 
-\begin{defn}\label{defn:homotopy-between-functions}
-  A \textbf{homotopy, $f\sim f'$} between maps $f,f':A\ra B$ is a function $h:\prd{x:A} (f(x)=f'(x))$.
-\end{defn}
-
-\begin{lem}\label{lem:homotopy-props}\ 
-\begin{enumerate}
-\item $\sim$ is an equivalence relation on each function type $A\ra B$.
-  That is, we have terms of types
-  \begin{gather*}
-    \prd{f:A\to B} (f\sim f)\\
-    \prd{f,g:A\to B} (f\sim g) \to (g\sim f)\\
-    \prd{f,g,h:A\to B} (f\sim g) \to (g\sim h) \to (f\sim h).
-  \end{gather*}
-\item If $f:A\ra B$ then $f\circ \idfunc[A]\sim f\sim \idfunc[B]\circ f$.
-\item If $f:A\ra B, g:B\ra C$ and $h:C\ra D$ then $h\circ (g\circ f)\;\sim\; (h\circ g)\circ f$.
-\end{enumerate}
-\end{lem}
-
-\begin{lem}\label{lem:hom-nat}
-(Naturality of homotopies) Let $h : f \sim g$ be a homotopy between $f,g : A \to B$. For any path $p : \id[A]{x}{y}$, the following diagram commutes:
-\begin{align*}
-\xymatrix{
-fx \ar[r]^{fp} \ar[d]_{hx} & fy \ar[d]^{hy} \\
-gx \ar[r]_{gp} & gy
-}
-\end{align*}
-The higher path witnessing this will be denoted by $h(p)$.
-\end{lem}
-
-\begin{cor}\label{cor:hom-fg}
-Let $h : P \sim \idfunc[A]$ be a homotopy, with $f : A \to A$. Then for any $x : A$ we have \[ h(fx) = f(hx) \] The above path will be denoted by $\com{h}{P}{x}$.
-\end{cor}
-\begin{proof}
-By naturality of $h$ the following diagram commutes:
-\begin{align*}
-\xymatrix{
-ffx \ar[r]^{f(hx)} \ar[d]_{h(fx)} & fx \ar[d]^{hx} \\
-fx \ar[r]_{hx} & x
-}
-\end{align*}
-Thus $h(fx) = f(hx)$ as desired.
-\end{proof}
-
-%% TODO: This should probably be folded into wherever we discuss function extensionality, so that $(f\sim g)\eqv (f=g)$.
+To show that contractible maps satisfy condition~\ref{item:beb1}, we will go by way of a different notion of equivalence.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Bijections and Isomorphisms}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\begin{defn} \label{defn:isos}
-Let $f:A\ra B$.
-\begin{enumerate}
-\item $f$ is a {\em bijection} if it is both injective and surjective, where
-\begin{itemize}
-\item $f$ is {\em injective} if $\forall_{x,x':A}\; \; fx=fx'\;\ra\; x=x'$,
-\item $f$ is {\em surjective} if $\forall_{y:B}\exists_{x:A}\;\; fx=y$,
-\end{itemize}
-\item $f$ is {\em an isomorphism} if it has $g:B\ra A$ that is both a left and a right
-inverse where,
-\begin{itemize} \item $g:B\ra A$ is a {\em left/right inverse} to $f$ if 
-$g\circ f\sim \idfunc[A]$/$f\circ g\sim \idfunc[B]$.
-\end{itemize}
-\item $f$ is {\em (left/right)-invertible} if it has a (left/right) inverse.
-\item $f$ is a {\em weak isomorphism} if it is both left invertible and right invertible.
-\item We write $A\cong B$ if there is an isomorphism $A\ra B$, and $A\cong_w B$ if there is a weak isomorphism $A\to B$.
-\end{enumerate}
-\end{defn}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \section{Bijections and Isomorphisms}
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-\begin{thm}\label{thm:isos-id-and-composition} $\;$
-\begin{enumerate}
-\item $f:A\ra B$ is a surjection iff it is right-invertible.
-\item If $f:A\ra B$ is left-invertible then it is injective.
-\item $\idfunc[A]:A\ra A$ is an isomorphism.
-\item If $f:A\ra B$ and $g:B\ra C$ are isomorphisms then so is $g\circ f:A\ra C$.
-\end{enumerate}
-\end{thm}
-\begin{proof} Routine
-\end{proof}
-\begin{thm}\label{thm:bijections-isos}
-The following are logically equivalent for $f:A\ra B$.
-\begin{enumerate}
-\item $f$ is a bijection.
-\item $\forall_{y:B}\exists_{x:A}\;\; (fx=y\;\wedge \forall_{x':A}\;\; (fx'=y\;\ra\; x=x'))$.\footnote{One could consider calling this notion ``bijection`` and the other one ``weak bijection``, to match the terminology for isomorphism and weak isomorphism.}
-\item $f$ is an isomorphism.
-\item $f$ is a weak isomorphism.
-\end{enumerate}
-\end{thm}
-\begin{proof}
-The proof of this proposition in type theory can be done by proving the implications $(i)\ra (ii)\ra (iii)\ra (iv)\ra (i)$.  $(i)\ra (ii)$ and $(iii)\ra (i)$ are the same as in set theory.  The proof that $(ii)\ra (iii)$ requires, given $(ii)$, the proof of the existence of a function $g$ inverse to $f$.  In set theory this uses the fact that functions are defined to be total single-valued relations.  Instead, in type theory the proof of the existence of $g$
-uses the non-dependent version of the type theoretic axiom of choice.  This axiom holds in the propositions as types interpretation of logic because of the strong form of the existential quantifier.  For $(iv)\ra (i)$ let $f$ be both left and right invertible.  By (i) and (ii) of Theorem~\ref{thm:isos-id-and-composition}, $f$ is both injective and surjective and hence a bijection.  
-\end{proof}
-\newpage
+% \begin{defn} \label{defn:isos}
+% Let $f:A\ra B$.
+% \begin{enumerate}
+% \item $f$ is a {\em bijection} if it is both injective and surjective, where
+% \begin{itemize}
+% \item $f$ is {\em injective} if $\forall_{x,x':A}\; \; fx=fx'\;\ra\; x=x'$,
+% \item $f$ is {\em surjective} if $\forall_{y:B}\exists_{x:A}\;\; fx=y$,
+% \end{itemize}
+% \item $f$ is {\em an isomorphism} if it has $g:B\ra A$ that is both a left and a right
+% inverse where,
+% \item $f$ is a {\em weak isomorphism} if it is both left invertible and right invertible.
+% \item We write $A\cong B$ if there is an isomorphism $A\ra B$, and $A\cong_w B$ if there is a weak isomorphism $A\to B$.
+% \end{enumerate}
+% \end{defn}
+
+% \begin{thm}\label{thm:isos-id-and-composition} $\;$
+% \begin{enumerate}
+% \item $f:A\ra B$ is a surjection iff it is right-invertible.
+% \item If $f:A\ra B$ is left-invertible then it is injective.
+% \item $\idfunc[A]:A\ra A$ is an isomorphism.
+% \item If $f:A\ra B$ and $g:B\ra C$ are isomorphisms then so is $g\circ f:A\ra C$.
+% \end{enumerate}
+% \end{thm}
+% \begin{proof} Routine
+% \end{proof}
+% \begin{thm}\label{thm:bijections-isos}
+% The following are logically equivalent for $f:A\ra B$.
+% \begin{enumerate}
+% \item $f$ is a bijection.
+% \item $\forall_{y:B}\exists_{x:A}\;\; (fx=y\;\wedge \forall_{x':A}\;\; (fx'=y\;\ra\; x=x'))$.\footnote{One could consider calling this notion ``bijection`` and the other one ``weak bijection``, to match the terminology for isomorphism and weak isomorphism.}
+% \item $f$ is an isomorphism.
+% \item $f$ is a weak isomorphism.
+% \end{enumerate}
+% \end{thm}
+% \begin{proof}
+% The proof of this proposition in type theory can be done by proving the implications $(i)\ra (ii)\ra (iii)\ra (iv)\ra (i)$.  $(i)\ra (ii)$ and $(iii)\ra (i)$ are the same as in set theory.  The proof that $(ii)\ra (iii)$ requires, given $(ii)$, the proof of the existence of a function $g$ inverse to $f$.  In set theory this uses the fact that functions are defined to be total single-valued relations.  Instead, in type theory the proof of the existence of $g$
+% uses the non-dependent version of the type theoretic axiom of choice.  This axiom holds in the propositions as types interpretation of logic because of the strong form of the existential quantifier.  For $(iv)\ra (i)$ let $f$ be both left and right invertible.  By (i) and (ii) of Theorem~\ref{thm:isos-id-and-composition}, $f$ is both injective and surjective and hence a bijection.  
+% \end{proof}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Adjoint  Isomorphisms}
+\section{Half Adjoint Equivalences}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\comment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %In order to define the notion of an adjoint isomorphism we need the following definition.
@@ -146,42 +208,171 @@ uses the non-dependent version of the type theoretic axiom of choice.  This axio
 %\end{defn}
 %}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{defn} A function $f:A\ra B$ is an {\em adjoint isomorphism} if there are $g:B\ra A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \circ g = \idfunc[B]$ such that there exists a path
-  \[\tau : \forall_{x:A}\;\map{f}{\eta x} = \epsilon(fx)\]
-We write $A\cong^f_a B$ if there is an adjoint isomorphism $A\ra B$.
+The idea of this definition is that in order to make $\qinv(f)$ better behaved, we need to add additional higher ``coherence data''.
+\emph{A priori}, we might expect to have to add infinitely many data at all higher levels of homotopy.
+Fortunately, it turns out that a single additional datum suffices.
+
+\begin{defn}
+  A function $f:A\ra B$ is a \textbf{half adjoint equivalence} if there are $g:B\ra A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \circ g = \idfunc[B]$ such that there exists a path
+  \[\tau : \prd{x:A} \map{f}{\eta x} = \epsilon(fx)\]
+% We write $A\cong^f_a B$ if there is an adjoint isomorphism $A\ra B$.
 \end{defn}
-We note that in the above definition, the coherence condition relating $\eta$ and $\epsilon$ only involves $f$. There is an analogous coherence condition involving $g$:
-  \[\upsilon : \forall_{y:B}\; \map{g}{\epsilon y} = \eta(gy)\]
-We write $A\cong^g_a B$ for the notion of adjoint isomorphism which uses the above condition instead. Fortunately, it turns out each of the conditions implies the other one:
+Thus we have a type $\ishae(f)$, defined to be
+\begin{equation*}
+  \sm{g:B\to A}{\eta: g \circ f = \idfunc[A]}{\epsilon:f \circ g = \idfunc[B]} \prd{x:A} \map{f}{\eta x} = \epsilon(fx) .
+\end{equation*}
+Note that in the above definition, the coherence condition relating $\eta$ and $\epsilon$ only involves $f$.
+We might consider instead an analogous coherence condition involving $g$:
+\[\upsilon : \prd{y:B} \map{g}{\epsilon y} = \eta(gy)\]
+% We write $A\cong^g_a B$ for the notion of adjoint isomorphism which uses the above condition instead.
+Fortunately, it turns out each of the conditions implies the other one:
 
 \begin{lem}\label{lem:coh-equiv}
-For $f : A \to B$, $g:B\ra A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \circ g = \idfunc[B]$, the following conditions are equivalent:
+For $f : A \to B$, $g:B\ra A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \circ g = \idfunc[B]$, the following conditions are logically equivalent:
 \begin{itemize}
-\item $\forall_{x:A}\;\map{f}{\eta x} = \epsilon(fx)$
-\item $\forall_{y:B}\; \map{g}{\epsilon y} = \eta(gy)$
+\item $\prd{x:A} \map{f}{\eta x} = \epsilon(fx)$
+\item $\prd{y:B} \map{g}{\epsilon y} = \eta(gy)$
 \end{itemize}
 \end{lem}
 \begin{proof}
-It suffices to show one direction; the other one is obtained by swapping $A/B$, $f/g$, and $\eta/\epsilon$. Let $\tau : \forall_{x:A}\;\map{f}{\eta x} = \epsilon(fx)$. Fix $y : B$. Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram :
+  It suffices to show one direction; the other one is obtained by swapping $A/B$, $f/g$, and $\eta/\epsilon$.
+  Let $\tau : \prd{x:A}\;\map{f}{\eta x} = \epsilon(fx)$.
+  Fix $y : B$.
+  Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram :
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{g(\epsilon (fgy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
+  \xymatrix{gfgfgy \ar^-{gfg(\epsilon y)}[r] \ar_{g(\epsilon (fgy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
 Using $\tau(gy)$ gives us
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{gf(\eta (gy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
+  \xymatrix{gfgfgy \ar^-{gfg(\epsilon y)}[r] \ar_{gf(\eta (gy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
-Since $\eta$ commutes with $f \circ g$, we have
+Using the commutativity of $\eta$ with $f \circ g$ (\autoref{cor:hom-fg}), we have
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{\eta (gfgy)}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
+  \xymatrix{gfgfgy \ar^-{gfg(\epsilon y)}[r] \ar_{\eta (gfgy)}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
 However, by naturality of $\eta$ we also have
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{gfgfgy \ar^{gfg(\epsilon y)}[r] \ar_{\eta (gfgy)}[d] & gfgy \ar^{\eta(gy)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy 
+  \xymatrix{gfgfgy \ar^-{gfg(\epsilon y)}[r] \ar_{\eta (gfgy)}[d] & gfgy \ar^{\eta(gy)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy 
   }\]
-Thus we have $g(\epsilon y) = \eta(g y)$ as desired.
+Thus, canceling all but the right-hand homotopy, we have $g(\epsilon y) = \eta(g y)$ as desired.
 \end{proof}
 
-Now we want to show that the various forms of equivalence introduced are in fact equivalent. The following definition and lemmas will be useful.
+However, it is important that we do not include \emph{both} of these data in the definition of $\ishae (f)$ (whence the name ``\emph{half} adjoint equivalence'').
+If we did, it would not turn out to be a mere proposition.
+(On the other hand, we could recover a mere proposition by including both 2-dimensional coherence paths and also \emph{one} additional 3-dimensional coherence path, of the two possibilities at that level.
+In general, homotopy theory suggests that we will get a well-behaved type if we cut off after an odd number of coherences.)
+
+Of course, it is obvious that we have $\ishae(f) \to\qinv(f)$: simply forget the coherence datum.
+The other direction is a version of a standard argument from homotopy theory and category theory.
+
+\begin{thm}\label{thm:equiv-iso-adj}
+  For any $f:A\to B$ we have $\qinv(f)\to\ishae(f)$.
+\end{thm}
+\begin{proof}
+Suppose that $(g,\eta,\varepsilon)$ is a quasi-inverse for $f$. We have to provide
+a quadruple $(g',\eta',\varepsilon',c)$ witnessing that $f$ is a half adjoint equivalence. To
+define $g'$ and $\eta'$, we can just make the obvious choice by setting $g'
+\defeq g$ and $\eta'\defeq \eta$. However, in the definition of $\varepsilon'$ we
+need start worrying about the construction of $c$, so we cannot just follow our nose
+and take $\varepsilon'$ to be $\varepsilon$. Instead, we take
+\begin{equation*}
+\varepsilon'(b) \defeq (\varepsilon(b)\ct \ap{f}{\eta(g(b))})\ct \opp{\varepsilon(f(g(b)))}
+\end{equation*}
+Now we need to find
+\begin{equation*}
+c(a):(\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))})\ct \opp{\varepsilon(f(g(f(a))))}=\ap{f}{\eta(a)}
+\end{equation*}
+Note first that by \autoref{cor:hom-fg}, we have 
+%$\eta(g(f(a)))\ct\eta(a)=\ap{g}{\ap{f}{\eta(a)}}\ct\eta(a)$ and hence it follows that
+$\eta(g(f(a)))=\ap{g}{\ap{f}{\eta(a)}}$. Therefore, we can apply
+\autoref{lem:htpy_natural} to compute
+\begin{align*}
+\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))}
+& = \varepsilon(f(a))\ct \ap{f}{\ap{g}{\ap{f}{\eta(a)}}}\\
+& = \ap{f}{\eta(a)}\ct\varepsilon(f(g(f(a))))
+\end{align*}
+from which we get the desired path $c(a)$.
+\end{proof}
+
+Now we want to show that $\eqv{\iscontr(f)}{\ishae(f)}$.
+Since $\iscontr(f)$ satisfies conditions~\ref{item:beb2} and~\ref{item:beb3} while $\ishae(f)$ satisfies conditions~\ref{item:beb1} and~\ref{item:beb3}, this will imply that in fact both satisfy all three conditions.
+
+\begin{thm}\label{thm:equiv-contr-hae}
+  For any $f:A\to B$ we have $\eqv{\iscontr(f)}{\ishae(f)}$.
+\end{thm}
+
+We give two proofs of this theorem.
+The first is a high-level argument obtained by repeatedly interchanging $\Sigma$- and $\Pi$-types; the second is more computational.
+
+\begin{proof}
+  We will make heavy use of the fact that all type formers respect equivalences.
+  For instance, if $P,Q:A\to\type$ and for all $x:A$ we have $\eqv{P(x)}{Q(x)}$, it follows that
+  \begin{align*}
+    \sm{x:A}P(x) &\;\simeq\; \sm{x:A}Q(x)\mathrlap{\qquad\text{and}}\\
+    \prd{x:A}P(x) &\;\simeq\; \prd{x:A}Q(x).
+  \end{align*}
+  Similarly, given $P:B\to\type$ and an equivalence $f:\eqv A B$, we have
+  \begin{align}
+    \sm{x:A}P(fx) &\;\simeq\; \sm{y:B}P(y)\mathrlap{\qquad\text{and}}\label{eq:sigma-baseequiv}\\
+    \prd{x:A}P(fx) &\;\simeq\; \prd{y:B}P(y).\label{eq:pi-baseequiv}
+  \end{align}
+  These facts follow immediately from function extensionality and univalence, but can also be proven more directly.
+  A direct proof is perhaps to be preferred in the long run, since it has more explicit computational content, but for our purposes here this does not matter.
+
+  We will construct a chain of equivalences whose composite yields the desired result.
+  We begin by applying \autoref{thm:ttac} twice, once by way of~\eqref{eq:sigma-baseequiv}.
+  \begin{align*}
+    \iscontr(f)
+    &\jdeq \prod_{b:B} \; \sum_{c:\sum_{a:A}(fa=b)}\; \prod_{d:\sum_{a:A}(fa=b)} (c=d)\\
+    &\simeq \sum_{k:\prod_{b:B}\sum_{a:A} (fa=b)} \;\prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} (k(b)=d)\\
+    &\simeq \sum_{k:\sum_{g:B\to A}\;\prod_{b:B} (fgb=b)} \;\prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((\proj1 k(b),\proj2 k(b))=d)\\
+    &\simeq \sum_{g:B\to A} \; \sum_{\epsilon:\prod_{b:B} (fgb=b)} \;\prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((gb,\epsilon b)=d).
+    % &\simeq \sum_{k:\prod_{b:B}\sum_{a:A} (fa=b)} \;\prod_{b:B}\;\prod_{a:A}\; \prod_{\gamma:fa=b} (kb = (a,\gamma))\\
+    % &\simeq \sum_{k:\prod_{b:B}\sum_{a:A} (fa=b)} \;\prod_{b:B}\;\prod_{a:A}\; \prod_{\gamma:fa=b} (kb = (a,\gamma))\\
+  \end{align*}
+  The equivalence in the last line uses an easy-to-prove ``associativity'' of dependent pair types:
+  \[\sum_{x:X} \; \sum_{y:Y(x)} Z(x,y) \;\simeq\; \sum_{w:\sum_{x:X} Y(x)} Z(w).\]
+  Thus, to show that $\iscontr(f)$ is equivalent to
+  \begin{equation*}
+    \ishae(f) \jdeq \sum_{g:B\to A} \;\sum_{\eta: g \circ f \htpy \idfunc[A]} \; \sum_{\epsilon:f \circ g \htpy \idfunc[B]} \;
+    \prod_{x:A} (\map{f}{\eta x} = \epsilon(fx)),
+  \end{equation*}
+  it will suffice to fix $g:B\to A$ and $\epsilon:g\circ f \htpy \idfunc[A]$, and show that
+  \begin{equation}\label{eq:ech-part2}
+    \prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((gb,\epsilon b)=d)
+    \;\simeq \;
+    \sum_{\eta: g \circ f \htpy \idfunc[A]} \;
+    \prod_{x:A} (\map{f}{\eta x} = \epsilon(fx)).
+  \end{equation}
+  We have used an evident commutativity between unrelated $\Sigma$-types to switch the order of $\eta$ and $\epsilon$ in $\ishae(f)$.
+  Now, using the universal properties~\eqref{eq:sigma-lump} and~\eqref{eq:path-lump} of $\Sigma$-types and identity types, along with a analogous commutativity for unrelated $\Pi$-types, we have
+  \begin{align*}
+    \prod_{b:B} \;\prod_{d:\sum_{a:A}(fa=b)} ((gb,\epsilon b)=d)
+    &\simeq \prod_{b:B} \;\prod_{a:A} \;\prod_{\gamma:fa=b} ((gb,\epsilon b)= (a,\gamma))\\
+    &\simeq \prod_{a:A} \;\prod_{b:B} \;\prod_{\gamma:fa=b} ((gb,\epsilon b)= (a,\gamma))\\
+    &\simeq \prod_{a:A}  ((gfa,\epsilon (fa))= (a,\refl {fa})).
+  \end{align*}
+  The equality $((gfa,\epsilon (fa))= (a,\refl a))$ is in $\sm{x:A} (fx = fa)$.
+  Thus, by the identification of paths in $\Sigma$-types, and \autoref{thm:ttac} again, we have
+  \begin{align*}
+    \prod_{a:A}  ((gfa,\epsilon (fa))= (a,\refl {fa}))
+    &\simeq \prod_{a:A}\; \sum_{\alpha:gfa = a} (\trans{\alpha}{\epsilon(fa)} = \refl{fa})\\
+    &\simeq \sum_{\eta:\prod_{a:A} (gfa = a)} \; \prod_{a:A} (\trans{\eta(a)}{\epsilon(fa)} = \refl{fa})
+  \end{align*}
+  Recalling our goal~\eqref{eq:ech-part2}, we see that it will suffice to fix ${\eta: g \circ f \htpy \idfunc[A]}$ and $a:A$, and show that
+  \begin{equation}
+    \label{eq:ech-part3}
+    (\trans{(\eta a)}{\epsilon(fa)} = \refl{fa})
+    \;\simeq\;
+    (\map{f}{\eta a} = \epsilon(fa)).
+  \end{equation}
+  Now the transport along $\eta a : gfa = a$ on the left-hand side takes place with respect to the type family $x\mapsto (fx=fa)$.
+  Thus, by [TODO: the pullback transport lemma] and \autoref{thm:path-paths}, we have
+  \[\trans{(\eta a)}{\epsilon(fa)} = \opp{\ap f {\eta a}} \ct \epsilon(fa).\]
+  But clearly $\opp{\ap f {\eta a}} \ct \epsilon(fa) = \refl{fa}$ if and only if $\map{f}{\eta a} = \epsilon(fa)$, and it is easy to show that this logical equivalence is actually an equivalence, yielding~\eqref{eq:ech-part3}.
+\end{proof}
+
+For the second proof, the following definition and lemmas will be useful.
 
 \begin{defn}
 For $f : A \to B$, $g : B \to A$, and $\eta : g \circ f \sim \idfunc[A]$, we denote
@@ -205,7 +396,7 @@ We use the known interactions between function types, $\Sigma$-types, identity t
 \end{proof}
 
 \begin{cor}\label{lem:higher-hom}
-For any adjoint isomorphism $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ and any $p : \id[A]{x}{x'}$ the following diagram commutes:
+For any half adjoint equivalence $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ and any $p : \id[A]{x}{x'}$ the following diagram commutes:
 \begin{align*}
 \xymatrix{
 f(\eta x') \ar[dd]_{\tau x'} \ar[r]^{\mathit{via \;} \eta(p) \;\;\;\;\; \; \;\;\;\;\;\;} & f(\opp{gf(p)} \ct \eta x \ct p) \ar[d] \\
@@ -225,7 +416,7 @@ TODO
 \end{proof}
 
 \begin{lem}\label{lem:coh-fg}
-For any adjoint isomorphism $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ the following diagram commutes for each $x : A$:
+For any half adjoint equivalence $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ the following diagram commutes for each $x : A$:
 
 \begin{align*}
 \xymatrix{
@@ -249,43 +440,15 @@ gf(\eta (g y))}
 TODO
 \end{proof}
 
-We can now establish equivalence among the various equivalences encountered thus far.
-
-\begin{thm}\label{thm:equivs-equiv}
-For any types $A, B$, we have 
-\begin{align*}
-(A = B) & \simeq (A \simeq B) \\
-       & \simeq (A\cong^f_a B) \\
-       & \simeq (A\cong^g_a B) \\
-       & \simeq (A \cong_w B) \\
-       & \simeq (B \cong_w A) \\
-        & \simeq (B\cong^g_a A) \\
-        & \simeq (B\cong^f_a A) \\
-        & \simeq (B \simeq A) \\
-        & \simeq (B = A)
-\end{align*}
-\end{thm}
-
-\begin{proof}
-It suffices to exhibit isomorphisms among the various types.
-\begin{description}
-\item [$\mathit{0)} \; (A = B) \cong (B = A)$]
-Basic properties of paths.
-
-\item[$\mathit{1)} \; (A = B) \cong (A \simeq B)$]
-Univalence.
-
-\item[$\mathit{2)} \; (B = A) \cong (B \simeq A)$]
-Follows from $\mathit{2)}$ by swapping $A$ and $B$.
-
-\item[$\mathit{3)} \; (A \simeq B) \cong (A \cong^f_a B)$] We proceed in 4 steps:
+\begin{proof}[Second proof of \autoref{thm:equiv-contr-hae}]
+Fix $f:A\to B$; we proceed in 4 steps:
 \begin{enumerate}
-\item Define a function $F : (A \simeq B) \to (A \cong^f_a B)$. Fix a function $f : A \to B$ and a proof $P(y) := (c(y), h(y))$ that every homotopy fiber of $f$ is contractible.
+\item Define a function $F : \iscontr(f) \to \ishae(f)$. Fix a proof $P(y) \jdeq (c(y), h(y))$ that every homotopy fiber of $f$ is contractible.
 We define an inverse mapping $g : B \to A$ by mapping each $y : B$ to the center of contraction of the h-fiber at $y$:
 \[ g(y) \defeq \proj{1}(c(y)) \]
 We can thus define the transformation $\epsilon$ by mapping $y$ to the witness that $g(y)$ indeed belongs to the h-fiber at $y$:
 \[ \epsilon(y) \defeq \proj{2}(c(y)) \]
-To define $\eta$ and $\tau$, by Lemma~\ref{lem:hfib} we have a family of equivalences $E(y,p,p')$ witnessing
+To define $\eta$ and $\tau$, by \autoref{lem:hfib} we have a family of equivalences $E(y,p,p')$ witnessing
 \[ \big( p = p' \big) \simeq \big( \sm{\gamma : \proj{1}(p) = \proj{1}(p')} f\gamma \; \ct \; \proj{2}(p') = \proj{2}(p) \big) \]
 for paths in the h-fiber at $y$. A special case arises when $y \defeq fx$ and $p' \defeq (x,\refl{fx})$. In this case,
 $E(fx,p,(x,\refl{fx}))$ witnesses the equivalence
@@ -296,20 +459,20 @@ The concatenation with identity path is clearly redundant and we have
 & \big( \sm{\gamma : \proj{1}(p) = x} f\gamma = \proj{2}(p) \big)
 \end{align*}
 Let $E'(p,x)$ denote the above equivalence, defined in the obvious way by concatenation.
-\medskip
 
-We can then define $\eta$ and $\tau$ (roughly) by constructing a path from $(gfx,\epsilon(fx))$ to $(x,\refl{fx})$ in the h-fiber at $fx$. More precisely, we put
+We can now define $\eta$ and $\tau$ (roughly) by constructing a path from $(gfx,\epsilon(fx))$ to $(x,\refl{fx})$ in the h-fiber at $fx$. More precisely, we put
 \begin{align*}
 \eta(x) & \defeq \proj{1} (\chi(x)) \\
 \tau(x) & \defeq \proj{2} (\chi(x))
 \end{align*}
 where
-\begin{align*} \chi(x) \defeq E'(c(fx), x) \; (E(fx, c(fx), (x,\refl{fx})) \; (h(fx)(x, \refl{fx}))) \end{align*} \\
+\begin{align*} \chi(x) \defeq E'(c(fx), x) \; (E(fx, c(fx), (x,\refl{fx})) \; (h(fx)(x, \refl{fx}))) \end{align*}
 
-
-\item Define a function $G : (A \cong^f_a B) \to (A \simeq B)$. Fix an adjoint isomorphism $(f,g,\eta,\epsilon,\tau)$. We want to show that every homotopy fiber of $f$ is contractible. Fix $y : B$. As our center of contraction for $\mathtt{hfiber} \; f \;y$ we put 
+\item Define a function $G : \ishae(f) \to \iscontr(f)$. Fix $(g,\eta,\epsilon,\tau): \ishae(f)$. We want to show that every homotopy fiber of $f$ is contractible. Fix $y : B$. As our center of contraction for $\mathtt{hfiber} \; f \;y$ we put 
 \[c(y) \defeq (gy, \epsilon y)\]
-Now take any $p : \mathtt{hfiber} \; f \;y$. We want to construct a path $h(y,p) : c(y) = p$. According to Lemma \ref{lem:hfib}, it suffices to give a path $\gamma(y,p) : \id{gy}{\proj{1}(p)}$ for which we have a path $\theta(y,p) : f(\gamma(y,p)) \ct \proj{2}(p) = \epsilon y$. We put $\gamma(y,p) \defeq {\opp{g(\proj{2}(p))}} \ct {\eta (\proj{1}(p))}$. Then we have 
+Now take any $p : \mathtt{hfiber} \; f \;y$. We want to construct a path $h(y,p) : c(y) = p$.
+According to \autoref{lem:hfib}, it suffices to give a path $\gamma(y,p) : \id{gy}{\proj{1}(p)}$ for which we have a path $\theta(y,p) : f(\gamma(y,p)) \ct \proj{2}(p) = \epsilon y$. We put $\gamma(y,p) \defeq {\opp{g(\proj{2}(p))}} \ct {\eta (\proj{1}(p))}$.
+Then we have 
 \begin{align*}
 f(\gamma(y,p)) \ct \proj{2}(p) & = \opp{fg(\proj{2}(p))} \ct {f (\eta(\proj{1}(p)))} \ct \proj{2}(p) \\
 & = \opp{fg(\proj{2}(p))} \ct {\epsilon(f(\proj{1}(p)))} \ct \proj{2}(p) \\
@@ -318,14 +481,17 @@ f(\gamma(y,p)) \ct \proj{2}(p) & = \opp{fg(\proj{2}(p))} \ct {f (\eta(\proj{1}(p
 where the second equality follows by $\tau(\proj{1}(p))$ and the third equality follows by the naturality of $\epsilon$. We let $\theta(y,p)$ be the path obtained by concatenating the above chain of equalities and put 
 \begin{align*}
  h(y,p) \defeq \opp{E(y,c(y),p)} (\gamma(y,p), \theta(y,p))
-\end{align*} \\
+\end{align*}
 
+\item Show that $G \circ F \sim \idfunc[\iscontr(f)]$. Fix a proof $P$ that each homotopy fiber of $f$ is contractible; it suffices to prove that $P = G(F(P))$ in the type $\prd{y:B} \iscontr (\mathtt{hfiber \;} f \; y)$.
+  However, this type is contractible.
+  For by $P$, each $\mathtt{hfiber} \; f \; y$ is contractible, while $\iscontr$ and $\Pi$ preserve contractibility by \autoref{thm:contr-contr} and \autoref{thm:contr-forall} respectively.
+  Thus we have $P = G(F(P))$, as desired.
 
-\item Show that $G \circ F \sim \idfunc[\eqv A B]$. Fix a function $f : A \to B$ and a proof $P$ that each homotopy fiber of $f$ is contractible. Obviously $G(F(f,P)) \equiv (f,P')$ for some $P'$. Thus, it suffices to prove that $P = P'$ in the type $\prd{y:B} \mathtt{iscontr \;} (\mathtt{hfiber \;} f \; y)$. However, this type is contractible: by $P$ (and also $P'$), each $\mathtt{hfiber} \; f \; y$ is contractible. Finally, $\mathtt{iscontr \;}$ and $\Pi$ preserve contractibility\footnote{There should be a note on this somewhere in the Basics chapter}. Thus we have $P = P'$ as desired. \\
-
-
-
-\item Show that $F \circ G \sim \idfunc[A \cong_a^f B]$. Fix an adjoint isomorphism $(f,g,\eta,\epsilon,\tau)$. Using definitional $\eta$-expansion for functions, we have \[F(G(f,g,\eta,\epsilon,\tau)) \equiv (f, g, \eta', \epsilon, \tau')\] for some $\eta'$ and $\tau'$. It thus suffices to show that for each $x : A$, we have $(n'x,\tau' x) = (nx,\tau x)$ in the type $\sm{\gamma : gfx = x} f\gamma = \epsilon(fx)$, i.e., in $\coh{g}{f}{\eta} \; x$. Fix $x : A$. It is easy to see that
+\item Show that $F \circ G \sim \idfunc[\ishae(f)]$.
+  Fix $(g,\eta,\epsilon,\tau):\ishae(f)$.
+  Using definitional $\eta$-expansion for functions, we have \[F(G(g,\eta,\epsilon,\tau)) \jdeq (g, \eta', \epsilon, \tau')\] for some $\eta'$ and $\tau'$.
+  It thus suffices to show that for each $x : A$, we have $(n'x,\tau' x) = (nx,\tau x)$ in the type $\sm{\gamma : gfx = x} f\gamma = \epsilon(fx)$, i.e., in $\coh{g}{f}{\eta} \; x$. Fix $x : A$. It is easy to see that
 \begin{align*}
 (n'x,\tau' x) = E'((gfx, \eta(fx)),x) \; (\refl{gfx} \ct \eta x, \theta)
 \end{align*}
@@ -364,23 +530,81 @@ f(\refl{gfx} \ct \eta x) \ar[d] \\
 f(\eta x) \ar[d] _{\tau x} \\
 \epsilon (f x)}
 \end{align*}
-Thus $(n'x,\tau' x) = (\refl{gfx} \ct \eta x, \theta'')$. All that remains is to show that $(\eta x, \tau x) = (\refl{gfx} \ct \eta x, \theta'')$ in $\coh{g}{f}{\epsilon} \; x$. By Lem.~\ref{lem:coheq}, it suffices to exhibit a path $\delta : \refl{gfx} \ct \eta x = \eta x$ such that $f(\delta) \ct \tau(x) = \theta''$. It is clear that the obvious path from $\refl{gfx} \ct \eta x$ to $\eta x$ does the job. \\
-\end{enumerate}
+Thus $(n'x,\tau' x) = (\refl{gfx} \ct \eta x, \theta'')$. All that remains is to show that $(\eta x, \tau x) = (\refl{gfx} \ct \eta x, \theta'')$ in $\coh{g}{f}{\epsilon} \; x$. By \autoref{lem:coheq}, it suffices to exhibit a path $\delta : \refl{gfx} \ct \eta x = \eta x$ such that $f(\delta) \ct \tau(x) = \theta''$. It is clear that the obvious path from $\refl{gfx} \ct \eta x$ to $\eta x$ does the job. \qedhere
+\end{enumerate}  
+\end{proof}
 
-\item[$\mathit{4)} \; (B \simeq A) \cong (B \cong^f_a A)$] Follows from $\mathit{3)}$ by swapping $A$ and $B$.
 
-\item[$\mathit{5)} \; (A \cong^f_a B) \cong (B \cong^g_a A)$] We simply swap $f/g$, and $\eta/\epsilon$.
+\section{Bi-invertible maps}
+\label{sec:biinv}
 
-\item[$\mathit{6)} \; (B \cong^f_a A) \cong (A \cong^g_a B)$] Follows from $\mathit{5)}$ by swapping $A$ and $B$.
+Finally, we return to the definition proposed in \S\ref{sec:basics-equivalences}.
 
-\item[$\mathit{7)} \; (A \cong^g_a B) \cong  (A \cong_w B)$] We proceed in 4 steps:
+\begin{defn}
+  Let $f:A\to B$.
+  \begin{itemize}
+  \item $g:B\ra A$ is a \textbf{left inverse} to $f$ if $g\circ f\htpy \idfunc[A]$.
+    If $f$ has a left inverse, it is \textbf{left invertible}; we have the type
+    \[ \linv(f) \defeq \sm{g:B\to A} (g\circ f\htpy \idfunc[A]). \]
+  \item Similarly, $g$ is a \textbf{right inverse} to $f$ if $f\circ g\htpy \idfunc[B]$, and we have
+    \[ \rinv(f) \defeq \sm{g:B\to A} (f\circ g\htpy \idfunc[B]). \]
+  \item We say $f$ is \textbf{bi-invertible} if it has both a left inverse and a right inverse:
+    \[ \biinv (f) \defeq \linv(f) \times \rinv(f). \]
+  \end{itemize}
+\end{defn}
+
+In \S\ref{sec:basics-equivalences} proved that we have $\qinv(f)\to\biinv(f)$ and $\biinv(f)\to\qinv(f)$.
+We can now prove the remaining property for this definition.
+
+\begin{lem}\label{thm:equiv-compose-equiv}
+  If $f:A\to B$ has a quasi-inverse, then so do
+  \begin{align*}
+    (f\circ -) &: (C\to A) \to (C\to B)\\
+    (-\circ f) &: (B\to C) \to (A\to C).
+  \end{align*}
+\end{lem}
+\begin{proof}
+  If $g$ is a quasi-inverse of $f$, then $(g\circ -)$ and $(-\circ g)$ are quasi-inverses of $(f\circ -)$ and $(-\circ f)$ respectively.
+\end{proof}
+
+\begin{thm}\label{thm:isprop-biinv}
+  For any $f:A\to B$, the type $\biinv(f)$ is a mere proposition.
+\end{thm}
+\begin{proof}
+  Suppose $u,v:\biinv(f)$; we want to show $u=v$.
+  It will suffice to show that $\proj1u = \proj1v$ and $\proj2u=\proj2v$.
+  Moreover, by function extensionality we have
+  \[\eqv{\linv(f)}{\sm{g:B\to A} (g\circ f = \idfunc[A])}\]
+  and similarly for $\rinv(f)$.
+
+  Now since $u$ (or $v$) witnesses that $f$ is bi-invertible, $f$ also has a quasi-inverse.
+  Thus, by \autoref{thm:equiv-compose-equiv}, $(f\circ -)$ and $(-\circ f)$ both also have quasi-inverses.
+  By \autoref{thm:equiv-iso-adj} and \autoref{thm:equiv-contr-hae}, therefore, $(f\circ -)$ and $(-\circ f)$ are contractible.
+  However, ${\sm{g:B\to A} (g\circ f = \idfunc[A])}$ is exactly the fiber of $(-\circ f)$ over $\idfunc[A]$, and hence is contractible.
+  Thus, $\proj1u = \proj1v$ since they live in a contractible type.
+  The equality $\proj2u=\proj2v$ follows similarly from $(f\circ -)$.
+\end{proof}
+
+\begin{cor}\label{thm:equiv-biinv-isequiv}
+  For any $f:A\to B$ we have $\eqv{\biinv(f)}{\iscontr(f)}$, and hence also $\eqv{\biinv(f)}{\ishae(f)}$.
+\end{cor}
+\begin{proof}
+  We have $\biinv(f) \to \qinv(f) \to \iscontr(f)$ and $\iscontr(f) \to \qinv(f) \to \biinv(f)$.
+  Since both $\iscontr(f)$ and $\biinv(f)$ are mere propositions, the equivalence follows from \autoref{ex:hprop-iff-equiv}.
+\end{proof}
+
+We can also give a more explicit, calculational proof that $\eqv{\biinv(f)}{\ishae(f)}$.
+[TODO: This proof needs to be switched around somehow.]
+
+\begin{proof}[Second proof of \autoref{thm:equiv-biinv-isequiv}]
+We proceed in 4 steps:
 \begin{enumerate}
-\item Define a function $F : (A \cong^g_a B) \to (A \cong_w B)$. This is very simple: given an adjoint isomorphism $(f,g,\eta,\epsilon,\upsilon) : A \cong^g_a B$, 
-we take $(f,g,g,\eta,\epsilon)$ to be our desired weak isomorphism. \\
+\item Define a function $F : (A \cong^g_a B) \to (A \cong_w B)$. This is very simple: given a half adjoint equivalence $(f,g,\eta,\epsilon,\upsilon) : A \cong^g_a B$, 
+we take $(f,g,g,\eta,\epsilon)$ to be our desired weak isomorphism.
 
 
 
-\item Define a function $G : (A \cong_w B) \to (A \cong^g_a B)$. Given a weak isomorphism $(f,g,h,\eta,\epsilon)$, our adjoint isomorphism will be $(f,g,\eta,\epsilon',\upsilon')$, for suitable $\epsilon'$ and $\upsilon'$. 
+\item Define a function $G : (A \cong_w B) \to (A \cong^g_a B)$. Given a weak isomorphism $(f,g,h,\eta,\epsilon)$, our half adjoint equivalence will be $(f,g,\eta,\epsilon',\upsilon')$, for suitable $\epsilon'$ and $\upsilon'$. 
 Namely, we put
 \begin{align*}
 \epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (h y)) \ct \epsilon y
@@ -391,11 +615,11 @@ g(\epsilon'(y)) & = \opp{gfg(\epsilon y)} \ct gf(\eta (h y)) \ct g(\epsilon y) \
 & = \opp{gfg(\epsilon y)} \ct \eta (gfhy) \ct g(\epsilon y) \\
 & = \eta(gy)
 \end{align*}
-where the second equality follows since $\eta$ commutes with $g \circ f$ and the third equality follows by naturality of $\eta$. We let $\upsilon'(y)$ be the above chain of equalities. \\
+where the second equality follows since $\eta$ commutes with $g \circ f$ and the third equality follows by naturality of $\eta$. We let $\upsilon'(y)$ be the above chain of equalities.
 
 
 
-\item Show that $G \circ F \sim \idfunc[A \cong^g_a B]$. Fix an adjoint isomorphism $(f,g,\eta,\epsilon,\upsilon)$. It is easy to see that $G(F(f,g,\eta,\epsilon,\upsilon)) \equiv (f,g,\eta, \epsilon', \upsilon')$, where
+\item Show that $G \circ F \sim \idfunc[A \cong^g_a B]$. Fix a half adjoint equivalence $(f,g,\eta,\epsilon,\upsilon)$. It is easy to see that $G(F(f,g,\eta,\epsilon,\upsilon)) \equiv (f,g,\eta, \epsilon', \upsilon')$, where
 \begin{align*}
 \epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (g y)) \ct \epsilon y
 \end{align*}
@@ -408,7 +632,7 @@ g(\opp{fg(\epsilon y)} \ct f(\eta (g y)) \ct \epsilon y) \ar[d] \\
 \opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
 \eta(g y)}
 \end{align*}
-It thus suffices to show that for each $y : B$, we have $(\epsilon y,\upsilon y) = (\epsilon' y,\upsilon' y)$ in the type $\sm{\gamma : fgy = y} g(\gamma) = \eta(g y)$, i.e., in the type $\coh{f}{g}{\eta} \; y$. By Lem.~\ref{lem:coheq}, it suffices to exhibit a path $\delta : \epsilon y = \epsilon' y$ such that $g(\delta) \ct \upsilon' y = \upsilon y$.
+It thus suffices to show that for each $y : B$, we have $(\epsilon y,\upsilon y) = (\epsilon' y,\upsilon' y)$ in the type $\sm{\gamma : fgy = y} g(\gamma) = \eta(g y)$, i.e., in the type $\coh{f}{g}{\eta} \; y$. By \autoref{lem:coheq}, it suffices to exhibit a path $\delta : \epsilon y = \epsilon' y$ such that $g(\delta) \ct \upsilon' y = \upsilon y$.
 
 Let $\delta : \epsilon y = \epsilon' y$ be the path 
 
@@ -457,7 +681,7 @@ g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d] \\
 \opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
 \eta(g y)}
 \end{align*}
-Now by Lem.\ref{lem:coh-fg} we have
+Now by \autoref{lem:coh-fg} we have
 
 \begin{align*}
 \xymatrix{
@@ -476,118 +700,79 @@ g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d] \\
 \opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
 \eta(g y)}
 \end{align*}
-However, this follows at once from Lem.~\ref{lem:higher-hom}. \\
-
+However, this follows at once from \autoref{lem:higher-hom}.
 
 
 \item Show that $F \circ G \sim \idfunc[A \cong_w B]$. Fix a weak isomorphism $(f,g,h,\eta,\epsilon)$. It is easy to see that $F(G(f,g,h,\eta,\epsilon)) \equiv (f,g,g,\eta,\epsilon')$, where
 \begin{align*}
 \epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (h y)) \ct \epsilon y
 \end{align*}
-Thus it suffices to show that for each $y : B$, we have $(g y, \epsilon' y) = (h y, \epsilon y)$ in the type $\sm{x : A} f x = y$, i.e., in $\mathtt{hfiber \;} f \; y$. By Lem.~\ref{lem:hfib} it suffices to give a path $\gamma : gy = hy$ such that $f(\gamma) \ct \epsilon y = e' y$. This is obviously satisfied if we take  $\gamma \defeq \opp{g(\epsilon y)} \ct \eta(h y)$. \\
+Thus it suffices to show that for each $y : B$, we have $(g y, \epsilon' y) = (h y, \epsilon y)$ in the type $\sm{x : A} f x = y$, i.e., in $\mathtt{hfiber \;} f \; y$. By  \autoref{lem:hfib} it suffices to give a path $\gamma : gy = hy$ such that $f(\gamma) \ct \epsilon y = e' y$. This is obviously satisfied if we take  $\gamma \defeq \opp{g(\epsilon y)} \ct \eta(h y)$.\qedhere
 \end{enumerate}
 
-
-\item[$\mathit{8)} \; (B \cong^g_a A) \cong  (B \cong_w A)$]  Follows from $\mathit{7)}$ by swapping $A$ and $B$.
-\end{description}
 \end{proof}
 
-\begin{thm}\label{thm:equiv-iso-adj} For any $A$ and $B$ we have
-\[ (A \cong^f_a B) \leftrightarrow (A \cong B) \]
-\end{thm}
-\begin{proof}
-One direction is obvious. For the other one, suppose that $(g,\eta,\varepsilon)$ is a quasi-inverse for $f$. We have to provide
-a quadruple $(g',\eta',\varepsilon',c)$ witnessing that $f$ is an equivalence. To
-define $g'$ and $\eta'$, we can just make the obvious choice by setting $g'
-\defeq g$ and $\eta'\defeq \eta$. However, in the definition of $\varepsilon'$ we
-need start worrying about the construction of $c$, so we cannot just follow our nose
-and take $\varepsilon'$ to be $\varepsilon$. Instead, we take
-\begin{equation*}
-\varepsilon'(b) \defeq (\varepsilon(b)\ct \ap{f}{\eta(g(b))})\ct \varepsilon(f(g(b)))^{-1}
-\end{equation*}
-Now we need to find
-\begin{equation*}
-c(a):(\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))})\ct \varepsilon(f(g(f(a))))^{-1}=\ap{f}{\eta(a)}
-\end{equation*}
-Note first that by lemma \ref{lem:htpy_natural}, we have 
-$\eta(g(f(a)))\ct\eta(a)=\ap{g}{\ap{f}{\eta(a)}}\ct\eta(a)$ and hence it follows
-that $\eta(g(f(a)))=\ap{g}{\ap{f}{\eta(a)}}$. Therefore, we can apply lemma
-\ref{lem:htpy_natural} once more to compute
-\begin{align*}
-\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))}
-& = \varepsilon(f(a))\ct \ap{f}{\ap{g}{\ap{f}{\eta(a)}}}\\
-& = \ap{f}{\eta(a)}\ct\varepsilon(f(g(f(a))))
-\end{align*}
-from which we get the desired path $c(a)$.
-\end{proof}
+\section{Concluding remarks}
+\label{sec:concluding-remarks}
+
+We have shown that all three definitions of equivalence satisfy the three desirable properties and are pairwise equivalent:
+\[ \iscontr(f) \simeq \ishae(f) \simeq \biinv(f) . \]
+(There are yet more possible definitions of equivalence --- we mentioned one in \autoref{ex:brck-qinv} --- but we will stop with these three.)
+Thus, we may choose any one of them as ``the'' definition of $\isequiv (f)$.
+For definiteness, we choose to define
+\[ \isequiv(f) \defeq \ishae(f).\]
+This choice is advantageous for formalization, since $\ishae(f)$ contains the most directly useful data.
+But for purposes of this book, the specific choice will make little difference.
 
 
 
-\comment{
-\begin{enumerate}
-\item $f$ is an equivalence.
-\item $f$ is a weak isomorphism
-\item $f$ is an adjoint isomorphism
-\end{enumerate}
-\begin{proof} 
-Let $f:A\ra B$ be an equivalence.  So each type $Cy$ is contractible, where for $y:B$, $Cy \defeq \Sigma_{x:A}\; fx=y$.  This means that
-  \[ \forall_{y:B}\exists_{u:Cy}\forall_{u':Cy}\; u'=u.\]
-By $\Sigma$-unfolding we get
-  \[ \forall_{y:B}\exists_{x:A}\exists_{z:(fx=y)}
-                            \forall_{x':A}\forall_{z':(fx'=y)}\; (x,z)=(x',z').
-  \]
-It follows that
-  \[ \forall_{y:B}\exists_{x:A}[fx=y\wedge\forall_{x':A}(fx'=y\ra  x=x')].
-  \]
-Hence, by $(ii)\ra (iv)$ of \autoref{thm:bijections-isos} , $f$ is a weak isomorphism.
+%%% This should go in the appendix on univalence implies funext, if anywhere.
 
-\begin{cor}\label{cor:equivs-equiv}
-For types $A,B$ we have the following relationships among the various equivalences:
-between our four equivalence relations.
-  \[ (\eqv A B) \simeq (A\cong_a^f B) \simeq (A\cong_w B) \leftrightarrow (A\cong B).\]
-\end{cor}
-\begin{proof} ??
+% \section{Identity Systems on a Type Universe}
+% \newcommand{\sfr}[1]{{{\sf r}_{#1}}}
+% Let $\bbU$ be a type universe.
 
-\end{proof}}
-
-\section{Identity Systems on a Type Universe}
-\newcommand{\sfr}[1]{{{\sf r}_{#1}}}
-Let $\bbU$ be a type universe.
-
-\begin{defn} An {\em identity system $(R,\sfr{})$ on $\bbU$} consists of a type $R_{A,B}$ for $A,B:\bbU$, together with $\sfr{A}:R_{A,A}$ for $A:\bbU$, such that the following holds.  
-\begin{quote}
-If $D_{A,B}(e)$ is a type for $A,B:\bbU$ and $e:R_{A,B}$ then there is   
-  \[ J_{A,B}(e):D_{A,B}(e)\mbox{ for } A,B:\bbU \mbox{ and } e:R_{A,B},\] 
-such that
-  \[ J_{A,A}(\sfr{A})=d_A\mbox{ for } A:\bbU.\]
-\end{quote}
-\end{defn}
-\begin{eg}
-$(Id_\bbU,\refl{\bbU})$ is an identity system on $\bbU$.
-\end{eg}
-\begin{thm}
-If $(R,\sfr{})$ is an identity system on $\bbU$ then
-\begin{enumerate}
-\item $R_{A,B}\ra \eqv{A}{B}$ for $A,B:\bbU$
-\item If $f_e:A\ra B$ and $g_e:B\ra A$ for $A,B:\bbU$ and $e:R_{A,B}$ such that 
-  \[ f_{\sfr{A}} = g_{\sfr{A}}=\idfunc[A]\mbox{ for } A:\bbU\] 
-then
-  \[ g_e\circ f_e =\idfunc[A]\mbox{ and } f_e\circ g_e = \idfunc[B]
-      \mbox{ for }  A,B:\bbU \mbox{ and } e:R_{A,B} \]
-\end{enumerate}
-\end{thm}
-\newcommand{\sfequiv}[1]{{\sf reflequiv}^\bbU_{#1}}
-\begin{rmk} Once we have the notion of a univalent type universe we can get the following result. 
-\end{rmk}
-\begin{thm}
-$\bbU$ is a univalent type universe iff $(Equiv^\bbU,\sfequiv{})$ is an identity system on $\bbU$, where
-  \[ Equiv^\bbU_{A,B}\defeq (\eqv{A}{B})\mbox{ for } A,B:\bbU\]
-and, if $s_A: (\idfunc[A]\mbox{ is an equivalence }A\ra A)$,
-  \[ \sfequiv{A}\defeq (\idfunc[A],s_A):\eqv{A}{A}\mbox{ for } A:\bbU.\]
-\end{thm}
+% \begin{defn} An {\em identity system $(R,\sfr{})$ on $\bbU$} consists of a type $R_{A,B}$ for $A,B:\bbU$, together with $\sfr{A}:R_{A,A}$ for $A:\bbU$, such that the following holds.  
+% \begin{quote}
+% If $D_{A,B}(e)$ is a type for $A,B:\bbU$ and $e:R_{A,B}$ then there is   
+%   \[ J_{A,B}(e):D_{A,B}(e)\mbox{ for } A,B:\bbU \mbox{ and } e:R_{A,B},\] 
+% such that
+%   \[ J_{A,A}(\sfr{A})=d_A\mbox{ for } A:\bbU.\]
+% \end{quote}
+% \end{defn}
+% \begin{eg}
+% $(Id_\bbU,\refl{\bbU})$ is an identity system on $\bbU$.
+% \end{eg}
+% \begin{thm}
+% If $(R,\sfr{})$ is an identity system on $\bbU$ then
+% \begin{enumerate}
+% \item $R_{A,B}\ra \eqv{A}{B}$ for $A,B:\bbU$
+% \item If $f_e:A\ra B$ and $g_e:B\ra A$ for $A,B:\bbU$ and $e:R_{A,B}$ such that 
+%   \[ f_{\sfr{A}} = g_{\sfr{A}}=\idfunc[A]\mbox{ for } A:\bbU\] 
+% then
+%   \[ g_e\circ f_e =\idfunc[A]\mbox{ and } f_e\circ g_e = \idfunc[B]
+%       \mbox{ for }  A,B:\bbU \mbox{ and } e:R_{A,B} \]
+% \end{enumerate}
+% \end{thm}
+% \newcommand{\sfequiv}[1]{{\sf reflequiv}^\bbU_{#1}}
+% \begin{rmk} Once we have the notion of a univalent type universe we can get the following result. 
+% \end{rmk}
+% \begin{thm}
+% $\bbU$ is a univalent type universe iff $(Equiv^\bbU,\sfequiv{})$ is an identity system on $\bbU$, where
+%   \[ Equiv^\bbU_{A,B}\defeq (\eqv{A}{B})\mbox{ for } A,B:\bbU\]
+% and, if $s_A: (\idfunc[A]\mbox{ is an equivalence }A\ra A)$,
+%   \[ \sfequiv{A}\defeq (\idfunc[A],s_A):\eqv{A}{A}\mbox{ for } A:\bbU.\]
+% \end{thm}
 
 
-Using the two theorems I believe (from a still mysterious coq proof of Assia and Cyril) that we can get a quick proof of function extensionality on a univalent universe.
+% Using the two theorems I believe (from a still mysterious coq proof of Assia and Cyril) that we can get a quick proof of function extensionality on a univalent universe.
+
+\section*{Exercises}
+
+\begin{ex}
+  Show that a type $A$ is contractible (that is, $\iscontr(A)$ holds) if and only if $A\simeq\unit$.
+\end{ex}
+
 % Local Variables:
 % TeX-master: "main"
 % End:

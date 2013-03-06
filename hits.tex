@@ -197,21 +197,31 @@ The way we interpret this type-theoretically, using our definition of dependent 
 Of course, we expect to be able to prove the non-dependent elimination rule from the dependent one, by taking $P$ to be a constant type family.
 This is in fact the case, although deriving the non-dependent computation rule for $\lloop$ (which refers to $\apfunc f$) from the dependent one (which refers to $\apdfunc f$) is surprisingly a little tricky.
 
-\begin{lem}
-  If $A$ is a type together with $x:A$ and $p:\id[A]xx$, then there is a
+\begin{lem}\label{thm:S1rec}
+  If $A$ is a type together with $a:A$ and $p:\id[A]aa$, then there is a
   function $f:\Sn^1\to{}A$ with
   \begin{align*}
-    f(\base)&\jdeq x \\
-    \apfunc f(\lloop)&=p
+    f(\base)&\jdeq a \\
+    \apfunc f(\lloop)&=p.
   \end{align*}
 \end{lem}
 \begin{proof}
-  The two types $x=^{\lambda{}x.A}_\lloop{}x$ and $x=_Ax$ are not the same, but as we remarked in Chapter~\ref{cha:basics}, they are equivalent.
-  Thus, from $p:x=x$ we can obtain $p':x=^{\lambda{}x.A}_\lloop{}x$, and thereby apply the induction principle to obtain $f:\Sn^1\to A$ such that $f(\base)\jdeq x$ and $\apdfunc f(\lloop) = p'$.
-  It remains to derive the equality $\apfunc f(\lloop)=p$\dots
+  The type $(\dpath {x \mapsto A}{\lloop} a a)\jdeq (\transfib{x \mapsto A}{\lloop} a = a)$ is not the same as the type $\id[A]aa$.
+  But it is equivalent to it, because by \autoref{thm:trans-trivial} we have $\transconst{A}{\lloop}{a} : \transfib{x \mapsto A}{\lloop} a= a$.
+  Thus, given $a:A$ and $p:a=a$, we can consider the composite
+  \[\transconst{A}{\lloop}{a} \ct p:(\dpath {x \mapsto A}\lloop aa).\]
+  Applying the induction principle, we obtain $f:\Sn^1\to A$ such that
+  \begin{alignat}{2}
+    f(\base) &\jdeq a & \quad\text{and}\label{eq:S1recindbase}\\
+    \apdfunc f(\lloop) &= \transconst{A}{\lloop}{a} \ct p.\label{eq:S1recindloop}
+  \end{alignat}
+  It remains to derive the equality $\apfunc f(\lloop)=p$.
+  However, by \autoref{thm:apd-const}, we have
+  \[\apdfunc f(\lloop) = \transconst{A}{\lloop}{f(\base)} \ct \apfunc f(\lloop).\]
+  Combining this with~\eqref{eq:S1recindloop} and canceling the occurrences of $\transconstf$ (which are the same by~\eqref{eq:S1recindbase}), we obtain $\apfunc f(\lloop)=p$.
 \end{proof}
 
-Similarly, in this case we may speak of defining $f$ by $f(\base)\defeq x$ and $\ap f \lloop \defeq p$.
+Similarly, in this case we may speak of defining $f$ by $f(\base)\defeq a$ and $\ap f \lloop \defeq p$.
 We also have an $\eta$-rule.
 
 \begin{lem}
@@ -224,12 +234,12 @@ We also have an $\eta$-rule.
   Then for all $x:\Sn^1$ we have $f(x)=g(x)$.
 \end{lem}
 \begin{proof}
-  This is the dependent elimination rule for the type family $P(x)\defeq(f(x)=g(x))$.
+  This is just the induction principle for the type family $P(x)\defeq(f(x)=g(x))$.
 \end{proof}
 
 These two lemmas imply the expected universal property of the circle:
 
-\begin{lem}
+\begin{lem}\label{thm:S1ump}
   For any type $A$ we have a natural equivalence
   \[ (\Sn^1 \to A) \;\simeq\;
   \sm{x:A} (x=x).
@@ -241,7 +251,7 @@ These two lemmas imply the expected universal property of the circle:
   Hence they are contractible, so $f$ is an equivalence.
 \end{proof}
 
-For other higher inductive types, we will generally leave the proofs of these lemmas to the reader.
+Other higher inductive types also satisfy lemmas analogous to~\ref{thm:S1rec} and~\ref{thm:S1ump}; we will generally leave their proofs to the reader.
 We now proceed to consider many examples.
 
 

@@ -11,3 +11,7 @@ clean:
 	rm -f main.out
 	rm -f main.pdf
 
+update-ref.sed: $(wildcard *.aux)
+	echo "#!/bin/sed -f" > $@
+	./aux2sed.sed $^ >> $@
+	chmod +x $@

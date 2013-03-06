@@ -347,7 +347,57 @@ Recall that a type family $P$ over a type $A$ can be seen as a property of eleme
 Then the transportation lemma says that if $x$ is propositionally equal to $y$, then $P(x)$ holds if and only if $P(y)$ holds.
 In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are \emph{equivalent}.
 
+Topologically, the transportation lemma can be viewed as a ``path lifting'' operation in a fibration.
+Given a path $p:x=y$ in the base space $A$ and a point $u:P(x)$ in the fiber over $x$, we may lift the path $p$ to a path in the total space starting at $u$.
+The point $\trans p u$ is the other endpoint of this lifted path.
+We can also define the path itself in type theory:
+
+\begin{thm}[Path lifting property]\label{thm:path_lifting}
+Let $P:A\to\type$ be a type family over $A$ and assume we have $u:P(x)$ for $x:A$. Then we have the identity
+\begin{equation*}
+\mathsf{lift}(u,p):(x,u)=(y,\trans{p}{u})
+\end{equation*}
+in $\sm{x:A}P(x)$ for any $p:x=y$.
+\end{thm}
+
+\begin{proof}[First proof]
+Let $D:\prd{x,y:A}{p:x=y}\type$ be defined by
+\begin{equation*}
+D(x,y,p)\defeq (x,u)=(y,\trans{p}{u}).
+\end{equation*}
+Then $D(x,x,\refl{x})\defeq (x,u)=(x,\trans{\refl{x}}{u})$. By the conversion rule we have $\trans{\refl{x}}{u}\defeq u$, so we see that $D(x,x,\refl{x})\defeq (x,u)=(x,u)$. Therefore we find $d(x)\defeq\refl{(x,u)}:D(x,x,\refl{x})$. Now $J$ gives a term of type $\prd{x,y:A}{p:x=y}(x,u)=(y,\trans{p}{u})$.
+\end{proof}
+\begin{proof}[Second proof] 
+  By induction, it suffices to find a term of type $(x,u)=(x,\trans{\refl{x}}{u})$.
+  Note that $\trans{\refl{x}}{u}\jdeq u$, so we really need to find a term of type $(x,u)=(x,u)$.
+  But here we can take the reflexivity term.
+\end{proof}
+
 Now we can prove the dependent version of \autoref{lem:map}.
+The topological intuition is that given $f:\prd{x:A} P(x)$ and a path $p:\id[A]xy$, we ought to be able to apply $f$ to $p$ and obtain a path in the total space of $P$ which ``lies over'' $p$, as shown below.
+
+\begin{center}
+  \begin{tikzpicture}[yscale=.5,xscale=2]
+    \draw (0,0) arc (-90:170:1cm) node[anchor=south east] {$A$} arc (170:270:1cm);
+    \draw (0,4) arc (-90:170:1cm) node[anchor=south east] {$\Sigma P$} arc (170:270:1cm);
+    \draw[->] (0,3.8) -- node[auto] {$\proj1$} (0,2.2);
+    \node[circle,fill,inner sep=1pt,label=left:{$x$}] (b1) at (-.5,1) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$y$}] (b2) at (.5,1) {};
+    \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto,swap] {$p$} (b2);
+    \node[circle,fill,inner sep=1pt,label=left:{$f(x)$}] (b1) at (-.5,5) {};
+    \node[circle,fill,inner sep=1pt,label=right:{$f(y)$}] (b2) at (.5,5) {};
+    \draw[decorate,decoration={snake,amplitude=1}] (b1) -- node[auto] {$f(p)$} (b2);
+  \end{tikzpicture}
+\end{center}
+
+We \emph{can} obtain such a thing from \autoref{lem:map}.
+Given $f:\prd{x:A} P(x)$, we can define a non-dependent function $f':A\to \sm{x:A} P(x)$ by setting $f'(x)\defeq (x,f(x))$, and then consider $\ap{f'}{p} : f'(x) = f'(y)$.
+However, it is not obvious from the type of such a path that it lies over a specific path in $A$ (in this case, $p$), which is sometimes important.
+
+The solution is to use the transport lemma.
+Since there is a canonical path from $u:P(x)$ to $\trans p u :P(y)$ which (at least intuitively) lies over $p$, any path from $u$ to $v:P(y)$ lying over $p$ should factor through this path, essentially uniquely, by a path from $\trans p u$ to $v$ lying entirely in the fiber $P(y)$.
+Thus, up to equivalence, it makes sense to define ``a path from $u$ to $v$ lying over $p:x=y$'' to mean a path $\trans p u = v$ in $P(y)$.
+And, indeed, we can show that dependent functions produce such paths.
 
 \begin{lem}[Dependent map]\label{lem:mapdep}
   Suppose $f:\prd{x: A} P(x)$; then we have
@@ -399,29 +449,28 @@ Thus, by concatenating with the path defined in \autoref{thm:trans-trivial}, for
   \big(\trans{p}{f(x)} = f(y)\big) &\to \big(f(x) = f(y)\big).\label{eq:apd-to-ap}
 \end{align}
 In fact, these functions are inverse equivalences (in the sense to be introduced in \S\ref{sec:basics-equivalences}), and they relate $\apfunc f (p)$  to $\apdfunc f (p)$.
+Specifically, if we write $\transconst Bpb$ for the path defined in \autoref{thm:trans-trivial}, we have the following.
+
+\begin{lem}\label{thm:apd-const}
+  For $f:A\to B$ and $p:\id[A]xy$, we have
+  \[ \apdfunc f(p) = \transconst B p{f(x)} \ct \apfunc f (p) \]
+\end{lem}
+\begin{proof}[First proof]
+  Let $D:\prd{x,y:A}{p:\id xy} \type$ be the type family defined by
+  \[ D(x,y,p) \defeq \big(\apdfunc f (p) = \transconst Bp{f(x)} \ct \apfunc f (p)\big). \]
+  Thus, we have
+  \[D(x,x,\refl x) \jdeq \big(\apdfunc f (\refl x) = \transconst B{\refl x}{f(x)} \ct \apfunc f ({\refl x})\big).\]
+  But by definition, all three paths appearing in this type are $\refl{f(x)}$, so we have
+  \[ \refl{\refl{f(x)}} : D(x,x,\refl x). \]
+  Thus, path induction gives us an element of $\prd{x,y:A}{p:x=y} D(x,y,p)$, which is what we wanted.
+\end{proof}
+\begin{proof}[Second proof]
+  By induction, it suffices to assume $y$ is $x$ and $p$ is $\refl x$.
+  In this case, what we have to prove is $\refl{f(x)} = \refl{f(x)} \ct \refl{f(x)}$, which is true judgmentally.
+\end{proof}
+
 But because the types of $\apdfunc{f}$ and $\apfunc{f}$ are different, it is often clearer to use different notations for them.
 We may sometimes use a notation $\apd f p$ for $\apdfunc{f}(p)$, which is similar to the notation $\ap f p$ for $\apfunc{f}$.
-
-\begin{thm}[Path lifting property]\label{thm:path_lifting}
-Let $P:A\to\type$ be a type family over $A$ and assume we have $u:P(x)$ for $x:A$. Then we have the identity
-\begin{equation*}
-\mathsf{lift}(u,p):(x,u)=(y,\trans{p}{u})
-\end{equation*}
-in $\sm{x:A}P(x)$ for any $p:x=y$.
-\end{thm}
-
-\begin{proof}[First proof]
-Let $D:\prd{x,y:A}{p:x=y}\type$ be defined by
-\begin{equation*}
-D(x,y,p)\defeq (x,u)=(y,\trans{p}{u}).
-\end{equation*}
-Then $D(x,x,\refl{x})\defeq (x,u)=(x,\trans{\refl{x}}{u})$. By the conversion rule we have $\trans{\refl{x}}{u}\defeq u$, so we see that $D(x,x,\refl{x})\defeq (x,u)=(x,u)$. Therefore we find $d(x)\defeq\refl{(x,u)}:D(x,x,\refl{x})$. Now $J$ gives a term of type $\prd{x,y:A}{p:x=y}(x,u)=(y,\trans{p}{u})$.
-\end{proof}
-\begin{proof}[Second proof] 
-  By induction, it suffices to find a term of type $(x,u)=(x,\trans{\refl{x}}{u})$.
-  Note that $\trans{\refl{x}}{u}\jdeq u$, so we really need to find a term of type $(x,u)=(x,u)$.
-  But here we can take the reflexivity term.
-\end{proof}
 
 \medskip
 
@@ -744,7 +793,7 @@ Specifically, for any $P:\type$, the type $\isprop(P)$ is defined to be
 Thus, to assert that ``$P$ is a mere proposition'' means to exhibit an inhabitant of $\isprop(P)$, which is a dependent function connecting any two elements of $P$ by a path.
 The continuity/naturality of this function implies that not only are any two elements of $P$ equal, but $P$ contains no higher homotopy either.
 
-\begin{lem}
+\begin{lem}\label{thm:inhabprop-eqvunit}
   If $P$ is a mere proposition and $x_0:P$, then $\eqv P \unit$.
 \end{lem}
 \begin{proof}
@@ -753,7 +802,7 @@ The continuity/naturality of this function implies that not only are any two ele
 \end{proof}
 
 In homotopy theory, a space that is homotopy equivalent to \unit is said to be \emph{contractible}.
-Thus, any mere proposition which is inhabited is contractible.
+Thus, any mere proposition which is inhabited is contractible (see also \S\ref{sec:contractibility}).
 On the other hand, the uninhabited type \emptyt is also (vacuously) a mere proposition.
 In classical mathematics, at least, these are the only two possibilities.
 
@@ -814,7 +863,7 @@ But if $P$ is a \emph{mere} proposition, then this cannot happen.
 
 For instance, recall that in \S\ref{sec:basics-equivalences} we defined
 \[(\eqv A B) \;\defeq\; \sm{f:A\to B} \isequiv (f),\]
-and that each type $\isequiv (f)$ is a mere proposition.
+and we showed that each type $\isequiv (f)$ is a mere proposition.
 It follows that if two equivalences have equal underlying functions, then they are equal as equivalences.
 
 Henceforth, if $P:A\to \type$ is a family of mere propositions, we will allow ourselves to write $\setof{x:A | P(x)}$ as an alternative notation for $\sm{x:A} P(x)$.
@@ -982,6 +1031,67 @@ In this book we will continue using untruncated logic as the default convention,
   This useful fact is more clumsy to express if propositional truncation is applied to all statements by default.
 \item Finally, truncations are not very useful for most of the mathematics we will be doing in this book, so it is simpler to notate them explicitly when they occur.
 \end{enumerate}
+
+\section{Contractibility}
+\label{sec:contractibility}
+
+In \autoref{thm:inhabprop-eqvunit} we observed that a mere proposition which is inhabited must be equivalent to unit, and it is not hard to see that the converse also holds.
+Another equivalent definition, which is also sometimes convenient, is the following.
+
+\begin{defn}\label{defn:contractible}
+  A type $A$ is \textbf{contractible}, or a \textbf{singleton}, if there is $a:A$, called the \textbf{center of contraction}, such that $a=x$ for all $x:A$.
+\end{defn}
+
+In other words, the type $\iscontr(A)$ is defined to be
+\[ \iscontr(A) \defeq \sm{a:A} \prd{x:A}(a=x). \]
+
+\begin{lem}\label{thm:contr-paths}
+  For a type $A$, the following are logically equivalent.
+  \begin{enumerate}
+  \item $A$ is contractible.\label{item:contr}
+  \item $A$ is a mere proposition, and there is a point $a:A$.\label{item:contr-inhabited-prop}
+  \item $A$ is equivalent to \unit.\label{item:contr-eqv-unit}
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  If $A$ is contractible, then it certainly has a point $a:A$ (the center of contraction), while for any $x,y:A$ we have $x=a=y$; thus $A$ is a mere proposition.
+  Conversely, if we have $a:A$ and $A$ is a mere proposition, then for any $x:A$ we have $x=a$; thus $A$ is contractible.
+  And we showed~\ref{item:contr-inhabited-prop}$\Rightarrow$\ref{item:contr-eqv-unit} in \autoref{thm:inhabprop-eqvunit}, while the converse follows since \unit easily has properties~\ref{item:contr} and~\ref{item:contr-inhabited-prop}.
+\end{proof}
+
+\begin{lem}\label{thm:isprop-iscontr}
+  For any type $A$, the type $\iscontr(A)$ is a mere proposition.
+\end{lem}
+\begin{proof}
+  Suppose given $c,c':\iscontr(A)$.
+  We may assume $c\jdeq(a,p)$ and $c'\jdeq(a',p')$ for $a,a':A$ and $p:\prd{x:A} (a=x)$ and $p':\prd{x:A} (a'=x)$.
+  By the characterization of paths in $\Sigma$-types, to show $c=c'$ it suffices to exhibit $q:a=a'$ such that $\trans{q}{p}=p'$.
+
+  We choose $q\defeq p(a')$.
+  For the other equality, by function extensionality we must show that $(\trans q p)(x)=p'(x)$ for any $x:A$.
+  For this, it will suffice to show that for any $x,y:A$ and $u:x=y$ we have $u= \opp{p(x)} \ct p(y)$, since then we would have $(\trans q p)(x) = \opp{p(x)} \ct p(y) = p'(x)$.
+  But now we can invoke path induction to assume that $x\jdeq y$ and $u\jdeq \refl{x}$.
+  In this case our goal is to show that $\refl x = \opp{p(x)} \ct p(x)$, which is just the inversion law for paths.
+\end{proof}
+
+\begin{cor}\label{thm:contr-contr}
+  If $A$ is contractible, then so is $\iscontr(A)$.
+\end{cor}
+\begin{proof}
+  By \autoref{thm:isprop-iscontr} and \autoref{thm:contr-paths}\ref{item:contr-inhabited-prop}.
+\end{proof}
+
+\begin{lem}\label{thm:contr-forall}
+  If $P:A\to\type$ is a type family such that each $P(a)$ is contractible, then $\prd{x:A} P(x)$ is contractible.
+\end{lem}
+\begin{proof}
+  By \autoref{thm:isprop-forall}, $\prd{x:A} P(x)$ is a mere proposition since each $P(x)$ is.
+  But it also has an element, namely the function sending each $x:A$ to the center of contraction of $P(x)$.
+  Thus by \autoref{thm:contr-paths}\ref{item:contr-inhabited-prop}, $\prd{x:A} P(x)$ is contractible.
+\end{proof}
+
+(In fact, the statement of \autoref{thm:contr-forall} is equivalent to the function extensionality axiom.
+See Appendix~[?].)
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%

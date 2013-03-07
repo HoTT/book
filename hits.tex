@@ -617,18 +617,137 @@ The cell-complex definition, however, generalizes easily to other spaces without
 \section{Pushouts}
 \label{sec:colimits}
 
-TODO: move section on pushouts as HITs from the next chapter.
+From a category-theoretic point of view, one of the important aspects of any foundational system is the ability to construct limits and colimits.
+In set-theoretic foundations, these are limits and colimits of sets, whereas in our case they will be limits and colimits of \emph{types}.
+We have seen in \S\ref{sec:universal-properties} that cartesian product types have the correct universal property of a categorical product of types, and in \autoref{ex:coprod-ump} that coproduct types likewise have their expected universal property.
+
+More general limits can be constructed using identity types and $\Sigma$-types, e.g.\ the pullback of $f:A\to C$ and $g:B\to C$ can be defined by $\sm{a:A}{b:B} (f(a)=g(b))$.
+However, more general \emph{colimits} require identifying elements coming from different types, for which higher inductives are well-adapted.
+Since all our constructions are homotopy-invariant, our colimits will all be \emph{homotopy colimits}, but we drop the ubiquitous adjective in the interests of conciseness.
+
+In this section we discuss \emph{pushouts}, as perhaps the simplest and one of the most useful colimits.
+Indeed, one expects all finite colimits to be constructible from pushouts and finite coproducts.
+It is also possible to give a direct construction of more general colimits using higher inductive types, but this is somewhat technical, and also not completely satisfactory since we do not yet have a good fully general notion of homotopy coherent diagrams.
+
+Suppose given a span of types and functions:
+\[\Ddiag=\;\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}\]
+The \textbf{pushout} of this span is the higher inductive type $A\sqcup^CB$ presented by
+\begin{itemize}
+\item a function $\inl:A\to A\sqcup^CB$,
+\item a function $\inr:B \to A\sqcup^CB$, and
+\item for each $c:C$ a path $\glue(c):(\inl(f(c))=\inr(g(c)))$.
+\end{itemize}
+In other words, $A\sqcup^CB$ is the disjoint union of $A$ and $B$, together with for every $c:C$ a witness that $f(c)$ and $g(c)$ are equal.
+The recursion principle says that if $D$ is another type, we can define a map $s:A\sqcup^CB\to{}D$ by defining
+\begin{itemize}
+\item for each $a:A$, the value of $s(\inl(a)):D$,
+\item for each $b:B$, the value of $s(\inr(b)):D$, and
+\item for each $c:C$, the value of $\mapfunc{s}(\glue(c)):s(\inl(f(c)))=s(\inr(g(c)))$.
+\end{itemize}
+We leave it to the reader to formulate the induction principle.
+It also implies the $\eta$-rule that if $s,s':A\sqcup^CB\to{}D$ are two maps such that
+\begin{align*}
+  s(\inl(a))&=s'(\inl(a))\\
+  s(\inr(b))&=s'(\inr(b))\\
+  \mapfunc{s}(\glue(c))&=\mapfunc{s'}(\glue(c))
+  \qquad\text{(modulo the previous two equalities)}
+\end{align*}
+for every $a,b,c$, then $s=s'$.
+
+\begin{rmk}
+  Note that if $A\jdeq B\jdeq\unit$, then the above pushout is essentially the same as the suspension of the type $C$.
+  This will be useful in Chapter~\ref{cha:homotopy}.
+\end{rmk}
+
+To formulate the universal property of a pushout, we introduce the following.
+
+\begin{defn}
+  Given functions $A \xleftarrow{f} C \xrightarrow{g} B$ and a type $D$, a \textbf{cocone under $\Ddiag$ with base $D$} consists of functions $i:A\to{}D$ and $j:B\to{}D$ and a homotopy $h : \prd{c:C} (i(f(c))=j(g(c)))$:
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^j[d] \\ A \ar_i[r] & D
+  }\]
+  We denote by $\cocone{\Ddiag}{D}$ the type of all such cocones, i.e.
+  \[ \cocone{\Ddiag}{D} \defeq
+  \sm{i:A\to D}{j:B\to D} \prd{c:C} (i(f(c))=j(g(c))).
+  \]
+\end{defn}
+
+Of course, there is a canonical cocone under $\Ddiag$ with base $A\sqcup^C B$ consisting of $\inl$, $\inr$, and $\glue$.
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+\xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^\glue\ \ } & B \ar^\inr[d] \\
+  A \ar_-\inl[r] & A\sqcup^CB }\]
+The following lemma says that this is the universal such cocone.
+
+\begin{lem}\label{thm:pushout-ump}
+  For any type $E$, there is an equivalence
+  \[ (A\sqcup^C B \to E) \;\simeq\; \cocone{\Ddiag}{E}. \]
+\end{lem}
+\begin{proof}
+  Let's consider an arbitrary type $E:\type$.
+  There is a canonical function
+  \[\function{(A\sqcup^CB\to{}E)}{\cocone{\Ddiag}{E}}
+  {t}{\composecocone{t}c_\sqcup}\]
+  defined by sending $(i,j,h)$ to $(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h)$.
+  We will show that this is an equivalence.
+
+  Firstly, given a $c=(i,j,h):\cocone{\mathscr{D}}{E}$, we need to construct a
+  map $\mathsf{s}(c)$ from $A\sqcup^CB$ to $E$.
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^{j}[d] \\
+    A \ar_-{i}[r] & E }\]
+ The map $\mathsf{s}(c)$ is defined in the following way
+  \begin{align*}
+    \mathsf{s}(c)(\inl(a))&=i(a)\\
+    \mathsf{s}(c)(\inr(b))&=j(b)\\
+    \mapfunc{\mathsf{s}(c)}(\glue(x))&=h(x)\\
+  \end{align*}
+We have defined a map
+\[\function{\cocone{\Ddiag}{E}}{(A\sqcup^BC\to{}E)}{c}{\mathsf{s}(c)}\]
+and we need to prove that this map is an inverse to
+$t\mapsto{}\composecocone{t}c_\sqcup$.
+On the one hand, if $c=(i,j,h):\cocone{\Ddiag}{E}$, we have
+\begin{align*}
+  \composecocone{\mathsf{s}(c)}c_\sqcup & =
+  (\mathsf{s}(c)\circ\inl,\mathsf{s}(c)\circ\inr,
+  \mapfunc{\mathsf{s}(c)}\circ\glue) \\
+  & = (\lambda{}a^A.\mathsf{s}(c)(\inl(a)),\lambda{}b^B.\mathsf{s}(c)(\inr(b)),
+  \lambda{}x^C.\mapfunc{\mathsf{s}(c)}(\glue(x))) \\
+  & = (\lambda{}a^A.i(a),\lambda{}b^B.j(b),
+  \lambda{}x^C.h(x)) \\
+  & = (i, j, h) \\
+  & = c
+\end{align*}
+
+On the other hand, if $t:A\sqcup^BC\to{}E$, we want to prove that
+$\mathsf{s}(\composecocone{t}c_\sqcup)=t$.
+For $a:A$, we have
+\[\mathsf{s}(\composecocone{t}c_\sqcup)(\inl(a))=t(\inl(a))\]
+because the first component of $\composecocone{t}c_\sqcup$ is $t\circ\inl$. In
+the same way, for $b:B$ we have
+\[\mathsf{s}(\composecocone{t}c_\sqcup)(\inr(b))=t(\inr(b))\]
+and for $x:C$ we have
+\[\mapfunc{\mathsf{s}(\composecocone{t}c_\sqcup)}(\glue(x))
+=\mapfunc{t}(\glue(x))\]
+hence $\mathsf{s}(\composecocone{t}c_\sqcup)=t$.
+
+This proves that $c\mapsto\mathsf{s}(c)$ is a quasi-inverse to $t\mapsto{}\composecocone{t}c_\sqcup$, as desired.
+\end{proof}
+
+We will discuss pushouts further in Chapter~\ref{cha:homotopy}.
+
+
+\section{Truncations}
+\label{sec:truncations}
+
 
 \section{Quotients}
 \label{sec:quotients}
 
 Both as HIT and impredicatively.
 
-\section{Truncations}
-\label{sec:truncations}
-
 \section{Free algebras}
 \label{sec:free-algebras}
+
 
 \section{The flattening lemma}
 \label{sec:flattening}

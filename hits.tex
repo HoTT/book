@@ -4,6 +4,11 @@
 \newcommand{\seg}{\ensuremath{\mathsf{seg}}\xspace}
 \newcommand{\eqtopath}{\ensuremath{\mathsf{eqtopath}}\xspace}
 \newcommand{\dpath}[4]{#3 =^{#1}_{#2} #4}
+\newcommand{\susp}{\Sigma}
+\newcommand{\north}{\mathsf{N}}
+\newcommand{\south}{\mathsf{S}}
+\newcommand{\merid}{\mathsf{merid}}
+\newcommand{\Map}{\mathsf{Map}}
 
 \chapter{Higher inductive types}
 \label{cha:hits}
@@ -398,6 +403,172 @@ We leave this to the reader (see \autoref{ex:nspheres}); in the next section we 
 \section{Suspensions}
 \label{sec:suspension}
 
+The \textbf{suspension} of a type $A$ is the universal way of making the points of $A$ into paths (and hence the paths in $A$ into 2-paths, and so on).
+It is a type $\susp A$ defined by the following generators:
+\begin{itemize}
+\item a point $\north:\susp A$,
+\item a point $\south:\susp A$, and
+\item a function $\merid:A \to (\id[\susp A]\north\south)$.
+\end{itemize}
+The names are intended to suggest a ``globe'' of sorts, with a north pole, a south pole, and an $A$'s worth of meridians from one to the other.
+Indeed, as we will see, if $A=\Sn^1$, then its suspension is equivalent to the surface of an ordinary sphere, $\Sn^2$.
+
+The recursion principle for $\susp A$ says that given a type $B$ together with points $n,s:B$ and a function $m:A \to (n=s)$, we have a function $f:\susp A \to B$ such that $f(\north)\jdeq n$ and $f(\south)\jdeq s$, and for all $a:A$ we have $\ap f {\merid(a)} = m(a)$.
+The induction principle says that given $P:\susp A \to \type$ together with
+\begin{itemize}
+\item a point $n:P(\north)$,
+\item a point $s:P(\south)$, and
+\item for each $a:A$, a path $m(a):\dpath P{\merid(a)}ns$,
+\end{itemize}
+there exists a function $f:\prd{x:\susp A} P(x)$ such that $f(\north)\jdeq n$ and $f(\south)\jdeq s$ and for each $a:A$ we have $\apd f {\merid(a)} = m(a)$.
+
+Our first observation about suspension is that it gives another way to define the circle.
+
+\begin{lem}\label{thm:suspbool}
+  $\eqv{\susp\bool}{\Sn^1}$.
+\end{lem}
+\begin{proof}
+  Define $f:\susp\bool\to\Sn^1$ by recursion such that $f(\north)\defeq \base$ and $f(\south)\defeq\base$, while $\ap f{\merid(0)}=\lloop$ but $\ap f{\merid(1)} = \refl{\base}$.
+  Define $g:\Sn^1\to\susp\bool$ by recursion such that $g(\base)\defeq \north$ and $\ap g \lloop = \merid(0) \ct \opp{\merid(1)}$.
+  We now show that $f$ and $g$ are quasi-inverses.
+
+  First we show by induction that $g(f(x))=x$ for all $x:\susp \bool$.
+  If $x\jdeq\north$, then $g(f(\north)) \jdeq g(\base)\jdeq \north$, so we have $\refl{\north} : g(f(\north))=\north$.
+  If $x\jdeq\south$, then $g(f(\south)) \jdeq g(\base)\jdeq \north$, and we choose the equality $\merid(1) : g(f(\south)) = \south$.
+  It remains to show that for any $y:\bool$, these equalities are preserved as $x$ varies along $\merid(y)$, which is to say that when $\refl{\north}$ is transported along $\merid(y)$ it yields $\merid(1)$.
+  By transport in path spaces and pulled back fibrations, this means we are to show that
+  \[ \opp{\ap g {\ap f {\merid(y)}}} \ct \refl{\north} \ct \merid(y) = \merid(1). \]
+  Of course, we may cancel $\refl{\north}$.
+  Now by \bool-induction, we may assume either $y\jdeq 0$ or $y\jdeq 1$.
+  If $y\jdeq 0$, then we have
+  \begin{align*}
+    \opp{\ap g {\ap f {\merid(0)}}} \ct \merid(0)
+    &= \opp{\ap g {\lloop}} \ct \merid(0)\\
+    &= \opp{\merid(0) \ct \opp{\merid(1)}} \ct \merid(0)\\
+    &= \merid(1) \ct \opp{\merid(0)} \ct \merid(0)\\
+    &= \merid(1)
+  \end{align*}
+  while if $y\jdeq 1$, then we have
+  \begin{align*}
+    \opp{\ap g {\ap f {\merid(1)}}} \ct \merid(1)
+    &= \opp{\ap g {\refl{\base}}} \ct \merid(1)\\
+    &= \opp{\refl{\north}} \ct \merid(1)\\
+    &= \merid(1).
+  \end{align*}
+  Thus, for all $x:\susp \bool$, we have $g(f(x))=x$.
+
+  Now we show by induction that $f(g(x))=x$ for all $x:\Sn^1$.
+  If $x\jdeq \base$, then $f(g(\base))\jdeq f(\north)\jdeq\base$, so we have $\refl{\base} : f(g(\base))=\base$.
+  It remains to show that this equality is preserved as $x$ varies along $\lloop$, which is to say that it is transported along $\lloop$ to itself.
+  Again, by transport in path spaces and pulled back fibrations, this means to show that
+  \[ \opp{\ap f {\ap g {\lloop}}} \ct \refl{\base} \ct \lloop = \refl{\base}.\]
+  However, we have
+  \begin{align*}
+    \ap f {\ap g {\lloop}} &= \ap f {\merid(0) \ct \opp{\merid(1)}}\\
+    &= \ap f {\merid(0)} \ct \opp{\ap f {\merid(1)}}\\
+    &= \lloop \ct \refl{\base}
+  \end{align*}
+  so this follows easily.
+\end{proof}
+
+Topologically, the two-point space \bool is also known as the \emph{0-dimensional sphere}, $\Sn^0$.
+(For instance, it is the space of points at distance $1$ from the origin in $\mathbb{R}^1$, just as the topological 1-sphere is the space of points at distance $1$ from the origin in $\mathbb{R}^2$.)
+Thus, \autoref{thm:suspbool} can be phrased suggestively as $\eqv{\susp\Sn^0}{\Sn^1}$.
+In fact, this pattern continues: we can define all the spheres inductively by
+\begin{equation}\label{eq:Snsusp}
+\begin{split}
+  \Sn^0 &\defeq \bool\\
+  \Sn^{n+1} &\defeq \susp \Sn^n.
+\end{split}
+\end{equation}
+To prove that this is correct would require making explicit the definition of $\Sn^n$ from the previous section, but we can motivate it as follows.
+If $(A,a_0)$ and $(B,b_0)$ are pointed types (with basepoints often left implicit), let $\Map_*(A,B)$ denote the type of based maps:
+\[ \Map_*(A,B) \defeq \sm{f:A\to B} (f(a_0)=b_0). \]
+Note that any type $A$ gives rise to a pointed type $A_+ \defeq A+\unit$ with basepoint $\inr(\ttt)$; this is called \emph{adjoining a disjoint basepoint}.
+
+\begin{lem}
+  For a type $A$ and a pointed type $(B,b_0)$, we have
+  \[ \eqv{\Map_*(A_+,B)}{(A\to B)} \]
+\end{lem}
+Note that on the right we have the ordinary type of \emph{unbased} functions from $A$ to $B$.
+\begin{proof}
+  From left to right, given $f:A_+ \to B$ with $p:f(\inr(\ttt)) = b_0$, we have $f\circ \inl : A \to B$.
+  And from right to left, given $g:A\to B$ we define $g':A_+ \to B$ by $g'(\inl(a))\defeq g(a)$ and $g'(\inr(u)) \defeq b_0$.
+  We leave it to the reader to show that these are quasi-inverse operations.
+\end{proof}
+
+In particular, note that $\eqv{\bool}{\unit_+}$.
+Thus, for any pointed type $B$ we have
+\[{\Map_*(\bool,B)} \simeq {(\unit \to B)}\simeq B.\]
+
+Now recall that the loop space operation $\Omega$ acts on pointed types, with definition $\Omega(A,a_0) \defeq (\id[A]{a_0}{a_0},\refl{a_0})$.
+We can also make the suspension $\susp$ act on pointed types, by $\susp(A,a_0)\defeq (\susp A,\north)$.
+
+\begin{lem}
+  For pointed types $(A,a_0)$ and $(B,b_0)$ we have
+  \[ \eqv{\Map_*(\susp A, B)}{\Map_*(A,\Omega B)}.\]
+\end{lem}
+\begin{proof}
+  From left to right, given $f:\susp A \to B$ with $p:f(\north) = b_0$, we define $g:A \to \Omega B$ by
+  \[g(a) \defeq \opp p \ct \ap f{\merid(a) \ct \opp{\merid(a_0)}} \ct p.\]
+  Then we have
+  \begin{align*}
+    g(a_0) &\jdeq \opp p \ct \ap f{\merid(a_0) \ct \opp{\merid(a_0)}} \ct p\\
+    &= \opp p \ct \ap f{\refl{\north}} \ct p\\
+    &= \opp p \ct p\\
+    &= \refl{b_0}.
+  \end{align*}
+  Thus, denoting this path by $q:g(a_0)=\refl{b_0}$, we have $(g,q):\Map_*(A,\Omega B)$.
+
+  On the other hand, from right to left, given $g:A\to \Omega B$ and $q:g(a_0)=\refl{b_0}$, we define $f:\susp A \to B$ by $\susp$-recursion, such that $f(\north)\defeq b_0$ and $f(\south)\defeq b_0$ and
+  \[ \ap f {\merid(a)} = g(a). \]
+  Then we can simply take $p$ to be $\refl{b_0} : f(\north)= b_0$.
+
+  Now given $(f,p)$, by passing back and forth we obtain $(f',p')$ where $f'$ is defined by $f'(\north)\jdeq b_0$ and $f'(\south)\jdeq b_0$ and
+  \[ \ap {f'} {\merid(a)} = \opp p \ct \ap f{\merid(a) \ct \opp{\merid(a_0)}} \ct p, \]
+  while $p' \jdeq \refl{b_0}$.
+  To show $f=f'$, by function extensionality it suffices to show $f(x)=f'(x)$ for all $x:\susp A$, so we can use $\susp$-induction.
+  First, we have
+  \begin{equation}
+    f(\north) \overset{p}{=} b_0 \jdeq f'(\north)\label{eq:ffprime-north}
+  \end{equation}
+  Second, we have
+  \[f(\south) \overset{\opp{\ap f {\merid(a_0)}}}{=} f(\north) \overset{p}{=} b_0 \jdeq f'(\south).\]
+  And thirdly, as $x$ varies along $\merid(a)$ we must show that the following diagram commutes (invoking the definition of $\ap{f'}{\merid(a)}$):
+  \[ \xymatrix{
+    f(\north) \ar[rrr]^{p} \ar[ddd]_{f(\merid(a))} &&&
+    b_0 \ar@{=}[r] &
+    f'(\north) \ar[d]^{\opp p}\\
+    &&&& f(\north) \ar[d]^{\ap f{\merid(a) \ct \opp{\merid(a_0)}}}\\
+    &&&& f(\north) \ar[d]^p\\
+    f(\south) \ar[rr]_{\opp{\ap f {\merid(a_0)}}} &&
+    f(\north) \ar[r]_p &
+    b_0 \ar@{=}[r] &
+    f'(\south) }
+  \]
+  This is clear.
+  Thus, to show that $(f,p)=(f',p')$, it remains only to show that $p$ is identified with $p'$ when transported along this equality $f=f'$.
+  Since the type of $p$ is $f(\north)=b_0$, this means essentially that when $p$ is composed on the left with the inverse of the equality~\eqref{eq:ffprime-north}, it becomes $p'$.
+  But this is obvious, since~\eqref{eq:ffprime-north} is just $p$ itself, while $p'$ is reflexivity.
+
+  On the other side, suppose given $(g,q)$.
+  By passing back and forth we obtain $(g',q')$ with
+  \begin{align*}
+    g'(a) &= \opp{\refl{b_0}} \ct g(a) \ct \opp{g(a_0)} \ct \refl{b_0}\\
+    &= g(a) \ct \opp{g(a_0)}\\
+    &= g(a)
+  \end{align*}
+  using $q:g(a_0) = \refl{b_0}$ in the last equality.
+  Thus, $g'=g$ by function extensionality, so it remains to show that when transported along this equality $q$ is identified with $q'$.
+  At $a_0$, the induced equality $g(a_0)=g'(a_0)$ consists essentially of $q$ itself, while the definition of $q'$ involves only canceling inverses and reflexivities.
+  Thus, some tedious manipulations of naturality finish the proof.
+\end{proof}
+
+In particular, for the spheres defined as in~\eqref{eq:Snsusp} we have
+\[ \Map_*(\Sn^n,B) \simeq \Map_*(\Sn^{n-1}, \Omega B) \simeq \cdots \simeq \Map_*(\bool,\Omega^n B) \simeq \Omega^n B. \]
+Thus, these spheres $\Sn^n$ have the universal property that we would expect from the spheres defined directly in terms of $n$-fold loops as in \S\ref{sec:circle}.
+
+
 \section{Cell complexes}
 \label{sec:cell-complexes}
 
@@ -490,10 +661,17 @@ be bundled in the type $A$ and all path constructors in the type $B$.
 
 \section*{Exercises}
 
+\begin{ex}\label{thm:suspS1}
+  Prove that $\eqv{\susp \Sn^1}{\Sn^2}$, using the explicit definition of $\Sn^2$ in terms of $\base$ and $\surf$ given in \S\ref{sec:circle}.
+\end{ex}
+
 \begin{ex}\label{ex:nspheres}
   Define dependent $n$-loops and the action of dependent functions on $n$-loops, and write down the induction principle for the $n$-spheres as defined at the end of \S\ref{sec:circle}.
 \end{ex}
 
+\begin{ex}
+  Prove that $\eqv{\susp \Sn^n}{\Sn^{n+1}}$, using the definition of $\Sn^n$ in terms of $\Omega^n$ from \S\ref{sec:circle}.
+\end{ex}
 
 
 % Local Variables:

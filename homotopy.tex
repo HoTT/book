@@ -1,8 +1,5 @@
 %%% Macros that should probably be defined before
 
-% Function definition with domain and codomain
-\newcommand{\function}[4]{\left\{\begin{array}{rcl}#1 &
-      \longrightarrow & #2 \\ #3 & \longmapsto & #4 \end{array}\right.}
 % h-propositions
 \newcommand{\anhprop}{a mere proposition\xspace}
 \newcommand{\hprops}{mere propositions\xspace}
@@ -11,16 +8,6 @@
 
 % Subuniverse
 \renewcommand{\P}{\ensuremath{\mathsf{P}}\xspace}
-% Cocone
-\newcommand{\cocone}[2]{\mathrm{cocone}_{#1}(#2)}
-% Diagram
-\newcommand{\Ddiag}{\mathscr{D}}
-% Pushouts
-% \newcommand{\inl}{\mathsf{inl}}
-% \newcommand{\inr}{\mathsf{inr}}
-\newcommand{\glue}{\mathsf{glue}}
-% Cone
-\newcommand{\cone}[2]{\mathrm{cone}_{#1}(#2)}
 % Reflector, projection and extension in an arbitrary reflective subuniverse
 \newcommand{\reflect}{\mathsf{r}}
 \newcommand{\project}{\mathsf{p}}
@@ -28,9 +15,6 @@
 % Projection and extension for truncations
 \newcommand{\extendsmb}{\mathsf{ext}}
 \newcommand{\extend}[1]{\extendsmb(#1)}
-% Apply a function to a cocone
-\newcommand{\composecocone}[2]{#1\circ#2}
-\newcommand{\composecone}[2]{#2\circ#1}
 
 \chapter{Homotopy theory}
 \label{cha:homotopy}
@@ -44,6 +28,9 @@ $n$-truncated types of this fixed universe \type.
 \section{Homotopy pushouts}
 \label{sec:pushouts}
 
+In \S\ref{sec:colimits} we used higher inductive types to define pushouts of types.
+It will be useful for us to consider also the notion of pushout in certain subcategories of types.
+
 \subsection{Definition}
 \label{sec:push:definition}
 
@@ -53,13 +40,13 @@ $P(A)$ holds. For instance \P could be \prop, \set, or more generally
 $\typele{n}$ for any $n\ge-2$.
 
 \begin{defn}
-  A \emph{pushout diagram} in $\P$ is 5-tuple $\Ddiag=(A,B,C,f,g)$ with
+  A \emph{span} in $\P$ is 5-tuple $\Ddiag=(A,B,C,f,g)$ with
   $A,B,C:\P$ and $f:C\to{}A$ and $g:C\to{}B$.
   \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
 \end{defn}
 
 \begin{defn}
-  Given a pushout diagram $\Ddiag=(A,B,C,f,g)$ and a type $D:\P$, a
+  Given a span $\Ddiag=(A,B,C,f,g)$ and a type $D:\P$, a
   \emph{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
   $i:A\to{}D$, $j:B\to{}D$ and $h : \prod_{c:C}i(f(c))=j(g(c))$
   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
@@ -101,7 +88,7 @@ prove the bits of functoriality that we need.
 We can now define the notion of pushout.
 
 \begin{defn}
-  Given a pushout diagram $\Ddiag$, a type $D:\P$ and a cocone
+  Given a span $\Ddiag$, a type $D:\P$ and a cocone
   $c:\cocone{\Ddiag}{D}$, the pair $(D,c)$ is said to be a \emph{pushout}
   of $\Ddiag$ in $\P$ if for every $E:\P$, the map
   \[\function{(D\to{}E)}{\cocone{\Ddiag}{E}}{t}{\composecocone{t}c}\]
@@ -112,8 +99,8 @@ This definition says that for every $E:\P$ and for every cocone under $\Ddiag$
 with base $E$, there is an essentially unique map $D\to{}E$ such that the whole
 diagram commutes, the proof of commutation being essentially unique too.
 
-We can now prove some properties of pushouts. First, pushouts are unique when
-they exist.
+Of course, we showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher inductive types.
+For a general \P, pushouts may or may not exist, but if they do, then they are unique.
 
 \begin{lem}
   If $(D,c)$ and $(D',c')$ are two pushouts of $\Ddiag$ in $\P$, then
@@ -154,119 +141,6 @@ they exist.
   pushouts merely exist then they actually exist.
 \end{cor}
 
-\subsection{Pushouts in \type}
-\label{sec:push:pushoutsintype}
-
-We will now study the special case where $\P$ is $\type$ itself and construct
-explicit pushouts using higher inductive types.
-
-We consider a pushout diagram
-
-\[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
-
-where $A,B,C:\type$.
-
-\begin{defn}
-  We define a type $A\sqcup^CB:\type$ by the following higher inductive
-  definition:
-
-  \begin{align*}
-    A\sqcup^CB\defeq&\ |\ \inl:A\to{}A\sqcup^CB \\
-    &\ |\ \inr : B\to{}A\sqcup^CB \\
-    &\ |\ \glue : \prod_{c:C}(\inl(f(c))=\inr(g(c)))
-  \end{align*}
-
-  In other words, $A\sqcup^CB$ is the disjoint union of $A$ and $B$ where for
-  every $c:C$ we add a witness that $f(c)$ and $g(c)$ are equal.
-
-  If $D$ is another type, we can define a map $s:A\sqcup^CB\to{}D$ by defining
-  \begin{align*}
-    (a:A)\qquad& s(\inl(a)):D\\
-    (b:B)\qquad& s(\inr(b)):D\\
-    (c:C)\qquad& \mapfunc{s}(\glue(c)):s(\inl(f(c)))=s(\inr(g(c)))
-  \end{align*}
-
-  And if $s,s':A\sqcup^CB\to{}D$ are two maps such that
-  \begin{align*}
-    s(\inl(a))=s'(\inl(a))\\
-    s(\inr(b))=s'(\inr(b))\\
-    \mapfunc{s}(\glue(c))=\mapfunc{s'}(\glue(c))
-  \end{align*}
-
-  for every $a,b,c$, then $s=s'$.
-\end{defn}
-
-The type $A\sqcup^CB$ is also called the \emph{pushout} of $\mathscr{D}$, because
-of the following lemma:
-
-\begin{lem}
-  The type $A\sqcup^CB$ together with the cocone $c_{\sqcup}=(\inl,\inr,\glue)$
-  is a pushout of $\mathscr{D}$ in $\type$.
-
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^\glue\ \ } & B \ar^\inr[d] \\
-    A \ar_-\inl[r] & A\sqcup^CB }\]
-\end{lem}
-\begin{proof}
-  Let's consider an arbitrary type $E:\type$. We need to prove that the map
-  \[\function{(A\sqcup^CB\to{}E)}{\cocone{\Ddiag}{E}}
-  {t}{\composecocone{t}c_\sqcup}\]
-  is an equivalence.
-
-  Given a $c=(i,j,h):\cocone{\mathscr{D}}{E}$, we need to construct a
-  map $\mathsf{s}(c)$ from $A\sqcup^CB$ to $E$.
-
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^{j}[d] \\
-    A \ar_-{i}[r] & E }\]
-
- The map $\mathsf{s}(c)$ is defined in the following way
-  \begin{align*}
-    \mathsf{s}(c)(\inl(a))&=i(a)\\
-    \mathsf{s}(c)(\inr(b))&=j(b)\\
-    \mapfunc{\mathsf{s}(c)}(\glue(x))&=h(x)\\
-  \end{align*}
-
-We have defined a map
-\[\function{\cocone{\Ddiag}{E}}{(A\sqcup^BC\to{}E)}{c}{\mathsf{s}(c)}\]
-and we need to prove that this map is an inverse to
-$t\mapsto{}\composecocone{t}c_\sqcup$.
-
-On the one hand, if $c=(i,j,h):\cocone{\Ddiag}{E}$, we have
-\begin{align*}
-  \composecocone{\mathsf{s}(c)}c_\sqcup & =
-  (\mathsf{s}(c)\circ\inl,\mathsf{s}(c)\circ\inr,
-  \mapfunc{\mathsf{s}(c)}\circ\glue) \\
-  & = (\lambda{}a^A.\mathsf{s}(c)(\inl(a)),\lambda{}b^B.\mathsf{s}(c)(\inr(b)),
-  \lambda{}x^C.\mapfunc{\mathsf{s}(c)}(\glue(x))) \\
-  & = (\lambda{}a^A.i(a),\lambda{}b^B.j(b),
-  \lambda{}x^C.h(x)) \\
-  & = (i, j, h) \\
-  & = c
-\end{align*}
-
-On the other hand, if $t:A\sqcup^BC\to{}E$, we want to prove that
-$\mathsf{s}(\composecocone{t}c_\sqcup)=t$.
-
-For $a:A$, we have
-\[\mathsf{s}(\composecocone{t}c_\sqcup)(\inl(a))=t(\inl(a))\]
-because the first component of $\composecocone{t}c_\sqcup$ is $t\circ\inl$. In
-the same way, for $b:B$ we have
-\[\mathsf{s}(\composecocone{t}c_\sqcup)(\inr(b))=t(\inr(b))\]
-and for $x:C$ we have
-\[\mapfunc{\mathsf{s}(\composecocone{t}c_\sqcup)}(\glue(x))
-=\mapfunc{t}(\glue(x))\]
-hence $\mathsf{s}(\composecocone{t}c_\sqcup)=t$.
-
-This proves that $c\mapsto\mathsf{s}(c)$ is an inverse to
-$t\mapsto{}\composecocone{t}c_\sqcup$ which proves that
-$(A\sqcup^BC,c_\sqcup)$ is a pushout of $\Ddiag$ in $\type$.
-\end{proof}
-
-\begin{defn}
-  If $A:\type$, the type $\unit\sqcup^A\unit$ (with the two obvious maps
-  $A\to\unit$) is called the \emph{suspension} of $A$.
-\end{defn}
 
 \section{Homotopy pullbacks}
 \label{sec:pullbacks}
@@ -275,13 +149,13 @@ Most of the previous section can be dualised to give a definition of
 pullbacks. More precisely we have the following
 
 \begin{defn}
-  A \emph{pullback diagram} in $\P$ is a diagram of the following form
+  A \emph{cospan} in $\P$ is a diagram of the following form
   \[\xymatrix{& B \ar^g[d] \\ A \ar_f[r] & C}\]
   with $A,B,C:\P$.
 \end{defn}
 
 \begin{defn}
-  If $\Ddiag$ is a pullback diagram and $D:\P$, a \emph{cone over $\Ddiag$ with
+  If $\Ddiag$ is a cospan and $D:\P$, a \emph{cone over $\Ddiag$ with
     base $D$} is a triple $(i,j,h)$ such as in the following diagram:
   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{D \ar^j[r] \ar_i[d] \drtwocell{^h} & B \ar^g[d] \\
@@ -305,11 +179,12 @@ map is (contravariantly) functorial.
 \end{defn}
 
 The construction of pullbacks in $\type$ is easier than the construction of
-pushouts, we don't need higher inductive types.
+pushouts.
+In particular, we don't need higher inductive types.
 
 \begin{defn}
   Let $\Ddiag$ be a diagram in $\type$. We define the following type
-  \[A\times_CB=\{(a,b):A\times{}B\ |\ f(a) = g(b)\}\]
+  \[A\times_CB=\setof{(a,b):A\times{}B | f(a) = g(b)}\]
 
   There is a canonical cone $c_\times=(\pi_1,\pi_2,\pi_3)$ over $\Ddiag$ with
   base $A\times_CB$ given by the following diagram
@@ -335,7 +210,6 @@ pushouts, we don't need higher inductive types.
   and we need to prove that $\composecone{\mathsf{s}(c)}{c_\times}=c$ and
   $\mathsf{s}(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
   $t:E\to{}A\times_CB$ and both are easy computations:
-
   \begin{align*}
     \composecone{\mathsf{s}(c)}{c_\times}
     &=\composecone{\mathsf{s}(c)}{(\pi_1,\pi_2,\pi_3)} \\
@@ -344,33 +218,32 @@ pushouts, we don't need higher inductive types.
     &=(i,j,h)\\
     &=c
   \end{align*}
-
   \begin{align*}
     \mathsf{s}(\composecone{t}{c_\times})(x) &=
     \mathsf{s}(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
     &=(\pi_1(t(x)),\pi_2(t(x)),\pi_3(t(x)))\\
-    &=t(x)
+    &=t(x)\qedhere
   \end{align*}
 \end{proof}
 
 \begin{defn}
-  If $\Ddiag$ is a pullback diagram and $D:\type$, then we define another
-  pullback diagram called $D\to\Ddiag$:
+  If $\Ddiag$ is a cospan and $D:\type$, then we define another
+  cospan called $D\to\Ddiag$:
   \[\xymatrix{& (D\to B) \ar^{g\circ-}[d] \\ (D\to A) \ar_{f\circ-}[r] & (D\to
     C)}\]
 
-  Similarly if $\Ddiag$ is a pushout diagram and $D:\type$, then we have a
-  pullback diagram $\Ddiag\to{}D$:
+  Similarly if $\Ddiag$ is a span and $D:\type$, then we have a
+  cospan $\Ddiag\to{}D$:
   \[\xymatrix{& (B\to D) \ar^{-\circ{}g}[d] \\ (A\to D) \ar_{-\circ{}f}[r] &
     (C\to D)}\]
 \end{defn}
 
 \begin{lem}
   \label{coneispb}
-  If $\Ddiag$ is a pullback diagram and $D:\P$, then
+  If $\Ddiag$ is a cospan and $D:\P$, then
   \[\cone{\Ddiag}{D}=(D\to{}A)\times_{(D\to{}C)}(D\to{}B)\]
 
-  If $\Ddiag$ is a pushout diagram and $D:\P$, then
+  If $\Ddiag$ is a span and $D:\P$, then
   \[\cocone{\Ddiag}{D}=(A\to{}D)\times_{(C\to{}D)}(B\to{}D)\]
 \end{lem}
 \begin{proof}
@@ -566,13 +439,13 @@ few bits of it.
 % \end{proof}
 
 We now want to prove that pushouts in \P are related to pushouts in \type. We
-first need to explain how to reflect pushout diagrams and cocones.
+first need to explain how to reflect spans and cocones.
 
 \begin{defn}
   Let
   \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
-  be a pushout diagram in $\type$. We note $\reflect(\Ddiag)$ the following
-  pushout diagram in $\P$:
+  be a span in $\type$. We note $\reflect(\Ddiag)$ the following
+  span in $\P$:
   \[\reflect(\Ddiag)=\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
     \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }\]
 \end{defn}
@@ -604,7 +477,7 @@ first need to explain how to reflect pushout diagrams and cocones.
 
 \begin{lem}
   \label{reflectcommutespushout}
-  Let $\Ddiag$ be a pushout diagram in $\type$ and $(D,c)$ a pushout of $\Ddiag$
+  Let $\Ddiag$ be a span in $\type$ and $(D,c)$ a pushout of $\Ddiag$
   in $\type$. Then $(\reflect(D),\reflect(c))$ is a pushout of
   $\reflect(\Ddiag)$ in $\P$.
 \end{lem}
@@ -856,7 +729,7 @@ that we will be able to omit rigorously the equalities left implicit above and s
 conclude that every coherence condition is always satisfied.
 
 \begin{cor}
-  Every pushout diagram $\Ddiag$ in $\P$ has a pushout in $\P$.
+  Every span $\Ddiag$ in $\P$ has a pushout in $\P$.
 \end{cor}
 
 \begin{proof}

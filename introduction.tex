@@ -26,28 +26,28 @@
 
 
 %%% Outline
-%%	- The idea of HoTT and the special role of Identity
+%%      - The idea of HoTT and the special role of Identity
 
 %
-%%	- The idea of informal type theory
+%%      - The idea of informal type theory
 %
-%%	- Brief history - ok
+%%      - Brief history - ok
 %
-%%	- Constructive math vs. general: no proof by contradiction/ proof relevance/ -- still need to do
+%%      - Constructive math vs. general: no proof by contradiction/ proof relevance/ -- still need to do
 %
-%%	- How is type theory different from set theory? - ok
+%%      - How is type theory different from set theory? - ok
 %
-%%	- How is HoTT different from type theory? -ok
+%%      - How is HoTT different from type theory? -ok
 %
-%%	- Different readers of these notes: -ok 
-%%		- Working mathematicians
-%%		- ... CS
-%%		- ... Logicians
-%%		- homotopy theorists and higher category theorists
+%%      - Different readers of these notes: -ok 
+%%              - Working mathematicians
+%%              - ... CS
+%%              - ... Logicians
+%%              - homotopy theorists and higher category theorists
 %
-%%	- weak points and work to do -- still needs to be done
+%%      - weak points and work to do -- still needs to be done
 %
-%%	- Coq development, new proof assistant, etc. - ok
+%%      - Coq development, new proof assistant, etc. - ok
 %%
 
 \emph{Homotopy type theory} (HoTT) is a new field of mathematics, which combines aspects of several different areas in a surprising way.
@@ -233,7 +233,7 @@ Thus, from every proof we can automatically extract an algorithm; this is very u
 
 However, this conception of logic does behave in ways unfamiliar to most mathematicians.
 For instance, the \textbf{axiom of choice} becomes a provable principle of reasoning: the type theoretic notion of ``there exists'' is strong enough to ensure that, if for every $x: A$ there exists a $y:B$ such that $R(x,y)$, then there is a function $f : A\to B$ such that, for all $x:A$, we have $R(x, f(x))$.
-On the other hand, the conception of ``or'' is so strong that the usual \textbf{law of excluded middle} fails: for if we always had a proof of ``$A$ or not $A$'', then for \emph{every} proposition $A$ we would either have a proof of it or a refutation --- which would of course be nice, but is unfortunately not the case.
+On the other hand, the conception of ``or'' is so strong that the usual \textbf{law of excluded middle} cannot be established: if we always had a proof of ``$A$ or not $A$'', then for \emph{every} proposition $A$ we would either have a proof of it or a refutation --- which would of course be nice, but it would also allow us to construct the Halting Oracle and other non-computable functions. We prefer good computational behavior of type theory, and in any case the Univalence Axiom implies that Excluded Middle is false, cf.\ \autoref{thm:not-lem}.
 Thus, the logic of ``proposition as types'' suggested by traditional type theory is not the ``classical'' logic familiar to most mathematicians.
 But it is also different from the logic often called ``intuitionistic'', which lacks \emph{both} the law of excluded middle and the axiom of choice.
 It is sometimes called ``constructive'' logic, but one should be aware that intuitionistic logic is also sometimes given that name; for emphasis we may call it \emph{pure constructive logic}.
@@ -271,18 +271,18 @@ We summarize the different points of view of the type-theoretic operations in Ta
 
 \begin{table}\centering
   \begin{tabular}{c||c|c|c}
-  	Type Theory & Logic & Set Theory & HoTT\\\hline
-  	$A$ & proposition & set & space\\
-	$a:A$ & proof & element & point \\
-    	$x:A \vdash B(x)$ & predicate & family of sets & fibration \\
-    	$x:A \vdash b(x) : B(x)$ & conditional proof & family of elements & section\\
-	$0, 1$ & $\bot, \top$ & $\emptyset, \{ \emptyset \}$ & $\emptyset, *$\\
-	$A + B$ & $A\vee B$ & disjoint union & coproduct\\
-	$A\times B$ & $A\wedge B$ & set of pairs & product space\\
-	$A\to B$ & $A\Rightarrow B$ & set of functions & function space\\
-	$\Sigma_{x:A}B(x)$ &  $\exists_{x:A}B(x)$ & disjoint sum & total space\\
-	$\Pi_{x:A}B(x)$ &  $\forall_{x:A}B(x)$ & product & space of sections\\
-	$\mathsf{Id}_{A}$ & identity relation & $\{\langle x,x\rangle\, |\, x\in A\}$ & path space $A^I$
+       Type Theory & Logic & Set Theory & HoTT\\\hline
+       $A$ & proposition & set & space\\
+       $a:A$ & proof & element & point \\
+       $x:A \vdash B(x)$ & predicate & family of sets & fibration \\
+       $x:A \vdash b(x) : B(x)$ & conditional proof & family of elements & section\\
+       $0, 1$ & $\bot, \top$ & $\emptyset, \{ \emptyset \}$ & $\emptyset, *$\\
+       $A + B$ & $A\vee B$ & disjoint union & coproduct\\
+       $A\times B$ & $A\wedge B$ & set of pairs & product space\\
+       $A\to B$ & $A\Rightarrow B$ & set of functions & function space\\
+       $\Sigma_{x:A}B(x)$ &  $\exists_{x:A}B(x)$ & disjoint sum & total space\\
+       $\Pi_{x:A}B(x)$ &  $\forall_{x:A}B(x)$ & product & space of sections\\
+       $\mathsf{Id}_{A}$ & identity relation & $\{\langle x,x\rangle\, |\, x\in A\}$ & path space $A^I$
   \end{tabular}
   \caption{Comparing points of view on type-theoretic operations}\label{tab:pov}
 \end{table}
@@ -299,7 +299,7 @@ These questions remain open at the present time, although methods are currently 
 
 Another basic issue is the difficulty of working with types, like the natural numbers, which are essentially sets (i.e., discrete spaces), containing only trivial paths.
 At present, homotopy type theory can really only characterize spaces up to homotopy equivalence, which means that these ``discrete spaces'' may only be \emph{homotopy equivalent} to discrete spaces.
-Type-theoretically, this means there are many paths that are \emph{provably} equal to reflexivity, but not definitionally so.
+Type-theoretically, this means there are many paths that are equal to reflexivity, but not \emph{judgmentally} equal to it.
 While this homotopy-invariance has advantages, these ``meaningless'' identity terms do introduce needless complications into arguments and constructions, so it would be convenient to have a systematic way of eliminating or collapsing them.
 In some cases, the proliferation of such superfluous identity terms makes it very difficult or impossible to formulate what should be a straightforward concept, such as the definition of a simplicial type.
 

@@ -120,34 +120,96 @@ In most cases, these rules follow a fairly predictable pattern, but we will not 
 \section{Universes}
 \label{sec:universes}
 
-We introduce a sequence of symbols $\UU_0,\UU_1,\UU_2, \dots$ which
-stand for type theoretic universes, i.e., types whose elements are
-types. In a way it would be nice if we just had one universe $\UU$ of
-all types including $\UU : \UU$.
-However, we can encode Burali--Forti's paradox in Type Theory, so such a universe makes the type theory inconsistent (in the sense that every type is inhabited, including ``false'').
-Instead, we introduce a hierarchy of universes
+A universe is a type whose elements are types. As in naive set theory
+we may wish for a universe of all types $\UU_\infty$ including itself
+$\UU_infty : \UU_\infty$ but as in set
+theory this is unsound, i.e. we can deduce that every type,
+including the empty type representing the proposition False, is inhabited. Using a
+representation of sets as trees we can directly encode Russell's
+paradox \cite{thierry:trees} or alternatively avoiding the use of
+inductive types to define trees we can encode the Burali-Forti paradox
+(that the collection of ordinals cannot be an ordinal) this is due to
+Girard \cite{girard:paradox}.
+
+To avoid paradoxes we introduce a hierarchy of universes
 \[ \UU_0 : \UU_1 : \UU_2 : \dots \]
-We assume that the hierarchy of universes is cummulative, i.e., if
-$A:\UU_i$ then $A : \UU_{i+1}$. Hence the difference between
-$\UU_0$ and $\UU_1$ is that $\UU_1$ contains the type $\UU_0:\UU_1$
-types build from $\UU_0$. Similarily $\UU_2$ contains all the types
-from $\UU_1$ and additionally $\UU_1$ and types build using $\UU_1$. 
+where every universe $\UU_i$ and an element of the next universe
+$\UU_{i+1}$. Moreover we assume that our universes are
+\emph{cummulative}, that is that all the elements of the $i$th
+universe are also emelements of the $i+1$th universe, i.e. if
+$A:\UU_i$ then $A:\UU_{i+1}$
+\footnote{This rule seems to break the principle that every element
+  has a uniquely determined type. This could be avoided by introducing
+  an explicit lifting operator. We simply omit writing liftings not to
+  clutter notation.}.
 
 We say that our type theory is predicative if types in a universe
 $\UU_i$ are introduced only with reference to types in the same or
 lower universes. Most (all ?) constructions introduced in this book
-are predicative. 
+are predicative. An impredicative type is one which is obtained by
+quantifying over all types at a certain level including itself. In
+classical Mathematics we can quantify over all truth values which are
+identified with the type of booleans. Do ing the same in type theory
+would involve quantifying over all types at the current level and is
+hence impredicative. As a consequence assuming excluded middle which
+identifies the small type of booleans with the universe, leads to an
+impredicative theory.
 
-When we say $A$ is a type we mean that it is an element of some
-universe $\UU_i$. To avoid having to clutter up the text with indices
-we use the metavariable $\UU$ to stand for any universe. That is $A$
-is a type is the same as saying $A : \UU$.
+When we say that $A$ is a type we mean that it inhabits some universe
+$\UU_i$. We usually want to avoid to mention the level $i$ explicitely
+and just assume that levels can be assigned in a consistent way. We
+may write $A:\UU$ omitting the level. This way we can even write
+$\UU:\UU$ which can be read as $\UU_I:\UU_{i+1}$ having left the
+indizes implicit. 
 
 
-\section{Function types}
+\section{Simple types}
 \label{sec:function-types}
 
-TODO.
+Before moving on to dependent types let us first review some types
+which corresponds to standard set theoretic constructions: the
+function type $A \to B$, the (cartesian) product
+of two types $A\times B$ (or the type of binary tuples) and the coproduct
+or disjoint union of types $A + B$.
+
+\subsection{Function types}
+
+Given $A,B$ types we can construct the (non-dependent) function type
+$A\to B$. In type theory functions are a primitive concept which
+cannot be reduced to the notion of a graph. Functions are usually
+assumed to be constructive that is given a function $f : A \to B$ and
+an element of the domain $a : A$ we can effectively compute an element
+of the codomain $f(a) : B$. We introduce functions by explicit
+defining equations $f(x) := b[x]$ where $b[x] : A$ is a term which may
+use $x:A$. Then $f(a) \jdeq b[x:=a]$ where $b[x:=a]$ is $b[x]$ with
+all occurences of $x$ replaced by $a$. Note that this substitution has
+to be capture avoiding but it may consistently change names of bound
+variables \cite{capture-avoiding}. 
+
+If we want to avoid giving a name to the function we can use
+$\lambda$-abstraction $\lambda_{x:A}b[x] : A \to
+B$. $\lambda$-abstractions induce the judgmental equality 
+$(\lambda_{x:A}b[x])(a) \defeq b[x:=a]$ ($\beta$-equality). Note that
+we do not assume $\eta$-equality $\lambda_{x:A} f(x) \jdeq f$ (where
+$x$ does not occur in $f$) but this is provable as propositional
+equality using functional extensionality.
+
+For example we may define a function $f : \Nat \to \Nat$ by defining $f(n)
+\defeq n+2$ and then $f(2) \jdeq 2+2$. If we want to avoid giving the function a name we can use
+$\lambda$-abstraction, i.e. we can write $\lambda n:\Nat.n+2 : \Nat
+\to \Nat$.
+
+There are other means by which to define a function,
+e.g. using the fact that $\Nat$ is inductively defined we can define
+functions by primitive recursion which induces a number of
+definitional equalities. In general we may use the
+elimination principle associated to a particular type to define
+functions - we will define this when we introduce the type. 
+
+\subsection{Product types}
+
+Given $A,B$ types we can construct the product type $A\times B$ whose
+elements are pairs $(a,b)$ where $a : A$ and $b : B$. But how can we co
 
 
 \section{Families of types}

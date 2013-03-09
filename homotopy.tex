@@ -16,14 +16,371 @@
 \newcommand{\extendsmb}{\mathsf{ext}}
 \newcommand{\extend}[1]{\extendsmb(#1)}
 
+%% FIXME: copied from HITs; move to macros?
+\newcommand{\base}{\ensuremath{\mathsf{base}}\xspace}
+\newcommand{\lloop}{\ensuremath{\mathsf{loop}}\xspace}
+\newcommand{\susp}{\Sigma}
+\newcommand{\merid}{\mathsf{merid}}
+\newcommand{\north}{\mathsf{N}}
+\newcommand{\south}{\mathsf{S}}
+
 \chapter{Homotopy theory}
 \label{cha:homotopy}
 
-In this chapter, we will start developing homotopy theory. Unless otherwise
-stated, the notation \type will denote a \emph{fixed} universe and several
-occurrences of the word \type will always represent the same universe. The types
-\prop, \set, \typele{n} represent the types of propositions, sets and
-$n$-truncated types of this fixed universe \type.
+In this chapter, we develop some homotopy theory within HoTT.  
+
+\section{Overview}
+
+
+
+%% Now, the really cool thing about using HoTT to work with $\infty$-groupoids is
+%% that you don't start by defining "an $\infty$-groupoid is..." like one would in
+%% any other framework---which is fortunate, because describing the
+%% structure of an $\infty$-groupoid in something like set theory is notoriously
+%% difficult, because of all the structure mentioned above.  Instead, you
+%% exploit the fact that every type in type theory is an $\infty$-groupoid, with
+%% the structure of morphisms, 2-morphism, 3-morphisms, ... given by the
+%% identity type ("propositional equality").
+
+
+%% Eventually, we hope to show that you can do a lot of math in an elegant
+%% way by working directly with $\infty$-groupoids, but for now, the area that we
+%% have developed the most is homotopy theory.  I started writing an update
+%% on our recent progress doing homotopy theory in type theory, and
+%% realized that we didn't have a post on the blog explaining the basics.
+%% So this post will tell the basic story: what is homotopy theory?  How do
+%% we do it in type theory?  And later I'll post an update with what we've
+%% been up to recently.
+
+We begin with a very brief summary of classical homotopy theory,
+homotopy theory in $\infty$-groupoids, and homotopy theory in HoTT.
+
+\subsection{Classical homotopy theory}
+
+\emph{Topology} is the study of spaces up to continuous deformation.
+\emph{Algebraic topology} is the use of tools from abstract algebra,
+like group theory, to tell whether two spaces are the same.  As a first
+cut, we can say that two spaces are "the same" when there is an
+isomorphism between them (continuous maps back and forth that compose to
+the identity), though we will refine this later.  For example, one basic
+construction in algebraic topology is the \emph{fundamental group} of a
+space: Given a space $X$ and a point $x_0$ in it, one can (almost---see
+below) make a group whose elements are loops at $x_0$ (paths from $x_0$
+to $x_0$), with the group operations given by the identity path
+(standing still), path concatenation, and path reversal.  Isomorphic
+spaces have the same fundamental group, so fundamental group can be used
+to tell two spaces apart: if $X$ and $Y$ have different fundamental
+groups, they are not isomorphic.  Thus, the fundamental group is an
+algebraic invariant that provides global information about a space,
+which complements the local information provided by notions like
+continuity.  For example, the torus locally looks like the sphere, but
+has a global difference: it has a hole in it.  One way to see this is to
+observe that the fundamental group of the sphere is trivial, but the
+fundamental group of the torus is not.
+
+To explain why this is so, we need to be a little more precise about
+what the fundamental group is.  Consider a space $X$ with a path $p$
+from $x$ to $y$.  Then there is an inverse path $\opp p$ from $y$ to
+$x$.  Concatenating $p$ with $\opp p$ (written $p \ct \opp p$) gives a
+path from $x$ to $x$, which should be the same as the identity path
+(witnessing one of the inverse cancellation laws of a groupoid).
+However, in topology, a path $p$ in $X$ is represented as a continuous
+map from the interval $[0,1]$ into $X$, where $p(0) = x$ and $p(1) =
+y$---think of the interval as "time" and $p$ as giving the point on the
+path at each moment in time.  Under this definition, $p \ct \opp p$
+(which walks from $x$ to $y$, and then back along the same route, as
+time goes from $0$ to $1$) is not literally the same as the identity
+path (which stays still at x at all times).  So loops don't actually
+form a group!
+
+The way to fix this is to consider the notion of \emph{homotopy between
+paths}. Because $p \ct \opp p$ walks out and back along the same route, you know
+that you can continuously shrink $p \ct \opp p$ down to the identity path---it
+won't, for example, get snagged around a hole in the space.  Formally, a
+homotopy between functions $f, g : X \rightarrow Y$ is a continuous map 
+$h : [0,1] \times X -> Y$ such that $h(0,x) = f(x)$ and $h(1,x) = g(x)$.  In the specific case
+of paths $p$ and $q$, which, remember, are represented by maps $[0,1] -> X$, a
+homotopy is a continuous map $h(t,x) : [0,1] x [0,1] -> X$, such that
+$h(0,x) = p(x)$ and $h(1,x) = q(x)$.  That is, it's the image in $X$ of a
+square, which fills in the space between $p$ and $q$.  Homotopy is an
+equivalence relation, and operations like concatenation, inverses,
+etc. respect it.  Moreover, the homotopy-equivalence-classes of loops in
+$X$ at $x_0$ (where two loops $p$ and $q$ are equated when there is a \emph{based}
+homotopy between them, which is a homotopy $h$ as above that additionally
+satisfies $h(t,0) = h(t,1) = x_0$ for all $t$) do form a group: while $p \ct \opp p$
+is not equal to the identity, it is homotopic to it!  So, we can fix up
+the above definition of the fundamental group of a space by defining it
+to be the group of loops modulo homotopy.
+
+Returning to the example, we can see that the sphere is different than
+the torus because the fundamental group of the sphere is trivial (the
+one-element group), but the fundamental group of the torus is not.  The
+intuition is that every loop on the sphere is homotopic to the identity,
+because its inside is filled in.  In contrast, a loop on the torus that
+goes around the donut's hole is not homotopic to the identity, so there
+are non-trivial loops.
+
+The fundamental group, which is written $\pi_1(X,x_0$), is the first in
+a series of \emph{homotopy groups} that provide additional information
+about a space.  Fix a point $x_0$ in $X$, and consider the constant path
+$\refl{x_0}$.  Then the homotopies between $\refl{}$ and itself form a
+group (when you quotient \emph{them} by homotopy), which tells you
+something about the two-dimensional structure of the space.  Then
+$\pi_3(X,x_0$) is the group of homotopies between homotopies, and so on.
+One of the basic questions that algebraic topologists consider is
+\emph{calculating the homotopy groups of a space $X$}, which means
+giving a group isomorphism between $\pi_k(X)$ and some more direct
+description of a group (e.g., by a multiplication table or
+presentation).  Somewhat surprisingly, this is a very difficult
+question, even for spaces as simple as the spheres.  Here is a chart
+that lists the low-dimensional homotopy groups of the low-dimensional
+spheres:
+
+FIXME
+
+There are some patterns, but there is no general formula, and many
+homotopy groups of spheres are currently unknown.  Homotopy groups are
+just one of the algebraic invariants that people study; some others are
+the \emph{homology groups} and \emph{cohomology groups}, which are
+sometimes easier to calculate.
+
+An interesting fact is that, while we started off by trying to classify
+spaces up to isomorphism, most of these algebraic tools in fact classify
+spaces up to something called \emph{homotopy equivalence}.  Two spaces $X$ and $Y$
+are homotopy equivalent iff there are maps $f : X -> Y$ and $g : Y -> X$
+such that there is a homotopy between $f \circ g$ and the identity function
+(and similarly for $g \circ f$).  This gives you a little wiggle room to
+"correct" maps that don't exactly compose to the identity, but only miss
+by space that can be filled in.  Isomorphic spaces are homotopy
+equivalent, but not nice versa: for example, the disk is not isomorphic
+to the point, but it is homotopy equivalent to it.  The vast majority of
+the constructions one considers (homotopy groups, homology and
+cohomology groups, etc.) are homotopy-invariant, in the sense that they
+respect homotopy equivalence.  For example, two homotopy-equivalent
+spaces have the same fundamental groups, essentially because the
+fundamental group was defined to be paths modulo homotopy.  Thus, these
+invariants are really properties of the homotopy-equivalence-classes of
+spaces, which are called \emph{homotopy types}.  To show
+\emph{disequality} of spaces, this still has bearing on the original
+problem of classifying spaces up to isomorphism: if two spaces have
+different fundamental groups, then they are not homotopy equivalent, and
+therefore not isomorphic.  
+
+\subsection{Homotopy theory of $\infty$-groupoids}
+
+Because all of these notions are homotopy-invariant, one can do homotopy
+in the setting of $\infty$-groupoids.  Recall from Chapter~\ref{FIXME}
+that $\infty$-groupoids are an infinite-dimensional generalization of
+the categorical notion of a groupoid (which is a category where every
+morphism is invertible).  Where a groupoid has just objects and
+morphisms, $\infty$-groupoids have objects, morphisms, morphisms between
+morphisms (2-morphisms), ... all the way up.  $\infty$-groupoids are a
+complex structure: Morphisms at each level have identity, composition,
+and inverse operations, which are weak in the sense that they satisfy
+the groupoid laws (associativity of composition, identity is a unit for
+composition, inverses cancel) only up to the next level morphisms.
+Because of weakness, it is quite difficult to describe all of the
+operations/properties of morphisms.  For example, because associativity
+of composition of morphisms $(p \ct (q \ct r) = (p \ct q) \ct r)$ is
+itself a higher-dimensional morphism, one needs an additional operation
+relating different proofs of associativity; for example, the different
+ways to reassociate $p \ct (q \ct (r \ct s))$ into $((p \ct q) \ct r)
+\ct s$ give rise to Mac Lane's pentagon.  Weakness also creates
+non-trivial interactions between levels, such as the middle-four
+interchange law.
+
+Every topological space X has a fundamental $\infty$-groupoid whose
+$k$-morphisms are the $k$-dimensional paths in $X$.  The weakness of the
+$\infty$-groupoid (the fact that the groupoid laws hold only up to
+higher-dimensional morphisms) corresponds directly to the fact that
+paths only form a group up to homotopy, because the $k+1$-paths are the
+homotopies between the $k$-paths.
+
+Moreover, the view of a space as an $\infty$-groupoid preserves enough
+structure to do homotopy theory (calculate homotopy/homology/cohomology
+groups, etc).  Formally, the fundamental $\infty$-groupoid construction
+is adjoint to the geometric realization of an $\infty$-groupoid as a
+space, and this adjunction preserves homotopy theory (this is called the
+\emph{homotopy hypothesis/theorem}, because whether it is a hypothesis
+or theorem depends on how you define $\infty$-groupoid).  For example,
+you can easily define the fundamental group of an $\infty$-groupoid, and
+if you calculate the fundamental group of the fundamental
+$\infty$-groupoid of a space, that will agree with the classical
+definition of fundamental group. 
+
+\subsection{Homotopy theory in type theory}
+
+Type theory is a formal calculus of $\infty$-groupoids. Because you can
+do homotopy theory through the abstraction of $\infty$-groupoids, you
+can do homotopy theory in type theory.  One might call this
+\emph{synthetic homotopy theory}, by analogy with \emph{synthetic
+  geometry}, which is geometry in the style of Euclid: you start from
+some basic constructions (a line connecting any two points) and axioms
+(all right angles are equal), and deduce consequences from them
+logically.  Here, the basic constructions/axioms are the operations on
+$\infty$-groupoids and maps between them ($\infty$-functors), as
+presented by the identity type Id M N in dependent type theory.  We will
+often refer to features of type theory by topological-sounding names
+(for example, thinking of $p : \id[A] M N$ as a ``path'' from $M$ to
+$N$), but it's important to keep in mind that we can only talk about
+these things through the abstraction of an $\infty$-groupoid.
+
+There are few really nice advantages of doing synthetic homotopy theory
+in type theory.  First, you can use proof assistants like Agda and Coq
+to check your proofs.  Second, we're starting to see examples where
+working in type theory is suggesting new ways of doing proofs.  Third,
+it seems likely that we will be able to interpret type theory in a wide
+variety of other categories that ``look like'' $\infty$-groupoids, and, if so,
+proving a result in type theory will show that it holds in these
+settings as well. It remains to be seen how much homotopy theory we can
+do synthetically, but there are already some positive indication, which
+are listed below.    
+
+The main tools we use to do homotopy theory in type theory are:
+
+\begin{itemize}
+
+\item Higher inductive types. To do some homotopy theory, we need some
+  basic spaces (the circle, the sphere, the torus) and constructions for
+  making new spaces (suspensions, gluing on cells, ...).  These are
+  defined using higher inductive types, as described in
+  Chapter~\ref{cha:hits}.  
+
+\item Homotopy groups.  Having defined some spaces, we can start
+  calculating some algebraic invariants of them.  The homotopy groups
+  have an extremely natural definition in the setting of
+  $\infty$-groupoids/type theory.  The fundamental group of $X$ at $x_0$
+  is (to a first approximation---see below) just the identity type
+  $\id[X] {x_0} {x_0}$, or the morphisms of the $\infty$-groupoid;
+  $\pi_2(X,x_0$) is just the identity type $\id[{\id[X] {x_0} {x_0}}]
+  {\refl{}}{\refl{}}$ the 2-morphisms, and so on.  So, calculating a
+  homotopy group is just giving an equivalence between an identity type
+  and some other type, and proving that this equivalence preserves the
+  group structure.  For example, calculating the fundamental group of
+  the circle consists of giving a equivalence between $\id[{\Sn ^1}] \base
+  \base$ and $\mathbb{Z}$ that sends composition of paths to addition.
+
+The reason this problem is interesting is that the (higher) inductive
+definition of a type X presents X as a free $\infty$-groupoid, and this
+presentation \emph{determines} but does not \emph{explicitly describe}
+the higher identity types of X.  The identity types are populated by
+both the generators ($\lloop$, for the circle), and all of the groupoid
+operations (identity, composition, inverses, ...).  As the above table
+for spheres shows, in higher dimensions the $\infty$-groupoid operations
+create quite a complex structure.  Thus, the higher-inductive
+presentation of a space allows you to pose the question "what does the
+identity type of $X$ really turn out to be?", though it can take some
+significant math to answer it.  This is a higher-dimensional
+generalization of a familiar fact in type theory: even for ordinary
+inductive types like natural numbers or booleans, it takes a bit of work
+to prove that $true$ is different than $false$---characterizing the
+identity type on booleans is a theorem, not part of the definition.
+
+One detail that was glossed over above is that the (iterated) identity
+type really gives what is called the \emph{path space} of a space, which
+is not just the \emph{set} of $k$-dimensional paths, but a whole space
+of them, with their higher homotopies.  To extract the set of
+paths-modulo-homotopy, we can use truncation, as described in
+Section~\ref{cha:hlevels}.
+
+\item Truncations: The predicate "$X$ is an n-type" is part of a
+  modality, which means that there is a corresponding operation of
+  $n$-truncation that takes a type A and makes the best approximation of
+  A as an $n$-type.  n-truncation equates (``kills'') all morphisms of
+  level higher than $n$ in $X$.  Truncations can be constructed using
+  higher inductive types, and are quite important to doing homotopy
+  theory in type theory, because many theorems characterize some
+  ``approximation'' of a space, where the approximation is constructed
+  by truncation.
+
+  For example, the fundamental group of a space is defined to be the
+  0-truncation of the space of loops at $x_0$, which produces the set of
+  paths modulo homotopy, killing the higher homotopies of the loop
+  space.
+
+\item Univalence.  The univalence axiom plays an essential role in
+  calculating homotopy groups (this is a formal claim: without
+  univalence, type theory is compatible with an interpretation where all
+  paths, including e.g. the loop on the circle, are reflexivity).  You
+  can see this in the calculation of the the fundamental group of the
+  circle below: the map from $\id[\Sn ^1] \base \base$ to $\mathbb{Z}$
+  is defined by mapping a path on the circle to an isomorphism on
+  $\mathbb{Z}$, so that, for example, $\lloop \ct \opp \lloop$ is sent
+  to $successor \ct predecessor$, and then applying the isomorphism to
+  0. Univalence allows non-trivial paths in the universe, and this is
+  used to extract information from paths in higher inductive types.
+
+\item Homotopy-theoretic and type-theoretic methods.  In the proofs
+  we've done so far, we've found that there are different ways of doing
+  homotopy theory in homotopy type theory.  Some proofs use techniques
+  that are familiar from traditional homotopy theory, whereas others are
+  more type-theoretic, and consist mainly of calculations with the
+  $\infty$-groupoid structure.  We will present some examples of both
+  styles below.  
+\end{itemize}
+
+\subsection{Overview of theorems we have proved}
+
+Here is a sample of some high-level theorems that we have proved in HoTT:
+
+\begin{thm}[Homotopy Groups of Spheres] \mbox{}
+\begin{itemize}
+\item $\pi_n(\Sn ^n) = \mathbb{Z}$.
+\item $\pi_k(\Sn ^n) = 1$ for $k < n$.  
+\item $\pi_3(\Sn ^2) = \mathbb{Z}$
+\item $\pi_{n+1}(\Sn ^n) = \mathbb{Z}_2$ for $n \ge 3$.    
+\item $\pi_k(\Sn ^n) = \pi_{k+1}(\Sn ^{n+1})$ whenever $k \le 2n - 2$.  
+\end{itemize}
+\end{thm}
+
+\begin{thm}[Hopf Fibration]
+There is a fibration $H$ over $\Sn ^2$ whose fibers are $\Sn ^1$ and
+whose total space is $\Sn ^3$.  
+\end{thm}
+
+\begin{thm}[Properties of Connected Spaces] \mbox{}
+\begin{itemize}
+\item If $X$ is $n$-connected, then $\pi_k(X) = 1$ for $k < n$.  
+\item Freudenthal Suspension Theorem: If $X$ is $n$-connected, 
+  the map $\merid : X \rightarrow \id[\susp X] \north \north$ is $2n$-connected.  
+  In particular, \id{\trunc{2n}{X}}{\trunc{2n}{\id[\susp X] \north \north}}.  
+
+\item Blakers-Massey Theorem: If $X$ is $i$-connected and $Y$ is
+  $j$-connected, then FIXME 
+\end{itemize}
+\end{thm}
+
+\begin{thm}[Eilenberg-Mac Lane Spaces]
+For any abelian group $G$ and positive number $n$, there is a type
+$K(G,n)$ such that $\pi_n(K(G,n)) = G$, and  $\pi_k(K(G,n)) = 1$
+otherwise.  
+\end{thm}
+
+\begin{thm}[Van Kampen Theorem]
+FIXME
+\end{thm}
+
+\begin{thm}[Whitehead's Principle for $n$-types]
+If $X$ and $Y$ are $n$-types, and $f : X \rightarrow Y$ induces an
+equivalence $\id{\pi_k(X)}{\pi_k(Y)}$ for all $k \le n$, then $f$ is an
+equivalence.
+\end{thm}
+
+
+
+\subsection{Conventions}
+
+Unless otherwise stated, the notation \type will denote a \emph{fixed}
+universe and several occurrences of the word \type will always represent
+the same universe. The types \prop, \set, \typele{n} represent the types
+of propositions, sets and $n$-truncated types of this fixed universe
+\type.
+
+\section{$\pi_1(S^1)$}
+
+\subsection{Encode/decode proof}
+
+\subsection{Comparisong with homotopy-theoretic proof}
 
 \section{Homotopy pushouts}
 \label{sec:pushouts}
@@ -924,7 +1281,7 @@ connectedness.
   $n$-connected.
 \end{proof}
 
-\section{Homotopy groups}
+\section{$\pi_k(S^n)$ when $k<n$, and a generalization}
 
 \begin{defn}
   A \emph{pointed type} $(A,a)$ is a type $A:\type$ together with a point $a:A$.

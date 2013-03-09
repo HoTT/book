@@ -1,12 +1,158 @@
+\newcommand{\rclim}{\mathsf{lim}} % HIT constructor for Cauchy reals
+
 \chapter{Real Numbers}
 \label{cha:real-numbers}
 
-Topological reals vs contractible reals.
+Any foundation of mathematics worthy of its name must eventual address the construction of
+real numbers. HoTT can draw experience from constructions of reals in constructive
+mathematics, which is not surprising as HoTT \emph{is} a kind of constructive mathematics.
 
-Two well-known constructions of reals. Cauchy Dedekind, we look at both.
+From a classical point of view it is perhaps surprising that there are many kinds of real
+numbers. We have encountered the \textbf{homotopical reals} as the universal covering
+space of of the circle in \autoref{pi1_S1}. However, there is no algebraic structure on
+the homotopical reals, as they are equivalent to the singleton space and so we cannot even
+exhibit $0 \neq 1$. What is needed is a set of reals which forms a complete archimedean
+ordered field. There are several notions of completeness, of which we shall have a closer
+look at those of Cauchy and Dedekind. Since we are in a constructive setting, the field
+structure will involve an apartness relation. And we cannot assume the Axiom of Countable
+Choice, which further complicates matters. But let us proceed one step at a time.
+
+\section{The Field of Rational Numbers}
+\label{sec:field-rati-numb}
+
+We first construct the rational numbers \Q, as the reals can then be seen as a completion
+of \Q. An expert will point out that \Q could be replaced by any approximate field, i.e.,
+a subring of \Q in which arbitrarily precise approximate inverses exist. An example is the
+ring of dyadic rationals, which are those of the form $n/2^k$. From an
+implementation point of view an approximate field is more suitable, but we leave such
+finesse for those who care about the digits of~$\pi$.
+
+Starting from the natural numbers \N, we first construct the integers in a familiar
+fashion, namely as a quotient
+%
+\[ \Z \defeq (\N \times \N)/{\sim} \]
+%
+where
+%
+\[ (a,b) \sim (c,d) \defeq (a + d = b + c). \]
+%
+In other words, a pair $(a,b)$ represents the integer $a - b$. As $\sim$ is a decidable
+relation, \Z has decidable equality and so is a set. The arithmetical operations are
+induced by those on \N, e.g., if $u, v \in \Z$ are represented by $(a,b)$ and $(c,d)$,
+respectively, then $u + v$ is represented by $(a + c, b + d)$, $-u$ is represented by $(b,
+a)$, and $u v$ is represented by $(a c + b d, a d + b c)$. The integers \Z then form the
+free commutative ring with unit. In fact, using the results from
+\autoref{sec:free-algebras} we could have constructed \Z as the free commutative ring with
+unit.
+
+The field of rationals \Q is constructed along the same lines as well, namely as the
+quotient
+%
+\[ \Q \defeq (\Z \times \N)/{\approx} \]
+%
+where
+\[ (u,a) \approx (v,b) \defeq (u (b + 1) = v (a + 1)). \]
+%
+In other words, a pair $(u, a)$ represents the rational number $u / (1 + a)$. There can be
+no division by zero because we cunningly added one to the natural denominator~$a$. Again
+we obtain a set with a decidable equality whose operations are induced by those on \Z. We
+do not bother to write these down as we trust our readers know how to compute with
+fractions even in the case when one is added to the denominator. Let us just record that
+there is an entirely unproblematic construction of the ordered field of rational number
+\Q, with a dedicable equality and decidable order. The field \Q can also be characterized
+as the initial one.
+
+\begin{rmk}
+  We could have constructed \Z and \Q without appeal to quotients. The integers can be
+  seen as a sum of two copies of \N which correspond to the negative and non-negative
+  integers, respectively. The rationals form a decidable subset of $\Z \times \N$ of
+  fractions in lowest terms. Such a construction makes arithmetic quite annoying because
+  all results must always be expressed as fractions in lowest terms.
+\end{rmk}
+
 
 \section{Cauchy Reals}
 \label{sec:cauchy-reals}
+
+The \textbf{Cauchy reals \RC} are the result of completing \Q with limits of Cauchy
+sequences. The construction works well in the presence of the Axiom of Countable Choice,
+which we do not have at our disposal. Nevertheless, the higher inductive types come to the
+rescue and make the construction possible. This is a novel observation about an old
+construction.
+
+To steer around the lack of Countable Choice we first replace Cauchy sequences with rapid
+Cauchy sequences.
+
+\begin{defn}\label{defn:rapid-cauchy}
+  A \textbf{rapid Cauchy sequence} $q : \N \to \Q$ is one which satisfies
+  %
+  \[ \prd{m,n:\N} |q_m - q_n| \leq 2^{-\min(m,n)}. \]
+  %
+  \textbf{Coincidence} of sequences is the relation defined by, for $q, r : \N \to \Q$,
+  %
+  \[ q \approx r \defeq
+     \prd{m,n:\N} |q_m - r_n| \leq 2^{-\min(m,n) - 1}. \]
+\end{defn}
+
+\noindent
+Rapidity guarantees that the $n$-th term of a Cauchy sequence is at most $2^{-n}$ from the
+limit. From a computational point of view we require that each term contributes at least
+one bit of information about the limit.
+
+It is easy to check that coincidence is an equivalence relation, so we are tempted to
+define the real numbers as the quotient
+%
+\[ \RC \defeq \mathcal{C}/{\approx} \tag{bad attempt} \]
+%
+where $\mathcal{C}$ is the type of rapid Cauchy sequences,
+%
+\[ \mathcal{C} \defeq
+   \sm{q : \N \to \Q} \prd{m,n:\N} |q_m - q_n| \leq 2^{-\min(m,n)}.
+\]
+%
+Unfortunately, we cannot show that this yields a field in which every (rapid) Cauchy
+sequence has a limit, for a rather bureaucratic reason: lifting a sequence of real numbers
+$x : \N \to \RC$ to a sequence of representatives $\N \to \mathcal{C}$ requires a kind of
+choice which is not available to us. But without the representative Cauchy sequences we
+have no way of constructing the Cauchy sequence which reprsents the limit. Every
+construction of reals whose last step is a quotient suffers from this deficiency. There
+are three common ways out of the conundrum:
+%
+\begin{enumerate}
+\item Pretend that the reals are a setoid $(\mathcal{C}, {\approx})$, i.e., the type of
+  Cauchy sequences $\mathcal{C}$ with a conincidence relation attached to it by
+  administrative decree.
+\item Give in to temptation and accept the Axiom of Countable Choice.
+\item Declare the Cauchy reals unworthy and construct the Dedekind reals instead.
+\end{enumerate}
+%
+We shall take a novel, forth way: combine the construction of Cauchy sequences and the
+quotient into a single higher-inductive construction. For the completion to work, we need
+to complete the rationals with limits of Cauchy sequences, but at the same time we must
+identify coincident Cauchy sequences. This requires a simultaneous definition of the
+higher-inductive type of Cauchy reals and the coincidence relation.
+
+\begin{defn}
+  The \textbf{Cauchy reals \RC} is the higher-inductive type given by the following data:
+  % 
+  \begin{itemize}
+  \item points: for $x : \N \to \Q + \RC$ such that \[\prd{m, n :
+      \N} x_m \sim_{\min(m,n)} x_n\] there is a point $\rclim(x) : \RC$,
+  \item paths: for $x, y : \N \to \Q + \RC$
+    such that \[\prd{m, n : \N} x_m \sim_{\min(m,n) + 1} y_n\] there
+    is a path $\id[\RC]{\rclim(x)}{\rclim(y)}$.
+  \end{itemize}
+  % 
+  Simultaneously, the relation $u \sim_k v$ is defined, for $u, v : \Q + \RC$ and $k : \N$ by
+  % 
+  \begin{align*}
+    \inl(q) \sim_k \inl(r) &\defeq |q - r| \leq 2^{-k} \\
+    \inl(q) \sim_k \inr(y) &\defeq \inl(q) \sim_{k+1} y_{k+1} \\
+    \inr(x) \sim_k \inl(r) &\defeq x_{k+1} \sim_{k+1} \inl(r) \\
+    \inr(x) \sim_k \inr(y) &\defeq x_{k+1} \sim_{k+1} y_{k+1}
+  \end{align*}  
+\end{defn}
+
 
 Outline:
 \begin{enumerate}
@@ -37,8 +183,9 @@ reals) Note, we do not use univalence, hence we have models in sSh(X).
 They are the same if we have CAC for Sigma-predicates
 Also, $Sigma = 2^N/\sim$.
 
-\section{Compactness of $[0,1]$}
-\label{sec:compactness-0-1}
+
+\section{Reals as a Topological Space}
+\label{sec:reals-as-topological}
 
 Heine-Borel... Locales, or formal spaces, would be an alternative. The usual arguments
 apply, but we will not go into them.

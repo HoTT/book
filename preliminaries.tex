@@ -133,10 +133,10 @@ Girard \cite{girard:paradox}.
 
 To avoid these paradoxes we introduce a hierarchy of universes
 \[ \UU_0 : \UU_1 : \UU_2 : \dots \]
-where every universe $\UU_i$ and an element of the next universe
+where every universe $\UU_i$ is an element of the next universe
 $\UU_{i+1}$. Moreover we assume that our universes are
 \emph{cummulative}, that is that all the elements of the $i$th
-universe are also emelements of the $i+1$th universe, i.e. if
+universe are also elements of the $i+1$th universe, i.e. if
 $A:\UU_i$ then $A:\UU_{i+1}$
 \footnote{This rule breaks the principle that every element
   has a uniquely determined type. This could be avoided by introducing
@@ -165,20 +165,26 @@ In the sequel we shall write $T[x]$ for a term with a variable $x$ and
 $T[T']$ for the same term where each occurence of $x$ has been
 replaced by $T'$. Moreover we shall assume that this substitution
 operation avoids the capture of bound variables, if necessary by
-onsistently renaming bound variables $\alpha$-conversion.
+consistently renaming bound variables ($\alpha$-conversion).
+As an example consider $B[x] \defeq \prd{y:A}x = y$, we don't want
+$B[y]$ to be equal to $\prd{y:A}y = y$ because the variable $y$ we are
+substitute doesn't refer to the bound variable. Instead we rename the
+bound variable to avoid capture $B[y] \jdeq \prd{y':A}y = y'$.
 
 A \textbf{family of types} over an indexing type $A:\UU$ and a 
 type $B[x] : \UU$ given $x:A$. This can be generalized to a sequence of indexing
-types $A_i[x_0,\dots x_{i-1}]$ each depending on the previous indeing
-types and a family $B[x_0,\dots,x_n]$ depending on all of them. In the
+types $A_i[x_0,\dots x_{i-1}]$ each depending on the previous indexing
+types and a family $B[x_0,\dots,x_n] : \UU$ depending on all of them. In the
 propsoitions of types view families correspond to predicates,
 assigning to each element of the indexing types a type corresponding
 to the proposition that this particular instance of the predicate holds.
 
-An example is the type $Vec(A,n)$ of
-vectors ($n$-tuples) of elements of type $A$ which is family indexed
-over $n : \Nat$. Another example is the type $x =_A x$ which is a
-family indexed over $x : A$. 
+An example is the type $\Vect(A,n)$ of
+vectors ($n$-tuples) of elements $a_i : A$ for $0 < i< n$ of type $A$:
+$\seq{a_0,\dots,a_n} : \Vect(A,n)$ which is family indexed
+over $n : \Nat$. Another example is the type $x =_A y$ which is a
+family indexed over $x,y : A$. Indeed, in both examples are also
+indexed by $A:\UU$.
 
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:pi-types}
@@ -198,18 +204,20 @@ and a family $B[x]$ indexed over $x:A$ we can form the type
 in the special case when $B$ is a constant family (i.e., $B$ does not
 dependent on $x$) in which case we write $A \to B$.
 
-% Given a type $A$ an example of a dependent function of type
-% $\prd{n:\Nat}{\mathrm Vec(A,n)$
-% is the function which constructs an $n$-tuple of $a$s. Another example
-% of a dependent function is the proof of reflexivity which has the type
-% $\Pi_{x:A}x = x$.
+Given a type $A$ an example of a dependent function of type
+$\prd{n:\Nat}\Vect(A,n)$
+is the function $f$ which constructs an $n$-tuple of $a$s, i.e. 
+\[ f(a) \defeq \seq{\underbrace{a,a,\dots a}_{\mbox{$n$-times}}} \] % \vec{\underbrace{a}{$n$-times}}
+ Another example
+of a dependent function is the proof of reflexivity which has the type
+$\prd{x:A}x = x$.
 
-Given a dependent function $f : \prd{x:A}B(x)$ and $a : A$ we can
-apply $f$ to $a$ which we write as $f(a) : B(a)$.  Such a function $f$ may be introduced by a defining equation
+Given a dependent function $f : \prd{x:A}B[x]$ and $a : A$ we can
+apply $f$ to $a$ which we write as $f(a) : B[a]$.  Such a function $f$ may be introduced by a defining equation
   \[ f(x)\defeq b[x]\mbox{ for } x:A,\]
-where $b[x]$ is a term for an object of type $B(x)$ for $x:A$. So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
-  \[ f(a)\jdeq b[a]:B(a)\]
-and we have $f(a):B(a)$. 
+where $b[x]$ is a term for an object of type $B[x]$ for $x:A$. So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
+  \[ f(a)\jdeq b[a]:B[a]\]
+and we have $f(a):B[a]$. 
 
 If we want to avoid giving a name to a function we can use
 $\lambda$-abstraction 
@@ -252,7 +260,7 @@ Q$ is a function $f$ assigning to each proof $p:P$ a proof $f(p) : Q$.
 
 The dependent function type corresponds to universal
 quantification: Given a type $A$ and a family $P[x]$ assuming $x:A$
-which we view as a predicate over $A$ we can form $\prd{x:A}{B[x]}$
+which we view as a predicate over $A$ we can form $\prd{x:A}B[x]$
 whose elements are proofs that $B[x]$ holds for all $x:A$ by assigning
 to each $a:A$ a proof $f(a) : B[a]$.
 

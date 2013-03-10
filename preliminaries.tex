@@ -122,7 +122,7 @@ In most cases, these rules follow a fairly predictable pattern, but we will not 
 
 A universe is a type whose elements are types. As in naive set theory
 we may wish for a universe of all types $\UU_\infty$ including itself
-$\UU_infty : \UU_\infty$ but as in set
+$\UU_\infty : \UU_\infty$ but as in set
 theory this is unsound, i.e. we can deduce that every type,
 including the empty type representing the proposition False, is inhabited. Using a
 representation of sets as trees we can directly encode Russell's
@@ -131,17 +131,16 @@ inductive types to define trees we can encode the Burali-Forti paradox
 (that the collection of ordinals cannot be an ordinal) this is due to
 Girard \cite{girard:paradox}.
 
-To avoid paradoxes we introduce a hierarchy of universes
+To avoid these paradoxes we introduce a hierarchy of universes
 \[ \UU_0 : \UU_1 : \UU_2 : \dots \]
 where every universe $\UU_i$ and an element of the next universe
 $\UU_{i+1}$. Moreover we assume that our universes are
 \emph{cummulative}, that is that all the elements of the $i$th
 universe are also emelements of the $i+1$th universe, i.e. if
 $A:\UU_i$ then $A:\UU_{i+1}$
-\footnote{This rule seems to break the principle that every element
+\footnote{This rule breaks the principle that every element
   has a uniquely determined type. This could be avoided by introducing
-  an explicit lifting operator. We simply omit writing liftings not to
-  clutter notation.}.
+  an explicit lifting operator.}
 
 We say that our type theory is predicative if types in a universe
 $\UU_i$ are introduced only with reference to types in the same or
@@ -159,117 +158,115 @@ When we say that $A$ is a type we mean that it inhabits some universe
 $\UU_i$. We usually want to avoid to mention the level $i$ explicitely
 and just assume that levels can be assigned in a consistent way. We
 may write $A:\UU$ omitting the level. This way we can even write
-$\UU:\UU$ which can be read as $\UU_I:\UU_{i+1}$ having left the
+$\UU:\UU$ which can be read as $\UU_i:\UU_{i+1}$ having left the
 indizes implicit. 
 
+In the sequel we shall write $T[x]$ for a term with a variable $x$ and
+$T[T']$ for the same term where each occurence of $x$ has been
+replaced by $T'$. Moreover we shall assume that this substitution
+operation avoids the capture of bound variables, if necessary by
+onsistently renaming bound variables $\alpha$-conversion.
 
-\section{Simple types}
-\label{sec:function-types}
+A \textbf{family of types} over an indexing type $A:\UU$ and a 
+type $B[x] : \UU$ given $x:A$. This can be generalized to a sequence of indexing
+types $A_i[x_0,\dots x_{i-1}]$ each depending on the previous indeing
+types and a family $B[x_0,\dots,x_n]$ depending on all of them. In the
+propsoitions of types view families correspond to predicates,
+assigning to each element of the indexing types a type corresponding
+to the proposition that this particular instance of the predicate holds.
 
-One of the central features of type theory is the use of dependent
-types, i.e. families of types dependening on a given type. However,
-before introducing constructions on dependent types, in particular
-$\Pi$-types and $\Sigma$-types we introduce there non-dependent 
-counterparts, namely function types $A\to B$, product types $A \times
-B$ and coproduct types $A + B$.
+An example is the type $Vec(A,n)$ of
+vectors ($n$-tuples) of elements of type $A$ which is family indexed
+over $n : \Nat$. Another example is the type $x =_A x$ which is a
+family indexed over $x : A$. 
 
-Before moving on to dependent types let us first review some types
-which corresponds to standard set theoretic constructions: the
-function type $A \to B$, the (cartesian) product
-of two types $A\times B$ (or the type of binary tuples) and the coproduct
-or disjoint union of types $A + B$.
+\section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
+\label{sec:pi-types}
 
-\subsection{Function types}
+Functions are a primitive concept in type theory, i.e. they are not
+viewed as a special case of relations. We assume functions to be
+constructive that is given an element of the input type we can
+effectively compute the result of the function applied to this
+element. In type theory we introduce the general concept of a
+dependent function type which allows the codomain to vary over the
+domain of the function --- this corresponds to the infinite cartesian
+product of types as the notation suggests. 
 
-Given $A,B$ types we can construct the (non-dependent) function type
-$A\to B$. In type theory functions are a primitive concept which
-cannot be reduced to the notion of a graph. Functions are usually
-assumed to be constructive that is given a function $f : A \to B$ and
-an element of the domain $a : A$ we can effectively compute an element
-of the codomain $f(a) : B$. We introduce functions by explicit
-defining equations $f(x) := b[x]$ where $b[x] : A$ is a term which may
-use $x:A$. Then $f(a) \jdeq b[x:=a]$ where $b[x:=a]$ is $b[x]$ with
-all occurences of $x$ replaced by $a$. Note that this substitution has
-to be capture avoiding but it may consistently change names of bound
-variables \cite{capture-avoiding}. 
+Given a type $A$
+and a family $B[x]$ indexed over $x:A$ we can form the type
+\[\prd{x:A}B(x)\] of dependent functions. Non-dependent functions arise
+in the special case when $B$ is a constant family (i.e., $B$ does not
+dependent on $x$) in which case we write $A \to B$.
+
+% Given a type $A$ an example of a dependent function of type
+% $\prd{n:\Nat}{\mathrm Vec(A,n)$
+% is the function which constructs an $n$-tuple of $a$s. Another example
+% of a dependent function is the proof of reflexivity which has the type
+% $\Pi_{x:A}x = x$.
+
+Given a dependent function $f : \prd{x:A}B(x)$ and $a : A$ we can
+apply $f$ to $a$ which we write as $f(a) : B(a)$.  Such a function $f$ may be introduced by a defining equation
+  \[ f(x)\defeq b[x]\mbox{ for } x:A,\]
+where $b[x]$ is a term for an object of type $B(x)$ for $x:A$. So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
+  \[ f(a)\jdeq b[a]:B(a)\]
+and we have $f(a):B(a)$. 
 
 If we want to avoid giving a name to a function we can use
-$\lambda$-abstraction $\lambda_{x:A}b[x] : A \to
-B$. $\lambda$-abstractions induce the judgmental equality 
-$(\lambda_{x:A}b[x])(a) \defeq b[x:=a]$ ($\beta$-equality). Note that
-we do not assume $\eta$-equality $\lambda_{x:A} f(x) \jdeq f$ (where
-$x$ does not occur in $f$) but this is provable as propositional
+$\lambda$-abstraction 
+\[\lam{x:A}b[x] : \prd{x:A}B[x]\]
+$\lambda$-abstractions induce the judgmental equality
+$(\lam{x:A}b[x])(a) \jdeq b[a]$ ($\beta$-equality). Note that
+we do not assume $\eta$-equality $\lam{x:A} f(x) \jdeq f$ (where
+$x$ does not occur in $f$) but this is provable for propositional
 equality using functional extensionality.
 
 For example we may define a function $f : \Nat \to \Nat$ by defining $f(n)
 \defeq n+2$ and then $f(2) \jdeq 2+2$. If we want to avoid giving the function a name we can use
-$\lambda$-abstraction, i.e. we can write $\lambda n:\Nat.n+2 : \Nat
-\to \Nat$.
+$\lambda$-abstraction, i.e. we can write $\lam{n:\Nat}n+2 : \Nat
+\to \Nat$. 
 
 There are other means by which to define a function,
 e.g. using the fact that $\Nat$ is inductively defined we can define
 functions by primitive recursion which induces a number of
 definitional equalities. In general we may use the
 elimination principle associated to a particular type to define
-functions - we will define this when we introduce the type. 
+functions - we will introduce these elimination principles with the
+type they eliminate over.
 
-\subsection{Product types}
+Function in several arguments correspond to iterated function types,
+i.e. a function $f$ with arguments in $A$ and $B$ and results in $C$ has
+the type $f : \prd{x:A}\prd{y : B[x]}C[x,y]$ which can be also
+written as $f : \prd{x:A,y:B[x]}C[x,y]$. Given an element $a:A$ we can apply
+$f$ to it obtaining $f(a) : \prd{y:B[a]}C[a,y]$. Given also an element $b:B$ we
+can continue applying $f$ obtaining $f(a)(b) : C[a,b]$ which we may also
+write as $f(a,b):C[a,b]$. Using this device of \emph{currying} we can
+represent $n$-ary functions without using product types. 
+This device is commonly used in functional programming for
+non-dependent functions. Consequently the symbol $\to$ is
+right-associative,  $A \to B \to C \jdeq A \to (B \to C)$ so that we can avoid
+brackets when writing the types of $n$-ary non-dependent functions.
 
-Given $A,B$ types we can construct the product type $A\times B$ whose
-elements are pairs $(a,b)$ where $a : A$ and $b : B$. 
+When we view propositions as types the non-dependent function type
+corresponds to implication, i.e. given types $P,Q$ a proof of $P \to
+Q$ is a function $f$ assigning to each proof $p:P$ a proof $f(p) : Q$.
 
+The dependent function type corresponds to universal
+quantification: Given a type $A$ and a family $P[x]$ assuming $x:A$
+which we view as a predicate over $A$ we can form $\prd{x:A}{B[x]}$
+whose elements are proofs that $B[x]$ holds for all $x:A$ by assigning
+to each $a:A$ a proof $f(a) : B[a]$.
 
-\section{Families of types}
-\label{sec:families-of-types}
-
-A \textbf{family of types} (in a universe \UU) is a function $B:A\to\UU$.
-An example is the type $Vec(A,n)$ of
-vectors ($n$-tuples) of elements of type $A$ which is family indexed
-over $n : \Nat$. Another example is the type $x =_A x$ which is a
-family indexed over $x : A$.
-
-
-\section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
-\label{sec:pi-types}
-
-Functions are a primitive concept in Type Theory, they are not reduced
-to relations as in set theory. The dependent function type is a
-generalisation of non-dependent function type $A \to B$ which allow
-the codomain to vary over the codomain over the domain. Thus using the
-proposition as types principle we can use function types to model not
-only implication but also universal quantification. Given a type $A$
-and a family $B[x]$ indexed over $x:A$ we can form the type
-$\Pi_{x:A}B[x]$ of dependent functions. Non dependent-functions arise
-in the special case when $B$ is a constant family (i.e., $B$ does not
-dependent on $x$) in which case we write $A \to B$.
-
-Given a dependent function $f : \Pi_{x:A}B[x]$ and $a : A$ we can
-apply $f$ to $a$ which we write as $f(a) : B[a]$.  Such a function $f$ may be introduced by a defining equation
-  \[ f(x)\defeq b[x]\mbox{ for } x:A,\]
-where $b[x]$ is a term for an object of type $B(x)$ for $x:A$ that may depend on the variable $x$ ranging over objects of $A$.  So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
-  \[ f(a)\jdeq b[a]:B[a]\]
-and we have $f(a):B[a]$.  As usual we use the lambda abstraction notation 
-$\lambda_{x:A}b[x]$ to name the function $f$ so that if $a:A$ then
-  \[\lambda_{x:A}b[x](a)\jdeq b[a]: B(a).\]
-
-Assuming $a:A$ an example of a dependent function of type $\Pi_{n:\Nat}Vec(A,n)$
-is the function which constructs an $n$-tuple of $a$s. Another example
-of a dependent function is the proof of reflexivity which has the type
-$\Pi_{x:A}x = x$.
-
-Dependent function types are used to represent:
-\begin{itemize}
-\item Conventional (non-dependent) functions as in $\Nat \to \Nat$,
-\item Implication as in $x =_A y \to y =_A x$,
-\item Universal quantification as in $\Pi_{n:\Nat}m+0 =_\Nat m$.
-\end{itemize}
+We summarize that from the type-theoretic point of view the concepts
+of an ordinary function, implication and universal quantification are
+unified using the notion of a dependent function type or $\Pi$-type.
 
 \section{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:sigma-types}
 
 As before in the case of functions the dependent pair type is a
 generalisation of the ordinary cartesian product $A \times B$. 
-As in the case of $\Pi$ we assume that $B[x]$ is a family indexed by
+As in the case of $\Pi$ we assume that $B:A \to \UU$ is a family
+indexed over $A$.
 $x:A$ to form $\Sigma_{x:A}B[x]$. Elements of $\Sigma_{x:A}B[x]$ are
 pairs $(a,b) : \Sigma_{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
 family $B$ does not depend on $A$ we write $A \times B$.

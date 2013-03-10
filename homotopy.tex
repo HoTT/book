@@ -214,15 +214,13 @@ there are already some positive indication, which are listed below.
 
 The main tools we use to do homotopy theory in type theory are:
 
-\begin{itemize}
-
-\item Higher inductive types. To do some homotopy theory, we need some
+\paragraph{Higher inductive types.} To do some homotopy theory, we need some
   basic spaces (the circle, the sphere, the torus) and constructions for
   making new spaces (suspensions, gluing on cells, ...).  These are
   defined using higher inductive types, as described in
-  Chapter~\ref{cha:hits}.  
+  Chapter~\ref{cha:hits}.
 
-\item Homotopy groups.  Having defined some spaces, we can start
+\paragraph{Homotopy groups.}  Having defined some spaces, we can start
   calculating some algebraic invariants of them.  The homotopy groups
   have an extremely natural definition in the setting of
   $\infty$-groupoids/type theory.  The fundamental group of $X$ at $x_0$
@@ -233,8 +231,9 @@ The main tools we use to do homotopy theory in type theory are:
   homotopy group is just giving an equivalence between an identity type
   and some other type, and proving that this equivalence preserves the
   group structure.  For example, calculating the fundamental group of
-  the circle consists of giving a equivalence between $\id[{\Sn ^1}] \base
-  \base$ and $\mathbb{Z}$ that sends composition of paths to addition.
+  the circle consists of giving a equivalence between $\id[{\Sn ^1}]
+  \base \base$ and $\mathbb{Z}$ that sends composition of paths to
+  addition.
 
 The reason this problem is interesting is that the (higher) inductive
 definition of a type X presents X as a free $\infty$-groupoid, and this
@@ -288,8 +287,7 @@ This gives rise to the following definitions:
   \[\pi_n(A,a)=\trunc0{\Omega^n(A,a)}\]
 \end{defn}
 
-
-\item Univalence.  The univalence axiom plays an essential role in
+\paragraph{Univalence.}  The univalence axiom plays an essential role in
   calculating homotopy groups (this is a formal claim: without
   univalence, type theory is compatible with an interpretation where all
   paths, including e.g. the loop on the circle, are reflexivity).  You
@@ -301,14 +299,19 @@ This gives rise to the following definitions:
   0. Univalence allows non-trivial paths in the universe, and this is
   used to extract information from paths in higher inductive types.
 
-\item Homotopy-theoretic and type-theoretic methods.  In the proofs
-  we've done so far, we've found that there are different ways of doing
-  homotopy theory in homotopy type theory.  Some proofs use techniques
-  that are familiar from traditional homotopy theory, whereas others are
-  more type-theoretic, and consist mainly of calculations with the
-  $\infty$-groupoid structure.  We will present some examples of both
-  styles below.  
-\end{itemize}
+\paragraph{Homotopy-theoretic and type-theoretic methods.}  In the
+proofs we've done so far, we've found that there are different ways of
+doing homotopy theory in HoTT.  Some proofs use techniques that are
+familiar from traditional homotopy theory and category theory, such as
+contractibility of total spaces of fibrations, or properties of
+pushout/pullback diagrams.  Others are more type-theoretic, and consist
+mainly of calculations with the $\infty$-groupoid structure, in a style
+that is very similar to how computer-scientists use type theory to
+reason about programs.  The line between the two styles is fuzzy, and
+many proofs have aspects of both styles; but there is enough of a
+difference in ``feel'' that it is worth commenting on.  We will present
+some examples of both styles below, and describe an example of the
+difference in Section~\ref{sec:pi1-s1-intro}.
 
 \subsection{Theorems we have proved}
 
@@ -363,11 +366,65 @@ otherwise.
 FIXME
 \end{thm}
 
-\begin{thm}[Whitehead's Principle for $n$-types]
-If $X$ and $Y$ are $n$-types, and $f : X \rightarrow Y$ induces an
-equivalence $\id{\pi_k(X)}{\pi_k(Y)}$ for all $k \le n$, then $f$ is an
-equivalence.
-\end{thm}
+%% \begin{thm}[Whitehead's Principle for $n$-types]
+%% If $X$ and $Y$ are $n$-types, and $f : X \rightarrow Y$ induces an
+%% equivalence $\id{\pi_k(X)}{\pi_k(Y)}$ for all $k \le n$, then $f$ is an
+%% equivalence.
+%% \end{thm}
+
+As discussed above, some proofs have a more homotopy-theoretic style,
+while others have a more type-theoretic style.  Many theorems can be
+proved in both styles.  The type-theoretic proofs are generally easier
+to formalize as computer-checked proofs.  In part, this is because the
+homotopy-theoretic proofs often prove a stronger lemma than is strictly
+necessary, but which may be of independent interest: For example, for
+$\pi_2(\Sn ^2)$, the homotopy-theoretic proof requires proving that the
+total space of the Hopf fibration (represented as a dependent type) is
+$\Sn ^3$, a significant result in its own right, whereas the
+type-theoretic proof bypasses this result, replacing it with
+calculations using the definition of the Hopf fibration.  It is
+currently unclear whether the type-theoretic style can be used to prove
+some of the most difficult theorems, such as the total space of Hopf
+fibration and $\pi_3(\Sn ^2)$ and $\pi_4(\Sn ^3)$, which we have done in
+the homotopy-theoretic style.
+
+The following table lists the proofs we have done in each style, and
+whether they have been computer-checked (\checkmark) or only done
+informally.  For the spheres, we have used two different definitions of
+the $n$-sphere $\Sn ^n$: the first as the suspension of $\Sn ^ {n-1}$,
+and the second as a higher inductive type with one base point and one
+loop in $\Omega^n$; we list the status for both definitions.
+
+\medskip
+\begin{tabular}{l|l|l}
+Theorem         & Homotopy-theoretic style & Type-theoretic style\\
+\hline 
+$\pi_1(\Sn ^1)$ & \checkmark & \checkmark \\ 
+\hline 
+$\pi_{k<n}(\Sn ^n)$ --- single-loop &    & \checkmark \\
+$\pi_{k<n}(\Sn ^n)$ --- suspension  &  \checkmark?  & \checkmark \\
+\hline 
+$\pi_2(\Sn ^2)$ --- single-loop &   &  \checkmark \\
+$\pi_2(\Sn ^2)$ --- suspension & informal   & \checkmark \\
+\hline 
+total space of Hopf fibration & informal &  \\
+\hline 
+$\pi_3(\Sn ^2)$     & informal   & \\
+\hline 
+$\pi_n(\Sn ^n)$ --- single-loop &    & \checkmark \\
+$\pi_n(\Sn ^n)$ --- suspension  &  informal  & \checkmark \\
+\hline 
+$\pi_4(\Sn ^3)$  &  informal  &  \\
+\hline
+Freudenthal         &  informal  & \checkmark \\
+\hline 
+Blakers-Massey      &            & informal  \\
+\hline 
+$K(G,n)$              &            & \checkmark  \\
+\hline 
+Van Kampen              &            & informal  \\
+\end{tabular}
+\medskip
 
 \section{Some basic homotopy groups}
 
@@ -380,8 +437,7 @@ represent the types of propositions, sets and $n$-truncated types of
 this fixed universe \type.
 
 \subsection{$\pi_1(S^1)$}
-
-\subsubsection{Encode/decode proof}
+\label{sec:pi1-s1-intro}
 
 Our goal is to show that $\id {\pi_1(\Sn ^1)} {\mathbb{Z}}$.  In fact, we
 will show that the loop space $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$.  This is a stronger
@@ -391,23 +447,100 @@ definition, so if $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$, then $\id {\trunc
 $\mathbb{Z}$ is a set, so $\id {\trunc 0 {\mathbb{Z}}} {\mathbb{Z}}$
 (FIXME: do we have this somewhere?).  
 
+Our proof that $\Omega_1(\Sn ^1)$ is $\mathbb{Z}$ can be seen as a
+type-theoretic version of a proof in classical homotopy theory.  The
+classical proof we start from is usually formulated using ``universal
+covering spaces'', but we will give an equivalent sketch using
+\emph{fibrations} which transfers more directly to type theory.  For any
+point $x_0\in B$, there is a canonical \emph{path fibration} $p:P_{x_0}
+B \to B$, where the points of $P_{x_0} B$ are paths in $B$ starting at
+$x_0$, and the map $p$ selects the other endpoint of such a path.  The
+space $P_{x_0} B$ is \emph{contractible}, i.e.\ homotopy equivalent to a
+point, since we can ``retract'' any path to its initial endpoint $x_0$.
+Moreover, the fiber over $x_0$ is the loop space $\Omega_1(B,x_0)$.
+
+Now consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which
+looks like a helix projecting down onto the circle:
+\begin{center}
+  \begin{tikzpicture}[xscale=1.4,yscale=.6]
+    \node (R) at (2,1) {$\mathbb{R}$};
+    \node (S1) at (2,-2) {$S^1$};
+    \draw[->] (R) -- node[auto] {$w$} (S1);
+    \draw (0,-2) ellipse (1 and .4);
+    \draw[dotted] (1,0) arc (0:-30:1 and .8);
+    \draw (1,0) arc (0:90:1 and .8) arc (90:270:1 and .3) coordinate (t1);
+    \draw[white,line width=4pt] (t1) arc (-90:90:1 and .8);
+    \draw (t1) arc (-90:90:1 and .8) arc (90:270:1 and .3) coordinate (t2);
+    \draw[white,line width=4pt] (t2) arc (-90:90:1 and .8);
+    \draw (t2) arc (-90:90:1 and .8) arc (90:270:1 and .3) coordinate (t3);
+    \draw[white,line width=4pt] (t3) arc (-90:90:1 and .8);
+    \draw (t3) arc (-90:-30:1 and .8) coordinate (t4);
+    \draw[dotted] (t4) arc (-30:0:1 and .8);
+    \node[fill,circle,inner sep=1pt,label={below:\scriptsize \base}] at (0,-2.4) {};
+    \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 0}] at (0,.2) {};
+    \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 1}] at (0,1.2) {};
+    \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 2}] at (0,2.2) {};
+  \end{tikzpicture}
+\end{center}
+The map $w$ sends each point on the helix to the point on the circle
+that it is ``sitting above''; this map is a fibration, and the fiber
+over each point is isomorphic to the integers.  If we lift the path that
+goes counterclockwise around the loop on the bottom, we go up one level in the
+helix, incrementing the integer in the fiber.  Similarly, going
+clockwise around the loop on the bottom corresponds to going down
+one level in the helix, decrementing this count.  This fibration is
+called the \emph{universal cover} of the circle.
+
+Now a basic fact is that a map $E_1\to E_2$ of fibrations over $B$
+which is a homotopy equivalence between $E_1$ and $E_2$ induces a
+homotopy equivalence on fibers.  Since $\mathbb{R}$ and $P_{\base} S^1$
+are both contractible, they are homotopy equivalent, and thus the fibers
+over \base, $\mathbb{Z}$ and $\Omega_1(\Sn ^1)$, are isomorphic.
+
+\smallskip
+
+It is possible to directly formalize this classical homotopy-theoretic
+proof in type theory, by (1) defining the universal cover, (2) proving
+that a homotopy equivalence between total spaces induces an equivalence
+on fibers, and (3) proving that the total spaces of both the path
+fibration and the cover are contractible. Indeed, this was the first
+proof of this result in HoTT.
+
+We later discovered that there is an alternative proof, which has a more
+type-theoretic feel.  In this proof, you directly construct fiberwise
+maps between the path fibration and the universal cover, and prove that
+they are mutually inverse by calculation.  We will call this the
+\emph{type-theoretic} or \emph{encode/decode} proof, because
+\emph{encode} and \emph{decode} are the names we use for the fiberwise
+maps between the path fibration and the cover below.  Both proofs use
+the same construction of the cover (step 1 above).  Where the classical
+proof induces an equivalence on fibers from an equivalence between total
+spaces (step 2), the encode/decode proof constructs the inverse map
+(\emph{decode}) explicitly as a map between fibers.  Where the classical
+proof uses contractibility (step 3), the type-theoretic proof uses path
+induction, circle induction, and integer induction.  These are the same
+tools used to prove contractibility---indeed, path induction \emph{is}
+contractibility of the path fibration composed with
+$\mathsf{transport}$, but they are applied in a different way.
+
+\subsubsection{Encode/decode proof}
+
 By definition, $\Omega(\Sn ^1)$ is $\id[\Sn ^1] \base \base$.  If we
-attempt to prove that $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$ directly, we
-will get stuck, because type theory gives you little leverage for
-working with loops.  Instead, we need to generalize the theorem
-statement, and analyze the whole fibration 
+attempt to prove that $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$ by directly
+constructing an equivalence, we will get stuck, because type theory
+gives you little leverage for working with loops.  Instead, we
+generalize the theorem statement to the path fibration, and analyze the
+whole fibration
 \[
 P(x:\Sn ^1) \defeq \id[\Sn ^1] \base x
 \]
 with one end-point free.  
 
-We will show that $P(x)$ is equal to another fibration, which gives a
-more explicit description of the paths.  We call this other fibration
+We show that $P(x)$ is equal to another fibration, which gives a more
+explicit description of the paths---we call this other fibration
 ``codes'', because its elements are \emph{data} that act as codes for
 paths on the circle.  In this case, the codes fibration is the universal
-cover of the circle, which is a helix sitting above the circle:
-
-PICTURE  
+cover of the circle.
 
 \begin{defn}[Universal Cover of $\Sn ^1$]
 Define $\code(x:\Sn ^1) : \type$ by circle-recursion, with 
@@ -641,7 +774,7 @@ A simple induction shows that this equivalence takes addition to
 compostion, so $\Omega(\Sn ^1) = \mathbb{Z}$ as groups.  
 
 \begin{cor}
-$\id{\pi_k{\Sn ^1}} \mathbb{Z}$ if $k = 1$ and $1$ otherwise.  
+$\id{\pi_k{\Sn ^1}} {\mathbb{Z}}$ if $k = 1$ and $1$ otherwise.  
 \end{cor}
 \begin{proof}
 For $k=1$, we sketched the proof from Corollary~\ref{cor:omega-s1} above.
@@ -651,9 +784,6 @@ For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
   lemmas to cite?).
 \end{proof}
 
-\subsubsection{Comparison with homotopy-theoretic proof}
-
-The first proof of $\Omega(\Sn ^1) = \mathbb{Z}$ 
 
 \subsection{Van Kampen's theorem}
 \label{sec:van-kampen}

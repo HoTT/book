@@ -364,9 +364,7 @@ equivalence $\id{\pi_k(X)}{\pi_k(Y)}$ for all $k \le n$, then $f$ is an
 equivalence.
 \end{thm}
 
-
-
-\subsection{Conventions}
+\subsubsection{Conventions}
 
 Unless otherwise stated, the notation \type will denote a \emph{fixed}
 universe and several occurrences of the word \type will always represent
@@ -384,7 +382,266 @@ far.
 
 \subsubsection{Encode/decode proof}
 
-\subsubsection{Comparisong with homotopy-theoretic proof}
+Our goal is to show that $\id {\pi_1(\Sn ^1)} {\mathbb{Z}}$.  In fact, we
+will show that the loop space $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$.  This is a stronger
+statement, because $\id{\pi_1(\Sn ^1)} {\trunc 0 {\Omega(\Sn ^1)}}$ by
+definition, so if $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$, then $\id {\trunc
+  0 {\Omega(\Sn ^1)}} {\trunc 0 {\mathbb{Z}}}$ by congruence, and
+$\mathbb{Z}$ is a set, so $\id {\trunc 0 {\mathbb{Z}}} {\mathbb{Z}}$
+(FIXME: do we have this somewhere?).  
+
+By definition, $\Omega(\Sn ^1)$ is $\id[\Sn ^1] \base \base$.  If we
+attempt to prove that $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$ directly, we
+will get stuck, because type theory gives you little leverage for
+working with loops.  Instead, we need to generalize the theorem
+statement, and analyze the whole fibration 
+\[
+P(x:\Sn ^1) \defeq \id[\Sn ^1] \base x
+\]
+with one end-point free.  
+
+We will show that $P(x)$ is equal to another fibration, which gives a
+more explicit description of the paths.  We call this other fibration
+``codes'', because its elements are \emph{data} that act as codes for
+paths on the circle.  In this case, the codes fibration is the universal
+cover of the circle, which is a helix sitting above the circle:
+
+PICTURE  
+
+\begin{defn}[Universal Cover of $\Sn ^1$]
+Define $\code(x:\Sn ^1) : \type$ by circle-recursion, with 
+\[
+\begin{array}{l}
+\code(\base) \defeq \mathbb{Z} \\
+\ap{\code}{\lloop} \defeq \ua(succ) \\
+\end{array}
+\]
+where $succ$ is the equivalence $\eqv {\mathbb{Z}} {\mathbb{Z}}$ given by
+adding one, which by univalence determines a path from $\mathbb{Z}$ to
+$\mathbb{Z}$ in \type.  
+\end{defn}
+
+To define a function by circle recursion, we need to find a point and a
+loop in the target.  In this case, the target is $\type$, and the point
+we choose is $\mathbb{Z}$, corresponding to our expectation that the
+fiber of the universal cover should be the integers.  The loop we choose
+is the successor/predecessor isomorphism on $\mathbb{Z}$, which
+corresponds to the fact that going around the loop in the base goes up
+one level on the helix.  Univalence is necessary for this part of the
+proof, because we need a \emph{non-trivial} equivalence on $\mathbb{Z}$.  
+
+From this definition, it is simple to calculate that transporting with
+$\code$ takes $\lloop$ to the successor function, and 
+$\opp{\lloop}$ to the predecessor function:
+\begin{lem} \label{lem:transport-s1-code}
+\id{\transfib \code \lloop x} {x + 1} and 
+\id{\transfib \code {\opp \lloop} x} {x - 1}
+\end{lem}
+\begin{proof}
+For the first, we calculate as follows:
+\[
+\begin{array}{lll}
+ & {\transfib \code \lloop x} &\\
+= & \transfib {A \mapsto A} {(\ap{\code}{\lloop})} x & \text{associativity}\\
+= & \transfib {A \mapsto A} {\ua succ} x & \text{reduction for circle-recursion}\\
+= & x + 1 & \text{reduction for \ua}
+\end{array}
+\]
+The second follows from the first, because 
+$\transfibf B p$ and 
+and ${\transfibf B {\opp p}}$ are always inverses, so 
+$\id{\transfibf \code {\opp \lloop}}$ must be the inverse of the
+$- + 1$.  
+\end{proof}
+
+In the remainder of the proof, we will show that $P$ and $\code$ are
+equivalent.  
+
+\paragraph{Encoding}
+
+Next, we define a function \encode that maps paths to codes:
+\begin{defn}
+Define $\encode : \prd{x : \Sn ^1} \rightarrow P(x) \rightarrow  \code(x)$ by 
+\[
+\encode \: p \defeq \transfib{\code} p 0
+\]
+(we leave the argument $x$ implicit).  
+\end{defn}
+Encode is defined by lifting a path into the universal cover, which
+determines an equivalence, and then applying the resulting equivalence
+to $0$.  
+The interesting thing about this function is that it computes a concrete
+number from a loop on the circle, when this loop is represented using
+the abstract groupoidal framework of HoTT.  To gain an
+intuition for how it does this, observe that by the above lemmas,
+$\transfib \code \lloop x$ is $-+1$ and $\transfibf \code {\opp
+  \lloop} x$ is $x - 1$.  Further, $\mathsf{transport}$ is functorial
+(Section~\ref{sec:basics}), so $\transfibf{\code} {\lloop \ct \lloop}$ is
+$(\transfibf \code \lloop) \circ (\transfib \code \lloop)$, etc.  Thus, when $p$ is a
+composition like 
+\[
+\lloop \ct \opp \lloop \ct \lloop \ct ...
+\]
+$\transfibf{\code}{p}$ will compute a composition of functions like
+\[
+(- + 1) \circ (- -1) \circ (- + 1) \circ ... 
+\]
+Applying this composition of functions to 0 will compute the
+\emph{winding number} of the path---how many times it goes around the
+circle, with orientation marked by whether it is positive or negative,
+after inverses have been canceled.  Thus, the computational behavior of
+$\encode$ follows from the reduction rules for higher-inductive types and
+univalence, and the action of $\mathsf{transport}$ on compositions and inverses.
+
+Note that the instance $\encode' \defeq \encode_{\base}$ has type 
+$\id \base \base \rightarrow \mathbb{Z}$, which will be one half of the
+equivalence between $\id{\base}{\base}$ and $\mathbb{Z}$.  
+
+\paragraph{Decoding}  
+
+Decoding an integer as a path is defined by recursion:
+
+\begin{defn}
+Define $\lloop^- : \mathbb{Z} \rightarrow \id{\base}{\base}$ by 
+\[
+\lloop^n = \begin{cases} \lloop \ct \lloop \ct ... \ct \lloop \text{ ($n$ times) } & \text{for positive n} \\
+ \opp \lloop \ct \opp \lloop \ct ... \ct \opp \lloop \text{ ($n$ times)} & \text{for negative n} \\
+  \refl{} & \text{for 0}  
+\end{cases}
+\]
+\end{defn}
+
+Since what we want overall is an equivalence between $\id \base \base$
+and $\mathbb{Z}$, we might expect to be able to prove that $\encode'$
+and $\lloop^-$ give an equivalence.  The problem comes in trying to prove
+the ``decode after encode'' direction, where we would need to show that
+$\id {\lloop^{\encode' p}} p$ for all $p$.  We would like to apply path
+induction, but path induction does not apply to loops like a with both
+endpoints fixed!  The way to solve this problem is to generalize the
+theorem to show that $\id {\lloop^{{\encode_x p}}} p$ for all $x: \Sn ^1$
+and $p : \id \base x$.  However, this does not make sense as is, because
+$\lloop^-$ is defined only for \id{\base}{\base}, whereas here it is
+applied to a \id{\base}{x}.  Thus, we generalize 
+$\lloop$ as follows:
+
+%% deliberately making a ``definition'' with a proof here :-) --Dan
+\begin{defn}
+Define $\decode : \prd{x : \Sn ^1}{\code(x) \rightarrow P(x)}$ by 
+circle induction on $x$.  It suffices to give a function 
+${\code(\base) \rightarrow P(\base)}$, for which we use $\lloop^-$, and 
+to show that $\lloop^-$ respects the loop.  
+\end{defn}
+
+\begin{proof}
+To show that $\lloop^-$ respects the loop, it suffices to give a path
+from $\lloop^-$ to itself that lies over $\lloop$. 
+Formally, this means a path from $\transfib {(x' \mapsto Cover x'
+\rightarrow P(x'))} {\lloop} {\lloop^-}$ to $loop^-$.  We define such a
+path as follows:
+
+\[
+\begin{array}{lll}
+  & \transfib {(x' \mapsto \code(x') \rightarrow P(x'))} \lloop {\lloop^-} & \\
+= & \transfibf P \lloop \circ {\lloop^-} \circ \transfibf \code {\opp \lloop} & \\
+= & (- \ct \lloop) \circ (\lloop^-) \circ \transfibf \code {\opp \lloop} & \\
+= & (- \ct \lloop) \circ (\lloop^-) \circ (- - 1) & \\
+= & (n \mapsto \lloop^{n - 1} \ct \lloop) \\                       
+\end{array}
+\]
+
+From line 1 to line 2, we apply the definition of $\mathsf{transport}$
+when the outer connective of the fibration is $\rightarrow$, whcih
+reduces the $\mathsf{transport}$ to pre- and post-composition with
+$\mathsf{transport}$ at the domain and range types.  From line 2 to line
+3, we apply the definition of $\mathsf{transport}$ when the type family
+is $\id{\base}{x}$, which is post-composition of paths.  From line 3 to
+line 4, we use the action of $\code$ on $\opp \lloop$ defined in
+Lemma~\ref{lem:transport-s1-code}.  From line 4 to line 5, we simply
+reduce the function composition.  Thus, it suffices to show that for all
+$n$, \id{\lloop^{n - 1} \ct \lloop}{\lloop^{n}}, which is an easy
+induction, using the groupoid laws.  
+\end{proof}
+
+\paragraph{Decoding after encoding}
+
+\begin{lem} \label{lem:s1-decode-encode}  For all 
+for all $x: \Sn ^1$ and $p : \id \base x$, $\id
+{\decode_x({{\encode_x(p)}})} p$.  
+\end{lem}
+
+\begin{proof}
+By path induction, it suffices to show that 
+$\id {\decode_{\base}({{\encode_{\base}(\refl{\base})}})} {\refl{\base}}$.  But
+${\encode_{\base}(\refl{\base})} \jdeq 
+ \transfib{\code}{\refl{\base}} 0 \jdeq 0$, and $\decode_{\base}(0)
+ \jdeq \lloop^ 0 \jdeq \refl{\base}$.  
+\end{proof}
+
+\paragraph{Encoding after decoding}
+
+\begin{lem} \label{lem:s1-encode-decode} For all 
+for all $x: \Sn ^1$ and $c : \code(x)$, $\id
+{\encode_x({{\decode_x(c)}})} c$.  
+\end{lem}
+
+\begin{proof}
+The proof is by circle induction.  It suffices to show the case for
+\base, because the case for \lloop is a path between paths in
+$\mathbb{Z}$, which can be given by appealing to the fact that $\mathbb{Z}$ is a set.  
+
+Thus, it suffices to show, for all $n : \mathbb{Z}$, that
+\[
+\id {\encode'(\lloop^n)} {n}
+\]
+The proof is by induction, with cases for $0$,$1$,$-1$,$n+1$, and
+$n-1$.  
+
+\begin{itemize}
+
+\item In the case for $0$, the result is true by definition.
+
+\item In the case for $1$, ${\encode'(\lloop^1)}$ reduces to 
+$\transfib{\code}{\lloop}{0}$, which by
+Lemma~\ref{lem:transport-s1-code} is $0 + 1 = 1$.  
+
+\item In the case for $n+1$, 
+\[
+\begin{array}{lll}
+  & {\encode'(\lloop^{n+1})}  \\
+= & {\encode'(\lloop^{n} \ct \lloop)} & \\
+= & \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} & \\
+= & \transfib{\code}{\lloop}{(\transfib{\code}{(\lloop^n)}{0})} & \text{by functoriality}\\
+= & {(\transfib{\code}{(\lloop^n)}{0})} + 1 & \text{by Lemma~\ref{lem:transport-s1-code}}\\
+= & n + 1 & \text{by the IH} \\
+\end{array}
+\]
+
+\item The cases for negatives are analogous.  
+\end{itemize}
+\end{proof}
+
+\paragraph{Tying it all togehter}
+
+\begin{thm}
+There is a family of equivalences $\prd{x : \Sn ^1} {\eqv {P(x)} {\code(x)}}$.  
+\end{thm}
+\begin{proof}
+The maps $\encode$ and $\decode$ are mutually inverse by 
+Lemmas \ref{lem:s1-decode-encode} and \ref{lem:s1-decode-encode},
+and this can be improved to an equivalence.  
+\end{proof}
+
+Takes the equivalence at {\base} gives
+\begin{cor}
+$\eqv {\id{\base}{\base}} {\mathbb{Z}}$
+\end{cor}
+
+A simple induction shows that this equivalence takes addition to
+compostion, so $\Omega(\Sn ^1) = \mathbb{Z}$ as groups.  
+
+\subsubsection{Comparison with homotopy-theoretic proof}
+
+FIXME
 
 \subsection{Van Kampen's theorem}
 \label{sec:van-kampen}

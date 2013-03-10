@@ -12,26 +12,1019 @@
 \newcommand{\reflect}{\mathsf{r}}
 \newcommand{\project}{\mathsf{p}}
 \newcommand{\ext}{\mathsf{ext}}
-% Projection and extension for truncations
-\newcommand{\extendsmb}{\mathsf{ext}}
-\newcommand{\extend}[1]{\extendsmb(#1)}
 
 \chapter{Homotopy theory}
 \label{cha:homotopy}
 
-In this chapter, we will start developing homotopy theory. Unless otherwise
-stated, the notation \type will denote a \emph{fixed} universe and several
-occurrences of the word \type will always represent the same universe. The types
-\prop, \set, \typele{n} represent the types of propositions, sets and
-$n$-truncated types of this fixed universe \type.
+In this chapter, we develop some homotopy theory within HoTT.  
 
-\section{Homotopy pushouts}
+\section{Overview}
+
+We begin with a very brief summary of classical homotopy theory,
+homotopy theory in $\infty$-groupoids, and homotopy theory in HoTT.
+
+\subsubsection{Classical homotopy theory}
+
+\emph{Topology} is the study of spaces up to continuous deformation.
+\emph{Algebraic topology} is the use of tools from abstract algebra,
+like group theory, to tell whether two spaces are the same.  As a first
+cut, we can say that two spaces are "the same" when there is an
+isomorphism between them (continuous maps back and forth that compose to
+the identity), though we will refine this later.  For example, one basic
+construction in algebraic topology is the \emph{fundamental group} of a
+space: Given a space $X$ and a point $x_0$ in it, one can (almost---see
+below) make a group whose elements are loops at $x_0$ (paths from $x_0$
+to $x_0$), with the group operations given by the identity path
+(standing still), path concatenation, and path reversal.  Isomorphic
+spaces have the same fundamental group, so fundamental group can be used
+to tell two spaces apart: if $X$ and $Y$ have different fundamental
+groups, they are not isomorphic.  Thus, the fundamental group is an
+algebraic invariant that provides global information about a space,
+which complements the local information provided by notions like
+continuity.  For example, the torus locally looks like the sphere, but
+has a global difference: it has a hole in it.  One way to see this is to
+observe that the fundamental group of the sphere is trivial, but the
+fundamental group of the torus is not.
+
+To explain why this is so, we need to be a little more precise about
+what the fundamental group is.  Consider a space $X$ with a path $p$
+from $x$ to $y$.  Then there is an inverse path $\opp p$ from $y$ to
+$x$.  Concatenating $p$ with $\opp p$ (written $p \ct \opp p$) gives a
+path from $x$ to $x$, which should be the same as the identity path
+(witnessing one of the inverse cancellation laws of a groupoid).
+However, in topology, a path $p$ in $X$ is represented as a continuous
+map from the interval $[0,1]$ into $X$, where $p(0) = x$ and $p(1) =
+y$---think of the interval as "time" and $p$ as giving the point on the
+path at each moment in time.  Under this definition, $p \ct \opp p$
+(which walks from $x$ to $y$, and then back along the same route, as
+time goes from $0$ to $1$) is not literally the same as the identity
+path (which stays still at x at all times).  So loops don't actually
+form a group!
+
+The way to fix this is to consider the notion of \emph{homotopy between
+paths}. Because $p \ct \opp p$ walks out and back along the same route, you know
+that you can continuously shrink $p \ct \opp p$ down to the identity path---it
+won't, for example, get snagged around a hole in the space.  Formally, a
+homotopy between functions $f, g : X \rightarrow Y$ is a continuous map 
+$h : [0,1] \times X -> Y$ such that $h(0,x) = f(x)$ and $h(1,x) = g(x)$.  In the specific case
+of paths $p$ and $q$, which, remember, are represented by maps $[0,1] \rightarrow X$, a
+homotopy is a continuous map $h(t,x) : [0,1] \times [0,1] \rightarrow X$, such that
+$h(0,x) = p(x)$ and $h(1,x) = q(x)$.  That is, it's the image in $X$ of a
+square, which fills in the space between $p$ and $q$.  Homotopy is an
+equivalence relation, and operations like concatenation, inverses,
+etc. respect it.  Moreover, the homotopy-equivalence-classes of loops in
+$X$ at $x_0$ (where two loops $p$ and $q$ are equated when there is a \emph{based}
+homotopy between them, which is a homotopy $h$ as above that additionally
+satisfies $h(t,0) = h(t,1) = x_0$ for all $t$) do form a group: while $p \ct \opp p$
+is not equal to the identity, it is homotopic to it!  So, we can fix up
+the above definition of the fundamental group of a space by defining it
+to be the group of loops modulo homotopy.
+
+Returning to the example, we can see that the sphere is different than
+the torus because the fundamental group of the sphere is trivial (the
+one-element group), but the fundamental group of the torus is not.  The
+intuition is that every loop on the sphere is homotopic to the identity,
+because its inside is filled in.  In contrast, a loop on the torus that
+goes around the donut's hole is not homotopic to the identity, so there
+are non-trivial loops.
+
+The fundamental group, which is written $\pi_1(X,x_0$), is the first in
+a series of \emph{homotopy groups} that provide additional information
+about a space.  Fix a point $x_0$ in $X$, and consider the constant path
+$\refl{x_0}$.  Then the homotopies between $\refl{}$ and itself form a
+group (when you quotient \emph{them} by homotopy), which tells you
+something about the two-dimensional structure of the space.  Then
+$\pi_3(X,x_0$) is the group of homotopies between homotopies, and so on.
+One of the basic questions that algebraic topologists consider is
+\emph{calculating the homotopy groups of a space $X$}, which means
+giving a group isomorphism between $\pi_k(X,x_0)$ and some more direct
+description of a group (e.g., by a multiplication table or
+presentation).  Somewhat surprisingly, this is a very difficult
+question, even for spaces as simple as the spheres.  Here is a chart
+that lists the low-dimensional homotopy groups of the low-dimensional
+spheres:
+
+%% FIXME: recreate table in TeX
+\includegraphics[width=5.5in]{spheres.jpg}
+
+There are some patterns, but there is no general formula, and many
+homotopy groups of spheres are currently unknown.  Homotopy groups are
+just one of the algebraic invariants that people study; some others are
+the \emph{homology groups} and \emph{cohomology groups}, which are
+sometimes easier to calculate.
+
+An interesting fact is that, while we started off by trying to classify
+spaces up to isomorphism, most of these algebraic tools in fact classify
+spaces up to something called \emph{homotopy equivalence}.  Two spaces $X$ and $Y$
+are homotopy equivalent iff there are maps $f : X \rightarrow Y$ and $g : Y \rightarrow X$
+such that there is a homotopy between $f \circ g$ and the identity function
+(and similarly for $g \circ f$).  This gives you a little wiggle room to
+"correct" maps that don't exactly compose to the identity, but only miss
+by space that can be filled in.  Isomorphic spaces are homotopy
+equivalent, but not nice versa: for example, the disk is not isomorphic
+to the point, but it is homotopy equivalent to it.  The vast majority of
+the constructions one considers (homotopy groups, homology and
+cohomology groups, etc.) are homotopy-invariant, in the sense that they
+respect homotopy equivalence.  For example, two homotopy-equivalent
+spaces have the same fundamental groups, essentially because the
+fundamental group was defined to be paths modulo homotopy.  Thus, these
+invariants are really properties of the homotopy-equivalence-classes of
+spaces, which are called \emph{homotopy types}.  To show
+\emph{disequality} of spaces, this still has bearing on the original
+problem of classifying spaces up to isomorphism: if two spaces have
+different fundamental groups, then they are not homotopy equivalent, and
+therefore not isomorphic.  
+
+\subsubsection{Homotopy theory of $\infty$-groupoids}
+
+Because all of these notions are homotopy-invariant, one can do homotopy
+in the setting of $\infty$-groupoids.  Recall from Chapter~\ref{FIXME}
+that $\infty$-groupoids are an infinite-dimensional generalization of
+the categorical notion of a groupoid (which is a category where every
+morphism is invertible).  Where a groupoid has just objects and
+morphisms, $\infty$-groupoids have objects, morphisms, morphisms between
+morphisms (2-morphisms), ... all the way up.  $\infty$-groupoids are a
+complex structure: Morphisms at each level have identity, composition,
+and inverse operations, which are weak in the sense that they satisfy
+the groupoid laws (associativity of composition, identity is a unit for
+composition, inverses cancel) only up to the next level morphisms.
+Because of weakness, it is quite difficult to describe all of the
+operations/properties of morphisms.  For example, because associativity
+of composition of morphisms $(p \ct (q \ct r) = (p \ct q) \ct r)$ is
+itself a higher-dimensional morphism, one needs an additional operation
+relating different proofs of associativity; for example, the different
+ways to reassociate $p \ct (q \ct (r \ct s))$ into $((p \ct q) \ct r)
+\ct s$ give rise to Mac Lane's pentagon.  Weakness also creates
+non-trivial interactions between levels, such as the middle-four
+interchange law.
+
+Every topological space X has a fundamental $\infty$-groupoid whose
+$k$-morphisms are the $k$-dimensional paths in $X$.  The weakness of the
+$\infty$-groupoid (the fact that the groupoid laws hold only up to
+higher-dimensional morphisms) corresponds directly to the fact that
+paths only form a group up to homotopy, because the $k+1$-paths are the
+homotopies between the $k$-paths.  Moreover, the view of a space as an
+$\infty$-groupoid preserves enough structure to do homotopy theory
+(calculate homotopy/homology/cohomology groups, etc).  Formally, the
+fundamental $\infty$-groupoid construction is adjoint to the geometric
+realization of an $\infty$-groupoid as a space, and this adjunction
+preserves homotopy theory (this is called the \emph{homotopy
+  hypothesis/theorem}, because whether it is a hypothesis or theorem
+depends on how you define $\infty$-groupoid).  For example, you can
+easily define the fundamental group of an $\infty$-groupoid, and if you
+calculate the fundamental group of the fundamental $\infty$-groupoid of
+a space, that will agree with the classical definition of fundamental
+group.  So homotopy theory done in the setting of $\infty$-groupoids
+really does tell you something about the original topological spaces
+that you start with.  
+
+\subsubsection{Homotopy theory in type theory}
+
+Type theory is a formal calculus of $\infty$-groupoids. Because you can
+do homotopy theory through the abstraction of $\infty$-groupoids, you
+can do homotopy theory in type theory.  One might call this
+\emph{synthetic homotopy theory}, by analogy with \emph{synthetic
+  geometry}, which is geometry in the style of Euclid: you start from
+some basic constructions (a line connecting any two points) and axioms
+(all right angles are equal), and deduce consequences from them
+logically.  Here, the basic constructions/axioms are the operations on
+$\infty$-groupoids and maps between them ($\infty$-functors).  The
+really nice thing about using HoTT to work with $\infty$-groupoids is
+that you don't start by defining "an $\infty$-groupoid is..." like one
+would in any other framework---which is fortunate, because describing
+the structure of an $\infty$-groupoid in something like set theory is
+notoriously difficult.  Instead, you exploit the fact that every type in
+type theory is an $\infty$-groupoid, with the structure of morphisms,
+2-morphism, 3-morphisms, ... given by the identity type.  We will often
+refer to features of type theory by topological-sounding names (for
+example, thinking of $p : \id[A] M N$ as a ``path'' from $M$ to $N$),
+but it's important to keep in mind that we can only talk about these
+things through the abstraction of an $\infty$-groupoid.
+
+There are few really nice advantages of doing synthetic homotopy theory
+in type theory.  First, you can use proof assistants like Agda and Coq
+to check your proofs.  Second, we're starting to see examples where
+working in type theory is suggesting new ways of doing proofs.  Third,
+it seems likely that we will be able to interpret type theory in a wide
+variety of other categories that ``look like'' the category of
+$\infty$-groupoids ($(\infty,1)$-toposes), and, if so, proving a result
+in type theory will show that it holds in these settings as well. It
+remains to be seen how much homotopy theory we can do synthetically, but
+there are already some positive indication, which are listed below.
+
+The main tools we use to do homotopy theory in type theory are:
+
+\begin{itemize}
+
+\item Higher inductive types. To do some homotopy theory, we need some
+  basic spaces (the circle, the sphere, the torus) and constructions for
+  making new spaces (suspensions, gluing on cells, ...).  These are
+  defined using higher inductive types, as described in
+  Chapter~\ref{cha:hits}.  
+
+\item Homotopy groups.  Having defined some spaces, we can start
+  calculating some algebraic invariants of them.  The homotopy groups
+  have an extremely natural definition in the setting of
+  $\infty$-groupoids/type theory.  The fundamental group of $X$ at $x_0$
+  is (to a first approximation---see below) just the identity type
+  $\id[X] {x_0} {x_0}$, or the morphisms of the $\infty$-groupoid;
+  $\pi_2(X,x_0$) is just the identity type $\id[{\id[X] {x_0} {x_0}}]
+  {\refl{}}{\refl{}}$ the 2-morphisms, and so on.  So, calculating a
+  homotopy group is just giving an equivalence between an identity type
+  and some other type, and proving that this equivalence preserves the
+  group structure.  For example, calculating the fundamental group of
+  the circle consists of giving a equivalence between $\id[{\Sn ^1}] \base
+  \base$ and $\mathbb{Z}$ that sends composition of paths to addition.
+
+The reason this problem is interesting is that the (higher) inductive
+definition of a type X presents X as a free $\infty$-groupoid, and this
+presentation \emph{determines} but does not \emph{explicitly describe}
+the higher identity types of X.  The identity types are populated by
+both the generators ($\lloop$, for the circle), and all of the groupoid
+operations (identity, composition, inverses, ...).  As the above table
+for spheres shows, in higher dimensions the $\infty$-groupoid operations
+create quite a complex structure.  Thus, the higher-inductive
+presentation of a space allows you to pose the question "what does the
+identity type of $X$ really turn out to be?", though it can take some
+significant math to answer it.  This is a higher-dimensional
+generalization of a familiar fact in type theory: even for ordinary
+inductive types like natural numbers or booleans, it takes a bit of work
+to prove that $\mathsf{true}$ is different than $\mathsf{false}$---characterizing the
+identity type on booleans is a theorem, not part of the definition
+(see Section~\ref{sec:compute-coprod}).
+
+One detail that was glossed over above is that the (iterated) identity
+type really gives what is called the \emph{path space} of a space, which
+is not just the \emph{set} of $k$-dimensional paths, but a whole space
+of them, with their higher homotopies.  To extract the set of
+paths-modulo-homotopy, we can use truncation, as described in
+Chapter~\ref{cha:hits}.  For example, the fundamental group of a
+space is defined to be the 0-truncation of the space of loops at $x_0$,
+which produces the set of paths modulo homotopy, killing the higher
+homotopies of the loop space.
+
+This gives rise to the following definitions:
+
+\begin{defn}
+  A \emph{pointed type} $(A,a)$ is a type $A:\type$ together with a point $a:A$.
+\end{defn}
+
+\begin{defn}
+  Given a pointed type $(A,a)$, we define the \emph{loop space} of $(A,a)$ as
+  the following pointed type:
+  \[\Omega(A,a)=((a=_Aa),\refl{A}(a)).\]
+
+  For $n:\N$, the \emph{iterated loop space} of a pointed type $(A,a)$ is
+  defined by:
+  \begin{align*}
+    \Omega^0(A,a)&=(A,a)\\
+    \Omega^{n+1}(A,a)&=\Omega^n(\Omega(A,a))
+  \end{align*}
+\end{defn}
+
+\begin{defn}
+  Given $n:\N$ and $(A,a)$ a pointed type, we define the homotopy groups of $A$
+  at $a$ by
+  \[\pi_n(A,a)=\trunc0{\Omega^n(A,a)}\]
+\end{defn}
+
+
+\item Univalence.  The univalence axiom plays an essential role in
+  calculating homotopy groups (this is a formal claim: without
+  univalence, type theory is compatible with an interpretation where all
+  paths, including e.g. the loop on the circle, are reflexivity).  You
+  can see this in the calculation of the the fundamental group of the
+  circle below: the map from $\id[\Sn ^1] \base \base$ to $\mathbb{Z}$
+  is defined by mapping a path on the circle to an isomorphism on
+  $\mathbb{Z}$, so that, for example, $\lloop \ct \opp \lloop$ is sent
+  to $successor \ct predecessor$, and then applying the isomorphism to
+  0. Univalence allows non-trivial paths in the universe, and this is
+  used to extract information from paths in higher inductive types.
+
+\item Homotopy-theoretic and type-theoretic methods.  In the proofs
+  we've done so far, we've found that there are different ways of doing
+  homotopy theory in homotopy type theory.  Some proofs use techniques
+  that are familiar from traditional homotopy theory, whereas others are
+  more type-theoretic, and consist mainly of calculations with the
+  $\infty$-groupoid structure.  We will present some examples of both
+  styles below.  
+\end{itemize}
+
+\subsection{Theorems we have proved}
+
+Here is a sample of some high-level theorems that we have proved in
+HoTT.  These are all well-known results in algebraic topology; the
+interesting thing is that they can be carried out in HoTT, and, in most
+cases, they have been computer-checked.
+
+\begin{thm}[Homotopy Groups of Spheres] \mbox{}
+\begin{itemize}
+\item $\pi_n(\Sn ^n) = \mathbb{Z}$ for $n \ge 1$.
+\item $\pi_k(\Sn ^n) = 1$ for $k < n$.  
+\item $\pi_3(\Sn ^2) = \mathbb{Z}$
+\item $\pi_{n+1}(\Sn ^n) = \mathbb{Z}_2$ for $n \ge 3$.    
+\item $\pi_k(\Sn ^n) = \pi_{k+1}(\Sn ^{n+1})$ whenever $k \le 2n - 2$.  
+\end{itemize}
+\end{thm}
+
+\begin{thm}[Hopf Fibration]
+There is a fibration $H$ over $\Sn ^2$ whose fibers are $\Sn ^1$ and
+whose total space is $\Sn ^3$.  
+\end{thm}
+
+\begin{thm}[Properties of Connected Spaces] \mbox{}
+Recall from Section~\ref{sec:suspension} that $\susp X$ is the
+suspension of $X$, and from Section~\ref{sec:colimits} that $X \sqcup^C
+Y$ is the pushout of $X$ and $Y$ along $C$.
+
+\begin{itemize}
+\item If $X$ is $n$-connected, then $\pi_k(X) = 1$ for $k < n$.  
+
+\item Freudenthal Suspension Theorem: 
+  If $X$ is $n$-connected, the map $\merid : X \rightarrow \id[\susp X]
+  \north \north$ is $2n$-connected.  In particular,
+  \id{\trunc{2n}{X}}{\trunc{2n}{\id[\susp X] \north \north}}.
+
+\item Blakers-Massey Theorem: If $X$ is $i$-connected and $Y$ is
+  $j$-connected, then for all $x:X,y:Y$, the map $\glue : C(x,y)
+  \rightarrow X \sqcup^C Y$ (where is the pushout$i+j$-connected.  In
+  particular, $\trunc {i+j} {P(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y]
+    {(\inl(x))} {(\inr(y))}}$.
+\end{itemize}
+\end{thm}
+
+\begin{thm}[Eilenberg-Mac Lane Spaces]
+For any abelian group $G$ and positive number $n$, there is a type
+$K(G,n)$ such that $\pi_n(K(G,n)) = G$, and  $\pi_k(K(G,n)) = 1$
+otherwise.  
+\end{thm}
+
+\begin{thm}[Van Kampen Theorem]
+FIXME
+\end{thm}
+
+\begin{thm}[Whitehead's Principle for $n$-types]
+If $X$ and $Y$ are $n$-types, and $f : X \rightarrow Y$ induces an
+equivalence $\id{\pi_k(X)}{\pi_k(Y)}$ for all $k \le n$, then $f$ is an
+equivalence.
+\end{thm}
+
+\section{Some basic homotopy groups}
+
+In this section, we describe some basic examples of calculating homotopy
+groups, which can be carried out using the tools we have developed so
+far.  Unless otherwise stated, the notation \type will denote a
+\emph{fixed} universe and several occurrences of the word \type will
+always represent the same universe. The types \prop, \set, \typele{n}
+represent the types of propositions, sets and $n$-truncated types of
+this fixed universe \type.
+
+\subsection{$\pi_1(S^1)$}
+
+\subsubsection{Encode/decode proof}
+
+Our goal is to show that $\id {\pi_1(\Sn ^1)} {\mathbb{Z}}$.  In fact, we
+will show that the loop space $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$.  This is a stronger
+statement, because $\id{\pi_1(\Sn ^1)} {\trunc 0 {\Omega(\Sn ^1)}}$ by
+definition, so if $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$, then $\id {\trunc
+  0 {\Omega(\Sn ^1)}} {\trunc 0 {\mathbb{Z}}}$ by congruence, and
+$\mathbb{Z}$ is a set, so $\id {\trunc 0 {\mathbb{Z}}} {\mathbb{Z}}$
+(FIXME: do we have this somewhere?).  
+
+By definition, $\Omega(\Sn ^1)$ is $\id[\Sn ^1] \base \base$.  If we
+attempt to prove that $\id {\Omega(\Sn ^1)} {\mathbb{Z}}$ directly, we
+will get stuck, because type theory gives you little leverage for
+working with loops.  Instead, we need to generalize the theorem
+statement, and analyze the whole fibration 
+\[
+P(x:\Sn ^1) \defeq \id[\Sn ^1] \base x
+\]
+with one end-point free.  
+
+We will show that $P(x)$ is equal to another fibration, which gives a
+more explicit description of the paths.  We call this other fibration
+``codes'', because its elements are \emph{data} that act as codes for
+paths on the circle.  In this case, the codes fibration is the universal
+cover of the circle, which is a helix sitting above the circle:
+
+PICTURE  
+
+\begin{defn}[Universal Cover of $\Sn ^1$]
+Define $\code(x:\Sn ^1) : \type$ by circle-recursion, with 
+\[
+\begin{array}{l}
+\code(\base) \defeq \mathbb{Z} \\
+\ap{\code}{\lloop} \defeq \ua(succ) \\
+\end{array}
+\]
+where $succ$ is the equivalence $\eqv {\mathbb{Z}} {\mathbb{Z}}$ given by
+adding one, which by univalence determines a path from $\mathbb{Z}$ to
+$\mathbb{Z}$ in \type.  
+\end{defn}
+
+To define a function by circle recursion, we need to find a point and a
+loop in the target.  In this case, the target is $\type$, and the point
+we choose is $\mathbb{Z}$, corresponding to our expectation that the
+fiber of the universal cover should be the integers.  The loop we choose
+is the successor/predecessor isomorphism on $\mathbb{Z}$, which
+corresponds to the fact that going around the loop in the base goes up
+one level on the helix.  Univalence is necessary for this part of the
+proof, because we need a \emph{non-trivial} equivalence on $\mathbb{Z}$.  
+
+From this definition, it is simple to calculate that transporting with
+$\code$ takes $\lloop$ to the successor function, and 
+$\opp{\lloop}$ to the predecessor function:
+\begin{lem} \label{lem:transport-s1-code}
+\id{\transfib \code \lloop x} {x + 1} and 
+\id{\transfib \code {\opp \lloop} x} {x - 1}
+\end{lem}
+\begin{proof}
+For the first, we calculate as follows:
+\[
+\begin{array}{lll}
+ & {\transfib \code \lloop x} &\\
+= & \transfib {A \mapsto A} {(\ap{\code}{\lloop})} x & \text{associativity}\\
+= & \transfib {A \mapsto A} {\ua succ} x & \text{reduction for circle-recursion}\\
+= & x + 1 & \text{reduction for \ua}
+\end{array}
+\]
+The second follows from the first, because 
+$\transfibf B p$ and 
+and ${\transfibf B {\opp p}}$ are always inverses, so 
+$\id{\transfibf \code {\opp \lloop}}$ must be the inverse of the
+$- + 1$.  
+\end{proof}
+
+In the remainder of the proof, we will show that $P$ and $\code$ are
+equivalent.  
+
+\paragraph{Encoding}
+
+Next, we define a function \encode that maps paths to codes:
+\begin{defn}
+Define $\encode : \prd{x : \Sn ^1} \rightarrow P(x) \rightarrow  \code(x)$ by 
+\[
+\encode \: p \defeq \transfib{\code} p 0
+\]
+(we leave the argument $x$ implicit).  
+\end{defn}
+Encode is defined by lifting a path into the universal cover, which
+determines an equivalence, and then applying the resulting equivalence
+to $0$.  
+The interesting thing about this function is that it computes a concrete
+number from a loop on the circle, when this loop is represented using
+the abstract groupoidal framework of HoTT.  To gain an
+intuition for how it does this, observe that by the above lemmas,
+$\transfib \code \lloop x$ is $-+1$ and $\transfibf \code {\opp
+  \lloop} x$ is $x - 1$.  Further, $\mathsf{transport}$ is functorial
+(Section~\ref{sec:basics}), so $\transfibf{\code} {\lloop \ct \lloop}$ is
+$(\transfibf \code \lloop) \circ (\transfib \code \lloop)$, etc.  Thus, when $p$ is a
+composition like 
+\[
+\lloop \ct \opp \lloop \ct \lloop \ct ...
+\]
+$\transfibf{\code}{p}$ will compute a composition of functions like
+\[
+(- + 1) \circ (- -1) \circ (- + 1) \circ ... 
+\]
+Applying this composition of functions to 0 will compute the
+\emph{winding number} of the path---how many times it goes around the
+circle, with orientation marked by whether it is positive or negative,
+after inverses have been canceled.  Thus, the computational behavior of
+$\encode$ follows from the reduction rules for higher-inductive types and
+univalence, and the action of $\mathsf{transport}$ on compositions and inverses.
+
+Note that the instance $\encode' \defeq \encode_{\base}$ has type 
+$\id \base \base \rightarrow \mathbb{Z}$, which will be one half of the
+equivalence between $\id{\base}{\base}$ and $\mathbb{Z}$.  
+
+\paragraph{Decoding}  
+
+Decoding an integer as a path is defined by recursion:
+
+\begin{defn}
+Define $\lloop^- : \mathbb{Z} \rightarrow \id{\base}{\base}$ by 
+\[
+\lloop^n = \begin{cases} \lloop \ct \lloop \ct ... \ct \lloop \text{ ($n$ times) } & \text{for positive n} \\
+ \opp \lloop \ct \opp \lloop \ct ... \ct \opp \lloop \text{ ($n$ times)} & \text{for negative n} \\
+  \refl{} & \text{for 0}  
+\end{cases}
+\]
+\end{defn}
+
+Since what we want overall is an equivalence between $\id \base \base$
+and $\mathbb{Z}$, we might expect to be able to prove that $\encode'$
+and $\lloop^-$ give an equivalence.  The problem comes in trying to prove
+the ``decode after encode'' direction, where we would need to show that
+$\id {\lloop^{\encode' p}} p$ for all $p$.  We would like to apply path
+induction, but path induction does not apply to loops like a with both
+endpoints fixed!  The way to solve this problem is to generalize the
+theorem to show that $\id {\lloop^{{\encode_x p}}} p$ for all $x: \Sn ^1$
+and $p : \id \base x$.  However, this does not make sense as is, because
+$\lloop^-$ is defined only for \id{\base}{\base}, whereas here it is
+applied to a \id{\base}{x}.  Thus, we generalize 
+$\lloop$ as follows:
+
+%% deliberately making a ``definition'' with a proof here :-) --Dan
+\begin{defn}
+Define $\decode : \prd{x : \Sn ^1}{\code(x) \rightarrow P(x)}$ by 
+circle induction on $x$.  It suffices to give a function 
+${\code(\base) \rightarrow P(\base)}$, for which we use $\lloop^-$, and 
+to show that $\lloop^-$ respects the loop.  
+\end{defn}
+
+\begin{proof}
+To show that $\lloop^-$ respects the loop, it suffices to give a path
+from $\lloop^-$ to itself that lies over $\lloop$. 
+Formally, this means a path from $\transfib {(x' \mapsto Cover x'
+\rightarrow P(x'))} {\lloop} {\lloop^-}$ to $loop^-$.  We define such a
+path as follows:
+
+\[
+\begin{array}{lll}
+  & \transfib {(x' \mapsto \code(x') \rightarrow P(x'))} \lloop {\lloop^-} & \\
+= & \transfibf P \lloop \circ {\lloop^-} \circ \transfibf \code {\opp \lloop} & \\
+= & (- \ct \lloop) \circ (\lloop^-) \circ \transfibf \code {\opp \lloop} & \\
+= & (- \ct \lloop) \circ (\lloop^-) \circ (- - 1) & \\
+= & (n \mapsto \lloop^{n - 1} \ct \lloop) \\                       
+\end{array}
+\]
+
+From line 1 to line 2, we apply the definition of $\mathsf{transport}$
+when the outer connective of the fibration is $\rightarrow$, whcih
+reduces the $\mathsf{transport}$ to pre- and post-composition with
+$\mathsf{transport}$ at the domain and range types.  From line 2 to line
+3, we apply the definition of $\mathsf{transport}$ when the type family
+is $\id{\base}{x}$, which is post-composition of paths.  From line 3 to
+line 4, we use the action of $\code$ on $\opp \lloop$ defined in
+Lemma~\ref{lem:transport-s1-code}.  From line 4 to line 5, we simply
+reduce the function composition.  Thus, it suffices to show that for all
+$n$, \id{\lloop^{n - 1} \ct \lloop}{\lloop^{n}}, which is an easy
+induction, using the groupoid laws.  
+\end{proof}
+
+\paragraph{Decoding after encoding}
+
+\begin{lem} \label{lem:s1-decode-encode}  For all 
+for all $x: \Sn ^1$ and $p : \id \base x$, $\id
+{\decode_x({{\encode_x(p)}})} p$.  
+\end{lem}
+
+\begin{proof}
+By path induction, it suffices to show that 
+$\id {\decode_{\base}({{\encode_{\base}(\refl{\base})}})} {\refl{\base}}$.  But
+${\encode_{\base}(\refl{\base})} \jdeq 
+ \transfib{\code}{\refl{\base}} 0 \jdeq 0$, and $\decode_{\base}(0)
+ \jdeq \lloop^ 0 \jdeq \refl{\base}$.  
+\end{proof}
+
+\paragraph{Encoding after decoding}
+
+\begin{lem} \label{lem:s1-encode-decode} For all 
+for all $x: \Sn ^1$ and $c : \code(x)$, $\id
+{\encode_x({{\decode_x(c)}})} c$.  
+\end{lem}
+
+\begin{proof}
+The proof is by circle induction.  It suffices to show the case for
+\base, because the case for \lloop is a path between paths in
+$\mathbb{Z}$, which can be given by appealing to the fact that $\mathbb{Z}$ is a set.  
+
+Thus, it suffices to show, for all $n : \mathbb{Z}$, that
+\[
+\id {\encode'(\lloop^n)} {n}
+\]
+The proof is by induction, with cases for $0$,$1$,$-1$,$n+1$, and
+$n-1$.  
+
+\begin{itemize}
+
+\item In the case for $0$, the result is true by definition.
+
+\item In the case for $1$, ${\encode'(\lloop^1)}$ reduces to 
+$\transfib{\code}{\lloop}{0}$, which by
+Lemma~\ref{lem:transport-s1-code} is $0 + 1 = 1$.  
+
+\item In the case for $n+1$, 
+\[
+\begin{array}{lll}
+  & {\encode'(\lloop^{n+1})}  \\
+= & {\encode'(\lloop^{n} \ct \lloop)} & \\
+= & \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} & \\
+= & \transfib{\code}{\lloop}{(\transfib{\code}{(\lloop^n)}{0})} & \text{by functoriality}\\
+= & {(\transfib{\code}{(\lloop^n)}{0})} + 1 & \text{by Lemma~\ref{lem:transport-s1-code}}\\
+= & n + 1 & \text{by the IH} \\
+\end{array}
+\]
+
+\item The cases for negatives are analogous.  
+\end{itemize}
+\end{proof}
+
+\paragraph{Tying it all togehter}
+
+\begin{thm}
+There is a family of equivalences $\prd{x : \Sn ^1} {\eqv {P(x)} {\code(x)}}$.  
+\end{thm}
+\begin{proof}
+The maps $\encode$ and $\decode$ are mutually inverse by 
+Lemmas \ref{lem:s1-decode-encode} and \ref{lem:s1-decode-encode},
+and this can be improved to an equivalence.  
+\end{proof}
+
+Instantiating at {\base} gives
+\begin{cor}\label{cor:omega-s1}
+$\eqv {\id{\base}{\base}} {\mathbb{Z}}$
+\end{cor}
+
+A simple induction shows that this equivalence takes addition to
+compostion, so $\Omega(\Sn ^1) = \mathbb{Z}$ as groups.  
+
+\begin{cor}
+$\id{\pi_k{\Sn ^1}} \mathbb{Z}$ if $k = 1$ and $1$ otherwise.  
+\end{cor}
+\begin{proof}
+For $k=1$, we sketched the proof from Corollary~\ref{cor:omega-s1} above.
+For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
+{\Omega^n(\Omega{\Sn ^1})} = \trunc 0 {\Omega^n(\mathbb{Z})}$, which is
+  $1$ because $\mathbb{Z}$ is a set and $\pi_n$ of a set is trivial (FIXME
+  lemmas to cite?).
+\end{proof}
+
+\subsubsection{Comparison with homotopy-theoretic proof}
+
+The first proof of $\Omega(\Sn ^1) = \mathbb{Z}$ 
+
+\subsection{Van Kampen's theorem}
+\label{sec:van-kampen}
+
+We begin with a naive version of the van Kampen theorem, and then improve it to a more refined version.
+
+\subsubsection{Naive van Kampen}
+\label{sec:naive}
+
+For a type $X$, write $\Pi_1 X: X\to X\to \type$ be the $0$-truncation of its identity type, i.e.\ $\Pi_1 X(x,y) \defeq \trunc0{x=y}$.
+Note that we have induced groupoid operations
+\begin{gather*}
+  (-\ct-) : \Pi_1X(x,y) \to \Pi_1X(y,z) \to \Pi_1X(x,z)\\
+  \opp{(-)} : \Pi_1X(x,y) \to \Pi_1X(y,x)\\
+  \refl{x} : \Pi_1X(x,x)\\
+  \apfunc{f} : \Pi_1X(x,y) \to \Pi_1Y(fx,fy)
+\end{gather*}
+for which we use the same notation as the corresponding operations on paths.
+
+Now given types $A,B,C$ and functions $f:A\to B$ and $g:A\to C$, let $P$ be the higher inductive type generated by
+\begin{itemize}
+\item $i:B\to P$
+\item $j:C\to P$
+\item for all $x:A$, a path $k x:ifx = jgx$.
+\end{itemize}
+Define $\code:P\to P\to \type$ by double induction on $P$ as follows.
+\begin{itemize}
+\item $\code(ib,ib')$ is a set-quotient of the type of sequences %pairs $(\vec a, \vec a', \vec p, \vec q)$
+  \[ (b, p_0, x_1, q_1, y_1, p_1, x_2, q_2, y_2, p_2, \dots, y_n, p_n, b') \]
+  where
+  \begin{itemize}
+  \item $n:\mathbb{N}$
+  \item $x_k:A$ and $y_k:A$ for $0<k \le n$
+  \item $p_0:\Pi_1B(b,f x_1)$ and $p_n:\Pi_1B(f y_n, b')$
+  \item $p_k:\Pi_1B(f y_k, fx_{k+1})$ for $1\le p < n$
+  \item $q_k:\Pi_1C(gx_k, gy_k)$ for $1\le q\le n$
+  \end{itemize}
+  The quotient is generated by the following equalities:
+  \begin{alignat*}{2}
+    % (\dots, p_{k-1} \ct fw, x_{k}', q_{k}, \dots) &=
+    % (\dots, p_{k-1}, x_{k}, gw \ct q_{k}, \dots)
+    % & \qquad\text{for } w:\Pi_1A(x_{k},x_{k}')\\
+    % (\dots, q_k \ct gw, y_k', p_k, \dots) &=
+    % (\dots, q_k, y_k, fw \ct p_k, \dots)
+    % & \qquad\text{for } w:\Pi_1A(y_k, y_k')\\
+    (\dots, q_k, y_k, \refl{fy_k}, y_k, q_{k+1},\dots)
+    &= (\dots, q_k\ct q_{k+1},\dots)\\
+    (\dots, p_k, x_k, \refl{gx_k}, x_k, p_{k+1},\dots)
+    &= (\dots, p_k\ct p_{k+1},\dots)
+  \end{alignat*}
+  (see \autoref{rmk:naive} below).
+\item $\code(jc,jc')$ is identical, with the roles of $B$ and $C$ reversed.
+  We likewise notationally reverse the roles of $x$ and $y$, and of $p$ and $q$.
+\item $\code(ib,jc)$ and $\code(jc,ib)$ are similar, with the parity changed so that they start in one type and end in the other.
+\item For $a:A$ and $b:B$, we require an equivalence
+  \begin{equation}
+    \code(ib, ifa) \simeq \code(ib,jga).\label{eq:bfa-bga}
+  \end{equation}
+  We define this to consist of the two functions defined on sequences by
+  \begin{align*}
+    (\dots, y_n, p_n,fa) &\mapsto (\dots,y_n,p_n,a,\refl{ga},ga)\\
+    (\dots, x_n, p_n, a, \refl{fa}, fa) &\mapsfrom (\dots, x_n, p_n, ga)
+  \end{align*}
+  Both of these functions are easily seen to respect the equivalence relations, and hence to define functions on the types of codes.
+  The left-to-right-to-left composite is
+  \[ (\dots, y_n, p_n,fa) \mapsto
+  (\dots,y_n,p_n,a,\refl{ga},a,\refl{fa},fa)
+  \]
+  which is equal to the identity by a generating equality of the quotient.
+  The other composite is analogous.
+  Thus we have defined an equivalence~\eqref{eq:bfa-bga}.
+\item Similarly, we require equivalences
+  \begin{align*}
+    \code(jc,ifa) &\simeq \code(jc,jga)\\
+    \code(ifa,ib)&\simeq (jga,ib)\\
+    \code(ifa,jc)&\simeq (jga,jc)
+  \end{align*}
+  all of which are defined in exactly the same way (the second two by adding reflexivity terms on the beginning rather than the end).
+\item Finally, we need to know that for $a,a':A$, the following diagram commutes:
+  \begin{equation}\label{eq:bfa-bga-comm}
+  \vcenter{\xymatrix{
+      \code(ifa,ifa') \ar[r]\ar[d] &
+      \code(ifa,jga')\ar[d]\\
+      \code(jga,ifa')\ar[r] &
+      \code(jga,jga')
+      }}
+  \end{equation}
+  This amounts to saying that if we add something to the beginning and then something to the end of a sequence, we might as well have done it in the other order.
+\end{itemize}
+
+\begin{rmk}\label{rmk:naive}
+  You might expect to see in the definition of \code some additional generating equations for the set-quotient, such as
+  \begin{alignat*}{2}
+    (\dots, p_{k-1} \ct fw, x_{k}', q_{k}, \dots) &=
+    (\dots, p_{k-1}, x_{k}, gw \ct q_{k}, \dots)
+    & \qquad\text{for } w:\Pi_1A(x_{k},x_{k}')\\
+    (\dots, q_k \ct gw, y_k', p_k, \dots) &=
+    (\dots, q_k, y_k, fw \ct p_k, \dots)
+    & \qquad\text{for } w:\Pi_1A(y_k, y_k').
+  \end{alignat*}
+  However, these are not necessary!
+  In fact, they follow automatically by path-induction on $w$.
+  This is because the requisite ``quotienting'' by paths in $A$ has happened already in the fact that $\code(u,v)$ is a \emph{set}, even though it involves the untruncated type $A$ in its definition.
+  This is why the version of van Kampen we are currently describing is ``naive''.
+  % In the next section we will remedy this defect.
+\end{rmk}
+
+Continuing on, we can characterize transporting in the fibration $\code$:
+\begin{itemize}
+\item For $p:b=_B b'$ and $u:P$, we have
+  \[ \mathsf{transport}^{b\mapsto \code(u,ib)}(p, (\dots, y_n,p_n,b))
+  = (\dots,y_n,p_n\ct p,b').
+  \]
+\item For $q:c=_C c'$ and $u:P$, we have
+  \[ \mathsf{transport}^{c\mapsto \code(u,jc)}(q, (\dots, x_n,q_n,c))
+  = (\dots,x_n,q_n\ct q,c').
+  \]
+\end{itemize}
+Here we are abusing notation by using the same name for a path in $X$ and its image in $\Pi_1X$.
+Note that transport in $\Pi_1X$ is also given by concatenation with (the image of) a path.
+From this we can prove the above statements by induction on $u$.
+We also have:
+\begin{itemize}
+\item For $a:A$ and $u:P$,
+  \[ \mathsf{transport}^{v\mapsto \code(u,v)}(ha, (\dots, y_n,p_n,fa))
+  = (\dots,y_n,p_n,a,\refl{ga},ga).
+  \]
+\end{itemize}
+This follows essentially from the definition of $\code$.
+
+We also construct a function
+\[ r : \prod_{u:P} \code(u,u) \]
+by induction on $u$ as follows:
+\begin{align*}
+  rib &\defeq (b,\refl{b},b)\\
+  rjc &\defeq (c,\refl{c},c)
+\end{align*}
+and for $rka$ we take the composite equality
+\begin{align*}
+  (ka,ka)_* (fa,\refl{fa},fa)
+  &= (ga,\refl{ga},a,\refl{fa},a,\refl{ga},ga) \\
+  &= (ga,\refl{ga},ga)
+\end{align*}
+where the first equality is by the observation above about transporting in $\code$, and the second is an instance of the set quotient relation used to define $\code$.
+
+We will now prove:
+\begin{thm}[Naive van Kampen]
+  For all $u,v:P$ there is an equivalence
+  \[ \Pi_1P(u,v) \simeq \code(u,v). \]
+\end{thm}
+\begin{proof}
+
+To define a function
+\[ \encode : \Pi_1P(u,v) \to \code(u,v) \]
+it suffices to define a function $(u=_P v) \to \code(u,v) $,
+since $\code(u,v)$ is a set.
+We do this by transport:
+\[\encode(p) \defeq \mathsf{transport}^{v\mapsto \code(u,v)}(p,r(u)).\]
+Now to define
+\[ \decode: \code(u,v) \to \Pi_1P(u,v) \]
+we proceed as usual by induction on $u,v:P$.
+In each case for $u$ and $v$, we apply $i$ or $j$ to all the equalities $p_k$ and $q_k$ as appropriate and concatenate the results in $P$, using $h$ to identify the endpoints.
+For instance, when $u\jdeq ib$ and $v\jdeq ib'$, we define
+\begin{multline}\label{eq:decode}
+ \decode(b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b')\\
+ \defeq i(p_0)\ct h(x_1) \ct j(q_1) \ct \opp{h(y_1)} \ct i(p_1) \ct \cdots \ct \opp{h(y_n)}\ct i(p_n).
+\end{multline}
+This respects the set-quotient equivalence relation and the equivalences like~\eqref{eq:bfa-bga}, since $h: fi \sim gj$ is natural and $f$ and $g$ are functorial.
+
+As usual, to show that the composite
+\[ \Pi_1P(u,v) \xrightarrow{\encode} \code(u,v) \xrightarrow{\decode} \Pi_1P(u,v) \]
+is the identity, we first peel off the 0-truncation (since the target is a set) and then apply path-induction.
+The input $\refl{u}$ goes to $ru$, which then goes back to $\refl u$ (applying a further induction on $u$ to decompose $\decode(ru)$).
+
+Finally, consider the composite
+\[  \code(u,v) \xrightarrow{\decode} \Pi_1P(u,v) \xrightarrow{\encode} \code(u,v). \]
+We proceed by induction on $u,v:P$.
+When $u\jdeq ib$ and $v\jdeq ib'$, this composite is
+\begin{multline*}
+(b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b')\\
+\begin{split}
+  &\mapsto \Big(ip_0\ct hx_1 \ct jq_1 \ct \opp{hy_1} \ct ip_1 \ct \cdots \ct \opp{hy_n}\ct ip_n\Big)_*(rib)\\
+  &= (ip_n)_* \cdots(jq_1)_* (hx_1)_*(ip_0)_*(b,\refl{b},b)\\
+  &= (ip_n)_* \cdots(jq_1)_* (hx_1)_*(b,p_0,ifx_1)\\
+  &= (ip_n)_* \cdots(jq_1)_* (b,p_0,x_1,\refl{gx_1},jgx_1)\\
+  &= (ip_n)_* \cdots (b,p_0,x_1,q_1,jgy_1)\\
+  &= \quad\vdots\\
+  &= (b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b').
+\end{split}
+\end{multline*}
+i.e.\ the identity function.
+The other three point cases are analogous, and the path cases are trivial since all the types are sets.
+\end{proof}
+
+\begin{eg}\label{eg:circle}
+  Let $A\defeq \bool$, $B\defeq\unit$, and $C\defeq \unit$.
+  Then $P \simeq S^1$.
+  Inspecting the definition of, say, $\code(i(\ttt),i(\ttt))$, we see that the paths all may as well be trivial, so the only information is in the sequence of elements $x_1,y_1,\dots,x_n,y_n: \bool$.
+  Moreover, if we have $x_k=y_k$ or $y_k=x_{k+1}$ for any $k$, then the set-quotient relations allow us to excise both of those elements.
+  Thus, every such sequence is equal to a canonical \emph{reduced} one in which no two adjacent elements are equal.
+  Clearly such a reduced sequence is uniquely determined by its length (a natural number $n$) together with, if $n>1$, the information of whether $x_1$ is $0_\bool$ or $1_\bool$, since that determines the rest of the sequence uniquely.
+  And these data can, of course, be identified with an integer, where $n$ is the absolute value and $x_1$ encodes the sign.
+  Thus we recover $\pi_1(S^1)\cong \mathbb{Z}$.
+\end{eg}
+
+\begin{eg}\label{eg:suspension}
+  More generally, let $B\defeq\unit$ and $C\defeq \unit$ but $A$ be arbitrary, so that $P$ is the suspension of $A$.
+  Then once again the paths $p_k$ and $q_k$ are trivial, so that the only information in a path code is a sequence of elements $x_1,y_1,\dots,x_n,y_n: A$.
+  The first two generating equalities say that adjacent equal elements can be canceled, so it makes sense to think of this sequence as a word of the form
+  \[ x_1 y_1^{-1} x_2 y_2^{-1} \cdots x_n y_n^{-1} \]
+  in a group.
+  Thus, $\pi_1(\Sigma A)$ is obtained by building the naively conceived ``free group on $A$'' followed by the 0-truncation.
+  By comparing universal properties, we can identify this with the free group on the set $\pi_0(A)$.
+\end{eg}
+
+\begin{eg}\label{eg:wedge}
+  Let $A\defeq\unit$ and $B$ and $C$ be arbitrary, so that $f$ and $g$ simply equip $B$ and $C$ with basepoints $b$ and $c$, say.
+  Then $P$ is the \emph{wedge} $B\vee C$ of $B$ and $C$ (the coproduct in the category of based spaces).
+  In this case, it is the elements $x_k$ and $y_k$ which are trivial, so that the only information is a sequence of loops $(p_0,q_1,p_1,\dots,p_n)$ with $p_k:\pi_1(B,b)$ and $q_k:\pi_1(C,c)$.
+  Such sequences, modulo the equivalence relation we have imposed, are easily identified with the \emph{free product} of the groups $\pi_1(B,b)$ and $\pi_1(C,c)$; thus we have $\pi_1(B\vee C) \cong \pi_1(B) * \pi_1(C)$.
+\end{eg}
+
+Technically speaking, we have only proven that these are only bijections of sets.
+To make them isomorphisms of groups, we could define a concatenation operation $\code$ and show that $\decode$/$\encode$ are an isomorphism of these.
+This operation on $\code$ is evidently just concatenation of sequences; we leave the details to the reader.
+
+
+\subsubsection{van Kampen with a set of basepoints}
+\label{sec:better}
+
+When $A$, $B$, and $C$ are not all sets, however, the version of the van Kampen theorem proven in the previous section is not as useful, since it does not identify the path-space of $P$ with a set presented in terms of \emph{set-level data}.
+For this reason, in this section we consider a better sort of van Kampen theorem, which is closely analogous to an improvement that is well-known to be important in classical algebraic topology, where $A$ (at least) is equipped with a \emph{set of base points}.
+
+Let $A,B,C,f,g,P,i,j,h$ be as in the previous section, and suppose also we are given a set $S$ and a map $k:S \to A$ which is \emph{$(-1)$-connected} in the ``fiberwise'' sense, i.e.\ left orthogonal to $(-1)$-truncated objects.
+(Apparently this is what a classical topologist would call a ``$0$-connected'' map, due to thinking in terms of cofibers rather than fibers.)
+For instance, $A$ could be pointed and connected with $k:\unit\to A$ the point, or $A$ could be a set with $k$ the identity function.
+
+Now let $T$ be the higher inductive type generated by
+\begin{itemize}
+\item A function $\ell:S\to T$, and
+\item For each $s,s':S$, a function $m:A(ks,ks') \to T(\ell s, \ell s')$.
+\end{itemize}
+\newcommand{\kbar}{\overline{k}}
+There is an obvious induced function $\kbar:T\to A$ such that $\kbar \ell = k$, and any $p:ks=ks'$ is equal to the composite $ks = \kbar \ell s \overset{\kbar m p}{=} \kbar \ell s' = k s'$.
+
+\begin{lem}\label{thm:kbar}
+  $\kbar$ is (fiberwise) 0-connected.
+\end{lem}
+\begin{proof}
+  We must show that for all $a:A$, the 0-truncation of the type $\sum_{t:T}(\kbar t = a)$ is contractible.
+  Since contractibility is a mere proposition and $k$ is $(-1)$-connected, we may assume that $a=ks$ for some $s:S$.
+  Now we can take the center of contraction to be $\tproj0{(\ell s,q)}$ where $q$ is the equality $\kbar\ell s = k s$.
+
+  It remains to show that for any $\phi:\trunc0{\sum_{t:T} (\kbar t = ks)}$ we have $\phi = \tproj0{(\ell s,q)}$.
+  Since the latter is a mere proposition, and in particular a set, we may assume that $\phi=\tproj0{(t,p)}$ for $t:T$ and $p:\kbar t = ks$.
+
+  Now we can do induction on $t:T$.
+  If $t\jdeq\ell s'$, then $ks' = \kbar \ell s' \overset{p}{=} ks$ yields via $m$ an equality $\ell s = \ell s'$.
+  Hence by definition of $\kbar$ and of equality in homotopy fibers, we obtain an equality $(ks',p) = (ks,q)$, and thus $\tproj0{(ks',p)} = \tproj0{(ks,q)}$.
+  Next we must show that as $t$ varies along $m$ these equalities agree.
+  But they are equalities in a set (namely $\trunc0{\sum_{t:T} (\kbar t = ks)}$), and hence this is automatic.
+\end{proof}
+
+Now we define $\code:P\to P\to \type$ by double induction as follows
+\begin{itemize}
+\item $\code(ib,ib')$ is now a set-quotient of the type of sequences
+  \[ (b, p_0, x_1, q_1, y_1, p_1, x_2, q_2, y_2, p_2, \dots, y_n, p_n, b') \]
+  where
+  \begin{itemize}
+  \item $n:\mathbb{N}$
+  \item $x_k:S$ and $y_k:S$ for $0<k \le n$
+  \item $p_0:\Pi_1B(b,f k x_1)$ and $p_n:\Pi_1B(f k y_n, b')$
+  \item $p_k:\Pi_1B(fk y_k, fkx_{k+1})$ for $1\le p < n$
+  \item $q_k:\Pi_1C(gkx_k, gky_k)$ for $1\le q\le n$
+  \end{itemize}
+  The quotient is generated by the following equalities (see \autoref{rmk:naive}):
+  \begin{alignat*}{2}
+    (\dots, q_k, y_k, \refl{fy_k}, y_k, q_{k+1},\dots)
+    &= (\dots, q_k\ct q_{k+1},\dots)\\
+    (\dots, p_k, x_k, \refl{gx_k}, x_k, p_{k+1},\dots)
+    &= (\dots, p_k\ct p_{k+1},\dots)\\
+    (\dots, p_{k-1} \ct fw, x_{k}', q_{k}, \dots) &=
+    (\dots, p_{k-1}, x_{k}, gw \ct q_{k}, \dots)
+    & \qquad\text{for } w:\Pi_1A(kx_{k},kx_{k}')\\
+    (\dots, q_k \ct gw, y_k', p_k, \dots) &=
+    (\dots, q_k, y_k, fw \ct p_k, \dots)
+    & \qquad\text{for } w:\Pi_1A(ky_k, ky_k').
+  \end{alignat*}
+  We will need below the definition of the case of $\decode$ on such a sequence, which as before concatenates all the paths $p_k$ and $q_k$ together with instances of $h$ to give an element of $\Pi_1P(ifb,ifb')$, cf.~\eqref{eq:decode}.
+  As before, the other three point cases are nearly identical.
+\item For $a:A$ and $b:B$, we require an equivalence
+  \begin{equation}
+    \code(ib, ifa) \simeq \code(ib,jga).\label{eq:bfa-bga2}
+  \end{equation}
+  Since $\code$ is set-valued, by \autoref{thm:kbar} we may assume that $a=\kbar t$ for some $t:T$.
+  Next, we can do induction on $t$.
+  If $t\jdeq \ell s$ for $s:S$, then we define~\eqref{eq:bfa-bga2} as in \S\ref{sec:naive}:
+  \begin{align*}
+    (\dots, y_n, p_n,fks) &\mapsto (\dots,y_n,p_n,s,\refl{gks},gks)\\
+    (\dots, x_n, p_n, s, \refl{fks}, fks) &\mapsfrom (\dots, x_n, p_n, gks)
+  \end{align*}
+  These respect the equivalence relations, and define quasi-inverses just as before.
+  Now suppose $t$ varies along $m_{s,s'}(w)$ for some $w:ks=ks'$; we must show that~\eqref{eq:bfa-bga2} respects transporting along $\kbar mw$.
+  By definition of $\kbar$, this essentially boils down to transporting along $w$ itself.
+  By the characterization of transport in path types, what we need to show is that
+  \[ w_*(\dots, y_n, p_n,fks) = (\dots,y_n, p_n \ct fw, fks') \]
+  is mapped by~\eqref{eq:bfa-bga2} to
+  \[ w_*(\dots,y_n,p_n,s,\refl{gks},gks) = (\dots, y_n, p_n, s, \refl{gks} \ct gw, gks') \]
+  But this follows directly from the new generators we have imposed on the set-quotient relation defining \code.
+\item The other three requisite equivalences are defined similarly.
+\item Finally, since the commutativity~\eqref{eq:bfa-bga-comm} is a mere proposition, by $(-1)$-connectedness of $k$ we may assume that $a=ks$ and $a'=ks'$, in which case it follows exactly as before.
+\end{itemize}
+
+\begin{thm}[van Kampen with a set of basepoints]
+  For all $u,v:P$ there is an equivalence
+  \[ \Pi_1P(u,v) \simeq \code(u,v). \]
+  with \code defined as in this section.
+\end{thm}
+
+\begin{proof}
+  Basically just like before.
+  To show that $\decode$ respects the new generators of the quotient relation, we use the naturality of $h$.
+  And to show that $\decode$ respects the equivalences such as~\eqref{eq:bfa-bga2}, we need to induct on $\kbar$ and on $T$ in order to decompose those equivalences into their definitions, but then it becomes again simply functoriality of $f$ and $g$.
+  The rest is easy.
+  In particular, no additional argument is required for $\encode\circ\decode$, since the goal is to prove an equality in a set, and so the case of $h$ is trivial.
+\end{proof}
+
+\begin{eg}\label{eg:clvk}
+  Suppose $S\defeq \unit$, so that $A$ has a basepoint $a \defeq k(\ttt)$ and is connected.
+  Then code for loops in the pushout can be identified with alternating sequences of loops in $\pi_1(B,f(a))$ and $\pi_1(C,g(a))$, modulo an equivalence relation which allows us to slide elements of $\pi_1(A,a)$ between them (after applying $f$ and $g$ respectively).
+  Thus, $\pi_1(P)$ can be identified with the \emph{amalgamated free product} $\pi_1(B) *_{\pi_1(A)} \pi_1(C)$.
+  This (in the case when $B$ and $C$ are open subspaces of $P$ and $A$ their intersection) is probably the most classical version of the van Kampen theorem.
+\end{eg}
+
+\begin{eg}\label{eg:cofiber}
+  As a special case of \autoref{eg:clvk}, suppose additionally that $C\defeq\unit$, so that $P$ is the cofiber $B/A$.
+  Then every loop in $C$ is equal to reflexivity, so the relations on path codes allow us to collapse all sequences to a single loop in $B$.
+  The additional relations require that multiplying on the left, right, or in the middle by an element in the image of $\pi_1(A)$ is the identity.
+  We can thus identify $\pi_1(B/A)$ with the quotient of the group $\pi_1(B)$ by the normal subgroup generated by the image of $\pi_1(A)$.
+\end{eg}
+
+\begin{eg}\label{eg:torus}
+  As a further special case of \autoref{eg:cofiber}, let $B\defeq S^1 \vee S^1$, let $A\defeq S^1$, and let $f:A\to B$ pick out the composite loop $p \ct q \ct \opp p \ct \opp q$, where $p$ and $q$ are the generating loops in the two copies of $S^1$ comprising $B$.
+  Then $P$ is a presentation of the torus $T^2$.
+  Thus, $\pi_1(T^2)$ is the quotient of the free group on two generators (i.e.\ $\pi_1(B)$) by the relation $p \ct q \ct \opp p \ct \opp q = 1$.
+  This clearly yields the free \emph{abelian} group on two generators, which is $\mathbb{Z}\times\mathbb{Z}$.
+
+  Similarly, if we defined $f$ to pick out $p\ct q\ct p \ct \opp q$, we would obtain a presentation for the fundamental group of the Klein bottle.
+\end{eg}
+
+\begin{eg}\label{eg:kg1}
+  As a more general special case of \autoref{eg:cofiber}, suppose given any presentation of a (set-)group $G = \langle X | R \rangle$, with $X$ a set of generators and $R$ a set of words in these generators.
+  Let $B\defeq \bigvee_X S^1$ and $A\defeq \bigvee_R S^1$, with $f:A\to B$ sending each copy of $S^1$ to the corresponding word in the generating loops of $B$.
+  It follows that $\pi_1(P) \cong G$.
+  Thus, if we 1-truncate $P$, we obtain an Eilenberg--Mac Lane space $K(G,1)$.
+\end{eg}
+
+\section{More advanced tools}
+
+In this section, we develop some more advanced tools for doing homotopy
+theory in HoTT, including the theory of pushouts and pullbacks in
+subcategories of types, the general notion of a reflective
+subuniverse, and the theory of truncations.  
+
+\subsection{Homotopy pushouts}
 \label{sec:pushouts}
 
 In \S\ref{sec:colimits} we used higher inductive types to define pushouts of types.
 It will be useful for us to consider also the notion of pushout in certain subcategories of types.
 
-\subsection{Definition}
+\subsubsection{Definition}
 \label{sec:push:definition}
 
 Let's consider \P a subuniverse of \type. More precisely we have a map
@@ -142,7 +1135,7 @@ For a general \P, pushouts may or may not exist, but if they do, then they are u
 \end{cor}
 
 
-\section{Homotopy pullbacks}
+\subsection{Homotopy pullbacks}
 \label{sec:pullbacks}
 
 Most of the previous section can be dualised to give a definition of
@@ -252,7 +1245,7 @@ In particular, we don't need higher inductive types.
   are inverse to each other.
 \end{proof}
 
-\section{Reflective subuniverses of $\type$}
+\subsection{Reflective subuniverses of $\type$}
 
 Reflective subuniverses are particularly nice subuniverses in the sense that
 every type $A:\type$ can be reflected down to a type $\reflect(A)$ in the
@@ -279,6 +1272,15 @@ subuniverse.
 The universal property means that $\reflect$ is left adjoint to the inclusion
 $\iota:\P\to\type$ with $\project_A$ as the unit, because the last $B$ in the
 universal property can be replaced by $\iota(B)$ given that $B$ is in $\P$.
+
+One example is truncations, as defined in Section~\ref{sec:truncations}.
+\begin{lem}[Truncations are reflective]
+  $\typele{n}$ is a reflective subuniverse of $\type$, with $\reflect$
+  given by $\trunc{n}{-}$.
+\end{lem}
+\begin{proof}
+Immediate from the universal property of truncations.  
+\end{proof}
 
 \begin{lem}
   Let \P be a subuniverse of \type. The fact that \P is reflective is \anhprop.
@@ -740,71 +1742,64 @@ conclude that every coherence condition is always satisfied.
   in \P.
 \end{proof}
 
-\section{Truncations}
+\subsection{Truncations}
 
-Given an integer $n\ge-2$, we recall that $\typeleU{n}$ (or just $\typele{n}$) is the type of all
-$n$-truncated types (in the universe $\type$). For instance $\typelep{-2}$ is
-contractible (there is only one $(-2)$-truncated type, the point), $\typelep{-1}$
-is also known as $\prop$, and $\typele{0}$ is also known as $\set$.
-
-Given a type $A:\type$ and an integer $n\ge-2$ we define an $n$-truncated type
-$\trunc n A:\typele{n}$, called the \emph{$n$-truncation} of $A$, by a
-\emph{truncated inductive type}:
-\begin{align*}
-  \trunc nA&:\typele{n}\\
-  &\defeq\ |\ \tprojf n:A\to\trunc nA
-\end{align*}
-
-This means that we have
-\[\trunc nA:\typele{n}\]
-\[\tprojf n:A\to\trunc nA\]
-and for every type family $P$ over $\trunc nA$ and $d:\prod_{a:A}P(\tproj na)$,
-we can define a section $\extend{d}$ of $P$ by $\extend{d}(\tproj na)=d(a)$.
-
-The nondependent elimination rule says that if $E$ is $n$-truncated, then every
-map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by
-$\extend{f}(\tproj na)=f(a)$.
-
-The nondependent $\eta$-rule says that if two maps $g,g':\trunc nA\to{}E$ are
-such that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$
-for all $x:\trunc nA$ (and then $g=g'$ using function extensionality).
+The following facts about truncations are useful for calculating
+homotopy groups.  
 
 \begin{lem}
-  [Universal property of truncations]
+  Let $n\ge-2$, $A:\type$ and $x,y:A$. There is a canonical map
+  \[f:\trunc n{x=_Ay}\to\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\]
+  defined by
+  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
+  This definition is correct because $\trunc {n+1}A$ is $(n+1)$-truncated hence
+  the right hand side of the arrow is $n$-truncated.
 
-  Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
-  equivalence:
-  \[\function{(\trunc nA\to{}B)}{A\to{}B}{g}{g\circ\tprojf n}\]
-  In particular, $\typele{n}$ is a reflective subuniverse of $\type$.
+  The lemma says that this map is an equivalence.
 \end{lem}
 
 \begin{proof}
-  Any $f:A\to{}B$ can be extended to a map $\extend{f}:\trunc nA\to{}B$ (because
-  $B$ is assumed to be $n$-truncated).
+  We cannot directly define an inverse to $f$ because there is no way to induct
+  on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$. We will instead
+  generalize the type of $f$ in order to have general elements of the type
+  $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
 
-  The map $\extend{f}\circ\tprojf n$ is equal to $f$ because for every $a:A$ we
-  have $\extend{f}(\tproj na)=f(a)$ by definition and the map
-  $\extend{g\circ\tprojf n}$ is equal to $g$ because they both send $\tproj na$
-  to $g(\tproj na)$.
+  Let $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ defined by
+  \[P(\tproj {n+1}x,\tproj {n+1}y)=\trunc n{x=_Ay}\]
+
+  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated and
+  $\typele{n}$ is $(n+1)$-truncated (here we are using the univalence axiom in a
+  very nontrivial way).
+
+  We can now generalize the result we want to prove. For every $u,v:\trunc{n+1}A$
+  there is a map
+  \[f:P(u,v)\to{}u=_{\trunc{n+1}A}v\]
+  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ by
+  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
+
+  The type of $f$ being $n$-truncated, we are allowed to define it only for $u$
+  and $v$ of this form, and then it's just the same definition as before.
+
+  But now we can define an inverse map
+  \[g:u=_{\trunc{n+1}A}v\to{}P(u,v)\]
+  by
+  \[g(\refl{\trunc{n+1}A}(\tproj {n+1}x)) = \tproj n{\refl{A}(x)}\]
+
+  because $u$ and $v$ are general elements of $\trunc{n+1}A$, and the output type
+  is $n$-truncated so we can moreover assume that $u$ and $v$ of the form
+  $\tproj {n+1}x$.
+
+  It is clear that $g$ and $f$ are inverse to each other, which prove that they
+  are both equivalences. The result stated in the lemma is then the special case
+  where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
 \end{proof}
 
-\begin{defn}
-  A type $A$ is called \emph{$n$-connected} if $\trunc nA$ is contractible.
-\end{defn}
-
-\begin{lem}
-  \label{connectedtotruncated}
-  Let $n\ge-2$, $A:\type$ and $B:\typele{n}$ and assume moreover that $A$ is
-  $n$-connected.
-
-  Then every map from $A$ to $B$ is constant in the sense that the constant map
-  operation
-  \[\function{B}{(A\to{}B)}{b}{\lambda{}x^A.b}\]
-  is an equivalence.
-\end{lem}
+\begin{cor}
+  Let $n\ge-2$ and $(A,a)$ be a pointed type. Then
+  \[\trunc n{\Omega(A,a)}=\Omega(\trunc{n+1}{(A,a)})\]
+\end{cor}
 \begin{proof}
-  This is just an application of the universal property. Note that
-  \[(\trunc nA\to{}B)=(\unit\to{}B)=B \qedhere\]
+  This is a special case of the previous lemma where $x=y=a$.
 \end{proof}
 
 \begin{lem}
@@ -835,7 +1830,28 @@ for all $x:\trunc nA$ (and then $g=g'$ using function extensionality).
   \autoref{reflectPequiv}.
 \end{proof}
 
-\section{Connectedness of suspensions}
+\section{Connectedness}
+
+\begin{defn}
+  A type $A$ is called \emph{$n$-connected} if $\trunc nA$ is contractible.
+\end{defn}
+
+\begin{lem}
+  \label{connectedtotruncated}
+  Let $n\ge-2$, $A:\type$ and $B:\typele{n}$ and assume moreover that $A$ is
+  $n$-connected.
+
+  Then every map from $A$ to $B$ is constant in the sense that the constant map
+  operation
+  \[\function{B}{(A\to{}B)}{b}{\lambda{}x^A.b}\]
+  is an equivalence.
+\end{lem}
+\begin{proof}
+  This is just an application of the universal property. Note that
+  \[(\trunc nA\to{}B)=(\unit\to{}B)=B \qedhere\]
+\end{proof}
+
+\subsection{Connectedness of suspensions}
 
 The aim of this section is to prove that the operation of suspension increases
 connectedness.
@@ -910,7 +1926,7 @@ connectedness.
   which proves that the suspension of $A$ is $(n+1)$-connected.
 \end{proof}
 
-\begin{cor}
+\begin{cor} \label{cor:sn-connected}
   For all $n:\N$, the sphere $\Sn^n$ is $(n-1)$-connected.
 \end{cor}
 
@@ -924,30 +1940,7 @@ connectedness.
   $n$-connected.
 \end{proof}
 
-\section{Homotopy groups}
-
-\begin{defn}
-  A \emph{pointed type} $(A,a)$ is a type $A:\type$ together with a point $a:A$.
-\end{defn}
-
-\begin{defn}
-  Given a pointed type $(A,a)$, we define the \emph{loop space} of $(A,a)$ as
-  the following pointed type:
-  \[\Omega(A,a)=((a=_Aa),\refl{A}(a)).\]
-
-  For $n:\N$, the \emph{iterated loop space} of a pointed type $(A,a)$ is
-  defined by:
-  \begin{align*}
-    \Omega^0(A,a)&=(A,a)\\
-    \Omega^{n+1}(A,a)&=\Omega^n(\Omega(A,a))
-  \end{align*}
-\end{defn}
-
-\begin{defn}
-  Given $n:\N$ and $(A,a)$ a pointed type, we define the homotopy groups of $A$
-  at $a$ by
-  \[\pi_n(A,a)=\trunc0{\Omega^n(A,a)}\]
-\end{defn}
+\subsection{$\pi_{k \le n}$ of an $n$-connected space (includes $\pi_{k < n}(\Sn ^n)$)}
 
 \begin{lem}
   Let $(A,a)$ be a pointed type and $n:\N$.
@@ -976,65 +1969,7 @@ $n$-connected types.
   $\pi_k(A,a)=\trunc0{\Omega^k(A,a)}=\trunc0{\unit}=\unit$.
 \end{proof}
 
-In order to compute the homotopy groups of $n$-connected types we will need the
-following lemma about commutation of truncation and path spaces.
-
-\begin{lem}
-  Let $n\ge-2$, $A:\type$ and $x,y:A$. There is a canonical map
-  \[f:\trunc n{x=_Ay}\to\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\]
-  defined by
-  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
-  This definition is correct because $\trunc {n+1}A$ is $(n+1)$-truncated hence
-  the right hand side of the arrow is $n$-truncated.
-
-  The lemma says that this map is an equivalence.
-\end{lem}
-
-\begin{proof}
-  We cannot directly define an inverse to $f$ because there is no way to induct
-  on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$. We will instead
-  generalize the type of $f$ in order to have general elements of the type
-  $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
-
-  Let $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ defined by
-  \[P(\tproj {n+1}x,\tproj {n+1}y)=\trunc n{x=_Ay}\]
-
-  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated and
-  $\typele{n}$ is $(n+1)$-truncated (here we are using the univalence axiom in a
-  very nontrivial way).
-
-  We can now generalize the result we want to prove. For every $u,v:\trunc{n+1}A$
-  there is a map
-  \[f:P(u,v)\to{}u=_{\trunc{n+1}A}v\]
-  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ by
-  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
-
-  The type of $f$ being $n$-truncated, we are allowed to define it only for $u$
-  and $v$ of this form, and then it's just the same definition as before.
-
-  But now we can define an inverse map
-  \[g:u=_{\trunc{n+1}A}v\to{}P(u,v)\]
-  by
-  \[g(\refl{\trunc{n+1}A}(\tproj {n+1}x)) = \tproj n{\refl{A}(x)}\]
-
-  because $u$ and $v$ are general elements of $\trunc{n+1}A$, and the output type
-  is $n$-truncated so we can moreover assume that $u$ and $v$ of the form
-  $\tproj {n+1}x$.
-
-  It is clear that $g$ and $f$ are inverse to each other, which prove that they
-  are both equivalences. The result stated in the lemma is then the special case
-  where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
-\end{proof}
-
-\begin{cor}
-  Let $n\ge-2$ and $(A,a)$ be a pointed type. Then
-  \[\trunc n{\Omega(A,a)}=\Omega(\trunc{n+1}{(A,a)})\]
-\end{cor}
-\begin{proof}
-  This is a special case of the previous lemma where $x=y=a$.
-\end{proof}
-
-\begin{lem}
+\begin{lem} \label{lem:pik-nconnected}
   If $A$ is $n$-connected and $a:A$, then we have
   \[\forall k\le{}n,\ \pi_k(A,a)=\unit\]
 \end{lem}
@@ -1056,361 +1991,13 @@ following lemma about commutation of truncation and path spaces.
   $n$-connected.
 \end{proof}
 
-\section{Van Kampen's theorem}
-\label{sec:van-kampen}
-
-We begin with a naive version of the van Kampen theorem, and then improve it to a more refined version.
-
-\subsection{Naive van Kampen}
-\label{sec:naive}
-
-For a type $X$, write $\Pi_1 X: X\to X\to \type$ be the $0$-truncation of its identity type, i.e.\ $\Pi_1 X(x,y) \defeq \trunc0{x=y}$.
-Note that we have induced groupoid operations
-\begin{gather*}
-  (-\ct-) : \Pi_1X(x,y) \to \Pi_1X(y,z) \to \Pi_1X(x,z)\\
-  \opp{(-)} : \Pi_1X(x,y) \to \Pi_1X(y,x)\\
-  \refl{x} : \Pi_1X(x,x)\\
-  \apfunc{f} : \Pi_1X(x,y) \to \Pi_1Y(fx,fy)
-\end{gather*}
-for which we use the same notation as the corresponding operations on paths.
-
-Now given types $A,B,C$ and functions $f:A\to B$ and $g:A\to C$, let $P$ be the higher inductive type generated by
-\begin{itemize}
-\item $i:B\to P$
-\item $j:C\to P$
-\item for all $x:A$, a path $k x:ifx = jgx$.
-\end{itemize}
-Define $\code:P\to P\to \type$ by double induction on $P$ as follows.
-\begin{itemize}
-\item $\code(ib,ib')$ is a set-quotient of the type of sequences %pairs $(\vec a, \vec a', \vec p, \vec q)$
-  \[ (b, p_0, x_1, q_1, y_1, p_1, x_2, q_2, y_2, p_2, \dots, y_n, p_n, b') \]
-  where
-  \begin{itemize}
-  \item $n:\mathbb{N}$
-  \item $x_k:A$ and $y_k:A$ for $0<k \le n$
-  \item $p_0:\Pi_1B(b,f x_1)$ and $p_n:\Pi_1B(f y_n, b')$
-  \item $p_k:\Pi_1B(f y_k, fx_{k+1})$ for $1\le p < n$
-  \item $q_k:\Pi_1C(gx_k, gy_k)$ for $1\le q\le n$
-  \end{itemize}
-  The quotient is generated by the following equalities:
-  \begin{alignat*}{2}
-    % (\dots, p_{k-1} \ct fw, x_{k}', q_{k}, \dots) &=
-    % (\dots, p_{k-1}, x_{k}, gw \ct q_{k}, \dots)
-    % & \qquad\text{for } w:\Pi_1A(x_{k},x_{k}')\\
-    % (\dots, q_k \ct gw, y_k', p_k, \dots) &=
-    % (\dots, q_k, y_k, fw \ct p_k, \dots)
-    % & \qquad\text{for } w:\Pi_1A(y_k, y_k')\\
-    (\dots, q_k, y_k, \refl{fy_k}, y_k, q_{k+1},\dots)
-    &= (\dots, q_k\ct q_{k+1},\dots)\\
-    (\dots, p_k, x_k, \refl{gx_k}, x_k, p_{k+1},\dots)
-    &= (\dots, p_k\ct p_{k+1},\dots)
-  \end{alignat*}
-  (see \autoref{rmk:naive} below).
-\item $\code(jc,jc')$ is identical, with the roles of $B$ and $C$ reversed.
-  We likewise notationally reverse the roles of $x$ and $y$, and of $p$ and $q$.
-\item $\code(ib,jc)$ and $\code(jc,ib)$ are similar, with the parity changed so that they start in one type and end in the other.
-\item For $a:A$ and $b:B$, we require an equivalence
-  \begin{equation}
-    \code(ib, ifa) \simeq \code(ib,jga).\label{eq:bfa-bga}
-  \end{equation}
-  We define this to consist of the two functions defined on sequences by
-  \begin{align*}
-    (\dots, y_n, p_n,fa) &\mapsto (\dots,y_n,p_n,a,\refl{ga},ga)\\
-    (\dots, x_n, p_n, a, \refl{fa}, fa) &\mapsfrom (\dots, x_n, p_n, ga)
-  \end{align*}
-  Both of these functions are easily seen to respect the equivalence relations, and hence to define functions on the types of codes.
-  The left-to-right-to-left composite is
-  \[ (\dots, y_n, p_n,fa) \mapsto
-  (\dots,y_n,p_n,a,\refl{ga},a,\refl{fa},fa)
-  \]
-  which is equal to the identity by a generating equality of the quotient.
-  The other composite is analogous.
-  Thus we have defined an equivalence~\eqref{eq:bfa-bga}.
-\item Similarly, we require equivalences
-  \begin{align*}
-    \code(jc,ifa) &\simeq \code(jc,jga)\\
-    \code(ifa,ib)&\simeq (jga,ib)\\
-    \code(ifa,jc)&\simeq (jga,jc)
-  \end{align*}
-  all of which are defined in exactly the same way (the second two by adding reflexivity terms on the beginning rather than the end).
-\item Finally, we need to know that for $a,a':A$, the following diagram commutes:
-  \begin{equation}\label{eq:bfa-bga-comm}
-  \vcenter{\xymatrix{
-      \code(ifa,ifa') \ar[r]\ar[d] &
-      \code(ifa,jga')\ar[d]\\
-      \code(jga,ifa')\ar[r] &
-      \code(jga,jga')
-      }}
-  \end{equation}
-  This amounts to saying that if we add something to the beginning and then something to the end of a sequence, we might as well have done it in the other order.
-\end{itemize}
-
-\begin{rmk}\label{rmk:naive}
-  You might expect to see in the definition of \code some additional generating equations for the set-quotient, such as
-  \begin{alignat*}{2}
-    (\dots, p_{k-1} \ct fw, x_{k}', q_{k}, \dots) &=
-    (\dots, p_{k-1}, x_{k}, gw \ct q_{k}, \dots)
-    & \qquad\text{for } w:\Pi_1A(x_{k},x_{k}')\\
-    (\dots, q_k \ct gw, y_k', p_k, \dots) &=
-    (\dots, q_k, y_k, fw \ct p_k, \dots)
-    & \qquad\text{for } w:\Pi_1A(y_k, y_k').
-  \end{alignat*}
-  However, these are not necessary!
-  In fact, they follow automatically by path-induction on $w$.
-  This is because the requisite ``quotienting'' by paths in $A$ has happened already in the fact that $\code(u,v)$ is a \emph{set}, even though it involves the untruncated type $A$ in its definition.
-  This is why the version of van Kampen we are currently describing is ``naive''.
-  % In the next section we will remedy this defect.
-\end{rmk}
-
-Continuing on, we can characterize transporting in the fibration $\code$:
-\begin{itemize}
-\item For $p:b=_B b'$ and $u:P$, we have
-  \[ \mathsf{transport}^{b\mapsto \code(u,ib)}(p, (\dots, y_n,p_n,b))
-  = (\dots,y_n,p_n\ct p,b').
-  \]
-\item For $q:c=_C c'$ and $u:P$, we have
-  \[ \mathsf{transport}^{c\mapsto \code(u,jc)}(q, (\dots, x_n,q_n,c))
-  = (\dots,x_n,q_n\ct q,c').
-  \]
-\end{itemize}
-Here we are abusing notation by using the same name for a path in $X$ and its image in $\Pi_1X$.
-Note that transport in $\Pi_1X$ is also given by concatenation with (the image of) a path.
-From this we can prove the above statements by induction on $u$.
-We also have:
-\begin{itemize}
-\item For $a:A$ and $u:P$,
-  \[ \mathsf{transport}^{v\mapsto \code(u,v)}(ha, (\dots, y_n,p_n,fa))
-  = (\dots,y_n,p_n,a,\refl{ga},ga).
-  \]
-\end{itemize}
-This follows essentially from the definition of $\code$.
-
-We also construct a function
-\[ r : \prod_{u:P} \code(u,u) \]
-by induction on $u$ as follows:
-\begin{align*}
-  rib &\defeq (b,\refl{b},b)\\
-  rjc &\defeq (c,\refl{c},c)
-\end{align*}
-and for $rka$ we take the composite equality
-\begin{align*}
-  (ka,ka)_* (fa,\refl{fa},fa)
-  &= (ga,\refl{ga},a,\refl{fa},a,\refl{ga},ga) \\
-  &= (ga,\refl{ga},ga)
-\end{align*}
-where the first equality is by the observation above about transporting in $\code$, and the second is an instance of the set quotient relation used to define $\code$.
-
-We will now prove:
-\begin{thm}[Naive van Kampen]
-  For all $u,v:P$ there is an equivalence
-  \[ \Pi_1P(u,v) \simeq \code(u,v). \]
-\end{thm}
+\begin{cor}[$\pi_{k<n}(\Sn ^n)$]
+For all $n$ and $k$, if $k < n$, then $\pi_k(\Sn ^n) = \unit$.  
+\end{cor}
 \begin{proof}
-
-To define a function
-\[ \encode : \Pi_1P(u,v) \to \code(u,v) \]
-it suffices to define a function $(u=_P v) \to \code(u,v) $,
-since $\code(u,v)$ is a set.
-We do this by transport:
-\[\encode(p) \defeq \mathsf{transport}^{v\mapsto \code(u,v)}(p,r(u)).\]
-Now to define
-\[ \decode: \code(u,v) \to \Pi_1P(u,v) \]
-we proceed as usual by induction on $u,v:P$.
-In each case for $u$ and $v$, we apply $i$ or $j$ to all the equalities $p_k$ and $q_k$ as appropriate and concatenate the results in $P$, using $h$ to identify the endpoints.
-For instance, when $u\jdeq ib$ and $v\jdeq ib'$, we define
-\begin{multline}\label{eq:decode}
- \decode(b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b')\\
- \defeq i(p_0)\ct h(x_1) \ct j(q_1) \ct \opp{h(y_1)} \ct i(p_1) \ct \cdots \ct \opp{h(y_n)}\ct i(p_n).
-\end{multline}
-This respects the set-quotient equivalence relation and the equivalences like~\eqref{eq:bfa-bga}, since $h: fi \sim gj$ is natural and $f$ and $g$ are functorial.
-
-As usual, to show that the composite
-\[ \Pi_1P(u,v) \xrightarrow{\encode} \code(u,v) \xrightarrow{\decode} \Pi_1P(u,v) \]
-is the identity, we first peel off the 0-truncation (since the target is a set) and then apply path-induction.
-The input $\refl{u}$ goes to $ru$, which then goes back to $\refl u$ (applying a further induction on $u$ to decompose $\decode(ru)$).
-
-Finally, consider the composite
-\[  \code(u,v) \xrightarrow{\decode} \Pi_1P(u,v) \xrightarrow{\encode} \code(u,v). \]
-We proceed by induction on $u,v:P$.
-When $u\jdeq ib$ and $v\jdeq ib'$, this composite is
-\begin{multline*}
-(b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b')\\
-\begin{split}
-  &\mapsto \Big(ip_0\ct hx_1 \ct jq_1 \ct \opp{hy_1} \ct ip_1 \ct \cdots \ct \opp{hy_n}\ct ip_n\Big)_*(rib)\\
-  &= (ip_n)_* \cdots(jq_1)_* (hx_1)_*(ip_0)_*(b,\refl{b},b)\\
-  &= (ip_n)_* \cdots(jq_1)_* (hx_1)_*(b,p_0,ifx_1)\\
-  &= (ip_n)_* \cdots(jq_1)_* (b,p_0,x_1,\refl{gx_1},jgx_1)\\
-  &= (ip_n)_* \cdots (b,p_0,x_1,q_1,jgy_1)\\
-  &= \quad\vdots\\
-  &= (b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b').
-\end{split}
-\end{multline*}
-i.e.\ the identity function.
-The other three point cases are analogous, and the path cases are trivial since all the types are sets.
+$\Sn$ is $n\mathord{-}1$-connected by Corollary~\ref{cor:sn-connected}.  Therefore
+Lemma~\ref{lem:pik-nconnected} gives the result.  
 \end{proof}
-
-\begin{eg}\label{eg:circle}
-  Let $A\defeq \bool$, $B\defeq\unit$, and $C\defeq \unit$.
-  Then $P \simeq S^1$.
-  Inspecting the definition of, say, $\code(i(\ttt),i(\ttt))$, we see that the paths all may as well be trivial, so the only information is in the sequence of elements $x_1,y_1,\dots,x_n,y_n: \bool$.
-  Moreover, if we have $x_k=y_k$ or $y_k=x_{k+1}$ for any $k$, then the set-quotient relations allow us to excise both of those elements.
-  Thus, every such sequence is equal to a canonical \emph{reduced} one in which no two adjacent elements are equal.
-  Clearly such a reduced sequence is uniquely determined by its length (a natural number $n$) together with, if $n>1$, the information of whether $x_1$ is $0_\bool$ or $1_\bool$, since that determines the rest of the sequence uniquely.
-  And these data can, of course, be identified with an integer, where $n$ is the absolute value and $x_1$ encodes the sign.
-  Thus we recover $\pi_1(S^1)\cong \mathbb{Z}$.
-\end{eg}
-
-\begin{eg}\label{eg:suspension}
-  More generally, let $B\defeq\unit$ and $C\defeq \unit$ but $A$ be arbitrary, so that $P$ is the suspension of $A$.
-  Then once again the paths $p_k$ and $q_k$ are trivial, so that the only information in a path code is a sequence of elements $x_1,y_1,\dots,x_n,y_n: A$.
-  The first two generating equalities say that adjacent equal elements can be canceled, so it makes sense to think of this sequence as a word of the form
-  \[ x_1 y_1^{-1} x_2 y_2^{-1} \cdots x_n y_n^{-1} \]
-  in a group.
-  Thus, $\pi_1(\Sigma A)$ is obtained by building the naively conceived ``free group on $A$'' followed by the 0-truncation.
-  By comparing universal properties, we can identify this with the free group on the set $\pi_0(A)$.
-\end{eg}
-
-\begin{eg}\label{eg:wedge}
-  Let $A\defeq\unit$ and $B$ and $C$ be arbitrary, so that $f$ and $g$ simply equip $B$ and $C$ with basepoints $b$ and $c$, say.
-  Then $P$ is the \emph{wedge} $B\vee C$ of $B$ and $C$ (the coproduct in the category of based spaces).
-  In this case, it is the elements $x_k$ and $y_k$ which are trivial, so that the only information is a sequence of loops $(p_0,q_1,p_1,\dots,p_n)$ with $p_k:\pi_1(B,b)$ and $q_k:\pi_1(C,c)$.
-  Such sequences, modulo the equivalence relation we have imposed, are easily identified with the \emph{free product} of the groups $\pi_1(B,b)$ and $\pi_1(C,c)$; thus we have $\pi_1(B\vee C) \cong \pi_1(B) * \pi_1(C)$.
-\end{eg}
-
-Technically speaking, we have only proven that these are only bijections of sets.
-To make them isomorphisms of groups, we could define a concatenation operation $\code$ and show that $\decode$/$\encode$ are an isomorphism of these.
-This operation on $\code$ is evidently just concatenation of sequences; we leave the details to the reader.
-
-
-\subsection{van Kampen with a set of basepoints}
-\label{sec:better}
-
-When $A$, $B$, and $C$ are not all sets, however, the version of the van Kampen theorem proven in the previous section is not as useful, since it does not identify the path-space of $P$ with a set presented in terms of \emph{set-level data}.
-For this reason, in this section we consider a better sort of van Kampen theorem, which is closely analogous to an improvement that is well-known to be important in classical algebraic topology, where $A$ (at least) is equipped with a \emph{set of base points}.
-
-Let $A,B,C,f,g,P,i,j,h$ be as in the previous section, and suppose also we are given a set $S$ and a map $k:S \to A$ which is \emph{$(-1)$-connected} in the ``fiberwise'' sense, i.e.\ left orthogonal to $(-1)$-truncated objects.
-(Apparently this is what a classical topologist would call a ``$0$-connected'' map, due to thinking in terms of cofibers rather than fibers.)
-For instance, $A$ could be pointed and connected with $k:\unit\to A$ the point, or $A$ could be a set with $k$ the identity function.
-
-Now let $T$ be the higher inductive type generated by
-\begin{itemize}
-\item A function $\ell:S\to T$, and
-\item For each $s,s':S$, a function $m:A(ks,ks') \to T(\ell s, \ell s')$.
-\end{itemize}
-\newcommand{\kbar}{\overline{k}}
-There is an obvious induced function $\kbar:T\to A$ such that $\kbar \ell = k$, and any $p:ks=ks'$ is equal to the composite $ks = \kbar \ell s \overset{\kbar m p}{=} \kbar \ell s' = k s'$.
-
-\begin{lem}\label{thm:kbar}
-  $\kbar$ is (fiberwise) 0-connected.
-\end{lem}
-\begin{proof}
-  We must show that for all $a:A$, the 0-truncation of the type $\sum_{t:T}(\kbar t = a)$ is contractible.
-  Since contractibility is a mere proposition and $k$ is $(-1)$-connected, we may assume that $a=ks$ for some $s:S$.
-  Now we can take the center of contraction to be $\tproj0{(\ell s,q)}$ where $q$ is the equality $\kbar\ell s = k s$.
-
-  It remains to show that for any $\phi:\trunc0{\sum_{t:T} (\kbar t = ks)}$ we have $\phi = \tproj0{(\ell s,q)}$.
-  Since the latter is a mere proposition, and in particular a set, we may assume that $\phi=\tproj0{(t,p)}$ for $t:T$ and $p:\kbar t = ks$.
-
-  Now we can do induction on $t:T$.
-  If $t\jdeq\ell s'$, then $ks' = \kbar \ell s' \overset{p}{=} ks$ yields via $m$ an equality $\ell s = \ell s'$.
-  Hence by definition of $\kbar$ and of equality in homotopy fibers, we obtain an equality $(ks',p) = (ks,q)$, and thus $\tproj0{(ks',p)} = \tproj0{(ks,q)}$.
-  Next we must show that as $t$ varies along $m$ these equalities agree.
-  But they are equalities in a set (namely $\trunc0{\sum_{t:T} (\kbar t = ks)}$), and hence this is automatic.
-\end{proof}
-
-Now we define $\code:P\to P\to \type$ by double induction as follows
-\begin{itemize}
-\item $\code(ib,ib')$ is now a set-quotient of the type of sequences
-  \[ (b, p_0, x_1, q_1, y_1, p_1, x_2, q_2, y_2, p_2, \dots, y_n, p_n, b') \]
-  where
-  \begin{itemize}
-  \item $n:\mathbb{N}$
-  \item $x_k:S$ and $y_k:S$ for $0<k \le n$
-  \item $p_0:\Pi_1B(b,f k x_1)$ and $p_n:\Pi_1B(f k y_n, b')$
-  \item $p_k:\Pi_1B(fk y_k, fkx_{k+1})$ for $1\le p < n$
-  \item $q_k:\Pi_1C(gkx_k, gky_k)$ for $1\le q\le n$
-  \end{itemize}
-  The quotient is generated by the following equalities (see \autoref{rmk:naive}):
-  \begin{alignat*}{2}
-    (\dots, q_k, y_k, \refl{fy_k}, y_k, q_{k+1},\dots)
-    &= (\dots, q_k\ct q_{k+1},\dots)\\
-    (\dots, p_k, x_k, \refl{gx_k}, x_k, p_{k+1},\dots)
-    &= (\dots, p_k\ct p_{k+1},\dots)\\
-    (\dots, p_{k-1} \ct fw, x_{k}', q_{k}, \dots) &=
-    (\dots, p_{k-1}, x_{k}, gw \ct q_{k}, \dots)
-    & \qquad\text{for } w:\Pi_1A(kx_{k},kx_{k}')\\
-    (\dots, q_k \ct gw, y_k', p_k, \dots) &=
-    (\dots, q_k, y_k, fw \ct p_k, \dots)
-    & \qquad\text{for } w:\Pi_1A(ky_k, ky_k').
-  \end{alignat*}
-  We will need below the definition of the case of $\decode$ on such a sequence, which as before concatenates all the paths $p_k$ and $q_k$ together with instances of $h$ to give an element of $\Pi_1P(ifb,ifb')$, cf.~\eqref{eq:decode}.
-  As before, the other three point cases are nearly identical.
-\item For $a:A$ and $b:B$, we require an equivalence
-  \begin{equation}
-    \code(ib, ifa) \simeq \code(ib,jga).\label{eq:bfa-bga2}
-  \end{equation}
-  Since $\code$ is set-valued, by \autoref{thm:kbar} we may assume that $a=\kbar t$ for some $t:T$.
-  Next, we can do induction on $t$.
-  If $t\jdeq \ell s$ for $s:S$, then we define~\eqref{eq:bfa-bga2} as in \S\ref{sec:naive}:
-  \begin{align*}
-    (\dots, y_n, p_n,fks) &\mapsto (\dots,y_n,p_n,s,\refl{gks},gks)\\
-    (\dots, x_n, p_n, s, \refl{fks}, fks) &\mapsfrom (\dots, x_n, p_n, gks)
-  \end{align*}
-  These respect the equivalence relations, and define quasi-inverses just as before.
-  Now suppose $t$ varies along $m_{s,s'}(w)$ for some $w:ks=ks'$; we must show that~\eqref{eq:bfa-bga2} respects transporting along $\kbar mw$.
-  By definition of $\kbar$, this essentially boils down to transporting along $w$ itself.
-  By the characterization of transport in path types, what we need to show is that
-  \[ w_*(\dots, y_n, p_n,fks) = (\dots,y_n, p_n \ct fw, fks') \]
-  is mapped by~\eqref{eq:bfa-bga2} to
-  \[ w_*(\dots,y_n,p_n,s,\refl{gks},gks) = (\dots, y_n, p_n, s, \refl{gks} \ct gw, gks') \]
-  But this follows directly from the new generators we have imposed on the set-quotient relation defining \code.
-\item The other three requisite equivalences are defined similarly.
-\item Finally, since the commutativity~\eqref{eq:bfa-bga-comm} is a mere proposition, by $(-1)$-connectedness of $k$ we may assume that $a=ks$ and $a'=ks'$, in which case it follows exactly as before.
-\end{itemize}
-
-\begin{thm}[van Kampen with a set of basepoints]
-  For all $u,v:P$ there is an equivalence
-  \[ \Pi_1P(u,v) \simeq \code(u,v). \]
-  with \code defined as in this section.
-\end{thm}
-
-\begin{proof}
-  Basically just like before.
-  To show that $\decode$ respects the new generators of the quotient relation, we use the naturality of $h$.
-  And to show that $\decode$ respects the equivalences such as~\eqref{eq:bfa-bga2}, we need to induct on $\kbar$ and on $T$ in order to decompose those equivalences into their definitions, but then it becomes again simply functoriality of $f$ and $g$.
-  The rest is easy.
-  In particular, no additional argument is required for $\encode\circ\decode$, since the goal is to prove an equality in a set, and so the case of $h$ is trivial.
-\end{proof}
-
-\begin{eg}\label{eg:clvk}
-  Suppose $S\defeq \unit$, so that $A$ has a basepoint $a \defeq k(\ttt)$ and is connected.
-  Then code for loops in the pushout can be identified with alternating sequences of loops in $\pi_1(B,f(a))$ and $\pi_1(C,g(a))$, modulo an equivalence relation which allows us to slide elements of $\pi_1(A,a)$ between them (after applying $f$ and $g$ respectively).
-  Thus, $\pi_1(P)$ can be identified with the \emph{amalgamated free product} $\pi_1(B) *_{\pi_1(A)} \pi_1(C)$.
-  This (in the case when $B$ and $C$ are open subspaces of $P$ and $A$ their intersection) is probably the most classical version of the van Kampen theorem.
-\end{eg}
-
-\begin{eg}\label{eg:cofiber}
-  As a special case of \autoref{eg:clvk}, suppose additionally that $C\defeq\unit$, so that $P$ is the cofiber $B/A$.
-  Then every loop in $C$ is equal to reflexivity, so the relations on path codes allow us to collapse all sequences to a single loop in $B$.
-  The additional relations require that multiplying on the left, right, or in the middle by an element in the image of $\pi_1(A)$ is the identity.
-  We can thus identify $\pi_1(B/A)$ with the quotient of the group $\pi_1(B)$ by the normal subgroup generated by the image of $\pi_1(A)$.
-\end{eg}
-
-\begin{eg}\label{eg:torus}
-  As a further special case of \autoref{eg:cofiber}, let $B\defeq S^1 \vee S^1$, let $A\defeq S^1$, and let $f:A\to B$ pick out the composite loop $p \ct q \ct \opp p \ct \opp q$, where $p$ and $q$ are the generating loops in the two copies of $S^1$ comprising $B$.
-  Then $P$ is a presentation of the torus $T^2$.
-  Thus, $\pi_1(T^2)$ is the quotient of the free group on two generators (i.e.\ $\pi_1(B)$) by the relation $p \ct q \ct \opp p \ct \opp q = 1$.
-  This clearly yields the free \emph{abelian} group on two generators, which is $\mathbb{Z}\times\mathbb{Z}$.
-
-  Similarly, if we defined $f$ to pick out $p\ct q\ct p \ct \opp q$, we would obtain a presentation for the fundamental group of the Klein bottle.
-\end{eg}
-
-\begin{eg}\label{eg:kg1}
-  As a more general special case of \autoref{eg:cofiber}, suppose given any presentation of a (set-)group $G = \langle X | R \rangle$, with $X$ a set of generators and $R$ a set of words in these generators.
-  Let $B\defeq \bigvee_X S^1$ and $A\defeq \bigvee_R S^1$, with $f:A\to B$ sending each copy of $S^1$ to the corresponding word in the generating loops of $B$.
-  It follows that $\pi_1(P) \cong G$.
-  Thus, if we 1-truncate $P$, we obtain an Eilenberg--Mac Lane space $K(G,1)$.
-\end{eg}
 
 %%% Local Variables:
 %%% mode: latex

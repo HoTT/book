@@ -1,4 +1,8 @@
-\newcommand{\coh}[3]{\mathtt{coh} \; #1 \; #2 \; #3}
+\newcommand{\lcoh}[3]{\mathtt{cohl}_{#1, #2, #3}}
+\newcommand{\rcoh}[3]{\mathtt{cohr}_{#1, #2, #3}}
+\newcommand{\lin}[1]{\mathtt{linv}_{#1}}
+\newcommand{\rin}[1]{\mathtt{rinv}_{#1}}
+\newcommand{\hfib}[2]{\mathtt{fib}_{#1,#2}}
 
 \chapter{Equivalences}
 \label{cha:equivalences}
@@ -66,7 +70,7 @@ For this definition,~\ref{item:beb2} and~\ref{item:beb3} are easy to show.
   Projecting to the first component of this equality, we have $g(f(a))=a$, yielding a homotopy $\alpha:g\circ f \htpy \idfunc[A]$.
 \end{proof}
 
-\begin{lem}
+\begin{lem}\label{thm:contr-hprop}
   For any $f$, the type $\iscontr(f)$ is a mere proposition.
 \end{lem}
 \begin{proof}
@@ -237,6 +241,69 @@ from which we get the desired path $c(a)$.
 Now we want to show that $\eqv{\iscontr(f)}{\ishae(f)}$.
 Since $\iscontr(f)$ satisfies conditions~\ref{item:beb2} and~\ref{item:beb3} while $\ishae(f)$ satisfies conditions~\ref{item:beb1} and~\ref{item:beb3}, this will imply that in fact both satisfy all three conditions.
 
+For convenience, we make the following notations.
+\begin{defn}
+For $f : A \to B$, we denote the type of left/right inverses of $f$ by 
+\begin{align*}
+\lin{f} & \defeq \sm{g : B \to A} \prd{x: A} gfx = x\\
+\rin{f} & \defeq \sm{g : B \to A} \prd{y: B} fgy = y
+\end{align*}
+\end{defn}
+
+\begin{defn}
+For $f : A \to B$, a left inverse $(g,\eta) : \lin{f}$, and a right inverse $(g,\epsilon) : \rin{f}$, we denote
+\begin{align*}
+\lcoh{f}{g}{\eta} & \defeq \sm{\epsilon : \prd{y: B} fgy = y} \prd{y:B} g(\epsilon y) = \eta (gy) \\
+\rcoh{f}{g}{\epsilon} & \defeq \sm{\eta : \prd{x: A} gfx = x} \prd{x:A} f(\eta x) = \epsilon (fx)
+\end{align*}
+\end{defn}
+
+\begin{lem}\label{lem:hfib}
+For any $f : A \to B$, $y : B$, and $(x,p),(x',p') : \hfib{f}{y}$, we have
+\[ \big((x,p) = (x',p')\big) \simeq \sm{\gamma : x = x'} f(\gamma) \ct p' = p\]
+\end{lem}
+\begin{proof}
+Routine.
+\end{proof}
+
+\begin{lem}\label{lem:coh-hfib}
+For any $f,g,\epsilon,\eta$, we have
+\begin{align*}
+\rcoh{f}{g}{\eta} & \simeq {\prd{y:B} \id[\hfib{g}{gy}]{(fgy,\eta(gy))}{(y,\refl{gy})}} \\
+\lcoh{f}{g}{\epsilon} & \simeq {\prd{x:A} \id[\hfib{f}{fx}]{(gfx,\epsilon(fx))}{(x,\refl{fx})}}
+\end{align*}
+\end{lem}
+\begin{proof}
+Using the previous lemma.
+\end{proof}
+
+\begin{thm}\label{thm:lequiv-contr-hae}
+For any $f:A\to B$ we have ${\iscontr(f)} \leftrightarrow {\ishae(f)}$.
+\end{thm}
+
+\begin{proof}
+\textbf{From left to right:}
+Let $P : \iscontr{f}$. We define an inverse mapping $g : B \to A$ by sending each $y : B$ to the center of contraction of the h-fiber at $y$:
+\[ g(y) \defeq \proj{1}(\proj{1}(Py)) \]
+We can thus define the transformation $\epsilon$ by mapping $y$ to the witness that $g(y)$ indeed belongs to the h-fiber at $y$:
+\[ \epsilon(y) \defeq \proj{2}(\proj{1}(P y)) \]
+It remains to define $\eta$ and $\tau$. This of course amounts to giving an element of $\lcoh{f}{g}{\epsilon}$. By Lem.~\ref{lem:coh-hfib}, this is the same as giving for each $x:A$ a path from $(x,\refl{fx})$ to $(gfx,\epsilon(fx))$ in the fiber at $fx$. But this is easy - for any $x : A$, the type $\hfib{f}{fx}$ 
+is contractible by assumption, hence such a path must exist. We can construct it explicitly as
+\[\opp{\big(P(fx) \; (x,\refl{fx})\big)} \ct \big(P(fx) \; (gfx,\epsilon(fx))\big) \]
+
+\bigskip 
+
+\textbf{From right to left:}
+Let $(g,\eta,\epsilon,\tau) : \ishae{f}$. We want to show that every homotopy fiber of $f$ is contractible. Fix $y : B$. As our center of contraction for $\hfib{f}{y}$ we put $(gy, \epsilon y)$. Now take any $(x,p) : \hfib{f}{y}$. We want to construct a path from $(gy, \epsilon y)$ to $(x,p)$. By Lem.~\ref{lem:hfib},it suffices to give a path $\gamma : \id{gy}{x}$ such that $f(\gamma) \ct p = \epsilon y$. We put $\gamma \defeq \opp{g(p)} \ct \eta x$.
+Then we have 
+\begin{align*}
+f(\gamma) \ct p & = \opp{fg(p)} \ct f (\eta x) \ct p \\
+& = \opp{fg(p)} \ct \epsilon(fx) \ct p \\
+& = \epsilon y
+\end{align*}
+where the second equality follows by $\tau x$ and the third equality follows by the naturality of $\epsilon$.
+\end{proof}
+
 \begin{thm}\label{thm:equiv-contr-hae}
   For any $f:A\to B$ we have $\eqv{\iscontr(f)}{\ishae(f)}$.
 \end{thm}
@@ -312,166 +379,29 @@ The first is a high-level argument obtained by repeatedly interchanging $\Sigma$
   But clearly $\opp{\ap f {\eta a}} \ct \epsilon(fa) = \refl{fa}$ if and only if $\map{f}{\eta a} = \epsilon(fa)$, and it is easy to show that this logical equivalence is actually an equivalence, yielding~\eqref{eq:ech-part3}.
 \end{proof}
 
-For the second proof, the following definition and lemmas will be useful.
-
-\begin{defn}
-For $f : A \to B$, $g : B \to A$, and $\eta : g \circ f \sim \idfunc[A]$, we denote
-\[ \coh{f}{g}{\eta} \defeq \prd{y : B} \sm{\gamma : fgy = y} g(\gamma) = \eta y \]
-\end{defn}
-
-\begin{lem}\label{lem:hfib}
-Let $f : A \to B$ and $y : B$. For any $p, p' : \mathtt{hfiber} \; f \;y$, we have
-\[ \big(p = p'\big) \simeq \sm{\gamma : \proj{1}(p) = \proj{1}(p')} f\gamma \ct \proj{2}(p') = \proj{2}(p) \]
+\begin{lem}\label{lem:coh-hprop}
+If $f$ is an equivalence, then for any $(g,\epsilon) : \rin{f}$, the type $\rcoh{f}{g}{\epsilon}$ is a mere proposition.
 \end{lem}
 \begin{proof}
-We use the known interactions between $\Sigma$-types, identity types, and transports.
+By Lem.~\ref{lem:coh-hfib} and the fact $\Pi$ preserves mere propositions, it suffices to show that for each $x:A$, the type $\id[\hfib{f}{fx}]{(fgx,\epsilon(fx))}{(x,\refl{fx})}$ is a mere proposition. Since $f$ is an equivalence, $\hfib{f}{fx}$ is contractible. Since any path space of a contractible space is itself contractible (and thus a mere proposition), this finishes the proof.
 \end{proof}
 
-\begin{lem}\label{lem:coheq}
-Let $f : A \to B$, $g : B \to A$, and $\eta : g \circ f \sim \idfunc[A]$. For any $y : B$ and $p, p' :\coh{f}{g}{\eta} \; y$, we have
-\[ \big(p = p'\big) \simeq \sm{\delta : \proj{1}(p) = \proj{1}(p')} g \delta \ct \proj{2}(p') = \proj{2}(p) \]
+\begin{lem}\label{lem:inv-hprop}
+If $f : A \to B$ has a left inverse, then the type $\rin{f}$ is a mere proposition. If $f : A \to B$ has a right inverse, then the type $\lin{f}$ is a mere proposition.
 \end{lem}
 \begin{proof}
-We use the known interactions between function types, $\Sigma$-types, identity types, and transports.
+This is shown in the next section; we should reorganize things a bit.
 \end{proof}
 
-\begin{cor}\label{lem:higher-hom}
-For any half adjoint equivalence $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ and any $p : \id[A]{x}{x'}$ the following diagram commutes:
-\begin{align*}
-\xymatrix{
-f(\eta x') \ar[dd]_{\tau x'} \ar[r]^{\mathit{via \;} \eta(p) \;\;\;\;\; \; \;\;\;\;\;\;} & f(\opp{gf(p)} \ct \eta x \ct p) \ar[d] \\
-& \opp{fgf(p)} \ct f(\eta x) \ct f(p) \ar[d]_{\mathit{via \;} \tau x} \\
-\epsilon(f x') \ar[r]_{\mathit{via \;} \epsilon(fp)\;\;\;\;\; \; \;\;\;\;\;\;\;\;\;\;}  & \opp{fgf(p)} \ct \epsilon (fx) \ct f(p)}
-\end{align*}
-Similarly, for any $(f,g,\eta,\epsilon,\upsilon) : A \cong_a^g B$ and any $p : \id[A]{y}{y'}$ the following diagram commutes:
-\begin{align*}
-\xymatrix{
-g(\epsilon y') \ar[dd]_{\upsilon y'} \ar[r]^{\mathit{via \;} \epsilon(p) \;\;\;\;\; \; \;\;\;\;\;\;} & g(\opp{fg(p)} \ct \eta y \ct p) \ar[d] \\
-& \opp{gfg(p)} \ct g(\epsilon y) \ct g(p) \ar[d]_{\mathit{via \;} \upsilon y} \\
-\eta(g y') \ar[r]_{\mathit{via \;} \eta(gp)\;\;\;\;\; \; \;\;\;\;\;\;\;\;\;\;}  & \opp{gfg(p)} \ct \eta (gy) \ct g(p)}
-\end{align*}
-\end{cor}
+\begin{thm}\label{thm:hae-hprop}
+For any $f : A \to B$, the type $\ishae{f}$ is a mere proposition.
+\end{thm}
 \begin{proof}
-TODO
-\end{proof}
-
-\begin{lem}\label{lem:coh-fg}
-For any half adjoint equivalence $(f,g,\eta,\epsilon,\tau) : A \cong_a^f B$ the following diagram commutes for each $x : A$:
-
-\begin{align*}
-\xymatrix{
-f(\eta (g f x)) \ar[d]_{\mathit{via \; } \com{\eta}{g \circ f}{x}} \ar[r]^{\tau(gfx)} &
-\epsilon (fgfx) \ar[d]^{\com{\epsilon}{f\circ g}{fx}} \\
-fgf (\eta x) \ar[r]_{\mathit{via \;} \tau x} &
-fg(\epsilon (f x))} 
-\end{align*}
-
-Similarly, for any $(f,g,\eta,\epsilon,\upsilon) : A \cong_a^g B$ the following diagram commutes for each $y : B$:
-
-\begin{align*}
-\xymatrix{
-g(\epsilon (f g y)) \ar[d]_{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \ar[r]^{\upsilon(fgy)} &
-\eta (gfgy) \ar[d]^{\com{\eta}{g\circ f}{gy}} \\
-gfg (\epsilon y) \ar[r]_{\mathit{via \;} \upsilon y} &
-gf(\eta (g y))} 
-\end{align*}
-\end{lem}
-\begin{proof}
-TODO
+The type $\ishae{f}$ is clearly equivalent to $\sm{u : \rin{f}} \rcoh{f}{\proj{1}(u)}{\proj{2}(u)}$. If $f$ has a half-adjoint equivalence, then by lemmas~\ref{lem:inv-hprop},~\ref{lem:coh-hprop}, and the fact that $\Sigma$ preserves mere propositions, it follows that the latter type is a mere proposition. This finishes the proof.
 \end{proof}
 
 \begin{proof}[Second proof of \autoref{thm:equiv-contr-hae}]
-Fix $f:A\to B$; we proceed in 4 steps:
-\begin{enumerate}
-\item Define a function $F : \iscontr(f) \to \ishae(f)$. Fix a proof $P(y) \jdeq (c(y), h(y))$ that every homotopy fiber of $f$ is contractible.
-We define an inverse mapping $g : B \to A$ by mapping each $y : B$ to the center of contraction of the h-fiber at $y$:
-\[ g(y) \defeq \proj{1}(c(y)) \]
-We can thus define the transformation $\epsilon$ by mapping $y$ to the witness that $g(y)$ indeed belongs to the h-fiber at $y$:
-\[ \epsilon(y) \defeq \proj{2}(c(y)) \]
-To define $\eta$ and $\tau$, by \autoref{lem:hfib} we have a family of equivalences $E(y,p,p')$ witnessing
-\[ \big( p = p' \big) \simeq \big( \sm{\gamma : \proj{1}(p) = \proj{1}(p')} f\gamma \; \ct \; \proj{2}(p') = \proj{2}(p) \big) \]
-for paths in the h-fiber at $y$. A special case arises when $y \defeq fx$ and $p' \defeq (x,\refl{fx})$. In this case,
-$E(fx,p,(x,\refl{fx}))$ witnesses the equivalence
-\[ \big( p = (x,\refl{fx}) \big) \simeq \big( \sm{\gamma : \proj{1}(p) = x} f\gamma \; \ct \; \refl{fx} = \proj{2}(p) \big) \]
-The concatenation with identity path is clearly redundant and we have
-\begin{align*}
-& \big( \sm{\gamma : \proj{1}(p) = x} f\gamma \; \ct \; \refl{fx} = \proj{2}(p) \big) \simeq \\ 
-& \big( \sm{\gamma : \proj{1}(p) = x} f\gamma = \proj{2}(p) \big)
-\end{align*}
-Let $E'(p,x)$ denote the above equivalence, defined in the obvious way by concatenation.
-
-We can now define $\eta$ and $\tau$ (roughly) by constructing a path from $(gfx,\epsilon(fx))$ to $(x,\refl{fx})$ in the h-fiber at $fx$. More precisely, we put
-\begin{align*}
-\eta(x) & \defeq \proj{1} (\chi(x)) \\
-\tau(x) & \defeq \proj{2} (\chi(x))
-\end{align*}
-where
-\begin{align*} \chi(x) \defeq E'(c(fx), x) \; (E(fx, c(fx), (x,\refl{fx})) \; (h(fx)(x, \refl{fx}))) \end{align*}
-
-\item Define a function $G : \ishae(f) \to \iscontr(f)$. Fix $(g,\eta,\epsilon,\tau): \ishae(f)$. We want to show that every homotopy fiber of $f$ is contractible. Fix $y : B$. As our center of contraction for $\mathtt{hfiber} \; f \;y$ we put 
-\[c(y) \defeq (gy, \epsilon y)\]
-Now take any $p : \mathtt{hfiber} \; f \;y$. We want to construct a path $h(y,p) : c(y) = p$.
-According to \autoref{lem:hfib}, it suffices to give a path $\gamma(y,p) : \id{gy}{\proj{1}(p)}$ for which we have a path $\theta(y,p) : f(\gamma(y,p)) \ct \proj{2}(p) = \epsilon y$. We put $\gamma(y,p) \defeq {\opp{g(\proj{2}(p))}} \ct {\eta (\proj{1}(p))}$.
-Then we have 
-\begin{align*}
-f(\gamma(y,p)) \ct \proj{2}(p) & = \opp{fg(\proj{2}(p))} \ct {f (\eta(\proj{1}(p)))} \ct \proj{2}(p) \\
-& = \opp{fg(\proj{2}(p))} \ct {\epsilon(f(\proj{1}(p)))} \ct \proj{2}(p) \\
-& = \epsilon y
-\end{align*}
-where the second equality follows by $\tau(\proj{1}(p))$ and the third equality follows by the naturality of $\epsilon$. We let $\theta(y,p)$ be the path obtained by concatenating the above chain of equalities and put 
-\begin{align*}
- h(y,p) \defeq \opp{E(y,c(y),p)} (\gamma(y,p), \theta(y,p))
-\end{align*}
-
-\item Show that $G \circ F \sim \idfunc[\iscontr(f)]$. Fix a proof $P$ that each homotopy fiber of $f$ is contractible; it suffices to prove that $P = G(F(P))$ in the type $\prd{y:B} \iscontr (\mathtt{hfiber \;} f \; y)$.
-  However, this type is contractible.
-  For by $P$, each $\mathtt{hfiber} \; f \; y$ is contractible, while $\iscontr$ and $\Pi$ preserve contractibility by \autoref{thm:contr-contr} and \autoref{thm:contr-forall} respectively.
-  Thus we have $P = G(F(P))$, as desired.
-
-\item Show that $F \circ G \sim \idfunc[\ishae(f)]$.
-  Fix $(g,\eta,\epsilon,\tau):\ishae(f)$.
-  Using definitional $\eta$-expansion for functions, we have \[F(G(g,\eta,\epsilon,\tau)) \jdeq (g, \eta', \epsilon, \tau')\] for some $\eta'$ and $\tau'$.
-  It thus suffices to show that for each $x : A$, we have $(n'x,\tau' x) = (nx,\tau x)$ in the type $\sm{\gamma : gfx = x} f\gamma = \epsilon(fx)$, i.e., in $\coh{g}{f}{\eta} \; x$. Fix $x : A$. It is easy to see that
-\begin{align*}
-(n'x,\tau' x) = E'((gfx, \eta(fx)),x) \; (\refl{gfx} \ct \eta x, \theta)
-\end{align*}
-where $\theta$ is the following path, with the arrows defined in the obvious ways:
-\begin{align*}
-\xymatrix{
-f(\refl{gfx} \ct \eta x) \ct \refl{fx} \ar[d] \\
-\refl{fgfx} \ct f(\eta x) \ct \refl{fx} \ar[d]_{\mathit{via \;}\tau x} \\
-\refl{fgfx} \ct \epsilon (fx) \ct \refl{fx} \ar[d] \\
-\epsilon (f x)}
-\end{align*}
-It is easy to show by identity elimination that the following diagram commutes:
-\begin{align*}
-\xymatrix{
-f(\refl{gfx} \ct \eta x) \ar[r] \ar[d] & f(\refl{gfx} \ct \eta x) \ct \refl{fx} \ar[d] \\
-f(\eta x) \ar[r] \ar[d]_{\tau x} & \refl{fgfx} \ct f(\eta x) \ct \refl{fx} \ar[d]_{\mathit{via \;}\tau x} \\
-\epsilon (f x) \ar[r] \ar[rd] & \refl{fgfx} \ct \epsilon (fx) \ct \refl{fx} \ar[d] \\
-& \epsilon (f x)}
-\end{align*}
-Thus we have $\theta = \theta'$, where $\theta'$ is the following path:
-\begin{align*}
-\xymatrix{
-f(\refl{gfx} \ct \eta x) \ct \refl{fx} \ar[d] \\
-f(\refl{gfx} \ct \eta x) \ar[d] \\
-f(\eta x) \ar[d] _{\tau x} \\
-\epsilon (f x)}
-\end{align*}
-In other words, we have  
-\begin{align*}
-(n'x,\tau' x) = E'((gfx, \eta(fx)),x) \; (\refl{gfx} \ct \eta x, \theta')
-\end{align*}
-Now \[(\refl{gfx} \ct \eta x, \theta') = \opp{E'((gfx, \eta(fx)),x)} \; (\refl{gfx} \ct \eta x, \theta'')\] where $\theta''$ is
-\begin{align*}
-\xymatrix{
-f(\refl{gfx} \ct \eta x) \ar[d] \\
-f(\eta x) \ar[d] _{\tau x} \\
-\epsilon (f x)}
-\end{align*}
-Thus $(n'x,\tau' x) = (\refl{gfx} \ct \eta x, \theta'')$. All that remains is to show that $(\eta x, \tau x) = (\refl{gfx} \ct \eta x, \theta'')$ in $\coh{g}{f}{\epsilon} \; x$. By \autoref{lem:coheq}, it suffices to exhibit a path $\delta : \refl{gfx} \ct \eta x = \eta x$ such that $f(\delta) \ct \tau(x) = \theta''$. It is clear that the obvious path from $\refl{gfx} \ct \eta x$ to $\eta x$ does the job. \qedhere
-\end{enumerate}  
+Follows from the logical equivalence established in Thm.~\ref{thm:lequiv-contr-hae} and the fact that both $\iscontr{f}$ and $\ishae{f}$ are mere propositions (Thm.~\ref{thm:contr-hprop} and Thm.~\ref{thm:hae-hprop}).
 \end{proof}
 
 
@@ -531,125 +461,6 @@ We can now prove the remaining property for this definition.
 \begin{proof}
   We have $\biinv(f) \to \qinv(f) \to \iscontr(f)$ and $\iscontr(f) \to \qinv(f) \to \biinv(f)$.
   Since both $\iscontr(f)$ and $\biinv(f)$ are mere propositions, the equivalence follows from \autoref{ex:hprop-iff-equiv}.
-\end{proof}
-
-We can also give a more explicit, calculational proof that $\eqv{\biinv(f)}{\ishae(f)}$.
-[TODO: This proof needs to be switched around somehow.]
-
-\begin{proof}[Second proof of \autoref{thm:equiv-biinv-isequiv}]
-We proceed in 4 steps:
-\begin{enumerate}
-\item Define a function $F : (A \cong^g_a B) \to (A \cong_w B)$. This is very simple: given a half adjoint equivalence $(f,g,\eta,\epsilon,\upsilon) : A \cong^g_a B$, 
-we take $(f,g,g,\eta,\epsilon)$ to be our desired weak isomorphism.
-
-
-
-\item Define a function $G : (A \cong_w B) \to (A \cong^g_a B)$. Given a weak isomorphism $(f,g,h,\eta,\epsilon)$, our half adjoint equivalence will be $(f,g,\eta,\epsilon',\upsilon')$, for suitable $\epsilon'$ and $\upsilon'$. 
-Namely, we put
-\begin{align*}
-\epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (h y)) \ct \epsilon y
-\end{align*}
-Then for any $y : B$ we have
-\begin{align*}
-g(\epsilon'(y)) & = \opp{gfg(\epsilon y)} \ct gf(\eta (h y)) \ct g(\epsilon y) \\
-& = \opp{gfg(\epsilon y)} \ct \eta (gfhy) \ct g(\epsilon y) \\
-& = \eta(gy)
-\end{align*}
-where the second equality follows since $\eta$ commutes with $g \circ f$ and the third equality follows by naturality of $\eta$. We let $\upsilon'(y)$ be the above chain of equalities.
-
-
-
-\item Show that $G \circ F \sim \idfunc[A \cong^g_a B]$. Fix a half adjoint equivalence $(f,g,\eta,\epsilon,\upsilon)$. It is easy to see that $G(F(f,g,\eta,\epsilon,\upsilon)) \equiv (f,g,\eta, \epsilon', \upsilon')$, where
-\begin{align*}
-\epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (g y)) \ct \epsilon y
-\end{align*}
-and $\upsilon'(y)$ is the following chain of paths:
-
-\begin{align*}
-\xymatrix{
-g(\opp{fg(\epsilon y)} \ct f(\eta (g y)) \ct \epsilon y) \ar[d] \\
-\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
-\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
-\eta(g y)}
-\end{align*}
-It thus suffices to show that for each $y : B$, we have $(\epsilon y,\upsilon y) = (\epsilon' y,\upsilon' y)$ in the type $\sm{\gamma : fgy = y} g(\gamma) = \eta(g y)$, i.e., in the type $\coh{f}{g}{\eta} \; y$. By \autoref{lem:coheq}, it suffices to exhibit a path $\delta : \epsilon y = \epsilon' y$ such that $g(\delta) \ct \upsilon' y = \upsilon y$.
-
-Let $\delta : \epsilon y = \epsilon' y$ be the path 
-
-\begin{align*}
-\xymatrix{
-\epsilon y \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
-\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\
-\opp{fg(\epsilon y)} \ct fg (\epsilon y) \ct \epsilon y \ar[d]^{\mathit{via \;} \upsilon y} \\
-\opp{fg(\epsilon y)} \ct f (\eta(g y)) \ct \epsilon y}
-\end{align*}
-It thus remains to show that $\upsilon y$ is equal to the path
-
-\begin{align*}
-\xymatrix{
-g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
-g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\
-g(\opp{fg(\epsilon y)} \ct fg (\epsilon y) \ct \epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \\
-g(\opp{fg(\epsilon y)} \ct f (\eta(g y)) \ct \epsilon y) \ar[d] \\
-\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
-\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
-\eta(g y)}
-\end{align*}
-Now the following diagram clearly commutes:
-
-\begin{align*}
-\xymatrix{
-g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} & \\
-g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \ar[r] &
-\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\  
-g(\opp{fg(\epsilon y)} \ct fg (\epsilon y) \ct \epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \ar[r] &
-\opp{gfg(\epsilon y)} \ct gfg (\epsilon y) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \\
-g(\opp{fg(\epsilon y)} \ct f (\eta(g y)) \ct \epsilon y) \ar[r] &
-\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
- & \opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
- & \eta(g y)}
-\end{align*}
-This means it suffices to show that $\upsilon y$ is equal to the path
-
-\begin{align*}
-\xymatrix{
-g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
-g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d] \\
-\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \\
-\opp{gfg(\epsilon y)} \ct gfg (\epsilon y) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \upsilon y} \\
-\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
-\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
-\eta(g y)}
-\end{align*}
-Now by \autoref{lem:coh-fg} we have
-
-\begin{align*}
-\xymatrix{
-\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]_{\mathit{via \; } \com{\epsilon}{f \circ g}{y}} \ar[r]^{\mathit{via \; } \upsilon(fgy)} &
-\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via\;}\com{\eta}{g\circ f}{gy}} \\
-\opp{gfg(\epsilon y)} \ct gfg (\epsilon y) \ct g(\epsilon y) \ar[r]_{\mathit{via \;} \upsilon y} &
-\opp{gfg(\epsilon y)} \ct gf(\eta (g y)) \ct g(\epsilon y)} 
-\end{align*}
-Thus it suffices to show that $\upsilon y$ is equal to the path
-
-\begin{align*}
-\xymatrix{
-g(\epsilon y) \ar[d]^{\mathit{via \;} \epsilon(\epsilon y)} \\
-g(\opp{fg(\epsilon y)} \ct \epsilon (f g y) \ct \epsilon y) \ar[d] \\
-\opp{gfg(\epsilon y)} \ct g(\epsilon (f g y)) \ct g(\epsilon y) \ar[d]^{\mathit{via \; \upsilon(fgy)}}  \\
-\opp{gfg(\epsilon y)} \ct \eta (gfgy) \ct g(\epsilon y) \ar[d]^{\mathit{via \;} \eta(g(\epsilon y))} \\
-\eta(g y)}
-\end{align*}
-However, this follows at once from \autoref{lem:higher-hom}.
-
-
-\item Show that $F \circ G \sim \idfunc[A \cong_w B]$. Fix a weak isomorphism $(f,g,h,\eta,\epsilon)$. It is easy to see that $F(G(f,g,h,\eta,\epsilon)) \equiv (f,g,g,\eta,\epsilon')$, where
-\begin{align*}
-\epsilon'(y) \defeq \opp{fg(\epsilon y)} \ct f(\eta (h y)) \ct \epsilon y
-\end{align*}
-Thus it suffices to show that for each $y : B$, we have $(g y, \epsilon' y) = (h y, \epsilon y)$ in the type $\sm{x : A} f x = y$, i.e., in $\mathtt{hfiber \;} f \; y$. By  \autoref{lem:hfib} it suffices to give a path $\gamma : gy = hy$ such that $f(\gamma) \ct \epsilon y = e' y$. This is obviously satisfied if we take  $\gamma \defeq \opp{g(\epsilon y)} \ct \eta(h y)$.\qedhere
-\end{enumerate}
-
 \end{proof}
 
 \section{Concluding remarks}

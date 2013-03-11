@@ -329,7 +329,7 @@ For the moment, therefore, we will assume:
   For any $A$, $B$, $f$, and $g$, the function~\eqref{eq:happly} is an equivalence.
 \end{axiom}
 
-We will see in later chapters that this axiom follows either from univalence (see \S\ref{sec:compute-universe} and Chapter~\ref{cha:univalence}) or from an interval type (see \S\ref{sec:interval}).
+We will see in later chapters that this axiom follows either from univalence (see \S\ref{sec:compute-universe} and Appendix~\ref{cha:univalence}) or from an interval type (see \S\ref{sec:interval}).
 Moreover, it should be more naturally built into a computational version of homotopy type theory, as envisioned in \autoref{rmk:computational-hope}.
 
 In particular,~\eqref{eq:happly} has a quasi-inverse
@@ -461,28 +461,35 @@ Thus, we postpone them until Chapter~\ref{cha:equivalences}.
 Just as the type \id[A]{a}{a'} is characterized up to isomorphism, with
 a separate ``definition'' for each $A$, there is no simple
 characterization of the type \id[{\id[A]{a}{a'}}]{p}{q} of paths between
-paths $p,q : \id[A]{a}{a'}$.  However, the type \id[A]{-}{-}
-respects equivalence:
+paths $p,q : \id[A]{a}{a'}$.
+However, our other general classes of theorems do extend to identity types such, such as the fact that they respect equivalence.
 
 \begin{thm}\label{thm:paths-respects-equiv}
-If $f : A \to B$ is an equivalence, then $\apfunc{f} :
-\id[A]{a}{a'} \to \id[B]{f(a)}{f(a')}$ for all $a,a'$.  
+  If $f : A \to B$ is an equivalence, then for all $a,a':A$, so is
+  \[\apfunc{f} : (\id[A]{a}{a'}) \to (\id[B]{f(a)}{f(a')}).\]
 \end{thm}
 \begin{proof}
-The quasi-inverse is \apfunc{\opp f}, which cancels in both directions
-because \apfunc{-} is functorial, so it suffices to cancel $f$ and $\opp{f}$.
+  Let $\opp f$ be a quasi-inverse of $f$, with homotopies $\alpha:\prd{b:B} f(\opp f(b))=b$ and $\beta:\prd{a:A} \opp f(f(a)) = a$.
+  The quasi-inverse of $\apfunc{f}$ is, essentially, \apfunc{\opp f}.
+  However, the type of \apfunc{\opp f} is
+  \[\apfunc{\opp f} : (\id{f(a)}{f(a')}) \to (\id{\opp f(f(a))}{\opp f(f(a'))}).\]
+  Thus, in order to obtain an element of $\id[A]{a}{a'}$ we must concatenate with the paths $\opp{\beta(a)}$ and $\beta (a')$ on either side.
+  To show that this gives a quasi-inverse of $\apfunc{f}$, on one hand we must show that for any $p:a=a'$ we have
+  \[ \opp{\beta(a)} \ct \apfunc{\opp f}(\apfunc{f}(p)) \ct \beta(a') = p. \]
+  This follows from the functoriality of $\apfunc{}$ on function composition (\autoref{lem:ap-functor}\ref{item:apfunctor-compose}) and the naturality of homotopies (\autoref{lem:htpy-natural}).
+  On the other hand, we must show that for any $q:f(a)=f(a')$ we have
+  \[ \apfunc{f}\big( \opp{\beta(a)} \ct \apfunc{\opp f}(q) \ct \beta(a') \big) = q. \]
+  This follows in the same way, using also the functoriality of $\apfunc{}$ on path-concatenation and inverses (\autoref{lem:ap-functor}\ref{item:apfunctor-ct} and~\ref{item:apfunctor-opp}).
 \end{proof}
 
-Thus, given a full characterization of $\id[A]{a}{a'}$,
-$\id[{\id[A]{a}{a'}}]{p}{q}$ is determined as well.  
+Thus, if for some type $A$ we have a full characterization of $\id[A]{a}{a'}$, the type $\id[{\id[A]{a}{a'}}]{p}{q}$ is determined as well.  
 For example:
 \begin{itemize}
-
-\item Paths $p = q$, where $p,q : \id[A \times B]{w}{w'}$, are equialent
+\item Paths $p = q$, where $p,q : \id[A \times B]{w}{w'}$, are equivalent
   to pairs of paths $\id[{\id[A]{\proj{1} w}{\proj{1} w'}}]{\projpath{1}{p}}{\projpath{1}{q}}$ 
   and $\id[{\id[B]{\proj{2} w}{\proj{2} w'}}]{\projpath{2}{p}}{\projpath{2}{q}}$.  
 
-\item Paths $p = q$, where $p,q : \id[\prd{x:A} B(x)]{f}{g}$, are equialent
+\item Paths $p = q$, where $p,q : \id[\prd{x:A} B(x)]{f}{g}$, are equivalent
   to homotopies $\prd{x:A} \id[B(x)] {\happly(p)(x)}{\happly(q)(x)}$.  
 \end{itemize}
 
@@ -512,7 +519,7 @@ Path induction on $p$, followed by the unit law for composition.
 \end{proof}
 
 Because $\apfunc{(x \mapsto x)}$ is the identity function, and 
-$\apfunc(x \mapsto c)$ (where $c$ is a constant) is \refl{c}, the
+$\apfunc{(x \mapsto c)}$ (where $c$ is a constant) is \refl{c}, the
 following are special cases:
 \begin{cor}\label{cor:transport-path-prepost}
 \[
@@ -522,10 +529,8 @@ following are special cases:
 \end{array}
 \]
 \end{cor}
-I.e. transporting with ${x \mapsto \id{c}{x}}$ is post-compostion, and
-transporting with ${x \mapsto \id{x}{c}}$ is contravariant
-pre-composition.  These may be familiar as the functorial actions of
-$Hom(c,-)$ and $Hom(-,c)$.
+In other words, transporting with ${x \mapsto \id{c}{x}}$ is post-composition, and transporting with ${x \mapsto \id{x}{c}}$ is contravariant pre-composition.
+These may be familiar as the functorial actions of the covariant and contravariant hom-functors $\hom(c,-)$ and $\hom(-,c)$ in category theory.
 
 \subsection{Coproducts}
 \label{sec:compute-coprod}

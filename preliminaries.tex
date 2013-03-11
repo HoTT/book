@@ -279,7 +279,8 @@ indexed over $x:A$ we can form the type $\sm{x:A}B[x]$. Elements of $\sm{x:A}B[x
 pairs $\tup{a}{b} : \sm{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
 family $B$ does not depend on $A$ we write $A \times B$.
 
-How to define a function out of $\Sigma$-type? We certainly need the projections:
+What are the functions out of $\Sigma$-type? In type-theoretic
+terminology: what is the elimination principle for $\Sigma$? We certainly need the projections:
 \begin{eqnarray*}
   \fst & : & \sm{x : A}B[x] \to A \\
   \snd & : & \prd{p:\sm{x : A}B[x]}B[\fst(p)]
@@ -298,20 +299,34 @@ computational interpretation.
 
 We require a family of types $C[p]$ indexed by elements of the
 $\Sigma$-type $p : \sm{x : A}B[x] \to A$ --- this is our induction
-predicate. Now we assime that we can \emph{prove} for the canonical
+predicate. Now we assume that we can \emph{prove} for the canonical
 elements of the $\Sigma$-types - the tuples. This corresponds to being
 able to construct an element of the following type
 \[ m:\prd{x:A}{y:B[x]}C[\tup{x}{y}] \]
 Given $m$ we now claim that $C$ holds for \emph{all} elements of the
 $\Sigma$-types which corresponds to being able to construct a function 
-\[ f : \prd{p:\sm{x : A}B[x]}{C[p]}\]
+\[ f : \prd{p:\sm{x : A}B[x]}C[p]\]
 with the defining equation
 \[ f(\tup{a}{b}) \defeq m(a,b) \]
-So intuitively this elimination principle tells us that to define a
+Intuitively, this elimination principle tells us that to define a
 function over a $\Sigma$-type it is enough to define it for its
 canonical elements of the form $\tup{a}{b}$. We leave it as an
 exercise to show that the projections are particular instances of this
 scheme. 
+
+The reader may wonder wether it is enough to just have the
+projections. Indeed, the elimination principle allows us to derive an
+additional fact which we can formulate using identity types which are
+introduced below: the principle of surjective pairing which can be
+viewed as an $\eta$-rule for $\Sigma$-types:
+\[ \spr : \prd{p : \sm{x:A} B[x]} \tup{\fst(p)}{\snd(p)} = p \]
+To prove $sp$ we only need to show
+\[ \tup{\fst(\tup{a}{b})}{\snd(\tup{a}{b})} = \tup{a}{b} \]
+and using the defining equations for $\fst$ and $\snd$ this is
+equivalent to
+\[ \tup{a}{b} = \tup{a}{b} \]
+which can be used using reflexivity, that is we define:
+\[ \spr(\tup{a}{b}) \defeq \refl{\tup{a}{b}} \]
 
 % However,
 % If $C$ is a family of types on $p:\Sigma_{x:A}B(x)$ and 
@@ -329,16 +344,18 @@ scheme.
 % y$ to construct $\pi_2 : \Pi(p : \Sigma_{x:A}{B(x)}),B(\pi_1 p)$ with
 % the defining equation $\pi_2(x,y) \defeq y$.
 
-As an example consider the type $\sm{n:\Nat}\Vec(A,n)$ of tuples of
+As an example consider the type $\sm{n:\Nat}\Vect(A,n)$ of tuples of
 arbitrary length, its elements are of the form
 $\tup{n}{\seq{a_0,\dots,a_{n-1}}}$ with $a_i : A$. Indeed this type is
 equivalent to the type of lists or finite sequences over $A$. Another example is the type
-$\Sigma_{n:\Nat}n+n = n$ which expresses the (true) proposition that
+$\sm{n:\Nat}n+n = n$ which expresses the (true) proposition that
 there exists a natural number which is equal to its doubling. An
 element of this type is the pair $\tup{0}{p}$ where $p: 0 = 0+0$ is a
 proof that $0$ is equal to its doubling.
 
-A more involved example is the type-theoretic axiom of choice. Assume
+A more involved example is the type-theoretic axiom of choice. Indeed,
+in this is a misnomer since this principle is actually provable in
+type theory. Assume
 there are types $A,B$ and a family $R(x,y)$ indexed over $x:A$ and
 $y:B$. Then we can show that from assuming 
 \[p : \Pi(x:A)\Sigma(y :B),R(x,y)\] 
@@ -348,15 +365,23 @@ a(p) & : & \sm{f : A \to B} \prd{x:A} R(x,(fx)) \\
 a(p) & \defeq & (\lambda_{x:A} \pi_1(p(x)),\lambda_{x:A} \pi_2(p(x)))
 \end{eqnarray*}
 
-Dependent pair types are used to represent:
-\begin{itemize}
-\item Conventional (non-dependent) pairs as in $\Nat \times \bool$,
-\item Conjunction as in $x =_A y \times y =_A z$,
-\item Existential quantification as in $\Sigma_{n:\Nat}n+n = n$.
-\end{itemize}
+Using types to represent propositions we use the non-dependent
+form of $\Sigma$ to represent conjunction, given types $P,Q$ the type
+$P \times Q$ has as proofs pairs of proofs $p:P$ and $q:Q$ and hence
+represents the statment that both $P$ and $Q$ hold. On the other hand
+gven a family of types $P[x]$ indexed over $x:A$ representing a
+predicate, then $\sm{x:A} P[x]$ represents existential quantification:
+its elements are pairs of an element $a : A$ and a proof $p : P[a]$
+that the property holds for this particular element.
+
+As before for $\Pi$-types we note the versatility of $\Sigma$-types,
+which generalize cartesian product, conjunction and existential
+quantification. 
 
 \section{Finite types}
 \label{sec:finite-types}
+
+
 
 We use $\emptyt$, $\unit$ and $\bbB$ for the standard {\bf empty
   type}, the standard {\bf singleton type} and the standard {\bf

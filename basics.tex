@@ -434,7 +434,7 @@ And, indeed, we can show that dependent functions produce such paths.
 
 \begin{proof}[Second proof]
   By induction, it suffices to assume $p$ is $\refl x$.
-  But in this case, we have $\trans{(\refl{x})}{f(x)}\jdeq f(x)$ judgmentally.
+  But in this case, the desired equation is $\trans{(\refl{x})}{f(x)}\jdeq f(x)$, which holds judgmentally.
 \end{proof}
 
 Recall that a non-dependently typed function $f:A\to B$ is just the special case of a dependently typed function $f:\prd{x:A} P(x)$ when $P$ is a constant type family, $P(x) \defeq B$.
@@ -644,10 +644,10 @@ In Chapter~\ref{cha:hlevels} we will make precise the sense in which this ``suff
   Suppose $f:\isset(A)$; then for any $x,y:A$ and $p,q:x=y$ we have $f(x,y,p,q):p=q$.
   Fix $x$, $y$, and $p$, and define $g: \prd{q:x=y} (p=q)$ by $g(q) \defeq f (x,y,p,q)$.
   Then for any $r:q=q'$, we have $\apdfunc{g}(r) : \trans{r}{g(q)} = g(q')$.
-  By \autoref{thm:transport-paths}, therefore, we have $g(q) \ct r = g(q')$.
+  By \autoref{cor:transport-path-prepost}, therefore, we have $g(q) \ct r = g(q')$.
 
   In particular, suppose given $x,y,p,q,r,s$ as in the lemma statement, and define $g$ as above.
-  Then $g(p) \ct r = g(q)$ and also $g(p) \ct s = g(q)$, hence by cancellation we have $r=s$.
+  Then $g(p) \ct r = g(q)$ and also $g(p) \ct s = g(q)$, hence by cancellation $r=s$.
 \end{proof}
 
 As mentioned in \S\ref{sec:types-vs-sets},
@@ -665,7 +665,7 @@ In Chapter~\ref{cha:hlevels} we will study a more general form of this question 
 \end{eg}
 
 \begin{eg}
-  The type $\emptyset$ is a set, for given any $x,y:\emptyset$ we may deduce anything we like by contradiction.
+  The type $\emptyt$ is a set, for given any $x,y:\emptyt$ we may deduce anything we like by contradiction.
 \end{eg}
 
 \begin{eg}
@@ -680,14 +680,16 @@ Most of the type forming operations we have considered so far also preserve sets
   If $A$ and $B$ are sets, then so is $A\times B$.
   For given $x,y:A\times B$ and $p,q:x=y$, by \autoref{thm:path-prod} we have $p= \pairpath(\projpath1(p),\projpath2(p))$ and $q= \pairpath(\projpath1(q),\projpath2(q))$.
   But $\projpath1(p)=\projpath1(q)$ since $A$ is a set, and $\projpath2(p)=\projpath2(q)$ since $B$ is a set; hence $p=q$.
+
+  Similarly, if $A$ is a set and $B:A\to\type$ is such that each $B(x)$ is a set, then $\sm{x:A} B(x)$ is a set.
 \end{eg}
 
 \begin{eg}\label{thm:isset-forall}
-  If $A$ is \emph{any} type and $B:A\to \type$ is such that for each $x:A$, the type $B(x)$ is a set, then the type $\prd{x:A} B(x)$ is a set.
+  If $A$ is \emph{any} type and $B:A\to \type$ is such that each $B(x)$ is a set, then the type $\prd{x:A} B(x)$ is a set.
   For suppose $f,g:\prd{x:A} B(x)$ and $p,q:f=g$.
   By function extensionality, we have $p = {\funext (x \mapsto \happly(p,x))}$ and likewise $q = {\funext (x \mapsto \happly(q,x))}$.
   But for any $x:A$, we have $\happly(p,x):f(x)=g(x)$ and also $\happly(q,x):f(x)=g(x)$, so since $B(x)$ is a set we have $\happly(p,x) = \happly(q,x)$.
-  Now using function extensionality again, we conclude that the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are $p$ and $q$.
+  Now using function extensionality again, the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are $p$ and $q$.
 \end{eg}
 
 For more examples, see Exercises~\ref{ex:isset-coprod} and~\ref{ex:isset-sigma}.
@@ -696,12 +698,12 @@ However, not all types are sets.
 \begin{eg}\label{thm:type-is-not-a-set}
   The universe \type is not a set.
   To prove this, it suffices to exhibit a type $A$ and a path $p:A=A$ which is not equal to $\refl A$.
-  Take $A=\unit+\unit$, and let $f:A\to A$ be defined by $f(\inl(\ttt))\defeq \inr(\ttt)$ and $f(\inr(\ttt))\defeq \inl(\ttt)$.
+  Take $A=\bool$, and let $f:A\to A$ be defined by $f(\btrue)\defeq \bfalse$ and $f(\bfalse)\defeq \btrue$.
   Then $f(f(x))=x$ for all $x$ (by an easy case analysis), so $f$ is an equivalence.
   Hence, by univalence, $f$ gives rise to a path $p:A=A$.
 
   If $p$ were equal to $\refl A$, then (again by univalence) $f$ would equal the identity function of $A$.
-  But this would imply that $\inl(\ttt)=\inr(\ttt)$, contradicting the disjointness of injections from \S\ref{sec:compute-coprod}.
+  But this would imply that $\btrue=\bfalse$, contradicting \autoref{rmk:true-neq-false}.
 \end{eg}
 
 We will study other types that are not sets in more detail starting in Chapter~\ref{cha:hits}.  An even more special kind of type than a set is a set with at most one element --- such types may be regarded as \emph{propositions in a narrow sense}, and their study is just what is usually called "logic".
@@ -743,7 +745,7 @@ On the other hand, we can now show that corresponding statements looking like th
   By univalence, this implies that $f$ is \emph{natural} with respect to equivalences of types.
   From this, and a fixed-point-free autoequivalence, we will be able to extract a contradiction.
 
-  Recall that $\bool\defeq \unit+\unit$, and let $e:\eqv\bool\bool$ be the equivalence defined by $e(\inl(\ttt))\defeq\inr(\ttt)$ and $e(\inr(\ttt))\defeq\inl(\ttt)$, as in \autoref{thm:type-is-not-a-set}.
+  Let $e:\eqv\bool\bool$ be the equivalence defined by $e(\bfalse)\defeq\btrue$ and $e(\btrue)\defeq\bfalse$, as in \autoref{thm:type-is-not-a-set}.
   Let $p:\bool=\bool$ be the path corresponding to $e$ by univalence, i.e.\ $p\defeq \ua(e)$.
   Then we have $f(\bool) : \neg\neg\bool \to\bool$ and
   \[\apd f p : \transfib{A\mapsto (\neg\neg A \to A)}{p}{f(\bool)} = f(\bool).\]

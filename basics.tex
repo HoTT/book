@@ -827,7 +827,16 @@ The continuity/naturality of this function implies that not only are any two ele
 \end{lem}
 \begin{proof}
   Define $f:P\to\unit$ by $f(x)\defeq \ttt$, and $g:\unit\to P$ by $g(u)\defeq x_0$.
-  Then for any $u:\unit$ we have $\eqv{(f(g(u))=u)}{\unit}$, hence $f(g(u))=u$, while for any $x:P$ we have $g(f(x))=x$ since $P$ is a mere proposition.
+  The claim follows from the next lemma, and the observation that \unit is a mere proposition by \autoref{thm:path-unit}.
+\end{proof}
+
+\begin{lem}\label{lem:equiv-iff-hprop}
+  If $P$ and $Q$ are mere propositions such that $P\to Q$ and $Q\to P$, then $\eqv P Q$.
+\end{lem}
+\begin{proof}
+  Suppose given $f:P\to Q$ and $g:Q\to P$.
+  Then for any $x:P$, we have $g(f(x))=x$ since $P$ is a mere proposition.
+  Similarly, for any $y:Q$ we have $f(g(y))=y$ since $Q$ is a mere proposition; thus $f$ and $g$ are quasi-inverses.
 \end{proof}
 
 In homotopy theory, a space that is homotopy equivalent to \unit is said to be \emph{contractible}.
@@ -1012,15 +1021,9 @@ In particular, therefore, the propositional truncation appears twice.
 The truncation in the domain means we assume that for every $x$ there exists some $a:A(x)$ such that $P(x,a)$, but that these values are not chosen or specified in any known way.
 The truncation in the codomain means we conclude that there exists some function $g$, but this function is not determined or specified in any known way.
 
-As with LEM and DN,~\eqref{eq:ac} is not a consequence of our basic type theory, but it may consistently be assumed as an axiom.
-Note the restriction to types that are sets; because of the continuity/functoriality of all functions, it is unreasonable to assert such a statement without some such restriction.
-However, they can be relaxed to a certain extent.
-For instance, we may allow $A$ and $P$ to be arbitrary type families as long as we maintain the assumption that $X$ is a set; this results in a seemingly stronger statement that is equally consistent.
-We may also replace the propositional truncation by the more general $n$-truncations to be considered in Chapter~\ref{cha:hlevels}, obtaining a spectrum of axioms interpolating between~\eqref{eq:ac} and \autoref{thm:ttac}.
+In fact, because of \autoref{thm:ttac}, this axiom can also be expressed in a simpler form.
 
-We also observe that \autoref{thm:ttac} implies a simplification of~\eqref{eq:ac}.
-
-\begin{lem}
+\begin{lem}\label{thm:ac-epis-split}
   The axiom of choice~\eqref{eq:ac} is equivalent to the statement that for any set $X$ and any $Y:X\to\type$ such that each $Y(x)$ is a set, we have
   \begin{equation}
     \big(\prd{x:X} \brck{Y(x)}\big)
@@ -1033,13 +1036,42 @@ We also observe that \autoref{thm:ttac} implies a simplification of~\eqref{eq:ac
   \[\brck{\prd{x:X} \sm{a:A(x)} P(x,a)}.\]
   Thus,~\eqref{eq:ac} is equivalent to the instance of~\eqref{eq:epis-split} where $Y(x) \defeq \sm{a:A(x)} P(x,a)$.
   Conversely,~\eqref{eq:epis-split} is equivalent to the instance of~\eqref{eq:ac} where $A(x)\defeq Y(x)$ and $P(x,a)\defeq\unit$.
-  Thus, the two are logically equivalent; so since both are mere propositions, they are equivalent types.
+  Thus, the two are logically equivalent.
+  Since both are mere propositions, by \autoref{lem:equiv-iff-hprop} they are equivalent types.
 \end{proof}
 
+As with LEM and DN, the equivalent forms~\eqref{eq:ac} and~\eqref{eq:epis-split} are not a consequence of our basic type theory, but they may consistently be assumed as axioms.
+
 \begin{rmk}
-  A word of caution about a common pitfall: although dependent function types preserve mere propositions (\autoref{thm:isprop-forall}), they do not commute with truncation: $\brck{\prd{x:A} P(x)}$ is not generally equivalent to $\prd{x:A} \brck{P(x)}$.
-  Indeed, while the version of the ``axiom of choice'' which is provable in type theory is really just a statement about how $\Sigma$'s and $\Pi$'s commute, the proper axiom of choice~\eqref{eq:ac} is arguably a statement about how $\Pi$'s commute with truncation.
+  It is easy to show that the right side of~\eqref{eq:epis-split} always implies the left.
+  Since both are mere propositions, by \autoref{lem:equiv-iff-hprop} the axiom of choice is also equivalent to asking for an equivalence
+  \[ \eqv{\big(\prd{x:X} \brck{Y(x)}\big)}{\brck{\prd{x:X} Y(x)}} \]
+  This illustrates a common pitfall: although dependent function types preserve mere propositions (\autoref{thm:isprop-forall}), they do not commute with truncation: $\brck{\prd{x:A} P(x)}$ is not generally equivalent to $\prd{x:A} \brck{P(x)}$.
+  The axiom of choice, if we assume it, says that this is true \emph{for sets}; as we will see below, it fails in general.
 \end{rmk}
+
+The restriction in the axiom of choice to types that are sets can be relaxed to a certain extent.
+For instance, we may allow $A$ and $P$ in~\eqref{eq:ac}, or $Y$ in~\eqref{eq:epis-split}, to be arbitrary type families; this results in a seemingly stronger statement that is equally consistent.
+We may also replace the propositional truncation by the more general $n$-truncations to be considered in Chapter~\ref{cha:hlevels}, obtaining a spectrum of axioms interpolating between~\eqref{eq:ac} and \autoref{thm:ttac}.
+However, we cannot relax the requirement that $X$ be a set.
+
+\begin{lem}
+  There exists a type $X$ and a family $Y:X\to \type$ such that each $Y(x)$ is a set, but such that~\eqref{eq:epis-split} is false.
+\end{lem}
+\begin{proof}
+  Define $X\defeq \sm{A:\type} \brck{\bool = A}$, and let $x_0 \defeq (\bool, \bproj{\refl{\bool}}) : X$.
+  Then by the identification of paths in $\Sigma$-types, the fact that $\brck{A=\bool}$ is a mere proposition, and univalence, we have $\eqv{(\id[X]{(A,p)}{(B,p)})}{(\eqv AB)}$.
+  In particular, $\eqv{(\id[X]{x_0}{x_0})}{(\eqv \bool\bool)}$, so as in \autoref{thm:type-is-not-a-set}, $X$ is not a set.
+  But if we define $Y(x) \defeq (x_0=x)$, then each $Y(x)$ is a set.
+
+  Now by definition, for any $(A,p):X$ we have $\brck{\bool=A}$, and hence $\brck{x_0 = (A,p)}$.
+  Thus, we have $\prd{x:X} \brck{Y(x)}$.
+  If~\eqref{eq:epis-split} held for this $X$ and $Y$, then we would also have $\brck{\prd{x:X} Y(x)}$.
+  Since we are trying to derive a contradiction ($\emptyt$), which is a mere proposition, we may assume $\prd{x:X} Y(x)$, i.e.\ that $\prd{x:X} (x_0=x)$.
+  But this implies $X$ is a mere proposition, and hence a set, which is a contradiction.
+\end{proof}
+
+
 
 \subsection{All surjectives split implies decidability of propositions}\label{sec:surj_split}
 In this subsection we derive that if all surjective functions between sets have

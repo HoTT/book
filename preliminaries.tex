@@ -272,33 +272,71 @@ unified using the notion of a dependent function type or $\Pi$-type.
 \label{sec:sigma-types}
 
 As before in the case of functions the dependent pair type is a
-generalisation of the ordinary cartesian product $A \times B$. 
-As in the case of $\Pi$ we assume that $B:A \to \UU$ is a family
-indexed over $A$.
-$x:A$ to form $\Sigma_{x:A}B[x]$. Elements of $\Sigma_{x:A}B[x]$ are
-pairs $(a,b) : \Sigma_{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
+generalisation of the ordinary cartesian product. At the same time 
+the dependent pair type can be viewed as an infinite sum over the
+indexing type - hence  the symbol $\Sigma$. Given a family $B[x]$
+indexed over $x:A$ we can form the type $\sm{x:A}B[x]$. Elements of $\sm{x:A}B[x]$ are
+pairs $\tup{a}{b} : \sm{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
 family $B$ does not depend on $A$ we write $A \times B$.
 
-If $C$ is a family of types on $p:\Sigma_{x:A}B(x)$ and 
-$c:\Pi(x:A)(y:B(x)),C((x,y))$, then we may define 
-$f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
-  \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
+How to define a function out of $\Sigma$-type? We certainly need the projections:
+\begin{eqnarray*}
+  \fst & : & \sm{x : A}B[x] \to A \\
+  \snd & : & \prd{p:\sm{x : A}B[x]}B[\fst(p)]
+\end{eqnarray*}
+with the defining equations 
+\begin{eqnarray*}
+  \fst(\tup{a}{b}) & \defeq & a \\
+  \snd(\tup{a}{b}) & \defeq & b
+\end{eqnarray*}
+Note that the 2nd projection has a dependent function type using the
+first projection. The projections are instances of a more general
+scheme to define functions which is the first instance of an
+elimination principle. The basic idea is to formulate an induction law
+for $\Sigma$-types and then observe that it has a straightforward
+computational interpretation.
 
-As special cases we can derive the projections: to derive the 1st
-projection let $C_1(p) \defeq A$ be the constant family and $c_1 : \Pi (x:A)(y:B(x),A$
-defined as $c_1(x)(y) \defeq x$ to derive $\pi_1 : \Sigma_{x:A}B(x)) \to A$
-with the defining equation $\pi_1 (x,y) \defeq x$. To derive the 2nd
-projection we use $C_2(p) \defeq B (\pi_1(p))$ and $c_2 : \Pi
-(x:A)(y:B(x)),B(\pi_1(x,y))$ note that the codomain $B(\pi_1(x,y))$ is
-definitionally equal to $B(x)$ and hence we can use $c_2(x)(y) \defeq
-y$ to construct $\pi_2 : \Pi(p : \Sigma_{x:A}{B(x)}),B(\pi_1 p)$ with
-the defining equation $\pi_2(x,y) \defeq y$.
+We require a family of types $C[p]$ indexed by elements of the
+$\Sigma$-type $p : \sm{x : A}B[x] \to A$ --- this is our induction
+predicate. Now we assime that we can \emph{prove} for the canonical
+elements of the $\Sigma$-types - the tuples. This corresponds to being
+able to construct an element of the following type
+\[ m:\prd{x:A}{y:B[x]}C[\tup{x}{y}] \]
+Given $m$ we now claim that $C$ holds for \emph{all} elements of the
+$\Sigma$-types which corresponds to being able to construct a function 
+\[ f : \prd{p:\sm{x : A}B[x]}{C[p]}\]
+with the defining equation
+\[ f(\tup{a}{b}) \defeq m(a,b) \]
+So intuitively this elimination principle tells us that to define a
+function over a $\Sigma$-type it is enough to define it for its
+canonical elements of the form $\tup{a}{b}$. We leave it as an
+exercise to show that the projections are particular instances of this
+scheme. 
 
-As an example consider the type $\Sigma_{n:\Nat}Vec(A,n)$ of tuples of
-arbitrary length - this type is equivalent to the type of lists or
-finite sequences over $A$. Another example is the type
+% However,
+% If $C$ is a family of types on $p:\Sigma_{x:A}B(x)$ and 
+% $c:\Pi(x:A)(y:B(x)),C((x,y))$, then we may define 
+% $f:(\Pi z:\Sigma_{x:A}B(x))C(z)$ with defining equation
+%   \[f((x,y))\defeq c(x)(y)\mbox{ for } x:A,y:B(x).\]
+
+% As special cases we can derive the projections: to derive the 1st
+% projection let $C_1(p) \defeq A$ be the constant family and $c_1 : \Pi (x:A)(y:B(x),A$
+% defined as $c_1(x)(y) \defeq x$ to derive $\pi_1 : \Sigma_{x:A}B(x)) \to A$
+% with the defining equation $\pi_1 (x,y) \defeq x$. To derive the 2nd
+% projection we use $C_2(p) \defeq B (\pi_1(p))$ and $c_2 : \Pi
+% (x:A)(y:B(x)),B(\pi_1(x,y))$ note that the codomain $B(\pi_1(x,y))$ is
+% definitionally equal to $B(x)$ and hence we can use $c_2(x)(y) \defeq
+% y$ to construct $\pi_2 : \Pi(p : \Sigma_{x:A}{B(x)}),B(\pi_1 p)$ with
+% the defining equation $\pi_2(x,y) \defeq y$.
+
+As an example consider the type $\sm{n:\Nat}\Vec(A,n)$ of tuples of
+arbitrary length, its elements are of the form
+$\tup{n}{\seq{a_0,\dots,a_{n-1}}}$ with $a_i : A$. Indeed this type is
+equivalent to the type of lists or finite sequences over $A$. Another example is the type
 $\Sigma_{n:\Nat}n+n = n$ which expresses the (true) proposition that
-there exists a natural number which is equal to its doubling.
+there exists a natural number which is equal to its doubling. An
+element of this type is the pair $\tup{0}{p}$ where $p: 0 = 0+0$ is a
+proof that $0$ is equal to its doubling.
 
 A more involved example is the type-theoretic axiom of choice. Assume
 there are types $A,B$ and a family $R(x,y)$ indexed over $x:A$ and

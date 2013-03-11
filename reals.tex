@@ -21,12 +21,12 @@ Choice, which further complicates matters. But let us proceed one step at a time
 \section{The Field of Rational Numbers}
 \label{sec:field-rati-numb}
 
-We first construct the rational numbers \Q, as the reals can then be seen as a completion
-of \Q. An expert will point out that \Q could be replaced by any approximate field, i.e.,
-a subring of \Q in which arbitrarily precise approximate inverses exist. An example is the
-ring of dyadic rationals, which are those of the form $n/2^k$. From an
-implementation point of view an approximate field is more suitable, but we leave such
-finesse for those who care about the digits of~$\pi$.
+We first construct the integers \Z and the rational numbers \Q, as the reals can then be
+seen as a completion of \Q. An expert will point out that \Q could be replaced by any
+approximate field, i.e., a subring of \Q in which arbitrarily precise approximate inverses
+exist. An example is the ring of dyadic rationals, which are those of the form $n/2^k$.
+From an implementation point of view an approximate field is more suitable, but we leave
+such finesse for those who care about the digits of~$\pi$.
 
 Starting from the natural numbers \N, we first construct the integers in a familiar
 fashion, namely as a quotient
@@ -37,14 +37,80 @@ where
 %
 \[ (a,b) \sim (c,d) \defeq (a + d = b + c). \]
 %
-In other words, a pair $(a,b)$ represents the integer $a - b$. As $\sim$ is a decidable
-relation, \Z has decidable equality and so is a set. The arithmetical operations are
-induced by those on \N, e.g., if $u, v \in \Z$ are represented by $(a,b)$ and $(c,d)$,
-respectively, then $u + v$ is represented by $(a + c, b + d)$, $-u$ is represented by $(b,
-a)$, and $u v$ is represented by $(a c + b d, a d + b c)$. The integers \Z then form the
-free commutative ring with unit. In fact, using the results from
-\autoref{sec:free-algebras} we could have constructed \Z as the free commutative ring with
-unit.
+In other words, a pair $(a,b)$ represents the integer $a - b$. The quotient could be
+constructed using heavy machinery, as in \autoref{sec:quotients}, but the following lemma
+shows that we need not do so.
+
+\begin{lem}\label{lem:quotient-when-canonical-representatives}
+  Suppose $\sim$ is an equivalence relation on a set $A$, and there exists an idempotent $r
+  : A \to A$ such that, for all $x, y \in A$, $\eqv{(r(x) = r(y))}{(x \sim y)}$. Then the
+  type
+  %
+  \begin{equation*}
+    A/{\sim} \defeq \sm{x : A} r(x) = x
+  \end{equation*}
+  %
+  is the set-quotient of~$\sim$ by $A$ in the following sense: there is a map $q : A \to
+  A/{\sim}$ such that, for every set $B$, the type $A/{\sim} \to B$ is equivalent to
+  %
+  \begin{equation}
+    \label{eq:quotient-when-canonical}
+      \sm{g : A \to B} \prd{x, y : A} (x \sim y) \to g(x) = g(y).
+  \end{equation}
+\end{lem}
+
+\begin{proof}
+  Let $i : \prd{x : A} r(r(x)) = r(x)$ witness idempotence of~$r$.
+  The map $q : A \to A/{\sim}$ is defined by $q(x) \defeq (r(x), i(x))$. An equivalence $e$
+  from $A/{\sim} \to B$ to~\eqref{eq:quotient-when-canonical} is defined by
+  %
+  \[ e(f) \defeq (f \circ q, {\ldots}), \]
+  %
+  where $\ldots$ is the following proof: if $x, y : A$ and $x \sim y$ then by assumption
+  $r(x) = r(y)$, hence $(r(x), i(x)) = (r(y), i(y))$ as $A$ is a set, therefore $f(q(x)) =
+  f(q(y))$. To see that $e$ is an equivalence, consider the map $e'$ in the opposite
+  direction,
+  %
+  \[ e'(g, p) (x, q) \defeq g(x). \]
+  %
+  Given any $f : A/{\sim} \to B$,
+  %
+  \[ e'(e(f))(x, p) \defeq f(q(x)) \defeq f(r(x), i(x)) = f(x, p) \]
+  %
+  where the last equality holds because $p : r(x) = x$ and so $(x,p) = (r(x), i(x))$
+  because $A$ is a set. Similarly we compute
+  %
+  \[ e(e'(g, p)) \defeq e(g \circ \proj{1}) \defeq (f \circ \proj{1} \circ q, {\ldots}). \]
+  %
+  Because $B$ is a set we need not worry about the $\ldots$ part, while for the first
+  component we have
+  %
+  \[ f(\proj{1}(q(x))) \defeq f(r(x)) = f(x), \]
+  %
+  where the last equation holds because $r(x) \sim x$ and $f$ respects $\sim$ by
+  assumption.
+\end{proof}
+
+The Lemma applies to $\Z$ with the idempotent $r : \N \times \N \to \N \times \N$
+defined by
+%
+\begin{equation*}
+  r(a, b) =
+  \begin{cases}
+    (a - b, 0) & \text{if $a \geq b$,} \\
+    (0, b - a) & \text{otherwise.}
+  \end{cases}  
+\end{equation*}
+%
+Thus a non-negative integer is canonically represented as $(k, 0)$, while a negative
+one by $(0, m)$. It is also clear that equality on \Z is decidable.
+
+The arithmetical operations are induced by those on \N, e.g., if $u, v \in \Z$ are
+represented by $(a,b)$ and $(c,d)$, respectively, then $u + v$ is represented by $(a + c,
+b + d)$, $-u$ is represented by $(b, a)$, and $u v$ is represented by $(a c + b d, a d + b
+c)$. The integers \Z then form the free commutative ring with unit. In fact, using the
+results from \autoref{sec:free-algebras} we could have constructed \Z as the free
+commutative ring with unit.
 
 The field of rationals \Q is constructed along the same lines as well, namely as the
 quotient
@@ -55,22 +121,23 @@ where
 \[ (u,a) \approx (v,b) \defeq (u (b + 1) = v (a + 1)). \]
 %
 In other words, a pair $(u, a)$ represents the rational number $u / (1 + a)$. There can be
-no division by zero because we cunningly added one to the natural denominator~$a$. Again
-we obtain a set with a decidable equality whose operations are induced by those on \Z. We
-do not bother to write these down as we trust our readers know how to compute with
-fractions even in the case when one is added to the denominator. Let us just record that
-there is an entirely unproblematic construction of the ordered field of rational number
-\Q, with a decidable equality and decidable order. The field \Q can also be characterized
-as the initial one.
+no division by zero because we cunningly added one to the natural denominator~$a$. Here
+too we have a canonical choice of representatives, namely fractions in lowest terms. Thus
+we may apply \autoref{lem:quotient-when-canonical-representatives} to obtain a set \Q,
+which again has a decidable equality.
+
+We do not bother to write down the arithmetical operations on \Q as we trust our readers
+know how to compute with fractions even in the case when one is added to the denominator.
+Let us just remember that there is an entirely unproblematic construction of the ordered
+field of rational number \Q, with a decidable equality and decidable order. The field \Q
+can also be characterized as the initial one.
 
 \begin{rmk}
-  We could have constructed \Z and \Q without appeal to quotients. The integers can be
-  seen as a sum of two copies of \N which correspond to the negative and non-negative
-  integers, respectively. The rationals form a decidable subset of $\Z \times \N$ of
-  fractions in lowest terms. Such a construction makes arithmetic quite annoying because
-  all results must always be expressed as fractions in lowest terms.
+  We could have constructed \Z and \Q without appeal to any quotients because both \Z and
+  \Q are equivalent to \N as types. The relevant algebraic structure could thus be defined
+  directly on the type \N, albeit with an annoying amount of coding of integers and
+  rationals as natural numbers.
 \end{rmk}
-
 
 \section{Cauchy Reals}
 \label{sec:cauchy-reals}
@@ -78,7 +145,7 @@ as the initial one.
 The Cauchy reals are the completion of \Q with limits of Cauchy sequences. The
 construction works well in the presence of the Axiom of Countable Choice, which we do not
 have at our disposal. Nevertheless, the higher inductive types come to the rescue and make
-the construction possible. This is a novel observation about an old construction.
+the construction possible.
 
 Recall the classic Cauchy condition for a sequence $x : \N \to \Q$, where $\Qp$ is the
 type of positive rational numbers:
@@ -135,7 +202,11 @@ gets the idea that we should add limits of limits as well, and then limits of li
 limits, and so on (after infinitely many steps, there will be some more). Crucially, we
 must quotient by the coincidence relation simulteneously with the inductive construction,
 or else we will face again the problem of lifting a sequence of reals to a sequence of
-representatives. Higher-inductive types are the perfect solution.
+representatives. Higher-inductive types are the perfect solution. (It would be possible to
+perform the same construction in constructive set theory as well.)
+
+\subsection{Construction of Cauchy Reals}
+\label{sec:constr-cauchy-reals}
 
 The construction of Cauchy reals $\RC$ is a \emph{higher inductive-recursive definition},
 because it involves a simultaneous definition of $\RC$ and an auxiliary proximity
@@ -267,9 +338,9 @@ lemma, which must thus also be established simultaneously with the inductive con
     so we are left with two to check (here we use the wiggle room provided by $\theta$):
     %
     \begin{itemize}
-    \item Suppose $\rclim(x) = \rclim(y)$ and $\inl(q) \sim_\epsilon \inr(\rclim(x))$. To
-      prove $\inl(q) \sim_\epsilon \inr(\rclim(y))$, observe that there are $\delta,
-      \theta : \Qp$ such that
+    \item Suppose $\rclim(x) = \rclim(y)$ and $\inl(q) \sim_\epsilon \inr(\rclim(x))$. We
+      need to prove that $\inl(q) \sim_\epsilon \inr(\rclim(y))$. Observe that there are
+      $\delta, \theta : \Qp$ such that
       %
       \begin{equation*}
         \inl(q) \sim_{\epsilon - \delta - \theta} x_\delta.
@@ -306,6 +377,41 @@ lemma, which must thus also be established simultaneously with the inductive con
   %
   This completes the construction of Cauchy reals.
 \end{proof}
+
+We are immediately able to populate $\RC$ with many real numbers. For suppose $q : \N \to
+\Q$ is a traditional Cauchy sequence of rational numbers, and let $M : \Qp \to \N$ be its
+modulus of convergence. Then $\inl \circ q \circ M : \Qp \to \Q + \RC$ is a Cauchy
+approximation and so $\rclim(\inl \circ q \circ m)$ is a real number. Thus the rationals
+$\Q$ embed into $\RC$ via constant sequences, and various famous real numbers $\sqrt{2}$,
+$\pi$, $e$, \dots as well because they are are all limits of Cauchy sequences of
+rationals.
+
+
+\textbf{TODO:} Discuss whether we got a set. Did we? Should we truncate?
+
+\subsection{Arithmetical operations}
+\label{sec:arithm-oper}
+
+Defining a function on $\RC$ may be quite laborious, as it leads to a recursion coupled
+with an induction which establishes that the recursion respects equality. So let first
+prove lemmas that will help with the construction of arithmetical operations.
+
+If $\RC$ were an ordinary inductive type we could prove that every real is of the form
+$\rclim{x}$ for some Cauchy approximation~$x$. But this is most definitely \emph{cannot}
+do, just like it is not the case that every point in the circle is equal to the base
+point, cf.\ \autoref{sec:circle}. [UNFINISHED]
+
+\subsection{Order}
+\label{sec:order}
+
+\subsection{Completeness}
+\label{sec:completeness}
+
+State the universal property.
+
+Explain how to use Fred Richman's completions. Conclude that complete metric spaces are sets?
+
+
 
 
 \hrulefill

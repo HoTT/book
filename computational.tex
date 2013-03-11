@@ -205,19 +205,38 @@ by path induction, with
 f(w,w,\refl{w})\defeq(\refl{\proj{1}(w)},\refl{\proj{2}(w)}).
 \end{equation*}
 We want to show that $f$ is an equivalence.
-We can find a section $g(w,w')$ of $f(w,w')$ by finding a function $G(w,w')$ of type
+
+In the reverse direction, we define
 \begin{equation*}
-\prd{p:\proj 1(w)=\proj 1(w')}{q:\trans p{\proj 2(w)}=\proj 2(w')}\mathsf{hFiber}(f(w,w'),(p,q))
+g : \prd{w,w':\sm{x:A}P(x)} \sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime) \;\to\; (w=w')
 \end{equation*}
-for each $w,w':\sm{x:A}P(x)$. To do this we will first use the induction principle of dependent sums, i.e.\ it is enough to find a function $G((x,u),(y,v))$ of type
+by first inducting on $w$ and $w'$, which splits them into $(w_1,w_2)$ and
+$(w_1',w_2')$ respectively, so it suffices to show 
 \begin{equation*}
-\prd{p:x=y}{q:\trans{p}{u}=v}\hfiber{f((x,u),(y,v))}{(p,q)}
+\sm{p:w_1 = w_1'}\trans{p}{w_2}=w_2^\prime \;\to\; ((w_1,w_2)=(w_1',w_2'))
 \end{equation*}
-This is obvious by induction on $p$ followed by induction on $q$ and we get
-\begin{equation*}
-G((x,u),(x,u),(\refl{x},\refl{u}))\defeq(\refl{(x,u)},\refl{(\refl{x},\refl{u})}).
-\end{equation*}
-This gives the function $g(w,w')\defeq\proj{1}\circ G(w,w')$ which is a section of $f(w,w')$ by construction. To show that there is a path $g(w,w',f(w,w',\alpha))=\alpha$ for any $\alpha:w=w'$ we use path induction on $\alpha$ and destruction on $w$. The result follows immediately.
+Next, given a pair $\sm{p:w_1 = w_1'}\trans{p}{w_2}=w_2^\prime$, we can
+use $\Sigma$-induction to get $p : w_1 = w_1'$ and $q :
+\trans{p}{w_2}=w_2^\prime$.  Inducting on $p$, we have $q :
+\trans{\refl{}}{w_2}=w_2^\prime$, and it suffices to show 
+$(w_1,w_2)=(w_1,w_2')$.  But $\trans{\refl{}}{w_2} \jdeq w_2$, so
+inducting on $q$ reduces to the goal to 
+$(w_1,w_2)=(w_1,w_2)$, which we can prove with $\refl{(w_1,w_2)}$.  
+
+Next we show that $f \circ g$ is the identity for all $w$, $w'$ and
+$r$, where $r$ has type $\sm{p:\proj{1}(w)=\proj{1}(w')}\trans{p}{\proj{2}(w)}=\proj{2}(w^\prime)$.
+First, we break apart the pairs $w$, $w'$, $r$ by pair induction, as in the
+definition of $g$, and then use two path inductions to reduce both components
+of $r$ to \refl{}.  Then it suffices to show that 
+$f (g(\refl{},\refl{})) = \refl{}$, which is true by definition.
+
+Similarly, to show that $g \circ f$ is the identity for all $w$, $w'$,
+and $p : w = w'$, we can do path-induction $p$, and then induction to
+split $w$, at which point it suffices to show that
+$g(f (\refl{(w_1,w_2)})) = \refl{(w_1,w_2)}$, which is true by
+definition.
+
+Thus, $f$ has a quasi-inverse, and is therefore an equivalence.  
 \end{proof}
 
 As for cartesian products, we have $\eta$-equivalence as a special case.
@@ -230,8 +249,14 @@ As for cartesian products, we have $\eta$-equivalence as a special case.
   But both sides are judgmentally equal to $\proj2(z)$.
 \end{proof}
 
-As we did for binary cartesian products, we can also compute the action of transport on $\Sigma$-types.
+Like with binary cartesian products, we can think of 
+the backward direction of \autoref{thm:path-sigma} as
+an introduction form (\pairpath{}{}), the forward direction as
+elimination forms (\projpath{1} and \projpath{2}), and the equivalence
+as giving $\beta$ and $\eta$ rules for these.  
 
+The action of transport on $\Sigma$-types is a generalization of the
+action for binary cartesian products:
 \begin{thm}
 Suppose we have a type family $P:A\to\type$ and a type family $Q:\big(\sm{x:A} P(x)\big)\to\type$. Then we get the type family
 \begin{equation*}
@@ -248,7 +273,10 @@ The path $\mathsf{lift}(u,p)$ is defined in \autoref{thm:path-lifting}.
 Immediate by path induction.
 \end{proof}
 
-We leave it to the reader to state and prove a generalization of \autoref{thm:ap-prod} (see \autoref{ex:ap-sigma}).
+We leave it to the reader to state and prove a generalization of
+\autoref{thm:ap-prod} (see \autoref{ex:ap-sigma}), and to characterize
+the reflexivity, inverses, and composition of $\sm{x:A} B$
+componentwise.
 
 
 \subsection{The unit type}
@@ -430,31 +458,74 @@ Thus, we postpone them until Chapter~\ref{cha:equivalences}.
 \subsection{Identity Type}
 \label{sec:compute-paths}
 
-When we know what \id[A]{}{} is, \id[ {\id[A]{}{}} ]{}{} follows:
+Just as the type \id[A]{a}{a'} is characterized up to isomorphism, with
+a separate ``definition'' for each $A$, there is no simple
+characterization of the type \id[{\id[A]{a}{a'}}]{p}{q} of paths between
+paths $p,q : \id[A]{a}{a'}$.  However, the type \id[A]{-}{-}
+respects equivalence:
 
-Transport, when $A$ is non-dependent:
+\begin{thm}\label{thm:paths-respects-equiv}
+If $f : A \to B$ is an equivalence, then $\apfunc{f} :
+\id[A]{a}{a'} \to \id[B]{f(a)}{f(a')}$ for all $a,a'$.  
+\end{thm}
+\begin{proof}
+The quasi-inverse is \apfunc{\opp f}, which cancels in both directions
+because \apfunc{-} is functorial, so it suffices to cancel $f$ and $\opp{f}$.
+\end{proof}
+
+Thus, given a full characterization of $\id[A]{a}{a'}$,
+$\id[{\id[A]{a}{a'}}]{p}{q}$ is determined as well.  
+For example:
+\begin{itemize}
+
+\item Paths $p = q$, where $p,q : \id[A \times B]{w}{w'}$, are equialent
+  to pairs of paths $\id[{\id[A]{\proj{1} w}{\proj{1} w'}}]{\projpath{1}{p}}{\projpath{1}{q}}$ 
+  and $\id[{\id[B]{\proj{2} w}{\proj{2} w'}}]{\projpath{2}{p}}{\projpath{2}{q}}$.  
+
+\item Paths $p = q$, where $p,q : \id[\prd{x:A} B(x)]{f}{g}$, are equialent
+  to homotopies $\prd{x:A} \id[B(x)] {\happly(p)(x)}{\happly(q)(x)}$.  
+\end{itemize}
+
+Next, we consider $\transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q}$,
+i.e. transport in a path fibration. This is given by pre- and
+post-composition, analogously to transport at $\to$.  
+
+\begin{thm}\label{thm:transport-path}
+Let $ A : \type$ with $a,a':A$ and $B : A \to \type$ and $f,g : \prd{x:A} B(x)$ and $p :
+\id[A]{a}{a'}$ and $q : \id[B(a)]{f(a)}{g(a)}$.  
+
+A common case is when $B(x)$ does not mention the variable $x$:
+\begin{equation*}
+\id[f(a') = g(a')]{\transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q}}
+{\opp{(\apfunc{f}{p})} \ct q \ct \apfunc{g}{p}}
+\end{equation*}
+
+When $B(x)$ is dependent, the rule is
+\begin{equation*}
+\transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q} = 
+\opp{(\apfunc{f}{p})} \ct \apdfunc{(\transfibf{A}{p})}(q) \ct \apfunc{g}{p}
+\end{equation*}
+
+\end{thm}
+\begin{proof}
+Path induction on $p$, followed by the unit law for composition.
+\end{proof}
+
+Because $\apfunc{(x \mapsto x)}$ is the identity function, and 
+$\apfunc(x \mapsto c)$ (where $c$ is a constant) is \refl{c}, the
+following are special cases:
+\begin{cor}\label{cor:transport-path-prepost}
 \[
 \begin{array}{l}
-\transport{x_0:A_0 \mapsto \id[A] {a_1(x_0)}{a_2(x_0)}} {\alpha_0}{\alpha} = 
-\opp{(\map{a_1}{\alpha_0})} \ct \alpha \ct \map{a_2}{\alpha_0}
+\transfib{x \mapsto \id{c}{x}} {p} {q} = q \ct p \\
+\transfib{x \mapsto \id{x}{c}} {p} {q} = \opp {p} \ct q \\
 \end{array}
 \]
-
-Useful special cases:
-\[
-\begin{array}{l}
-\transport{x:A \mapsto \id[A] {a}{x}} {\alpha_0} \: {\alpha} = \alpha \ct \alpha_0 \\
-\transport{x:A \mapsto \id[A] {x_0}{a}} {\alpha_0} \: {\alpha} = \opp {\alpha_0} \ct \alpha \\
-\end{array}
-\]
-
-Transport, when $A$ is dependent:
-\[
-\begin{array}{l}
-\transport{x_0:A_0 \mapsto \id[A(x_0)] {a_1(x_0)}{a_2(x_0)}} {\alpha_0} \: {\alpha} = \\
-\opp{(\map{a_1}{\alpha_0})} \ct \mapdep{(\transport{A}{\alpha_0})}{\alpha} \ct \map{a_2}{\alpha_0}
-\end{array}
-\]
+\end{cor}
+I.e. transporting with ${x \mapsto \id{c}{x}}$ is post-compostion, and
+transporting with ${x \mapsto \id{x}{c}}$ is contravariant
+pre-composition.  These may be familiar as the functorial actions of
+$Hom(c,-)$ and $Hom(-,c)$.
 
 \subsection{Coproducts}
 \label{sec:compute-coprod}
@@ -491,6 +562,10 @@ The essential insight is that we can use the elimination property of $A+B$ to \e
   \code(\inl(a)) &\defeq (a_0=a)\\
   \code(\inr(b)) &\defeq \emptyt
 \end{align*}
+This is a very simple example of a proof technique that is used quite a
+bit in formalizing homotopy theory in HoTT; see
+e.g. Section~\ref{sec:pi1-s1-intro}.  
+
 We can now show:
 
 \begin{thm}\label{thm:path-coprod}
@@ -536,8 +611,8 @@ We can now show:
     &= \refl{a_0} \ct c\\
     &= c.
   \end{align*}
-  In the penultimate line, we have used \autoref{thm:path-paths}.
-  (Is the lemma we used in the second line stated anywhere?)
+  In the second line, we have used \autoref{cor:transport-path-prepost}.
+  In the penultimate line, we have used \autoref{thm:path-paths}.  
 \end{proof}
 
 Of course, there is a corresponding theorem if we fix $b_0:B$ instead of $a_0:A$.

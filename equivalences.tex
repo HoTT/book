@@ -19,9 +19,9 @@ By function extensionality, it follows that $\qinv(f)$ is equivalent to the type
 \end{equation*}
 We will define three different types having properties~\ref{item:beb1}--\ref{item:beb3}, which we call
 \begin{itemize}
-\item contractible functions,
-\item half adjoint equivalences, and
-\item bi-invertible maps.
+\item half adjoint equivalences,
+\item bi-invertible maps, and
+\item contractible functions.
 \end{itemize}
 We will also show that all these types are equivalent.
 These names are intentionally somewhat clunky, because after we know that they are all equivalent and have properties~\ref{item:beb1}--\ref{item:beb3}, we will revert to saying simply ``equivalence'' without needing to specify which specific definition we choose.
@@ -419,12 +419,14 @@ It is also easy to see:
 
 We have shown that all three definitions of equivalence satisfy the three desirable properties and are pairwise equivalent:
 \[ \iscontr(f) \simeq \ishae(f) \simeq \biinv(f) . \]
-(There are yet more possible definitions of equivalence --- we mentioned one in \autoref{ex:brck-qinv} --- but we will stop with these three.)
+(There are yet more possible definitions of equivalence, but we will stop with these three.
+See \autoref{ex:brck-qinv} and the exercises in this chapter for some more.)
 Thus, we may choose any one of them as ``the'' definition of $\isequiv (f)$.
 For definiteness, we choose to define
 \[ \isequiv(f) \defeq \ishae(f).\]
 This choice is advantageous for formalization, since $\ishae(f)$ contains the most directly useful data.
-But for purposes of this book, the specific choice will make little difference.
+On the other hand, for other purposes, $\biinv(f)$ is ofter easier to deal with, since it contains no 2-dimensional paths and its two symmetrical halves can be treated independently.
+However, for purposes of this book, the specific choice will make little difference.
 
 
 
@@ -469,11 +471,37 @@ But for purposes of this book, the specific choice will make little difference.
 
 % Using the two theorems I believe (from a still mysterious coq proof of Assia and Cyril) that we can get a quick proof of function extensionality on a univalent universe.
 
-% \section*{Exercises}
+\section*{Notes}
 
-% \begin{ex}
-%   Show that a type $A$ is contractible (that is, $\iscontr(A)$ holds) if and only if $A\simeq\unit$.
-% \end{ex}
+The first definition of equivalence given in homotopy type theory was the one that we have called $\iscontr(f)$, which was due to Voevodsky.
+The possibility of the other definitions was subsequently observed by various people.
+The basic theorems about adjoint equivalences such as \autoref{lem:coh-equiv,thm:equiv-iso-adj} are adaptations of standard facts in higher category theory and homotopy theory.
+Using bi-invertibility as a definition of equivalences was suggested by Andr\'e Joyal.
+
+\section*{Exercises}
+
+\begin{ex}
+  Consider the type of ``two-sided adjoint equivalence data'' for $f:A\to B$,
+  \begin{multline*}
+    \sm{g:B\to A}{\eta: g \circ f \sim \idfunc[A]}{\epsilon:f \circ g \sim \idfunc[B]}\\
+    \Big(\prd{x:A} \map{f}{\eta x} = \epsilon(fx)\Big) \times
+    \Big(\prd{y:B} \map{g}{\epsilon y} = \eta(gy) \Big).
+  \end{multline*}
+  By \autoref{lem:coh-equiv}, we know that if $f$ is an equivalence, then this type is inhabited.
+  Give a characterization of this type analogous to \autoref{lem:qinv-autohtpy}.
+
+  Can you give an example showing that this type is not generally a mere proposition?
+  (This will be easier after \autoref{cha:hits}.)
+\end{ex}
+
+\begin{ex}
+  Show that for any $f:A\to B$, the following type also satisfies the three desiderata of $\isequiv(f)$:
+  \begin{multline*}
+    \sm{R:A\to B\to \type}\\
+    \Big(\prd{a:A} \iscontr\big(\sm{b:B} R(a,b)\big)\Big) \times
+    \Big(\prd{b:B} \iscontr\big(\sm{a:A} R(a,b)\big)\Big).
+  \end{multline*}
+\end{ex}
 
 % Local Variables:
 % TeX-master: "main"

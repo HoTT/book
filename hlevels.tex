@@ -1,5 +1,9 @@
 
 
+% Projection and extension for truncations
+\newcommand{\extendsmb}{\mathsf{ext}}
+\newcommand{\extend}[1]{\extendsmb(#1)}
+
 
 \newbox\pbbox
 \setbox\pbbox=\hbox{\xy \POS(65,0)\ar@{-} (0,0) \ar@{-} (65,65)\endxy}
@@ -440,6 +444,58 @@ suffices to show that $X \rightarrow X'$ is an $n$-type because the projection:
  \[(\eqv{X}{X'}) \hookrightarrow (X \rightarrow X').\]
  is an inclusion (i.e.~its fibers are h-propositions). Since $n$-types are preserved under the arrow type, this reduces to an assumption that $X'$ is an $n$-type.
 \end{proof} 
+
+\section{Truncations}
+\label{sec:truncations}
+
+Recall the notion of $n$-types from Chapter~\ref{chap:hlevels}.  ``Being
+an $n$-type'' is a predicate on types.  % Given an integer $n\ge-2$, we
+% recall that $\typeleU{n}$ (or just $\typele{n}$) is the type of all
+% $n$-truncated types (in the universe $\type$). For instance
+% $\typelep{-2}$ is contractible (there is only one $(-2)$-truncated type,
+% the point), $\typelep{-1}$ is also known as $\prop$, and $\typele{0}$ is
+% also known as $\set$. 
+This predicate is accompanied by an operation of $n$-truncation that takes a
+type $A$ and makes the best approximation of $A$ as an $n$-type. This operation
+of $n$-truncation equates (``kills'') all morphisms of level higher than $n$ in
+$A$.  In this section, we explain the basic properties of truncations and we
+will construct truncations using higher inductive types in section
+\ref{sec:hittruncations}.
+
+Given a type $A:\type$ and an integer $n\ge-2$, its \emph{$n$-truncation} is a
+type $\trunc n A$ together with a map $\tprojf n:A\to\trunc nA$, such that
+$\trunc n A$ is $n$-truncated and for every family of $n$-types $P$ over $\trunc
+nA$ and $d:\prod_{a:A}P(\tproj na)$, we can define a section $\extend{d}$ of $P$
+by $\extend{d}(\tproj na)\defeq d(a)$.
+
+In particular, if $E$ is some $n$-truncated type, we can consider the constant
+family of types equal to $E$ for every point of $A$ and we get that every map
+$f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by
+$\extend{f}(\tproj na)\defeq f(a)$.
+
+We also have the nondependent $\eta$-rule which says that if two maps
+$g,g':\trunc nA\to{}E$ are such that $g(\tproj na)=g'(\tproj na)$ for every
+$a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$ and in particular $g=g'$.
+
+\begin{lem}
+  [Universal property of truncations]
+
+  Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
+  equivalence:
+  \[\function{(\trunc nA\to{}B)}{A\to{}B}{g}{g\circ\tprojf n}\]
+%  In particular, $\typele{n}$ is a reflective subuniverse of $\type$. TODO move somewhere else
+\end{lem}
+
+\begin{proof}
+  Given that $B$ is $n$-truncated, any $f:A\to{}B$ can be extended to a map
+  $\extend{f}:\trunc nA\to{}B$.
+
+  The map $\extend{f}\circ\tprojf n$ is equal to $f$ because for every $a:A$ we
+  have $\extend{f}(\tproj na)=f(a)$ by definition and the map
+  $\extend{g\circ\tprojf n}$ is equal to $g$ because they both send $\tproj na$
+  to $g(\tproj na)$.
+\end{proof}
+
 
 %%% Local Variables: 
 %%% mode: latex

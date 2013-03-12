@@ -109,7 +109,7 @@ and
 \prd{n : \nat} \id{f(\s(n))}{e_s(n, f(n))} \\
 \prd{n : \nat} \id{g(\s(n))}{e_s(n, g(n))}
 \end{align*}
-Then $f$ and $g$ are equal, i.e., we have $\alpha : \id[\prd{x :\nat} E(x)]{f}{g}$. 
+Then $f$ and $g$ are equal. 
 \end{thm}
 
 \begin{proof}
@@ -149,7 +149,7 @@ A $\nat$-algebra $\chi_i$ is called \emph{homotopy-initial}, or \emph{h-initial}
 
 As expected, h-initial algebras are unique:
 \begin{thm}
-Any two h-initial $\nat$-algebras $\chi_i$ and $\chi'_i$ are equal, i.e., we have $\id[\nalg]{\chi_i}{\chi'_i}$.
+Any two h-initial $\nat$-algebras $\chi_i$ and $\chi'_i$ are equal.
 \end{thm}
 
 We now have the following theorem; the proof is only sketched as it involves a large amount of technical detail.
@@ -212,7 +212,7 @@ To improve this situation, we first observe that we have the following definable
 Since the composition of $g$ and $f$ satisfies the same recurrences as the identity function on $\nat$, Theorem~\ref{thm:nat-uniq} gives that $\prd{n : \nat} \id{g(f(n))}{n}$. The `primed' version of the same theorem gives $\prd{n : \natp} \id{f(g(n))}{n}$.
 
 This makes it possible to transfer functions on $\nat$ to functions on $\natp$ (and vice versa) by using the maps $f$ and $g$ from above:
-\[ \dblp \defeq \lambda(n :\natp), f(\dbl(g(n)) \]
+\[ \dblp \defeq \lambda(n :\natp), f(\dbl(g(n))) \]
 It is an easy exercise to show that this version of $\dblp$ is equal to the earlier one.
 
 The ability to transfer functions in this way is an improvement over `priming' but the easy result
@@ -308,10 +308,10 @@ and so on.
 
 We have the following elimination rule for W types:
 \begin{itemize}
-\item When proving a statement $E : \big(\wtype{a:A} B(a)\big) \to \type$ about \emph{all} terms of the $W$-type $\wtype{a:A} B(a)$, it suffices to prove it for $\supp(a,f)$, assuming it holds for all $f(b)$ with $b : B(a)$. 
+\item When proving a statement $E : \big(\wtype{x:A} B(x)\big) \to \type$ about \emph{all} terms of the $W$-type $\wtype{x:A} B(x)$, it suffices to prove it for $\supp(a,f)$, assuming it holds for all $f(b)$ with $b : B(a)$. 
 In other words, it suffices to give a proof 
 \begin{align*}
-e : & \; \prd{a:A}{f : B(a) \to \wtype{a:A} B(a)}\\ & \; \prd{g : \prd{b : B(a)} E(f(b))} E(\supp(a,f))
+e : & \; \prd{a:A}{f : B(a) \to \wtype{x:A} B(x)}\\ & \; \prd{g : \prd{b : B(a)} E(f(b))} E(\supp(a,f))
 \end{align*}
 \end{itemize}
 
@@ -335,14 +335,14 @@ Putting this together, we thus have
 \[ \dbl \defeq \rec_\natw(\natw; e) \]
 with $e$ as defined above.
 
-The associated computation rule for the function $\rec_{\wtype{a:A} B(a)}(E;e) : \prd{w : \wtype{a:A} B(a)} E(w)$ is as follows.
+The associated computation rule for the function $\rec_{\wtype{x:A} B(x)}(E;e) : \prd{w : \wtype{x:A} B(x)} E(w)$ is as follows.
 \begin{itemize}
-\item For any $x : A$ and $f : B(x) \to \wtype{a:A} B(a)$ we have 
+\item For any $a : A$ and $f : B(a) \to \wtype{x:A} B(x)$ we have 
 \begin{align*}
-& \rec_{\wtype{a:A} B(a)}(E;\supp(x,f)) \equiv \\ & e(x,f,\big(\lambda (b : B(x)), \; \rec_{\wtype{a:A} B(a)}(E;f(b))\big))
+& \rec_{\wtype{x:A} B(x)}(E;e;\supp(a,f)) \equiv \\ & e(a,f,\big(\lambda (b : B(a)), \; \rec_{\wtype{x:A} B(x)}(E;f(b))\big))
 \end{align*}
 \end{itemize}
-In other words, the function $\rec_{\wtype{a:A} B(a)}(E;e)$ satisfies the recurrence $e$.
+In other words, the function $\rec_{\wtype{x:A} B(x)}(E;e)$ satisfies the recurrence $e$.
 
 By the above computation rule, the function $\dbl$ behaves as expected:
 \begin{align*}
@@ -363,7 +363,18 @@ and so on.
 
 \medskip
 
-As for natural numbers, we have the corresponding notions of $\w$-algebras, $\w$-homo-morphisms, and h-initiality for W-types.
+Just like for natural numbers, we can prove a uniqueness theorem for 
+W-types:
+\begin{thm}\label{thm:w-uniq}
+Let $g,h : \prd{w:\wtype{x:A}B(x)} E(w)$ be two functions which satisfy the recurrence $e : \prd{a,f} (\prd{b : B(a)} E(f(b))) \to E(\supp(a,f))$ up to propositional equality, i.e., such that
+\begin{align*}
+\prd{a,f} \id{g(\supp(a,f))}{e(a,f,\lambda (b: B(a)), g(f(b)))} \\
+\prd{a,f} \id{g(\supp(a,f))}{e(a,f,\lambda (b: B(a)), g(f(b)))}
+\end{align*}
+Then $g$ and $h$ are equal. 
+\end{thm}
+
+Like for natural numbers, we have the corresponding notions of $\w$-algebras, $\w$-homo-morphisms, and h-initiality for W-types.
 \begin{defn}
 A \emph{$\w$-algebra} for a type $A : \type$ and type family $B : A \to \type$ is a type $C$ with a term $c : \prd{a:A} (B(a) \to C) \to C$. Thus,
 \begin{align*}
@@ -386,7 +397,7 @@ A $\w$-algebra $\chi_i$ is called \emph{h-initial} if for any other $\w$-algebra
 \end{defn}
 
 Similarly, we have the analogous theorem stating that W-types give rise to homotopy-initial algebras.
-\begin{thm}
+\begin{thm}\label{thm:w-hinit}
 For any type $A : \type$ and type family $B : A \to \type$, the $\w$-algebra $(\wtype{x:A}{B(x)}, \supp)$ is h-initial.
 \end{thm}
 
@@ -400,27 +411,118 @@ In the previous section we showed how to encode natural numbers as W-types, with
 \zw & \defeq \supp(\true, (\lambda (x : \zero), \; \rec_\zero(\natw;x))) \\
 \sw & \defeq \lambda (n : \natw), \; \supp(\false, (\lambda (x : \one), \; n))
 \end{align*}
-We also showed how one can define a $\dbl$ function on $\natw$ using simple elimination. When it comes to dependent elimination, however, this encoding is no longer satisfactory: given $E : \natw \to \type$ and recurrences $e_z : E(\zw)$ and $e_s : \prd{n : \natw}{y : E(n)} E(\sw(n))$, we can only construct a dependent function $r(E,e_z,e_s) : \prd{n : \natw} E(n)$ satisfying the given recurrences \emph{propositionally}. This means that the computation rules for natural numbers, which assert definitional equalities, cannot be derived from the rules for W-types.
+We also showed how one can define a $\dbl$ function on $\natw$ using simple elimination. When it comes to dependent elimination, however, this encoding is no longer satisfactory: given $E : \natw \to \type$ and recurrences $e_z : E(\zw)$ and $e_s : \prd{n : \natw}{y : E(n)} E(\sw(n))$, we can only construct a dependent function $r(E,e_z,e_s) : \prd{n : \natw} E(n)$ satisfying the given recurrences \emph{propositionally}. This means that the computation rules for natural numbers, which give definitional equalities, cannot be derived from the rules for W-types in any obvious way.
 
-This problem goes away if instead of the conventional inductive types we consider \emph{homotopy-inductive types}, where all computation rules are stated up to a path, i.e., the symbol $\equiv$ is replaced by $=$. For instance, the computation rule for the homotopy version of W-types $\mathbf{W^h}$ becomes:
+This problem goes away if instead of the conventional inductive types we consider \emph{homotopy-inductive types}, where all computation rules are stated up to a path, i.e., the symbol $\equiv$ is replaced by $=$. For instance, the computation rule for the homotopy version of W-types $\mathsf{W^h}$ becomes:
 \begin{itemize}
-\item For any $x : A$ and $f : B(x) \to \wtypeh{a:A} B(a)$ we have 
+\item For any $a : A$ and $f : B(a) \to \wtypeh{x:A} B(x)$ we have 
 \begin{align*}
-& \rec_{\wtypeh{a:A} B(a)}(E;\supp(x,f)) = \\ & e(x,f,\big(\lambda (b : B(x)), \; \rec_{\wtypeh{a:A} B(a)}(E;f(b))\big))
+& \rec_{\wtypeh{x:A} B(x)}(E;\supp(a,f)) = \\ & e(a,f,\big(\lambda (b : B(a)), \; \rec_{\wtypeh{x:A} B(x)}(E;f(b))\big))
 \end{align*}
 \end{itemize}
 
-It is interesting to note that all the properties established so far for inductive types - e.g., the uniqueness principle, homotopy-initiality - hold for homotopy-inductive types as well. For instance, the type $\twoh$ with propositional computation rules for $\true$ and $\false$ gives rise to a homotopy-initial $\two$-algebra $(\nath, \true, \false)$. Furthermore, it can be shown that now we also have the converse: any homotopy-initial $2$-algebra $(\nat',t',f')$ necessarily satisfies the elimination and propositional computation rules for Booleans. We thus have the following stronger theorem:
+Homotopy-inductive types have an obvious disadvantage when it comes to computational properties - the behavior of any function constructed using the elimination principle can now only be characterized propositionally. However, there are numerous advantages to this approach as well - for instance, the notion of a homotopy-inductive type is now internal to the type theory. This means we can e.g., form a type of all natural numbers objects and make assertions about it. In the case of W-types, we can characterize $\wtype{x:A} B(x)$ as any type endowed with a supremum function and a dependent eliminator satisfying the appropriate computation rule:
+\begin{align*}
+\w_d \; A \; B \defeq & \; \sm{W : \type} \\
+                      & \; \sm{\supp : \prd {a} (B(a) \to W) \to W} \\
+                      & \; \prd{E : W \to \type} \\
+                      & \; \prd{e : \prd{a,f} (\prd{b : B(a)} E(f(b))) \to E(\supp(a,f))} \\
+                      & \; \sm{\rec : \prd{w : W} E(w)} \\
+                      & \; \prd{a,f} \rec(\supp(a,f)) = e(a,\lambda (b: B(a)), \rec(f(b)))
+\end{align*}
 
 \begin{thm}
-The types satisfying the formation, introduction, elimination, and propositional computation rules are precisely the homotopy-initial $\two$-algebras.
+For any $A : \type$ and $B : A \to \type$, the type $\w_d \; A \; B$ is a mere proposition.
 \end{thm}
+
+It turns out that there is an equivalent characterization of W-types using simple elimination, plus certain \emph{uniqueness} and \emph{coherence} laws. First we give the rule for simple elimination:
+
+\begin{itemize}
+\item When constructing a function from the the $W$-type $\wtypeh{x:A} B(x)$ into the type $C$, it suffices to give its value for $\supp(a,f)$, assuming we are given the values of all $f(b)$ with $b : B(a)$.
+In other words, it suffices to construct a term
+\begin{align*}
+c : & \; \prd{a:A} (B(a) \to C) \to C
+\end{align*}
+\end{itemize}
+The associated computation rule for $\rec_{\wtypeh{x:A} B(x)}(C,c) : (\wtype{x:A} B(x)) \to C$ is as follows:
+\begin{itemize}
+\item For any $a : A$ and $f : B(a) \to \wtypeh{x:A} B(x)$ we have 
+\begin{align*}
+& \rec_{\wtypeh{x:A} B(x)}(C;c;\supp(a,f)) = \\ & c(a,\lambda (b : B(a)), \; \rec_{\wtypeh{x:A} B(x)}(C;c;f(b)))
+\end{align*}
+i.e., there is a witness $\beta(C;c;a;f)$ for the above equality.
+\end{itemize}
+
+Furthermore, we have the following uniqueness rule, saying that any two functions defined by the same recurrence are equal:
+\begin{itemize}
+\item Let $C : \type$ and $c : \prd{a:A} (B(a) \to C) \to C$ be given. Let $g,h : (\wtypeh{x:A} B(x)) \to C$ be two functions which satisfy the recurrence $c$ up to propositional equality, i.e., such that we have terms
+\begin{align*}
+\beta_g : \prd{a,f} \id{g(\supp(a,f))}{c(a,\lambda (b: B(a)), g(f(b)))} \\
+\beta_h : \prd{a,f} \id{h(\supp(a,f))}{c(a,\lambda (b: B(a)), h(f(b)))}
+\end{align*}
+Then $g$ and $h$ are equal, i.e., there is a term $\alpha(C;c;f;g,\beta_g;\beta_h) : g = h$.
+\end{itemize}
+
+We note that in the dependent case the uniqueness rule is derivable from dependent elimination (Thm.~\ref{thm:w-uniq}). When the eliminator is simple rather than dependent, this rule is no longer derivable - and in fact, the statement is not even true (exercise). We hence postulate it as an axiom, together with the following coherence law, which tells us how the proof of uniqueness behaves on canonical terms:
+\begin{itemize}
+\item
+For any $a : A$ and $f : B(a) \to C$, the following diagram commutes propositionally:
+\[\xymatrix{
+\;\;\;\;\; g(\supp(x,f)) \ar_{\alpha(\supp(x,f))}[d] \ar^{\beta_g \;\;\;\;\;\;\;\;\;\;}[r] & c(a,\lambda (b: B(a)), g(f(b)))
+\ar^{c(a,-)(\funext \; \lambda (b), \; \alpha(f(b)))}[d] \\
+\;\;\;\;\; h(\supp(x,f)) \ar_{\beta_h \;\;\;\;\;\;\;\;\;\;}[r] & c(a,\lambda (b: B(a)), h(f(b))) \\
+}\]
+where $\alpha$ abbreviates the path $\alpha(C;c;f;g,\beta_g;\beta_h) : g = h$.
+\end{itemize}
+
+Putting all of this data together yields another characterization of $\wtype{x:A} B(x)$, as a type with a supremum function, satisfying simple elimination, computation, uniqueness, and coherence rules:
+\begin{align*}
+\w_s \; A \; B \defeq & \; \sm{W : \type} \\
+                      & \; \sm{\supp : \prd {a} (B(a) \to W) \to W} \\
+                      & \; \prd{C : \type} \\
+                      & \; \prd{c : \prd{a} (B(a) \to C) \to C} \\
+                      & \; \sm{\rec : W \to C} \\
+                      & \; \sm{\beta : \prd{a,f} \rec(\supp(a,f)) = c(a,\lambda (b: B(a)), \rec(f(b)))} \\
+                      & \; \prd{g : W \to C} \\
+                      & \; \prd{h : W \to C} \\
+                      & \; \prd{\beta_g : \prd{a,f} g(\supp(a,f)) = c(a,\lambda (b: B(a)), g(f(b)))} \\
+                      & \; \prd{\beta_h : \prd{a,f} h(\supp(a,f)) = c(a,\lambda (b: B(a)), h(f(b)))} \\
+                      & \; \sm{\alpha : \prd {w : W} g(w) = h(w)} \\
+                      & \; \alpha(\supp(x,f)) \ct \beta_h = \beta_g \ct c(a,-)(\funext \; \lambda (b), \; \alpha(f(b)))
+\end{align*}
+
+\begin{thm}
+For any $A : \type$ and $B : A \to \type$, the type $\w_s \; A \; B$ is a mere proposition.
+\end{thm}
+
+Finally, we have a third, very concise characterization of $\wtype{x:A} B(x)$ as an h-initial $\w$-algebra:
+\begin{align*}
+\w_h \; A \; B \defeq \sm{\chi : \walg \; A \; B} \ishinitw(\chi)
+\end{align*}
+
+\begin{thm}
+For any $A : \type$ and $B : A \to \type$, the type $\w_h \; A \; B$ is a mere proposition.
+\end{thm}
+
+It turns out all three characterizations of W-types are in fact equivalent:
+\begin{thm}
+For any $A : \type$ and $B : A \to \type$, we have
+\[ \w_d \; A \; B \simeq \w_s \; A \; B \simeq \w_h \; A \; B \]
+\end{thm}
+
+Thus, we have the following corrollary, which is an improvement over Thm.~\ref{thm:w-hinit}:
+
+\begin{cor}
+The types satisfying the formation, introduction, elimination, and propositional computation rules for W-types are precisely the homotopy-initial $\w$-algebras.
+\end{cor}
 
 Finally, as desired, it can be shown that homotopy-natural numbers can be encoded as homotopy-W-types:
 
 \begin{thm}
 The rules for natural numbers with propositional computation rules can be derived from the rules for W-types with propositional computation rules.
 \end{thm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Derivation of the Paulin-Mohring Rule}
 \begin{thm}

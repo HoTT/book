@@ -132,7 +132,7 @@ lower universes. Most (all ?) constructions introduced in this book
 are predicative. An impredicative type is one which is obtained by
 quantifying over all types at a certain level including itself. In
 classical Mathematics we can quantify over all truth values which are
-identified with the type of booleans. Do ing the same in type theory
+identified with the type of booleans. Doing the same in type theory
 would involve quantifying over all types at the current level and is
 hence impredicative. As a consequence assuming excluded middle which
 identifies the small type of booleans with the universe, leads to an
@@ -167,7 +167,7 @@ An example is the type $\Vect(A,n)$ of
 vectors ($n$-tuples) of elements $a_i : A$ for $0 < i< n$ of type $A$:
 $\seq{a_0,\dots,a_n} : \Vect(A,n)$ which is family indexed
 over $n : \Nat$. Another example is the type $x =_A y$ which is a
-family indexed over $x,y : A$. Indeed, in both examples are also
+family indexed over $x,y : A$. Indeed, xsboth examples are also
 indexed by $A:\UU$.
 
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
@@ -365,58 +365,70 @@ quantification.
 \section{Finite types}
 \label{sec:finite-types}
 
-
-
-We use $\emptyt$, $\unit$ and $\bbB$ for the standard {\bf empty
-  type}, the standard {\bf singleton type} and the standard {\bf
-  boolean type}, respectively.  So $\emptyt$ is not intended to have
-any elements, we have $\star:\unit$ and $\bfalse,\btrue:\bool$.
+A finite type can be presented by listing its elements. In homotopy
+type theory there is only one finite type for each finite cardinal
+since we finite types with the same number of elements are equivalent.
+Indeed, we only need three finite types to generate all others: 
 \begin{itemize}
-\item If $C$ is a family on $\emptyt$ then we have $f:\Pi_{z:\emptyt}(z)$ with no defining equation.
-\item If $C$ is a family on $\unit$ and $c:C(\star)$ then we have $f:\Pi_{z:\unit}(z)$ with defining equation
-  \[ f(\star)\defeq c.\]
-\item If $C$ is a family on $\bool$, $c_0:C(\bfalse)$ 
-and $c_1:C(\btrue)$ then we have $f:\Pi_{z:\bool}C(z)$ with the defining equations
- \[ \begin{array}{rl}
-f(\bfalse) \defeq& c_0, \mbox{ and}\\
-f(\btrue) \defeq& c_1.
-  \end{array}\]
+\item the empty type $\emptyt$ with no elements,
+\item the unit type $\unit$ with exactly one element $\star:\unit$,
+\item and the type of booleans $\bool$ with exactly two elements
+  $\btrue,\bfalse : \bool$
 \end{itemize}
-
-If $A$ and $A'$ are types then $A+A'$ is their disjoint union.  If
-$a:A$ then there is a copy $\inl(a):A+A'$ and if $a':A'$ there is a
-copy $\inr(a'):A+A'$.
-If $C$ is a family on $A+A'$, $c_\inl:\Pi_{x:A}C(\inl(x))$ and $c_\inr:\Pi_{x':A'}C(\inr(x'))$ then $f:\Pi_{z:A+A'}C(z)$ with defining equations
-  \[\left\{\begin{array}{rll} 
-f(\inl(x))\defeq& c_\inl(x)&\mbox{ for } x:A \mbox{ and}\\
-f(\inr(x'))\defeq& c_\inr(x')&\mbox{ for } x':A'\\
-\end{array}\right.\]
-
-We can define the disjoint union of two types $A,B:\UU$ as
-\[A + B \defeq \Sigma_{x:\bool}F(x)\]
+The elimination principles for all three types are straightforward:
+\begin{itemize}
+\item If $C[x]$ is a family on $x:\emptyt$ then we have $f:\prd{z:\emptyt}C[z]$ with no defining equation.
+\item If $C[x]$ is a family on $x:\unit$ and $c:C[\star]$ then we have $f:\prd{z:\unit}C[z]$ with defining equation
+  \[ f(\star)\defeq c.\]
+\item If $C[x]$ is a family on $x:\bool$, $c_0:C[\bfalse]$ 
+and $c_1:C[\btrue]$ then we have $f:\prd{z:\bool}C[z]$ with the
+defining equations
+\begin{eqnarray*}
+f(\bfalse) & \defeq& c_0\\
+f(\btrue) & \defeq & c_1
+\end{eqnarray*}
+\end{itemize}
+Using $\Sigma$-types we can derive the coproduct (or disjoint union) $A+B$
+of two types $A,B$ which in particular shows that we con construct all
+finite types using $\emptyt$ and $S(X) = X+1$. We define
+\[A + B \defeq \sm{x:\bool}F(x)\]
 where $F : \bool \to \UU$ is
 defined as $F(\bfalse) \defeq A$ and $F(\btrue)\defeq B$. The
 injections can be defined as:
 \begin{align*}
 & \inl :  A \to A+B\\
-& \inl(a) \defeq (\bfalse,a)
+& \inl(a) \defeq (\bfalse,a)\\
 & \inr :  B \to A+B\\
 & \inr(b) \defeq (\btrue,b)
 \end{align*}
+We can derive the elimination principle for $A+B$:
+Given  $C[x]$ is a family on $x:A+A'$ and
+\begin{eqnarray*}
+c_\inl & : & \prd_{x:A}C[\inl(x)] \\
+c_\inr & : & \Pi_{x':A'}C(\inr(x'))
+\end{eqnarray*}
+then we can define $f:\prd_{z:A+A'}C[z]$ with defining equations
+\begin{eqnarray*}
+f(\inl(x)) & \defeq& c_\inl(x)  \\
+f(\inr(x) & \defeq & c_\inr(x)  
+\end{eqnarray*}
 
-\textbf{Todo:} Derive eliminator.
-
-Clearly, using $+$, $0$ and $1$ we can define all finite types.
-
-Our technique to derive $+$ from $\Sigma$ can also be used to derive
+The technique to derive $+$ from $\Sigma$ can also be used to derive
 $\times$ form $\Pi$ namely given $A,B:\UU$ we can define 
-\[ A \times B \defeq \Pi_{x:\bool}F(x)\]
-where $F$ is defined as for $+$ above. The projections can be derived
-by applications to $\bfalse$ and $\btrue$. However, the general
-eliminator requires the principle of functional extensionality which
-we haven't introduced yet. Hence there are two ways to derive $A\times
+\[ A \times B \defeq \prd{x:\bool}F(x)\] where $F$ is defined as for
+$+$ above. The projections can be derived by applications to $\bfalse$
+and $\btrue$. To derive the eliminator we need the principle of
+functional extensionality. Hence there are two ways to derive $A\times
 B$ : either as a non-dependent $\Sigma$-type or as a special case of
-$\Pi$ where the domain is boolean. 
+$\Pi$ where the domain is boolean.
+
+The types $\emptyt$ and $\unit$ represent the logical constants
+\emph{False} and \emph{True}. Indeed, \emph{False} has no proof while
+\emph{True} has one trivial proof. Unlike in classical mathematics we
+do not identify propositions with $\bool$ (instead we idnetify
+propositions with types). hence the type $A \to \bool$ does not
+represent all subsets of $A$ but only the decidable ones.
+
 
 \section{The identity type on a type}
 \label{sec:identity-types}

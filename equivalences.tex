@@ -59,16 +59,22 @@ In this section we exhibit a specific counterexample.
   and thus to
   \[ \sm{h:\textstyle\sum_{g:A\to A} (g = \idfunc[A])} (\proj1(h) = \idfunc[A])
   \]
-  However, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible to $\idfunc[A]$, so this type is equivalent to $(\idfunc[A] = \idfunc[A])$.
-  And by function extensionality, this is equivalent to $\prd{x:A}(x=x)$.
+  However, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible to $\idfunc[A]$, so by \autoref{thm:omit-contr} this type is equivalent to $(\idfunc[A] = \idfunc[A])$.
+  And by function extensionality, $(\idfunc[A] = \idfunc[A])$ is equivalent to $\prd{x:A}(x=x)$.
 \end{proof}
+
+Thus, what we need is some $A$ which admits a nontrivial element of $\prd{x:A}(x=x)$.
+Thinking of $A$ as a higher groupoid, an inhabitant of $\prd{x:A}(x=x)$ is a natural transformation from the identity functor of $A$ to itself.
+Such transformations are said to form the \emph{center} of a category, since the naturality axiom requires that they commute with all morphisms.
+Classically, if $A$ is simply a group regarded as a one-object groupoid, then this yields precisely its center in the usual group-theoretic sense.
+This provides some motivation for the following.
 
 \begin{lem}\label{lem:autohtpy}
   Suppose we have a type $A$ with $a:A$ and $q:a=a$ such that
   \begin{enumerate}
   \item The type $a=a$ is a set.\label{item:autohtpy1}
   \item For all $x:A$ we have $\brck{a=x}$.\label{item:autohtpy2}
-  \item For all $p,q:a=a$ we have $p\ct q = q \ct p$.\label{item:autohtpy3}
+  \item For all $p:a=a$ we have $p\ct q = q \ct p$.\label{item:autohtpy3}
   \end{enumerate}
   Then there exists $f:\prd{x:A} (x=x)$ with $f(a)=q$.
 \end{lem}
@@ -78,11 +84,12 @@ In this section we exhibit a specific counterexample.
   For since being a set is a mere proposition, we may assume that $g(x)=\bproj p$ and $g(y)=\bproj q$ for $p:a=x$ and $q:a=y$, in which case composing with $p$ and $q$ yields an equivalence $\eqv{(x=y)}{(a=a)}$.
   But $(a=a)$ is a set by~\ref{item:autohtpy1}, so $(x=y)$ is also a set.
 
-  Now, we would like to define $f$ by assigning to each $x$ the path $\opp{g(x)} \ct q \ct g(x)$, but this does not work because $g(x)$ does not inhabit $a=x$ but rather $\brck{a=x}$, and the type $x=x$ may not be a mere proposition.
-  Instead we define, for each $x:A$, the type
+  Now, we would like to define $f$ by assigning to each $x$ the path $\opp{g(x)} \ct q \ct g(x)$, but this does not work because $g(x)$ does not inhabit $a=x$ but rather $\brck{a=x}$, and the type $(x=x)$ may not be a mere proposition, so we cannot use induction on propositional truncation.
+  Instead we can apply the technique mentioned in \S\ref{sec:unique-choice}: we characterize uniquely the object we wish to construct.
+  Let us define, for each $x:A$, the type
   \[ B(x) \defeq \sm{r:x=x} \prd{s:a=x} (r = \opp s \ct q\ct s) .\]
   We claim that $B(x)$ is always a mere proposition.
-  Since this is itself a mere proposition, we may assume that $g(x) = \bproj p$ for some $p:a=x$.
+  Since this claim is itself a mere proposition, we may assume that $g(x) = \bproj p$ for some $p:a=x$.
   Now suppose given $(r,h)$ and $(r',h')$ in $B(x)$; then we have
   \[ h(p) \ct \opp{h'(p)} : r = r'. \]
   It remains to show that $h$ is identified with $h'$ when transported along this equality, which by transport in identity types and function types, reduces to showing
@@ -98,9 +105,9 @@ In this section we exhibit a specific counterexample.
   But this is just an instance of~\ref{item:autohtpy3}.
 \end{proof}
 
-\begin{lem}
-  There is a function $f:A\to B$ such that $\qinv(f)$ is not a mere proposition.
-\end{lem}
+\begin{thm}
+  There exist types $A$ and $B$ and a function $f:A\to B$ such that $\qinv(f)$ is not a mere proposition.
+\end{thm}
 \begin{proof}
   It suffices to exhibit a type $X$ such that $\prd{x:X} (x=x)$ is not a mere proposition.
   Define $X\defeq \sm{A:\type} \brck{\bool=A}$, as in the proof of \autoref{thm:no-higher-ac}.

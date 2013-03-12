@@ -68,6 +68,7 @@
 %%% Identity types %%%
 \newcommand{\id}[3][]{\ensuremath{#2 =_{#1} #3}\xspace}
 \newcommand{\idtype}[3][]{\ensuremath{\mathsf{Id}_{#1}(#2,#3)}\xspace}
+\newcommand{\idtypevar}[1]{\ensuremath{\mathsf{Id}_{#1}}\xspace}
 
 %%% singleton
 \newcommand{\sgl}{\ensuremath{\mathsf{sgl}}\xspace}
@@ -120,6 +121,7 @@
 %%% Equivalence types %%%
 \newcommand{\eqv}[2]{\ensuremath{#1 \simeq #2}\xspace}
 \newcommand{\eqvspaced}[2]{\ensuremath{#1 \;\simeq\; #2}\xspace}
+\newcommand{\texteqv}[2]{\ensuremath{\mathsf{Equiv}(#1,#2)}\xspace}
 \newcommand{\isequiv}{\ensuremath{\mathsf{isequiv}}}
 \newcommand{\qinv}{\ensuremath{\mathsf{qinv}}}
 \newcommand{\ishae}{\ensuremath{\mathsf{ishae}}}
@@ -280,6 +282,8 @@
 %%% Diagrams
 \newcommand{\Ddiag}{\mathscr{D}}
 
+% TODO: \autoref for sections.  Capitalized?
+
 %%%% THEOREM ENVIRONMENTS %%%%
 
 % Hyperref includes the command \autoref{...} which is like \ref{...}
@@ -296,33 +300,43 @@
 % for the reader to find a particular theorem when flipping through
 % the document.
 \makeatletter
-\def\defthm#1#2{%
-  %% All types of theorems are numbered inside sections
-  \newtheorem{#1}{#2}[section]%
-  %% This command tells hyperref's \autoref what to call things
-  \expandafter\def\csname #1autorefname\endcsname{#2}%
-  %% This makes all the theorem counters secretly the same counter
-  \expandafter\let\csname c@#1\endcsname\c@thm}
+\def\defthm#1#2#3{%
+  %% Ensure all theorem types are numbered with the same counter
+  \newaliascnt{#1}{thm}
+  \newtheorem{#1}[#1]{#2}
+  \aliascntresetthe{#1}
+  %% This command tells cleveref's \cref what to call things
+  \crefname{#1}{#2}{#3}}
 
 % Now define a bunch of theorem-type environments.
 \newtheorem{thm}{Theorem}[section]
-\newcommand{\thmautorefname}{Theorem}
+\crefname{thm}{Theorem}{Theorems}
 %\defthm{prop}{Proposition}   % Probably we shouldn't use "Proposition" in this way
-\defthm{cor}{Corollary}
-\defthm{lem}{Lemma}
-\defthm{axiom}{Axiom}
+\defthm{cor}{Corollary}{Corollaries}
+\defthm{lem}{Lemma}{Lemmas}
+\defthm{axiom}{Axiom}{Axioms}
 % Since definitions and theorems in type theory are synonymous, should
 % we actually use the same theoremstyle for them?
 \theoremstyle{definition}
-\defthm{defn}{Definition}
+\defthm{defn}{Definition}{Definitions}
 \theoremstyle{remark}
-\defthm{rmk}{Remark}
-\defthm{eg}{Example}
-\defthm{egs}{Examples}
-\defthm{notes}{Notes}
+\defthm{rmk}{Remark}{Remarks}
+\defthm{eg}{Example}{Examples}
+\defthm{egs}{Examples}{Examples}
+\defthm{notes}{Notes}{Notes}
 % Number exercises within chapters, with their own counter.
 \newtheorem{ex}{Exercise}[chapter]
-\def\exautorefname{Exercise}
+\crefname{ex}{Exercise}{Exercises}
+
+% Display format for sections
+\crefformat{section}{\S#2#1#3}
+\Crefformat{section}{Section~#2#1#3}
+\crefrangeformat{section}{\S\S#3#1#4--#5#2#6}
+\Crefrangeformat{section}{Sections~#3#1#4--#5#2#6}
+\crefname{part}{Part}{Parts}
+
+% Use cleveref instead of hyperref's \autoref
+\let\autoref\cref
 
 
 %%%% EQUATION NUMBERING %%%%

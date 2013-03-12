@@ -3,28 +3,6 @@
 
 \addcontentsline{toc}{chapter}{Introduction}
 
-{%%%%%%% macros local to this file, discharged at the end of the file
-
-%\newcommand{\stype}{{\;\sf type}}
-%%\newcommand{\nat}{\mathbb{N}}
-%\newcommand{\nat}{{\bf N}}
-%\newcommand{\rec}{{\sf rec}}
-%%\newcommand{\bool}{\bbB}
-%\newcommand{\bool}{{\bf B}}
-%\newcommand{\app}{{\sf app}}
-%\newcommand{\pair}{{\sf pair}}
-%\newcommand{\suc}{{\sf succ}}
-%\newcommand{\inleft}{{\sf inleft}}
-%\newcommand{\inright}{{\sf inright}}
-%%\newcommand{\bbzero}{{0\hspace*{-4pt} 0}}
-%\newcommand{\emptyt}{{\bf 0}}
-%%\newcommand{\bbone}{{1\hspace*{-4pt} 1}}
-%\newcommand{\unitt}{{\bf 1}}
-
-\newcommand{\idtypevar}{{{\sf Id}}}
-\newcommand{\eq}{{{\sf Eq}}}
-
-
 %%% Outline
 %%      - The idea of HoTT and the special role of Identity
 
@@ -117,7 +95,7 @@ For instance, interpreting types as sheaves helps explain the intuitionistic nat
 It also implies that we can use type-theoretic reasoning to study the structured objects, leading to the rich field of categorical logic.
 The homotopical interpretation fits this same pattern: it clarifies the nature of \emph{identity} in type theory, and allows us to use type-theoretic reasoning in the study of homotopy theory.
 
-The key new idea of the homotopy interpretation is that the logical notion of identity $a = b$ of two objects $a, b: A$ of the same type $A$ can be understood as the existence of a \emph{path} $p : a \leadsto b$ from point $a$ to point $b$ in the space $A$.  This also means that two functions $f, g: A\to B$ can be identified if they are homotopic, since a homotopy is just a (continuous) family of paths $p_x: f(x) \leadsto g(x)$ in $B$, one for each $x:A$.  In type theory, for every type $A$ there is a (formerly somewhat mysterious) type $\idtypevar_{A}$ of identifications of two objects of $A$; in HoTT, this is just the \emph{path space} $A^I$ of all continuous maps $I\to A$ from the unit interval.  In this way, a term $p : \idtypevar_{A}(a,b)$ represents a path $p : a \leadsto b$ in $A$. 
+The key new idea of the homotopy interpretation is that the logical notion of identity $a = b$ of two objects $a, b: A$ of the same type $A$ can be understood as the existence of a \emph{path} $p : a \leadsto b$ from point $a$ to point $b$ in the space $A$.  This also means that two functions $f, g: A\to B$ can be identified if they are homotopic, since a homotopy is just a (continuous) family of paths $p_x: f(x) \leadsto g(x)$ in $B$, one for each $x:A$.  In type theory, for every type $A$ there is a (formerly somewhat mysterious) type $\idtypevar{A}$ of identifications of two objects of $A$; in HoTT, this is just the \emph{path space} $A^I$ of all continuous maps $I\to A$ from the unit interval.  In this way, a term $p : \idtype[A]{a}{b}$ represents a path $p : a \leadsto b$ in $A$. 
 
 The idea of homotopy type theory arose around 2006 in independent work by Awodey and Warren~\cite{AW} and Voevodsky~\cite{VV}, but it was inspired by 
 Hofmann and Streicher's earlier groupoid interpretation~\cite{HofmannM:gromtt}.
@@ -134,12 +112,12 @@ The Univalence Axiom also further strengthens the homotopical view of type theor
 Very briefly, the basic idea of the Univalence Axiom can be explained as follows.
 In type theory, one can have a universe $\UU$, the terms of which are themselves types, $A : \UU$, etc.
 Call those types that are terms of $\UU$ the \emph{small} types.
-Like any type, $\UU$ has an identity type $\idtypevar_{\UU}$ which expresses the identity relation $A = B$ between small types.
+Like any type, $\UU$ has an identity type $\idtypevar{\UU}$ which expresses the identity relation $A = B$ between small types.
 Thinking of types as spaces, $\UU$ is a space, the points of which are spaces; to understand its identity type, we must ask, what is a path $p : A \leadsto B$ between spaces in $\UU$?
 The univalence axiom says that such paths correspond to homotopy equivalences $A\simeq B$, (roughly) as explained above.
-A bit more precisely, given any (small) types $A$ and $B$, in addition to the primitive type $\idtypevar_{\UU}(A,B)$ of identifications of $A$ with $B$, there is the defined type $\eq(A,B)$ of equivalences from $A$ to $B$.
+A bit more precisely, given any (small) types $A$ and $B$, in addition to the primitive type $\idtype[\UU]AB$ of identifications of $A$ with $B$, there is the defined type $\texteqv AB$ of equivalences from $A$ to $B$.
 Since the identity map on any object is an equivalence, there is a canonical map,
-$$\idtypevar_{\UU}(A,B)\to\eq(A,B).$$
+\[\idtype[\UU]AB\to\texteqv AB.\]
 The univalence axiom states that this map is itself an equivalence.
 At the risk of oversimplifying, we can state this succinctly as follows:
 
@@ -258,11 +236,39 @@ Thus, the homotopical perspective reveals that classical/intuitionistic logic an
 We may speak of ``LEM$_n$'' and ``AC$_n$'', with AC$_\infty$ being provable and LEM$_\infty$ inconsistent with univalence, while AC$_{-1}$ and LEM$_{-1}$ are the versions familiar to classical mathematicians --- hence in most cases it is appropriate to assume the subscript $(-1)$ when none is given.
 
 It is worth emphasizing that univalent foundations does not \emph{require} the use of constructive or intuitionistic logic.
-All of classical mathematics which depends on the law of excluded middle and the axiom of choice can be performed in univalent foundations, simply by assuming that these two principles hold (in their proper, $(-1)$-truncated, form).
-However, type theory does encourage avoiding these principles when they are unnecessary, since they interfere with its computational behavior and exclude interesting ``nonstandard'' models.
-\mbox{Every} mathematician knows that a theorem is more powerful when proven using fewer assumptions, since it applies to more examples; the situation with AC and LEM is no different.
-Univalent foundations improves this situation further, by making AC and LEM even less necessary than they are in classical mathematics.
-For instance, in set theory the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the axiom of choice, while in univalent foundations it is just \emph{true}.
+Most of classical mathematics which depends on the law of excluded middle and the axiom of choice can be performed in univalent foundations, simply by assuming that these two principles hold (in their proper, $(-1)$-truncated, form).
+However, type theory does encourage avoiding these principles when they are unnecessary, for several reasons.
+
+First of all, every mathematician knows that a theorem is more powerful when proven using fewer assumptions, since it applies to more examples; the situation with AC and LEM is no different.
+Type theory admits many interesting ``nonstandard'' models, such as in sheaf toposes, and likewise homotopy type theory admits models in higher toposes such as studied in~\cite{lurie:higher-topoi}.
+Classicality principles such as AC and LEM tend to fail in such models.
+But if we avoid using these principles, then the theorems we prove will be valid internally to all such models.
+
+Secondly, one of the additional virtues of type theory is its computable character.
+In addition to a foundation for mathematics, type theory is a formal theory of computation, and can be treated as a powerful programming language.
+From this perspective, the rules of the system cannot be chosen arbitrarily the way set-theoretic axioms can: there must be a harmony between them which allows all proofs to be ``executed'' as programs.
+We do not yet fully understood the new principles introduced by homotopy type theory, such as univalence and higher inductive types, from this point of view, but the basic outlines are clear; see e.g.~\autoref{sec:computational} and~\cite{lh:canonicity}.
+However, principles such as AC and LEM are fundamentally antithetical to computability, since they assert baldly that certain things exist without giving any way to compute them.
+Thus, avoiding them is also necessary to maintain the character of type theory as a theory of computation.
+
+Fortunately, constructive reasoning is not as hard as it may seem.
+Quite often, simply by rephrasing some definitions, a theorem can be made constructive and its proof more elegant at the same time.
+Moreover, univalent foundations makes this even more true than it used to be.
+For instance:
+\begin{enumerate}
+\item In set-theoretic foundations, various constructions in homotopy theory and category theory rely on the axiom of choice to perform transfinite constructions.
+  But with higher inductive types, we can encode these constructions directly and constructively.
+  In particular, none of the ``synthetic'' homotopy theory we will do in \autoref{cha:homotopy} requires LEM or AC.
+\item In set-theoretic foundations, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the axiom of choice.
+  But with the univalence axiom, it is just \emph{true}; see \autoref{cha:category-theory}.
+\item In set theory, various circumlocutions are required to obtain notions of ``cardinal number'' and ``ordinal number'' which canonically represent isomorphism classes of sets and well-ordered sets, respectively --- possibly involving the axiom of choice or the axiom of foundation.
+  But with univalence and higher inductive types, we can obtain such representatives directly by truncating the universe; see \autoref{cha:set-math}.
+\item In set-theoretic foundations, the definition of the real numbers as equivalence classes of Cauchy sequences requires the axiom of (countable) choice to be well-behaved.
+  But with higher inductive types, we can give a version of this definition which is well-behaved and avoids any choice principles; see \autoref{cha:real-numbers}.
+\end{enumerate}
+However, we emphasize again that the reader does not have to care about, or worry about, constructivity to read this book.
+The point is that in all of the above examples, the version of the theory we present is the \emph{best} way to to it, whether or not LEM and AC are available.
+Constructivity is an added bonus.
 
 Given this discussion of adding new principles such as univalence, higher inductive types, AC, and LEM, one may wonder whether the resulting system remains consistent.
 (One of the original virtues of type theory, relative to set theory, was that it can be seen to be consistent by proof-theoretic means).
@@ -291,6 +297,7 @@ We summarize the different points of view of the type-theoretic operations in Ta
   \caption{Comparing points of view on type-theoretic operations}\label{tab:pov}
 \end{table}
 
+% TODO: write something about reasons to be constructive
 
 \subsection*{Open problems} 
 
@@ -303,7 +310,7 @@ These questions remain open at the present time, although methods are currently 
 
 Another basic issue is the difficulty of working with types, like the natural numbers, which are essentially sets (i.e., discrete spaces), containing only trivial paths.
 At present, homotopy type theory can really only characterize spaces up to homotopy equivalence, which means that these ``discrete spaces'' may only be \emph{homotopy equivalent} to discrete spaces.
-Type-theoretically, this means there are many paths that are equal to reflexivity, but not \emph{judgmentally} equal to it (see \S\ref{sec:types-vs-sets} for the meaning of ``judgmentally'').
+Type-theoretically, this means there are many paths that are equal to reflexivity, but not \emph{judgmentally} equal to it (see \cref{sec:types-vs-sets} for the meaning of ``judgmentally'').
 While this homotopy-invariance has advantages, these ``meaningless'' identity terms do introduce needless complications into arguments and constructions, so it would be convenient to have a systematic way of eliminating or collapsing them.
 In some cases, the proliferation of such superfluous identity terms makes it very difficult or impossible to formulate what should be a straightforward concept, such as the definition of a (semi-)simplicial type.
 
@@ -314,14 +321,13 @@ More generally, we expect that HoTT should be the internal language of $(\infty,
 Despite this general consensus, however, the details remain to be worked out, and doing so will undoubtedly lead to further insights into both concepts.
 
 But by far the largest field of work to be done is in the ongoing formalization of everyday mathematics in this new system.
-Recent successes in formalizing some facts from basic homotopy theory and category theory have been encouraging; some of these are described in Chapters~\ref{cha:homotopy} and~\ref{cha:category-theory}.
+Recent successes in formalizing some facts from basic homotopy theory and category theory have been encouraging; some of these are described in \cref{cha:homotopy,cha:category-theory}.
 Obviously, however, much work remains to be done.
 
 %\subsection*{Some references?}
 %
 %Some other surveys and introductions?
 
-}%%%%%%%%%%%%% end of scope of local macros
 
 % Local Variables:
 % TeX-master: "main"

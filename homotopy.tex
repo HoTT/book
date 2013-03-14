@@ -365,7 +365,9 @@ otherwise.
 \end{thm}
 
 \begin{thm}[Van Kampen Theorem]
-FIXME
+For any maps $f:A\to B$ and $g:A\to C$ with $A$ connected, the fundamental group of the homotopy pushout of $f$ and $g$ is the amalgamated free product (pushout of groups) of $\pi_1(B)$ and $\pi_1(C)$ over $\pi_1(A)$:
+\[ \pi_1(B\sqcup_A C) = \pi_1(B) *_{\pi_1(A)} \pi_1(C).\]
+There is also a generalization to non-connected $A$.
 \end{thm}
 
 %% \begin{thm}[Whitehead's Principle for $n$-types]
@@ -612,7 +614,7 @@ the abstract groupoidal framework of HoTT.  To gain an
 intuition for how it does this, observe that by the above lemmas,
 $\transfib \code \lloop x$ is $-+1$ and $\transfibf \code {\opp
   \lloop} x$ is $x - 1$.  Further, $\mathsf{transport}$ is functorial
-(\autoref{sec:basics}), so $\transfibf{\code} {\lloop \ct \lloop}$ is
+(\autoref{cha:basics}), so $\transfibf{\code} {\lloop \ct \lloop}$ is
 $(\transfibf \code \lloop) \circ (\transfib \code \lloop)$, etc.  Thus, when $p$ is a
 composition like 
 \[
@@ -692,7 +694,7 @@ $\mathsf{transport}$ at the domain and range types.  From line 2 to line
 3, we apply the definition of $\mathsf{transport}$ when the type family
 is $\id{\base}{x}$, which is post-composition of paths.  From line 3 to
 line 4, we use the action of $\code$ on $\opp \lloop$ defined in
-Lemma~\ref{lem:transport-s1-code}.  From line 4 to line 5, we simply
+\autoref{lem:transport-s1-code}.  From line 4 to line 5, we simply
 reduce the function composition.  Thus, it suffices to show that for all
 $n$, \id{\lloop^{n - 1} \ct \lloop}{\lloop^{n}}, which is an easy
 induction, using the groupoid laws.  
@@ -738,7 +740,7 @@ $n-1$.
 
 \item In the case for $1$, ${\encode'(\lloop^1)}$ reduces to 
 $\transfib{\code}{\lloop}{0}$, which by
-Lemma~\ref{lem:transport-s1-code} is $0 + 1 = 1$.  
+\autoref{lem:transport-s1-code} is $0 + 1 = 1$.  
 
 \item In the case for $n+1$, 
 \[
@@ -747,7 +749,7 @@ Lemma~\ref{lem:transport-s1-code} is $0 + 1 = 1$.
 = & {\encode'(\lloop^{n} \ct \lloop)} & \\
 = & \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} & \\
 = & \transfib{\code}{\lloop}{(\transfib{\code}{(\lloop^n)}{0})} & \text{by functoriality}\\
-= & {(\transfib{\code}{(\lloop^n)}{0})} + 1 & \text{by Lemma~\ref{lem:transport-s1-code}}\\
+= & {(\transfib{\code}{(\lloop^n)}{0})} + 1 & \text{by \autoref{lem:transport-s1-code}}\\
 = & n + 1 & \text{by the IH} \\
 \end{array}
 \]
@@ -763,23 +765,23 @@ There is a family of equivalences $\prd{x : \Sn ^1} {\eqv {P(x)} {\code(x)}}$.
 \end{thm}
 \begin{proof}
 The maps $\encode$ and $\decode$ are mutually inverse by 
-Lemmas \ref{lem:s1-decode-encode} and \ref{lem:s1-decode-encode},
+\autoref{lem:s1-decode-encode,lem:s1-decode-encode},
 and this can be improved to an equivalence.  
 \end{proof}
 
 Instantiating at {\base} gives
 \begin{cor}\label{cor:omega-s1}
-$\eqv {\id{\base}{\base}} {\mathbb{Z}}$
+$\eqv {(\id{\base}{\base})} {\mathbb{Z}}$
 \end{cor}
 
 A simple induction shows that this equivalence takes addition to
 compostion, so $\Omega(\Sn ^1) = \mathbb{Z}$ as groups.  
 
 \begin{cor}
-$\id{\pi_k{\Sn ^1}} {\mathbb{Z}}$ if $k = 1$ and $1$ otherwise.  
+$\id{\pi_k(\Sn ^1)} {\mathbb{Z}}$ if $k = 1$ and $1$ otherwise.  
 \end{cor}
 \begin{proof}
-For $k=1$, we sketched the proof from Corollary~\ref{cor:omega-s1} above.
+For $k=1$, we sketched the proof from \autoref{cor:omega-s1} above.
 For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
 {\Omega^n(\Omega{\Sn ^1})} = \trunc 0 {\Omega^n(\mathbb{Z})}$, which is
   $1$ because $\mathbb{Z}$ is a set and $\pi_n$ of a set is trivial (FIXME
@@ -790,10 +792,24 @@ For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
 \subsection{Van Kampen's theorem}
 \label{sec:van-kampen}
 
-We begin with a naive version of the van Kampen theorem, and then improve it to a more refined version.
+Van Kampen's theorem calculates the fundamental group $\pi_1$ of a pushout of spaces.
+It is traditionally stated for a topological space $X$ which is the union of two open subspaces $U$ and $V$, but in homotopy-theoretic terms this is just a convenient way of ensuring that $X$ is the homotopy pushout of $U$ and $V$ over their intersection.
+Thus, we will prove a version of van Kampen's theorem for arbitrary homotopy pushouts.
+
+In this section we will describe a proof of van Kampen's theorem which uses the same type-theoretic encode/decode machinery that we used for $\pi_1(\Sn^1)$ in \autoref{sec:pi1-s1-intro}.
+There is another more homotopy-theoretic approach, which uses the machinery of reflective subuniverses to be described in \autoref{sec:more-advanced-tools}.
+
+We do need a more refined version of the encode/decode technique, however.
+In \autoref{sec:pi1-s1-intro} (as well as in \autoref{sec:compute-coprod,sec:compute-nat}) we used it to characterize the entire path spaces of a (higher) inductive type $W$ --- deriving as a consequence a characterization of the loop space $\Omega(W)$, and thereby also of its 0-truncation $\pi_1(W)$.
+In van Kampen's theorem, our goal is only to characterize the fundamental group $\pi_1(W)$, and we do not have any explicit description of the loop spaces or the path spaces to use.
+However, it turns out that we can use the same technique directly for a truncated version of the path spaces, thereby characterizing not only the fundamental \emph{group} $\pi_1(W)$ but the whole 0-truncated path fibration.
+
 
 \subsubsection{Naive van Kampen}
-\label{sec:naive}
+\label{sec:naive-vankampen}
+
+We begin with a ``naive'' version of van Kampen's theorem, which is useful but not quite as useful as the classical version.
+In \autoref{sec:better-vankampen} we will improve it to a more useful version.
 
 For a type $X$, write $\Pi_1 X: X\to X\to \type$ be the $0$-truncation of its identity type, i.e., $\Pi_1 X(x,y) \defeq \trunc0{x=y}$.
 Note that we have induced groupoid operations
@@ -1014,7 +1030,7 @@ This operation on $\code$ is evidently just concatenation of sequences; we leave
 
 
 \subsubsection{van Kampen with a set of basepoints}
-\label{sec:better}
+\label{sec:better-vankampen}
 
 When $A$, $B$, and $C$ are not all sets, however, the version of the van Kampen theorem proven in the previous section is not as useful, since it does not identify the path-space of $P$ with a set presented in terms of \emph{set-level data}.
 For this reason, in this section we consider a better sort of van Kampen theorem, which is closely analogous to an improvement that is well-known to be important in classical algebraic topology, where $A$ (at least) is equipped with a \emph{set of base points}.
@@ -1130,20 +1146,49 @@ Now we define $\code:P\to P\to \type$ by double induction as follows
 \begin{eg}\label{eg:torus}
   As a further special case of \autoref{eg:cofiber}, let $B\defeq S^1 \vee S^1$, let $A\defeq S^1$, and let $f:A\to B$ pick out the composite loop $p \ct q \ct \opp p \ct \opp q$, where $p$ and $q$ are the generating loops in the two copies of $S^1$ comprising $B$.
   Then $P$ is a presentation of the torus $T^2$.
+  Indeed, it is not hard to identify $P$ with the presentation of $T^2$ as described in \autoref{sec:hubs-spokes}, using the cone on a particular loop.
   Thus, $\pi_1(T^2)$ is the quotient of the free group on two generators (i.e., $\pi_1(B)$) by the relation $p \ct q \ct \opp p \ct \opp q = 1$.
   This clearly yields the free \emph{abelian} group on two generators, which is $\mathbb{Z}\times\mathbb{Z}$.
+\end{eg}
 
-  Similarly, if we defined $f$ to pick out $p\ct q\ct p \ct \opp q$, we would obtain a presentation for the fundamental group of the Klein bottle.
+\begin{eg}
+  More generally, any CW complex can be obtained by repeatedly ``coning off'' spheres, as described in \autoref{sec:hubs-spokes}.
+  That is, we start with a set $X_0$ of points (``0-cells''), which is the ``0-skeleton'' of the CW complex.
+  We take the pushout
+  \begin{equation*}
+    \vcenter{\xymatrix{
+        S_1 \times \Sn^0\ar[r]^-{f_1}\ar[d] &
+        X_0\ar[d]\\
+        \unit \ar[r] &
+        X_1
+      }}
+  \end{equation*}
+  for some set $S_1$ of 1-cells and some family $f_1$ of ``attaching maps'', obtaining the ``1-skeleton'' $X_1$.
+  Then we take the pushout
+  \begin{equation*}
+    \vcenter{\xymatrix{
+        S_2 \times \Sn^1\ar[r]^{f_2}\ar[d] &
+        X_1\ar[d]\\
+        \unit \ar[r] &
+        X_2
+      }}
+  \end{equation*}
+  for some set $S_2$ of 2-cells and some family $f_2$ of attaching maps, obtaining the 2-skeleton $X_2$, and so on.
+  The fundamental group of each pushout can be calculated from the van Kampen theorem: we obtain the group presented by generators derived from the 1-skeleton, and relations derived from $S_2$ and $f_2$.
+  The pushouts after this stage do not alter the fundamental group, since $\pi_1(\Sn^n)$ is trivial for $n>1$ (we will prove this in \autoref{sec:pik-le-n}).
 \end{eg}
 
 \begin{eg}\label{eg:kg1}
-  As a more general special case of \autoref{eg:cofiber}, suppose given any presentation of a (set-)group $G = \langle X | R \rangle$, with $X$ a set of generators and $R$ a set of words in these generators.
+  In particular, suppose given any presentation of a (set-)group $G = \langle X | R \rangle$, with $X$ a set of generators and $R$ a set of words in these generators.
   Let $B\defeq \bigvee_X S^1$ and $A\defeq \bigvee_R S^1$, with $f:A\to B$ sending each copy of $S^1$ to the corresponding word in the generating loops of $B$.
-  It follows that $\pi_1(P) \cong G$.
-  Thus, if we 1-truncate $P$, we obtain an Eilenberg--Mac Lane space $K(G,1)$.
+  It follows that $\pi_1(P) \cong G$; thus we have constructed a connected type whose fundamental group is $G$.
+  Since any group has a presentation, any group is the fundamental group of some type.
+  If we 1-truncate such a type, we obtain a type whose only nontrivial homotopy group is $G$; this is called an \emph{Eilenberg--Mac Lane space} $K(G,1)$.
 \end{eg}
 
+
 \section{More advanced tools}
+\label{sec:more-advanced-tools}
 
 In this section, we develop some more advanced tools for doing homotopy
 theory in HoTT, including the theory of pushouts and pullbacks in
@@ -2075,6 +2120,7 @@ connectedness.
 \end{proof}
 
 \subsection{$\pi_{k \le n}$ of an $n$-connected space (includes $\pi_{k < n}(\Sn ^n)$)}
+\label{sec:pik-le-n}
 
 \begin{lem}
   Let $(A,a)$ be a pointed type and $n:\N$.
@@ -2129,8 +2175,8 @@ $n$-connected types.
 For all $n$ and $k$, if $k < n$, then $\pi_k(\Sn ^n) = \unit$.  
 \end{cor}
 \begin{proof}
-$\Sn$ is $n\mathord{-}1$-connected by Corollary~\ref{cor:sn-connected}.  Therefore
-Lemma~\ref{lem:pik-nconnected} gives the result.  
+$\Sn$ is $n\mathord{-}1$-connected by \autoref{cor:sn-connected}.  Therefore
+\autoref{lem:pik-nconnected} gives the result.  
 \end{proof}
 
 %%% Local Variables:

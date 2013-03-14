@@ -1,7 +1,3 @@
-\newcommand{\eqtopath}{\ensuremath{\mathsf{eqtopath}}\xspace}
-\newcommand{\dpath}[4]{#3 =^{#1}_{#2} #4}
-\newcommand{\Map}{\mathsf{Map}}
-
 \chapter{Higher inductive types}
 \label{cha:hits}
 
@@ -86,8 +82,16 @@ There is generally consensus that the computational equalities for \emph{point} 
 In the example above, this means we have $f(\base)\jdeq b$.
 This is unproblematic both philosophically and semantically.
 Moreover, it greatly simplifies our lives, since otherwise the second computation rule $\ap f \lloop = \ell$ would not even be well-typed as a propositional equality; we would have to compose one side or the other with the specified identification of $f(\base)$ with $b$.
-(Such problems do arise eventually, of course, when we come to talk about paths of higher dimension, but that will not be of great concern to us here.)
+(Such problems do arise eventually, of course, when we come to talk about paths of higher dimension, but that will not be of great concern to us here.
+See also \autoref{sec:hubs-spokes}.)
 Thus, we will take the point-constructor computation rules to be judgmental, and those for paths and higher paths to be propositional.
+
+\begin{rmk}
+Recall that for ordinary inductive types, we regard the computation rules for a recursively defined function as not merely judgmental equalities, but \emph{definitional} ones, and thus we may use the notation $\defeq$ for them.
+For instance, the truncated predecessor function $p:\nat\to\nat$ is defined by $p(0)\defeq 0$ and $p(s(n))\defeq n$.
+In the case of higher inductive types, this sort of notation is reasonable for the point constructors (e.g.\ $f(\base)\defeq b$), but for the path constructors it could be misleading, since equalities such as $\ap f \lloop = \ell$ are not judgmental.
+Thus, we hybridize the notations, writing instead $\ap f \lloop \defid \ell$ for this sort of ``propositional equality by definition''.
+\end{rmk}
 
 Now, what about the dependent eliminator (the induction principle)?
 Recall that for an ordinary inductive type $W$, to prove by induction that $\prd{x:W} P(x)$, we must specify for each constructor of $W$, an operation on $P$ which acts on the ``fibers'' above that constructor in $W$.
@@ -124,7 +128,7 @@ With the notion of dependent paths in hand, we can now state more precisely the 
 \item A path $\ell : \dpath P \lloop b b$,
 \end{itemize}
 there is a function $f:\prd{x:\Sn^1} P(x)$ such that $f(\base)\jdeq b$ and $\apd f \lloop = \ell$.
-In this situation, we may speak of defining $f$ by $f(\base)\defeq b$ and $\apd f \lloop \defeq \ell$, even though technically the latter is not a definitional equality.
+As in the non-dependent case, we speak of defining $f$ by $f(\base)\defeq b$ and $\apd f \lloop \defid \ell$.
 
 Topologically, the induction principle for $\Sn^1$ can be visualized as shown in \autoref{fig:topS1ind}.
 Given a fibration over the circle (which in the picture is a torus), to define a section of this fibration is the same as to give a point $b$ in the fiber over $\base$ along with a path from $b$ to $b$ lying over $\lloop$.
@@ -199,8 +203,8 @@ This is in fact the case, although deriving the non-dependent computation rule f
   If $A$ is a type together with $a:A$ and $p:\id[A]aa$, then there is a
   function $f:\Sn^1\to{}A$ with
   \begin{align*}
-    f(\base)&\jdeq a \\
-    \apfunc f(\lloop)&=p.
+    f(\base)&\defeq a \\
+    \apfunc f(\lloop)&\defid p.
   \end{align*}
 \end{lem}
 \begin{proof}
@@ -219,7 +223,7 @@ This is in fact the case, although deriving the non-dependent computation rule f
   Combining this with~\eqref{eq:S1recindloop} and canceling the occurrences of $\transconstf$ (which are the same by~\eqref{eq:S1recindbase}), we obtain $\apfunc f(\lloop)=p$.
 \end{proof}
 
-Similarly, in this case we may speak of defining $f$ by $f(\base)\defeq a$ and $\ap f \lloop \defeq p$.
+% Similarly, in this case we speak of defining $f$ by $f(\base)\defeq a$ and $\ap f \lloop \defid p$.
 We also have an $\eta$-rule.
 
 \begin{lem}
@@ -299,7 +303,7 @@ From the point of view of homotopy theory, of course, the interval is not really
 
 However, type-theoretically the interval is not completely boring, because it enables us to give an easy proof of function extensionality.
 
-\begin{lem}
+\begin{lem}\label{thm:interval-funext}
   If $f,g:A\to{}B$ are two functions such that $f(x)=g(x)$ for every $x:A$, then
   $f=g$ in the type $A\to{}B$.
 \end{lem}
@@ -338,7 +342,7 @@ We observe that the circle is nontrivial.
 \end{lem}
 \begin{proof}
   Suppose that $\lloop=\refl{\base}$.
-  Then since for any type $A$ with $x:A$ and $p:x=x$, there is a function $f:\Sn^1\to A$ with $f(\base)\defeq x$ and $\ap f \lloop = p$, we have
+  Then since for any type $A$ with $x:A$ and $p:x=x$, there is a function $f:\Sn^1\to A$ defined by $f(\base)\defeq x$ and $\ap f \lloop \defid p$, we have
   \[p = f(\lloop) = f(\refl{\base}) = \refl{x}.\]
   But this implies that every type is a set, which as we have seen is not the case (any universe containing \bool is not a set).
 \end{proof}
@@ -463,8 +467,8 @@ Our first observation about suspension is that it gives another way to define th
   $\eqv{\susp\bool}{\Sn^1}$.
 \end{lem}
 \begin{proof}
-  Define $f:\susp\bool\to\Sn^1$ by recursion such that $f(\north)\defeq \base$ and $f(\south)\defeq\base$, while $\ap f{\merid(\bfalse)}=\lloop$ but $\ap f{\merid(\btrue)} = \refl{\base}$.
-  Define $g:\Sn^1\to\susp\bool$ by recursion such that $g(\base)\defeq \north$ and $\ap g \lloop = \merid(\bfalse) \ct \opp{\merid(\btrue)}$.
+  Define $f:\susp\bool\to\Sn^1$ by recursion such that $f(\north)\defeq \base$ and $f(\south)\defeq\base$, while $\ap f{\merid(\bfalse)}\defid\lloop$ but $\ap f{\merid(\btrue)} \defid \refl{\base}$.
+  Define $g:\Sn^1\to\susp\bool$ by recursion such that $g(\base)\defeq \north$ and $\ap g \lloop \defid \merid(\bfalse) \ct \opp{\merid(\btrue)}$.
   We now show that $f$ and $g$ are quasi-inverses.
 
   First we show by induction that $g(f(x))=x$ for all $x:\susp \bool$.
@@ -556,7 +560,7 @@ We can also make the suspension $\susp$ act on pointed types, by $\susp(A,a_0)\d
   Thus, denoting this path by $q:g(a_0)=\refl{b_0}$, we have $(g,q):\Map_*(A,\Omega B)$.
 
   On the other hand, from right to left, given $g:A\to \Omega B$ and $q:g(a_0)=\refl{b_0}$, we define $f:\susp A \to B$ by $\susp$-recursion, such that $f(\north)\defeq b_0$ and $f(\south)\defeq b_0$ and
-  \[ \ap f {\merid(a)} = g(a). \]
+  \[ \ap f {\merid(a)} \defid g(a). \]
   Then we can simply take $p$ to be $\refl{b_0} : f(\north)= b_0$.
 
   Now given $(f,p)$, by passing back and forth we obtain $(f',p')$ where $f'$ is defined by $f'(\north)\jdeq b_0$ and $f'(\south)\jdeq b_0$ and
@@ -633,12 +637,12 @@ Now identify the edge $r$ with $q$ and the edge $s$ with $p$, resulting in also 
 Topologically, this identification can be seen to produce a torus.
 
 The induction principle for the torus is the trickiest of any we've written out so far.
-Given $P:T^1\to\type$, we require
+Given $P:T^2\to\type$, for a section $\prd{x:T^2} P(x)$ we require
 \begin{itemize}
-\item A point $b':P(b)$,
-\item A path $p' : \dpath P p b b$,
-\item A path $q' : \dpath P q b b$, and
-\item A 2-path $t'$ between the ``composites'' $p'\ct q'$ and $q'\ct p'$, lying over $t$.
+\item a point $b':P(b)$,
+\item a path $p' : \dpath P p b b$,
+\item a path $q' : \dpath P q b b$, and
+\item a 2-path $t'$ between the ``composites'' $p'\ct q'$ and $q'\ct p'$, lying over $t$.
 \end{itemize}
 In order to make sense of this last datum, we need a composition operation for dependent paths, but this is not hard to define.
 Then the induction principle gives a function $f:\prd{x:T^2} P(x)$ such that $f(b)\jdeq b'$ and $\apd f {p} = p'$ and $\apd f {q} = q'$ and something like ``$\apd f t = t'$''.
@@ -647,6 +651,107 @@ We leave the details to the reader (see \autoref{ex:torus}).
 
 Of course, another definition of the torus is $T^2 \defeq \Sn^1 \times \Sn^1$.
 The cell-complex definition, however, generalizes easily to other spaces without such descriptions, such as the Klein bottle, the projective plane, etc.
+It does, however, get increasingly difficult to write down the induction principles, requiring us to define notions of dependent $n$-paths and of $\apdfunc{}$ acting on $n$-paths.
+Fortunately, once we have the spheres in hand, there is a way around this.
+
+
+\section{Hubs and spokes}
+\label{sec:hubs-spokes}
+
+In topology, one usually speaks of building CW complexes by attaching $n$-dimensional discs along their $(n-1)$-dimensional boundary spheres.
+However, another way to express this is by gluing in the \emph{cone} on an $(n-1)$-dimensional sphere.
+That is, we regard a disc as consisting of a cone point (or ``hub''), with meridians (or ``spokes'') connecting that point to every point on the boundary, continuously, as shown in \autoref{fig:hub-and-spokes}.
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \draw (0,0) circle (2cm);
+    \foreach \x in {0,20,...,350}
+      \draw[blue] (0,0) -- (\x:2cm);
+    \node[blue,circle,fill,inner sep=2pt] (hub) at (0,0) {};
+  \end{tikzpicture}
+  \caption{A 2-disc made out of a hub and spokes}
+  \label{fig:hub-and-spokes}
+\end{figure}
+
+We can use this idea to express higher inductive types containing $n$-dimensional paths for $n>1$ in terms of ones containing only 1-dimensional paths.
+The point is that we can obtain an $n$-dimensional path as a continuous family of 1-dimensional paths parametrized by an $(n-1)$-dimensional object.
+The simplest $(n-1)$-dimensional object to use is the $(n-1)$-sphere, although in some cases a different one may be preferable.
+(Recall that we were able to define the spheres in \autoref{sec:suspension} inductively using suspensions, which involve only 1-dimensional path constructors.
+Indeed, suspension can also be regarded as an instance of this idea, since it involves a family of 1-dimensional paths parametrized by the type being suspended.)
+
+For instance, the torus $T^2$ from the previous section could be defined instead to be generated by:
+\begin{itemize}
+\item a point $b:T^2$,
+\item a path $p:b=b$,
+\item another path $q:b=b$,
+\item a point $h:T^2$, and
+\item for each $x:\Sn^1$, a path $s(x) : f(x)=h$, where $f:\Sn^1\to T^2$ is defined by $f(\base)\defeq b$ and $\ap f \lloop \defid p \ct q \ct \opp p \ct \opp q$.
+\end{itemize}
+The induction principle for this version of the torus says that given $P:T^2\to\type$, for a section $\prd{x:T^2} P(x)$ we require
+\begin{itemize}
+\item a point $b':P(b)$,
+\item a path $p' : \dpath P p b b$,
+\item a path $q' : \dpath P q b b$,
+\item a point $h':P(h)$, and
+\item for each $x:\Sn^1$, a path $\dpath {P}{s(x)}{g(x)}{h'}$, where $g:\prd{x:\Sn^1} P(f(x))$ is defined by $g(\base)\defeq b'$ and $\apd g \lloop \defid p' \ct q' \ct \opp{(p')} \ct \opp{(q')}$.
+\end{itemize}
+Note that there is no need for dependent 2-paths or $\apdfunc{}$ acting on 2-paths.
+We leave it to the reader to write out the computation rules.
+
+\begin{rmk}\label{rmk:spokes-no-hub}
+One might question the need for introducing the hub point $h$; why couldn't we instead simply add paths continuously relating the boundary of the disc to a point \emph{on} that boundary, as shown in \autoref{fig:spokes-no-hub}?
+This does work, but not as well.
+For if, given some $f:\Sn^1 \to X$, we give a path constructor connecting each $f(x)$ to $f(\base)$, then what we end up with is more like the picture in \autoref{fig:spokes-no-hub-ii} of a cone whose vertex is twisted around and glued to some point on its base.
+The problem is that the specified path from $f(\base)$ to itself may not be reflexivity.
+We could add a 2-dimensional path constructor ensuring this, but using a separate hub avoids the need for any path constructors of dimension $>1$.
+\end{rmk}
+
+\begin{figure}
+  \centering
+  \begin{minipage}{2in}
+    \begin{center}
+      \begin{tikzpicture}
+        \draw (0,0) circle (2cm);
+        \clip (0,0) circle (2cm);
+        \foreach \x in {0,15,...,165}
+        \draw[blue] (0,-2cm) -- (\x:4cm);
+      \end{tikzpicture}
+    \end{center}
+    \caption{Hubless spokes}
+    \label{fig:spokes-no-hub}
+  \end{minipage}
+  \qquad
+  \begin{minipage}{2in}
+    \begin{center}
+      \begin{tikzpicture}[xscale=1.3]
+        \draw (0,0) arc (-90:90:.7cm and 2cm) ;
+        \draw[dashed] (0,4cm) arc (90:270:.7cm and 2cm) ;
+        \draw[blue] (0,0) to[out=90,in=0] (-1,1) to[out=180,in=180] (0,0);
+        \draw[blue] (0,4cm) to[out=180,in=180,looseness=2] (0,0);
+        \path (0,0) arc (-90:-60:.7cm and 2cm) node (a) {};
+        \draw[blue] (a.center) to[out=120,in=10] (-1.2,1.2) to[out=190,in=180] (0,0);
+        \path (0,0) arc (-90:-30:.7cm and 2cm) node (b) {};
+        \draw[blue] (b.center) to[out=150,in=20] (-1.4,1.4) to[out=200,in=180] (0,0);
+        \path (0,0) arc (-90:0:.7cm and 2cm) node (c) {};
+        \draw[blue] (c.center) to[out=180,in=30] (-1.5,1.5) to[out=210,in=180] (0,0);
+        \path (0,0) arc (-90:30:.7cm and 2cm) node (d) {};
+        \draw[blue] (d.center) to[out=190,in=50] (-1.7,1.7) to[out=230,in=180] (0,0);
+        \path (0,0) arc (-90:60:.7cm and 2cm) node (e) {};
+        \draw[blue] (e.center) to[out=200,in=70] (-2,2) to[out=250,in=180] (0,0);
+        \clip (0,0) to[out=90,in=0] (-1,1) to[out=180,in=180] (0,0);
+        \draw (0,4cm) arc (90:270:.7cm and 2cm) ;
+      \end{tikzpicture}
+    \end{center}
+    \caption{Hubless spokes, II}
+    \label{fig:spokes-no-hub-ii}
+  \end{minipage}
+\end{figure}
+
+\begin{rmk}
+  Note also that this ``translation'' of higher paths into 1-paths does not preserve judgmental computation rules for these paths, though it does preserve propositional ones.
+  This is another reason for preferring the latter.
+\end{rmk}
 
 
 \section{Pushouts}
@@ -661,7 +766,7 @@ However, more general \emph{colimits} require identifying elements coming from d
 Since all our constructions are homotopy-invariant, our colimits will all be \emph{homotopy colimits}, but we drop the ubiquitous adjective in the interests of conciseness.
 
 In this section we discuss \emph{pushouts}, as perhaps the simplest and one of the most useful colimits.
-Indeed, one expects all finite colimits to be constructible from pushouts and finite coproducts.
+Indeed, one expects all finite colimits (for a suitable homotopical definition of ``finite'') to be constructible from pushouts and finite coproducts.
 It is also possible to give a direct construction of more general colimits using higher inductive types, but this is somewhat technical, and also not completely satisfactory since we do not yet have a good fully general notion of homotopy coherent diagrams.
 
 Suppose given a span of types and functions:
@@ -770,6 +875,14 @@ This proves that $c\mapsto\mathsf{s}(c)$ is a quasi-inverse to $t\mapsto{}\compo
 
 We will discuss pushouts further in \autoref{cha:homotopy}.
 
+\begin{rmk}
+  Note that colimits do not in general preserve truncation.
+  For instance, $\Sn^0$ and \unit are both sets, but the pushout of $\unit \leftarrow \Sn^0 \to \unit$ is $\Sn^1$, which is not a set.
+  If we are interested in colimits in the category of $n$-types, therefore, we need to apply truncation to the general construction of colimits.
+  We will consider this further in \autoref{subsec:reflective-subuniverses,cha:set-math}.
+\end{rmk}
+
+
 \section{Truncations}
 \label{sec:hittruncations}
 
@@ -809,114 +922,203 @@ However, it is a little tricky to make sense of constructors of this sort, whose
 Moreover, if we want a definition that works for general $n$, then this approach is unfeasible.
 
 Instead, we can invoke \autoref{thm:hlevel-loops}, which implies that a type $B$ is an $n$-type, for $n\ge -1$, if and only if $\Omega^{n+1}(B,b)$ is contractible for all $b:B$.
-And by \autoref{lem:susp-loop-adj}, we have $\Omega^{n+1}(B,b) \simeq \Map_*(\Sn^{n+1},B)$.
-This suggests that we define $\trunc nA$ to be generated by:
+And by \autoref{lem:susp-loop-adj}, we have $\Omega^{n+1}(B,b) \simeq \Map_*(\Sn^{n+1},(B,b))$, where $\Sn^{n+1}$ is equipped with some basepoint which we may as well call \base.
+
+However, contractibility of $\Map_*(\Sn^{n+1},(B,b))$ is something that we can ensure directly by giving path constructors.
+We might first of all try to  define $\trunc nA$ to be generated by a function $\tproj n- : A \to \trunc n A$, together with for each $r:\Sn^n \to \trunc n A$ and each $x:\Sn^n$, a path $s_r(x):r(x) = r(\base)$.
+But this does not quite work, for the same reason that \autoref{rmk:spokes-no-hub} fails.
+
+Instead, we use the full ``hub and spoke'' construction.
+Thus, we take $\trunc nA$ to be the higher inductive type generated by:
 \begin{itemize}
-\item A function $\tproj n- : A \to \trunc n A$,
-\item For each $s:\Sn^n \to \trunc n A$ and each $x:\Sn^n$, a path $s(x) = s(\base)$.
+\item a function $\tproj n- : A \to \trunc n A$,
+\item for each $r:\Sn^n \to \trunc n A$, a point $h(r):\trunc n A$, and
+\item for each $r:\Sn^n \to \trunc n A$ and each $x:\Sn^n$, a path $s_r(x):r(x) = h(r)$.
 \end{itemize}
 
-
-\emph{FIXME: it would be good if this section could define some specific
-truncations with HITs and then mention that we can construct the
-following interface in general, because it would be nice
-to have truncations before the intro to the homotopy chapter.}
-
-\section{Truncated colimits}
-FIXME: This needs work. coequalizer should be defined before.
-we can construct coequalizers using sums and pushouts:
-The coequalizer of $f, g : X \to Y$ is the pushout of $[f, g]$ and $[\idfunc, \idfunc]$.
-
-A priori the $n$-trunction of a colimit need not be the colimit in $\typele{n}$. Fortunately this is the case~\cite{RijkeSpitters}.
-With this insight we can have a look at coequalizers in $\set$. Let $D$ be the diagram with two arrows $f,g:A\rightrightarrows B$.
-The general (homotopy) colimit of $D$ does not have the quotient-like properties it would
-have in the category $\set$. For instance, the coequalizer of $\unit\rightrightarrows\unit$ is the circle.
-Nevertheless, the $0$-truncation of the circle \emph{is} $\unit$, which is the expected coequalizer in $\set$. Thus we get
+The existence of these constructors is now enough to show:
 
 \begin{lem}
-Let $f,g:A\to B$ be functions between sets $A$ and $B$. The 
-{set-co}equalizer $c_{f,g}:B\to B/_{f,g}$ has the property that
-\begin{equation*}
-\prod\{C:\set\}(h:B\to C)(H:h\circ f\sim h\circ g),\ 
-\iscontr\big(\sum(k:B/_{f,g}\to C),\ k\circ c_{f,g}\sim h\big).
-\end{equation*}
+  $\trunc n A$ is an $n$-type.
 \end{lem}
+\begin{proof}
+  We must show $\Omega^{n+1}(\trunc nA,b)$ is contractible for all $b:\trunc nA$, which by \autoref{lem:susp-loop-adj} is equivalent to $\Map_*(\Sn^{n+1},(\trunc nA,b))$.
+  As center of contraction for the latter, we choose the function $c_b:\Sn^{n+1} \to \trunc nA$ which is constant at $b$, together with $\refl b : c_b(\base) = b$.
 
-This is a general phenomenon, the 0-truncated colimits behave as expected.
+  Now, an arbitrary element of $\Map_*(\Sn^{n+1},(\trunc nA,b))$ consists of a map $r:\Sn^n \to \trunc n A$ together with a path $p:r(\base)=b$.
+  By function extensionality, to show $r = c_b$ it suffices to give, for each $x:\Sn^n$, a path $r(x)=c_b(x) \jdeq b$.
+  We choose this to be the composite $s_r(x) \ct \opp{s_r(\base)} \ct p$, where $s_r$ is the third constructor of $\trunc nA$.
+
+  Finally, we must show that when transported along this equality $r=c_b$, the path $p$ becomes $\refl b$.
+  By transport in path types, this means we need
+  \[\opp{(s_r(\base) \ct \opp{s_r(\base)} \ct p)} \ct p = \refl b.\]
+  But this is immediate from path operations.
+\end{proof}
+
+To show the desired universal property of the $n$-truncation, we need the induction principle.
+We extract this from the constructors in the usual way; it says that given $P:\trunc nA\to\type$ together with
+\begin{itemize}
+\item For each $a:A$, an element $g(a) : P(\tproj na)$,
+\item For each $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, an element $h'(r,r'):P(h(r))$.
+\item For each $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, and each $x:\Sn^n$, a dependent path $\dpath{P}{s_r(x)}{r'(x)}{h'(r,r')}$.
+\end{itemize}
+
+\begin{thm}\label{thm:truncn-ind}
+  For any type family $P:\trunc n A \to \type$ such that each $P(x)$ is an $n$-type, and any function $g : \prd{a:A} P(\tproj n a)$, there exists a section $f:\prd{x:\trunc n A} P(x)$ such that $f(\tproj n a)\defeq g(a)$ for all $a:A$.
+\end{thm}
+\begin{proof}
+  It will suffice to construct the second and third data listed above, since $g$ has exactly the type of the first datum.
+  Given $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, we have $h(r):\trunc n A$ and $s_r :\prd{x:\Sn^n} (r(x) = h(r))$.
+  Define $t:\Sn^n \to P(h(r))$ by $t(x) \defeq \trans{s_r(x)}{r'(x)}$.
+  Then since $P(h(r))$ is $n$-truncated, there exists a point $u:P(h(r))$ and a contraction $v:\prd{x:\Sn^n} (t(x) = u)$.
+  Define $h'(r,r') \defeq u$, giving the second datum.
+  Then (recalling the definition of dependent paths), $v$ has exactly the type required of the third datum.
+\end{proof}
+
 
 \section{Free algebras}
 \label{sec:free-algebras}
 
-It would be nice if \Z is constructed as the free commutative ring with unit here, because
-then we can just use it in \autoref{sec:field-rati-numb}. If you do that, please modify
-the relevant text in that section. It may be worth pointing out that the rationals \Q are
-\emph{not} a free equational algebra because inverse is a partial operation. This sets up
-the stage for \autoref{sec:field-rati-numb}.
+Another use of higher inductive types is to construct algebraic gadgets that are free on a family of generators, or more generally are presented by some generators with some relations.
+It is well-known in type theory that some free algebraic objects can be defined as (ordinary) inductive types.
+For instance, the free monoid on a type $A$ can be identified with the type $\lst A$ of \emph{finite lists} of elements of $A$, which is inductively generated by
+\begin{itemize}
+\item a constructor $\nil:\lst A$, and
+\item for each $\ell:\lst A$ and $a:A$, an element $\cons(a,\ell):\lst A$.
+\end{itemize}
+This is possible because elements of the free monoid have computable canonical forms (namely, finite lists).
+However, elements of other free (and presented) algebraic structures do not in general have \emph{computable} canonical forms.
+For instance, equality of words in group presentations is algorithmically undecidable.
+However, we can still describe free algebraic objects as \emph{higher} inductive types, by simply asserting all the axiomatic equations as path constructors.
+
+For example, if $X$ is a set, then the free group on $X$ is the higher inductive type $F X$ generated by the following.
+\begin{itemize}
+\item A function $X\to F X$.
+\item A function $m: F X \times F X \to F X$.
+\item An element $e:F X$.
+\item A function $i:F X \to F X$.
+\item For each $x,y,z:F X$, an equality $m(x,m(y,z)) = m(m(x,y),z)$.
+\item For each $x:F X$, equalities $m(x,e) = x$ and $m(e,x) = x$.
+\item For each $x:F X$, equalities $m(x,i(x)) = e$ and $m(i(x),x) = e$.
+\item The last two constructors used for the 0-truncation, as described in \autoref{sec:hittruncations}.
+\end{itemize}
+The first constructor says that $X$ maps to the free group on itself.
+The next three give $F X$ the operations of a group: multiplication, an identity element, and inversion.
+The three constructors after that assert the axioms of a group: associativity, unitality, and inverses.
+
+Finally, the truncation constructors assert that $F X$ is a set.
+(If we wanted to generate the ``homotopically free $\infty$-group'' on $X$, then we ought instead to add all coherence homotopies at all higher levels for the group structure.)
+We could instead leave off these constructors and apply the 0-truncation $\trunc 0-$ afterwards.
+
+With this definition, it is straightforward to prove:
+
+\begin{thm}
+  $F X$ is the free group on $X$.
+  In other words, for any (set) group $G$, composition with $X\to F X$ determines an equivalence
+  \[ \mathrm{Grp}(F X,G) \simeq (X\to G) \]
+  where $\mathrm{Grp}(-,-)$ denotes the set of group homomorphisms between two (set) groups.\qed
+\end{thm}
+
+Sometimes, of course, a particular free object does have a more explicit description.
+For instance, the free group on \unit is the integers \Z, which can be defined more concretely in numerous ways (see for instance \autoref{sec:field-rati-numb}).
+Probably the easiest way to identify $F\unit$ with $\Z$ is to show that $\Z$ has the same universal property as $F\unit$.
+Similarly, we could show that \Z is the free commutative ring with unit on \emptyt, and so on.
+
+Note that this sort of construction only applies to \emph{algebraic} theories.
+It can be modified to apply also to what are called \emph{essentially algebraic theories}: those whose operations are partially defined on a domain specified by equalities between previous operations.
+But it does not apply, for instance, to the theory of fields, in which the ``inversion'' operation is partially defined on a domain $\setof{x | x\neq 0}$ specified by an \emph{inequality} between previous operations.
+And indeed, it is well-known that the category of fields has no initial object.
+See \autoref{sec:field-rati-numb}.
+
+On the other hand, this construction applies just as well to \emph{infinitary} algebraic theories, whose ``operations'' can take infinitely many inputs.
+This means that higher inductive types represent a significant strengthening of constructive type theory (not necessarily in terms of proof-theoretic strength, but in terms of practical power).
+Indeed, it is known~\cite{blass:freealg} that even ZF set theory (without the axiom of choice) is unable to construct free algebras for all infinitary algebraic theories.
 
 
 \section{The flattening lemma}
 \label{sec:flattening}
 
-The flattening lemma is a general lemma about higher inductive types which says
-that if $W$ is a higher inductive type and $P:W\to\type$ is a function defined
-by induction and with the univalence axiom for the paths, then the total space
-of $P$ is equivalent to a ``flattened'' higher inductive type build up from $W$
-and $P$.
+The \emph{flattening lemma} is a general lemma about higher inductive types which says that if $W$ is a higher inductive type and $P:W\to\type$ is a recursively defined function, using univalence for the paths in $W$, then the total space $\sm{x:W} P(x)$ is equivalent to a ``flattened'' higher inductive type, whose constructors may be deduced from those of $W$ and the definition of $P$.
 
 \newcommand{\cc}{\mathsf{c}}
 \newcommand{\pp}{\mathsf{p}}
 \newcommand{\cct}{\widetilde{\mathsf{c}}}
 \newcommand{\ppt}{\widetilde{\mathsf{p}}}
 
-In what follows, we will assume that we have $A,B:\type$ and $f,g:B\to{}A$ and
-that the higher inductive type $W$ is generated by
+In this section we will prove one general case of the flattening lemma, which directly implies many particular cases, and suggests the method to prove others.
+Suppose we have $A,B:\type$ and $f,g:B\to{}A$, and that the higher inductive type $W$ is generated by
 \begin{itemize}
 \item $\cc:A\to{}W$ and
-\item $\pp:\prd{b:B}\cc(f(b))=_W\cc(g(b))$.
+\item $\pp:\prd{b:B} (\cc(f(b))=_W\cc(g(b)))$.
 \end{itemize}
 
-Using binary sums and dependent sums a lot of interesting nonrecursive higher
+Using binary sums and dependent sums, a lot of interesting nonrecursive higher
 inductive types can be represented in this form. All point constructors have to
 be bundled in the type $A$ and all path constructors in the type $B$.
+For instance:
+\begin{itemize}
+\item The circle $\Sn^1$ can be represented by taking $A\defeq \unit$ and $B\defeq \unit$, with $f$ and $g$ the identity.
+\item The pushout of $j:X\to Y$ and $k:X\to Z$ can be represented by taking $A\defeq Y+Z$ and $B\defeq X$, with $f\defeq \inl \circ j$ and $g\defeq \inr\circ k$.
+\end{itemize}
 
 \begin{lem}[Flattening lemma]
   Suppose $C:A\to\type$ is a family of types over $A$ and $D:\prd{b:B}C(f(b))\simeq{}C(g(b))$ is a family of equivalences over $B$.
   Let $P : W\to\type$ be defined by
   \begin{align*}
-    P(\cc(a)) &= C(a)\\
-    \map{P}{\pp(b)} &= \eqtopath(D(b))
+    P(\cc(a)) &\defeq C(a)\\
+    \map{P}{\pp(b)} &\defid \ua(D(b))
   \end{align*}
   and let $\widetilde{W}$ be the higher inductive type generated by
   \begin{itemize}
   \item $\cct:\prd{a:A}{x:C(a)}\widetilde{W}$ and
-  \item $\ppt:\prd{b:B}{x:C(f(b))} (\cct(f(b),x)=_{\widetilde{W}}\cct(g(b),D(b)(x)))$.
+  \item $\ppt:\prd{b:B}{y:C(f(b))} (\cct(f(b),y)=_{\widetilde{W}}\cct(g(b),D(b)(y)))$.
   \end{itemize}
   Then we have
-  \[ \sum_{x:W} P(x) \;\simeq\; \widetilde{W}. \]
+  \[ \big(\sm{x:W} P(x)\big) \;\simeq\; \widetilde{W}. \]
 \end{lem}
 
 \begin{proof}
-  We will define two maps going back and forth and prove that they are inverse
-  to each other.
-
-  The map $f:\widetilde{W}\to\Sigma_{x:W}P(x)$ is defined by
+  We will define two maps going back and forth and prove that they are quasi-inverses.
+  The map $h:\widetilde{W}\to\sm{x:W}P(x)$ is defined on the point-constructor by
   \begin{align*}
-    f(\cct(a,x)) &= (\cc(a),x) \\
-    \map{f}{\ppt(b,y)} &= (\pp(b),\map{(\lambda{}f.\,f\,x)}{\eqtopath(D(b))}
+    h(\cct(a,x)) &\defeq (\cc(a),x)
   \end{align*}
+  For the value $\ap{h}{\ppt(b,y)}$ of $h$ on the path-constructor, we require a path
+  \[(\cc(f(b)),y) = (\cc(g(b)),D(b)(y)).\]
+  We have $\pp(b):\cc(f(b)) = \cc(g(b))$, so for this it suffices to give a path $\transfib{P}{\pp(b)}{y} = D(b)(y)$.
+  But $\transfib{P}{\pp(b)}{y} = \transfib{X\mapsto X}{\ap P {\pp(b)}}{y}$ by [TODO: where?], while $\ap P {\pp(b)} \defid \ua(D(b))$.
+  Thus, this is just the computation rule for paths in the universe (see \autoref{sec:compute-universe}).
 
-  For the inverse map $g:\Sigma_{x:W}P(x)\to\widetilde{W}$ we currify and define
-  for all $x:W$ a map $\widetilde{g}_x:P(x)\to\widetilde{W}$ by induction on
-  $x$.
+  \def\ktil{\widetilde{k}}
 
-  \emph{unfinished}
-  % \begin{align*}
-  %   \widetilde{g}_{\cc(a)} &= \lambda{}x^{C(a)}.\,\cct(a,x) \\
-  %   \map{(\lambda{}x^W.\,\widetilde{g}_x)}{\pp(b)} &= 
-  % \end{align*}
+  For the inverse map $k:\sm{x:W} P(x)\to\widetilde{W}$, we must define for all $x:W$ a map $\widetilde{k}_x:P(x)\to\widetilde{W}$.
+  We proceed by induction on $x$.
+  If $x\jdeq \cc(a)$, then $P(\cc(a))\defeq C(a)$, and we define $\ktil_{\cc(a)}(y) \defeq \cct(a,y)$.
+  Next, as $x$ varies along $\pp(b)$, we must show that $\ktil_{\cc(f(b))}$ becomes equal to $\ktil_{\cc(g(b))}$ when transported along $\pp(b)$.
+  By transport in function types, this means we must show that for $y:C(g(b))$, we have
+  \[ \trans{\pp(b)}{\ktil_{\cc(f(b))}\big(\trans{\opp{\pp(b)}}{y}\big)} = \ktil_{\cc(g(b))}(y). \]
+  The outer transport is with respect to the constant family $x\mapsto \widetilde{W}$, so we can ignore it.
+  Thus, substituting the definition of $\ktil_{\cc(a)}$, what we want is
+  \[ \cct(f(b),\trans{\opp{\pp(b)}}{y}) = \cct(g(b),y). \]
+  Using equalities in $\Sigma$-types, we can obtain this easily from $\pp(b):f(b)=g(b)$ and the evident equality
+  $\trans{\pp(b)}{\trans{\opp{\pp(b)}}{y}}= y$.
+
+  [TODO: Remains to check these are inverses\dots]
 \end{proof}
 
+
 \section*{Notes}
+
+The general idea of higher inductive types was conceived in discussions between Peter Lumsdaine, Mike Shulman, Andrej Bauer, and Michael Warren at the Oberwolfach meeting in 2011, although there are some suggestions of some special cases in earlier work.
+So far, not much has been written about them except in blog posts.
+A general discussion of their syntax (probably borrowing from this chapter), and their semantics in higher-categorical models, will appear in~\cite{ls:hits}.
+Dan Licata and Guillaume Brunerie have also contributed substantially to the general theory, especially by finding convenient ways to represent them in computer proof assistants and to do homotopy theory with them (see \autoref{cha:homotopy}).
+
+The fact that ``quotient types'' of a suitable sort imply function extensionality is folklore in type theory; \autoref{thm:interval-funext} is an adaptation of such arguments.
+The description of higher spheres using loop spaces and suspensions in \autoref{sec:circle,sec:suspension} is largely due to Dan Licata and Guillaume Brunerie.
+The reduction of higher paths to 1-dimensional paths with hubs and spokes (\autoref{sec:hubs-spokes}) is due to Peter Lumsdane and Mike Shulman.
+The description of truncation as a higher inductive type is due to Peter Lumsdaine; the $(-1)$-truncation is closely related to the ``bracket types'' of~\cite{ab:bracket-types}.
+The flattening lemma was first formulated in generality by Guillaume Brunerie.
 
 
 \section*{Exercises}

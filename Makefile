@@ -15,3 +15,11 @@ update-ref.sed: $(wildcard *.aux)
 	echo "#!/bin/sed -f" > $@
 	./aux2sed.sed $^ >> $@
 	chmod +x $@
+
+ref_index.py: $(wildcard *.aux)
+	echo "#!/usr/bin/python" > $@
+	echo "ref_index = {" >> $@
+	./aux2pydict.sed $^ >> $@
+	echo "}" >> $@
+	echo "if __name__ == '__main__': print (ref_index)" >> $@
+	chmod +x $@

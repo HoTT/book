@@ -42,7 +42,7 @@ choice we can find a function out of the image as indicated by the diagram
 \end{tikzpicture}
 \end{equation*}
 whenever $g$ coequalizes $\pi_1$ and $\pi_2$. In our approach, the result 
-that the image of a function $f$ is the coequzalizer
+that the image of a function $f$ is the coequalizer
 of its kernel pair is a consequence of the principle of unique choice, 
 which we will also prove.
 
@@ -62,23 +62,31 @@ surjective functions between sets split, then propositions are decidable.
 \note{BS:This needs work.}
 The truncations allow us to define a stable factorization
 system\footnote{\url{http://uf-ias-2012.wikispaces.com/file/view/images.pdf/401765624/images.pdf}}.
+In fact, this generalizes to reflective subuniverses; see~\autoref{subsec:reflective-subuniverses}.
 We will only consider the factorization system given by $(-1)$-truncation.
 This defines a stable orthogonal factorization system $(\mathcal{E},
-\mathcal{M})$ on $\set$: every map factors as an epimorphism followed by a monomorphism.
+\mathcal{M})$ on $\set$: every map factors as an epimorphism followed by a 
+monomorphism and this factorization is stable under pullback.
 We first define these notions:
 \begin{defn}
 Let $f:A\to B$ be a function between $\set$s. It is \emph{surjective} if
 \begin{equation*}
 \mathsf{surj}(f)\defeq\prod(b:B),\ \|\hfiber{f}b\|.
 \end{equation*}
-A monomorphism is a functions with truncated homotopy fibers, i.e.\ if there is a term of type
+A monomorphism is a functions with contractible homotopy fibers, i.e.\ if there is a term of type
 \begin{equation*}
 \mathsf{inj}(f)\defeq\prod(a:A),\ \mathsf{isContr}(\hfiber{f}{f(a)}).
 \end{equation*}
 \end{defn}
 
+We remark that $f:A\to B$ is a monomorphism if and only if the function
+\begin{equation*}
+\lambda a.\pair{a,a,\idfunc{f(a)}}:A\to A\times_B A
+\end{equation*}
+is an equivalence.
+
 The injective functions are of course the monomorphisms of
-$\mathsf{Set}$, which we can also define via a pullback diagram, but we will not do that here.
+$\set$, which we can also define via a pullback diagram, but we will not do that here.
 
 \begin{defn}
 Let $f:A\to B$ be a function between $\set$s. Define
@@ -93,19 +101,54 @@ i_f & := \pi_1.
 \end{defn}
 
 \begin{lem}
-Then $\tilde{f}$ is epi and $i_f$ is mono.
+Then $\tilde{f}$ is surjective and $i_f$ is mono.
 \end{lem}
+
+We the insights from~\autoref{subsec:reflective-subuniverses} we can have a look at coequalizers
+in $\set$. Let $D$ be the diagram $f,g:A\to B$.
+The general (homotopy) colimit of $D$ does not have the quotient-like properties as it would
+have in the category $\set$. For instance, the coequalizer of
+$\mathsf{unit}\rightrightarrows\mathsf{unit}$ is the circle. Nevertheless,
+the $0$-truncation of the circle is again $\mathsf{unit}$, which is the
+expected coequalizer in $\set$. Thus we get
+
+\begin{defn}
+Let $A$ and $B$ be sets and let $f,g:A\to B$.
+We denote the set-coequalizer of $f$ and $g$ by $c_{f,g}:B\to B/_{f,g}$. A
+\emph{regular epimorphism} is a function between sets which is a coequalizer.
+\end{defn}
+
+\begin{lem}
+Let $f,g:A\to B$ be functions between sets $A$ and $B$. The 
+{set-co}equalizer $c_{f,g}:B\to B/_{f,g}$ has the property that
+\begin{equation*}
+\prod\{C:\set\}(h:B\to C)(H:h\circ f\sim h\circ g),\ 
+\mathsf{isContr}\big(\sum(k:B/_{f,g}\to C),\ k\circ c_{f,g}\sim h\big).
+\end{equation*}
+\end{lem}
+
+As explained in~\autoref{subsec:reflective-subuniverses}, this is a general phenomenon, the 0-truncated colimits behave as expected.
+
+\note{TODO}
+We need to prove that epis are surjective. Hence we need unique choice. 
+
+\begin{thm}\label{thm:set_regular}
+The category $\set$ is regular.\note{Tdo}
+\end{thm}
+
+\begin{proof}
+$\set$ has all limits, so it is finitely complete. 
+Proposition \ref{prop:images_are_coequalizers} gives
+that the kernel pair of each function has a coequalizer.
+Lemma \ref{lem:pb_of_coeq_is_coeq} gives that
+coequalizers are stable under pullbacks.
+\end{proof}
+
 
 \section{Quotients}
 \label{sec:quotients}
 
-Both as HIT and impredicatively.\note{BS:Work in progress}
-
-Make sure to state conditions under which a quotient is known to result in a very nice
-set. In particular, in \autoref{cha:real-numbers} we need to construct the rationals \Q as
-a quotient of $\Z \times \Z$ by a decidable equivalence relation. We need a lemma which
-states that such a quotient has decidable equatity (and therefore is a set, for example).
-
+\note{BS:Work in progress}
 
 We present two constructions of a quotient by a $\prop$-valued equivalence relation $R$. 
 The first one uses as a higher inductive type. We freely add a path $x= y$ whenever $x$ 
@@ -220,6 +263,7 @@ the diagram
 is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \simeq A/\!\!/ R $.
 \end{proof}
 
+\subsection{Predicativity}
 One may wonder about the predicative interpretation of the quotient constructions above.
 One could argue that the HIT construction is predicative by considering the interpretation of this
 quotient in the setoid model~\cite{Altenkirch1999,coquand2012constructive}. 
@@ -245,6 +289,13 @@ equivalent to $Y$.
 Define $Z\defeq X/\!\!/\ker f$ using the type of equivalence classes; see~\ref{def:VVquotient}. 
 Then $Z:U$, since $\prop_U$ is in the lowest universe. Finally, we observe that $Z\defeq X/\ker f\simeq\im f\simeq Y$.
 \end{proof}
+
+We finish this section with the following observation.
+
+\begin{lem}\label{lem:dec-quotients}
+Let $A:\type$ and $R:A\to A\to\bool$. Then $A/\!/\!R$ has decidable equality. In particular, it is a $\set$.
+\end{lem}
+
 
 \section{Algebraic Set Theory}
 \note{Steve Awodey}

@@ -1209,8 +1209,82 @@ It is beyond the scope of this book to describe any models of type theory, so we
 However, we can prove that it holds whenever the types involved are $n$-truncated for some finite $n$, by ``downward'' induction on $n$.
 In addition to being of interest in its own right (for instance, it implies the essential uniqueness of Eilenberg--Mac Lane spaces), the proof of this result will hopefully provide some intuitive explanation for why we cannot hope to prove an analogous theorem without truncation hypotheses.
 
-\emph{(in progress\dots)}
+We begin with the following theorem, which will eventually supply the induction step in the proof of the truncated Whitehead's principle.
+It may be regarded as a type-theoretic, $\infty$-groupoidal version of the classical statement that a fully faithful and essentially surjective functor is an equivalence of categories.
 
+\begin{thm}\label{thm:whitehead0}
+  Suppose $f:A\to B$ is a function such that
+  \begin{enumerate}
+  \item $\trunc0 f : \trunc0 A \to \trunc0 B$ is surjective\note{Should define ``surjective'' somewhere}, and
+  \item for any $x,y:A$, the function $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence.
+  \end{enumerate}
+  Then $f$ is an equivalence.
+\end{thm}
+\begin{proof}
+  Let $b:B$, we show that $\sm{x:A}(f(x)=b)$ to be contractible.
+  Since $\trunc0 f$ is surjective, there merely exists an $a:A$ such that $\trunc 0 f(\tproj0a) = \tproj0b$.
+  Since contractibility is a mere proposition, we may assume given such an $a$.
+  Then we have $\tproj0{f(a)} = \trunc 0 f(\tproj0a) =\tproj0b$, hence $\tproj{-1}{f(a)=b}$.
+  Again, since we are still trying to prove contractibility, we may assume $f(a)=b$.
+  Thus, the fiber of $f$ over $b$ is inhabited; it remains to show it is a mere proposition.
+  For this, suppose given $x,y:A$ with $p:f(x)=b$ and $q:f(y)=b$.
+  Then since $\apfunc f$ is an equivalence, there exists $r:x=y$ with $\apfunc f (r) = p \ct \opp q$.
+  However, the latter equality rearranges to $\trans{r}{p} = q$, so that together with $r$ it exhibits $(x,p) = (y,q)$ in the fiber of $f$ over $b$.
+\end{proof}
+
+Since homotopy groups are truncations of loop spaces, rather than path spaces, we need to modify this theorem to speak about these instead.
+
+\begin{cor}\label{thm:whitehead1}
+  Suppose $f:A\to B$ is a function such that
+  \begin{enumerate}
+  \item $\trunc0 f : \trunc0 A \to \trunc0 B$ is a bijection, and
+  \item for any $x:A$, the function $\apfunc f : \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
+  \end{enumerate}
+  Then $f$ is an equivalence.
+\end{cor}
+\begin{proof}
+  By \autoref{thm:whitehead0}, it suffices to show that $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence for any $x,y:A$.
+  And by \autoref{thm:equiv-inhabcod}, we may assume $\id[B]{f(x)}{f(y)}$.
+  In particular, $\tproj0{f(x)} = \tproj0{f(y)}$, so since $\trunc0 f$ is an equivalence, we have $\tproj0 x = \tproj0y$, hence $\tproj{-1}{x=y}$.
+  Since we are trying to prove a mere proposition ($f$ being an equivalence), we may assume given $p:x=y$.
+  But now the following square commutes up to homotopy:
+  \begin{equation*}
+  \vcenter{\xymatrix{
+      \Omega(A,x)\ar[r]^-{-\ct p}\ar[d]_{\apfunc f} &
+      \id[A]xy \ar[d]^{\apfunc f}\\
+      \Omega(B,f(x))\ar[r]_-{-\ct f(p)} &
+      \id[B]{f(x)}{f(y)}.
+      }}
+  \end{equation*}
+  The top and bottom maps are equivalences, and the left-hand map is so by assumption.
+  Hence, by the 2-out-of-3 property, so is the right-hand map.
+\end{proof}
+
+Now we can prove the truncated Whitehead's principle.
+
+\begin{thm}\label{thm:whiteheadn}
+  Suppose $A$ and $B$ are $n$-types and $f:A\to B$ is such that $\pi_k(f):\pi_k(A,x) \to \pi_k(B,f(x))$ is a bijection for all $k$ and all $x:A$.
+  Then $f$ is an equivalence.
+\end{thm}
+\begin{proof}
+  We proceed by induction on $n$.
+  When $n=-2$, the statement is trivial.
+  Thus, suppose it to be true for all functions between $n$-types, and let $A$ and $B$ be $(n+1)$-types and $f:A\to B$ as above.
+  Then since $\pi_0$ is just the 0-truncation, $\trunc0f:\trunc0A \to \trunc0B$ is a bijection.
+  Thus, by \autoref{thm:whitehead1}, it will suffice to show that for any $x:A$, the function $\apfunc f: \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
+  However, $\Omega(A,x)$ and $\Omega(B,f(x))$ are $n$-types, and $\pi_k(\apfunc f) = \pi_{k+1}(f)$, so this follows from the inductive hypothesis.
+\end{proof}
+
+Note that if $A$ and $B$ are not $n$-truncated for any finite $n$, then there is no way for the induction to get started.
+
+A map $f$ such that $\pi_k(f)$ is a bijection for all $k$ may be called \emph{$\infty$-connected} or a \emph{weak equivalence}.
+A type $Z$ is called \emph{$\infty$-truncated} or \emph{hypercomplete} if the induced map $(-\circ f):(B\to Z) \to (A\to Z)$ is an equivalence whenever $f$ is $\infty$-connected --- that is, if $Z$ thinks every $\infty$-connected map is an equivalence.
+Then if we want to assume Whitehead's principle as an axiom, we may use either of the following equivalent forms.
+\begin{itemize}
+\item Every $\infty$-connected function is an equivalence.
+\item Every type is $\infty$-truncated.
+\end{itemize}
+In higher topos models, the $\infty$-truncated types form a reflective subuniverse in the sense of \autoref{subsec:reflective-subuniverses} (the ``hypercompletion'' of an $\infty$-topos), but we do not know whether this is true in general.
 
 
 \section{More advanced tools}

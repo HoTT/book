@@ -2023,54 +2023,57 @@ conclude that every coherence condition is always satisfied.
 \subsection{Truncations}
 \label{subsec:facts-about-truncations}
 
-The following facts about truncations are useful for calculating
-homotopy groups.  
+The encode/decode method can also be used to calculate the path spaces of a truncation.
+Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
+Indeed, for any $x,y:A$ there is a canonical map
+\begin{equation}
+  f:\ttrunc n{x=_Ay}\to \Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)\label{eq:path-trunc-map}
+\end{equation}
+defined by
+\[f(\tproj n{p})\defeq \apfunc{\tproj {n+1}-}(p). \]
+This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the codomain of $f$ is $n$-truncated.
 
-\begin{lem}
-  Let $n\ge-2$, $A:\type$ and $x,y:A$. There is a canonical map
-  \[f:\trunc n{x=_Ay}\to\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\]
-  defined by
-  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
-  This definition is correct because $\trunc {n+1}A$ is $(n+1)$-truncated hence
-  the right hand side of the arrow is $n$-truncated.
-
-  The lemma says that this map is an equivalence.
-\end{lem}
+\begin{thm}
+  For any $A$ and $x,y:A$ and $n\ge -2$, the map~\eqref{eq:path-trunc-map} is an equivalence; thus we have
+  \[ \eqv{\ttrunc n{x=_Ay}}{\Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)}. \]
+\end{thm}
 
 \begin{proof}
-  We cannot directly define an inverse to $f$ because there is no way to induct
-  on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$. We will instead
-  generalize the type of $f$ in order to have general elements of the type
-  $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  As in previous situations, we cannot directly define a quasi-inverse to~\eqref{eq:path-trunc-map} because there is no way to induct on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Thus, instead we generalize its type, in order to have general elements of the type $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Define $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ by
+  \[P(\tproj {n+1}x,\tproj {n+1}y)\defeq \trunc n{x=_Ay}\]
+  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated, and $\typele{n}$ is $(n+1)$-truncated by \autoref{thm:hleveln-of-hlevelSn}.
+  Now for every $u,v:\trunc{n+1}A$, there is a map
+  \[\encode:P(u,v) \to \big(u=_{\trunc{n+1}A}v\big)\]
+  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and $p:x=y$ by
+  \[\encode(\tproj n{p})\defeq \apfunc{\tproj{n+1}-} (p).\]
+  Since the codomain of $\encode$ is $n$-truncated, it suffices to define it only for $u$ and $v$ of this form, and then it's just the same definition as before.
+  We also define a function
+  \[ r : \prd{u:\trunc{n+1} A} P(u,u) \]
+  by induction on $u$, where $r(\tproj{n+1} x) \defeq \tproj n {\refl x}$.
 
-  Let $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ defined by
-  \[P(\tproj {n+1}x,\tproj {n+1}y)=\trunc n{x=_Ay}\]
-
-  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated and
-  $\typele{n}$ is $(n+1)$-truncated (here we are using the univalence axiom in a
-  very nontrivial way).
-
-  We can now generalize the result we want to prove. For every $u,v:\trunc{n+1}A$
-  there is a map
-  \[f:P(u,v)\to{}u=_{\trunc{n+1}A}v\]
-  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ by
-  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
-
-  The type of $f$ being $n$-truncated, we are allowed to define it only for $u$
-  and $v$ of this form, and then it's just the same definition as before.
-
-  But now we can define an inverse map
-  \[g:u=_{\trunc{n+1}A}v\to{}P(u,v)\]
+  Now we can define an inverse map
+  \[\decode: (u=_{\trunc{n+1}A}v) \to P(u,v)\]
   by
-  \[g(\refl{\trunc{n+1}A}(\tproj {n+1}x)) = \tproj n{\refl{A}(x)}\]
-
-  because $u$ and $v$ are general elements of $\trunc{n+1}A$, and the output type
-  is $n$-truncated so we can moreover assume that $u$ and $v$ of the form
-  $\tproj {n+1}x$.
-
-  It is clear that $g$ and $f$ are inverse to each other, which prove that they
-  are both equivalences. The result stated in the lemma is then the special case
-  where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
+  \[\decode(p) \defeq \transfib{v\mapsto P(u,v)}{p}{r(u)}. \]
+  To show that the composite
+  \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \]
+  is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that $\decode(r(u)) = \refl{u}$.
+  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition of $r$ and $\decode$.
+  Finally, to show that 
+  \[ P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \]
+  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
+  Then we have
+  \begin{align*}
+    \decode(\encode(\tproj n p)) &= \decode(\apfunc{\tproj{n+1}-}(p))\\
+    &= \transfib{v\mapsto P(\tproj{n+1}x,v)}{\apfunc{\tproj{n+1}-}(p)}{\tproj n {\refl x}}\\
+    &= \transfib{v\mapsto \trunc n{u=v}}{p}{\tproj n {\refl x}}\\
+    &= \tproj n {\transfib{v \mapsto (u=v)}{p}{\refl x}}\\
+    &= \tproj n p.
+  \end{align*}
+  This completes the proof that \encode and \decode are quasi-inverses.
+  The stated result is then the special case where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
 \end{proof}
 
 \begin{cor}

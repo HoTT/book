@@ -10,10 +10,8 @@
 \newcommand{\contr}{\ensuremath{\mathsf{contr}}}
 % \newcommand{\Eq}{\mathsf{Eq}}
  \newcommand{\HLevel}{\mathsf{HLevel}}
- \newcommand{\hProp}{\mathsf{hProp}}
 % \newcommand{\inl}{\mathsf{inl}}
 % \newcommand{\inr}{\mathsf{inr}}
- \newcommand{\ishProp}{\mathsf{ishProp}}
  \newcommand{\isofhlevel}{\mathsf{isofhlevel}}
  \newcommand{\istype}[1]{\mathsf{is}\mbox{-}{#1}\mbox{-}\mathsf{type}}
 % \newcommand{\refl}{\mathsf{refl}}
@@ -30,12 +28,12 @@
 % \renewcommand{\paragraph}{\@startsection{paragraph}{4}{0mm}{-0.5\baselineskip}{-1ex}{\bf}}
 % \makeatother
 
-\chapter{$n$-types}
+\chapter{\texorpdfstring{$n$}{n}-types}
 \label{cha:hlevels}
 
 \section{Definition and First Properties}
 
-In homotopy theory one often talks about $n$-types, i.e.\ spaces which homotopy groups vanish above $n$. In this section we introduce a corresponding notion for type theory. 
+In homotopy theory one often talks about $n$-types, i.e.\ spaces whose homotopy groups vanish above $n$. In this section we introduce a corresponding notion for type theory. 
 
 \begin{defn}\label{def:hlevel}
   Define the predicate $\istype{n} : \Type \to \Type$ for $n \geq -2$ by recursion as follows:
@@ -53,19 +51,16 @@ In homotopy theory one often talks about $n$-types, i.e.\ spaces which homotopy 
 Given a number $n \geq -2$ and a type $X$, we say that $X$ is an $n$-type, if the type $\istype{n}(X)$ is inhabited.
 \end{defn}
 
-There is an important remark that we should make about this definition.
-
 \begin{rmk}
- The number $n$ in \autoref{def:hlevel} ranges over all integers greater than or equal to $-2$. One should note however that the induction principle for type $\Nat$ applies in this case.  Alternatively, we could have defined a predicate $\istype{(k\mbox{-}2)}$ for $k : \Nat$. This justifies the correctness of the above definition and allows us to use the type-theoretic induction principle for $\Nat$ in the computation of $n$-types (for which we can take $n = -2$ as the base case).
+The number $n$ in \autoref{def:hlevel} ranges over all integers greater than or equal to $-2$. We could make sense of this by defining a type $\Z_{{\geq}-2}$ of such integers (a type whose induction principle is identical to that of $\Nat$) or instead defining a predicate $\istype{(k\mbox{-}2)}$ for $k : \Nat$. Either method justifies the correctness of the above definition and allows us to use induction on $\Nat$ in the computation of $n$-types (for which we can take $n = -2$ as the base case).
  
- We shall also note that we could alternatively declare $n$ as a variable of the meta-theory. We choose not do so, precisely because we
-wish to use the type-theoretic induction principle for $\Nat$ in the remainder of the section.
+Note that we could instead define each predicate separately for each $n$ (i.e., considering $n$ as a variable of the meta-theory), but we choose not do so, precisely because we wish to use the type-theoretic induction principle for $\Nat$ in the remainder of the section.
 \end{rmk}
 
-As in homotopy theory, a type does not have to be an $n$-type for some number $n$; in the section on higher inductive types we will see that one can describe the types (such as, for example, the $2$-sphere) that are not an $n$-type for any value of $n$.
+As in homotopy theory, a type does not have to be an $n$-type for some number $n$; in the section on higher inductive types we will see that one can describe types (for example, the $2$-sphere) that are not an $n$-type for any $n$.
 
-We start by showing the preservation of $n$-types under certain operations and various logical constructors.
-For the remainder of the section, let $X, Y : \Type$ and $n : \Nat$.
+We start by showing $n$-types are closed under certain operations and constructors.
+For the remainder of the chapter, let $X, Y : \Type$ and $n : \Nat$.
 \begin{thm}\label{thm:h-level-retracts}
  Let $p \colon X \to Y$ be a retraction and suppose that $X$ is an $n$-type. Then $Y$ is also an $n$-type.
 \end{thm}
@@ -101,7 +96,7 @@ Before giving a proof of the theorem we gather some useful facts about retractio
 
 
 \begin{proof}[Proof of \autoref{thm:h-level-retracts}]
- We proceed by induction with respect to $n$.
+ We proceed by induction on $n$.
 
  For $n=-2$, we know that $X$ is contractible and let $x_0 : X$ be the center of contraction.
  We claim that $y_0 \defeq p(x_0) : Y$ is the center of contraction for $Y$.
@@ -129,7 +124,7 @@ As an immediate corollary we obtain the stability of $n$-types under equivalence
 \end{thm}
 
 \begin{proof}
- We proceed by induction with respect to $n$.
+ We proceed by induction on $n$.
 
  For $n = -2$, we need to show that a contractible type, say, $A$, has contractible path spaces.
        Let $a_0: A$ be the center of contraction of $A$, and let $x, y : A$. We show that $\idtype[A]{x}{y}$
@@ -186,7 +181,7 @@ Before proving the theorem, we prove an auxiliary lemma:
 \end{thm}
 
 \begin{proof}
- We proceed by induction with respect to $n$.
+ We proceed by induction on $n$.
 
  For $n = -2$, we choose the center of contraction for $\sum\limits_{x : A} B(x)$ to be the pair
        $(a_0, b_0)$, where $a_0 : A$ is the center of contraction of $A$ and $b_0 : B(a_0)$ is the center of contraction of $B(a_0)$.
@@ -211,7 +206,7 @@ Before proving the theorem, we prove an auxiliary lemma:
 \end{thm}
 
 \begin{proof}
-  We proceed by induction with respect to $n$.
+  We proceed by induction on $n$.
   For $n = -2$, the result is simply \autoref{thm:contr-forall}.
 
   For the inductive step, let $f, g : \prod\limits_{a:A}B(a)$.
@@ -227,26 +222,26 @@ provided that the target space $B$ is an $n$-type.
 \section{Propositions and sets}
 
 \begin{defn}\label{defn:h-prop}
- A type $A$ is said to be an \emph{h-proposition} (an \emph{h-prop} for short), if it is $-1$-type.
+ A type $A$ is said to be a \emph{proposition} (a \emph{prop} for short), if it is a $-1$-type.
   Thus we define the predicate
- \[\ishProp (A) := \istype{(-1)}(A)  .\]
+ \[\isprop (A) := \istype{(-1)}(A)  .\]
 \end{defn}
 
-\begin{egs}
+\begin{egs}\hfill
  \begin{itemize}
-  \item Trivially, the empty type $\emptyset$ is an h-proposition.
-  \item For any type $X$, its negation $\neg X := X \to \emptyset$ is an h-proposition. This follows from the previous example by the preservation of $n$-types under dependent products.
+  \item Trivially, the empty type $\emptyt$ is a proposition.
+  \item For any type $X$, its negation $\neg X := X \to \emptyt$ is a proposition. This follows from the previous example by the preservation of $n$-types under dependent products.
  \end{itemize}
 \end{egs}
 
 \begin{thm}\label{thm:hprop-inhab-contr}
- If a type $A$ is an h-proposition and is inhabited, then $A$ is contractible.
+ If a type $A$ is a proposition and is inhabited, then $A$ is contractible.
 \end{thm}
 
 \begin{proof}
  Let $a_0$ be an inhabitant of $A$. We choose $a_0$ as center of contraction and thus have to
   prove that for any $a : A$, $a = a_0$.
-  Since $A$ is an h-prop, we know that $\idtype[A]{a}{a_0}$ is contractible.
+  Since $A$ is a prop, we know that $\idtype[A]{a}{a_0}$ is contractible.
   We choose its center of contraction in order to provide the desired equality.
 \end{proof}
 
@@ -254,10 +249,10 @@ provided that the target space $B$ is an $n$-type.
  The converse of \autoref{thm:hprop-inhab-contr} is also true; this follows directly from cumulativity of $n$-type hierarchy (\autoref{thm:hlevel-cumulative}).
 \end{rmk}
 
-We next turn towards giving some less obvious examples of h-propositions:
+We next turn towards giving some less obvious examples of propositions:
 
 \begin{thm}\label{thm:isaprop-isofhlevel}
- For any $n \geq -2$ and any type $X$, the type $\istype{n}(X)$ is an h-proposition.
+ For any $n \geq -2$ and any type $X$, the type $\istype{n}(X)$ is an proposition.
 \end{thm}
 
 The theorem will be proven by induction. We start with a lemma, which contains the crucial observation needed in the proof of the base case.
@@ -271,15 +266,13 @@ The theorem will be proven by induction. We start with a lemma, which contains t
   Given any $c' : \iscontr (X)$, we need to show that
        \[ c = c' : \sum_{x:X}\prod_{x':X}\idtype{x}{x'}  . \]
 
- We use the equivalence between paths in total spaces and pairs of paths in the base space and the fiber.
-
- TODO : link to appropriate theorem
+ We use \autoref{thm:path-sigma}, the equivalence between paths in total spaces and pairs of paths in the base space and the fiber.
 
  The path $e : \pi_1(c) = \pi_1 (c')$ in the base space is given by contractibility of $X$.
  It remains to show:
  \[ \trans{e}{\pi_2(c)} = \pi_2 (c') : \prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}  .  \]
  The type $X$ is contractible and thus $\idtype[X]{\pi_1 (c')} {x'}$ is contractible as well by cumulativity.
-From presevation of $n$-types under products it follows that the type $\prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}$
+From preservation of $n$-types under products it follows that the type $\prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}$
   is contractible as well. Its center of contraction gives the desired equality.
 \end{proof}
 
@@ -287,35 +280,35 @@ From presevation of $n$-types under products it follows that the type $\prod_{x'
   We proceed by induction with respect to $n$.
 
  For the base case, we need to show that for any type $X$, the type $\iscontr(X)$ is an
-        h-proposition. By applying \autoref{lem:hlevel-if-inhab-hlevel}, it suffices to show that
-        if $X$ is contractible, then $\iscontr(X)$ is an h-proposition.
+        proposition. By applying \autoref{lem:hlevel-if-inhab-hlevel}, it suffices to show that
+        if $X$ is contractible, then $\iscontr(X)$ is an proposition.
         But since $X$ is contractible, the type $\iscontr(X)$ is contractible by \autoref{lem:contr-contr-is-contr},
-          thus in particular it is an h-proposition by cumulativity.
+          thus in particular it is an proposition by cumulativity.
 
 For the inductive step we need to show
-\[\prod_{X : \Type} \ishProp (\istype{n}(X)) \to \prod_{X : \Type} \ishProp (\istype{(n+1)}(X)) \]
+\[\prod_{X : \Type} \isprop (\istype{n}(X)) \to \prod_{X : \Type} \isprop (\istype{(n+1)}(X)) \]
 To show the conclusion of this implication, we need to show that for any type $X$, the type
     \[\prod_{x, x' : X}\istype{n}(x = x')\]
-is an h-proposition. By \autoref{thm:hlevel-prod} it suffices to show that for any $x, x' : X$, the type $\istype{n}(x =_X x')$ is an h-proposition.
+is an proposition. By \autoref{thm:hlevel-prod} it suffices to show that for any $x, x' : X$, the type $\istype{n}(x =_X x')$ is an proposition.
 But this follows from the induction hypothesis applied to the type $(x =_X x')$.
 \end{proof}
 
 As an immediate corollary we obtain:
 
 \begin{cor}
- For any function $f \colon A \to B$ between two types, the type $\isequiv(f)$ is an h-proposition.
+ For any function $f \colon A \to B$ between two types, the type $\isequiv(f)$ is an proposition.
 \end{cor}
 
 \begin{thm}
- A type $X$ is an h-proposition if and only if we have $\prod\limits_{x, y : X} (x =_X y)$.
+ A type $X$ is an proposition if and only if we have $\prod\limits_{x, y : X} (x =_X y)$.
 \end{thm}
 
 \begin{proof}
- The `only if' direction is trivial. Conversely, suppose that $X$ is an h-prop and let $x, y : X$. We need to show that $\idtype{x}{y}$ is contractible. For that it is enough to show that $X$ is contractible. Choosing $x : X$ as the center of contraction and applying the assumption, gives the desired result.
+ The `only if' direction is trivial. Conversely, suppose that $X$ is a prop and let $x, y : X$. We need to show that $\idtype{x}{y}$ is contractible. For that it is enough to show that $X$ is contractible. Choosing $x : X$ as the center of contraction and applying the assumption, gives the desired result.
 \end{proof}
 
 \begin{defn}\label{defn:h-set}
- A type $X$ is an {\em h-set}, if it is a $0$-type.
+ A type $X$ is a {\em set} if it is a $0$-type.
 \end{defn}
 
 \begin{defn}
@@ -329,14 +322,14 @@ As an immediate corollary we obtain:
 \begin{thm}\label{thm:h-set-uip-K}
  For a type $X$ the following are equivalent:
  \begin{enumerate}
-  \item\label{enum:set-set} $X$ is an h-set.
+  \item\label{enum:set-set} $X$ is a set.
   \item\label{enum:set-uip} $X$ has UIP.
   \item\label{enum:set-k} $X$ satisfies Axiom K.
  \end{enumerate}
 \end{thm}
 
 \begin{proof} (\ref{enum:set-set} $\Rightarrow$ \ref{enum:set-uip}) is clear by definition. (\ref{enum:set-uip} $\Rightarrow$ \ref{enum:set-k}) follows by instantiating UIP with $y := x$ and $q := \refl{x}$.
-Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Let $x, y : X$. We need to show that for any $p, q : (\id{x}{y})$ we have $\id{p}{q}$. But elimination on $q$ reduces the problem precisely to Axiom K.
+Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is a set. Let $x, y : X$. We need to show that for any $p, q : (\id{x}{y})$ we have $\id{p}{q}$. But elimination on $q$ reduces the problem precisely to Axiom K.
 \end{proof}
 
 \begin{defn}
@@ -347,7 +340,7 @@ Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is an h-set. Le
 The following theorem is due to Hedberg~\cite{hedberg1998coherence}, for more information and generalizations
 see~\cite{krausgeneralizations}.
 \begin{thm}
- Let $X : \type$. If $X$ has decidable equality, then $X$ is an h-set.
+ Let $X : \type$. If $X$ has decidable equality, then $X$ is a set.
 \end{thm}
 
 \begin{proof}
@@ -358,11 +351,11 @@ Fix $x : X$ and assume that for all $y : Y$ we have
     by
     \[ \eta_y(p) := \begin{cases}
                      q & \text{ if } \alpha(y) = \inl(q) \\
-                     \mathsf{elim}(f(p)) & \text{ if } \alpha(y) = \inr(f).
+                     \mathsf{elim}_\emptyt(f(p)) & \text{ if } \alpha(y) = \inr(f).
                     \end{cases}
 \]
 
-TODO : explain elimination $\mathsf{elim}$ on False
+(Recall that $\emptyt$-elimination allows us to conclude anything, given an element of $\emptyt$.)
 
 \noindent
  By case analysis we see that for any $p, p' : x = y$ we have
@@ -381,13 +374,14 @@ TODO : explain elimination $\mathsf{elim}$ on False
 \end{proof}
 
 \begin{thm}\label{prop:nat-is-set}
- The type $\Nat$ of natural numbers is an h-set.
+ The type $\Nat$ of natural numbers is a set.
 \end{thm}
 
 \begin{proof}
  We will show that $\Nat$ has decidable equality, that is for all $x, y : \Nat$, we have $(x =_X y) + \neg (x =_X y)$.
  We proceed by induction on $x$ and case analysis on $y$.
 
+ % TODO: better phrase for "discrimination on the constructors"?
  If $x = 0$ and $y = 0$, we take $\inl(\refl{}(0))$. If $x = 0$ and $y = S(n)$,
  then by discrimination on the constructors we get $\neg (0 = S (n))$.
 
@@ -395,7 +389,7 @@ TODO : explain elimination $\mathsf{elim}$ on False
  If $y = S (m)$, using the induction hypothesis we may determine whether $(m = n)$ or $\neg(m = n)$ and proceed accordingly.
 \end{proof}
 
-\section{$n$-types form an $(n\mbox{+}1)$-type}
+\section{The type of \texorpdfstring{$n$}{n}-types is an \texorpdfstring{$(n\mbox{+}1)$}{(n+1)}-type}
 
 In this section we show that the type of $n$-types is itself an $(n\mbox{+}1)$-type. Formally, we may define the type:
  \[n\mbox{-}\type \defeq \sum_{X : \type} \ \istype{n}(X) \]
@@ -421,15 +415,14 @@ We start with a lemma that can be seen as a version of {\em Univalence for propo
   & \simeq (\eqv{X}{X'}),
  \end{split}
  \end{equation*}
- where the first equivalence follows from \ref{lem:paths-in-total-space}; the second is an immediate consequence of $P(X')$ being an h-prop; and the third is an application of the Univalence Axiom.
+ where the first equivalence follows from \ref{lem:paths-in-total-space}; the second is an immediate consequence of $P(X')$ being a prop; and the third is an application of the Univalence Axiom.
 \end{proof}
 
 \begin{proof}[Proof of \autoref{thm:hleveln-of-hlevelSn}]
- Let $(X, p), (X', p') : n\mbox{-}\type$. We need to show that $\idtype{(X, p)}{(X', p')}$ is an $n$-type. Since for any $n \geq -2$ and any
-type $X$ the type: $\istype{n}(X)$ is an h-prop, we may apply \autoref{lem:sig-id-h-prop} with $P := \istype{n}$. Next, we observe that it
+ Let $(X, p), (X', p') : n\mbox{-}\type$. We need to show that $\idtype{(X, p)}{(X', p')}$ is an $n$-type. Since for any $n \geq -2$ and any type $X$, the type $\istype{n}(X)$ is a proposition, we may apply \autoref{lem:sig-id-h-prop} with $P := \istype{n}$. Next, we observe that it
 suffices to show that $X \rightarrow X'$ is an $n$-type because the projection:
  \[(\eqv{X}{X'}) \hookrightarrow (X \rightarrow X').\]
- is an inclusion (i.e.~its fibers are h-propositions). Since $n$-types are preserved under the arrow type, this reduces to an assumption that $X'$ is an $n$-type.
+ is an inclusion (i.e.~its fibers are propositions). Since $n$-types are preserved under the arrow type, this reduces to an assumption that $X'$ is an $n$-type.
 \end{proof} 
 
 \section{Truncations}

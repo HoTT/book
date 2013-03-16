@@ -324,13 +324,13 @@ written $\Omega^2(A,a)$ and represented in type theory by the type
 $\id[{\id[A]{a}{a}}]{\refl{a}}{\refl{a}}$.  And so on.  In general, we can
 make the following definition:  
 
-\begin{defn}
+\begin{defn} \label{def:pointedtype}
   A \emph{pointed type} $(A,a)$ is a type $A:\type$ together with a
   point $a:A$.  We write $\type_* \defeq \sm{A:\type} A$ for the type of
   pointed types in the universe $\type$.  
 \end{defn}
 
-\begin{defn}
+\begin{defn} \label{def:loopspace}
   Given a pointed type $(A,a)$, we define the \emph{loop space} of $(A,a)$ as
   the following pointed type:
   \[\Omega(A,a)=((a=_Aa),\refl{A}(a)).\]
@@ -715,20 +715,6 @@ Fortunately, because everything in homotopy type theory is automatically functor
 
 More precisely, the proposition $\isset(A)$ is defined to be the type
 \[ \isset(A) \defeq \prd{x,y:A}{p,q:x=y} (p=q). \]
-In \autoref{cha:hlevels} we will make precise the sense in which this ``suffices for all higher levels'', but as an example, we observe that it suffices for the next level up.
-
-\begin{lem}\label{thm:isset-is1type}
-  If $A$ is a set (that is, $\isset(A)$ is inhabited), then for any $x,y:A$ and $p,q:x=y$ and $r,s:p=q$, we have $r=s$.
-\end{lem}
-\begin{proof}
-  Suppose $f:\isset(A)$; then for any $x,y:A$ and $p,q:x=y$ we have $f(x,y,p,q):p=q$.
-  Fix $x$, $y$, and $p$, and define $g: \prd{q:x=y} (p=q)$ by $g(q) \defeq f (x,y,p,q)$.
-  Then for any $r:q=q'$, we have $\apdfunc{g}(r) : \trans{r}{g(q)} = g(q')$.
-  By \autoref{cor:transport-path-prepost}, therefore, we have $g(q) \ct r = g(q')$.
-
-  In particular, suppose given $x,y,p,q,r,s$ as in the lemma statement, and define $g$ as above.
-  Then $g(p) \ct r = g(q)$ and also $g(p) \ct s = g(q)$, hence by cancellation $r=s$.
-\end{proof}
 
 As mentioned in \autoref{sec:types-vs-sets},
 the sets in homotopy type theory are not like the sets in ZF set theory, in that there is no global ``membership predicate'' $\in$.
@@ -773,7 +759,46 @@ Most of the type forming operations we have considered so far also preserve sets
 \end{eg}
 
 For more examples, see Exercises~\ref{ex:isset-coprod} and~\ref{ex:isset-sigma}.
-However, not all types are sets.
+
+\paragraph{Higher Levels}
+
+Sets are the first rung on a ladder of \emph{homotopy $n$-types}.  For
+example, a $1$-type is an analogous notion one level up, which is like a
+$1$-groupoid in category theory.  The defining property of a set, also
+called a $0$-type, is that it has no non-trivial paths.  The defining
+property of a $1$-type is that it has no non-trivial paths between
+paths:
+
+\begin{defn}\label{defn:1type}
+  A type $A$ is a \textbf{1-type} if for all $x,y:A$ and $p,q:x=y$ and $r,s:x=y$, we have $r=s$.
+\end{defn}
+
+Similary, we can define $2$-types, $3$-types, and so on.  We will define
+the general notion inductively in \cref{cha:hlevels}, and study the
+relationships between them.  
+
+However, for now it is useful to have two facts in mind.  First, the
+levels are upward-closed (if $A$ is an $n$-type then $A$ is an
+$n+1$-type); for example:
+%%  will make precise the sense in which this
+%% ``suffices for all higher levels'', but as an example, we observe that
+%% it suffices for the next level up.
+
+\begin{lem}\label{thm:isset-is1type}
+  If $A$ is a set (that is, $\isset(A)$ is inhabited), then $A$ is a 1-type.
+\end{lem}
+\begin{proof}
+  Suppose $f:\isset(A)$; then for any $x,y:A$ and $p,q:x=y$ we have $f(x,y,p,q):p=q$.
+  Fix $x$, $y$, and $p$, and define $g: \prd{q:x=y} (p=q)$ by $g(q) \defeq f (x,y,p,q)$.
+  Then for any $r:q=q'$, we have $\apdfunc{g}(r) : \trans{r}{g(q)} = g(q')$.
+  By \autoref{cor:transport-path-prepost}, therefore, we have $g(q) \ct r = g(q')$.
+
+  In particular, suppose given $x,y,p,q,r,s$ as in the lemma statement, and define $g$ as above.
+  Then $g(p) \ct r = g(q)$ and also $g(p) \ct s = g(q)$, hence by cancellation $r=s$.
+\end{proof}
+
+Second, this stratification of types by level is not degenerate, in the
+sense that not all types are sets:  
 
 \begin{eg}\label{thm:type-is-not-a-set}
   The universe \type is not a set.
@@ -785,10 +810,12 @@ However, not all types are sets.
   If $p$ were equal to $\refl A$, then (again by univalence) $f$ would equal the identity function of $A$.
   But this would imply that $\btrue=\bfalse$, contradicting \autoref{rmk:true-neq-false}.
 \end{eg}
+We will study other types that are not sets in more detail starting in
+\autoref{cha:hits}.
 
-We will study other types that are not sets in more detail starting in \autoref{cha:hits}.
-An even more special kind of type than a set is a set with at most one element.
-Such types may be regarded as \emph{propositions in a narrow sense}, and their study is just what is usually called "logic".
+An even more special kind of type than a set is a set with at most one
+element.  Such types may be regarded as \emph{propositions in a narrow
+  sense}, and their study is just what is usually called "logic".
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Logic}

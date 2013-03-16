@@ -158,10 +158,46 @@ The table below summarizes the ``equality'' and ``homotopical'' points of view o
   \end{tabular}
 \end{center}
 
-However, proof-relevance also means that we can't stop after proving ``symmetry'' and  ``transitivity'' of equality: we need to know that these \emph{operations} on equalities are well-behaved.
-(This issue is invisible to set-level mathematics, where symmetry and transitivity are mere \emph{properties} of equality, rather than structure on paths.)
-For instance, we need to know that concatenation is \emph{associative}, and that inversion provides \emph{inverses} with respect to concatenation.
-This is to be expected from the topological point of view, where these are regarded as \emph{operations} on paths.
+\subsection{Iterated Identity Types}
+\label{sec:iterated-identity-types}
+
+In many logical systems (say, first-order logic), a distinction is made
+between individuals (e.g. $x$), which are the subjects of propositions,
+and proofs of propositions (e.g. evidence for $\id[A]{x}{y}$).  Type
+theory unifies these two concepts. For example, an individual of type
+$\mathbb{Z}$, which represents an integer, is the same general kind of
+thing as evidence $p : \id[\mathbb{Z}]{x}{y}$---an individual is a term
+of type $\mathbb{Z}$; a proof of equality of integers is a term of type
+$\id[\mathbb{Z}]{x}{y}$.  Because of this, the identity type can be
+\emph{iterated}: one can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of equalities
+between evidence $p,q$, and the type 
+$\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on.  In familiar cases, these
+types will be uninteresting; for example, evidence for
+$\id[{\id[\mathbb{Z}]{x}{y}}]{p}{q}$ can always be constructed, expressing
+the fact that there is only one way to prove say
+$\id[{\mathbb{Z}}]{1}{1}$.
+
+Non-trivial iterated identity types arise from the interpretation of the
+identity type as paths: when $p,q : \id[A]{x}{y}$ are thought of as
+paths from $x$ to $y$, a term $r : \id[{\id[A]{x}{y}}]{p}{q}$ can be
+thought of as a \emph{path between paths}, or a \emph{homotopy}.  The
+term $r$
+can be visualized as a 2-dimensional path that fills in the space
+between $p$ and $q$.  Similarly, $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$
+is the type of 3-dimensional paths between two 2-dimensional paths, and
+so on.  
+
+One use of paths between paths is to state the properties of the
+operations of path inversion and concatenation.  Because of
+proof-relevance, we can't stop after proving ``symmetry'' and
+``transitivity'' of equality: we need to know that these
+\emph{operations} on equalities are well-behaved.  (This issue is
+invisible to set-level mathematics, where symmetry and transitivity are
+mere \emph{properties} of equality, rather than structure on paths.)
+For instance, we need to know that concatenation is \emph{associative},
+and that inversion provides \emph{inverses} with respect to
+concatenation.  This is to be expected from the topological point of
+view, where these are regarded as \emph{operations} on paths.
 
 \begin{lem}\label{thm:omg}%[The $\omega$-groupoid structure of types]
   Suppose $A:\type$, that $x,y,z,w:A$ and that $p:x= y$ and $q:y = z$ and $r:z=w$.
@@ -276,6 +312,36 @@ In particular, often we don't need the complicated combinatorics involved in mak
   Each possibility will produce a \emph{definitionally} different proof, but they will all be equal to each other.
   Such an equality between any two particular proofs can, again, be proven by induction, reducing all the paths in question to reflexivities and then observing that both proofs reduce themselves to reflexivities.
 \end{rmk}
+
+Another application of iterated identity types is representing a
+fundamental concept of homotopy theory called \emph{iterated loop
+  spaces}.  Given a type $A$ with a point $a:A$, the \emph{loop space}
+$\Omega(A,a)$ is the space of loops in $A$ from $a$ to $a$.  This is
+represented in type theory by the type $\id[A]{a}{a}$.  It is then
+useful to consider the loops space in the loop space of $A$, which is
+the space of 2-dimensional loops on the identity loop in $a$.  This is
+written $\Omega^2(A,a)$ and represented in type theory by the type
+$\id[{\id[A]{a}{a}}]{\refl{a}}{\refl{a}}$.  And so on.  In general, we can
+make the following definition:  
+
+\begin{defn}
+  A \emph{pointed type} $(A,a)$ is a type $A:\type$ together with a
+  point $a:A$.  We write $\type_* \defeq \sm{A:\type} A$ for the type of
+  pointed types in the universe $\type$.  
+\end{defn}
+
+\begin{defn}
+  Given a pointed type $(A,a)$, we define the \emph{loop space} of $(A,a)$ as
+  the following pointed type:
+  \[\Omega(A,a)=((a=_Aa),\refl{A}(a)).\]
+
+  For $n:\N$, the \emph{iterated loop space} of a pointed type $(A,a)$ is
+  defined by:
+  \begin{align*}
+    \Omega^0(A,a)&=(A,a)\\
+    \Omega^{n+1}(A,a)&=\Omega^n(\Omega(A,a))
+  \end{align*}
+\end{defn}
 
 \section{Functions are functors}
 \label{sec:functors}

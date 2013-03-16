@@ -7,8 +7,9 @@ cumulative hierarchy. For many purposes the homotopy-theoretic sets are just as 
 the Zermelo-Fraenkel ones, but there are also important differences. We address these in
 the present chapter. 
 
-This chapter has three parts. First we show that constructively $\set$ has pleasant categorical structure: it is a
-$\Pi W$-pretopos. This part only focuses on the dimension. In the next part we will concentrate on the set/class distinction. Algebraic Set
+This chapter has three parts. First, closely following~\cite{RijkeSpitters}, we show that constructively $\set$ has pleasant categorical
+structure: it is a $\Pi W$-pretopos. This part only focuses on the dimension. In the next part we will concentrate on the set/class
+distinction. Algebraic Set
 Theory is the natural framework for doing so. Finally, we show that the theory of ordinals and cardinals from classical set theory can
 naturally be developed by considering sets with isomorphisms as equalities. This equality is, of course, precisely the one we obtain from
 the univalence axiom.
@@ -215,7 +216,7 @@ that $I_0(f(a))= \alpha_1(a)$ for all $a:A$, which gives us $I_1$.
 
 To show that $\mathsf{isContr}(C_f)\to\mathsf{surj}(f)$,
 let $H:\mathsf{isContr}(C_f)$. Using the univalence axiom, we construct
-a dependent type $P:C_f\to\mathsf{Prop}$. Note that $\mathsf{Prop}$ is
+a dependent type $P:C_f\to\prop$. Note that $\prop$ is
 a proposition, so we can use induction on $C_f$. We define
 \begin{align*}
 P(t) & := \mathsf{unit}\\
@@ -375,30 +376,74 @@ coequalizers are stable under pullbacks.
 \section{Quotients}
 \label{sec:quotients}
 
-\note{BS:Work in progress}
-
 We present two constructions of a quotient by a $\prop$-valued equivalence relation $R$. 
 The first one uses as a higher inductive type. We freely add a path $x= y$ whenever $x$ 
 and $y$ are related by $R$ and we truncate the quotient to become a set.
 Instead of giving the truncated higher inductive definition, we use the coequalizer which was defined above.
 
 \begin{defn}
-Let $A$ be a set and let $R:A\to A\to\mathsf{Prop}$ be a binary relation over
+Let $A$ be a set and let $R:A\to A\to\prop$ be a binary relation over
 $A$, not necessarily an equivalence relation. 
 We define $A/R$ to be the coequalizer of the two projections
 $\pi_1,\pi_2:\sum(x,y:A),\ R(x,y)\to A$ in $\set$.
 \end{defn} 
 
-One can prove that quotients have all the expected properties; see~\cite{RijkeSpitters}.
+\begin{defn}
+A relation $R:A\to A\to\prop$ is said to be \emph{effective} if the square
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\sum(x,y:A),\ R (x,y) & A \\ A & A/R \\};
+\draw[ar] (m-1-1) -- node[above] {$\pi_1$} (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$c_{R }$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left]  {$\pi_2$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$c_R $} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+is a pullback. 
+\end{defn}
+
+The following lemma uses univalence for propositions.
+
+\begin{lem}\label{lem:sets_exact}
+Suppose $\pairr{A,R}$ is an equivalence relation. Then there is an
+equivalence
+\begin{equation*}
+(c_R(x)= c_R(y))\simeq R(x,y)
+\end{equation*}
+for any $x,y:A$. In other words, equivalence relations are effective.
+\end{lem}
+
+\begin{proof}
+We begin by extending $R$ to a relation $\tilde{R}:A/R\to A/R\to\prop$. After
+the construction of $\tilde{R}$ we will show that $\tilde{R}$ is equivalent
+to the identity type on $A/R$. We define $\tilde{R}$ by double induction on
+$A/R$ (note that $\prop$ is a set by univalence for propositions). We
+define $\tilde{R}(c_R(x),c_R(y)) := R(x,y)$. For $r:R(x,x')$ and $s:R(y,y')$,
+the transitivity and symmetry 
+of $R$ gives an equivalence from $R(x,y)$ to $R(x',y')$. This completes the
+definition of $\tilde{R}$. To finish the proof of the proposition, we need
+to show that $\tilde{R}(w,w')\simeq w= w'$ for every $w,w':A/R$. We can
+do this by showing that the type $\sum(w':A/R),\ \tilde{R}(w,w')$ is contractible for
+each $w:A/R$. We do this by induction. Let $x:A$. We have the term 
+$\pair{c_R(x),\rho(x)}:\sum(w':A/R),\ \tilde{R}(c_R(x),w')$, where $\rho$ is
+the reflexivity term of $R$, hence we only
+have to show that
+\begin{equation*}
+\prod(w':A/R)(r:\tilde{R}(c_R(x),w')),\ \pairr{w',r}=\pairr{c_R(x),\rho(x)},
+\end{equation*}
+which we do by induction on $w'$. Let $y:A$ and let $r:R(x,y)$. Then we have
+the path $p_R(r)^{-1}:c_R(y)= c_R(x)$. We automatically get a path from
+$p_R(r)^{-1}\cdot r=\rho(x)$, finishing the proof.
+\end{proof}
 
 \subsection{Voevodsky's impredicative quotients}\label{sec:resizing}
 The second solution is due to Voevodsky~\cite{pelayo2013preliminary}.
 He defines the quotient $A/\!\!/R $ as the type of equivalence classes of $R$, 
-i.e.\ as the image of $R$ in $A\to\mathsf{Prop}$. This gives a direct
+i.e.\ as the image of $R$ in $A\to\prop$. This gives a direct
 construction of quotients, but it requires a resizing rule. We fix an equivalence relation $\pairr{A,R}$.
 
 \begin{defn}
-A predicate $P:A\to\mathsf{Prop}$ is said to be an equivalence class with 
+A predicate $P:A\to\prop$ is said to be an equivalence class with 
 respect to $R $ if there is a term of type
 \begin{equation*}
 \mathsf{isEqClass}(R ,P):=\sum(x:A)\prod(y:A),\ R (x,y)\simeq P(y).
@@ -408,7 +453,7 @@ respect to $R $ if there is a term of type
 \begin{defn}\label{def:VVquotient}
 We define
 \begin{equation*}
-A/\!\!/ R :=\sum(P:A\to\mathsf{Prop}),\ \|\mathsf{isEqClass}(R ,P)\|.
+A/\!\!/ R :=\sum(P:A\to\prop),\ \|\mathsf{isEqClass}(R ,P)\|.
 \end{equation*}
 \end{defn}
 

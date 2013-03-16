@@ -114,8 +114,8 @@ This provides some motivation for the following.
   Finally, \autoref{ex:eqvboolbool} implies that every equivalence $\eqv\bool\bool$ is equal to either $\idfunc[\bool]$ or $e$, so we can show~\ref{item:autohtpy3} by a four-way case analysis.
 \end{proof}
 
-More generally, \autoref{lem:autohtpy} implies that any ``Eilenberg--Mac Lane space'' $K(G,1)$, where $G$ is an abelian group, will provide a counterexample.
-The type $X$ we used is the case $G = \mathbb{Z}/2$.
+More generally, \autoref{lem:autohtpy} implies that any ``Eilenberg--Mac Lane space'' $K(G,1)$, where $G$ is an abelian group, will provide a counterexample; see \autoref{cha:homotopy}.
+The type $X$ we used turns out to be equivalent to $K(\mathbb{Z}/2,1)$.
 In \autoref{cha:hits} we will see that the circle $\Sn^1 = K(\mathbb{Z},1)$ is another easy-to-describe example.
 
 We now move on to describing better notions of equivalence.
@@ -423,6 +423,64 @@ For instance, it implies that when proving a function to be an equivalence, we a
   To show $f$ is an equivalence, it suffices to show that $\hfib f y$ is contractible for any $y:B$.
   But if $e:B\to \isequiv(f)$, then given any such $y$ we have $e(y):\isequiv(f)$, so that $f$ is an equivalence and hence $\hfib f y$ is contractible, as desired.
 \end{proof}
+
+
+\section{Monomorphisms and surjections}
+\label{sec:mono-surj}
+
+When $A$ and $B$ are sets and $f:A\to B$ is an equivalence, we also call it as \textbf{isomorphism} or a \textbf{bijection}.
+(We avoid these words for types that are not sets, since in homotopy theory and higher category theory they often denote a stricter notion of ``sameness'' than homotopy equivalence.)
+In set theory, a function is a bijection just when it is both injective and surjective.
+The same is true in type theory, if we formulate these conditions appropriately.
+
+\begin{defn}
+  Let $f:A\to B$.
+  \begin{enumerate}
+  \item We say $f$ is \textbf{surjective} if for every $b:B$ we have $\brck{\hfib f b}$.
+    In other words, every fiber of $f$ is merely inhabited.
+  \item We say $f$ is a \textbf{monomorphism} if for every $x,y:A$ the function $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence.
+  \end{enumerate}
+\end{defn}
+
+Note that if $A$ and $B$ are sets, then by \autoref{lem:equiv-iff-hprop}, $f$ is a monomorphism just when
+\begin{equation}
+  \prd{x,y:A} (\id[B]{f(x)}{f(y)}) \to (\id[A]xy).\label{eq:injective}
+\end{equation}
+In this case we say that $f$ is \textbf{injective}.
+We avoid that word for types that are not sets, because it might be interpreted as~\eqref{eq:injective} (which is an ill-behaved notion for non-sets).
+It is also true that any function between sets is surjective if and only if it is an \emph{epimorphism} in a suitable sense, but this also fails for more general types, and surjectivity is generally the more important notion.
+
+\begin{thm}\label{thm:mono-surj-equiv}
+  A function $f:A\to B$ is an equivalence if and only if it is both mono and surjective.
+\end{thm}
+\begin{proof}
+  If $f$ is an equivalence, then each $\hfib f b$ is contractible, hence so is $\brck{\hfib f b}$, so $f$ is surjective.
+  And we showed in \autoref{thm:paths-respects-equiv} that any equivalence is mono.
+
+  Conversely, suppose $f$ is mono and surjective.
+  Let $b:B$; we show that $\sm{x:A}(f(x)=b)$ is contractible.
+  Since $f$ is surjective, there merely exists an $a:A$ such that $f(a)=b$.
+  Thus, the fiber of $f$ over $b$ is inhabited; it remains to show it is a mere proposition.
+  For this, suppose given $x,y:A$ with $p:f(x)=b$ and $q:f(y)=b$.
+  Then since $\apfunc f$ is an equivalence, there exists $r:x=y$ with $\apfunc f (r) = p \ct \opp q$.
+  However, using the characterization of paths in $\Sigma$-types, the latter equality rearranges to $\trans{r}{p} = q$.
+  Thus, together with $r$ it exhibits $(x,p) = (y,q)$ in the fiber of $f$ over $b$.
+\end{proof}
+
+\begin{cor}
+  For any $f:A\to B$ we have
+  \[ \isequiv(f) \simeq (\mathsf{isMono}(f) \times \mathsf{isSurjective}(f)).\]
+\end{cor}
+\begin{proof}
+  Both surjectivity and monomorphy are mere propositions; now apply \autoref{lem:equiv-iff-hprop}.
+\end{proof}
+
+Of course, this cannot be used as a definition of ``equivalence'', since the definition of monomorphy refers to equivalences.
+However, this characterization can still be useful; see \autoref{sec:whitehead}.
+We will generalize it in \autoref{cha:hlevels}.
+
+% TODO: modify whitehead.
+
 
 
 \section{Concluding remarks}

@@ -373,8 +373,7 @@ coequalizers are stable under pullbacks.
 \end{proof}
 
 
-\section{Quotients}
-\label{sec:quotients}
+\section{Quotients}\label{sec:quotients}
 
 We present two constructions of a quotient by a $\prop$-valued equivalence relation $R$. 
 The first one uses as a higher inductive type. We freely add a path $x= y$ whenever $x$ 
@@ -685,6 +684,7 @@ If we use the resizing rules we can replace the large type $\sum(P:\prop),\ P$ w
 the usual notion of a subobject classifier. Without the resizing rules we do obtain a large subobject classifier.
 
 \subsection{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}W-pretopos}
+\label{subsec:piw}
 \begin{thm} The category $\set$ is a $\Pi$W-pretopos.
 \end{thm}
 \begin{proof}
@@ -837,8 +837,57 @@ This we also obtained in proposition~\ref{prop:trunc_of_prop_is_set}.
 
 \section{Algebraic Set Theory}
 \note{Steve Awodey}
-We should obtain a model of BIST following the Awodey, Forsell, Warren paper. 
-We use the replacement axiom~\ref{lem:replacement}
+We should obtain a model of BIST following Awodey, Forsell, Warren. 
+We may want tot use the replacement axiom~\ref{lem:replacement}.
+We should consider as classes only those large sets with small diagonal.
+
+The universe is naturally a groupoid, but it may be possible to distort it to be a set.
+
+It seems unlikely that the axiom of collection and the axiom of multiple choice are derivable in HoTT,
+simply because none of its axioms seem applicable.  In the constructive set theory CZF~\cite{aczel2001notes}, unlike in classical Zermelo
+set theory, the collection axiom is \emph{stronger} than the replacement axiom. 
+The replacement axiom \emph{is} derivable from the resizing rules; see section~\ref{sec:resizing}.
+In line with Voevodsky's proposal to add resizing rules to homotopy type theory, one could also consider its extension with the
+collection axiom.
+
+\subsection{Class of stable maps}
+\begin{defn}\label{defn:small_maps}
+A class $\smal:\prod\{X,Y:\type\},\ (X\to Y)\to\prop$ is \emph{stable} of if it satisfies:
+\begin{description}
+\item[pullback stability] If we have a pullback diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {X & A \\ Y & B \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$f$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left]  {$g$} (m-2-1);
+\draw[ar] (m-2-1) -- (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+then $\smal(f)\to\smal(g)$.
+\item[Descent] If the bottom arrow in the above diagram is surjective, then $\smal(g)\to\smal(f)$. 
+\item[Sum] If $\smal(f),\smal(g)$, then $\smal(f+g)$.
+\end{description}
+A class of stable class of maps is \emph{locally full}~\citep[3.2]{MoerdijkPalmgren2002} if for all $g:X\to Y$ and $f:Y\to Z$ such
+that $\smal(f)$: $\smal(g)$ iff $\smal(fg)$.
+
+A class of maps $\smal$ is called a \emph{class of small maps} if it is stable, locally full and for each $X$, 
+$\smal_X$ --- the small over maps over $X$ --- forms a $\Pi$W-pretopos; see~\citep[3.3]{MoerdijkPalmgren2002}.
+\end{defn}
+
+\begin{lem}
+The class of set-fibered maps is a class of small maps.
+\end{lem}
+\begin{proof}
+The class of maps with set-fibers is stable. It even has dependent sums.
+
+We claim that it is locally full: If $g$ has set-fibers, then $fg$ has set-fibers, as sets are
+closed under $\Sigma$-types. Conversely, fix $y\in Y$, then $\hfiber g y$ is the pullback
+\[\sum x:\hfiber{fg}{f(y)},\ g(x)=y.\]
+
+By the use of the object classifier, \autoref{thm:nobject_classifier}, we see that the type $\smal_X$ is equivalent
+to the sets in context $X$. Now, sets in any context form a $\Pi$W-pretopos; see \autoref{subsec:piw}.
+\end{proof}
 
 \section{Excluded Middle and the Axiom of Choice}
 \label{sec:excl-middle-axiom}

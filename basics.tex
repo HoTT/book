@@ -7,7 +7,7 @@
 Recall that for any type $A$, and any $x,y:A$, we have a identity type $\id[A]{x}{y}$, also written $\idtype[A]{x}{y}$ or just $x=y$.
 We can think of inhabitants of $x=y$ as either
 \begin{enumerate}
-\item proofs or evidence that $x$ and $y$ are equal,
+\item evidence that $x$ and $y$ are equal,
 \item identifications of $x$ with $y$,
 \item paths from $x$ to $y$, or
 \item isomorphisms/equivalences from $x$ to $y$.
@@ -15,7 +15,18 @@ We can think of inhabitants of $x=y$ as either
 The first is more traditional in type theory; but in homotopy type theory we often take the latter perspectives as well.
 It turns out that the defining rules of identity types, as described in the previous chapter, give them structure which corresponds precisely to that of a space or a higher groupoid.
 
-Recall that the induction principle for the identity types $\id[A]{x}{y}$ (with $A$ a fixed type) says that if
+This interpretation depends on the ability to \emph{iterate} the identity types.
+Recall that type theory (unlike, say, first-order logic) does not distinguish between individuals (e.g.\ $x$), which are the subjects of propositions, and proofs of propositions (e.g.\ evidence for $\id[A]{x}{y}$).
+Thus, the identity type can be iterated: we can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of equalities between identifications $p,q$, and the type $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on.
+
+If the original type $A$ is ``set-like'', such as \nat, these iterated identity types will be uninteresting (see \autoref{sec:basics-sets}).
+However, under the interpretation of $p,q : \id[A]{x}{y}$ as paths from $x$ to $y$, an element $r : \id[{\id[A]{x}{y}}]{p}{q}$ can be
+thought of as a \emph{path between paths}, or a \emph{homotopy}, and visualized as a 2-dimensional path that fills in the space between $p$ and $q$.
+Similarly, $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$ is the type of 3-dimensional paths between two 2-dimensional paths, and so on.
+This ``tower of identity types'' is what we claim has the structure of a higher groupoid.
+
+One of the amazing things about homotopy type theory is that all the higher groupoid structure arises automatically from the induction principle for identity types, as stated in \autoref{sec:identity-types}.
+Recall that this says that
 \begin{itemize}
 \item for every $x,y:A$ and every $p:\id[A]xy$ we have a type $D(x,y,p)$, and
 \item for every $a:A$ we have an element $d(a):D(a,a,\refl a)$, 
@@ -48,7 +59,7 @@ If a sequence $(a_n)_{n\in \mathbb{N}}$ is defined by giving $a_0$ and specifyin
 (This may seem so obvious as to not be worth saying, but if we view a definition by recursion as an algorithm for calculating values of a sequence, then it is precisely the process of executing that algorithm.)
 The rule~\eqref{eq:Jconv} is analogous: it says that if we define an object $f(p)$ for all $p:x=y$ by specifying what the value should be when $p$ is $\refl{x}:x=x$, then the value we specified is in fact the value of $f(\refl{x})$.
 
-We now derive from this induction principle all the structure of a higher groupoid.
+We now derive from this induction principle the beginnings of the structure of a higher groupoid.
 We begin with symmetry of equality, which, in topological language, means that ``paths can be reversed''.
 
 \begin{lem}\label{lem:opp}
@@ -158,46 +169,11 @@ The table below summarizes the ``equality'' and ``homotopical'' points of view o
   \end{tabular}
 \end{center}
 
-\subsection{Iterated Identity Types}
-\label{sec:iterated-identity-types}
-
-In many logical systems (say, first-order logic), a distinction is made
-between individuals (e.g. $x$), which are the subjects of propositions,
-and proofs of propositions (e.g. evidence for $\id[A]{x}{y}$).  Type
-theory unifies these two concepts. For example, an individual of type
-$\mathbb{Z}$, which represents an integer, is the same general kind of
-thing as evidence $p : \id[\mathbb{Z}]{x}{y}$---an individual is a term
-of type $\mathbb{Z}$; a proof of equality of integers is a term of type
-$\id[\mathbb{Z}]{x}{y}$.  Because of this, the identity type can be
-\emph{iterated}: one can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of equalities
-between evidence $p,q$, and the type 
-$\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on.  In familiar cases, these
-types will be uninteresting; for example, evidence for
-$\id[{\id[\mathbb{Z}]{x}{y}}]{p}{q}$ can always be constructed, expressing
-the fact that there is only one way to prove say
-$\id[{\mathbb{Z}}]{1}{1}$.
-
-Non-trivial iterated identity types arise from the interpretation of the
-identity type as paths: when $p,q : \id[A]{x}{y}$ are thought of as
-paths from $x$ to $y$, a term $r : \id[{\id[A]{x}{y}}]{p}{q}$ can be
-thought of as a \emph{path between paths}, or a \emph{homotopy}.  The
-term $r$
-can be visualized as a 2-dimensional path that fills in the space
-between $p$ and $q$.  Similarly, $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$
-is the type of 3-dimensional paths between two 2-dimensional paths, and
-so on.  
-
-One use of paths between paths is to state the properties of the
-operations of path inversion and concatenation.  Because of
-proof-relevance, we can't stop after proving ``symmetry'' and
-``transitivity'' of equality: we need to know that these
-\emph{operations} on equalities are well-behaved.  (This issue is
-invisible to set-level mathematics, where symmetry and transitivity are
-mere \emph{properties} of equality, rather than structure on paths.)
-For instance, we need to know that concatenation is \emph{associative},
-and that inversion provides \emph{inverses} with respect to
-concatenation.  This is to be expected from the topological point of
-view, where these are regarded as \emph{operations} on paths.
+Because of proof-relevance, we can't stop after proving ``symmetry'' and ``transitivity'' of equality: we need to know that these \emph{operations} on equalities are well-behaved.
+(This issue is invisible to set-level mathematics, where symmetry and transitivity are mere \emph{properties} of equality, rather than structure on
+paths.)
+From the homotopy-theoretic point of view, concatenation and inversion are just the ``first level'' of higher groupoid structure --- we also need coherence laws on these operations, and analogous operations at higher dimensions.
+For instance, we need to know that concatenation is \emph{associative}, and that inversion provides \emph{inverses} with respect to concatenation.
 
 \begin{lem}\label{thm:omg}%[The $\omega$-groupoid structure of types]
   Suppose $A:\type$, that $x,y,z,w:A$ and that $p:x= y$ and $q:y = z$ and $r:z=w$.
@@ -212,11 +188,6 @@ view, where these are regarded as \emph{operations} on paths.
 
 Note, in particular, that~\ref{item:omg1}--\ref{item:omg4} are themselves propositional equalities, living in the identity types of the identity types $x=y$.
 Topologically, they are \emph{paths of paths}, and we are familiar topologically with the idea that concatenating a path with the reversed path only gives a constant path \emph{up to homotopy}, i.e.\ up to a higher path.
-The paths~\ref{item:omg1}--\ref{item:omg4} also satisfy their own higher coherence laws, which are themselves higher paths, and so on all the way up.
-
-However, for most purposes it is unnecessary to make the whole infinite-dimensional structure explicit.
-One of the nice things about homotopy type theory is that all of this structure can be \emph{proven} starting from only the inductive property of identity types, so we can make explicit as much or as little of it as we need.
-In particular, often we don't need the complicated combinatorics involved in making precise notions such as ``coherent structure at all higher levels''.
 
 \begin{proof}[Proof of~\autoref{thm:omg}]
   All the proofs use the induction principle for equalities.
@@ -313,35 +284,42 @@ In particular, often we don't need the complicated combinatorics involved in mak
   Such an equality between any two particular proofs can, again, be proven by induction, reducing all the paths in question to reflexivities and then observing that both proofs reduce themselves to reflexivities.
 \end{rmk}
 
-Another application of iterated identity types is representing a
-fundamental concept of homotopy theory called \emph{iterated loop
-  spaces}.  Given a type $A$ with a point $a:A$, the \emph{loop space}
-$\Omega(A,a)$ is the space of loops in $A$ from $a$ to $a$.  This is
-represented in type theory by the type $\id[A]{a}{a}$.  It is then
-useful to consider the loops space in the loop space of $A$, which is
-the space of 2-dimensional loops on the identity loop in $a$.  This is
-written $\Omega^2(A,a)$ and represented in type theory by the type
-$\id[{\id[A]{a}{a}}]{\refl{a}}{\refl{a}}$.  And so on.  In general, we can
-make the following definition:  
+We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence laws, which are themselves higher paths, and so on all the way up to infinity.
+However, for most purposes it is unnecessary to make the whole infinite-dimensional structure explicit.
+One of the nice things about homotopy type theory is that all of this structure can be \emph{proven} starting from only the inductive property of identity types, so we can make explicit as much or as little of it as we need.
+In particular, in this book we will not need any of the complicated combinatorics involved in making precise notions such as ``coherent structure at all higher levels''.
+
+One particularly important case of iterated identity types (path types) is when the start and end points are the same.
+In set theory, the propositon $a=a$ is entirely uninteresting, but in homotopy theory paths from a point to itself are called \emph{loops} and carry lots of interesting higher structure.
+Thus, given a type $A$ with a point $a:A$, we define its \emph{loop space} $\Omega(A,a)$ to be the type $\id[A]{a}{a}$.
+We may sometimes write simply $\Omega A$ if the point $a$ is understood from context.
+
+Since any two elements of $\Omega A$ are paths with the same start and end points, they can be concatenated;
+thus we have an operation $\Omega A\times \Omega A\to \Omega A$.
+More generally, the higher groupoid structure of $A$ gives $\Omega A$ the analogous structure of a ``higher group''.
+
+It can also be useful to consider the loop space \emph{of} the loop space of $A$, which is the space of 2-dimensional loops on the identity loop in $a$.
+This is written $\Omega^2(A,a)$ and represented in type theory by the type $\id[{\id[A]{a}{a}}]{\refl{a}}{\refl{a}}$.
+And so on.
+In general, we make the following definitions:
 
 \begin{defn} \label{def:pointedtype}
-  A \emph{pointed type} $(A,a)$ is a type $A:\type$ together with a
-  point $a:A$.  We write $\type_* \defeq \sm{A:\type} A$ for the type of
-  pointed types in the universe $\type$.  
+  A \textbf{pointed type} $(A,a)$ is a type $A:\type$ together with a point $a:A$.
+  We write $\type_* \defeq \sm{A:\type} A$ for the type of pointed types in the universe $\type$.
 \end{defn}
 
 \begin{defn} \label{def:loopspace}
-  Given a pointed type $(A,a)$, we define the \emph{loop space} of $(A,a)$ as
-  the following pointed type:
-  \[\Omega(A,a)=((a=_Aa),\refl{A}(a)).\]
-
-  For $n:\N$, the \emph{iterated loop space} of a pointed type $(A,a)$ is
-  defined by:
+  Given a pointed type $(A,a)$, we define the \textbf{loop space} of $(A,a)$ to be the following pointed type:
+  \[\Omega(A,a)=((\id[A]aa),\refl{A}(a)).\]
+  For $n:\N$, the \textbf{$n$-fold iterated loop space} of a pointed type $(A,a)$ is defined recursively by:
   \begin{align*}
     \Omega^0(A,a)&=(A,a)\\
-    \Omega^{n+1}(A,a)&=\Omega^n(\Omega(A,a))
+    \Omega^{n+1}(A,a)&=\Omega^n(\Omega(A,a)).
   \end{align*}
 \end{defn}
+
+We will return to iterated loop spaces in \autoref{cha:hlevels,cha:hits,cha:homotopy}.
+
 
 \section{Functions are functors}
 \label{sec:functors}

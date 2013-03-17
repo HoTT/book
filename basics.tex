@@ -699,11 +699,11 @@ for any $a:A$ and type family $B:\prd{x:A} (a=x) \to\type$.
 However, inductive types with recursion, like the natural numbers, have more complicated universal properties; see \autoref{cha:induction}.
 
 
-\section{Sets}
+\section{Sets and $n$-types}
 \label{sec:basics-sets}
 
 While types in general behave like higher groupoids, there is a subclass of them that behave more like the sets in a traditional set-theoretic system.
-Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms and higher morphisms, while topologically we may consider sets with the discrete topology.
+Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms and higher morphisms; while topologically, we may consider spaces having the discrete topology.
 More generally, we may consider groupoids or spaces that are \emph{equivalent} to ones of this sort; since everything we do in type theory is up to homotopy, we can't expect to tell the difference.
 
 Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopy information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
@@ -758,28 +758,23 @@ Most of the type forming operations we have considered so far also preserve sets
   Now using function extensionality again, the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are $p$ and $q$.
 \end{eg}
 
-For more examples, see Exercises~\ref{ex:isset-coprod} and~\ref{ex:isset-sigma}.
+For more examples, see \autoref{ex:isset-coprod,ex:isset-sigma}.
 
-\paragraph{Higher Levels}
-
-Sets are the first rung on a ladder of \emph{homotopy $n$-types}.  For
-example, a $1$-type is an analogous notion one level up, which is like a
-$1$-groupoid in category theory.  The defining property of a set, also
-called a $0$-type, is that it has no non-trivial paths.  The defining
-property of a $1$-type is that it has no non-trivial paths between
-paths:
+In fact, sets are just the first rung on a ladder of what are called \emph{homotopy $n$-types}.
+The next rung consists of \emph{$1$-types}, which are analogous to $1$-groupoids in category theory.
+The defining property of a set (which we may also call a \emph{$0$-type}) is that it has no non-trivial paths.
+Similarly, the defining property of a $1$-type is that it has no non-trivial paths between paths:
 
 \begin{defn}\label{defn:1type}
   A type $A$ is a \textbf{1-type} if for all $x,y:A$ and $p,q:x=y$ and $r,s:x=y$, we have $r=s$.
 \end{defn}
 
-Similary, we can define $2$-types, $3$-types, and so on.  We will define
-the general notion inductively in \cref{cha:hlevels}, and study the
-relationships between them.  
+Similary, we can define $2$-types, $3$-types, and so on.
+We will define the general notion of $n$-type inductively in \cref{cha:hlevels}, and study the relationships between them.
 
-However, for now it is useful to have two facts in mind.  First, the
-levels are upward-closed (if $A$ is an $n$-type then $A$ is an
-$n+1$-type); for example:
+However, for now it is useful to have two facts in mind.
+First, the levels are upward-closed: if $A$ is an $n$-type then $A$ is an $(n+1)$-type.
+For example:
 %%  will make precise the sense in which this
 %% ``suffices for all higher levels'', but as an example, we observe that
 %% it suffices for the next level up.
@@ -810,18 +805,22 @@ sense that not all types are sets:
   If $p$ were equal to $\refl A$, then (again by univalence) $f$ would equal the identity function of $A$.
   But this would imply that $\btrue=\bfalse$, contradicting \autoref{rmk:true-neq-false}.
 \end{eg}
-We will study other types that are not sets in more detail starting in
-\autoref{cha:hits}.
 
-An even more special kind of type than a set is a set with at most one
-element.  Such types may be regarded as \emph{propositions in a narrow
-  sense}, and their study is just what is usually called "logic".
+In \autoref{cha:hits,cha:homotopy} we will show that for any $n$, there are types which are not $n$-types.
+
+Note that $A$ is a 1-type exactly when for any $x,y:A$, the identity type $\id[A]xy$ is a set.
+(Thus, \autoref{thm:isset-is1type} could equivalently be read as saying that the identity types of a set are also sets.)
+This will be the basis of the inductive definition of $n$-types we will give in \autoref{cha:hlevels}.
+
+We can also extend this characterization ``downwards'' from sets.
+That is, a type $A$ is a set just when for any $x,y:A$, any two elements of $\id[A]xy$ are equal.
+Since sets are equivalently 0-types, it is natural to call a type a \emph{$(-1)$-type} if it has this latter property (any two elements of it are equal).
+Such types may be regarded as \emph{propositions in a narrow sense}, and their study is just what is usually called ``logic''.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Logic}
 \label{sec:logic}
-
-% This implies in particular that the usual method of \emph{proof by contradiction} cannot in general be used to establish a positive statement, but only one of the form ``it's not the case that \dots''.
 
 Type theory, formal or informal, is a collection of rules for manipulating types and their elements.
 But when writing mathematics informally in human language, we generally use familiar words, particularly logical connectives such as ``and'' and ``or'', and logical quantifiers such as ``for all'' and ``there exists''.
@@ -952,7 +951,7 @@ On the other hand, the uninhabited type \emptyt is also (vacuously) a mere propo
 In classical mathematics, at least, these are the only two possibilities.
 
 Mere propositions are also called \emph{subterminal objects} (if thinking categorically), \emph{subsingletons} (if thinking set-theoretically), or \emph{h-propositions}.
-In \autoref{cha:hlevels} we will learn to also call them \emph{$(-1)$-truncated types}.
+The discussion in \autoref{sec:basics-sets} suggests we should also call them \emph{$(-1)$-types}; we will return to this in \autoref{cha:hlevels}.
 The adjective ``mere'' emphasizes that although any type may be regarded as a proposition (which we prove by giving an inhabitant of it), a type that is a mere proposition cannot usefully be regarded as any \emph{more} than a proposition: there is no additional information contained in a witness of its truth.
 
 Note that a type $A$ is a set if and only if for all $x,y:A$, the identity type $\id[A]xy$ is a mere proposition.
@@ -1321,7 +1320,7 @@ Another equivalent definition of contractibility, which is also sometimes conven
 
 In other words, the type $\iscontr(A)$ is defined to be
 \[ \iscontr(A) \defeq \sm{a:A} \prd{x:A}(a=x). \]
-Note that under the usual propositions-as-types reading, we can pronounce $\iscontr(A)$ as ``$A$ contains exactly one element''.
+Note that under the usual propositions-as-types reading, we can pronounce $\iscontr(A)$ as ``$A$ contains exactly one element'', or more precisely ``$A$ contains an element, and every other element of $A$ is equal to that element''.
 
 \begin{rmk}
   We can also pronounce $\iscontr(A)$ more topologically as ``there is a point $a:A$ such that for all $x:A$ there exists a path from $a$ to $x$''.
@@ -1413,6 +1412,19 @@ This principle consists of many lemmas, most of which we leave to the reader; th
   We leave the proof of~\ref{item:omitcontr2} to the reader (see \autoref{ex:omit-contr2}).
 \end{proof}
 
+Another reason contractible types are interesting is that they extend the ladder of $n$-types mentioned in \autoref{sec:basics-sets} downwards one more step.
+
+\begin{lem}
+  A type $A$ is a mere proposition if and only if for all $x,y:A$, the type $\id[A]xy$ is contractible.
+\end{lem}
+\begin{proof}
+  For ``if'', we simply observe that any contractible type is inhabited.
+  For ``only if'', we observed in \autoref{subsec:hprops} that every mere proposition is a set, so that each type $\id[A]xy$ is a mere proposition.
+  But it is also inhabited (since $A$ is a mere proposition), and hence by \autoref{thm:contr-unit}\ref{item:contr-inhabited-prop} it is contractible.
+\end{proof}
+
+Thus, contractible types may also be called \emph{$(-2)$-types}.
+They will be the base case of our inductive definition of $n$-types in \autoref{cha:hlevels}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1447,15 +1459,12 @@ The more refined approach we have described, which characterizing the entire ide
 
 The type-theoretic axiom of choice~\eqref{eq:sigma-ump-map} was noticed in William Howard's original paper~\cite{howard:pat} on the propositions-as-types correspondence, and was studied further by Martin-L\"of with the introduction of his dependent type theory.
 
-The fact that it is possible to define sets in type theory using finitely many data, with all higher homotopies automatically taken care of as in \autoref{sec:basics-sets}, was first observed by Voevodsky.
-His original definition of $\isset$ was a bit more complicated than ours, but has the advantage of fitting neatly into an infinite hierarchy; see \autoref{cha:hlevels}.
+The fact that it is possible to define sets, mere propositions, and contractible types in type theory using finitely many data, with all higher homotopies automatically taken care of as in \autoref{sec:basics-sets,subsec:hprops,sec:contractibility}, was first observed by Voevodsky.
+In fact, he defined the entire hierarchy of $n$-types by induction, as we will do in \autoref{cha:hlevels}.
 
 \autoref{thm:not-dneg,thm:not-lem} rely in essense on a classical theorem of Hedberg, which we will prove in \autoref{cha:hlevels}.
 The implication that the propositions-as-types form of LEM contradicts univalence was observed by Martin Escardo on the Agda mailing list.
 The proof we have given of \autoref{thm:not-dneg} is due to Thierry Coquand.
-
-Mere propositions were first defined in type theory by Voevodsky.
-His original definition was slightly more complicated than ours, but fits into the more general framework of \autoref{cha:hlevels}.
 
 The propositional truncation was introduced, in extensional type theory, by~\cite{ab:bracket-types}.
 The intensional version was constructed by Voevodsky using an impredicative quantification, and later by Lumsdaine using higher inductive types (see \autoref{cha:hits}).

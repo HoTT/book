@@ -699,11 +699,11 @@ for any $a:A$ and type family $B:\prd{x:A} (a=x) \to\type$.
 However, inductive types with recursion, like the natural numbers, have more complicated universal properties; see \autoref{cha:induction}.
 
 
-\section{Sets}
+\section{Sets and $n$-types}
 \label{sec:basics-sets}
 
 While types in general behave like higher groupoids, there is a subclass of them that behave more like the sets in a traditional set-theoretic system.
-Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms and higher morphisms, while topologically we may consider sets with the discrete topology.
+Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms and higher morphisms; while topologically, we may consider spaces having the discrete topology.
 More generally, we may consider groupoids or spaces that are \emph{equivalent} to ones of this sort; since everything we do in type theory is up to homotopy, we can't expect to tell the difference.
 
 Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopy information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
@@ -758,28 +758,23 @@ Most of the type forming operations we have considered so far also preserve sets
   Now using function extensionality again, the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are $p$ and $q$.
 \end{eg}
 
-For more examples, see Exercises~\ref{ex:isset-coprod} and~\ref{ex:isset-sigma}.
+For more examples, see \autoref{ex:isset-coprod,ex:isset-sigma}.
 
-\paragraph{Higher Levels}
-
-Sets are the first rung on a ladder of \emph{homotopy $n$-types}.  For
-example, a $1$-type is an analogous notion one level up, which is like a
-$1$-groupoid in category theory.  The defining property of a set, also
-called a $0$-type, is that it has no non-trivial paths.  The defining
-property of a $1$-type is that it has no non-trivial paths between
-paths:
+In fact, sets are just the first rung on a ladder of what are called \emph{homotopy $n$-types}.
+The next rung consists of \emph{$1$-types}, which are analogous to $1$-groupoids in category theory.
+The defining property of a set (which we may also call a \emph{$0$-type}) is that it has no non-trivial paths.
+Similarly, the defining property of a $1$-type is that it has no non-trivial paths between paths:
 
 \begin{defn}\label{defn:1type}
   A type $A$ is a \textbf{1-type} if for all $x,y:A$ and $p,q:x=y$ and $r,s:x=y$, we have $r=s$.
 \end{defn}
 
-Similary, we can define $2$-types, $3$-types, and so on.  We will define
-the general notion inductively in \cref{cha:hlevels}, and study the
-relationships between them.  
+Similary, we can define $2$-types, $3$-types, and so on.
+We will define the general notion of $n$-type inductively in \cref{cha:hlevels}, and study the relationships between them.
 
-However, for now it is useful to have two facts in mind.  First, the
-levels are upward-closed (if $A$ is an $n$-type then $A$ is an
-$n+1$-type); for example:
+However, for now it is useful to have two facts in mind.
+First, the levels are upward-closed: if $A$ is an $n$-type then $A$ is an $(n+1)$-type.
+For example:
 %%  will make precise the sense in which this
 %% ``suffices for all higher levels'', but as an example, we observe that
 %% it suffices for the next level up.
@@ -810,18 +805,22 @@ sense that not all types are sets:
   If $p$ were equal to $\refl A$, then (again by univalence) $f$ would equal the identity function of $A$.
   But this would imply that $\btrue=\bfalse$, contradicting \autoref{rmk:true-neq-false}.
 \end{eg}
-We will study other types that are not sets in more detail starting in
-\autoref{cha:hits}.
 
-An even more special kind of type than a set is a set with at most one
-element.  Such types may be regarded as \emph{propositions in a narrow
-  sense}, and their study is just what is usually called "logic".
+In \autoref{cha:hits,cha:homotopy} we will show that for any $n$, there are types which are not $n$-types.
+
+Note that $A$ is a 1-type exactly when for any $x,y:A$, the identity type $\id[A]xy$ is a set.
+(Thus, \autoref{thm:isset-is1type} could equivalently be read as saying that the identity types of a set are also sets.)
+This will be the basis of the inductive definition of $n$-types we will give in \autoref{cha:hlevels}.
+
+We can also extend this characterization ``downwards'' from sets.
+That is, a type $A$ is a set just when for any $x,y:A$, any two elements of $\id[A]xy$ are equal.
+Since sets are equivalently 0-types, it is natural to call a type a \emph{$(-1)$-type} if it has this latter property (any two elements of it are equal).
+Such types may be regarded as \emph{propositions in a narrow sense}, and their study is just what is usually called ``logic''.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Logic}
 \label{sec:logic}
-
-% This implies in particular that the usual method of \emph{proof by contradiction} cannot in general be used to establish a positive statement, but only one of the form ``it's not the case that \dots''.
 
 Type theory, formal or informal, is a collection of rules for manipulating types and their elements.
 But when writing mathematics informally in human language, we generally use familiar words, particularly logical connectives such as ``and'' and ``or'', and logical quantifiers such as ``for all'' and ``there exists''.

@@ -1,23 +1,892 @@
-\chapter{Classical Set Theory}
+\chapter{Set Theory}
 \label{cha:set-math}
 
 Our conception of sets as types with simple homotopy structure, cf.\
 \autoref{sec:basics-sets}, is at odds with the Zermelo-Frankel sets which form a
-cummulative hierarchy. For many purposes the homotopy-theoretic sets are just as good as
+cumulative hierarchy. For many purposes the homotopy-theoretic sets are just as good as
 the Zermelo-Fraenkel ones, but there are also important differences. We address these in
-the present chapter.
+the present chapter. 
+
+This chapter has three parts. First, closely following~\cite{RijkeSpitters}, we show that constructively $\set$ has pleasant categorical
+structure: it is a $\Pi W$-pretopos. This part only focuses on the dimension. In the next part we will concentrate on the set/class
+distinction. Algebraic Set
+Theory is the natural framework for doing so. Finally, we show that the theory of ordinals and cardinals from classical set theory can
+naturally be developed by considering sets with isomorphisms as equalities. This equality is, of course, precisely the one we obtain from
+the univalence axiom.
+
+In this section we use the notation $f\sim g$ for pointwise equality of functions. By functional equality, $f\sim g\to f=g$.
+
+\section{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}W-pretopos}
+We will show that $\set$ is a $\Pi$W-pretopos. We start by proving that it is a regular category.
+Thus, we will show that
+\begin{enumerate}
+\item $\set$ is finitely complete.
+\item The kernel pair $\pi_1,\pi_2:\sum(x,y:A),\ f(x)= f(y)\to A$ of any
+      function has a coequalizer.
+\item Pullbacks of coequalizers are again coequalizers.
+\end{enumerate}
+The obvious candidate for coequalizer of the kernel pair of a function is the
+image of the function. To prove that it is, we will use unique choice. Using unique
+choice we can find a function out of the image as indicated by the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\sum(x,y:A),\ f(x)= f(y) & A & \mathsf{im}(f) \\ & & X \\};
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] (m-1-2) -- node[above] {$\tilde{f}$} (m-1-3);
+\draw[ar] (m-1-2) -- node[auto,swap] {$g$} (m-2-3);
+\draw[ar,densely dotted] (m-1-3) -- (m-2-3);
+\end{tikzpicture}
+\end{equation*}
+whenever $g$ coequalizes $\pi_1$ and $\pi_2$. The result 
+that the image of a function $f$ is the coequalizer of its kernel pair is a consequence of the principle of unique choice.
+
+\subsection{The image of a function}
+The truncations allow us to define a stable factorization
+system\footnote{\url{http://uf-ias-2012.wikispaces.com/file/view/images.pdf/401765624/images.pdf}}.
+In fact, this generalizes to reflective subuniverses; see~\autoref{subsec:reflective-subuniverses}.
+We will only consider the factorization system given by $(-1)$-truncation.
+This defines a stable orthogonal factorization system $(\mathcal{E},
+\mathcal{M})$ on $\set$: every map factors as an surjection followed by a 
+monomorphism and this factorization is stable under pullback.
+We first define these notions:
+\begin{defn}
+Let $f:A\to B$ be a function between $\set$s. It is \emph{surjective} if
+\begin{equation*}
+\mathsf{surj}(f)\defeq\prod(b:B),\ \|\hfiber{f}b\|.
+\end{equation*}
+A monomorphism is a functions with contractible homotopy fibers, i.e.\ if there is a term of type
+\begin{equation*}
+\mathsf{inj}(f)\defeq\prod(a:A),\ \mathsf{isContr}(\hfiber{f}{f(a)}).
+\end{equation*}
+\end{defn}
+
+We remark that $f:A\to B$ is a monomorphism if and only if the function
+\begin{equation*}
+\lambda a.\pairr{a,a,\refl{f(a)}}:A\to A\times_B A
+\end{equation*}
+is an equivalence.
+
+The injective functions are of course the monomorphisms of
+$\set$, which we can also define via a pullback diagram, but we will not do that here.
+
+\begin{defn}
+Let $f:A\to B$ be a function between $\set$s. Define the image 
+\begin{equation*}
+\im(f):=\sum(b:B),\ \|\hfiber{f}b\|
+\end{equation*}
+We define the functions $\tilde{f}:A\to\im(f)$ and $i_f:\im(f)\to B$ by
+\begin{align*}
+\tilde{f} & := \lambda a.\pairr{f(a),\pi(a,\refl{f(a)})}\\
+i_f & := \pi_1.
+\end{align*}
+\end{defn}
+
+\begin{lem}
+Then $\tilde{f}$ is surjective and $i_f$ is mono.
+\end{lem}
+
+We use the insights from~\autoref{subsec:reflective-subuniverses} and look at coequalizers
+in $\set$. The coequalizer is defined using the truncated pushout. Let $D$ be the diagram $f,g:A\to B$.
+The general, non-truncated, pushout of $D$ does not have the quotient-like properties as it would
+have in the category $\set$. For instance, the coequalizer of
+$\unit\rightrightarrows\unit$ is the circle. Nevertheless,
+the $0$-truncation of the circle is again $\unit$, which is the
+expected coequalizer in $\set$. Thus we get
+
+\begin{defn}
+Let $A$ and $B$ be sets and let $f,g:A\to B$.
+We denote the set-coequalizer of $f$ and $g$ by $c_{f,g}:B\to B/_{f,g}$. A
+\emph{regular epimorphism} is a function between sets which is a coequalizer.
+\end{defn}
+
+\begin{lem}
+Let $f,g:A\to B$ be functions between sets $A$ and $B$. The 
+{set-co}equalizer $c_{f,g}:B\to B/_{f,g}$ has the property that
+\begin{equation*}
+\prod\{C:\set\}(h:B\to C)(H:h\circ f\sim h\circ g),\ 
+\mathsf{isContr}\big(\sum(k:B/_{f,g}\to C),\ k\circ c_{f,g}\sim h\big).
+\end{equation*}
+\end{lem}
+
+As explained in~\autoref{subsec:reflective-subuniverses}, this is a general phenomenon, the 0-truncated colimits behave as expected.
+
+To prove that $\set$ is a regular category, we will first connect epis and surjective functions. 
+We use the pinciple of unique choice; see~\autoref{cor:UC}. 
+
+\begin{defn}
+Let $f:A\to B$ be a function between sets. Define
+\begin{align*}
+\mathsf{epi}(f) & := \prod\{X:\set\}(g,h:B\to X),\ 
+(g\circ f\sim h\circ f)\to (g\sim h)\\
+\mathsf{epi}'(f) & :=\prod\{X:\set\}(g:B\to X),\ 
+\mathsf{isContr}\big(\sum(h:B\to X),\ g\circ f\sim h\circ f\big).
+\end{align*}
+\end{defn}
+
+Note that $\mathsf{epi}(f)$ is the usual notion of epimorphism while the
+notion $\mathsf{epi}'(f)$ seems to be stronger. The latter seems to be the right notion for general types.
+
+\begin{lem}\label{epis-surj}
+For any function $f:A\to B$ between sets, the following are equivalent:
+\begin{enumerate}
+\item $f$ is an epimorphism.
+\item There is a term of $\mathsf{epi}'(f)$.
+\item Consider the pushout diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & B \\ \mathsf{unit} & C_f \\};
+\draw[ar] (m-1-1) -- node[above] {$f$} (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$\iota$} (m-2-2);
+\draw[ar] (m-1-1) -- (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$t$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+in $\set$ defining the mapping cone. The type $C_f$ is contractible.
+\item $f$ is surjective.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+Let $f:A\to B$ be a function between sets.
+To show that $\mathsf{epi}(f)\to\mathsf{epi}'(f)$, let $H:\mathsf{epi}(f)$,
+let $X$ be a set and let $g:B\to X$ be a function. Then we find
+\begin{equation*}
+\pairr{g,\refl{g\circ f}}:\sum(h:B\to X),\ g\circ f\sim h\circ f.
+\end{equation*}
+Thus, to show that $\sum(h:B\to X),\ g\circ f\sim h\circ f$ 
+is contractible we need to show that
+\begin{equation*}
+\prod(h:B\to X)(K:g\circ f\sim h\circ f)\sum(L:g\sim h),\ K\sim L\circ f.
+\end{equation*}
+Note that $K\sim L\circ f$ is contractible since $X$ is assumed to be a set,
+hence it suffices to show that
+\begin{equation*}
+\prod(h:B\to X),\ (g\circ f\sim h\circ f)\to (g\sim h).
+\end{equation*}
+This follows at once from the assumption that $f$ is an epimorphism.
+
+To show that $\mathsf{epi}'(f)\to\mathsf{isContr}(C_f)$, suppose that
+$H:\mathsf{epi}'(f)$. The basic constructor of $C_f$ corresponding to
+$\mathsf{unit}\to C_f$ gives us a term $t:C_f$. We have to show that
+\begin{equation*}
+\prod(x:C_f),\ x= t.
+\end{equation*}
+Note that $x= t$ is a proposition, hence we can use induction on
+$C_f$: it suffices to find
+\begin{align*}
+I_0 & : \prod\{b:B\},\ \iota(b)= t\\
+I_1 & : \prod\{a:A\},\ \alpha_1(a)\cdot I_0(f(a))=\refl{t}.
+\end{align*}
+where $\alpha_1:\prod(a:A),\ \iota(f(a))= t$ is a basic constructor
+of $C_f$. Note that $\alpha_1$ is a homotopy from $\iota\circ f$ to
+$\mathsf{const}_t\circ f$, so we find the terms
+\begin{equation*}
+\pairr{\iota,\refl{\iota\circ f}},\pairr{\mathsf{const}_t,\alpha_1}:
+\sum(h:B\to C_f),\ \iota\circ f\sim h\circ f.
+\end{equation*}
+By the assumption $H:\mathsf{epi}'(f)$, it follows that there is a path
+\begin{equation*}
+\gamma:\pairr{\iota,\refl{\iota\circ f}}=\pairr{\mathsf{const}_t,\alpha_1}
+\end{equation*}
+Hence we get $I_0$ from $A:\iota=\mathsf{const}_t$. Moreover,
+we get $ R:A\cdot\refl{\iota\circ f}=\alpha_1$.
+Note that $(A\cdot\refl{\iota\circ f})(a)= I_0(f(a))$, so it follows
+that $I_0(f(a))= \alpha_1(a)$ for all $a:A$, which gives us $I_1$.
+
+To show that $\mathsf{isContr}(C_f)\to\mathsf{surj}(f)$,
+let $H:\mathsf{isContr}(C_f)$. Using the univalence axiom, we construct
+a dependent type $P:C_f\to\prop$. Note that $\prop$ is
+a proposition, so we can use induction on $C_f$. We define
+\begin{align*}
+P(t) & := \mathsf{unit}\\
+P(\iota(b)) & := \|\hfiber{f}b\|.
+\end{align*}
+For $a:A$ the type $\|\hfiber{f}{f(a)}\|$ is canonically
+equivalent to $\mathsf{unit}$, which finishes the construction of $P$.
+Since $C_f$ is assumed to be contractible it follows that $P(x)$ is
+equivalent to $P(t)$ for any $x:C_f$. In particular we find that
+$\|\hfiber{f}b\|$ is contractible for each $b:B$, showing
+that $f$ is surjective.
+
+To show that $\mathsf{surj}(f)\to\mathsf{epi}(f)$,
+let $f:A\to B$ be a surjective function and consider a set $C$ and two functions
+$g,h:B\to C$ with the property that $g\circ f\sim h\circ f$. Since $f$ 
+is assumed to be surjective,
+we have an equivalence $B\simeq\mathsf{im}(f)$. We have the following equivalences
+\begin{align*}
+\prod(b:B),\ g(b)= h(b) 
+& \simeq \prod(w:\mathsf{im}(f)),\ g(\pi_1 w)= h(\pi_1(w))\\
+& \simeq \prod(b:B)(a:A)(p:f(a)= b),\ g(b)= h(b)\\
+& \simeq \prod(a:A),\ g(f(a))= h(f(a)).
+\end{align*}
+By assumption, there is a term of the latter type.
+\end{proof}
+The proof that epis are surjective in~\cite{Mines/R/R:1988} uses the power set operation. 
+This proof can be made predicative by using a large power set and typical ambiguity.
+A predicative proof for setoids was given by Wilander~\cite{Wilander2010}. 
+The proof above is similar, but avoids setoids by using the pushout and the
+univalence axiom. 
+% \begin{rem}
+% The above theorem is not true when we replace $\set$ by $\type$
+% (replacing it also in the definition of $\mathsf{epi}$ and $\mathsf{epi}'$). 
+% However, we do
+% get the implications $\textit{ii.}\Rightarrow\textit{iii.}\Rightarrow
+% \textit{iv.}$
+% \end{rem}
+
+\begin{lem}\label{lem:images_are_coequalizers}
+Surjective functions between sets are regular epimorphisms.
+\end{lem}
+
+\begin{proof}
+Note that it suffices to show that for any function $f:A\to B$, the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\sum(x,y:A),\ f(x)= f(y) & A & \mathsf{im}(f) \\};
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] (m-1-2) -- node[above] {$\tilde{f}$} (m-1-3);
+\end{tikzpicture}
+\end{equation*}
+is a coequalizer diagram.
+
+The first thing we have to verify is that there is a homotopy 
+$H:\tilde{f}\circ\pi_1\sim\tilde{f}\circ\pi_2$. Let $\pairr{x,y,p}$ be a term
+of $\sum(x,y:A),\ f(x)= f(y)$. 
+Then we have $\tilde{f}(\pi_1(\pairr{x,y,p}))= \pairr{f(x),u}$, 
+where $u$ is a term of the contractible type $\|\hfiber{f}{f(x)}\|$. 
+Similarly, we have a path 
+$\tilde{f}(\pi_2(\pairr{x,y,p}))= \pairr{f(y),v}$,
+where $v$ is a term of the contractible type $\|\hfiber{f}{f(y)}\|$.
+Since we have $p:f(x)= f(y)$ and since
+$\|\hfiber{f}{f(y)}\|$ is contractible, 
+it follows that we get a path from $\tilde{f}(\pi_1(\pairr{x,y,p}))$ to
+$\tilde{f}(\pi_2(\pairr{x,y,p}))$, which gives us our homotopy.
+
+Now suppose that $g:A\to X$ is a function for which there is a homotopy 
+$K:g\circ\pi_1\sim g\circ\pi_2$. We have to show that the space
+\begin{equation*}
+\sum(h:\mathsf{im}(f)\to X)(L:h\circ\tilde{f}\sim g),\ h\circ H\sim K
+\end{equation*}
+is contractible. We will apply unique choice to define a 
+function from $\mathsf{im}(f)$ to $X$. Let $R',R:\mathsf{im}(f)\to
+X\to\type$ be the relations defined by 
+\begin{align*}
+R'(w,x) & :=\prod(a:A),\ (\tilde{f}(a)= w)\to (g(a)= x)\\
+R(w,x) & := \|R'(w,x)\|.
+\end{align*}
+There is a term of $\mathsf{atMostOne}(R(w))$ for every $w:\mathsf{im}(f)$. 
+To see this, note that the type $\mathsf{atMostOne}(R(w))$ is a
+proposition. Therefore, there is an equivalence
+\begin{equation*}
+\big(\prod(w:\mathsf{im}(f)),\ \mathsf{atMostOne}(R(w))\big)
+\simeq\prod(a:A),\ \mathsf{atMostOne}(R(\tilde{f}(a))).
+\end{equation*}
+We can simplify this even further to
+\begin{equation*}
+\prod(a:A),\ \mathsf{atMostOne}(R^\prime(\tilde{f}(a))).
+\end{equation*}
+This follows from the assumption that $g(a)= g(a^\prime)$ 
+whenever $f(a)= f(a^\prime)$. Let $a:A$, $x,x^\prime:X$,
+$u:R^\prime(\tilde{f}(a),x)$ and $u^\prime:R^\prime(\tilde{f}(a),x^\prime)$. 
+Then there are the paths $u(a,\refl{\tilde{f}(a)}):g(a)=
+x$ and $u^\prime(a,\refl{\tilde{f}(a)}):g(a)= x^\prime$, 
+showing that $x= x^\prime$. 
+
+Also, there is a term of $\|\sum(x:X),\ R(w,x)\|$ for every $w:\mathsf{im}(f)$. Indeed, the space
+\begin{equation*}
+\prod(w:\mathsf{im}(f)),\ \big\| \sum(x:X),\ R(w,x)\big\|
+\end{equation*}
+is equivalent to the space
+\begin{equation*}
+\prod(a:A),\ \big\| \sum(x:X),\ R(\tilde{f}(a),x)\big\|.
+\end{equation*}
+The space $\prod(a:A)\sum(x:X),\ R^\prime(\tilde{f}(a),x)$ is inhabited by the term
+\begin{equation*}
+\lambda a.\pairr{g(a),\lambda a^\prime,p.K(\pairr{a^\prime,a,p^{-1}})}
+\end{equation*}
+This shows that the hypotheses of the principle of unique choice are satisfied, so we get a term of type
+\begin{equation*}
+\sum(h:\mathsf{im}(f)\to X)\prod(w:\mathsf{im}(f)),\ R(w,h(w)).
+\end{equation*}
+An immediate consequence of the way we constructed our function $h:\mathsf{im}(f)\to X$ is that $h\circ\tilde{f}\sim g$. The result follows
+now from the observation that the space
+\begin{equation*}
+\sum(h^\prime:\mathsf{im}(f)\to X),\ h^\prime\circ\tilde{f}\sim h\circ\tilde{f}
+\end{equation*}
+is contractible because $\tilde{f}$ is an epimorphism. 
+\end{proof}
+
+\begin{lem}\label{lem:pb_of_coeq_is_coeq}
+Pullbacks of surjective functions are surjective. Consequently,
+pullbacks of coequalizers are coequalizers.
+\end{lem}
+
+\begin{proof}
+Consider a pullback diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & B \\ C & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$g$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left]  {$f$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$h$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+and assume that $g$ is surjective. Applying the pasting lemma of pullbacks
+with the morphism $c:\mathsf{unit}\to C$, we obtain an
+equivalence $\hfiber{f}c\simeq\hfiber{g}{h(c)}$ for any
+$c:C$. This equivalence gives that $f$ is surjective.
+\end{proof}
+
+\begin{thm}\label{thm:set_regular}
+The category $\set$ is regular.
+\end{thm}
+
+\begin{proof}
+$\set$ has all limits, so it is finitely complete. 
+\autoref{lem:images_are_coequalizers} gives
+that the kernel pair of each function has a coequalizer.
+\autoref{lem:pb_of_coeq_is_coeq} shows that
+coequalizers are stable under pullbacks.
+\end{proof}
+
+
+\subsection{Quotients}\label{subsec:quotients}
+Now that we know that $\set$ is regular, to show that $\set$ is exact, we need to show that every
+equivalence relation is effective. In other words, given an equivalence
+relation $R:A\to A\to\prop$, there is a coequalizer $c_R$ of the pair
+$\pi_1,\pi_2:\sum(x,y:A),\ R(x,y)\to A$ and, moreover, the $\pi_1$ and $\pi_2$
+for the kernel pair of $c_R$.
+
+We present two constructions of a quotient by a $\prop$-valued equivalence relation $R$. 
+The first one uses as a higher inductive type. We freely add a path $x= y$ whenever $x$ 
+and $y$ are related by $R$ and we truncate the quotient to become a set.
+Instead of giving the truncated higher inductive definition, we use the coequalizer which was defined above.
+
+\begin{defn}
+Let $A$ be a set and let $R:A\to A\to\prop$ be a binary relation over
+$A$, not necessarily an equivalence relation. 
+We define $A/R$ to be the coequalizer of the two projections
+$\pi_1,\pi_2:\sum(x,y:A),\ R(x,y)\to A$ in $\set$.
+\end{defn} 
+
+\begin{defn}
+A relation $R:A\to A\to\prop$ is said to be \emph{effective} if the square
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\sum(x,y:A),\ R (x,y) & A \\ A & A/R \\};
+\draw[ar] (m-1-1) -- node[above] {$\pi_1$} (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$c_{R }$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left]  {$\pi_2$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$c_R $} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+is a pullback. 
+\end{defn}
+
+The following lemma uses univalence for propositions.
+
+\begin{lem}\label{lem:sets_exact}
+Suppose $\pairr{A,R}$ is an equivalence relation. Then there is an
+equivalence
+\begin{equation*}
+(c_R(x)= c_R(y))\simeq R(x,y)
+\end{equation*}
+for any $x,y:A$. In other words, equivalence relations are effective.
+\end{lem}
+
+\begin{proof}
+We begin by extending $R$ to a relation $\tilde{R}:A/R\to A/R\to\prop$. After
+the construction of $\tilde{R}$ we will show that $\tilde{R}$ is equivalent
+to the identity type on $A/R$. We define $\tilde{R}$ by double induction on
+$A/R$ (note that $\prop$ is a set by univalence for propositions). We
+define $\tilde{R}(c_R(x),c_R(y)) := R(x,y)$. For $r:R(x,x')$ and $s:R(y,y')$,
+the transitivity and symmetry 
+of $R$ gives an equivalence from $R(x,y)$ to $R(x',y')$. This completes the
+definition of $\tilde{R}$. To finish the proof of the proposition, we need
+to show that $\tilde{R}(w,w')\simeq w= w'$ for every $w,w':A/R$. We can
+do this by showing that the type $\sum(w':A/R),\ \tilde{R}(w,w')$ is contractible for
+each $w:A/R$. We do this by induction. Let $x:A$. We have the term 
+$\pair{c_R(x),\rho(x)}:\sum(w':A/R),\ \tilde{R}(c_R(x),w')$, where $\rho$ is
+the reflexivity term of $R$, hence we only
+have to show that
+\begin{equation*}
+\prod(w':A/R)(r:\tilde{R}(c_R(x),w')),\ \pairr{w',r}=\pairr{c_R(x),\rho(x)},
+\end{equation*}
+which we do by induction on $w'$. Let $y:A$ and let $r:R(x,y)$. Then we have
+the path $p_R(r)^{-1}:c_R(y)= c_R(x)$. We automatically get a path from
+$p_R(r)^{-1}\cdot r=\rho(x)$, finishing the proof.
+\end{proof}
+
+\subsection{Voevodsky's impredicative quotients}\label{sec:resizing}
+The second solution is due to Voevodsky~\cite{pelayo2013preliminary}.
+He defines the quotient $A/\!\!/R $ as the type of equivalence classes of $R$, 
+i.e.\ as the image of $R$ in $A\to\prop$. This gives a direct
+construction of quotients, but it requires a resizing rule. We fix an equivalence relation $\pairr{A,R}$.
+
+\begin{defn}
+A predicate $P:A\to\prop$ is said to be an equivalence class with 
+respect to $R $ if there is a term of type
+\begin{equation*}
+\mathsf{isEqClass}(R ,P):=\sum(x:A)\prod(y:A),\ R (x,y)\simeq P(y).
+\end{equation*}
+\end{defn}
+
+\begin{defn}\label{def:VVquotient}
+We define
+\begin{equation*}
+A/\!\!/ R :=\sum(P:A\to\prop),\ \|\mathsf{isEqClass}(R ,P)\|.
+\end{equation*}
+\end{defn}
+
+Using univalence on propositions, the following is an easy consequence of the definition:
+
+\begin{lem}
+The type $A/\!\!/ R $ is equivalent to $\im(R)$.
+\end{lem}
+
+In \ref{lem:images_are_coequalizers} we have shown that images are
+coequalizers. In particular, we immediately get the coequalizer diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\sum(x,y:A),\ R (x)= R (y) & A & A/\!\!/ R.  \\};
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] (m-1-2) -- (m-1-3);
+\end{tikzpicture}
+\end{equation*}
+We can use this to show that any equivalence relation is effective.
+
+\begin{thm}\label{prop:kernels_are_effective}
+For any function $f:A\to B$ between any two sets, 
+the relation $\ker(f):A\to A\to\type$ given by 
+$\ker(f,x,y):=f(x)= f(y)$ is effective. 
+\end{thm}
+
+\begin{proof}
+We will use that $\im(f)$ is the coequalizer of $\pi_1,\pi_2:
+\sum(x,y:A),\ f(x)= f(y)\to A$; 
+%we get this equivalence from proposition~\ref{prop:images_are_coequalizers}
+. Note that the canonical kernel pair of the function 
+$c_f:=\lambda a.\pairr{f(a),\tau_1(\pairr{a,\refl{f(a)}})}$ consists 
+of the two projections
+\begin{equation*}
+\pi_1,\pi_2:\big(\sum(x,y:A),\ c_f(x)= c_f(y)\big)\to A.
+\end{equation*}
+For any $x,y:A$, we have equivalences
+\begin{align*}
+c_f(x)= c_f(y) & \simeq \sum(p:f(x)= f(y)),\ p\cdot\tau_1(\pairr{x,\refl{f(x)}})
+=\tau_1(\pairr{y,\refl{f(x)}})\\ & \simeq f(x)= f(y),
+\end{align*}
+where the last equivalence holds because 
+$\|\hfiber{f}b\|$ is a proposition for any $b:B$. 
+Therefore, we get that
+\begin{equation*}
+\sum(x,y:A),\ c_f(x)= c_f(y)\simeq\sum(x,y:A),\ f(x)= f(y)
+\end{equation*}
+and hence we may conclude that $\ker f$ is an effective relation 
+for any function $f$.
+\end{proof}
+
+\begin{thm}
+Equivalence relations are effective and there is an equivalence $A/R \simeq A/\!\!/ R $. 
+\end{thm}
+
+\begin{proof}
+We need to analyze the coequalizer diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\sum(x,y:A),\ R (x)= R (y) & A & A/\!\!/ R. \\};
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] (m-1-2) -- (m-1-3);
+\end{tikzpicture}
+\end{equation*}
+By the univalence axiom, the space $R (x)= R (y)$ is equivalent to the space of homotopies from $R (x)$ to $R (y)$, which is
+equivalent to $\prod(z:A),\ R (x,z)\simeq R (y,z)$. Since $R $ is an equivalence relation, the latter space is equivalent to $R (x,y)$. To
+summarize, we get that $(R (x)= R (y))\simeq R (x,y)$, so $R $ is effective since it is equivalent to an effective relation. Also,
+the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\sum(x,y:A),\ R (x,y) & A & A/\!\!/ R. \\};
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] (m-1-2) -- (m-1-3);
+\end{tikzpicture}
+\end{equation*}
+is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \simeq A/\!\!/ R $.
+\end{proof}
+
+\subsection{Predicativity}\label{sec:resizing}
+One may wonder about the predicative interpretation of the quotient constructions above.
+One could argue that the HIT construction is predicative by considering the interpretation of this
+quotient in the setoid model~\cite{Altenkirch1999,coquand2012constructive}. 
+In this model the quotient does not raise the universe level. 
+A similar observation holds for constructions that can be carried out in the groupoid 
+model~\cite{hofmann1998groupoid}. These observations should suffice for the set-level higher inductive 
+types we use in the present paper.
+
+Voevodsky~\cite{Universe-poly} has proposed to allow some impredicativity by adding the following resizing rule:
+\[a:U_n, p:(\mathsf{isprop}\ a)\vdash (\mathsf{rr}\ a\ p): U_0,\]
+where $U_n$ is any universe and $U_0$ is the lowest universe.
+Moreover, when lifted to $U_n$, $(\mathsf{rr}\ a\ p)= a$.
+Hence, $\mathsf{rr}$ is an equivalence between $\prop_n$ and $\prop_0$. 
+Here we assume that $U_0$ is a subuniverse of $U_n$. 
+Another axiom resizes each $\prop_n$ to the lowest universe.
+
+The following replacement axiom is derivable from the resizing axiom; see~\cite{Universe-poly}.
+\begin{lem}\label{lem:replacement}
+Let $U$ be a universe and $X:U$, if $f:X\twoheadrightarrow Y$ is a surjection, $Y$ is a set then there exists a $Z:U$ which is
+equivalent to $Y$.
+\end{lem}
+\begin{proof}
+Define $Z\defeq X/\!\!/\ker f$ using the type of equivalence classes; see~\ref{def:VVquotient}. 
+Then $Z:U$, since $\prop_U$ is in the lowest universe. Finally, we observe that $Z\defeq X/\ker f\simeq\im f\simeq Y$.
+\end{proof}
+
+\subsection{The object classifier}\label{subsec:object_classification}
+In topos theory we have a small subobject classifier classifying the monomorphisms.
+In HoTT without resizing rules, $\prop$ is large. It is a reflective subuniverse see \autoref{subsec:reflective-subuniverses}.
+In higher topos theory one considers not only subobject classifiers, but also \emph{object classifiers} 
+which classify more general classes of maps.
+In this section we will establish the existence of an internal analogue of such object classifiers, 
+they will always sit a higher universe. Moreover, we will find an $n$-object classifier for
+every $n:\mathbb{N}_{\geq-2}$, where the $n$-object classifier will classify the
+functions with $n$-truncated homotopy fibers. 
+
+In addition to the size issue of the object classifers, we will see that the
+$n$-object classifier will generally not be of (homotopy) level $n$, but of level
+$n+1$. This observation should be regarded in contrast to the theory of 
+predicative toposes, where a universal small
+map is required to exist. Such a universal small map is suggested to be a map
+between sets, 
+but it seems that within homotopy type theory we cannot expect
+such a map to exist. The main reason is that the universal small map of sets
+will in general be a map of groupoids; a universal small map of groupoids will
+in general be a map of $2$-groupoids, etc.
+
+\begin{thm}\label{thm:nobject_classifier_appetizer}
+For any type $B$ there is an equivalence
+\begin{equation*}
+\chi:\big(\sum(A:\type),\ A\to B\big)\simeq B\to\type.
+\end{equation*}
+Likewise, there is an equivalence
+\begin{equation*}
+\chi_n:\big(\sum(A:\type)(f:A\to B),\ \mathsf{isTrunc}(n,f)\big)\simeq B\to \typele{n}
+\end{equation*}
+for every $n:\mathbb{N}_{\geq-2}$. Here $\mathsf{isTrunc}(n,f)$ denotes that all fibers of $f$ are $n$-truncated
+\end{thm}
+
+\begin{proof}
+We begin by constructing the first equivalence, i.e.\ we have to construct functions
+\begin{align*}
+\chi & : \big(\sum(A:\type),\ A\to B\big)\to B\to\type\\
+\psi & : (B\to\type)\to\big(\sum(A:\type),\ A\to B\big).
+\end{align*}
+The function $\chi$ is defined by $\chi(f,b):=\hfiber{f}b$. The
+function $\psi$ is defined by $\psi(P):=\pairr{(\sum(b:B),\ P(b)),\pi_1}$. Now
+we have to verify that $\chi\circ\psi\sim\idfunc{}$ and that $\psi\circ\chi
+\sim\idfunc{}$:
+\begin{enumerate}
+\item Let $P$ be a dependent type over $B$. It is a basic fact that 
+$\hfiber{\pi_1}{b}\simeq P(b)$ and therefore it follows immediately
+that $P\sim\chi(\psi(P))$.
+\item Let $f:A\to B$ be a function. We have to find a path
+\begin{equation*}
+\pairr{(\sum(b:B),\ \hfiber{f}b),\pi_1}=\pairr{A,f}
+\end{equation*}
+First note that we have the basic equivalence
+$e:\sum(b:B),\ \hfiber{f}b\simeq A$ with $e(b,a,p):=a$ and $e^{-1}(a)
+:=(f(a),a,\refl{f(a)})$. It also follows that
+$e\cdot\pi_1=\pi_1\circ e^{-1}$. From this, we immediately read off
+that $(e\cdot\pi_1)(a)= f(a)$ for each $a:A$. This completes the proof
+of the first of the asserted equivalences.
+\end{enumerate}
+To find the second set of equivalences, note that if we restrict $\chi$ to
+functions with $n$-truncated homotopy fibers we get an $n$-truncated dependent
+type. Likewise, if we restrict $\psi$ to $n$-truncated dependent types we get
+a function with $n$-truncated homotopy fibers.
+\end{proof}
+
+\begin{defn}
+Define
+\begin{equation*}
+\pointed{\type}:=\sum(A:\type),\ A\qquad\text{and}\qquad \pointed{\typele{n}}:=
+\sum(A:\typele{n}),\ A.
+\end{equation*}
+Thus, $\pointed{\type}$ stands for the \emph{pointed types} and $\pointed{\typele{n}}$ stands for
+the pointed $n$-types.
+\end{defn}
+
+The following theorem states that we have an object classifier.
+\begin{thm}\label{thm:nobject_classifier}
+Let $f:A\to B$ be a function. Then the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & \pointed{\type} \\ B & \type \\};
+\draw[ar] (m-1-1) -- node[above] {$\vartheta_f$} (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$\pi_1$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left]  {$f$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$\chi_f$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+is a pullback diagram. Here, the function $\vartheta_f$ is defined by
+\begin{equation*}
+\lambda a.\pairr{\hfiber{f}{f(a)},\pairr{a,\refl{f(a)}}}.
+\end{equation*}
+A similar statement holds when we replace $\type$ by $\typele{n}$.
+\end{thm}
+\begin{proof}
+Note that we have the equivalences
+\begin{align*}
+A & \simeq \sum(b:B),\ \hfiber{f}b\\
+ & \simeq \sum(b:B)(X:\type)(p:\hfiber{f}b= X),\ X\\
+ & \simeq \sum(b:B)(X:\type)(x:X),\ \hfiber{f}b= X\\
+ & \equiv B\times_{\type}\pointed{\type}.
+\end{align*}
+which gives us a composite equivalence $e:A\simeq B\times_\type\pointed{\type}$. 
+We may display the action of this composite equivalence step by step by
+\begin{align*}
+a & \mapsto \pairr{f(a),\pairr{a,\refl{f(a)}}}\\
+ & \mapsto \pairr{f(a),\hfiber{f}{f(a)},\refl{\hfiber{f}{f(a)}},\pairr{a,\refl{f(a)}}}\\
+ & \mapsto \pairr{f(a),\hfiber{f}{f(a)},\pairr{a,\refl{f(a)}},\refl{\hfiber{f}{f(a)}}}
+\end{align*}
+Therefore, we get homotopies $f\sim\pi_1\circ e$ and $\vartheta_f\sim \pi_2\circ e$. 
+\end{proof}
+
+\begin{lem}\label{lem:subobject}
+The type $\pointed{\prop}$ is contractible.
+\end{lem}
+\begin{proof}
+Suppose that $\pairr{P,u}$ is a term of $\sum(P:\prop),\ P$. Then we have $u:P$ and hence there is a term of type $\mathsf{isContr}(P)$. It
+follows that $P\simeq\unit$ and therefore we get from the univalence axiom that there is a path
+$\pairr{P,u}=\pairr{\unit,\mathsf{tt}}$.
+\end{proof}
+
+If we use the resizing rules we can replace the large type $\sum(P:\prop),\ P$ with the small type $\unit$. In this way we would obtain
+the usual notion of a subobject classifier. Without the resizing rules we do obtain a large subobject classifier.
+
+\subsection{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}W-pretopos}
+\label{subsec:piw}
+\begin{thm} The category $\set$ is a $\Pi$W-pretopos.
+\end{thm}
+\begin{proof}
+We have an initial object and disjoint sums. We have finite limits and finite sums (\autoref{thm:set_regular}). 
+Sums are stable under pullback. So, $\set$ is lextensive. 
+$\set$ is locally Cartesian closed. This follows from the preparations we made in
+\autoref{sec:compute-pi}, using the
+fact that the existence of $\prod$-types gives local Cartesian closure; e.g.~\citep[Prop.~1.9.8]{jacobs1999categorical}.
+The category $\set$ is regular (\autoref{thm:set_regular}) and quotients are effective (\autoref{lem:sets_exact}). We thus have an
+exact category, since it is also lextensive, we have a pretopos. It has $\prod$-types (\autoref{thm:hlevel-prod}) and
+W-types
+(\autoref{sec:w-types}), so we have a $\Pi$W-pretopos. 
+\end{proof}
+
+One wonders what prevents $\set$ from begin a topos. We the lack impredicativity to define the subobject classifier. If we
+assume the resizing rules from \autoref{sec:resizing}, then $\prop$ becomes small. We have seen in
+\autoref{thm:nobject_classifier} that it satisfies the properties of a subobject classifier and hence we actually
+obtain a topos: $\set$ is also (locally) cartesian closed and has all finite limits and colimits.
+
+\subsection{All surjectives split implies decidability of propositions}\label{sec:surj_split}
+In this subsection we derive that if all surjective functions between sets have
+a section, then for all propositions $A$ we can decide whether $A$ or $\neg A$
+holds. This is an adaptation of an old, famous theorem by
+Diaconescu and Bishop to homotopy type theory.
+
+We make use of the more general construction of suspension which will be defined in \autoref{sec:suspension}, but we only need
+to apply the suspension to propositions. In the case where $A$ is a proposition,
+it turns out that the
+suspension $\susp(A)$ is equivalent to the quotient $\mathsf{bool}/R$,
+where $R$ is the equivalence relation we get by setting
+$R(\mathsf{true},\mathsf{false}):= A$. This shall become clear in the proofs
+below.
+
+\begin{lem}\label{prop:trunc_of_prop_is_set}
+The suspension of a proposition is a set and the path space 
+$0=1$ in $\susp(A)$ is equivalent to $A$, for any proposition $A$. 
+\end{lem}
+
+\begin{proof}
+Let $A$ be a proposition. Using the univalence axiom, we will define a 
+dependent type $P:\susp(A)\to\susp(A)\to\type$ with the 
+property that $P(x,y)$ is a proposition for each $x,y:\susp(A)$ 
+and which turns out to be equivalent to the dependent type 
+$\mathsf{Id}_{\susp(A)}$.
+
+We make the following definitions:
+\begin{align*}
+P(0,0) & \equiv \unit & P(1,0) & \equiv A\\
+P(0,1) & \equiv A & P(1,1) & \equiv \unit.
+\end{align*}
+To show that this gives a dependent type we need to verify that there 
+is an equivalence $P(0,0)\simeq P(0,1)$ and an eqivalence 
+$P(1,0)\simeq P(1,1)$ for every $a:A$. Since $A$ is assumed to 
+be a proposition, this is indeed the case.
+
+To finish the proof we need to show that $P(x,y)\simeq x=y$ 
+for every $x,y:\susp(A)$. We can find such a fiberwise equivalence 
+by finding a transformation
+\begin{equation*}
+\tau(y):\prod(x:\susp(A)),\ P(x,y)\to x=y
+\end{equation*}
+which induces an equivalence 
+\begin{equation*}
+\big(\sum(x:A),\ P(x,y)\big)\simeq\big(\sum(x:\susp(A)),\ x=y\big)
+\end{equation*}
+of total spaces, for every $y:\susp(A)$. The latter type 
+is contractible, so it suffices to find the mentioned transformation 
+and proof that the total space on the left is contractible. We may do 
+the first of these tasks by applying the induction principle for 
+$\susp(A)$. We make the definitions
+\begin{align*}
+\tau(0,0) & := \lambda t.\refl{0} & \tau(1,0) &:= \lambda a.\alpha(a)^{-1}\\
+\tau(0,1) & := \alpha & \tau(1,1) &:= \lambda t.\refl{1}.
+\end{align*}
+To find a path $\alpha(a)\cdot\tau(0,0)=\tau(0,1)$ for $a:A$, 
+note that because $A$ is a proposition there are paths
+\begin{equation*}
+(\alpha(a)\cdot\tau(0,0))(x)=\tau(0,0,x)\bullet\alpha(a)^{-1}
+=\alpha(a)^{-1}= \alpha(x)^{-1}. 
+\end{equation*}
+Thus we get the requested path from function extensionality. Likewise, 
+we obtain a path $\tau(0)=\tau(1)$ for every $a:A$, 
+which finishes the construction of $\tau$.
+
+The last thing to do to finish the proof is to show that 
+$\sum(x:A),\ P(x,y)$ is contractible for every $y:\susp(A)$. 
+Since $\mathsf{isContr}(X)$ is a proposition for every type $X$, 
+we only need to show that $\sum(x:A),\ P(x,0)$ and 
+$\sum(x:\susp(A)),\ P(x,1)$ are contractible. 
+They are clearly equivalent, so we only verify the contractibility 
+of the latter. The obvious candidate for the center of contraction 
+is $\pairr{1,\mathsf{tt}}$, thus we need to show that there is a 
+function $c$ of type
+\begin{equation*}
+\prod(x:\susp(A))(u:P(x,1)),\ \langle{x,u}\rangle=\langle{1,\mathsf{tt}}\rangle.
+\end{equation*}
+We do this again by induction on $x$. To define $c(0)$, note that 
+for any $a:A$, we have the path $\alpha(a):0= 1$. Since 
+$\unit$ is contractible we will automatically get a path 
+$\alpha(a)\cdot u=\mathsf{tt}$. The definition of $c(1)$ is obvious. 
+Then we get, for $a:A$, a path 
+$(\alpha(a)\cdot c(0))(\mathsf{tt})= c(1,\mathsf{tt})$ 
+because $\susp(A)$ is contractible when $A$ is contractible. 
+This gives us a path $\alpha(a)\cdot c(0)= c(1)$ and finishes 
+the proof by induction that $\sum(x:A),\ P(x,1)$ is contractible.
+\end{proof}
+
+\begin{defn}
+Suppose $A$ is a type. We define
+\begin{equation*}
+\mathsf{isDecidable}(A)\equiv  A+\neg A
+\end{equation*}
+\end{defn}
+
+\begin{thm}[Bishop/Diaconescu]\label{thm:1surj_to_surj_to_pem}
+Suppose that all surjections between sets split. Then for all $A:\prop$,
+$\mathsf{isDecidable}(A)$. 
+\end{thm}
+
+\begin{proof}
+Consider the function $\pi:\mathsf{bool}\to\susp(A)$ defined by 
+$\pi(\mathsf{true})\equiv 1$ and $\pi(\mathsf{false})\equiv 0$. 
+The first thing we will do is show that $\pi$ is surjective, 
+i.e.\ that there is a function of type
+\begin{equation*}
+\prod(x:\susp(A)),\ \|\hfiber\pi{x}\|.
+\end{equation*}
+Note that we have the terms 
+$\langle{\mathsf{false},\refl{0}}\rangle:\hfiber\pi0$ 
+and $\langle{\mathsf{true},\refl{1}}\rangle:\hfiber\pi1$. 
+Since $\|\hfiber\pi{x}\|$ is a proposition for each 
+$x:\susp(A)$, this gives us the proof by induction of 
+the surjectivity of $\pi$.
+
+By proposition~\ref{prop:trunc_of_prop_is_set} the suspension of 
+a proposition is always a set, so our assumption gives us a 
+section $g:\susp(A)\to\mathsf{bool}$ of $\pi$. 
+Since $\mathsf{bool}$ has decidable equality, there is a term of type 
+\begin{equation*}
+\mathsf{isDecidable}(g(\pi(\mathsf{true}))= g(\pi(\mathsf{false})))
+\end{equation*}
+and since $g$ is a section of $\pi$ it follows that there is a term of type
+\begin{equation*}
+\mathsf{isDecidable}(\pi(\mathsf{true})=\pi(\mathsf{false}))
+\end{equation*}
+Now we see that it is enough to show that 
+$\pi(\mathsf{true})= \pi(\mathsf{false})$ is equivalent to $A$. 
+This we also obtained in proposition~\ref{prop:trunc_of_prop_is_set}.
+\end{proof}
+
+\section{Algebraic Set Theory}
+\note{Steve Awodey}
+We should obtain a model of BIST following Awodey, Forsell, Warren. 
+We may want to use the replacement axiom~\ref{lem:replacement}.
+We should consider as classes only those large sets with small diagonal.
+
+The universe is naturally a groupoid, but it may be possible to distort it to be a set.
+
+It seems unlikely that the axiom of collection and the axiom of multiple choice are derivable in HoTT,
+simply because none of its axioms seem applicable.  In the constructive set theory CZF~\cite{aczel2001notes}, unlike in classical Zermelo
+set theory, the collection axiom is \emph{stronger} than the replacement axiom. 
+The replacement axiom \emph{is} derivable from the resizing rules; see section~\ref{sec:resizing}.
+In line with Voevodsky's proposal to add resizing rules to homotopy type theory, one could also consider its extension with the
+collection axiom.
+
+\subsection{Class of stable maps}
+\begin{defn}\label{defn:small_maps}
+A class $\smal:\prod\{X,Y:\type\},\ (X\to Y)\to\prop$ is \emph{stable} of if it satisfies:
+\begin{description}
+\item[pullback stability] If we have a pullback diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {X & A \\ Y & B \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$f$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left]  {$g$} (m-2-1);
+\draw[ar] (m-2-1) -- (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+then $\smal(f)\to\smal(g)$.
+\item[Descent] If the bottom arrow in the above diagram is surjective, then $\smal(g)\to\smal(f)$. 
+\item[Sum] If $\smal(f),\smal(g)$, then $\smal(f+g)$.
+\end{description}
+A class of stable class of maps is \emph{locally full}~\citep[3.2]{MoerdijkPalmgren2002} if for all $g:X\to Y$ and $f:Y\to Z$ such
+that $\smal(f)$: $\smal(g)$ iff $\smal(fg)$.
+
+A class of maps $\smal$ is called a \emph{class of small maps} if it is stable, locally full and for each $X$, 
+$\smal_X$ --- the small over maps over $X$ --- forms a $\Pi$W-pretopos; see~\citep[3.3]{MoerdijkPalmgren2002}.
+\end{defn}
+
+\begin{lem}
+The class of set-fibered maps is a class of small maps.
+\end{lem}
+\begin{proof}
+The class of maps with set-fibers is stable. It even has dependent sums.
+
+We claim that it is locally full: If $g$ has set-fibers, then $fg$ has set-fibers, as sets are
+closed under $\Sigma$-types. Conversely, fix $y\in Y$, then $\hfiber g y$ is the pullback
+\[\sum x:\hfiber{fg}{f(y)},\ g(x)=y.\]
+
+By the use of the object classifier, \autoref{thm:nobject_classifier}, we see that the type $\smal_X$ is equivalent
+to the sets in context $X$. Now, sets in any context form a $\Pi$W-pretopos; see \autoref{subsec:piw}.
+\end{proof}
 
 \section{Excluded Middle and the Axiom of Choice}
 \label{sec:excl-middle-axiom}
 
 \textbf{TODO:} Discuss excluded middle and choice, state that the appropriate versions are
 consistent, so me may assume them. Prove that choice implies excluded middle?
+See~\ref{thm:1surj_to_surj_to_pem}
 
 \section{Sets and Classes}
 \label{sec:sets-classes}
 
 \textbf{TODO:} Discuss the role of universes as classes-of-classes-of-classes, or
 alternatively as inaccessible sets.
+This could be part of AST(?)
 
 \section{Powersets}
 \label{sec:powersets}

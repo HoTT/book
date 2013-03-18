@@ -23,13 +23,13 @@ In this chapter, we develop some homotopy theory within HoTT.
 We begin with a very brief summary of classical homotopy theory,
 homotopy theory in $\infty$-groupoids, and homotopy theory in HoTT.
 
-\subsubsection{Classical homotopy theory}
+\subsection{Classical homotopy theory}
 
 \emph{Topology} is the study of spaces up to continuous deformation.
 \emph{Algebraic topology} is the use of tools from abstract algebra,
 like group theory, to tell whether two spaces are the same.  As a first
 cut, we can say that two spaces are "the same" when there is an
-isomorphism between them (continuous maps back and forth that compose to
+homeomorphism between them (continuous maps back and forth that compose to
 the identity), though we will refine this later.  For example, one basic
 construction in algebraic topology is the \emph{fundamental group} of a
 space: Given a space $X$ and a point $x_0$ in it, one can (almost---see
@@ -66,13 +66,13 @@ paths}. Because $p \ct \opp p$ walks out and back along the same route, you know
 that you can continuously shrink $p \ct \opp p$ down to the identity path---it
 won't, for example, get snagged around a hole in the space.  Formally, a
 homotopy between functions $f, g : X \rightarrow Y$ is a continuous map 
-$h : [0,1] \times X -> Y$ such that $h(0,x) = f(x)$ and $h(1,x) = g(x)$.  In the specific case
-of paths $p$ and $q$, which, remember, are represented by maps $[0,1] -> X$, a
-homotopy is a continuous map $h(t,x) : [0,1] x [0,1] -> X$, such that
+$h : [0,1] \times X \rightarrow Y$ such that $h(0,x) = f(x)$ and $h(1,x) = g(x)$.  In the specific case
+of paths $p$ and $q$, which, remember, are represented by maps $[0,1] \rightarrow X$, a
+homotopy is a continuous map $h(t,x) : [0,1] \times [0,1] \rightarrow X$, such that
 $h(0,x) = p(x)$ and $h(1,x) = q(x)$.  That is, it's the image in $X$ of a
-square, which fills in the space between $p$ and $q$.  Homotopy is an
+square that fills in the space between $p$ and $q$.  Homotopy is an
 equivalence relation, and operations like concatenation, inverses,
-etc. respect it.  Moreover, the homotopy-equivalence-classes of loops in
+etc., respect it.  Moreover, the homotopy equivalence classes of loops in
 $X$ at $x_0$ (where two loops $p$ and $q$ are equated when there is a \emph{based}
 homotopy between them, which is a homotopy $h$ as above that additionally
 satisfies $h(t,0) = h(t,1) = x_0$ for all $t$) do form a group: while $p \ct \opp p$
@@ -80,31 +80,32 @@ is not equal to the identity, it is homotopic to it!  So, we can fix up
 the above definition of the fundamental group of a space by defining it
 to be the group of loops modulo homotopy.
 
-Returning to the example, we can see that the sphere is different than
+Returning to the example, we can see that the sphere is different from
 the torus because the fundamental group of the sphere is trivial (the
 one-element group), but the fundamental group of the torus is not.  The
 intuition is that every loop on the sphere is homotopic to the identity,
-because its inside is filled in.  In contrast, a loop on the torus that
+because its inside can be filled in.  In contrast, a loop on the torus that
 goes around the donut's hole is not homotopic to the identity, so there
 are non-trivial loops.
 
 The fundamental group, which is written $\pi_1(X,x_0$), is the first in
 a series of \emph{homotopy groups} that provide additional information
 about a space.  Fix a point $x_0$ in $X$, and consider the constant path
-$\refl{x_0}$.  Then the homotopies between $\refl{}$ and itself form a
-group (when you quotient \emph{them} by homotopy), which tells you
+$\refl{x_0}$.  Then the homotopy classes of homotopies between $\refl{}$ and itself form a
+group $\pi_2(X,x_0$), which tells you
 something about the two-dimensional structure of the space.  Then
-$\pi_3(X,x_0$) is the group of homotopies between homotopies, and so on.
+$\pi_3(X,x_0$) is the group of homotopy classes of homotopies between homotopies, and so on.
 One of the basic questions that algebraic topologists consider is
 \emph{calculating the homotopy groups of a space $X$}, which means
-giving a group isomorphism between $\pi_k(X)$ and some more direct
+giving a group isomorphism between $\pi_k(X,x_0)$ and some more direct
 description of a group (e.g., by a multiplication table or
 presentation).  Somewhat surprisingly, this is a very difficult
 question, even for spaces as simple as the spheres.  Here is a chart
 that lists the low-dimensional homotopy groups of the low-dimensional
-spheres:
+spheres.
 
-FIXME
+%% FIXME: recreate table in TeX
+\includegraphics[width=5.5in]{spheres.png}
 
 There are some patterns, but there is no general formula, and many
 homotopy groups of spheres are currently unknown.  Homotopy groups are
@@ -113,45 +114,47 @@ the \emph{homology groups} and \emph{cohomology groups}, which are
 sometimes easier to calculate.
 
 An interesting fact is that, while we started off by trying to classify
-spaces up to isomorphism, most of these algebraic tools in fact classify
+spaces up to isomorphism, most of these algebraic tools classify
 spaces up to something called \emph{homotopy equivalence}.  Two spaces $X$ and $Y$
-are homotopy equivalent iff there are maps $f : X -> Y$ and $g : Y -> X$
-such that there is a homotopy between $f \circ g$ and the identity function
-(and similarly for $g \circ f$).  This gives you a little wiggle room to
-"correct" maps that don't exactly compose to the identity, but only miss
-by space that can be filled in.  Isomorphic spaces are homotopy
-equivalent, but not nice versa: for example, the disk is not isomorphic
+are called {\em homotopy equivalent} if there are maps $f : X \rightarrow Y$ and $g : Y \rightarrow X$
+such that there is a homotopy between $f \circ g$ and the identity function on $Y$,
+and similarly for $g \circ f$.  This gives you a little wiggle room to
+``correct'' maps that don't exactly compose to the identity.
+Isomorphic spaces are homotopy
+equivalent, but not vice versa: for example, the disk is not isomorphic
 to the point, but it is homotopy equivalent to it.  The vast majority of
 the constructions one considers (homotopy groups, homology and
-cohomology groups, etc.) are homotopy-invariant, in the sense that they
-respect homotopy equivalence.  For example, two homotopy-equivalent
+cohomology groups, etc.) are homotopy invariant, in the sense that they
+respect homotopy equivalence.  For example, two homotopy equivalent
 spaces have the same fundamental groups, essentially because the
 fundamental group was defined to be paths modulo homotopy.  Thus, these
-invariants are really properties of the homotopy-equivalence-classes of
-spaces, which are called \emph{homotopy types}.  To show
-\emph{disequality} of spaces, this still has bearing on the original
-problem of classifying spaces up to isomorphism: if two spaces have
-different fundamental groups, then they are not homotopy equivalent, and
-therefore not isomorphic.  
+invariants are really properties of the homotopy equivalence classes of
+spaces, which are called \emph{homotopy types}.  Homotopy equivalence is a coarser
+relation on spaces that homeomorphism, so it can bear 
+                                                         on the original
+problem of classifying spaces up to homeomorphism, in that two spaces
+that are shown to be not homotopy equivalent are then not homeomorphic.
 
-\subsubsection{Homotopy theory of $\infty$-groupoids}
+\subsection{Homotopy theory of $\infty$-groupoids}
 
-Because all of these notions are homotopy-invariant, one can do homotopy
-in the setting of $\infty$-groupoids.  Recall from Chapter~\ref{FIXME}
+A natural setting for studying homotopy theory is $\infty$-groupoids, because
+the formalism allows only notions invariant under homotopy to be formulated.
+The notions of the previous section are all invariant under homotopy.
+                                       Recall from Chapter~\ref{FIXME}
 that $\infty$-groupoids are an infinite-dimensional generalization of
 the categorical notion of a groupoid (which is a category where every
 morphism is invertible).  Where a groupoid has just objects and
 morphisms, $\infty$-groupoids have objects, morphisms, morphisms between
-morphisms (2-morphisms), ... all the way up.  $\infty$-groupoids are a
-complex structure: Morphisms at each level have identity, composition,
+morphisms (2-morphisms), \dots, all the way up.  The structure of an $\infty$-groupoid is
+complex: morphisms at each level have identity, composition,
 and inverse operations, which are weak in the sense that they satisfy
 the groupoid laws (associativity of composition, identity is a unit for
-composition, inverses cancel) only up to the next level morphisms.
-Because of weakness, it is quite difficult to describe all of the
-operations/properties of morphisms.  For example, because associativity
-of composition of morphisms $(p \ct (q \ct r) = (p \ct q) \ct r)$ is
+composition, inverses cancel) only up to morphisms at the next level.
+Because of weakness, it is difficult to describe all the
+operations on morphisms and all the properties of morphisms.  For example, because associativity
+of composition of morphisms $p \ct (q \ct r) = (p \ct q) \ct r$ is
 itself a higher-dimensional morphism, one needs an additional operation
-relating different proofs of associativity; for example, the different
+relating various proofs of associativity: the various
 ways to reassociate $p \ct (q \ct (r \ct s))$ into $((p \ct q) \ct r)
 \ct s$ give rise to Mac Lane's pentagon.  Weakness also creates
 non-trivial interactions between levels, such as the middle-four
@@ -161,22 +164,23 @@ Every topological space X has a fundamental $\infty$-groupoid whose
 $k$-morphisms are the $k$-dimensional paths in $X$.  The weakness of the
 $\infty$-groupoid (the fact that the groupoid laws hold only up to
 higher-dimensional morphisms) corresponds directly to the fact that
-paths only form a group up to homotopy, because the $k+1$-paths are the
-homotopies between the $k$-paths.
+paths form a group only up to homotopy, with the $k+1$-paths serving as the
+homotopies between the $k$-paths.  Moreover, the view of a space as an
+$\infty$-groupoid preserves enough structure to do homotopy theory
+(calculate homotopy/homology/cohomology groups, etc.)  Formally, the
+fundamental $\infty$-groupoid construction is adjoint to the geometric
+realization of an $\infty$-groupoid as a space, and this adjunction
+preserves homotopy theory (this is called the \emph{homotopy
+  hypothesis/theorem}, because whether it is a hypothesis or theorem
+depends on how you define $\infty$-groupoid).  For example, you can
+easily define the fundamental group of an $\infty$-groupoid, and if you
+calculate the fundamental group of the fundamental $\infty$-groupoid of
+a space, and it will agree with the classical definition of fundamental
+group.  So homotopy theory done in the setting of $\infty$-groupoids
+really does tell you something about the original topological spaces
+that you start with.  
 
-Moreover, the view of a space as an $\infty$-groupoid preserves enough
-structure to do homotopy theory (calculate homotopy/homology/cohomology
-groups, etc).  Formally, the fundamental $\infty$-groupoid construction
-is adjoint to the geometric realization of an $\infty$-groupoid as a
-space, and this adjunction preserves homotopy theory (this is called the
-\emph{homotopy hypothesis/theorem}, because whether it is a hypothesis
-or theorem depends on how you define $\infty$-groupoid).  For example,
-you can easily define the fundamental group of an $\infty$-groupoid, and
-if you calculate the fundamental group of the fundamental
-$\infty$-groupoid of a space, that will agree with the classical
-definition of fundamental group. 
-
-\subsubsection{Homotopy theory in type theory}
+\subsection{Homotopy theory in type theory}
 
 Type theory is a formal calculus of $\infty$-groupoids. Because you can
 do homotopy theory through the abstraction of $\infty$-groupoids, you
@@ -191,40 +195,37 @@ really nice thing about using HoTT to work with $\infty$-groupoids is
 that you don't start by defining "an $\infty$-groupoid is..." like one
 would in any other framework---which is fortunate, because describing
 the structure of an $\infty$-groupoid in something like set theory is
-notoriously difficult, because of all the structure mentioned above.
-Instead, you exploit the fact that every type in type theory is an
-$\infty$-groupoid, with the structure of morphisms, 2-morphism,
-3-morphisms, ... given by the identity type.  We will often refer to
-features of type theory by topological-sounding names (for example,
-thinking of $p : \id[A] M N$ as a ``path'' from $M$ to $N$), but it's
-important to keep in mind that we can only talk about these things
-through the abstraction of an $\infty$-groupoid.
+notoriously difficult.  Instead, you exploit the fact that every type in
+type theory is an $\infty$-groupoid, with the structure of morphisms,
+2-morphism, 3-morphisms, ... given by the identity type.  We will often
+refer to features of type theory by topological-sounding names (for
+example, thinking of $p : \id[A] M N$ as a ``path'' from $M$ to $N$),
+but it's important to keep in mind that we can only talk about these
+things through the abstraction of an $\infty$-groupoid.
 
 There are few really nice advantages of doing synthetic homotopy theory
 in type theory.  First, you can use proof assistants like Agda and Coq
 to check your proofs.  Second, we're starting to see examples where
 working in type theory is suggesting new ways of doing proofs.  Third,
 it seems likely that we will be able to interpret type theory in a wide
-variety of other categories that ``look like'' $\infty$-groupoids, and, if so,
-proving a result in type theory will show that it holds in these
-settings as well. It remains to be seen how much homotopy theory we can
-do synthetically, but there are already some positive indication, which
-are listed below.    
+variety of other categories that ``look like'' the category of
+$\infty$-groupoids ($(\infty,1)$-toposes), and, if so, proving a result
+in type theory will show that it holds in these settings as well. It
+remains to be seen how much homotopy theory we can do synthetically, but
+there are already some positive indication, which are listed below.
 
 The main tools we use to do homotopy theory in type theory are:
 
-\begin{itemize}
-
-\item Higher inductive types. To do some homotopy theory, we need some
+\subsubsection{Higher inductive types} To do some homotopy theory, we need some
   basic spaces (the circle, the sphere, the torus) and constructions for
   making new spaces (suspensions, gluing on cells, ...).  These are
   defined using higher inductive types, as described in
-  Chapter~\ref{cha:hits}.  
+  \autoref{cha:hits}.
 
-\item Homotopy groups.  Having defined some spaces, we can start
+\subsubsection{Homotopy groups}  Having defined some spaces, we can start
   calculating some algebraic invariants of them.  The homotopy groups
   have an extremely natural definition in the setting of
-  $\infty$-groupoids/type theory.  The fundamental group of $X$ at $x_0$
+  $\infty$-groupoids, which we import easily into type theory.  The fundamental group of $X$ at $x_0$
   is (to a first approximation---see below) just the identity type
   $\id[X] {x_0} {x_0}$, or the morphisms of the $\infty$-groupoid;
   $\pi_2(X,x_0$) is just the identity type $\id[{\id[X] {x_0} {x_0}}]
@@ -232,8 +233,9 @@ The main tools we use to do homotopy theory in type theory are:
   homotopy group is just giving an equivalence between an identity type
   and some other type, and proving that this equivalence preserves the
   group structure.  For example, calculating the fundamental group of
-  the circle consists of giving a equivalence between $\id[{\Sn ^1}] \base
-  \base$ and $\mathbb{Z}$ that sends composition of paths to addition.
+  the circle consists of giving a equivalence between $\id[{\Sn ^1}]
+  \base \base$ and $\Z$ that sends composition of paths to
+  addition.
 
 The reason this problem is interesting is that the (higher) inductive
 definition of a type X presents X as a free $\infty$-groupoid, and this
@@ -248,76 +250,67 @@ identity type of $X$ really turn out to be?", though it can take some
 significant math to answer it.  This is a higher-dimensional
 generalization of a familiar fact in type theory: even for ordinary
 inductive types like natural numbers or booleans, it takes a bit of work
-to prove that $true$ is different than $false$---characterizing the
-identity type on booleans is a theorem, not part of the definition.
+to prove that $\mathsf{true}$ is different from $\mathsf{false}$---characterizing the
+identity type on booleans is a theorem, not part of the definition
+(see \autoref{sec:compute-coprod}).
 
 One detail that was glossed over above is that the (iterated) identity
 type really gives what is called the \emph{path space} of a space, which
 is not just the \emph{set} of $k$-dimensional paths, but a whole space
 of them, with their higher homotopies.  To extract the set of
 paths-modulo-homotopy, we can use truncation, as described in
-Section~\ref{cha:hits}.  For example, the fundamental group of a
+\autoref{cha:hits}.  For example, the fundamental group of a
 space is defined to be the 0-truncation of the space of loops at $x_0$,
 which produces the set of paths modulo homotopy, killing the higher
 homotopies of the loop space.
 
-This gives rise to the following definitions:
-
-\begin{defn}
-  A \emph{pointed type} $(A,a)$ is a type $A:\type$ together with a point $a:A$.
-\end{defn}
-
-\begin{defn}
-  Given a pointed type $(A,a)$, we define the \emph{loop space} of $(A,a)$ as
-  the following pointed type:
-  \[\Omega(A,a)=((a=_Aa),\refl{A}(a)).\]
-
-  For $n:\N$, the \emph{iterated loop space} of a pointed type $(A,a)$ is
-  defined by:
-  \begin{align*}
-    \Omega^0(A,a)&=(A,a)\\
-    \Omega^{n+1}(A,a)&=\Omega^n(\Omega(A,a))
-  \end{align*}
-\end{defn}
-
+Using iterated loop spaces (\cref{def:loopspace}), we can make the
+following definition:
 \begin{defn}
   Given $n:\N$ and $(A,a)$ a pointed type, we define the homotopy groups of $A$
   at $a$ by
   \[\pi_n(A,a)=\trunc0{\Omega^n(A,a)}\]
 \end{defn}
 
-
-\item Univalence.  The univalence axiom plays an essential role in
+\subsubsection{Univalence}  The univalence axiom plays an essential role in
   calculating homotopy groups (this is a formal claim: without
   univalence, type theory is compatible with an interpretation where all
-  paths, including e.g. the loop on the circle, are reflexivity).  You
+  paths, including, for example, the loop on the circle, are reflexivity).  You
   can see this in the calculation of the the fundamental group of the
-  circle below: the map from $\id[\Sn ^1] \base \base$ to $\mathbb{Z}$
+  circle below: the map from $\id[\Sn ^1] \base \base$ to $\Z$
   is defined by mapping a path on the circle to an isomorphism on
-  $\mathbb{Z}$, so that, for example, $\lloop \ct \opp \lloop$ is sent
+  $\Z$, so that, for example, $\lloop \ct \opp \lloop$ is sent
   to $successor \ct predecessor$, and then applying the isomorphism to
   0. Univalence allows non-trivial paths in the universe, and this is
   used to extract information from paths in higher inductive types.
 
-\item Homotopy-theoretic and type-theoretic methods.  In the proofs
-  we've done so far, we've found that there are different ways of doing
-  homotopy theory in homotopy type theory.  Some proofs use techniques
-  that are familiar from traditional homotopy theory, whereas others are
-  more type-theoretic, and consist mainly of calculations with the
-  $\infty$-groupoid structure.  We will present some examples of both
-  styles below.  
-\end{itemize}
+\subsubsection{Homotopy-theoretic and type-theoretic methods}  In the
+proofs we've done so far, we've found that there are various ways of
+doing homotopy theory in HoTT.  Some proofs use techniques that are
+familiar from traditional homotopy theory and category theory, such as
+contractibility of total spaces of fibrations, or properties of
+pushout/pullback diagrams.  Others are more type-theoretic, and consist
+mainly of calculations with the $\infty$-groupoid structure, in a style
+that is very similar to how computer-scientists use type theory to
+reason about programs.  The line between the two styles is fuzzy, and
+many proofs have aspects of both styles; but there is enough of a
+difference in ``feel'' that it is worth commenting on.  We will present
+some examples of both styles below, and describe an example of the
+difference in \autoref{sec:pi1-s1-intro}.
 
 \subsection{Theorems we have proved}
 
-Here is a sample of some high-level theorems that we have proved in HoTT:
+Here is a sample of some high-level theorems that we have proved in
+HoTT.  These are all well-known results in algebraic topology; the
+interesting thing is that they can be carried out in HoTT, and, in most
+cases, they have been computer-checked.
 
 \begin{thm}[Homotopy Groups of Spheres] \mbox{}
 \begin{itemize}
-\item $\pi_n(\Sn ^n) = \mathbb{Z}$ for $n \ge 1$.
+\item $\pi_n(\Sn ^n) = \Z$ for $n \ge 1$.
 \item $\pi_k(\Sn ^n) = 1$ for $k < n$.  
-\item $\pi_3(\Sn ^2) = \mathbb{Z}$
-\item $\pi_{n+1}(\Sn ^n) = \mathbb{Z}_2$ for $n \ge 3$.    
+\item $\pi_3(\Sn ^2) = \Z$
+\item $\pi_{n+1}(\Sn ^n) = \Z_2$ for $n \ge 3$.    
 \item $\pi_k(\Sn ^n) = \pi_{k+1}(\Sn ^{n+1})$ whenever $k \le 2n - 2$.  
 \end{itemize}
 \end{thm}
@@ -327,74 +320,490 @@ There is a fibration $H$ over $\Sn ^2$ whose fibers are $\Sn ^1$ and
 whose total space is $\Sn ^3$.  
 \end{thm}
 
-Recall from Section~\ref{sec:suspension} that $\susp X$ is the
-suspension of $X$, and from Section~\ref{sec:colimits} that $X \sqcup^C
-Y$ is the pushout of $X$ and $Y$ along $C$.
-
-\begin{thm}[Properties of Connected Spaces] \mbox{}
-\begin{itemize}
-\item If $X$ is $n$-connected, then $\pi_k(X) = 1$ for $k < n$.  
-
-\item Freudenthal Suspension Theorem: 
-  If $X$ is $n$-connected, the map $\merid : X \rightarrow \id[\susp X]
-  \north \north$ is $2n$-connected.  In particular,
-  \id{\trunc{2n}{X}}{\trunc{2n}{\id[\susp X] \north \north}}.
-
-\item Blakers-Massey Theorem: If $X$ is $i$-connected and $Y$ is
-  $j$-connected, then for all $x:X,y:Y$, the map $\glue : C(x,y)
-  \rightarrow X \sqcup^C Y$ (where is the pushout$i+j$-connected.  In
-  particular, $\trunc {i+j} {P(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y]
-    (\inl x) (\inr y)}$.
-\end{itemize}
+\begin{thm}
+  If $X$ is $n$-connected, then $\pi_k(X) = 1$ for $k < n$.
 \end{thm}
 
-\begin{thm}[Eilenberg-Mac Lane Spaces]
+Recall from \autoref{sec:suspension} that $\susp X$ denotes the suspension of $X$.
+
+\begin{thm}[Freudenthal Suspension Theorem]
+  If $X$ is $n$-connected, the map $X \rightarrow \Omega(\susp X)$ is $2n$-connected.
+  In particular, $\id{\trunc{2n}{X}}{\trunc{2n}{\Omega(\susp X)}}$.
+\end{thm}
+
+Recall from \autoref{sec:colimits} that $X \sqcup^C Y$ is the pushout of $X$ and $Y$ along $C$.
+
+\begin{thm}[Blakers-Massey Theorem]
+  If $X$ is $i$-connected and $Y$ is
+  $j$-connected, then for all $x:X$ and $y:Y$, the map $\glue : C(x,y)
+  \rightarrow X \sqcup^C Y$ is $i+j$-connected.  In
+  particular, $\trunc {i+j} {P(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y]
+    {(\inl(x))} {(\inr(y))}}$.\note{What is $P$?}
+\end{thm}
+
+\begin{thm}[Eilenberg--Mac Lane Spaces]
 For any abelian group $G$ and positive number $n$, there is a type
 $K(G,n)$ such that $\pi_n(K(G,n)) = G$, and  $\pi_k(K(G,n)) = 1$
-otherwise.  
+for $k\neq n$.
 \end{thm}
 
 \begin{thm}[Van Kampen Theorem]
-FIXME
+For any maps $f:A\to B$ and $g:A\to C$ with $A$ connected, the fundamental group of the homotopy pushout of $f$ and $g$ is the amalgamated free product (pushout of groups) of $\pi_1(B)$ and $\pi_1(C)$ over $\pi_1(A)$:
+\[ \pi_1(B\sqcup_A C) = \pi_1(B) *_{\pi_1(A)} \pi_1(C).\]
+There is also a generalization to non-connected $A$.
 \end{thm}
 
 \begin{thm}[Whitehead's Principle for $n$-types]
 If $X$ and $Y$ are $n$-types, and $f : X \rightarrow Y$ induces an
-equivalence $\id{\pi_k(X)}{\pi_k(Y)}$ for all $k \le n$, then $f$ is an
+isomorphism $\id{\pi_k(X)}{\pi_k(Y)}$ for all $k \le n$, then $f$ is an
 equivalence.
 \end{thm}
 
+As discussed above, some proofs have a more homotopy-theoretic style,
+while others have a more type-theoretic style.  Many theorems can be
+proved in both styles.  The type-theoretic proofs are generally easier
+to formalize as computer-checked proofs.  In part, this is because the
+homotopy-theoretic proofs often prove a stronger lemma than is strictly
+necessary, but which may be of independent interest: For example, for
+$\pi_2(\Sn ^2)$, the homotopy-theoretic proof requires proving that the
+total space of the Hopf fibration (represented as a dependent type) is
+$\Sn ^3$, a significant result in its own right, whereas the
+type-theoretic proof bypasses this result, replacing it with
+calculations using the definition of the Hopf fibration.  It is
+currently unclear whether the type-theoretic style can be used to prove
+some of the most difficult theorems, such as the total space of Hopf
+fibration and $\pi_3(\Sn ^2)$ and $\pi_4(\Sn ^3)$, which we have done in
+the homotopy-theoretic style.
 
+\autoref{tab:theorems} lists the proofs we have done in each style, and
+whether they have been computer-checked (\checkmark) or only done
+informally.  For the spheres, we have used two different definitions of
+the $n$-sphere $\Sn ^n$: the first as the suspension of $\Sn ^ {n-1}$,
+and the second as a higher inductive type with one base point and one
+loop in $\Omega^n$; we list the status for both definitions.
 
-\subsection{Conventions}
+\begin{table}
+  \centering
+\begin{tabular}{l|l|l}
+Theorem         & Homotopy-theoretic style & Type-theoretic style\\
+\hline 
+$\pi_1(\Sn ^1)$ & \checkmark & \checkmark \\ 
+\hline 
+$\pi_{k<n}(\Sn ^n)$ --- single-loop &    & \checkmark \\
+$\pi_{k<n}(\Sn ^n)$ --- suspension  &  \checkmark?  & \checkmark \\
+\hline 
+$\pi_2(\Sn ^2)$ --- single-loop &   &  \checkmark \\
+$\pi_2(\Sn ^2)$ --- suspension & informal   & \checkmark \\
+\hline 
+total space of Hopf fibration & informal &  \\
+\hline 
+$\pi_3(\Sn ^2)$     & informal   & \\
+\hline 
+$\pi_n(\Sn ^n)$ --- single-loop &    & \checkmark \\
+$\pi_n(\Sn ^n)$ --- suspension  &  informal  & \checkmark \\
+\hline 
+$\pi_4(\Sn ^3)$  &  informal  &  \\
+\hline
+Freudenthal         &  informal  & \checkmark \\
+\hline 
+Blakers-Massey      &            & informal  \\
+\hline 
+$K(G,n)$              &            & \checkmark  \\
+\hline 
+naive Van Kampen              &            & \checkmark  \\
+\hline
+improved Van Kampen              &            & informal \\
+\hline
+Whitehead for $n$-types  &  &  \checkmark 
+\end{tabular}
+  \caption{Theorems from homotopy theory}
+  \label{tab:theorems}
+\end{table}
 
-Unless otherwise stated, the notation \type will denote a \emph{fixed}
-universe and several occurrences of the word \type will always represent
-the same universe. The types \prop, \set, \typele{n} represent the types
-of propositions, sets and $n$-truncated types of this fixed universe
-\type.
 
 \section{Some basic homotopy groups}
 
 In this section, we describe some basic examples of calculating homotopy
 groups, which can be carried out using the tools we have developed so
-far.  
+far.  Unless otherwise stated, the notation \type will denote a
+\emph{fixed} universe and several occurrences of the word \type will
+always represent the same universe. The types \prop, \set, \typele{n}
+represent the types of propositions, sets and $n$-truncated types of
+this fixed universe \type.
 
-\subsection{$\pi_1(S^1)$}
+\subsection{\texorpdfstring{$\pi_1(S^1)$}{π₁(S¹)}}
+\label{sec:pi1-s1-intro}
+
+Our goal is to show that $\id {\pi_1(\Sn ^1)} {\Z}$.  In fact, we
+will show that the loop space $\id {\Omega(\Sn ^1)} {\Z}$.  This is a stronger
+statement, because $\id{\pi_1(\Sn ^1)} {\trunc 0 {\Omega(\Sn ^1)}}$ by
+definition, so if $\id {\Omega(\Sn ^1)} {\Z}$, then $\id {\trunc
+  0 {\Omega(\Sn ^1)}} {\trunc 0 {\Z}}$ by congruence, and
+$\Z$ is a set, so $\id {\trunc 0 {\Z}} {\Z}$
+(FIXME: do we have this somewhere?).  
+\note{What definition of $\Z$ do we want to use?}
+
+Our proof that $\Omega_1(\Sn ^1)$ is $\Z$ can be seen as a
+type-theoretic version of a proof in classical homotopy theory.  The
+classical proof we start from is usually formulated using ``universal
+covering spaces'', but we will give an equivalent sketch using
+\emph{fibrations} which transfers more directly to type theory.  For any
+point $x_0\in B$, there is a canonical \emph{path fibration} $p:P_{x_0}
+B \to B$, where the points of $P_{x_0} B$ are paths in $B$ starting at
+$x_0$, and the map $p$ selects the other endpoint of such a path.  The
+space $P_{x_0} B$ is \emph{contractible}, i.e., homotopy equivalent to a
+point, since we can ``retract'' any path to its initial endpoint $x_0$.
+Moreover, the fiber over $x_0$ is the loop space $\Omega_1(B,x_0)$.
+
+Now consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which
+looks like a helix projecting down onto the circle:
+\begin{center}
+  \begin{tikzpicture}[xscale=1.4,yscale=.6]
+    \node (R) at (2,1) {$\mathbb{R}$};
+    \node (S1) at (2,-2) {$S^1$};
+    \draw[->] (R) -- node[auto] {$w$} (S1);
+    \draw (0,-2) ellipse (1 and .4);
+    \draw[dotted] (1,0) arc (0:-30:1 and .8);
+    \draw (1,0) arc (0:90:1 and .8) arc (90:270:1 and .3) coordinate (t1);
+    \draw[white,line width=4pt] (t1) arc (-90:90:1 and .8);
+    \draw (t1) arc (-90:90:1 and .8) arc (90:270:1 and .3) coordinate (t2);
+    \draw[white,line width=4pt] (t2) arc (-90:90:1 and .8);
+    \draw (t2) arc (-90:90:1 and .8) arc (90:270:1 and .3) coordinate (t3);
+    \draw[white,line width=4pt] (t3) arc (-90:90:1 and .8);
+    \draw (t3) arc (-90:-30:1 and .8) coordinate (t4);
+    \draw[dotted] (t4) arc (-30:0:1 and .8);
+    \node[fill,circle,inner sep=1pt,label={below:\scriptsize \base}] at (0,-2.4) {};
+    \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 0}] at (0,.2) {};
+    \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 1}] at (0,1.2) {};
+    \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 2}] at (0,2.2) {};
+  \end{tikzpicture}
+\end{center}
+The map $w$ sends each point on the helix to the point on the circle
+that it is ``sitting above''; this map is a fibration, and the fiber
+over each point is isomorphic to the integers.  If we lift the path that
+goes counterclockwise around the loop on the bottom, we go up one level in the
+helix, incrementing the integer in the fiber.  Similarly, going
+clockwise around the loop on the bottom corresponds to going down
+one level in the helix, decrementing this count.  This fibration is
+called the \emph{universal cover} of the circle.
+
+Now a basic fact is that a map $E_1\to E_2$ of fibrations over $B$
+which is a homotopy equivalence between $E_1$ and $E_2$ induces a
+homotopy equivalence on fibers.  Since $\mathbb{R}$ and $P_{\base} S^1$
+are both contractible, they are homotopy equivalent, and thus the fibers
+over \base, $\Z$ and $\Omega_1(\Sn ^1)$, are isomorphic.
+
+\smallskip
+
+It is possible to directly formalize this classical homotopy-theoretic
+proof in type theory, by (1) defining the universal cover, (2) proving
+that a homotopy equivalence between total spaces induces an equivalence
+on fibers, and (3) proving that the total spaces of both the path
+fibration and the cover are contractible. Indeed, this was the first
+proof of this result in HoTT.
+
+We later discovered that there is an alternative proof, which has a more
+type-theoretic feel.  In this proof, you directly construct fiberwise
+maps between the path fibration and the universal cover, and prove that
+they are mutually inverse by calculation.  We will call this the
+\emph{type-theoretic} or \emph{encode/decode} proof, because
+\emph{encode} and \emph{decode} are the names we use for the fiberwise
+maps between the path fibration and the cover below.  Both proofs use
+the same construction of the cover (step 1 above).  Where the classical
+proof induces an equivalence on fibers from an equivalence between total
+spaces (step 2), the encode/decode proof constructs the inverse map
+(\emph{decode}) explicitly as a map between fibers.  Where the classical
+proof uses contractibility (step 3), the type-theoretic proof uses path
+induction, circle induction, and integer induction.  These are the same
+tools used to prove contractibility---indeed, path induction \emph{is}
+contractibility of the path fibration composed with
+$\mathsf{transport}$, but they are applied in a different way.
 
 \subsubsection{Encode/decode proof}
 
-\subsubsection{Comparisong with homotopy-theoretic proof}
+By definition, $\Omega(\Sn ^1)$ is $\id[\Sn ^1] \base \base$.  If we
+attempt to prove that $\id {\Omega(\Sn ^1)} {\Z}$ by directly
+constructing an equivalence, we will get stuck, because type theory
+gives you little leverage for working with loops.  Instead, we
+generalize the theorem statement to the path fibration, and analyze the
+whole fibration
+\[
+P(x:\Sn ^1) \defeq (\id[\Sn ^1] \base x)
+\]
+with one end-point free.  
+
+We show that $P(x)$ is equal to another fibration, which gives a more
+explicit description of the paths---we call this other fibration
+``codes'', because its elements are \emph{data} that act as codes for
+paths on the circle.  In this case, the codes fibration is the universal
+cover of the circle.
+
+\begin{defn}[Universal Cover of $\Sn ^1$]
+Define $\code(x:\Sn ^1) : \type$ by circle-recursion, with 
+\[
+\begin{array}{l}
+\code(\base) \defeq \Z \\
+\ap{\code}{\lloop} \defeq \ua(\Zsuc) \\
+\end{array}
+\]
+where $\Zsuc$ is the equivalence $\eqv {\Z} {\Z}$ given by
+adding one, which by univalence determines a path from $\Z$ to
+$\Z$ in \type.  
+\end{defn}
+
+To define a function by circle recursion, we need to find a point and a
+loop in the target.  In this case, the target is $\type$, and the point
+we choose is $\Z$, corresponding to our expectation that the
+fiber of the universal cover should be the integers.  The loop we choose
+is the successor/predecessor isomorphism on $\Z$, which
+corresponds to the fact that going around the loop in the base goes up
+one level on the helix.  Univalence is necessary for this part of the
+proof, because we need a \emph{non-trivial} equivalence on $\Z$.  
+
+From this definition, it is simple to calculate that transporting with
+$\code$ takes $\lloop$ to the successor function, and 
+$\opp{\lloop}$ to the predecessor function:
+\begin{lem} \label{lem:transport-s1-code}
+\id{\transfib \code \lloop x} {x + 1} and 
+\id{\transfib \code {\opp \lloop} x} {x - 1}
+\end{lem}
+\begin{proof}
+For the first, we calculate as follows:
+\[
+\begin{array}{lll}
+ & {\transfib \code \lloop x} &\\
+= & \transfib {A \mapsto A} {(\ap{\code}{\lloop})} x & \text{associativity}\\
+= & \transfib {A \mapsto A} {\ua (\Zsuc)} x & \text{reduction for circle-recursion}\\
+= & x + 1 & \text{reduction for \ua}
+\end{array}
+\]
+The second follows from the first, because 
+$\transfibf B p$ and 
+and ${\transfibf B {\opp p}}$ are always inverses, so 
+$\id{\transfibf \code {\opp \lloop}}$ must be the inverse of the
+$- + 1$.  
+\end{proof}
+
+In the remainder of the proof, we will show that $P$ and $\code$ are
+equivalent.  
+
+\paragraph{Encoding}
+
+Next, we define a function \encode that maps paths to codes:
+\begin{defn}
+Define $\encode : \prd{x : \Sn ^1} \rightarrow P(x) \rightarrow  \code(x)$ by 
+\[
+\encode \: p \defeq \transfib{\code} p 0
+\]
+(we leave the argument $x$ implicit).  
+\end{defn}
+Encode is defined by lifting a path into the universal cover, which
+determines an equivalence, and then applying the resulting equivalence
+to $0$.  
+The interesting thing about this function is that it computes a concrete
+number from a loop on the circle, when this loop is represented using
+the abstract groupoidal framework of HoTT.  To gain an
+intuition for how it does this, observe that by the above lemmas,
+$\transfib \code \lloop x$ is $-+1$ and $\transfibf \code {\opp
+  \lloop} x$ is $x - 1$.  Further, $\mathsf{transport}$ is functorial
+(\autoref{cha:basics}), so $\transfibf{\code} {\lloop \ct \lloop}$ is
+$(\transfibf \code \lloop) \circ (\transfib \code \lloop)$, etc.  Thus, when $p$ is a
+composition like 
+\[
+\lloop \ct \opp \lloop \ct \lloop \ct ...
+\]
+$\transfibf{\code}{p}$ will compute a composition of functions like
+\[
+(- + 1) \circ (- -1) \circ (- + 1) \circ ... 
+\]
+Applying this composition of functions to 0 will compute the
+\emph{winding number} of the path---how many times it goes around the
+circle, with orientation marked by whether it is positive or negative,
+after inverses have been canceled.  Thus, the computational behavior of
+$\encode$ follows from the reduction rules for higher-inductive types and
+univalence, and the action of $\mathsf{transport}$ on compositions and inverses.
+
+Note that the instance $\encode' \defeq \encode_{\base}$ has type 
+$\id \base \base \rightarrow \Z$, which will be one half of the
+equivalence between $\id{\base}{\base}$ and $\Z$.  
+
+\paragraph{Decoding}  
+
+Decoding an integer as a path is defined by recursion:
+
+\begin{defn}
+Define $\lloop^- : \Z \rightarrow \id{\base}{\base}$ by 
+\[
+\lloop^n = \begin{cases} \lloop \ct \lloop \ct ... \ct \lloop \text{ ($n$ times) } & \text{for positive n} \\
+ \opp \lloop \ct \opp \lloop \ct ... \ct \opp \lloop \text{ ($n$ times)} & \text{for negative n} \\
+  \refl{} & \text{for 0}  
+\end{cases}
+\]
+\end{defn}
+
+Since what we want overall is an equivalence between $\id \base \base$
+and $\Z$, we might expect to be able to prove that $\encode'$
+and $\lloop^-$ give an equivalence.  The problem comes in trying to prove
+the ``decode after encode'' direction, where we would need to show that
+$\id {\lloop^{\encode' p}} p$ for all $p$.  We would like to apply path
+induction, but path induction does not apply to loops like a with both
+endpoints fixed!  The way to solve this problem is to generalize the
+theorem to show that $\id {\lloop^{{\encode_x p}}} p$ for all $x: \Sn ^1$
+and $p : \id \base x$.  However, this does not make sense as is, because
+$\lloop^-$ is defined only for \id{\base}{\base}, whereas here it is
+applied to a \id{\base}{x}.  Thus, we generalize 
+$\lloop$ as follows:
+
+%% deliberately making a ``definition'' with a proof here :-) --Dan
+\begin{defn}
+Define $\decode : \prd{x : \Sn ^1}{\code(x) \rightarrow P(x)}$ by 
+circle induction on $x$.  It suffices to give a function 
+${\code(\base) \rightarrow P(\base)}$, for which we use $\lloop^-$, and 
+to show that $\lloop^-$ respects the loop.  
+\end{defn}
+
+\begin{proof}
+To show that $\lloop^-$ respects the loop, it suffices to give a path
+from $\lloop^-$ to itself that lies over $\lloop$. 
+Formally, this means a path from $\transfib {(x' \mapsto Cover x'
+\rightarrow P(x'))} {\lloop} {\lloop^-}$ to $loop^-$.  We define such a
+path as follows:
+
+\[
+\begin{array}{lll}
+  & \transfib {(x' \mapsto \code(x') \rightarrow P(x'))} \lloop {\lloop^-} & \\
+= & \transfibf P \lloop \circ {\lloop^-} \circ \transfibf \code {\opp \lloop} & \\
+= & (- \ct \lloop) \circ (\lloop^-) \circ \transfibf \code {\opp \lloop} & \\
+= & (- \ct \lloop) \circ (\lloop^-) \circ (- - 1) & \\
+= & (n \mapsto \lloop^{n - 1} \ct \lloop) \\                       
+\end{array}
+\]
+
+From line 1 to line 2, we apply the definition of $\mathsf{transport}$
+when the outer connective of the fibration is $\rightarrow$, whcih
+reduces the $\mathsf{transport}$ to pre- and post-composition with
+$\mathsf{transport}$ at the domain and range types.  From line 2 to line
+3, we apply the definition of $\mathsf{transport}$ when the type family
+is $\id{\base}{x}$, which is post-composition of paths.  From line 3 to
+line 4, we use the action of $\code$ on $\opp \lloop$ defined in
+\autoref{lem:transport-s1-code}.  From line 4 to line 5, we simply
+reduce the function composition.  Thus, it suffices to show that for all
+$n$, \id{\lloop^{n - 1} \ct \lloop}{\lloop^{n}}, which is an easy
+induction, using the groupoid laws.  
+\end{proof}
+
+\paragraph{Decoding after encoding}
+
+\begin{lem} \label{lem:s1-decode-encode}  For all 
+for all $x: \Sn ^1$ and $p : \id \base x$, $\id
+{\decode_x({{\encode_x(p)}})} p$.  
+\end{lem}
+
+\begin{proof}
+By path induction, it suffices to show that 
+$\id {\decode_{\base}({{\encode_{\base}(\refl{\base})}})} {\refl{\base}}$.  But
+${\encode_{\base}(\refl{\base})} \jdeq 
+ \transfib{\code}{\refl{\base}} 0 \jdeq 0$, and $\decode_{\base}(0)
+ \jdeq \lloop^ 0 \jdeq \refl{\base}$.  
+\end{proof}
+
+\paragraph{Encoding after decoding}
+
+\begin{lem} \label{lem:s1-encode-decode} For all 
+for all $x: \Sn ^1$ and $c : \code(x)$, $\id
+{\encode_x({{\decode_x(c)}})} c$.  
+\end{lem}
+
+\begin{proof}
+The proof is by circle induction.  It suffices to show the case for
+\base, because the case for \lloop is a path between paths in
+$\Z$, which can be given by appealing to the fact that $\Z$ is a set.  
+
+Thus, it suffices to show, for all $n : \Z$, that
+\[
+\id {\encode'(\lloop^n)} {n}
+\]
+The proof is by induction, with cases for $0$,$1$,$-1$,$n+1$, and
+$n-1$.  
+
+\begin{itemize}
+
+\item In the case for $0$, the result is true by definition.
+
+\item In the case for $1$, ${\encode'(\lloop^1)}$ reduces to 
+$\transfib{\code}{\lloop}{0}$, which by
+\autoref{lem:transport-s1-code} is $0 + 1 = 1$.  
+
+\item In the case for $n+1$, 
+\[
+\begin{array}{lll}
+  & {\encode'(\lloop^{n+1})}  \\
+= & {\encode'(\lloop^{n} \ct \lloop)} & \\
+= & \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} & \\
+= & \transfib{\code}{\lloop}{(\transfib{\code}{(\lloop^n)}{0})} & \text{by functoriality}\\
+= & {(\transfib{\code}{(\lloop^n)}{0})} + 1 & \text{by \autoref{lem:transport-s1-code}}\\
+= & n + 1 & \text{by the IH} \\
+\end{array}
+\]
+
+\item The cases for negatives are analogous.  
+\end{itemize}
+\end{proof}
+
+\paragraph{Tying it all togehter}
+
+\begin{thm}
+There is a family of equivalences $\prd{x : \Sn ^1} {\eqv {P(x)} {\code(x)}}$.  
+\end{thm}
+\begin{proof}
+The maps $\encode$ and $\decode$ are mutually inverse by 
+\autoref{lem:s1-decode-encode,lem:s1-decode-encode},
+and this can be improved to an equivalence.  
+\end{proof}
+
+Instantiating at {\base} gives
+\begin{cor}\label{cor:omega-s1}
+$\eqv {(\id{\base}{\base})} {\Z}$
+\end{cor}
+
+A simple induction shows that this equivalence takes addition to
+compostion, so $\Omega(\Sn ^1) = \Z$ as groups.  
+
+\begin{cor}
+$\id{\pi_k(\Sn ^1)} {\Z}$ if $k = 1$ and $1$ otherwise.  
+\end{cor}
+\begin{proof}
+For $k=1$, we sketched the proof from \autoref{cor:omega-s1} above.
+For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
+{\Omega^n(\Omega{\Sn ^1})} = \trunc 0 {\Omega^n(\Z)}$, which is
+  $1$ because $\Z$ is a set and $\pi_n$ of a set is trivial (FIXME
+  lemmas to cite?).
+\end{proof}
+
 
 \subsection{Van Kampen's theorem}
 \label{sec:van-kampen}
 
-We begin with a naive version of the van Kampen theorem, and then improve it to a more refined version.
+Van Kampen's theorem calculates the fundamental group $\pi_1$ of a pushout of spaces.
+It is traditionally stated for a topological space $X$ which is the union of two open subspaces $U$ and $V$, but in homotopy-theoretic terms this is just a convenient way of ensuring that $X$ is the homotopy pushout of $U$ and $V$ over their intersection.
+Thus, we will prove a version of van Kampen's theorem for arbitrary homotopy pushouts.
+
+In this section we will describe a proof of van Kampen's theorem which uses the same type-theoretic encode/decode machinery that we used for $\pi_1(\Sn^1)$ in \autoref{sec:pi1-s1-intro}.
+There is another more homotopy-theoretic approach, which uses the machinery of reflective subuniverses to be described in \autoref{sec:more-advanced-tools}.
+
+We do need a more refined version of the encode/decode technique, however.
+In \autoref{sec:pi1-s1-intro} (as well as in \autoref{sec:compute-coprod,sec:compute-nat}) we used it to characterize the entire path spaces of a (higher) inductive type $W$ --- deriving as a consequence a characterization of the loop space $\Omega(W)$, and thereby also of its 0-truncation $\pi_1(W)$.
+In van Kampen's theorem, our goal is only to characterize the fundamental group $\pi_1(W)$, and we do not have any explicit description of the loop spaces or the path spaces to use.
+However, it turns out that we can use the same technique directly for a truncated version of the path spaces, thereby characterizing not only the fundamental \emph{group} $\pi_1(W)$ but the whole 0-truncated path fibration.
+
 
 \subsubsection{Naive van Kampen}
-\label{sec:naive}
+\label{sec:naive-vankampen}
 
-For a type $X$, write $\Pi_1 X: X\to X\to \type$ be the $0$-truncation of its identity type, i.e.\ $\Pi_1 X(x,y) \defeq \trunc0{x=y}$.
+We begin with a ``naive'' version of van Kampen's theorem, which is useful but not quite as useful as the classical version.
+In \autoref{sec:better-vankampen} we will improve it to a more useful version.
+
+For a type $X$, write $\Pi_1 X: X\to X\to \type$ be the $0$-truncation of its identity type, i.e., $\Pi_1 X(x,y) \defeq \trunc0{x=y}$.
 Note that we have induced groupoid operations
 \begin{gather*}
   (-\ct-) : \Pi_1X(x,y) \to \Pi_1X(y,z) \to \Pi_1X(x,z)\\
@@ -575,7 +984,7 @@ When $u\jdeq ib$ and $v\jdeq ib'$, this composite is
   &= (b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b').
 \end{split}
 \end{multline*}
-i.e.\ the identity function.
+i.e., the identity function.
 The other three point cases are analogous, and the path cases are trivial since all the types are sets.
 \end{proof}
 
@@ -585,9 +994,9 @@ The other three point cases are analogous, and the path cases are trivial since 
   Inspecting the definition of, say, $\code(i(\ttt),i(\ttt))$, we see that the paths all may as well be trivial, so the only information is in the sequence of elements $x_1,y_1,\dots,x_n,y_n: \bool$.
   Moreover, if we have $x_k=y_k$ or $y_k=x_{k+1}$ for any $k$, then the set-quotient relations allow us to excise both of those elements.
   Thus, every such sequence is equal to a canonical \emph{reduced} one in which no two adjacent elements are equal.
-  Clearly such a reduced sequence is uniquely determined by its length (a natural number $n$) together with, if $n>1$, the information of whether $x_1$ is $0_\bool$ or $1_\bool$, since that determines the rest of the sequence uniquely.
+  Clearly such a reduced sequence is uniquely determined by its length (a natural number $n$) together with, if $n>1$, the information of whether $x_1$ is $\bfalse$ or $\btrue$, since that determines the rest of the sequence uniquely.
   And these data can, of course, be identified with an integer, where $n$ is the absolute value and $x_1$ encodes the sign.
-  Thus we recover $\pi_1(S^1)\cong \mathbb{Z}$.
+  Thus we recover $\pi_1(S^1)\cong \Z$.
 \end{eg}
 
 \begin{eg}\label{eg:suspension}
@@ -613,12 +1022,12 @@ This operation on $\code$ is evidently just concatenation of sequences; we leave
 
 
 \subsubsection{van Kampen with a set of basepoints}
-\label{sec:better}
+\label{sec:better-vankampen}
 
 When $A$, $B$, and $C$ are not all sets, however, the version of the van Kampen theorem proven in the previous section is not as useful, since it does not identify the path-space of $P$ with a set presented in terms of \emph{set-level data}.
 For this reason, in this section we consider a better sort of van Kampen theorem, which is closely analogous to an improvement that is well-known to be important in classical algebraic topology, where $A$ (at least) is equipped with a \emph{set of base points}.
 
-Let $A,B,C,f,g,P,i,j,h$ be as in the previous section, and suppose also we are given a set $S$ and a map $k:S \to A$ which is \emph{$(-1)$-connected} in the ``fiberwise'' sense, i.e.\ left orthogonal to $(-1)$-truncated objects.
+Let $A,B,C,f,g,P,i,j,h$ be as in the previous section, and suppose also we are given a set $S$ and a map $k:S \to A$ which is \emph{$(-1)$-connected} in the ``fiberwise'' sense, i.e., left orthogonal to $(-1)$-truncated objects.
 (Apparently this is what a classical topologist would call a ``$0$-connected'' map, due to thinking in terms of cofibers rather than fibers.)
 For instance, $A$ could be pointed and connected with $k:\unit\to A$ the point, or $A$ could be a set with $k$ the identity function.
 
@@ -681,7 +1090,7 @@ Now we define $\code:P\to P\to \type$ by double induction as follows
   \end{equation}
   Since $\code$ is set-valued, by \autoref{thm:kbar} we may assume that $a=\kbar t$ for some $t:T$.
   Next, we can do induction on $t$.
-  If $t\jdeq \ell s$ for $s:S$, then we define~\eqref{eq:bfa-bga2} as in \S\ref{sec:naive}:
+  If $t\jdeq \ell s$ for $s:S$, then we define~\eqref{eq:bfa-bga2} as in \autoref{sec:naive}:
   \begin{align*}
     (\dots, y_n, p_n,fks) &\mapsto (\dots,y_n,p_n,s,\refl{gks},gks)\\
     (\dots, x_n, p_n, s, \refl{fks}, fks) &\mapsfrom (\dots, x_n, p_n, gks)
@@ -729,20 +1138,147 @@ Now we define $\code:P\to P\to \type$ by double induction as follows
 \begin{eg}\label{eg:torus}
   As a further special case of \autoref{eg:cofiber}, let $B\defeq S^1 \vee S^1$, let $A\defeq S^1$, and let $f:A\to B$ pick out the composite loop $p \ct q \ct \opp p \ct \opp q$, where $p$ and $q$ are the generating loops in the two copies of $S^1$ comprising $B$.
   Then $P$ is a presentation of the torus $T^2$.
-  Thus, $\pi_1(T^2)$ is the quotient of the free group on two generators (i.e.\ $\pi_1(B)$) by the relation $p \ct q \ct \opp p \ct \opp q = 1$.
-  This clearly yields the free \emph{abelian} group on two generators, which is $\mathbb{Z}\times\mathbb{Z}$.
+  Indeed, it is not hard to identify $P$ with the presentation of $T^2$ as described in \autoref{sec:hubs-spokes}, using the cone on a particular loop.
+  Thus, $\pi_1(T^2)$ is the quotient of the free group on two generators (i.e., $\pi_1(B)$) by the relation $p \ct q \ct \opp p \ct \opp q = 1$.
+  This clearly yields the free \emph{abelian} group on two generators, which is $\Z\times\Z$.
+\end{eg}
 
-  Similarly, if we defined $f$ to pick out $p\ct q\ct p \ct \opp q$, we would obtain a presentation for the fundamental group of the Klein bottle.
+\begin{eg}
+  More generally, any CW complex can be obtained by repeatedly ``coning off'' spheres, as described in \autoref{sec:hubs-spokes}.
+  That is, we start with a set $X_0$ of points (``0-cells''), which is the ``0-skeleton'' of the CW complex.
+  We take the pushout
+  \begin{equation*}
+    \vcenter{\xymatrix{
+        S_1 \times \Sn^0\ar[r]^-{f_1}\ar[d] &
+        X_0\ar[d]\\
+        \unit \ar[r] &
+        X_1
+      }}
+  \end{equation*}
+  for some set $S_1$ of 1-cells and some family $f_1$ of ``attaching maps'', obtaining the ``1-skeleton'' $X_1$.
+  Then we take the pushout
+  \begin{equation*}
+    \vcenter{\xymatrix{
+        S_2 \times \Sn^1\ar[r]^{f_2}\ar[d] &
+        X_1\ar[d]\\
+        \unit \ar[r] &
+        X_2
+      }}
+  \end{equation*}
+  for some set $S_2$ of 2-cells and some family $f_2$ of attaching maps, obtaining the 2-skeleton $X_2$, and so on.
+  The fundamental group of each pushout can be calculated from the van Kampen theorem: we obtain the group presented by generators derived from the 1-skeleton, and relations derived from $S_2$ and $f_2$.
+  The pushouts after this stage do not alter the fundamental group, since $\pi_1(\Sn^n)$ is trivial for $n>1$ (we will prove this in \autoref{sec:pik-le-n}).
 \end{eg}
 
 \begin{eg}\label{eg:kg1}
-  As a more general special case of \autoref{eg:cofiber}, suppose given any presentation of a (set-)group $G = \langle X | R \rangle$, with $X$ a set of generators and $R$ a set of words in these generators.
+  In particular, suppose given any presentation of a (set-)group $G = \langle X | R \rangle$, with $X$ a set of generators and $R$ a set of words in these generators.
   Let $B\defeq \bigvee_X S^1$ and $A\defeq \bigvee_R S^1$, with $f:A\to B$ sending each copy of $S^1$ to the corresponding word in the generating loops of $B$.
-  It follows that $\pi_1(P) \cong G$.
-  Thus, if we 1-truncate $P$, we obtain an Eilenberg--Mac Lane space $K(G,1)$.
+  It follows that $\pi_1(P) \cong G$; thus we have constructed a connected type whose fundamental group is $G$.
+  Since any group has a presentation, any group is the fundamental group of some type.
+  If we 1-truncate such a type, we obtain a type whose only nontrivial homotopy group is $G$; this is called an \emph{Eilenberg--Mac Lane space} $K(G,1)$.
 \end{eg}
 
+
+\subsection{Whitehead's theorem and Whitehead's principle}
+\label{sec:whitehead}
+
+In classical homotopy theory, a map $f:A\to B$ which induces an isomorphism $\pi_n(A,a) \cong \pi_n(B,f(a))$ for all basepoints $a$ in $A$ is necessarily a homotopy equivalence, as long as the spaces $A$ and $B$ are well-behaved (e.g.\ have the homotopy types of CW-complexes).
+This is known as \emph{Whitehead's theorem}.
+In fact, the ``ill-behaved'' spaces for which Whitehead's theorem fails are invisible to type theory.
+Roughly, it is only the well-behaved topological spaces which are used to present $\infty$-groupoids, and homotopy type theory deals with $\infty$-groupoids directly rather than actual topological spaces.
+Thus, one might expect that Whitehead's theorem would be true in univalent foundations.
+
+However, this is \emph{not} the case: Whitehead's theorem is not provable.
+In fact, there are known models of type theory in which it fails to be true, although for entirely different reasons than its failure for ill-behaved topological spaces.
+These models are ``non-hypercomplete $\infty$-toposes'' (see~\cite{lurie:higher-topoi}); roughly speaking, they consist of sheaves of $\infty$-groupoids over infinite-dimensional base spaces.
+
+From a foundational point of view, therefore, we may speak of \emph{Whitehead's principle} as a ``classicality axiom'', akin to LEM and AC.
+It may consistently be assumed, but it is not part of the computationally motivated type theory, nor does it hold in all natural models.
+But when working from set-theoretic foundations, this principle is invisible: it cannot fail to be true in a world where $\infty$-groupoids are built up out of sets (using topological spaces, simplicial sets, or any other such model).
+Thus, by showing us a world of mathematics where $\infty$-groupoids are basic objects, univalent foundations reveals new axioms that have heretofor been implicitly assumed without realizing it, solely due to the nature of our chosen foundational system.
+
+It is beyond the scope of this book to describe any models of type theory, so we will not explain how Whitehead's principle can come to fail.
+However, we can prove that it holds whenever the types involved are $n$-truncated for some finite $n$, by ``downward'' induction on $n$.
+In addition to being of interest in its own right (for instance, it implies the essential uniqueness of Eilenberg--Mac Lane spaces), the proof of this result will hopefully provide some intuitive explanation for why we cannot hope to prove an analogous theorem without truncation hypotheses.
+
+We begin with the following modification of \autoref{thm:mono-surj-equiv}, which will eventually supply the induction step in the proof of the truncated Whitehead's principle.
+It may be regarded as a type-theoretic, $\infty$-groupoidal version of the classical statement that a fully faithful and essentially surjective functor is an equivalence of categories.
+
+\begin{thm}\label{thm:whitehead0}
+  Suppose $f:A\to B$ is a function such that
+  \begin{enumerate}
+  \item $\trunc0 f : \trunc0 A \to \trunc0 B$ is surjective, and\label{item:whitehead01}
+  \item for any $x,y:A$, the function $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence.\label{item:whitehead02}
+  \end{enumerate}
+  Then $f$ is an equivalence.
+\end{thm}
+\begin{proof}
+  Note that~\ref{item:whitehead02} is precisely the statement that $f$ is a monomorphism, c.f.~\autoref{sec:mono-surj}.
+  Thus, by \autoref{thm:mono-surj-equiv}, it suffices to show that $f$ is surjective, i.e.\ that for any $b:B$ we have $\trunc{-1}{\hfib f b}$.
+  Suppose given $b$; then since $\trunc0 f$ is surjective, there merely exists an $a:A$ such that $\trunc 0 f(\tproj0a) = \tproj0b$.
+  And since our goal is a mere proposition, we may assume given such an $a$.
+  Then we have $\tproj0{f(a)} = \trunc 0 f(\tproj0a) =\tproj0b$, hence $\trunc{-1}{f(a)=b}$.
+  Again, since our goal is still a mere proposition, we may assume $f(a)=b$.
+  Hence $\hfib f b$ is inhabited, and thus merely inhabited.
+\end{proof}
+
+Since homotopy groups are truncations of loop spaces, rather than path spaces, we need to modify this theorem to speak about these instead.
+
+\begin{cor}\label{thm:whitehead1}
+  Suppose $f:A\to B$ is a function such that
+  \begin{enumerate}
+  \item $\trunc0 f : \trunc0 A \to \trunc0 B$ is a bijection, and
+  \item for any $x:A$, the function $\apfunc f : \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
+  \end{enumerate}
+  Then $f$ is an equivalence.
+\end{cor}
+\begin{proof}
+  By \autoref{thm:whitehead0}, it suffices to show that $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence for any $x,y:A$.
+  And by \autoref{thm:equiv-inhabcod}, we may assume $\id[B]{f(x)}{f(y)}$.
+  In particular, $\tproj0{f(x)} = \tproj0{f(y)}$, so since $\trunc0 f$ is an equivalence, we have $\tproj0 x = \tproj0y$, hence $\tproj{-1}{x=y}$.
+  Since we are trying to prove a mere proposition ($f$ being an equivalence), we may assume given $p:x=y$.
+  But now the following square commutes up to homotopy:
+  \begin{equation*}
+  \vcenter{\xymatrix{
+      \Omega(A,x)\ar[r]^-{-\ct p}\ar[d]_{\apfunc f} &
+      \id[A]xy \ar[d]^{\apfunc f}\\
+      \Omega(B,f(x))\ar[r]_-{-\ct f(p)} &
+      \id[B]{f(x)}{f(y)}.
+      }}
+  \end{equation*}
+  The top and bottom maps are equivalences, and the left-hand map is so by assumption.
+  Hence, by the 2-out-of-3 property, so is the right-hand map.
+\end{proof}
+
+Now we can prove the truncated Whitehead's principle.
+
+\begin{thm}\label{thm:whiteheadn}
+  Suppose $A$ and $B$ are $n$-types and $f:A\to B$ is such that $\pi_k(f):\pi_k(A,x) \to \pi_k(B,f(x))$ is a bijection for all $k$ and all $x:A$.
+  Then $f$ is an equivalence.
+\end{thm}
+\begin{proof}
+  We proceed by induction on $n$.
+  When $n=-2$, the statement is trivial.
+  Thus, suppose it to be true for all functions between $n$-types, and let $A$ and $B$ be $(n+1)$-types and $f:A\to B$ as above.
+  Then since $\pi_0$ is just the 0-truncation, $\trunc0f:\trunc0A \to \trunc0B$ is a bijection.
+  Thus, by \autoref{thm:whitehead1}, it will suffice to show that for any $x:A$, the function $\apfunc f: \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
+  However, $\Omega(A,x)$ and $\Omega(B,f(x))$ are $n$-types, and $\pi_k(\apfunc f) = \pi_{k+1}(f)$, so this follows from the inductive hypothesis.
+\end{proof}
+
+Note that if $A$ and $B$ are not $n$-truncated for any finite $n$, then there is no way for the induction to get started.
+
+A map $f$ such that $\pi_k(f)$ is a bijection for all $k$ may be called \emph{$\infty$-connected} or a \emph{weak equivalence}.
+A type $Z$ is called \emph{$\infty$-truncated} or \emph{hypercomplete} if the induced map $(-\circ f):(B\to Z) \to (A\to Z)$ is an equivalence whenever $f$ is $\infty$-connected --- that is, if $Z$ thinks every $\infty$-connected map is an equivalence.
+Then if we want to assume Whitehead's principle as an axiom, we may use either of the following equivalent forms.
+\begin{itemize}
+\item Every $\infty$-connected function is an equivalence.
+\item Every type is $\infty$-truncated.
+\end{itemize}
+In higher topos models, the $\infty$-truncated types form a reflective subuniverse in the sense of \autoref{subsec:reflective-subuniverses} (the ``hypercompletion'' of an $\infty$-topos), but we do not know whether this is true in general.
+
+
 \section{More advanced tools}
+\label{sec:more-advanced-tools}
 
 In this section, we develop some more advanced tools for doing homotopy
 theory in HoTT, including the theory of pushouts and pullbacks in
@@ -752,7 +1288,7 @@ subuniverse, and the theory of truncations.
 \subsection{Homotopy pushouts}
 \label{sec:pushouts}
 
-In \S\ref{sec:colimits} we used higher inductive types to define pushouts of types.
+In \autoref{sec:colimits} we used higher inductive types to define pushouts of types.
 It will be useful for us to consider also the notion of pushout in certain subcategories of types.
 
 \subsubsection{Definition}
@@ -976,7 +1512,8 @@ In particular, we don't need higher inductive types.
   are inverse to each other.
 \end{proof}
 
-\subsection{Reflective subuniverses of $\type$}
+\subsection{Reflective subuniverses of \texorpdfstring{$\type$}{U}}
+\label{subsec:reflective-subuniverses}
 
 Reflective subuniverses are particularly nice subuniverses in the sense that
 every type $A:\type$ can be reflected down to a type $\reflect(A)$ in the
@@ -1004,7 +1541,7 @@ The universal property means that $\reflect$ is left adjoint to the inclusion
 $\iota:\P\to\type$ with $\project_A$ as the unit, because the last $B$ in the
 universal property can be replaced by $\iota(B)$ given that $B$ is in $\P$.
 
-One example is truncations, as defined in Section~\ref{sec:truncations}.
+One example is truncations, as defined in \autoref{sec:truncations}.
 \begin{lem}[Truncations are reflective]
   $\typele{n}$ is a reflective subuniverse of $\type$, with $\reflect$
   given by $\trunc{n}{-}$.
@@ -1474,55 +2011,59 @@ conclude that every coherence condition is always satisfied.
 \end{proof}
 
 \subsection{Truncations}
+\label{subsec:facts-about-truncations}
 
-The following facts about truncations are useful for calculating
-homotopy groups.  
+The encode/decode method can also be used to calculate the path spaces of a truncation.
+Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
+Indeed, for any $x,y:A$ there is a canonical map
+\begin{equation}
+  f:\ttrunc n{x=_Ay}\to \Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)\label{eq:path-trunc-map}
+\end{equation}
+defined by
+\[f(\tproj n{p})\defeq \apfunc{\tproj {n+1}-}(p). \]
+This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the codomain of $f$ is $n$-truncated.
 
-\begin{lem}
-  Let $n\ge-2$, $A:\type$ and $x,y:A$. There is a canonical map
-  \[f:\trunc n{x=_Ay}\to\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\]
-  defined by
-  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
-  This definition is correct because $\trunc {n+1}A$ is $(n+1)$-truncated hence
-  the right hand side of the arrow is $n$-truncated.
-
-  The lemma says that this map is an equivalence.
-\end{lem}
+\begin{thm}
+  For any $A$ and $x,y:A$ and $n\ge -2$, the map~\eqref{eq:path-trunc-map} is an equivalence; thus we have
+  \[ \eqv{\ttrunc n{x=_Ay}}{\Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)}. \]
+\end{thm}
 
 \begin{proof}
-  We cannot directly define an inverse to $f$ because there is no way to induct
-  on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$. We will instead
-  generalize the type of $f$ in order to have general elements of the type
-  $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  As in previous situations, we cannot directly define a quasi-inverse to~\eqref{eq:path-trunc-map} because there is no way to induct on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Thus, instead we generalize its type, in order to have general elements of the type $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Define $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ by
+  \[P(\tproj {n+1}x,\tproj {n+1}y)\defeq \trunc n{x=_Ay}\]
+  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated, and $\typele{n}$ is $(n+1)$-truncated by \autoref{thm:hleveln-of-hlevelSn}.
+  Now for every $u,v:\trunc{n+1}A$, there is a map
+  \[\encode:P(u,v) \to \big(u=_{\trunc{n+1}A}v\big)\]
+  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and $p:x=y$ by
+  \[\encode(\tproj n{p})\defeq \apfunc{\tproj{n+1}-} (p).\]
+  Since the codomain of $\encode$ is $n$-truncated, it suffices to define it only for $u$ and $v$ of this form, and then it's just the same definition as before.
+  We also define a function
+  \[ r : \prd{u:\trunc{n+1} A} P(u,u) \]
+  by induction on $u$, where $r(\tproj{n+1} x) \defeq \tproj n {\refl x}$.
 
-  Let $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ defined by
-  \[P(\tproj {n+1}x,\tproj {n+1}y)=\trunc n{x=_Ay}\]
-
-  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated and
-  $\typele{n}$ is $(n+1)$-truncated (here we are using the univalence axiom in a
-  very nontrivial way).
-
-  We can now generalize the result we want to prove. For every $u,v:\trunc{n+1}A$
-  there is a map
-  \[f:P(u,v)\to{}u=_{\trunc{n+1}A}v\]
-  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ by
-  \[f(\tproj n{\refl{A}(x)})=\refl{\trunc {n+1}A}(\tproj {n+1}x)\]
-
-  The type of $f$ being $n$-truncated, we are allowed to define it only for $u$
-  and $v$ of this form, and then it's just the same definition as before.
-
-  But now we can define an inverse map
-  \[g:u=_{\trunc{n+1}A}v\to{}P(u,v)\]
+  Now we can define an inverse map
+  \[\decode: (u=_{\trunc{n+1}A}v) \to P(u,v)\]
   by
-  \[g(\refl{\trunc{n+1}A}(\tproj {n+1}x)) = \tproj n{\refl{A}(x)}\]
-
-  because $u$ and $v$ are general elements of $\trunc{n+1}A$, and the output type
-  is $n$-truncated so we can moreover assume that $u$ and $v$ of the form
-  $\tproj {n+1}x$.
-
-  It is clear that $g$ and $f$ are inverse to each other, which prove that they
-  are both equivalences. The result stated in the lemma is then the special case
-  where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
+  \[\decode(p) \defeq \transfib{v\mapsto P(u,v)}{p}{r(u)}. \]
+  To show that the composite
+  \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \]
+  is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that $\decode(r(u)) = \refl{u}$.
+  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition of $r$ and $\decode$.
+  Finally, to show that 
+  \[ P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \]
+  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
+  Then we have
+  \begin{align*}
+    \decode(\encode(\tproj n p)) &= \decode(\apfunc{\tproj{n+1}-}(p))\\
+    &= \transfib{v\mapsto P(\tproj{n+1}x,v)}{\apfunc{\tproj{n+1}-}(p)}{\tproj n {\refl x}}\\
+    &= \transfib{v\mapsto \trunc n{u=v}}{p}{\tproj n {\refl x}}\\
+    &= \tproj n {\transfib{v \mapsto (u=v)}{p}{\refl x}}\\
+    &= \tproj n p.
+  \end{align*}
+  This completes the proof that \encode and \decode are quasi-inverses.
+  The stated result is then the special case where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
 \end{proof}
 
 \begin{cor}
@@ -1671,7 +2212,8 @@ connectedness.
   $n$-connected.
 \end{proof}
 
-\subsection{$\pi_{k \le n}$ of an $n$-connected space (includes $\pi_{k < n}(\Sn ^n)$)}
+\subsection{\texorpdfstring{$\pi_{k \le n}$}{π\_(k≤n)} of an \texorpdfstring{$n$}{n}-connected space (includes \texorpdfstring{$\pi_{k < n}(\Sn ^n)$}{π\_(k<n)(Sⁿ)})}
+\label{sec:pik-le-n}
 
 \begin{lem}
   Let $(A,a)$ be a pointed type and $n:\N$.
@@ -1726,8 +2268,8 @@ $n$-connected types.
 For all $n$ and $k$, if $k < n$, then $\pi_k(\Sn ^n) = \unit$.  
 \end{cor}
 \begin{proof}
-$\Sn$ is $n\mathord{-}1$-connected by Corollary~\ref{cor:sn-connected}.  Therefore
-Lemma~\ref{lem:pik-nconnected} gives the result.  
+$\Sn$ is $n\mathord{-}1$-connected by \autoref{cor:sn-connected}.  Therefore
+\autoref{lem:pik-nconnected} gives the result.  
 \end{proof}
 
 %%% Local Variables:

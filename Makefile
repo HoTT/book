@@ -5,13 +5,15 @@ pdf: *.tex
 	pdflatex main.tex
 
 clean:
-	rm -f main.out
+	/bin/rm -f main.out
 	rm -f main.aux
 	rm -f main.log
 	rm -f main.out
 	rm -f main.pdf
 
-update-ref.sed: $(wildcard *.aux)
-	echo "#!/bin/sed -f" > $@
-	./aux2sed.sed $^ >> $@
-	chmod +x $@
+etc/refdict.py: $(wildcard *.aux)
+	echo "# AUTOMATICALLY GENERATED, DO NOT HANDLE WITH BARE HANDS" > $@
+	echo "ref_index = {" >> $@
+	sed -f etc/aux2refdict.sed $^
+	echo "}" >> $@
+

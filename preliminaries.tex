@@ -126,17 +126,7 @@ $A:\UU_i$ then $A:\UU_{i+1}$
   has a uniquely determined type. This could be avoided by introducing
   an explicit lifting operator.}
 
-We say that our type theory is predicative if types in a universe
-$\UU_i$ are introduced only with reference to types in the same or
-lower universes. Most (all ?) constructions introduced in this book
-are predicative. An impredicative type is one which is obtained by
-quantifying over all types at a certain level including itself. In
-classical Mathematics we can quantify over all truth values which are
-identified with the type of booleans. Doing the same in type theory
-would involve quantifying over all types at the current level and is
-hence impredicative. As a consequence assuming excluded middle which
-identifies the small type of booleans with the universe, leads to an
-impredicative theory.
+We say that our type theory is predicative if types in a universe $\UU_i$ are introduced only with reference to types in the same or lower universes. Most (all ?) constructions introduced in this book are predicative. An impredicative type is one which is obtained by quantifying over all types at a certain level including itself. In classical Mathematics we can quantify over all truth values which are identified with the type of booleans. Doing the same in type theory would involve quantifying over all types at the current level and is hence impredicative. As a consequence assuming the principle of excluded middle, which identifies the small type of booleans with the universe, leads to an impredicative theory.
 
 When we say that $A$ is a type we mean that it inhabits some universe
 $\UU_i$. We usually want to avoid to mention the level $i$ explicitely
@@ -144,31 +134,30 @@ and just assume that levels can be assigned in a consistent way. We
 may write $A:\UU$ omitting the level. This way we can even write
 $\UU:\UU$ which can be read as $\UU_i:\UU_{i+1}$ having left the
 indizes implicit. 
-
-In the sequel we shall write $T[x]$ for a term with a variable $x$ and
-$T[T']$ for the same term where each occurence of $x$ has been
-replaced by $T'$. Moreover we shall assume that this substitution
+ 
+In the sequel we shall write $a(x)$ for a term with a variable $x$ and
+$a(b)$ for the same term where each occurence of $x$ has been
+replaced by $b$. Moreover, we shall assume that this substitution
 operation avoids the capture of bound variables, if necessary by
 consistently renaming bound variables ($\alpha$-conversion).
-As an example consider $B[x] \defeq \prd{y:A}x = y$, we don't want
-$B[y]$ to be equal to $\prd{y:A}y = y$ because the variable $y$ we are
+As an example consider $b(x) \defeq \prd{y:A}x = y$, we don't want
+$B(y)$ to be equal to $\prd{y:A}y = y$ because the variable $y$ we are
 substitute doesn't refer to the bound variable. Instead we rename the
-bound variable to avoid capture $B[y] \jdeq \prd{y':A}y = y'$.
+bound variable to avoid capture $B(y) \jdeq \prd{y':A}y = y'$.
 
 A \textbf{family of types} over an indexing type $A:\UU$ and a 
-type $B[x] : \UU$ given $x:A$. This can be generalized to a sequence of indexing
-types $A_i[x_0,\dots x_{i-1}]$ each depending on the previous indexing
-types and a family $B[x_0,\dots,x_n] : \UU$ depending on all of them. In the
-propsoitions of types view families correspond to predicates,
+type $B(x) : \UU$ given $x:A$. This can be generalized to a sequence of indexing
+types $A_i(x_0,\dots x_{i-1})$ each depending on the previous indexing
+types and a family $B(x_0,\dots,x_n) : \UU$ depending on all of them. In the
+propositions as types view families correspond to predicates:
 assigning to each element of the indexing types a type corresponding
 to the proposition that this particular instance of the predicate holds.
 
 An example is the type $\Vect(A,n)$ of
 vectors ($n$-tuples) of elements $a_i : A$ for $0 < i< n$ of type $A$:
 $\seq{a_0,\dots,a_n} : \Vect(A,n)$ which is family indexed
-over $n : \Nat$. Another example is the type $x =_A y$ which is a
-family indexed over $x,y : A$. Indeed, xsboth examples are also
-indexed by $A:\UU$.
+over $A:\UU$ and $n : \Nat$. Another example is the type $x =_A y$ which is a
+family indexed over $A:\UU$ and $x,y : A$.
 
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:pi-types}
@@ -183,7 +172,7 @@ domain of the function --- this corresponds to the infinite cartesian
 product of types as the notation suggests. 
 
 Given a type $A$
-and a family $B[x]$ indexed over $x:A$ we can form the type
+and a family $B(x)$ indexed over $x:A$ we can form the type
 \[\prd{x:A}B(x)\] of dependent functions. Non-dependent functions arise
 in the special case when $B$ is a constant family (i.e., $B$ does not
 dependent on $x$) in which case we write $A \to B$.
@@ -196,18 +185,19 @@ is the function $f$ which constructs an $n$-tuple of $a$s, i.e.
 of a dependent function is the proof of reflexivity which has the type
 $\prd{x:A}x = x$.
 
-Given a dependent function $f : \prd{x:A}B[x]$ and $a : A$ we can
-apply $f$ to $a$ which we write as $f(a) : B[a]$.  Such a function $f$ may be introduced by a defining equation
-  \[ f(x)\defeq b[x]\mbox{ for } x:A,\]
-where $b[x]$ is a term for an object of type $B[x]$ for $x:A$. So if $a$ is a term for an object of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
-  \[ f(a)\jdeq b[a]:B[a]\]
-and we have $f(a):B[a]$. 
+Given a dependent function $f : \prd{x:A}B(x)$ and $a : A$ we can
+apply $f$ to $a$ which we write as $f(a) : B(a)$.  Such a function $f$ may be introduced by a defining equation
+  \[ f(x)\defeq b(x)\mbox{ for } x:A,\]
+where $b(x)$ is a term of type $B(x)$ for $x:A$. So if $a$ is a term of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
+  \[ f(a)\jdeq b(a):B(a)\]
+and we have $f(a):B(a)$. We use the same syntax for substitution and function application hence this rule may look a bit tautological. Here $f(a)$ is function application whle $b(a)$ is the substitution of $a$ for $x$.
 
 If we want to avoid giving a name to a function we can use
 $\lambda$-abstraction 
-\[\lam{x:A}b[x] : \prd{x:A}B[x]\]
+\[\lam{x:A}b(x) : \prd{x:A}B[x]\]
 $\lambda$-abstractions induce the judgmental equality
-$(\lam{x:A}b[x])(a) \jdeq b[a]$ ($\beta$-equality). Note that
+\[(\lam{x:A}b(x))(a) \jdeq b(a)\]
+($\beta$-equality). Note that
 we do not assume $\eta$-equality $\lam{x:A} f(x) \jdeq f$ (where
 $x$ does not occur in $f$) but this is provable for propositional
 equality using functional extensionality.
@@ -225,12 +215,12 @@ elimination principle associated to a particular type to define
 functions - we will introduce these elimination principles with the
 type they eliminate over.
 
-Function in several arguments correspond to iterated function types,
+Functions in several arguments correspond to iterated function types,
 i.e. a function $f$ with arguments in $A$ and $B$ and results in $C$ has
-the type $f : \prd{x:A}\prd{y : B[x]}C[x,y]$ which can be also
-written as $f : \prd{x:A,y:B[x]}C[x,y]$. Given an element $a:A$ we can apply
-$f$ to it obtaining $f(a) : \prd{y:B[a]}C[a,y]$. Given also an element $b:B$ we
-can continue applying $f$ obtaining $f(a)(b) : C[a,b]$ which we may also
+the type $f : \prd{x:A}\prd{y : B(x)}C(x,y)$ which can be also
+written as $f : \prd{x:A,y:B[x]}C(x,y)$. Given an element $a:A$ we can apply
+$f$ to it obtaining $f(a) : \prd{y:B[a]}C(a,y)$. Given also an element $b:B$ we
+can continue applying $f$ obtaining $f(a)(b) : C(a,b)$ which we may also
 write as $f(a,b):C[a,b]$. Using this device of \emph{currying} we can
 represent $n$-ary functions without using product types. 
 This device is commonly used in functional programming for
@@ -243,10 +233,10 @@ corresponds to implication, i.e. given types $P,Q$ a proof of $P \to
 Q$ is a function $f$ assigning to each proof $p:P$ a proof $f(p) : Q$.
 
 The dependent function type corresponds to universal
-quantification: Given a type $A$ and a family $P[x]$ assuming $x:A$
-which we view as a predicate over $A$ we can form $\prd{x:A}B[x]$
-whose elements are proofs that $B[x]$ holds for all $x:A$ by assigning
-to each $a:A$ a proof $f(a) : B[a]$.
+quantification: Given a type $A$ and a family $P(x)$ assuming $x:A$
+which we view as a predicate over $A$ we can form $\prd{x:A}B(x)$
+whose elements are proofs that $B(x)$ holds for all $x:A$ by assigning
+to each $a:A$ a proof $f(a) : B(a)$.
 
 We summarize that from the type-theoretic point of view the concepts
 of an ordinary function, implication and universal quantification are
@@ -255,19 +245,19 @@ unified using the notion of a dependent function type or $\Pi$-type.
 \section{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:sigma-types}
 
-As before in the case of functions the dependent pair type is a
+As the dependent function tpe generalizes the ordinary function type, dependent pair type is a
 generalisation of the ordinary cartesian product. At the same time 
 the dependent pair type can be viewed as an infinite sum over the
-indexing type - hence  the symbol $\Sigma$. Given a family $B[x]$
-indexed over $x:A$ we can form the type $\sm{x:A}B[x]$. Elements of $\sm{x:A}B[x]$ are
-pairs $\tup{a}{b} : \sm{x:A}B[x]$ where $a:A$ and $b:B[a]$. If the
+indexing type - hence  the symbol $\Sigma$. Given a family $B(x)$
+indexed over $x:A$ we can form the type $\sm{x:A}B(x)$. Elements of $\sm{x:A}B(x)$ are
+pairs $\tup{a}{b} : \sm{x:A}B(x)$ where $a:A$ and $b:B(a)$. If the
 family $B$ does not depend on $A$ we write $A \times B$.
 
 What are the functions out of $\Sigma$-type? In type-theoretic
 terminology: what is the elimination principle for $\Sigma$? We certainly need the projections:
 \begin{eqnarray*}
-  \fst & : & \sm{x : A}B[x] \to A \\
-  \snd & : & \prd{p:\sm{x : A}B[x]}B[\fst(p)]
+  \fst & : & \sm{x : A}B(x) \to A \\
+  \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p))
 \end{eqnarray*}
 with the defining equations 
 \begin{eqnarray*}
@@ -275,21 +265,23 @@ with the defining equations
   \snd(\tup{a}{b}) & \defeq & b
 \end{eqnarray*}
 Note that the 2nd projection has a dependent function type using the
-first projection. The projections are instances of a more general
+first projection. 
+
+The projections are instances of a more general
 scheme to define functions which is the first instance of an
 elimination principle. The basic idea is to formulate an induction law
 for $\Sigma$-types and then observe that it has a straightforward
 computational interpretation.
 
 We require a family of types $C[p]$ indexed by elements of the
-$\Sigma$-type $p : \sm{x : A}B[x] \to A$ --- this is our induction
+$\Sigma$-type $p : \sm{x : A}B(x) \to A$ --- this is our induction
 predicate. Now we assume that we can \emph{prove} $C$ for the canonical
 elements of the $\Sigma$-types - the tuples. This corresponds to being
 able to construct an element of the following type
-\[ m:\prd{x:A}{y:B[x]}C[\tup{x}{y}] \]
+\[ m:\prd{x:A}{y:B(x)}C(\tup{x}{y}) \]
 Given $m$ we now claim that $C$ holds for \emph{all} elements of the
 $\Sigma$-types which corresponds to being able to construct a function 
-\[ f : \prd{p:\sm{x : A}B[x]}C[p]\]
+\[ f : \prd{p:\sm{x : A}B(x)}C(p)\]
 with the defining equation
 \[ f(\tup{a}{b}) \defeq m(a,b) \]
 Intuitively, this elimination principle tells us that to define a
@@ -298,12 +290,12 @@ canonical elements of the form $\tup{a}{b}$. We leave it as an
 exercise to show that the projections are particular instances of this
 scheme. 
 
-The reader may wonder wether it is enough to just have the
+The reader may wonder whether it is enough to just have the
 projections. Indeed, the elimination principle allows us to derive an
 additional fact which we can formulate using identity types which are
 introduced below: the principle of surjective pairing which can be
 viewed as an $\eta$-rule for $\Sigma$-types:
-\[ \spr : \prd{p : \sm{x:A} B[x]} \tup{\fst(p)}{\snd(p)} = p \]
+\[ \spr : \prd{p : \sm{x:A} B(x)} \tup{\fst(p)}{\snd(p)} = p \]
 To prove $sp$ we only need to show
 \[ \tup{\fst(\tup{a}{b})}{\snd(\tup{a}{b})} = \tup{a}{b} \]
 and using the defining equations for $\fst$ and $\snd$ this is
@@ -353,9 +345,9 @@ Using types to represent propositions we use the non-dependent
 form of $\Sigma$ to represent conjunction, given types $P,Q$ the type
 $P \times Q$ has as proofs pairs of proofs $p:P$ and $q:Q$ and hence
 represents the statment that both $P$ and $Q$ hold. On the other hand
-gven a family of types $P[x]$ indexed over $x:A$ representing a
-predicate, then $\sm{x:A} P[x]$ represents existential quantification:
-its elements are pairs of an element $a : A$ and a proof $p : P[a]$
+gven a family of types $P(x)$ indexed over $x:A$ representing a
+predicate, then $\sm{x:A} P(x)$ represents existential quantification:
+its elements are pairs of an element $a : A$ and a proof $p : P(a)$
 that the property holds for this particular element.
 
 As before for $\Pi$-types we note the versatility of $\Sigma$-types,
@@ -367,7 +359,7 @@ quantification.
 
 A finite type can be presented by listing its elements. In homotopy
 type theory there is only one finite type for each finite cardinal
-since we finite types with the same number of elements are equivalent.
+since finite types with the same number of elements are equivalent.
 Indeed, we only need three finite types to generate all others: 
 \begin{itemize}
 \item the empty type $\emptyt$ with no elements,
@@ -377,11 +369,11 @@ Indeed, we only need three finite types to generate all others:
 \end{itemize}
 The elimination principles for all three types are straightforward:
 \begin{itemize}
-\item If $C[x]$ is a family on $x:\emptyt$ then we have $f:\prd{z:\emptyt}C[z]$ with no defining equation.
-\item If $C[x]$ is a family on $x:\unit$ and $c:C[\star]$ then we have $f:\prd{z:\unit}C[z]$ with defining equation
+\item If $C(x)$ is a family on $x:\emptyt$ then we have $f:\prd{z:\emptyt}C(z)$ with no defining equation.
+\item If $C[x]$ is a family on $x:\unit$ and $c:C(\star)$ then we have $f:\prd{z:\unit}C(z)$ with defining equation
   \[ f(\star)\defeq c.\]
-\item If $C[x]$ is a family on $x:\bool$, $c_0:C[\bfalse]$ 
-and $c_1:C[\btrue]$ then we have $f:\prd{z:\bool}C[z]$ with the
+\item If $C(x)$ is a family on $x:\bool$, $c_0:C(\bfalse)$ 
+and $c_1:C(\btrue)$ then we have $f:\prd{z:\bool}C(z)$ with the
 defining equations
 \begin{eqnarray*}
 f(\bfalse) & \defeq& c_0\\
@@ -389,7 +381,7 @@ f(\btrue) & \defeq & c_1
 \end{eqnarray*}
 \end{itemize}
 Using $\Sigma$-types we can derive the coproduct (or disjoint union) $A+B$
-of two types $A,B$ which in particular shows that we con construct all
+of two types $A,B$ which in particular shows that we can construct all
 finite types using $\emptyt$ and $S(X) = X+1$. We define
 \[A + B \defeq \sm{x:\bool}F(x)\]
 where $F : \bool \to \UU$ is
@@ -402,12 +394,12 @@ injections can be defined as:
 & \inr(b) \defeq (\btrue,b)
 \end{align*}
 We can derive the elimination principle for $A+B$:
-Given  $C[x]$ is a family on $x:A+A'$ and
+Given  $C(x)$ is a family on $x:A+A'$ and
 \begin{eqnarray*}
-c_\inl & : & \prd_{x:A}C[\inl(x)] \\
+c_\inl & : & \prd_{x:A}C(\inl(x)) \\
 c_\inr & : & \prd{x':A'}C(\inr(x'))
 \end{eqnarray*}
-then we can define $f:\prd_{z:A+A'}C[z]$ with defining equations
+then we can define $f:\prd_{z:A+A'}C(z)$ with defining equations
 \begin{eqnarray*}
 f(\inl(x)) & \defeq& c_\inl(x)  \\
 f(\inr(x) & \defeq & c_\inr(x)  
@@ -425,7 +417,7 @@ $\Pi$ where the domain is boolean.
 The types $\emptyt$ and $\unit$ represent the logical constants
 \emph{False} and \emph{True}. Indeed, \emph{False} has no proof while
 \emph{True} has one trivial proof. Unlike in classical mathematics we
-do not identify propositions with $\bool$ (instead we idnetify
+do not identify propositions with $\bool$ (instead we identify
 propositions with types). Hence the type $A \to \bool$ does not
 represent all subsets of $A$ but only the decidable ones.
 
@@ -456,17 +448,17 @@ There are two different but equivalent elimination principles for
 identity types:
 \begin{description}
 \item[Martin-L\"{o}f Rule:] 
-Given a family $C[x,y,p]$ indexed by $x,y:A$ and $p:x=_A y$ and 
-\[c:\prd{x:A} C[x,x,\refl{x}]\]
-we can derive a function $f:\prd{x,y:A,p:x = y}C[x,y,p]$ with the
+Given a family $C(x,y,p)$ indexed by $x,y:A$ and $p:x=_A y$ and 
+\[c:\prd{x:A} C(x,x,\refl{x})\]
+we can derive a function $f:\prd{x,y:A,p:x = y}C(x,y,p)$ with the
 defining equation 
 \[ f(x,x,\refl{x}) \defeq c(x) \]
 \item[Paulin-Mohring Rule:] 
-Given $x:A$ and a family $D[x][y,q]$ indexed by $y:A,q:x=_A y$ and 
-\[ d[x]:D[x][x,\refl{x}] \]
-we can derive a function $g[x]:\prd{y:A,q:x = y}C[y,q]$ with the defining
+Given $x:A$ and a family $D(x,y,q)$ indexed by $y:A,q:x=_A y$ and 
+\[ d(x):D(x,x,\refl{x}) \]
+we can derive a function $g(x):\prd{y:A,q:x = y}C[y,q]$ with the defining
 equation 
-\[ g[x](x,\refl{x}) \defeq d[x] \]
+\[ g(x)(x,\refl{x}) \defeq d(x) \]
 \end{description}
 These principles arise from different views on the identity type,
 while the Martin-L\"of rule is based on the view that the identity
@@ -476,14 +468,14 @@ the identity type over a given $x:A$, that is $x =_A -$ as a predicate
 indexed only by one variable.
 
 It is easy to see that the Martin-L\"of rule follows from the
-Paulin-Mohring rule: Assume as given $C[x,y,p]$ and $c$ as in the
-premise of the Martin-L\"of rule: now given $x:A$ we define $D[x][y,q] :=
-C[x,y,q]$ and $d[x] \defeq c(x)$ we obtain $g[x]:\prd{y:A,q:a = y}C[x,y,q]$
-with the defining equation $g[x](x,\refl{x}) \defeq c(x)$. Now
-abstracting $x$ we obtain $f : \prd{x,y:A,p:x =_A y}C[x,y,p]$ with the
-defining equation $f(x) \defeq g[x]$ and hence 
+Paulin-Mohring rule: Assume as given $C(x,y,p)$ and $c$ as in the
+premise of the Martin-L\"of rule: now given $x:A$ we define $D(x)(y,q) :=
+C(x,y,q)$ and $d(x) \defeq c(x)$ we obtain $g(x):\prd{y:A,q:a = y}C(x,y,q)$
+with the defining equation $g(x)(x,\refl{x}) \defeq c(x)$. Now
+abstracting $x$ we obtain $f : \prd{x,y:A,p:x =_A y}C(x,y,p)$ with the
+defining equation $f(x) \defeq g(x)$ and hence 
 \begin{eqnarray*}
-f(x,x,\refl{x}) & \jdeq & g[x](x,\refl{x})  \\
+f(x,x,\refl{x}) & \jdeq & g(x)(x,\refl{x})  \\
                    & \jdeq & c(x)
 \end{eqnarray*}
 as required.
@@ -491,46 +483,46 @@ as required.
 The other direction is a bit more involved: We assume the Martin-L\"of
 rule and derive two principles:
 \begin{description}
-\item[transport] Given a family $P[x]$ over
-$x:A$ and $p : a =_A b, x : P[a]$ we obtain $\trans{p}{x} : P[b]$ with
+\item[transport] Given a family $P(x)$ over
+$x:A$ and $p : a =_A b, x : P(a)$ we obtain $\trans{p}{x} : P(b)$ with
 the defining equation $\trans{\refl{a}}{x} \defeq x$.
 \item[singleton is contractible]  Given $x:A$ we define 
 \[ \sgl(x) := \Sigma y:A, x =_A y \]
 and we show that 
-\[\sctr[x] : \prd{p : \sgl(x)} (x,\refl{x}) =_{\sgl(x)}  p \]
+\[\sctr(x) : \prd{p : \sgl(x)} (x,\refl{x}) =_{\sgl(x)}  p \]
 with
-\[ \sctr[x](\tup{x}{\refl{x}}) \defeq \refl{\tup{x}{\refl{x}}} \]
+\[ \sctr(x)(\tup{x}{\refl{x}}) \defeq \refl{\tup{x}{\refl{x}}} \]
 \end{description}
-Now to derive the Paulin-Mohring rule assume $D[x][y,q]$ and
-$d[x]:D[x][x,\refl{x}]$. We derive $E[x][p]$ indexed over $p:\sgl(x)$
-with $E[x][p] \defeq D[x][\fst(x),\snd(x)]$. Using the equations for
-the projections we also have that $d[x] : E[x][\tup{x}{\refl{x}}]$.
+Now to derive the Paulin-Mohring rule assume $D(x,y,q)$ and
+$d(x):D(x,x,\refl{x})$. We derive $E(x,p)$ indexed over $p:\sgl(x)$
+with $E(x,p) \defeq D(x,\fst(x),\snd(x))$. Using the equations for
+the projections we also have that $d(x) : E(x,\tup{x}{\refl{x}})$.
 Now using transport along $\sctr$ we derive 
-$h[x] : \prd{s : \sgl{x}}E[x][s]$ as 
-\[h[x](s) \defeq \trans{\sctr(s)}{d[x]}\]
-and now $g[x]:\prd{y:A,q:x = y}C[y,q]$ can be obtained as
-$g[x](y,q) \defeq h[x](\tup{y}{q})$ with 
+$h(x) : \prd{s : \sgl{x}}E(x)(s)$ as 
+\[h(x)(s) \defeq \trans{\sctr(s)}{d(x)}\]
+and now $g(x):\prd{y:A,q:x = y}C(y,q)$ can be obtained as
+$g(x)(y,q) \defeq h(x)(\tup{y}{q})$ with 
 \begin{eqnarray*}
-g[x](x , \refl{x}) & \jdeq & h[x](\tup{x}{\refl{x}} \\
-& \jdeq & \trans{\sctr(\tup{x}{\refl{x})}}{d[x]}\\
-& \jdeq & \trans{\refl{\tup{x}{\refl{x}}}}{d[x]}\\
-& \jdeq & d[x].
+g(x)(x , \refl{x}) & \jdeq & h(x)(\tup{x}{\refl{x}} \\
+& \jdeq & \trans{\sctr(\tup{x}{\refl{x})}}{d(x)}\\
+& \jdeq & \trans{\refl{\tup{x}{\refl{x}}}}{d(x)}\\
+& \jdeq & d(x).
 \end{eqnarray*}
 
-To derive transport from the Martin-L\"of rule for $P[x]$ over
-$x:A$ and $C[x,y,q]\defeq P[x] \to P[y]$ and $c(x) : P[x] \to P[x]$ is
+To derive transport from the Martin-L\"of rule for $P(x)$ over
+$x:A$ and $C(x,y,q)\defeq P(x) \to P(y)$ and $c(x) : P(x) \to P(x)$ is
 the identity function $c(x)(p) \defeq p$ we obtain 
-$f : \prd{x,y:A}{q : x = y} P[x] \to P[y]$ with
-$f (x,x,refl{x})(p) \defeq p$ which we denote as 
+$f : \prd{x,y:A}{q : x = y} P(x) \to P(y)$ with
+$f (x,x,\refl{x})(p) \defeq p$ which we denote as 
 $\trans{q}{p} \defeq f(x,y,q)(p)$.
 
 We are left to derive $\sctr$ from the Martin-L\"of rule:
-We use $C[x,y,p] \defeq \tup{y}{p} =_{\sgl(x)} \tup{x}{\refl{x}}$
+We use $C(x,y,p) \defeq \tup{y}{p} =_{\sgl(x)} \tup{x}{\refl{x}}$
 with $c(x) \defeq \refl{\tup{x}{\refl{x}}}$ and using the Martin-L\"of
   rule: 
 \[f : \prd{x,y:A}{p:x = y} \tup{y}{p} =_{\sgl(x)} \tup{x}{\refl{x}}\]
  with $f(x,x,\refl{x}) \defeq \refl{\tup{x}{\refl{x}}}$. We now define
-$\sctr[x](p) = f(x,\fst(p),\snd(p)$.
+$\sctr(x)(p) = f(x,\fst(p),\snd(p)$.
 
 We are going to use the Paulin-Mohring rule to show that $=$ is an
 equivalence relation. Assuming a type $A$ we show that there is a function
@@ -552,18 +544,21 @@ and
   \[ \mbox{ from $n:\nat$ infer $\suc(n):\nat$}.\]
 The inductive character of $\nat$ is captured by the, so called, elimination and computation rules for $\nat$.  We prefer to call them the rules for defining a function on $\nat$ by primitive recursion. 
 
-If $C$ is a family on $\nat$, $c_0:C(0)$ and $c_\suc(x,y):C(\suc(x))$ for $x:\nat,y:C(x)$ then we may introduce a function $f:\Pi_{x:\nat}C(x)$ by the following primitive recursion defining equations; one defining equation for each introduction rule.
+If $C[x]$ is a family on $x:\nat$, $c_0:C[0]$ and $c_\suc:\prd{x:nat,y:C[x]}C[\suc(x)$ then we may introduce a function $f:\Pi_{x:\nat}C(x)$ by the following primitive recursion defining equations; one defining equation for each introduction rule.
 
   \[\left\{\begin{array}{rl}
 f(0)\defeq& c_0, \mbox{ and}\\
 f(\suc(x))\defeq& c_\suc(x,f(x))\mbox{ for } x:\nat
   \end{array}\right.\]
 It is sometimes convenient to make explicit the dependence of $f$ on $c_0$ and $c_\suc$ by using the primitive recursive operator $\rec_\nat$.  So we have
-  \[ \rec_\nat(x,c_0,c_\suc):C(x)\mbox{ for } x:\nat\]
+  \[ \rec_\nat(x,c_0,c_\suc):\prd{x:\nat}C(x)\]
 with the defining equations
+\begin{eqnarray*}
+  \rec_\nat(x,c_0,c_\suc)(0) & \defeq & c_0 \\
+  \rec_\nat(x,c_0,c_\suc)(\suc(n)) & \defeq & c_s(n, \rec_\nat(x,c_0,c_\suc)) \\
+\end{eqnarray*}
 
-
-As an example we define the function $m + - : \nat \to \nat$ for any
+As an example we define the function $(+)(m) : \nat \to \nat$ for any
 $m : \nat$ using the constant family $\nat$ and the defining
 equations:
 \begin{eqnarray*}

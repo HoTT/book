@@ -377,7 +377,7 @@ where $\Pi_A(B)$ and $\hat{B}$ denote respectively the type families
 \[
 \begin{array}{rclcl}
 \Pi_A(B) &\defeq& \big(x\mapsto \prd{a:A(x)} B(x,a) \big) &:& X\to \type\\
-\hat{B} &\defeq& \big(w \mapsto B(\proj1w,\proj2w) \big) &:& \sm{x:X} A(x) \to \type.
+\hat{B} &\defeq& \big(w \mapsto B(\proj1w,\proj2w) \big) &:& \big(\sm{x:X} A(x)\big) \to \type.
 \end{array}
 \]
 If these formulas look a bit intimidating, don't worry about the details.
@@ -444,14 +444,27 @@ As we did in \autoref{sec:compute-cartprod,sec:compute-pi}, it is useful to brea
   \]
 \end{itemize}
 
-We can also identify the reflexivity, inverses, and concatenation of equalities in the universe with the corresponding operations on equivalences:
+We can also identify the reflexivity, concatenation, and inverses of equalities in the universe with the corresponding operations on equivalences:
 \begin{align*}
   \refl{A} &= \ua(\idfunc[A]) \\
-  \opp{\ua(f)} &= \ua(f^{-1}) \\ 
-  \ua(f) \ct \ua(g) &= \ua(g\circ f)
+  \ua(f) \ct \ua(g) &= \ua(g\circ f) \\
+  \opp{\ua(f)} &= \ua(f^{-1})
 \end{align*}
-Proving these formally requires knowing how to invert and compose equivalences, which in turn requires having an actual definition of equivalences.
-Thus, we postpone them until \autoref{cha:equivalences}.
+The first of these follows because $\idfunc[A] = \idtoeqv(\refl{A})$ by definition of \idtoeqv, and \ua is the inverse of \idtoeqv.
+For the second, if we define $p \defeq \ua(f)$ and $q\defeq \ua(g)$, then we have
+\[ \ua(g\circ f) = \ua(\idtoeqv(q) \circ \idtoeqv(p)) = \ua(\idtoeqv(p\cdot q)) = p\cdot q\]
+using \autoref{thm:transport-concat} and the definition of $\idtoeqv$.
+The third is similar.
+
+The following observation, which is a special case of \autoref{thm:transport-compose}, is often useful when applying the univalence axiom.
+
+\begin{lem}\label{thm:transport-is-ap}
+  For any type family $B:A\to\type$ and $x,y:A$ with a path $p:x=y$ and $u:B(x)$, we have
+  \begin{align*}
+    \transfib{B}{p}{u} &= \transfib{X\mapsto X}{\apfunc{B}(p)}{u}\\
+    &= \idtoeqv(\apfunc{B}(p))(u).
+  \end{align*}
+\end{lem}
 
 
 \subsection{Identity Type}

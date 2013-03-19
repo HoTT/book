@@ -2,114 +2,87 @@
 \setbox\pbbox=\hbox{\xy \POS(65,0)\ar@{-} (0,0) \ar@{-} (65,65)\endxy}
 \def\pb{\save[]+<3.5mm,-3.5mm>*{\copy\pbbox} \restore}
 
-
 \newcommand{\comp}[2]{\ensuremath{{#2} \circ {#1}}}
-
-%
-% % Type-theoretic:
 \newcommand{\contr}{\ensuremath{\mathsf{contr}}}
-% \newcommand{\Eq}{\mathsf{Eq}}
- \newcommand{\HLevel}{\mathsf{HLevel}}
-% \newcommand{\inl}{\mathsf{inl}}
-% \newcommand{\inr}{\mathsf{inr}}
- \newcommand{\isofhlevel}{\mathsf{isofhlevel}}
- \newcommand{\istype}[1]{\mathsf{is}\mbox{-}{#1}\mbox{-}\mathsf{type}}
-% \newcommand{\refl}{\mathsf{refl}}
-% \renewcommand{\S}{\mathsf{S}}
-% \newcommand{\sfSigma}{\mathsf{\Sigma}}
- \newcommand{\Type}{\mathsf{Type}}
-% \newcommand{\U}{\mathsf{U}}
+\newcommand{\istype}[1]{\mathsf{is}\mbox{-}{#1}\mbox{-}\mathsf{type}}
+% \newcommand{\nplusone}{\ensuremath{(n\mbox{\rm{+}}1)}}
+% \newcommand{\nminusone}{\ensuremath{(n\mbox{\rm{-}}1)}}
+\newcommand{\nplusone}{\ensuremath{(n+1)}}
+\newcommand{\nminusone}{\ensuremath{(n-1)}}
 
-% Other:
-% \newcommand{\oftype}{\! : \!}
-%  \newcommand*{\into}{\ensuremath{\lhook\joinrel\relbar\joinrel\rightarrow}}
+% Subuniverse
+\renewcommand{\P}{\ensuremath{\mathsf{P}}\xspace}
+% Reflector, projection and extension in an arbitrary reflective subuniverse
+\newcommand{\reflect}{\mathsf{r}}
+\newcommand{\project}{\mathsf{p}}
+\newcommand{\ext}{\mathsf{ext}}
 
-% \makeatletter
-% \renewcommand{\paragraph}{\@startsection{paragraph}{4}{0mm}{-0.5\baselineskip}{-1ex}{\bf}}
-% \makeatother
 
-\chapter{\texorpdfstring{$n$}{n}-types}
+\chapter{\texorpdfstring{$n$}{n}-types and modalities}
 \label{cha:hlevels}
 
 \section{Definition and First Properties}
 
-In homotopy theory one often talks about $n$-types, i.e.\ spaces whose homotopy groups vanish above $n$. In this section we introduce a corresponding notion for type theory. 
+In homotopy theory one often talks about $n$-types, i.e.\ spaces whose homotopy groups vanish above $n$.
+We mentioned in \autoref{sec:basics-sets} that a similar notion can be defined in type theory, with the $0$-types being the sets and continuing inductively.
+As mentioned in \autoref{sec:logic,sec:contractibility}, it turns out to be convenient to start two levels lower, where the $(-1)$-types being the mere propositions and the $(-2)$-types the contractible ones.
+We now define these formally for all $n$.
 
 \begin{defn}\label{def:hlevel}
-  Define the predicate $\istype{n} : \Type \to \Type$ for $n \geq -2$ by recursion as follows:
-
-\[ \istype{n}(X) := \begin{cases}
-                         \iscontr(X) & \text{ if } n = -2 , \\
-                         \prod\limits_{x,y : X}\istype{n'}(\idtype[X]{x}{y}) & \text{ if } n = S(n') .
-                        \end{cases}
-\]
-%
-%  \begin{itemize}
-%   \item $\isofhlevel(0)(X) := \iscontr(X)$, %if  $X$ is of h-level $0$, if it is contractible.
-%   \item $\isofhlevel(S (n))(X) := \prod\limits_{x,y : X}\isofhlevel(n)(\idtype[X]{x}{y})$ %is of h-level $n+1$, if for all $x, y : X$ the type $(x =_X y)$ is of h-level $n$.
-%  \end{itemize}
-Given a number $n \geq -2$ and a type $X$, we say that $X$ is an $n$-type, if the type $\istype{n}(X)$ is inhabited.
+  Define the predicate $\istype{n} : \type \to \type$ for $n \geq -2$ by recursion as follows:
+  \[ \istype{n}(X) \defeq
+  \begin{cases}
+    \iscontr(X) & \text{ if } n = -2 , \\
+    \prd{x,y : X} \istype{n'}(\id[X]{x}{y}) & \text{ if } n = n'+1
+  \end{cases}
+  \]
+  We say that $X$ is an $n$-type if $\istype{n}(X)$ is inhabited.
 \end{defn}
 
 \begin{rmk}
-The number $n$ in \autoref{def:hlevel} ranges over all integers greater than or equal to $-2$. We could make sense of this by defining a type $\Z_{{\geq}-2}$ of such integers (a type whose induction principle is identical to that of $\Nat$) or instead defining a predicate $\istype{(k\mbox{-}2)}$ for $k : \Nat$. Either method justifies the correctness of the above definition and allows us to use induction on $\Nat$ in the computation of $n$-types (for which we can take $n = -2$ as the base case).
- 
-Note that we could instead define each predicate separately for each $n$ (i.e., considering $n$ as a variable of the meta-theory), but we choose not do so, precisely because we wish to use the type-theoretic induction principle for $\Nat$ in the remainder of the section.
+  The number $n$ in \autoref{def:hlevel} ranges over all integers greater than or equal to $-2$.
+  We could make sense of this formally by defining a type $\Z_{{\geq}-2}$ of such integers (a type whose induction principle is identical to that of $\Nat$), or instead defining a predicate $\istype{(k-2)}$ for $k : \Nat$.
+  Either way, we can prove theorems about $n$-types by induction on $n$, with $n = -2$ as the base case.
 \end{rmk}
 
-As in homotopy theory, a type does not have to be an $n$-type for some number $n$; in the section on higher inductive types we will see that one can describe types (for example, the $2$-sphere) that are not an $n$-type for any $n$.
+As in classical homotopy theory, a type does not have to be an $n$-type for any number $n$.
+In \autoref{cha:hits} will define some types that are expected to be counterexamples.
+
+\begin{eg}
+  We saw in \autoref{thm:prop-minusonetype}, $X$ is a $(-1)$-type if and only if it is a mere proposition.
+  Therefore, $X$ is a $0$-type if and only if it is a set.
+\end{eg}
 
 We start by showing $n$-types are closed under certain operations and constructors.
-For the remainder of the chapter, let $X, Y : \Type$ and $n : \Nat$.
+For the remainder of the chapter, let $X, Y : \type$ and $n : \Nat$.
+
 \begin{thm}\label{thm:h-level-retracts}
- Let $p \colon X \to Y$ be a retraction and suppose that $X$ is an $n$-type. Then $Y$ is also an $n$-type.
+ Let $p : X \to Y$ be a retraction and suppose that $X$ is an $n$-type. Then $Y$ is also an $n$-type.
 \end{thm}
 
-Before giving a proof of the theorem we gather some useful facts about retractions:
+By definition, a \textbf{retraction} is a function $p : X \to Y$ such that there exists a function $s : Y \to X$, called its \textbf{section} and a homotopy $\epsilon:\prd{y:Y} (p(s(y))=y)$.
 
-\begin{lem}\label{lem:path-retract}
- Let $p \colon X \to Y$ be a retraction with section $s \colon Y \to X$.
- We denote by $\epsilon_y \defeq \epsilon(y) : p(s(y)) = y$ the equalities thus given.
- \begin{enumerate}
-  \item \label{enum:section-paths-1}
-      If $e : s(y) = x$ in $X$, then we have $e' :  y = p(x)$ in $Y$
-        by the composition
-     \[e' \defeq y \stackrel{\opp{\epsilon_y}}{=} p(s(y)) \stackrel{\map{p}{e}}{=} p(x).\]
-  \item \label{enum:section-paths-2}
-      Given $e : s(y) = s(y')$, we have $\vec e : y = y'$.
-     \begin{proof}
-        By \ref{enum:section-paths-1} we obtain $e' : y = p(s(y'))$.
-        Postcomposing with $\epsilon_{y'}$ we get
-           \[ \overrightarrow{e} : y \stackrel{e'}{=} p(s(y)) \stackrel{\epsilon_{y'}}{=} y'  . \]
-     \end{proof}
-  \item \label{enum:section-paths-3}
-        If in \ref{enum:section-paths-2} we consider $e = \refl{s(y)}$, then $e' \ct \epsilon_{y}$
-        is homotopic to the identity path, that is,
-          \[ \overrightarrow{\refl{s(y)}} = \refl{y}  . \]
-  \item Given $e : y = y'$ in $Y$, we have $\overrightarrow{\map{s}{e}} = e$.
-      \begin{proof}
-       This follows by induction on $e$ and \ref{enum:section-paths-3}.
-      \end{proof}
- \end{enumerate}
-
-\end{lem}
-
-
-\begin{proof}[Proof of \autoref{thm:h-level-retracts}]
+\begin{proof}
  We proceed by induction on $n$.
 
- For $n=-2$, we know that $X$ is contractible and let $x_0 : X$ be the center of contraction.
- We claim that $y_0 \defeq p(x_0) : Y$ is the center of contraction for $Y$.
- Let $y : Y$, we need a path $y = y_0$. We have $\epsilon_y : p(s(y)) = y$ and $\contr_{s(y)} : s(y) = x_0$.
- By composing we obtain a path
- \[\xymatrix { y \ar@{=}[r]^{\opp{\epsilon_y}} & p(s(y)) \ar@{=}[rr]^{\map{p}{\contr_{s(y)}}} && p(x_0) \equiv y_0 } . \]
- For the inductive step, let $y, y' : Y$. We show that $\idtype {y}{y'}$ is an $n$-type.
- By assumption we know that $\idtype{s(y)}{s(y')}$ is an $n$-type.
- We have two maps
- \[\xymatrix{\idtype{y}{y'} \ar@<1.5ex>[rr]^{\map{s}{\_}} & & \idtype{s(y)}{s(y')} \ar@<1.2ex>[ll]^{\overrightarrow{(\_)}}}\]
-  By \autoref{lem:path-retract} we have $\comp{\map{s}{\_}}{\overrightarrow{(\_)}} = 1$,
-   that is, $\idtype {y}{y'}$ is a retract of $\idtype{s(y)}{s(y')}$.
-    Thus, by the induction hypothesis, $\idtype {y}{y'}$ is $n$-type, as required.
+ For $n=-2$, assume $X$ is contractible; let $x_0 : X$ be the center of contraction.
+ We claim that $y_0 \defeq p(x_0) : Y$ is a center of contraction for $Y$.
+ Let $y : Y$; we need a path $y = y_0$.
+ But we have $\epsilon_y : p(s(y)) = y$ and $\contr_{s(y)} : s(y) = x_0$, so by composition
+ \[ \opp{\epsilon_y} \ct \ap{p}{\contr_{s(y)}} : y = p(x_0) \jdeq y_0 .\]
+
+ For the inductive step, assume that any retract of an $n$-type is an $n$-type, and that $X$ is an $\nplusone$-type.
+ Let $y, y' : Y$; we must show that $\id{y}{y'}$ is an $n$-type.
+ Snce $X$ is an $\nplusone$-type, $\id[X]{s(y)}{s(y')}$ is an $n$-type.
+ We claim that $\id{y}{y'}$ is a retract of $\id[X]{s(y)}{s(y')}$.
+ As the section, we have
+ \[ \apfunc s : (y=y') \to (s(y)=s(y')). \]
+ For the retraction, we define $t:(s(y)=s(y'))\to(y=y')$ by
+ \[ t(q) \defeq  \opp{\epsilon_y} \ct \ap p q \ct \epsilon_{y'}.\]
+ To show that $t$ is a retraction of $\apfunc s$, we must show that
+ \[ \opp{\epsilon_y} \ct \ap p {\ap sr} \ct \epsilon_{y'} = q \]
+ for any $r:y=y'$.
+ But this follows easily from \autoref{lem:htpy-natural}.
 \end{proof}
 
 As an immediate corollary we obtain the stability of $n$-types under equivalence:
@@ -118,82 +91,95 @@ As an immediate corollary we obtain the stability of $n$-types under equivalence
  If $\eqv{X}{Y}$ and $X$ is an $n$-type, then so is $Y$.
 \end{cor}
 
+Recall also the notion of monomorphism from \autoref{sec:mono-surj}.
+
+\begin{thm}\label{thm:isntype-mono}
+  If $f:X\to Y$ is a monomorphism and $Y$ is an $n$-type for some $n\ge -1$, then so is $X$.
+\end{thm}
+\begin{proof}
+  Let $x,x':X$; we must show that $\id[X]{x}{x'}$ is an $\nminusone$-type.
+  But since $f$ is a monomorphism, we have $(\id[X]{x}{x'}) \simeq (\id[Y]{f(x)}{f(x')})$, and the latter is an $\nminusone$-type by assumption.
+\end{proof}
+
+Note that this theorem fails when $n=-2$: the map $\emptyt \to \unit$ is a monomorphism, but $\unit$ is a $(-2)$-type while $\emptyt$ is not.
+
 \begin{thm}\label{thm:hlevel-cumulative}
  The hierarchy of $n$-types is cumulative in the following sense:
-   given a number $n \geq -2$, if $X$ is an $n$-type, then it is also an $(n\mbox{\rm{+}}1)$-type.
+   given a number $n \geq -2$, if $X$ is an $n$-type, then it is also an $\nplusone$-type.
 \end{thm}
 
 \begin{proof}
  We proceed by induction on $n$.
 
  For $n = -2$, we need to show that a contractible type, say, $A$, has contractible path spaces.
-       Let $a_0: A$ be the center of contraction of $A$, and let $x, y : A$. We show that $\idtype[A]{x}{y}$
+       Let $a_0: A$ be the center of contraction of $A$, and let $x, y : A$. We show that $\id[A]{x}{y}$
        is contractible.
        By contractibility of $A$ we have a path $\contr_x \ct \opp{\contr_y} : x = y$, which we choose as
-       the center of contraction for $\idtype{x}{y}$.
+       the center of contraction for $\id{x}{y}$.
        Given any $p : x = y$, we need to show $p = \contr_x \ct \opp{\contr_y}$.
            By identity elimination, it suffices to show that
         $\refl{x} = \contr_x \ct \opp{\contr_x}$, which is trivial.
 
- For the inductive step, we need to show that $\idtype[X]{x}{y}$ is an $(n\mbox{+}1)$-type, provided
-          that $X$ is an $(n\mbox{+}1)$-type. Applying the induction hypothesis to $\idtype[X]{x}{y}$
+ For the inductive step, we need to show that $\id[X]{x}{y}$ is an $\nplusone$-type, provided
+          that $X$ is an $\nplusone$-type. Applying the induction hypothesis to $\id[X]{x}{y}$
          yields the desired result.
 \end{proof}
 
 An equivalent criterion for being an $n$-type can be expressed using
-loop spaces (\cref{def:loopspace}):
+loop spaces (see \cref{def:loopspace}):
 
 \begin{thm}\label{thm:hlevel-loops}
  Let $X : \type$ be a type, and let $n\geq -1$.
   If for all $x : X$, the type $\Omega(X, x)$ is an $n$-type,
-       then $X$ is an $(n\mbox{\rm{+}}1)$-type.
+       then $X$ is an $\nplusone$-type.
 \end{thm}
 
 Note that the converse of this implication is always true.
-
-Before proving the theorem, we prove an auxiliary lemma:
+Before proving it, we prove an auxiliary lemma:
 
 \begin{lem}\label{lem:hlevel-if-inhab-hlevel}
  Given $n \geq -1$ and $X : \type$. If, given any inhabitant of $X$ it follows that $X$ is
    an $n$-type, then $X$ is an $n$-type.
 \end{lem}
-
 \begin{proof}
-  Let $f \colon X \to \istype{n}(X)$ be the given map. For any $x, x' : X$ we need to show that
-     $\idtype{x}{x'}$ is an $(n \mbox{-} 1)$-type. But this is precisely given by
-    $f(x)(x)(x') : \istype{(n-1)}(\idtype{x}{x'}) $.
+  Let $f : X \to \istype{n}(X)$ be the given map.
+  We need to show that for any $x, x' : X$, the type $\id{x}{x'}$ is an $\nminusone$-type.
+  But then $f(x)$ shows that $X$ is an $n$-type, hence all its path spaces are $\nminusone$-types.
 \end{proof}
 
 
 \begin{proof}[Proof of \autoref{thm:hlevel-loops}]
- In order to show that $X$ is an $(n\mbox{+}1)$-type, we need to show that for any given $x, x' : X$,
-   the type $\idtype{x}{x'}$ is an $n$-type.
+ In order to show that $X$ is an $\nplusone$-type, we need to show that for any given $x, x' : X$,
+   the type $\id{x}{x'}$ is an $n$-type.
   Following \autoref{lem:hlevel-if-inhab-hlevel} it suffices to give a map
-   \[ \idtype{x}{x'} \to \istype{n}(\idtype{x}{x'})  .\]
-  By the elimination rule and the assumption that $\Omega(X, x)$ is an $n$-type we obtain this map.
+   \[ (\id{x}{x'}) \to \istype{n}(\id{x}{x'})  .\]
+  By path induction, it suffices to do this when $x\jdeq x'$, in which case it follows from the assumption that $\Omega(X, x)$ is an $n$-type.
 \end{proof}
 
-\section{Preservation under constructors}
+% \section{Preservation under constructors}
+% \label{sec:ntype-pres}
+
+We now show that $n$-types are preserved by most type forming operations.
 
 \begin{thm}
- Let $n \geq -2$, and let $A : \type$ and $B \colon A \to \type$.
- If $A$ is an $n$-type and for all $a : A$, $B(a)$ is an $n$-type, then so is $\sum\limits_{x : A} B(x)$.
+ Let $n \geq -2$, and let $A : \type$ and $B : A \to \type$.
+ If $A$ is an $n$-type and for all $a : A$, $B(a)$ is an $n$-type, then so is $\sm{x : A} B(x)$.
 \end{thm}
 
 \begin{proof}
  We proceed by induction on $n$.
 
- For $n = -2$, we choose the center of contraction for $\sum\limits_{x : A} B(x)$ to be the pair
+ For $n = -2$, we choose the center of contraction for $\sm{x : A} B(x)$ to be the pair
        $(a_0, b_0)$, where $a_0 : A$ is the center of contraction of $A$ and $b_0 : B(a_0)$ is the center of contraction of $B(a_0)$.
-       Given any other element $(a,b)$ of $\sum\limits_{x : A} B(x)$, we provide a path $\id{(a, b)}{(a_0,b_0)}$
+       Given any other element $(a,b)$ of $\sm{x : A} B(x)$, we provide a path $\id{(a, b)}{(a_0,b_0)}$
        by contractibility of $A$ and $B(a_0)$, respectively.
 
- For the inductive step, suppose that $A$ is an $(n\mbox{+}1)$-type and
-         for any $a : A$, $B(a)$ is an $(n \mbox{+} 1)$-type. We show that $\sum\limits_{x : A} B(x)$ is an $(n \mbox{+} 1)$-type:
-      fix $(a_1, b_1)$ and $(a_2,b_2)$ in $\sum\limits_{x : A} B(x)$,
-     we show that $\idtype[\sum\limits_{x : A} B(x)]{(a_1, b_1)}{(a_2,b_2)}$ is an $n$-type.
-      By \autoref{lemma_from_another_chapter} we have
-      \[ \eqv{\idtype[\sum\limits_{x : A} B(x)]{(a_1, b_1)}{(a_2,b_2)}}{\sum_{p : \idtype{a_1}{a_2}} \idtype[B(a_2)]{\trans{p}{b_1}}{b_2}} \]
+ For the inductive step, suppose that $A$ is an $\nplusone$-type and
+         for any $a : A$, $B(a)$ is an $\nplusone$-type. We show that $\sm{x : A} B(x)$ is an $\nplusone$-type:
+      fix $(a_1, b_1)$ and $(a_2,b_2)$ in $\sm{x : A} B(x)$,
+     we show that $\id{(a_1, b_1)}{(a_2,b_2)}$ is an $n$-type.
+      By \autoref{thm:path-sigma} we have
+      \[ \eqvspaced{(\id{(a_1, b_1)}{(a_2,b_2)})}{\sm{p : \id{a_1}{a_2}} (\id[B(a_2)]{\trans{p}{b_1}}{b_2})} \]
    and by preservation of $n$-types under equivalences (\autoref{cor:preservation-hlevels-weq})
    it suffices to prove that the latter is an $n$-type. This follows from the
    induction hypothesis.
@@ -201,115 +187,66 @@ Before proving the theorem, we prove an auxiliary lemma:
 
 
 \begin{thm}\label{thm:hlevel-prod}
- Let $n$ be a natural number, and let $A : \type$ and $B \colon A \to \type$.
-     If for all $a : A$, $B(a)$ is an $n$-type, then so is $\prod\limits_{x : A} B(x)$.
+ Let $n$ be a natural number, and let $A : \type$ and $B : A \to \type$.
+     If for all $a : A$, $B(a)$ is an $n$-type, then so is $\prd{x : A} B(x)$.
 \end{thm}
 
 \begin{proof}
   We proceed by induction on $n$.
   For $n = -2$, the result is simply \autoref{thm:contr-forall}.
 
-  For the inductive step, let $f, g : \prod\limits_{a:A}B(a)$.
-  We need to show that $\idtype{f}{g}$ is an $n$-type.
-  By function extensionality and closure of $n$-types under equivalence, it suffices to show that $\prod\limits_{a : A} \idtype[B(a)]{f(a)}{g(a)}$ is an $n$-type.
+  For the inductive step, let $f, g : \prd{a:A}B(a)$.
+  We need to show that $\id{f}{g}$ is an $n$-type.
+  By function extensionality and closure of $n$-types under equivalence, it suffices to show that $\prd{a : A} \id[B(a)]{f(a)}{g(a)}$ is an $n$-type.
   But this follows from the inductive hypothesis.
 \end{proof}
 
-\noindent
-As a special case of the above theorem, we obtain that the function space $A \to B$ is an $n$-type
-provided that the target space $B$ is an $n$-type.
-
-\section{Propositions and sets}
-
-\begin{defn}\label{defn:h-prop}
- A type $A$ is said to be a \emph{proposition} (a \emph{prop} for short), if it is a $-1$-type.
-  Thus we define the predicate
- \[\isprop (A) := \istype{(-1)}(A)  .\]
-\end{defn}
-
-\begin{egs}\hfill
- \begin{itemize}
-  \item Trivially, the empty type $\emptyt$ is a proposition.
-  \item For any type $X$, its negation $\neg X := X \to \emptyt$ is a proposition. This follows from the previous example by the preservation of $n$-types under dependent products.
- \end{itemize}
-\end{egs}
-
-\begin{thm}\label{thm:hprop-inhab-contr}
- If a type $A$ is a proposition and is inhabited, then $A$ is contractible.
-\end{thm}
-
-\begin{proof}
- Let $a_0$ be an inhabitant of $A$. We choose $a_0$ as center of contraction and thus have to
-  prove that for any $a : A$, $a = a_0$.
-  Since $A$ is a prop, we know that $\idtype[A]{a}{a_0}$ is contractible.
-  We choose its center of contraction in order to provide the desired equality.
-\end{proof}
-
-\begin{rmk}\label{rem:is-contr-implies-isaprop-and-element}
- The converse of \autoref{thm:hprop-inhab-contr} is also true; this follows directly from cumulativity of $n$-type hierarchy (\autoref{thm:hlevel-cumulative}).
-\end{rmk}
-
-We next turn towards giving some less obvious examples of propositions:
+As a special case of the above theorem, the function space $A \to B$ is an $n$-type provided that $B$ is an $n$-type.
+We can now generalize our observations in \autoref{cha:basics} that $\isset(A)$ and $\isprop(A)$ are mere propositions.
 
 \begin{thm}\label{thm:isaprop-isofhlevel}
- For any $n \geq -2$ and any type $X$, the type $\istype{n}(X)$ is an proposition.
+ For any $n \geq -2$ and any type $X$, the type $\istype{n}(X)$ is a mere proposition.
 \end{thm}
-
-The theorem will be proven by induction. We start with a lemma, which contains the crucial observation needed in the proof of the base case.
-
-\begin{lem}\label{lem:contr-contr-is-contr}
-  Let $X$ be a type. If $X$ is contractible, then so is $\iscontr(X)$.
-\end{lem}
-
 \begin{proof}
- Let $c : \iscontr(X)$. We claim that $c$ is the center of contraction of $\iscontr (X)$.
-  Given any $c' : \iscontr (X)$, we need to show that
-       \[ c = c' : \sum_{x:X}\prod_{x':X}\idtype{x}{x'}  . \]
-
- We use \autoref{thm:path-sigma}, the equivalence between paths in total spaces and pairs of paths in the base space and the fiber.
-
- The path $e : \pi_1(c) = \pi_1 (c')$ in the base space is given by contractibility of $X$.
- It remains to show:
- \[ \trans{e}{\pi_2(c)} = \pi_2 (c') : \prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}  .  \]
- The type $X$ is contractible and thus $\idtype[X]{\pi_1 (c')} {x'}$ is contractible as well by cumulativity.
-From preservation of $n$-types under products it follows that the type $\prod_{x' : X} \idtype[X]{\pi_1 (c')} {x'}$
-  is contractible as well. Its center of contraction gives the desired equality.
-\end{proof}
-
-\begin{proof}[Proof of \autoref{thm:isaprop-isofhlevel}]
   We proceed by induction with respect to $n$.
 
- For the base case, we need to show that for any type $X$, the type $\iscontr(X)$ is an
-        proposition. By applying \autoref{lem:hlevel-if-inhab-hlevel}, it suffices to show that
-        if $X$ is contractible, then $\iscontr(X)$ is an proposition.
-        But since $X$ is contractible, the type $\iscontr(X)$ is contractible by \autoref{lem:contr-contr-is-contr},
-          thus in particular it is an proposition by cumulativity.
+ For the base case, we need to show that for any $X$, the type $\iscontr(X)$ is a mere proposition.
+ By \autoref{thm:contr-unit}, it suffices to show that if $X$ is contractible, then $\iscontr(X)$ is a mere proposition.
+ But this follows from \autoref{thm:contr-contr}.
 
 For the inductive step we need to show
-\[\prod_{X : \Type} \isprop (\istype{n}(X)) \to \prod_{X : \Type} \isprop (\istype{(n+1)}(X)) \]
+\[\prod_{X : \type} \isprop (\istype{n}(X)) \to \prod_{X : \type} \isprop (\istype{\nplusone}(X)) \]
 To show the conclusion of this implication, we need to show that for any type $X$, the type
     \[\prod_{x, x' : X}\istype{n}(x = x')\]
-is an proposition. By \autoref{thm:hlevel-prod} it suffices to show that for any $x, x' : X$, the type $\istype{n}(x =_X x')$ is an proposition.
+is a mere proposition. By \autoref{thm:hlevel-prod} it suffices to show that for any $x, x' : X$, the type $\istype{n}(x =_X x')$ is a mere proposition.
 But this follows from the induction hypothesis applied to the type $(x =_X x')$.
 \end{proof}
 
-As an immediate corollary we obtain:
+Finally, we show that the type of $n$-types is itself an $\nplusone$-type.
+We define this to be:
+\[\ntype{n} \defeq \sm{X : \type} \istype{n}(X) \]
+In particular, we have $\prop \defeq \ntype{(-1)}$ and $\set \defeq \ntype{0}$, as defined in \autoref{cha:basics}.
+Note that just as for \prop and \set, because $\istype{n}(X)$ is a mere proposition, for any $(X,p), (X',p'):\ntype{n}$ we have
+\[ (\id[\ntype{n}]{(X, p)}{(X', p')}) \;\simeq\; (\id[\type] X X') \;\simeq\; (\eqv{X}{X'}).\]
+by \autoref{thm:path-subset}.
 
-\begin{cor}
- For any function $f \colon A \to B$ between two types, the type $\isequiv(f)$ is an proposition.
-\end{cor}
-
-\begin{thm}
- A type $X$ is an proposition if and only if we have $\prod\limits_{x, y : X} (x =_X y)$.
+\begin{thm}\label{thm:hleveln-of-hlevelSn}
+ For any $n \geq -2$, the type $\ntype{n}$ is an $\nplusone$-type.
 \end{thm}
+\begin{proof}[Proof of \autoref{thm:hleveln-of-hlevelSn}]
+  Let $(X, p), (X', p') : \ntype{n}$; we need to show that $\id{(X, p)}{(X', p')}$ is an $n$-type.
+  By the above observation, this type is equivalent to $\eqv{X}{X'}$.
+  Next, we observe that the projection
+  \[(\eqv{X}{X'}) \hookrightarrow (X \rightarrow X').\]
+  is a monomorphism, so that if $n\geq -1$, then by \autoref{thm:isntype-mono} it suffices to show that $X \rightarrow X'$ is an $n$-type.
+  But since $n$-types are preserved under the arrow type, this reduces to an assumption that $X'$ is an $n$-type.
 
-\begin{proof}
- The `only if' direction is trivial. Conversely, suppose that $X$ is a prop and let $x, y : X$. We need to show that $\idtype{x}{y}$ is contractible. For that it is enough to show that $X$ is contractible. Choosing $x : X$ as the center of contraction and applying the assumption, gives the desired result.
+  In the case $n=-2$, this argument shows that $\eqv{X}{X'}$ is a $(-1)$-type --- but it is also inhabited, since any two contractible types are equivalent to \unit, and hence to each other.
+  Thus, $\eqv{X}{X'}$ it is also a $(-2)$-type.
 \end{proof}
 
-\begin{defn}\label{defn:h-set}
- A type $X$ is a {\em set} if it is a $0$-type.
-\end{defn}
+\section{UIP and Hedberg's theorem}
+\label{sec:hedberg}
 
 \begin{defn}
  Let $X : \type$. We say that $X$
@@ -369,8 +306,7 @@ Fix $x : X$ and assume that for all $y : Y$ we have
  Define $\theta_y$ by
      $\theta_y(q) \defeq \opp{\eta_x(\refl{}(x))} \ct q$.
   Finally, we prove $\theta_y(\eta_y(p)) = p$ by path induction on $p$:
-   \[\theta_x(\eta_x(\refl{}(x))) = \opp{\eta_x(\refl{}(x))} \ct \eta_x(\refl{}(x)) = \refl{}(x). \]
-
+   \[\theta_x(\eta_x(\refl{}(x))) = \opp{\eta_x(\refl{}(x))} \ct \eta_x(\refl{}(x)) = \refl{}(x). \qedhere \]
 \end{proof}
 
 \begin{thm}\label{prop:nat-is-set}
@@ -389,58 +325,15 @@ Fix $x : X$ and assume that for all $y : Y$ we have
  If $y = S (m)$, using the induction hypothesis we may determine whether $(m = n)$ or $\neg(m = n)$ and proceed accordingly.
 \end{proof}
 
-\section{The type of \texorpdfstring{$n$}{n}-types is an \texorpdfstring{$(n\mbox{+}1)$}{(n+1)}-type}
-
-In this section we show that the type of $n$-types is itself an $(n\mbox{+}1)$-type. Formally, we may define the type:
- \[n\mbox{-}\type \defeq \sum_{X : \type} \ \istype{n}(X) \]
-
-In particular, we define $\prop \defeq (-1)\mbox{-}\type$ and $\set \defeq 0\mbox{-}\type$.
-
-\begin{thm}\label{thm:hleveln-of-hlevelSn}
- For any $n \geq -2$ the type $n\mbox{-}\type$ is an $(n\mbox{+}1)$-type.
-\end{thm}
-
-We start with a lemma that can be seen as a version of {\em Univalence for propositions on the universe}.
-
-\begin{lem}\label{lem:sig-id-h-prop}
- Let $P : \type \to \prop$ and let $(X, p), (X', p') : \sum\limits_{X : \type} P(X)$. Then:
- \[ \idtype{(X, p)}{(X', p')}  \simeq (\eqv{X}{X'})\]
-\end{lem}
-
-\begin{proof}
- We have:
- \begin{equation*}\begin{split}
- \idtype{(X, p)}{(X', p')} & \simeq \sum_{z : \idtype{X}{X'}} \idtype{\trans{z}{p}}{p'} \\
-  & \simeq \idtype{X}{X'} \\
-  & \simeq (\eqv{X}{X'}),
- \end{split}
- \end{equation*}
- where the first equivalence follows from \ref{lem:paths-in-total-space}; the second is an immediate consequence of $P(X')$ being a prop; and the third is an application of the Univalence Axiom.
-\end{proof}
-
-\begin{proof}[Proof of \autoref{thm:hleveln-of-hlevelSn}]
- Let $(X, p), (X', p') : n\mbox{-}\type$. We need to show that $\idtype{(X, p)}{(X', p')}$ is an $n$-type. Since for any $n \geq -2$ and any type $X$, the type $\istype{n}(X)$ is a proposition, we may apply \autoref{lem:sig-id-h-prop} with $P := \istype{n}$. Next, we observe that it
-suffices to show that $X \rightarrow X'$ is an $n$-type because the projection:
- \[(\eqv{X}{X'}) \hookrightarrow (X \rightarrow X').\]
- is an inclusion (i.e.~its fibers are propositions). Since $n$-types are preserved under the arrow type, this reduces to an assumption that $X'$ is an $n$-type.
-\end{proof} 
 
 \section{Truncations}
 \label{sec:truncations}
 
-Recall the notion of $n$-types from \autoref{chap:hlevels}.  ``Being
-an $n$-type'' is a predicate on types.  % Given an integer $n\ge-2$, we
-% recall that $\typeleU{n}$ (or just $\typele{n}$) is the type of all
-% $n$-truncated types (in the universe $\type$). For instance
-% $\typelep{-2}$ is contractible (there is only one $(-2)$-truncated type,
-% the point), $\typelep{-1}$ is also known as $\prop$, and $\typele{0}$ is
-% also known as $\set$. 
-This predicate is accompanied by an operation of $n$-truncation that takes a
-type $A$ and makes the best approximation of $A$ as an $n$-type. This operation
-of $n$-truncation equates (``kills'') all morphisms of level higher than $n$ in
-$A$.  In this section, we explain the basic properties of truncations and we
-will construct truncations using higher inductive types in section
-\ref{sec:hittruncations}.
+The operation of $n$-truncation takes a type $A$ and makes the best
+approximation of $A$ as an $n$-type by equating (``killing'') all
+morphisms of level higher than $n$.  In this section, we explain the
+basic properties of truncations and we will construct truncations
+using higher inductive types in section \ref{sec:hittruncations}.
 
 Given a type $A:\type$ and an integer $n\ge-2$, its \emph{$n$-truncation} is a
 type $\trunc n A$ together with a map $\tprojf n:A\to\trunc nA$, such that
@@ -457,13 +350,10 @@ We also have the nondependent $\eta$-rule which says that if two maps
 $g,g':\trunc nA\to{}E$ are such that $g(\tproj na)=g'(\tproj na)$ for every
 $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$ and in particular $g=g'$.
 
-\begin{lem}
-  [Universal property of truncations]
-
+\begin{lem}[Universal property of truncations]
   Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
   equivalence:
   \[\function{(\trunc nA\to{}B)}{A\to{}B}{g}{g\circ\tprojf n}\]
-%  In particular, $\typele{n}$ is a reflective subuniverse of $\type$. TODO move somewhere else
 \end{lem}
 
 \begin{proof}
@@ -476,6 +366,826 @@ $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$ and in particular $g=g'$.
   to $g(\tproj na)$.
 \end{proof}
 
+The encode/decode method can also be used to calculate the path spaces of a truncation.
+Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
+Indeed, for any $x,y:A$ there is a canonical map
+\begin{equation}
+  f:\ttrunc n{x=_Ay}\to \Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)\label{eq:path-trunc-map}
+\end{equation}
+defined by
+\[f(\tproj n{p})\defeq \apfunc{\tproj {n+1}-}(p). \]
+This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the codomain of $f$ is $n$-truncated.
+
+\begin{thm}
+  For any $A$ and $x,y:A$ and $n\ge -2$, the map~\eqref{eq:path-trunc-map} is an equivalence; thus we have
+  \[ \eqv{\ttrunc n{x=_Ay}}{\Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)}. \]
+\end{thm}
+
+\begin{proof}
+  As in previous situations, we cannot directly define a quasi-inverse to~\eqref{eq:path-trunc-map} because there is no way to induct on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Thus, instead we generalize its type, in order to have general elements of the type $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Define $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ by
+  \[P(\tproj {n+1}x,\tproj {n+1}y)\defeq \trunc n{x=_Ay}\]
+  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated, and $\typele{n}$ is $(n+1)$-truncated by \autoref{thm:hleveln-of-hlevelSn}.
+  Now for every $u,v:\trunc{n+1}A$, there is a map
+  \[\encode:P(u,v) \to \big(u=_{\trunc{n+1}A}v\big)\]
+  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and $p:x=y$ by
+  \[\encode(\tproj n{p})\defeq \apfunc{\tproj{n+1}-} (p).\]
+  Since the codomain of $\encode$ is $n$-truncated, it suffices to define it only for $u$ and $v$ of this form, and then it's just the same definition as before.
+  We also define a function
+  \[ r : \prd{u:\trunc{n+1} A} P(u,u) \]
+  by induction on $u$, where $r(\tproj{n+1} x) \defeq \tproj n {\refl x}$.
+
+  Now we can define an inverse map
+  \[\decode: (u=_{\trunc{n+1}A}v) \to P(u,v)\]
+  by
+  \[\decode(p) \defeq \transfib{v\mapsto P(u,v)}{p}{r(u)}. \]
+  To show that the composite
+  \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \]
+  is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that $\decode(r(u)) = \refl{u}$.
+  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition of $r$ and $\decode$.
+  Finally, to show that 
+  \[ P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \]
+  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
+  Then we have
+  \begin{align*}
+    \decode(\encode(\tproj n p)) &= \decode(\apfunc{\tproj{n+1}-}(p))\\
+    &= \transfib{v\mapsto P(\tproj{n+1}x,v)}{\apfunc{\tproj{n+1}-}(p)}{\tproj n {\refl x}}\\
+    &= \transfib{v\mapsto \trunc n{u=v}}{p}{\tproj n {\refl x}}\\
+    &= \tproj n {\transfib{v \mapsto (u=v)}{p}{\refl x}}\\
+    &= \tproj n p.
+  \end{align*}
+  This completes the proof that \encode and \decode are quasi-inverses.
+  The stated result is then the special case where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
+\end{proof}
+
+\begin{cor}
+  Let $n\ge-2$ and $(A,a)$ be a pointed type. Then
+  \[\trunc n{\Omega(A,a)}=\Omega(\trunc{n+1}{(A,a)})\]
+\end{cor}
+\begin{proof}
+  This is a special case of the previous lemma where $x=y=a$.
+\end{proof}
+
+\begin{lem}
+  Let $k,n\ge-2$ with $k\le{}n$ and $A:\type$. Then
+  $\trunc k{\trunc nA}=\trunc kA$.
+\end{lem}
+\begin{proof}
+  We define two maps $f:\trunc k{\trunc nA}\to\trunc kA$ and
+  $g:\trunc kA\to\trunc k{\trunc nA}$ in the following way:
+
+  \[f(\tproj k{\tproj na})=\tproj ka\]
+  \[g(\tproj ka)=\tproj k{\tproj na}\]
+
+  The map $f$ is well-defined because $\trunc kA$ is $k$-truncated and also
+  $n$-truncated (because $k\le{}n$), and the map $g$ is well-defined because
+  $\trunc k{\trunc nA}$ is $k$-truncated.
+
+  The composition $f\circ{}g:\trunc kA\to\trunc kA$ satisfy
+  $(f\circ{}g)(\tproj ka)=\tproj ka$ hence $f\circ{}g=\idfunc[\trunc kA]$, and
+  we also have $g\circ{}f=\idfunc[\trunc k{\trunc nA}]$ in the same way.
+\end{proof}
+
+\begin{lem}
+  We have $\trunc n{\unit}=\unit$.
+\end{lem}
+\begin{proof}
+  Indeed, $\unit$ is $n$-truncated for every $n$ hence $\trunc n{\unit}=\unit$ by
+  \autoref{reflectPequiv}.
+\end{proof}
+
+
+\section{Reflective subuniverses}
+\label{subsec:reflective-subuniverses}
+
+Reflective subuniverses are particularly nice subuniverses in the sense that
+every type $A:\type$ can be reflected down to a type $\reflect(A)$ in the
+subuniverse which is (in a precise way) the free type generated by $A$ in the
+subuniverse.
+
+\begin{defn}
+  A subuniverse $\P$ of $\type$ is a \emph{reflective subuniverse of $\type$} if
+  for every $A:\type$ we have a type $\reflect(A):\P$ and a map
+  $\project_A:A\to\reflect(A)$ satisfying the following universal property:
+
+  For every $A:\type$ and $B:\P$, the following map is an equivalence
+  \[\function{(\reflect(A)\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}\]
+
+  In other words, for every $B:\P$ and $g:A\to{}B$ there is a unique map
+  $\ext(g):\reflect(A)\to{}B$ making the following diagram commute.
+
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{A \ar^{\project_A}[r] \ar_g[rd] \druppertwocell{=} & \reflect(A)
+    \ar@{-->}^{\ext(g)}[d] \\
+    & B}\]
+\end{defn}
+
+The universal property means that $\reflect$ is left adjoint to the inclusion
+$\iota:\P\to\type$ with $\project_A$ as the unit, because the last $B$ in the
+universal property can be replaced by $\iota(B)$ given that $B$ is in $\P$.
+
+One example is truncations, as defined in \autoref{sec:truncations}.
+\begin{lem}[Truncations are reflective]
+  $\typele{n}$ is a reflective subuniverse of $\type$, with $\reflect$
+  given by $\trunc{n}{-}$.
+\end{lem}
+\begin{proof}
+Immediate from the universal property of truncations.  
+\end{proof}
+
+\begin{lem}
+  Let \P be a subuniverse of \type. The fact that \P is reflective is \anhprop.
+\end{lem}
+
+\begin{proof}
+  Let's assume that \P is reflective in two different ways
+  $(\reflect,\project,\ext)$ and $(\reflect',\project',\ext')$. We need to
+  construct an equivalence between $\reflect(A)$ and $\reflect'(A)$ for every
+  $A:\type$ and we need to prove that the following diagram commutes:
+
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd] \druppertwocell{=} &
+    \reflect(A) \ar@{->}^\sim[d] \\
+    & \reflect'(A)}\]
+
+  The type $\reflect'(A)$ is in \P, so we can define the map
+  \[\ext(\project'_A):\reflect(A)\to\reflect'(A)\]
+  which is exactly the map making the previous diagram commute.
+
+  We can also define
+  \[\ext'(\project_A):\reflect'(A)\to\reflect(A)\]
+
+  In order to prove that the composite is the identity, we only need to prove
+  that $\ext'(\project_A)\circ\ext(\project'_A)\circ\project_A=\project_A$
+  which is the case:
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd]
+    \ar@/_5mm/_{\project_A}[rdd] &
+    \reflect(A) \ar@{->}^{\ext(\project'_A)}[d] \\
+    & \reflect'(A) \ar@{->}^{\ext'(\project_A)}[d] \\
+    & \reflect(A)}\]
+\end{proof}
+
+For the rest of this section, we assume that $\P$ is a reflective subuniverse of
+$\type$.
+
+The following lemma says that the counit of the adjunction is an equivalence.
+\begin{lem}
+  \label{reflectPequiv}
+  If $A:\P$, then the map $\project_A:A\to\reflect(A)$ is an equivalence.
+\end{lem}
+\begin{proof}
+  Given that $A$ is in $\P$, we can define $\ext(\idfunc[A]):\reflect(A)\to{}A$.
+
+  Then we have $\ext(\idfunc[A])\circ\project_A=\idfunc[A]:A\to{}A$ by
+  definition, and in order to prove that
+  $\project_A\circ\ext(\idfunc[A])=\idfunc[\reflect(A)]$ we only need to prove
+  that $\project_A\circ\ext(\idfunc[A])\circ\project_A=
+  \idfunc[\reflect(A)]\circ\project_A$ which is again true.
+
+  \[\xymatrix{
+    A \ar^{\project_A}[r] \ar_{\idfunc[A]}[rd] &
+    \reflect(A) \ar^>>>{\ext(\idfunc[A])}[d] \ar@/^40pt/^{\idfunc[\reflect(A)]}[dd] \\
+    & A \ar_{\project_A}[d] \\
+    & \reflect(A)}\]
+\end{proof}
+
+The reflector $\reflect$ is a map $\type\to\P$ and using the universal property
+we should be able to prove that $\reflect$ is $(\infty,1)$-functorial. But we
+don't know how to express $(\infty,1)$-functoriality so we will only prove a
+few bits of it.
+
+\begin{defn}
+  If $f:A\to{}B$, there is a map $\reflect(f):\reflect(A)\to\reflect(B)$ defined
+  by
+  \[\reflect(f)\circ\project_A=\project_B\circ{}f\]
+  (or in other words $\reflect(f)=\ext(\project_B\circ{}f)$).
+
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
+    \ar@{-->}^-{\reflect(f)}[d]
+    \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
+
+  This operation satisfies the following functoriality conditions:
+  \begin{align*}
+    \reflect(\idfunc[A])=\idfunc[\reflect(A)]\\
+    \reflect(f\circ{}g)=\reflect(f)\circ\reflect(g)
+  \end{align*}
+
+  In order to define these equalities, we only need to define them after
+  composition by $\project(A)$, because of the universal property.
+
+  The first one is defined by
+
+  \[\xymatrix{
+    \reflect(\idfunc[A])\circ\project_A \ar@{==}[r] \ar@{=}[d] &
+    \idfunc[\reflect(A)]\circ\project_A \ar@{=}[d] \\
+    \project_A \ar@{=}[r] & \project_A
+  }\]
+
+  The second one is defined by
+
+  \[\xymatrix{
+    \reflect(f\circ g)\circ\project_A \ar@{==}[r] \ar@{=}[d] &
+    \reflect(f)\circ\reflect(g)\circ\project_A \ar@{=}[d] \\
+    \project_C\circ f\circ g \ar@{=}[r] & \reflect(f)\circ\project_B\circ g
+  }\]
+\end{defn}
+
+% \begin{proof}
+%   The map $\reflect(f)$ is defined to be the unique map
+%   $\reflect(A)\to\reflect(B)$ such that
+%   $\reflect(f)\circ\project_A=\project_B\circ{}f$ (using the universal property
+%   of $\reflect$), or in other words $\reflect(f)=\ext(\project_B\circ{}f)$.
+
+%   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+%   \xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
+%     \ar@{-->}^-{\reflect(f)}[d]
+%     \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
+%   In order to prove that $\reflect(\idfunc[A])=\idfunc[\reflect(A)]$, we only
+%   need to prove that
+%   $\reflect(\idfunc[A])\circ\project_A=\idfunc[\reflect(A)]\circ\project_A$. But
+%   both sides are equal to $\project_A$.
+
+%   Similarly, to prove that $\reflect(f\circ{}g)=\reflect(f)\circ\reflect(g)$ we
+%   only need to prove that $\reflect(f\circ{}g)\circ\project_A=
+%   \reflect(f)\circ\reflect(g)\circ\project_A$ and both sides are equal to
+%   $\project_C\circ{}f\circ{}g$.
+
+%   Note that by definition, the following diagram commutes:
+
+%   \[\xymatrix{
+%     \reflect(f\circ g)\circ\project_A \ar@{=}[r] \ar@{=}[d] &
+%     \reflect(f)\circ\reflect(g)\circ\project_A \ar@{=}[d] \\
+%     \project_C\circ f\circ g \ar@{=}[r] & \reflect(f)\circ\project_B\circ g
+%     }\]
+% \end{proof}
+
+\begin{defn}
+  For every $A,B:\type$, $C:\P$, $f:A\to{}B$ and $i:B\to{}C$ we have
+  \[\ext(i\circ{}f)=\ext(i)\circ\reflect(f)\]
+
+  \[\xymatrix{
+    A \ar^{\project_A}[r] \ar_f[d] & \reflect(A) \ar^{\reflect(f)}[d]
+    \ar@/^15mm/^{\ext(i\circ f)}[dd] \\
+    B \ar^{\project_B}[r] \ar_i[rd] & \reflect(B) \ar^{\ext(i)}[d] \\
+    & C}\]
+
+  This equality is defined by
+  \[\xymatrix{
+    \ext(i\circ f)\circ\project_A \ar@{==}[r] \ar@{=}[d] &
+    \ext(i)\circ\reflect(f)\circ\project_A \ar@{=}[d] \\
+    i\circ f \ar@{=}[r] & \ext(i)\circ\project_B\circ f
+  }\]
+
+\end{defn}
+
+% \begin{proof}
+%   \[\xymatrix{A \ar^{\project_A}[r] \ar_f[d] & \reflect(A) \ar^{\reflect(f)}[d]
+%     \\
+%     B \ar^{\project_B}[r] \ar_i[d] & \reflect(B) \ar^{\ext(i)}[ld] \\
+%     C &}\]
+
+%   We only have to prove that
+%   \[\ext(i\circ{}f)\circ\project_A=\ext(i)\circ\reflect(f)\circ\project_A\]
+%   which is the case, because they are both equal to $i\circ{}f$.
+% \end{proof}
+
+
+\section{Homotopy pushouts}
+\label{sec:pushouts}
+
+In \autoref{sec:colimits} we used higher inductive types to define pushouts of types.
+It will be useful for us to consider also the notion of pushout in certain subcategories of types.
+
+Let's consider \P a subuniverse of \type. More precisely we have a map
+$P:\type\to\prop$ and we use the notation $A:\P$ to mean that $A:\type$ and
+$P(A)$ holds. For instance \P could be \prop, \set, or more generally
+$\typele{n}$ for any $n\ge-2$.
+
+\begin{defn}
+  A \emph{span} in $\P$ is 5-tuple $\Ddiag=(A,B,C,f,g)$ with
+  $A,B,C:\P$ and $f:C\to{}A$ and $g:C\to{}B$.
+  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
+\end{defn}
+
+\begin{defn}
+  Given a span $\Ddiag=(A,B,C,f,g)$ and a type $D:\P$, a
+  \emph{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
+  $i:A\to{}D$, $j:B\to{}D$ and $h : \prod_{c:C}i(f(c))=j(g(c))$
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^j[d] \\ A \ar_i[r] & D
+  }\]
+
+  We denote by $\cocone{\Ddiag}{D}$ the type of all such cocones.
+\end{defn}
+
+The map $D\mapsto\cocone{\Ddiag}{D}$ is $(\infty,1)$-functorial, but we don't
+know how to express this internally in homotopy type theory, so we will only
+prove the bits of functoriality that we need.
+
+\begin{defn}
+  Given $D,E:\P$ and a map $t:D\to{}E$, there is a map
+  \[\function{\cocone{\Ddiag}{D}}{\cocone{\Ddiag}{E}}{c}{\composecocone{t}c}\]
+  defined by:
+  \[\composecocone{t}(i,j,h)=(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h)\]
+
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar_j[d]
+    \ar@/_/^{t\circ{}j}[rdd] & \\
+    A \ar^i[r] \ar@/^/_{t\circ{}i}[rrd] & D \ar[rd]|<<<<t & \\
+    & & E }\]
+\end{defn}
+
+\begin{lem}
+  For any types $D,E,F:\P$, functions $t:D\to{}E$, $u:E\to{}F$ and
+  $c:\cocone{\Ddiag}{D}$ we have
+  \[\composecocone{\idfunc[D]}c = c\]
+  \[\composecocone{(u\circ{}t)}c=\composecocone{u}(\composecocone{t}c)\]
+\end{lem}
+\begin{proof}
+  This follows easily from the unit laws and associativity of composition of
+  functions and from the functoriality of $f\mapsto{}\mapfunc{f}$ which has been proved
+  earlier.
+\end{proof}
+
+We can now define the notion of pushout.
+
+\begin{defn}
+  Given a span $\Ddiag$, a type $D:\P$ and a cocone
+  $c:\cocone{\Ddiag}{D}$, the pair $(D,c)$ is said to be a \emph{pushout}
+  of $\Ddiag$ in $\P$ if for every $E:\P$, the map
+  \[\function{(D\to{}E)}{\cocone{\Ddiag}{E}}{t}{\composecocone{t}c}\]
+  is an equivalence.
+\end{defn}
+
+This definition says that for every $E:\P$ and for every cocone under $\Ddiag$
+with base $E$, there is an essentially unique map $D\to{}E$ such that the whole
+diagram commutes, the proof of commutation being essentially unique too.
+
+Of course, we showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher inductive types.
+For a general \P, pushouts may or may not exist, but if they do, then they are unique.
+
+\begin{lem}
+  If $(D,c)$ and $(D',c')$ are two pushouts of $\Ddiag$ in $\P$, then
+  $(D,c)=(D',c')$.
+\end{lem}
+\begin{proof}
+  We first prove that the two types $D$ and $D'$ are equivalent.
+
+  Using the universal property of $D$ with $D'$, we see that the following map is an
+  equivalence
+  \[\function{(D\to{}D')}{\cocone{\Ddiag}{D'}}{t}{\composecocone{t}c}\]
+
+  In particular, there is a function $f:D\to{}D'$ satisfying $\composecocone{f}c=c'$. In the
+  same way there is a function $g:D'\to{}D$ such that $\composecocone{g}c'=c$.
+
+  In order to prove that $g\circ{}f=\idfunc[D]$ we use the universal property of
+  $D$ for $D$, which says that the following map is an equivalence:
+  \[\function{(D\to{}D)}{\cocone{\Ddiag}{D}}{t}{\composecocone{t}c}\]
+
+  Using the functoriality of $t\mapsto{}\composecocone{t}c$ we see that
+  \begin{align*}
+    \composecocone{(g\circ{}f)}c &= \composecocone{g}(\composecocone{f}c) \\
+    &= \composecocone{g}c' \\
+    &= c \\
+    &= \composecocone{\idfunc[D]}c
+  \end{align*}
+  hence
+  $g\circ{}f=\idfunc[D]$, because equivalences are injective. The same argument
+  with $D'$ instead of $D$ shows that $f\circ{}g=\idfunc[D']$.
+
+  Hence $D$ and $D'$ are equal, and the fact that $(D,c)=(D',c')$ follows from
+  the fact that the equivalence between $D$ and $D'$ we just defined sends $c$
+  to $c'$.
+\end{proof}
+
+\begin{cor}
+  The type of pushouts of $\Ddiag$ in $\P$ is \anhprop. In particular if
+  pushouts merely exist then they actually exist.
+\end{cor}
+
+
+\section{Homotopy pullbacks}
+\label{sec:pullbacks}
+
+Most of the previous section can be dualised to give a definition of
+pullbacks. More precisely we have the following
+
+\begin{defn}
+  A \emph{cospan} in $\P$ is a diagram of the following form
+  \[\xymatrix{& B \ar^g[d] \\ A \ar_f[r] & C}\]
+  with $A,B,C:\P$.
+\end{defn}
+
+\begin{defn}
+  If $\Ddiag$ is a cospan and $D:\P$, a \emph{cone over $\Ddiag$ with
+    base $D$} is a triple $(i,j,h)$ such as in the following diagram:
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{D \ar^j[r] \ar_i[d] \drtwocell{^h} & B \ar^g[d] \\
+    A \ar_f[r] & C
+  }\]
+
+  We denote by $\cone{\Ddiag}{D}$ the type of all such cones.
+\end{defn}
+
+The map $D\mapsto\cone{\Ddiag}{D}$ is contravariant in $D$, if $t:E\to{}D$ we
+have a map
+\[\function{\cone{\Ddiag}{D}}{\cone{\Ddiag}{E}}{c}{\composecone{t}{c}}\]
+defined by $\composecone{t}{(i,j,h)}=(i\circ{}t,j\circ{}t,h\circ{}t)$ and this
+map is (contravariantly) functorial.
+
+\begin{defn}
+  A pair $(D,c)$ where $D:\P$ and $c:\cone{\Ddiag}{D}$ is called a
+  \emph{pullback} of $\Ddiag$ in \P if for all $E:\P$ the map
+  \[\function{(E\to{}D)}{\cone{\Ddiag}{E}}{t}{\composecone{t}{c}}\]
+  is an equivalence.
+\end{defn}
+
+The construction of pullbacks in $\type$ is easier than the construction of
+pushouts.
+In particular, we don't need higher inductive types.
+
+\begin{defn}
+  Let $\Ddiag$ be a diagram in $\type$. We define the following type
+  \[A\times_CB=\setof{(a,b):A\times{}B | f(a) = g(b)}\]
+
+  There is a canonical cone $c_\times=(\pi_1,\pi_2,\pi_3)$ over $\Ddiag$ with
+  base $A\times_CB$ given by the following diagram
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{A\times_CB \ar^-{\pi_2}[r] \ar_{\pi_1}[d] \drtwocell{^\pi_3\ }
+    & B \ar^g[d] \\ A \ar_f[r] & C}\]
+  where
+  \begin{align*}
+    \pi_1((a,b),p)&=a\\
+    \pi_2((a,b),p)&=b\\
+    \pi_3((a,b),p)&=p\\
+  \end{align*}
+\end{defn}
+
+\begin{lem}
+  Let $\Ddiag$ be a diagram in $\type$. Then $(A\times_CB,c_\times)$ is a
+  pullback of $\Ddiag$.
+\end{lem}
+\begin{proof}
+  Given a type $E$ and a cone $c=(i,j,h):\cone{\Ddiag}{E}$ we construct a map
+  $\mathsf{s}(c):E\to{}A\times_CB$ by
+  \[\mathsf{s}(c)(x)=((i(x), j(x)), h(x))\]
+  and we need to prove that $\composecone{\mathsf{s}(c)}{c_\times}=c$ and
+  $\mathsf{s}(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
+  $t:E\to{}A\times_CB$ and both are easy computations:
+  \begin{align*}
+    \composecone{\mathsf{s}(c)}{c_\times}
+    &=\composecone{\mathsf{s}(c)}{(\pi_1,\pi_2,\pi_3)} \\
+    &=(\pi_1\circ\mathsf{s}(c),\pi_2\circ\mathsf{s}(c),
+    \pi_3\circ\mathsf{s}(c))\\
+    &=(i,j,h)\\
+    &=c
+  \end{align*}
+  \begin{align*}
+    \mathsf{s}(\composecone{t}{c_\times})(x) &=
+    \mathsf{s}(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
+    &=(\pi_1(t(x)),\pi_2(t(x)),\pi_3(t(x)))\\
+    &=t(x)\qedhere
+  \end{align*}
+\end{proof}
+
+\begin{defn}
+  If $\Ddiag$ is a cospan and $D:\type$, then we define another
+  cospan called $D\to\Ddiag$:
+  \[\xymatrix{& (D\to B) \ar^{g\circ-}[d] \\ (D\to A) \ar_{f\circ-}[r] & (D\to
+    C)}\]
+
+  Similarly if $\Ddiag$ is a span and $D:\type$, then we have a
+  cospan $\Ddiag\to{}D$:
+  \[\xymatrix{& (B\to D) \ar^{-\circ{}g}[d] \\ (A\to D) \ar_{-\circ{}f}[r] &
+    (C\to D)}\]
+\end{defn}
+
+\begin{lem}
+  \label{coneispb}
+  If $\Ddiag$ is a cospan and $D:\P$, then
+  \[\cone{\Ddiag}{D}=(D\to{}A)\times_{(D\to{}C)}(D\to{}B)\]
+
+  If $\Ddiag$ is a span and $D:\P$, then
+  \[\cocone{\Ddiag}{D}=(A\to{}D)\times_{(C\to{}D)}(B\to{}D)\]
+\end{lem}
+\begin{proof}
+  In both cases the map from left to right is $(i,j,h)\mapsto(i,j,\funext(h))$
+  and the map from right to left is $(i,j,p)\mapsto(i,j,\happly(p))$ and they
+  are inverse to each other.
+\end{proof}
+
+\section{Pushouts in reflective subuniverses}
+\label{sec:pushouts-subuniv}
+
+We now want to prove that pushouts in \P are related to pushouts in \type. We
+first need to explain how to reflect spans and cocones.
+
+\begin{defn}
+  Let
+  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
+  be a span in $\type$. We note $\reflect(\Ddiag)$ the following
+  span in $\P$:
+  \[\reflect(\Ddiag)=\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
+    \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }\]
+\end{defn}
+
+\begin{defn}
+  Let $D:\type$ and $c=(i,j,h):\cocone{\Ddiag}{D}$.
+  We define
+  \[\reflect(c)=(\reflect(i),\reflect(j),\reflect(h)):
+  \cocone{\reflect(\Ddiag)}{\reflect(D)}\]
+  where
+  \[\reflect(h):\prod_{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
+  is defined in the following way:
+
+  We have \[h:\prod_{c:C}i(f(c))=j(g(c))\]
+  hence
+  \[\funext(h):i\circ{}f=j\circ{}g\]
+  We can apply $\reflect$ and we get
+  \[\mapfunc{\reflect}(\funext(h)):\reflect(i\circ{}f)=\reflect(j\circ{}g)\]
+  Now we can compose with the fact that $\reflect$ commutes with composition and
+  we get the following (the proofs that $\reflect$ commutes with composition are
+  not written in order to keep terms readable, we will later see that they don't
+  get in the way):
+  \[\mapfunc{\reflect}(\funext(h)):
+  \reflect(i)\circ\reflect(f)=\reflect(j)\circ\reflect(g)\]
+  and then
+  \[\reflect(h)\defeq\happly(\mapfunc{\reflect}(\funext(h))):
+  \prod_{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
+\end{defn}
+
+\begin{lem}
+  \label{reflectcommutespushout}
+  Let $\Ddiag$ be a span in $\type$ and $(D,c)$ a pushout of $\Ddiag$
+  in $\type$. Then $(\reflect(D),\reflect(c))$ is a pushout of
+  $\reflect(\Ddiag)$ in $\P$.
+\end{lem}
+
+\begin{proof}
+  Let $E:\P$ and let's consider the following diagram:
+
+  \[\xymatrix{ (\reflect(D)\to E)
+    \ar^{t\mapsto{}\composecocone{t}{\reflect(c)}}[r] \ar_{f_1}^\sim[d]
+    &
+    \cocone{\reflect(\Ddiag)}{E}\\
+    (D\to E) \ar_{f_2}^\sim[d] &
+    (\reflect(A)\to{}E)\times_{(\reflect(C)\to{}E)}(\reflect(B)\to{}E)
+    \ar_{f_5}^\sim[u] \\
+    \cocone{\Ddiag}{E}\ar_-{f_3}^-\sim[r] & (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
+    \ar_{f_4}^\sim[u] }\]
+
+  We need to prove that the top arrow is an equivalence, we will do this by
+  proving that it is a composite of five equivalences.
+
+  The first equivalence, $f_1$, comes from the universal property of $\reflect$ and the fact
+  that $E$ is in \P:
+  \[f_1(t) \defeq t\circ\project_D.\]
+
+  The second equivalence comes from the universal property of $(D,c)$, as a pushout of
+  $\Ddiag$ in \type:
+  \[f_2(u) \defeq (u\circ{}i,u\circ{}j,\mapfunc{u}\circ{}h).\]
+
+  The third map comes from \autoref{coneispb}, and is defined by
+  \[f_3(i,j,h) \defeq (i,j,\funext(h)).\]
+
+  The fourth map comes from the universal property of $\reflect$ applied three
+  times and the fact that pullbacks are invariant under equivalence (everything
+  is invariant under equivalence anyway):
+  \[f_4(i,j,p) \defeq (\ext(i),\ext(j),\mapfunc{\ext}(p)).\]
+
+  Note that $\mapfunc{\ext}(p)$ has type $\ext(i\circ{}f)=\ext(j\circ{}g)$
+  instead of $\ext(i)\circ\reflect(f)=\ext(j)\circ\reflect(g)$ but we
+  (implicitely) concatenate with the proofs that
+  $\ext(i\circ{}f)=\ext(i)\circ\reflect(f)$ and the same for $j$ and $g$. Again,
+  we will see later that these proof do not get in the way.
+
+  The fifth equivalence comes from \autoref{coneispb}, and is defined by
+  \[f_5(a,b,q) \defeq (a,b,\happly(q)).\]
+
+  We now need to prove that the diagram commutes, so we can conclude that the map
+  $t\mapsto{}t\circ\reflect(c)$ is an equivalence.
+
+  We have
+  \begin{align*}
+    f_5(f_4(f_3(f_2(f_1(t))))) &= f_5(f_4(f_3(f_2(t\circ\project_D)))) \\
+    &= f_5(f_4(f_3(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
+    \mapfunc{(t\circ\project_D)}\circ{}h))) \\
+    &=f_5(f_4(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
+    \funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
+    &=f_5(\ext(t\circ\project_D\circ{}i),\ext(t\circ\project_D\circ{}j),\\
+    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
+    \\
+    &=f_5(\ext(t\circ\project_D)\circ\reflect(i),
+    \ext(t\circ\project_D)\circ\reflect(j),\\
+    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
+    \\
+    &=f_5(t\circ\reflect(i),
+    t\circ\reflect(j),
+    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
+    &=(t\circ\reflect(i),t\circ\reflect(j),
+    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))))
+  \end{align*}
+
+  Note that in the two steps before the last equality we are using the fact
+  that if $a=a'$ and $b=b'$, then $(a,b,q)=(a',b',q)$. This is actually not
+  even well typed given that the type of $q$ depends on $a$ and $b$, so we
+  have to transport $q$ along the proofs $p:a=a'$ and $q:b=b'$. In the present
+  case we have $q:a\circ\reflect(f)=b\circ\reflect(g)$ hence the correct
+  statement is
+  \[(a,b,q)=(a',b',q')\] where
+  \[q'\defeq\map{(\lambda{}u.\,u\circ\reflect(f))}{\rev p} \ct q \ct
+  \map{(\lambda{}u.\,u\circ\reflect(g))}{p'})\] Again we will leave this
+  implicit and take care of it only when it will be needed.
+
+  \bigskip
+
+  In order to prove that the diagram commutes, we now only need to prove that
+  \begin{align*}
+    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) &=
+    \mapfunc{t}\circ\reflect(h)
+  \end{align*}
+  This is an equality in the type
+  \[(c:\reflect(C))\to{}t(\reflect(i)(\reflect(f)(c)))=
+  t(\reflect(j)(\reflect(g)(c)))\]
+  This type is equal to
+  \[t\circ\reflect(i)\circ\reflect(f) = t\circ\reflect(j)\circ\reflect(g)\]
+  via $\funext$ so we only need to prove
+  \begin{align*}
+    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)) &=
+    \funext(\mapfunc{t}\circ\reflect(h)) \\
+    &: t\circ\reflect(i)\circ\reflect(f) =
+    t\circ\reflect(j)\circ\reflect(g)
+  \end{align*}
+
+  Note that for any appropriately typed $t$ and $p$ we have
+  \[\funext(\mapfunc{t}\circ\happly(p))=\map{(\lambda{}u.\,t\circ{}u)}p\]
+  (by induction on $p$.)
+  Hence the previous equality becomes the following, using the definition of
+  $\reflect(h)$ and expanding $h$ to $\happly(\funext(h))$:
+  \[\map{\ext}{\map{(\lambda{}u.\,t\circ\project_D\circ{}u)}{\funext(h)}}=
+  \map{(\lambda{}u.\,t\circ{}u)}{\map{\reflect}{\funext(h)}}\]
+
+  The idea is now to do an induction on the path $\funext(h):i\circ f = j\circ
+  g$, which should be allowed because nothing in the previous expression seems to
+  depend on the fact that $\funext(h)$ goes from a composition to another
+  composition.  But let's not forget that there are implicit equalities on
+  both sides of the equation and they use the fact that $i\circ f$ and
+  $j\circ g$ are compositions, so first we need to deal with that.
+
+  % After that, using the fact that for every $k:C\to{}D$ we have
+
+  % \begin{align*}
+  %   \ext(t\circ\project_D\circ{}k) &= \ext(t\circ\project_D)\circ\reflect(k) \\
+  %   &= t\circ\reflect(k)
+  % \end{align*}
+
+  % We will have
+
+  % \[\ext\circ(\lambda{}u.\,t\circ\project_D\circ{}u)=
+  % (\lambda{}u.\,t\circ{}u)\circ\reflect\]
+
+  % Hence the result, using the functoriality of $f\mapsto{}f_*$.
+
+  \bigskip
+
+  % Let's prove that the implicit equalities around $\mapfunc{r}$ and
+  % $\mapfunc{\ext}$ cancel.
+  We have the following diagram:
+
+  \[\xymatrix{
+    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
+      t\circ\reflect(j\circ g) \ar@{=}[d] \\
+    t\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
+      t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
+    \extend{t\circ\project_D}\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
+      \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
+    \extend{t\circ\project_D\circ i}\circ\reflect(f) \ar@{=}[d] &
+      \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] \\
+    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
+      \extend{t\circ\project_D\circ j\circ g}\\
+  }\]
+
+  \begin{itemize}
+  \item The top horizontal equality is
+    $\map{(\lambda{}u.\,t\circ{}u)}{\map{\reflect}{\funext(h)}}$ without the
+    implicit equalities around.
+  \item The first line of vertical equalities are the implicit equalities around
+    the term $\map{(\lambda{}u.\,t\circ{}u)}{\map{\reflect}{\funext(h)}}$ (the
+    right hand side of the equality we want to prove).
+  \item The next two lines of vertical equalities are around the left hand side
+    of the equality we want to prove and come from the long computation a few
+    pages ago.
+  \item The last line of vertical equalities are the implicit equalities around
+    $\mapfunc{\extendsmb}$.
+  \item The bottom horizontal equality is
+    $\map{\ext}{\map{(\lambda{}u.\,t\circ\project_D\circ{}u)}{\funext(h)}}$
+    without the implicit equalities around.
+  \end{itemize}
+
+  The commutativity of the diagram is the equality we want to prove and
+  the fact that the compositions $i\circ f$ and $j\circ g$ are being split in
+  the middle of the diagram is the reason why we cannot work directly, by induction on
+  $\funext(h)$.
+
+  So we will prove that the following diagram (where the vertical part is the
+  right hand side of the previous diagram) commutes. Note that on the right hand
+  side of this diagram, we do no longer use the fact that $j\circ g$ is a
+  composition of two functions, so induction on it will be allowed.
+
+  \[\xymatrix{
+    t\circ\reflect(j\circ g) \ar@{=}[d] & \\
+    t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] & \\
+    \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] &
+    \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[l] \ar@{=}[luu]
+    \ar@{=}[ldd] \\
+    \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] & \\
+    \extend{t\circ\project_D\circ j\circ g} & \\
+  }\]
+
+  The top square commutes because it is the concatenation of the two equalities
+  $t=\extend{t\circ\project_D}$ and $\reflect(j)\circ\reflect(g)=\reflect(j\circ
+  g)$ in two different orders (interchange law). In order to prove that the
+  bottom square commutes, we only have to prove that it commutes after
+  composition with $\project_C$ on the right. Let's write $u=t\circ\project_D$
+  and let's consider the following diagram.
+
+  \[\xymatrix@C=-30pt{
+    \extend{u}\circ\reflect(j)\circ\reflect(g)\circ\project_C
+      \ar@{=}[rrrr] \ar@{=}[ddd] \ar@{=}[rd] & & & &
+    \extend{u}\circ\reflect(j\circ g)\circ\project_C
+      \ar@{=}[ld] \ar@{=}[ddd] \\ &
+    \extend{u}\circ\reflect(j)\circ\project_B\circ g
+      \ar@{=}[rr] \ar@{=}[d] & {\phantom{thisisanuglyhack}} &
+    \extend{u}\circ\project_D\circ j\circ g
+      \ar@{=}[d] & \\ &
+    \extend{u\circ j}\circ\project_B\circ g
+      \ar@{=}[rr] \ar@{=}[ld] & &
+    u\circ j\circ g
+      \ar@{=}[rd] & \\
+    \extend{u\circ j}\circ\reflect(g)\circ\project_C
+      \ar@{=}[rrrr] & & & &
+    \extend{u\circ j\circ g}\circ\project_C
+  }\]
+
+  We need to prove that the outer square commutes.
+
+  \begin{itemize}
+  \item The left square commutes because of the interchange law
+  \item The top square commutes because of the definition of the equality
+    $\reflect(j\circ g)=\reflect(j)\circ\reflect(g)$
+  \item The bottom, right and interior squares commute because of the definition
+    of the equality $\extend{a}\circ\reflect(b)=\extend{a\circ b}$
+  \end{itemize}
+
+  This proves that the outer square commutes, hence the previous triangular
+  diagram commutes. We can do the same for the left part of the first
+  rectangular diagram so we now only have to prove that the following diagram
+  commutes:
+
+  \[\xymatrix{
+    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
+      t\circ\reflect(j\circ g) \ar@{=}[d] \\
+    \extend{t\circ\project_D}\circ\reflect(i\circ f) \ar@{=}[d] &
+      \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[d] \\
+    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
+      \extend{t\circ\project_D\circ j\circ g}\\
+  }\]
+
+  And now we are finally allowed to induct on $\funext(h)$ because the diagram
+  is not relying anymore on the fact that $i\circ f$ and $j\circ g$ are
+  compositions.
+
+  \bigskip
+
+  This proves that the diagram commutes, hence the map
+  $t\mapsto{}\composecocone{t}\reflect(c)$ is an equivalence which proves that
+  the reflector commutes with pushouts.
+\end{proof}
+
+This proof was rather tedious, but we can hope that at some point we will
+understand better what $(\infty,1)$-functoriality means in homotopy type theory, and
+that we will be able to omit rigorously the equalities left implicit above and still
+conclude that every coherence condition is always satisfied.
+
+\begin{cor}
+  Every span $\Ddiag$ in $\P$ has a pushout in $\P$.
+\end{cor}
+
+\begin{proof}
+  According to \autoref{reflectPequiv} and to the diagram defining the action of
+  $\reflect$ on functions, the diagram $\reflect(\Ddiag)$ is equivalent to
+  $\Ddiag$. But we just proved that $\reflect(\Ddiag)$ has a pushout, namely the
+  reflection of the pushout in \type of $\Ddiag$, hence $\Ddiag$ has a pushout
+  in \P.
+\end{proof}
+
+\section{Modalities and factorization systems}
+\label{sec:modalities}
+
+\dots
 
 %%% Local Variables: 
 %%% mode: latex

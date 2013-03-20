@@ -254,18 +254,20 @@ an introduction form (\pairpath{}{}), the forward direction as
 elimination forms (\projpath{1} and \projpath{2}), and the equivalence
 as giving $\beta$ and $\eta$ rules for these.  
 
-The action of transport on $\Sigma$-types is a generalization of the
-action for binary cartesian products:
+Note that the lifted path $\mathsf{lift}(u,p)$  of $p:x=y$ at $u:P(x)$ defined in \autoref{thm:path-lifting} may be identified with the special case of the introduction form
+\[\pairpath(p,\refl{u}):(x,u) = (y,\trans p u).\]
+This appears in the statement of action of transport on $\Sigma$-types, which is also a generalization of the action for binary cartesian products:
+
 \begin{thm}
-Suppose we have a type family $P:A\to\type$ and a type family $Q:\big(\sm{x:A} P(x)\big)\to\type$. Then we get the type family
-\begin{equation*}
-x:A\vdash \sm{u:P(x)} Q(x,u):\type
-\end{equation*}
-For any path $p:x=y$ and any $(u,z):\sum(u:P(x)),\ Q(x,u)$ we have
-\begin{equation*}
-\trans{p}{u,z}=(\trans{p}{u},\trans{\mathsf{lift}(u,p)}{z}).
-\end{equation*}
-The path $\mathsf{lift}(u,p)$ is defined in \autoref{thm:path-lifting}.
+  Suppose we have type families $P:A\to\type$ and $Q:\big(\sm{x:A} P(x)\big)\to\type$.
+  Then we can construct the type family over $A$ defined by
+  \begin{equation*}
+    x \mapsto  \sm{u:P(x)} Q(x,u).
+  \end{equation*}
+  For any path $p:x=y$ and any $(u,z):\sum(u:P(x)),\ Q(x,u)$ we have
+  \begin{equation*}
+    \trans{p}{u,z}=\big(\trans{p}{u},\,\trans{\pairpath(p,\refl{u})}{z}\big).
+  \end{equation*}
 \end{thm}
 
 \begin{proof}
@@ -274,7 +276,7 @@ Immediate by path induction.
 
 We leave it to the reader to state and prove a generalization of
 \autoref{thm:ap-prod} (see \autoref{ex:ap-sigma}), and to characterize
-the reflexivity, inverses, and composition of $\sm{x:A} B$
+the reflexivity, inverses, and composition of $\Sigma$-types
 componentwise.
 
 
@@ -368,10 +370,10 @@ This can be proven easily by path induction.
 
 Transporting dependent functions is similar, but more complicated.
 Suppose given $X$ and $p$ as before, type families $A:X\to \type$ and $B:\prd{x:X} (A(x)\to\type)$, and also a dependent function $f : \prd{a:A(x_1)} B(x_1,a)$.
-Then
+Then for $p:\id[A]{x_1}{x_2}$ and $a:A(x_2)$, we have
 \begin{align*}
-  \transfib{\Pi_A(B)}{p}{f} =
-  \;\Big(x \mapsto \transfib{\hat{B}}{\opp{(\mathsf{lift}(x,\opp{p}))}}{f (\transfib{A}{\opp p}x)}\Big)
+  \transfib{\Pi_A(B)}{p}{f}(a) =
+  \Transfib{\hat{B}}{\opp{(\pairpath(\opp{p},\refl{x}))}}{f(\transfib{A}{\opp p}{a})}
 \end{align*}
 where $\Pi_A(B)$ and $\hat{B}$ denote respectively the type families
 \[

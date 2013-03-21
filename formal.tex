@@ -7,6 +7,8 @@
 %% \PassOptionsToPackage{pdftex}{color}
 %% \fi
 
+\newcommand{\production}{\vcentcolon\vcentcolon=}
+
 \newcommand{\mkbox}[1]{\ensuremath{#1}}
 
 \newcommand{\Prod}[2]{\displaystyle\prod _{#1}~#2}
@@ -78,68 +80,75 @@
 \newcommand{\pacomment}[1]{}
 \newcommand{\myrefl}[1]{{\sf refl_{#1}}}
 
+TODO: ensure that macros used in this appendix are replaced by the standard
+ones in the file {\tt macros.tex}. -- Dan G
+
 In this appendix we give a presentation of a version of intensional
 Dependent Type Theory. 
 
-The role of this appendix is to give a concise, simple, but we believe
-precise, informal presentation of a formal type theory, that can be
-used as a standard of mathematical rigour for the informal work in
-Martin-L\"{o}f's intensional dependent type theory.  If the work in
+The role of this appendix is to give a concise, simple, but informal
+presentation of a formal type theory, which can be 
+used as a standard of mathematical rigour for informal work in
+Martin-L\"{o}f's intensional dependent type theory.  If work in
 Homotopy Type Theory can, in principle, be represented in this formal
-type theory when extra axioms and rules like the Univalence Axiom and
-rules for Higher Dimensional Inductive Definitions have been added,
+type theory with extra axioms and rules, such as the Univalence Axiom and
+rules for Higher Dimensional Inductive Definitions,
 then the claim is that the mathematics has met this standard of
-rigour.
+rigour. (TODO: How could presenting a formal type theory be enough for
+rigour in the presence of axioms and HIT?  Don't we also need a semantic 
+model in traditional mathematics that sends False to Empty? The statement about
+consistency made later should be clarified, in that it only works in the absence
+of such axioms. -- Dan G)
 
 \section*{The Raw Syntax}
- The terms and types of our type theory are written using the following syntax, which is an extension
-of $\lambda$-calculus with {\em primitive} $c,c',\dots$ and {\em defined} $f,f',\dots$
-constants
+ The objects and types of our type theory may be written as terms using the following syntax, which is an extension
+of $\lambda$-calculus with {\em variables} $x, x',\dots$, {\em primitive} constants $c,c',\dots$, {\em defined} constants $f,f',\dots$, and term
+forming operations
 $$
-t,u,A,B~~~::=~~~x~|~\lambda x.t~|~t(u)~|~c~|~f
+t,u,A,B\production x~|~\lambda x.t~|~t(u)~|~c~|~f
 $$
 
  We follow the usual convention about free and bound variables. In particular,
 we write $B[a/x]$ or simply $B[a]$ if the variable $x$ is clear from the context, for the 
 substitution of $a$ for $x$ in $B$, with possible renaming for avoiding clash of variables.
-More generally if $J$ is a judgement, we may write $J[a/x]$ or simply $J[a]$ for the 
+More generally, if $J$ is a judgement, we may write $J[a/x]$ or simply $J[a]$ for the 
 judgement obtained by substitution of $a$ for $x$ in $J$.
 
 \medskip
 
- We may write $t(t_1,\dots,t_n)$ for $t(t_1)(t_2)\dots (t_n)$.  Also sometimes we use infix notation, writing $t_1\; u\; t2$ rather than $u(t_1)(t_2)$ when $u$ is a primitive or defined constant.
+ We may write $t(t_1,\dots,t_n)$ or $t(t_1)(t_2)\dots (t_n)$ for $(((t(t_1))(t_2))\dots (t_n))$.  We may also use infix notation, writing $t_1\; u\; t_2$ for $u(t_1,t_2)$ when $u$ is a primitive or defined constant.
 
 \medskip
 
- Each defined constant will have zero, one or more {\em defining equations}.  There will be two kinds of defined constant.  The first {\em explicit} kind of defined constant $f$ will have a single {\em explicit definition}
-  \[ f(x_1,\dots,x_n):= t\]
-where $t$ does not involve $f$.  An example of explicit definition will be used later.  We introduce the defined constant 
-$o$, for composition of functions, with explicit definition
-  \[ \circ (x,y)(z) := x(y(z))\]
+ Each defined constant will have zero, one or more {\em defining equations}.  There will be two kinds of defined constant.  An {\em explicit} defined constant $f$ will have a single defining equation
+  \[ f(x_1,\dots,x_n)\defeq t,\]
+where $t$ does not involve $f$.  An example of explicit definition will be displayed later.  We introduce the explicit defined constant 
+$\circ$, for composition of functions, with defining equation
+  \[ \circ (x,y)(z) \defeq x(y(z))\]
 and use infix notation $x\circ y$ for $\circ(x,y)$.
 
 
 
-The other kind of defined constant will be used in connection with a form of type having some primitive constants that are used to introduce elements into types of that form.  With each such primitive constant $c$ there will be a defining equation of the form
+The second kind of defined constant will be used in connection with a form of type having some primitive constants that are used to introduce elements into types of that form.  With each such primitive constant $c$ there will be a defining equation of the form
 $$
-f(x_1,\dots,x_n,c(y_1,\dots,y_m)) ~:=~ t,
+f(x_1,\dots,x_n,c(y_1,\dots,y_m)) \defeq t,
 $$
 where now $f$ may occur in $t$, but now only in such a way that, in the context where $f$ is introduced it will be a totally defined typed function.
 The paradigm examples of such defined functions are the functions defined by primitive recursion on the natural numbers.  We may call this kind of definition of a function a {\em total recursive definition}.  In computer science and logic this kind of definition of a function on a recursive data type has been called a {\em definition by structural recursion}
 
 Together with $\beta$-conversion
 $$
-(\lambda x.t)(u) ~:=~ t[u/x]
+(\lambda x.t)(u) \defeq t[u/x]
 $$
-and thinking of $:=$ as a rewriting rule (unfolding definitions),
+and thinking of $\defeq$ as a rewriting rule (unfolding definitions),
 this forms a rewriting system which has the confluence (or Church-Rosser) property: we can
-define $t~\conv~u$ to mean that $t$ and $u$ can be reduced to the same term by using
+define $t \conv u$ to mean that $t$ and $u$ can be reduced to the same term by using
 $\beta$-reduction and recursion.
 
 \section*{The Forms of judgement}
 
- In type theory, we mainly derive assertions or judgements of the form $A~\myType$ for ``$A$ is a correct type'' or $a:A$ for ``$a$ is a correct term of type $A$.  It will also be useful to have judgements of the form $B~\Fam(A)$
-for ``$B$ is a correct family of types, $B(x)$ for $x:A$''.
+ In type theory, we mainly derive assertions or judgements of the form $A~\myType$ (which means ``$A$ is a correct type'') or $a:A$ (which means ``$a$ is a correct term of type $A$'').  It will also be useful to have judgements of the form $B~\Fam(A)$,
+which means ``$B$ is a correct family of types, $B(x)$ for $x:A$''.
 The judgement $A=B~\myType$ is defined to mean $A~\myType,~B~\myType$ and $A\conv B$
 while the judgement $t=u:A$ is defined to mean $t:A,~u:A$ and $t\conv u$.
 In general
@@ -188,7 +197,7 @@ $x$ is not free in $B$.
 
 \medskip
 
- When writing rules we follow the convention that we don't write explicitely the whole context.  For instance the more explicit rule for abstraction should be: if $b:B(x)~(\Gamma,x:A)$ then $\lambda x.b:\Pi(A,B)~(\Gamma)$.
+ When writing rules we follow the convention that we don't write explicitly the whole context.  For instance, the more explicit rule for abstraction should be: if $b:B(x)~(\Gamma,x:A)$ then $\lambda x.b:\Pi(A,B)~(\Gamma)$.
 
 \medskip
 
@@ -211,30 +220,30 @@ d:C(\myzero)~~~~~~~e:(\Pi x:\NN)(C(x)\rightarrow C(\mysuc (x)))
 $$
 with the defining equations
 $$
-f(\myzero) ~:=~ d~~~~~~~~~~~~f(\mysuc (x)) ~:=~ e(x,f(x))
+f(\myzero) \defeq d~~~~~~~~~~~~f(\mysuc (x)) \defeq e(x,f(x))
 $$
  
 As usual $C,d,e$ may have been obtained in an implicit context $\Gamma$ in which variables $x_1,\ldots,x_n$ are declared.  Then there will be the extra implicit parameters $x_1,\ldots,x_n$, so that the fully explicit primitive recursion schema is
 $$
-f(x_1,\dots,x_n)(\myzero) ~:=~ d[x_1,\dots,x_n]~~~~~~~~f(x_1,\dots,x_n)(\mysuc (x)) ~:=~ e[x_1,\dots,x_n,x,f(x_1,\dots,x_n)(x)]
+f(x_1,\dots,x_n)(\myzero) \defeq d[x_1,\dots,x_n]~~~~~~~~f(x_1,\dots,x_n)(\mysuc (x)) \defeq e[x_1,\dots,x_n,x,f(x_1,\dots,x_n)(x)]
 $$
 
 \medskip
 \subsection*{The Finite Types $\NN_0,\NN_1,\NN_2$}
 
-$0,1$ and, for $k=0,1,2$, $\NN_k$ are introduced as primitive constants with the rules
+We introduce primitive constants $0,1,\NN_0,\NN_1,\NN_2$ are introduced as primitive constants with the rules
 
 \begin{itemize}
-\item $\NN_k~\myType$ for $k=0,1,2$,
-\item $0:\NN_1$, $0:\NN_2$ and $1:\NN_2$.
+\item $\NN_0~\myType$, $\NN_1~\myType$, $\NN_2~\myType$,
+\item $0:\NN_1$, $0:\NN_2$, $1:\NN_2$.
 \end{itemize}
  For $k=0,1,2$, if we have $C~\Fam(\NN_k)$ we can introduce $f:\Pi(\NN_k,C)$.  
 \begin{itemize}
 \item When $k=0$ $f$ has no defining equation.  
 \item When $k=1$, if $c_0:C(0)$ then $f$ has the defining equation
-  \[ f(0):= c_0.\]
+  \[ f(0)\defeq c_0.\]
 \item When $k=2$, if $c_0:C(0)$ and $c_1:C(1)$ then $f$ has the defining equations
-  \[ f(0):= c_0\mbox{ and } f(1):=c_1.\]
+  \[ f(0)\defeq c_0\mbox{ and } f(1)\defeq c_1.\]
 \end{itemize}
 \pacomment{%%%%%%%%%%%%%%%%%
 \begin{itemize}
@@ -255,7 +264,7 @@ In the special case where $C$ is $\lambda x.C_0$ where $C_0$ does not contain $x
 \end{itemize}
 If we have $C~\Fam(\NN_1)$ and $c_0:C(0)$ we can introduce the defined function 
 $f:(\Pi(\NN_1,C)$ with defining equation
-  \[ f(0)~:=~c_0.\]
+  \[ f(0)\defeqc_0.\]
 \item The {\em two element type} $\NN_2$ is introduced, together with $0,1$, as primitive constants with the rules
 \begin{itemize}
 \item $\NN_2~\myType$,
@@ -263,7 +272,7 @@ $f:(\Pi(\NN_1,C)$ with defining equation
 \end{itemize}
 If we have $C~\Fam(\NN_2)$, $c_0:C(\nn^2_0)$ and $c_1:C(\nn^2_1)$ we can introduce the defined function 
 $f:\Pi(\NN_2,C)$ with defining equations
-  \[ f(0)~:=~c_0\mbox{ and }f(1)~:=~ c_1.\]
+  \[ f(0)\defeqc_0\mbox{ and }f(1)\defeq c_1.\]
 Note that $\NN_2$ is the type of boolean values, here $0$ and $1$.
 \end{itemize}
 }%%%end pacomment%%%%%%%%%%%%%%%%
@@ -282,7 +291,7 @@ d:(\Pi x:A)(\Pi y:B(x))C(\PAIR(x,y))
 $
 we can introduce $f:\Pi(\Sigma(A,B),C)$ with the defining equation
 $$
-f(\PAIR(x,y))~:=~d(x,y).
+f(\PAIR(x,y))\defeq d(x,y).
 $$
 
 \medskip
@@ -294,9 +303,9 @@ We introduce primitive constants $+,in_1,in_2$ with the rules
 \item if $a:A_i$ then $in_i(a):A_i$, for $i=1,2$.
 \end{itemize}
 We write $A_1+A_2$ instead of $+(A_1,A_2)$.
-If $C~\Fam(A_1+A_2)$ and $d_i:\Pi(A_i,C\circ in_i)$ for $i=1,2$, where 
-$(C\circ in_i)(x)~:=~C(in_i(x))$, then we can introduce a defined constant $f:\Pi(A_1+A_2,C)$ with the defining equations
-  \[ f(in_i(x))~:= ~d_i(x)\mbox{ for } i=1,2.\]
+If $C~\Fam(A_1+A_2)$ and $d_i:\Pi(A_i,C\circ in_i)$ for $i=1,2$,
+then we can introduce a defined constant $f:\Pi(A_1+A_2,C)$ with the defining equations
+  \[ f(in_i(x))~\defeq ~d_i(x)\mbox{ for } i=1,2.\]
 
 \subsection*{Types of ordinals}
 We introduce primitive constants $\Ord,~\LIM$ with the rules
@@ -306,11 +315,15 @@ We introduce primitive constants $\Ord,~\LIM$ with the rules
 \item $\mysuc:\Ord\rightarrow\Ord$
 \item $\LIM:(\NN\rightarrow\Ord)\rightarrow\Ord$
 \end{itemize}
+
+TODO: Is that a correct definition of $\Ord$?  I'm under the impression that $\LIM ( n \mapsto [2n] )$
+and $\LIM ( n \mapsto [n] )$ should be the same, where $[n]$ is $s^n(0)$. -- Dan G
+
 If $C~\Fam(\Ord)$ and $d:C(\myzero)$ and $e:(\Pi x:\Ord)(C(x)\rightarrow C(\mysuc(x)))$ and
 $$g:(\Pi u:\NN\rightarrow\Ord)((\Pi n:\NN)C(u(n)))\rightarrow C(\LIM(u))$$
 then we can introduce a defined constant $f:\Pi(\Ord,C)$ with the defining equations
 $$
-f(0) ~:=~ d~~~~~f(\mysuc(n)) ~:=~ e(n,f(n))~~~~~f(\LIM(u)) ~:=~ g(u,f\circ u)
+f(0) \defeq d~~~~~f(\mysuc(n)) \defeq e(n,f(n))~~~~~f(\LIM(u)) \defeq g(u,f\circ u)
 $$
 where $(f\circ u)(n) = f(u(n))$.
 
@@ -328,9 +341,9 @@ d:(\Pi x:A)(\Pi u:B(x)\rightarrow \WW(A,B))((\Pi y:B)C(u(y)))\rightarrow C(\SUP(
 $$
 with the defining equation
 $$
-f(\SUP(x,u)) ~:=~ d(x,u,f\circ u)
+f(\SUP(x,u)) \defeq d(x,u,f\circ u)
 $$
-where $(f\circ u)(y) ~:=~ f(u(y))$.
+where $(f\circ u)(y) \defeq f(u(y))$.
 
 \subsection*{Identity Types $Id_A(a,a')$}
 We introduce primitive constants $Id$ and $\myrefl{}$ with the rules
@@ -341,7 +354,7 @@ We introduce primitive constants $Id$ and $\myrefl{}$ with the rules
 If $C~\myType~(y:A,z:Id(A,a,y))$ and $d:C[a,\myrefl{a}]$ then we can introduce a defined constant 
   $$f:(\Pi y:A)(\Pi z:Id(A,a))C$$ 
 with defining equation
-  \[ f(a,\myrefl{a}):= d.\]
+  \[ f(a,\myrefl{a})\defeq d.\]
 When we make explicit a variable declaration $x:A$ 
 and let $a$ be $x$ 
 so that we have 
@@ -349,7 +362,7 @@ so that we have
 then we have the defined constant
   $$f':(\Pi x,y:A)(\Pi z:Id(A,x,y))C$$ 
 with defining equation
-  \[ f'(x,x,\myrefl{x}):= d(x).\]
+  \[ f'(x,x,\myrefl{x})\defeq d(x).\]
 This defined constant $f'$, with its defining equation, corresponds to the rules for identity types originally formulated by Per Martin-L\"{o}f.   The defined constant $f$, with its defining equation, corresponds to the rules given later by Christine Paulin-Mohring.  It is not entirely trivial to recapture $f$ from $f'$.
 
 
@@ -372,7 +385,7 @@ The rules reflecting the forms of type of the basic type theory are
 \end{itemize}
 
 Having added the type universe $\myUU$ we may introduce another type universe
-$\myUU^+$ that has all the previous rules that $\myUU$ has, but in addition reflects the above two general rules of $\myUU$; i.e. it has the rules
+$\myUU^+$ that has all the previous rules that $\myUU$ has, but in addition reflects the above two general rules of $\myUU$; i.e., it has the rules
 
 \medskip
 
@@ -384,7 +397,15 @@ $\myUU^+$ that has all the previous rules that $\myUU$ has, but in addition refl
 \medskip
 
 Iterating we get an infinite hierarchy of universes $\myUU_0,\myUU_1,\ldots$, where
-$\myUU_0=\myUU$ and $\myUU_{n+1}=\myUU_n^+$ for $n=0,1,\ldots$.
+$\myUU_0=\myUU$ and $\myUU_{n+1}=\myUU_n^+$ for $n=0,1,\ldots$.  They share the reflection rules
+stated above for $\myUU$:
+
+\begin{itemize}
+\item if $A_1,A_2:\myUU_n$ then $A_1+A_2:\myUU_n$,
+\item if $A:\myUU_n$ and $B:A\rightarrow\myUU_n$ then     $\Pi(A,B),\Sigma(A,B),\WW(A,B):\myUU_n$, and 
+\item if $A:\myUU_n$ and $a,a':A$ then $Id(A,a,a'):\myUU_n$.
+\end{itemize}
+
 \pacomment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{itemize}
 \item $\myUU_n~\myType$
@@ -399,8 +420,8 @@ $\myUU_0=\myUU$ and $\myUU_{n+1}=\myUU_n^+$ for $n=0,1,\ldots$.
  This system has the following syntactical properties.
 
 \begin{thm}\label{red}
-If $A~\myType$ and $A$ reduces to $A'$ then $A'~\myType$.
-If $t:A$ and $t$ reduces to $t'$ then $t':A$.
+If $A~\myType$ and $A \conv A'$ then $A'~\myType$.
+If $t:A$ and $t \conv t'$ then $t':A$.
 \end{thm}
 
 \begin{thm}\label{SN}
@@ -408,21 +429,23 @@ If $t:A$ and $t$ reduces to $t'$ then $t':A$.
 If $t:A$ then $A$ and $t$ are strongly normalizable. 
 \end{thm}
 
+TODO: Insert somewhere the definition of {\em strongly normalizable}. -- Dan G
+
  We say that a term is {\em in normal form} if it cannot be reduced.
-A closed normal type has to be a primitive type, i.e. of the form $c(\vec{v})$ for some
-primitive constant $c$ (where $\vec{v}$ may be empty, for instance $\NN$). 
+A closed normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$ for some
+primitive constant $c$ (where $\vec{v}$ may be omitted if empty, for instance, as with $\NN$). 
 More generally we have the following explicit description of terms in normal form.
 
 \begin{lem}\label{normal}
 The terms in normal form can be described by the following syntax
 $$
-v~::=~ k~|~\lambda x.v~|~c(\vec{v})~|~f(\vec{v})
+v\production  k~|~\lambda x.v~|~c(\vec{v})~|~f(\vec{v})
 $$
 $$
-k~::=~x~|~k(v)~|~f(\vec{v})(k)
+k\production x~|~k(v)~|~f(\vec{v})(k)
 $$
 where $f(\vec{v})$ represents a partial application of the defined function $f$.
-In particular, a type in normal form should be of the form $k$ or $c(\vec{v})$.
+In particular, a type in normal form is of the form $k$ or $c(\vec{v})$.
 \end{lem}
 
 \begin{thm}
@@ -434,10 +457,10 @@ $t:A$ is decidable.
 
  A corollary is the {\em consistency} property: there is no proof of $\NN_0$ in the empty
 context. Indeed if we have $t:\NN_0$ then by Theorems \ref{red} and \ref{SN} the term $t$ will reduce
-to a term in normal form $t'$ which satsifies $t':\NN_0$, but this is not possible by a 
+to a term in normal form $t'$ that satisfies $t':\NN_0$, but this is not possible by a 
 purely combinatorial argument using Lemma \ref{normal}. Similarly, we have the following
 {\em canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
-normal form $\mysuc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to term
+normal form $\mysuc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
 in normal form, the typing relation is {\em decidable}, and identifying type-checking with
 {\em proof-checking}, we can indeed ``recognize a proof of an assertion when we see one''.
 
@@ -447,10 +470,12 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 
  The system of rules with introduction (primitive constants) and elimination and computation rules
 (defined constant) is inspired by Gentzen natural deduction. The possibility of strengthening
-the elimination rule for existential quantification was indicated by Howard 1969. The strengthening
+the elimination rule for existential quantification was indicated by Howard 1969. The strengthening of
 the axioms for disjunction appears in Martin-L\"of 1972, and for absurdity elimination and Identity type
 in Martin-L\"of 1973. The $W$-types were introduced in Martin-L\"of 1979. They generalize a notion
 of trees introduced by Tait 1968.%(himself inspired from unpublished work of Spector).
+
+TODO: fix the citations in the neighboring paragraphs. -- Dan G.
 
  The generalized form of primitive recursion for natural numbers and ordinals appear in Hilbert 1925.
 This motivated G\"odel's system $T$, 1958, which was analyzed by Tait 1966, who used, following

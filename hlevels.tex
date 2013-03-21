@@ -21,7 +21,7 @@
 \chapter{\texorpdfstring{$n$}{n}-types and modalities}
 \label{cha:hlevels}
 
-\section{Definition and First Properties}
+\section{$n$-types}
 
 In homotopy theory one often talks about $n$-types, i.e.\ spaces whose homotopy groups vanish above $n$.
 We mentioned in \autoref{sec:basics-sets} that a similar notion can be defined in type theory, with the $0$-types being the sets and continuing inductively.
@@ -36,7 +36,7 @@ We now define these formally for all $n$.
     \prd{x,y : X} \istype{n'}(\id[X]{x}{y}) & \text{ if } n = n'+1
   \end{cases}
   \]
-  We say that $X$ is an $n$-type if $\istype{n}(X)$ is inhabited.
+  We say that $X$ \emph{is an $n$-type} if $\istype{n}(X)$ is inhabited.
 \end{defn}
 
 \begin{rmk}
@@ -49,15 +49,15 @@ As in classical homotopy theory, a type does not have to be an $n$-type for any 
 In \autoref{cha:hits} will define some types that are expected to be counterexamples.
 
 \begin{eg}
-  We saw in \autoref{thm:prop-minusonetype}, $X$ is a $(-1)$-type if and only if it is a mere proposition.
+  We saw in \autoref{thm:prop-minusonetype} that $X$ is a $(-1)$-type if and only if it is a mere proposition.
   Therefore, $X$ is a $0$-type if and only if it is a set.
 \end{eg}
 
 We start by showing $n$-types are closed under certain operations and constructors.
-For the remainder of the chapter, let $X, Y : \type$ and $n : \Nat$.
 
 \begin{thm}\label{thm:h-level-retracts}
- Let $p : X \to Y$ be a retraction and suppose that $X$ is an $n$-type. Then $Y$ is also an $n$-type.
+ Let $p : X \to Y$ be a retraction and suppose that $X$ is an $n$-type, for any $n\geq -2$.
+ Then $Y$ is also an $n$-type.
 \end{thm}
 
 By definition, a \textbf{retraction} is a function $p : X \to Y$ such that there exists a function $s : Y \to X$, called its \textbf{section} and a homotopy $\epsilon:\prd{y:Y} (p(s(y))=y)$.
@@ -125,37 +125,6 @@ Note that this theorem fails when $n=-2$: the map $\emptyt \to \unit$ is a monom
          yields the desired result.
 \end{proof}
 
-An equivalent criterion for being an $n$-type can be expressed using
-loop spaces (see \cref{def:loopspace}):
-
-\begin{thm}\label{thm:hlevel-loops}
- Let $X : \type$ be a type, and let $n\geq -1$.
-  If for all $x : X$, the type $\Omega(X, x)$ is an $n$-type,
-       then $X$ is an $\nplusone$-type.
-\end{thm}
-
-Note that the converse of this implication is always true.
-Before proving it, we prove an auxiliary lemma:
-
-\begin{lem}\label{lem:hlevel-if-inhab-hlevel}
- Given $n \geq -1$ and $X : \type$. If, given any inhabitant of $X$ it follows that $X$ is
-   an $n$-type, then $X$ is an $n$-type.
-\end{lem}
-\begin{proof}
-  Let $f : X \to \istype{n}(X)$ be the given map.
-  We need to show that for any $x, x' : X$, the type $\id{x}{x'}$ is an $\nminusone$-type.
-  But then $f(x)$ shows that $X$ is an $n$-type, hence all its path spaces are $\nminusone$-types.
-\end{proof}
-
-
-\begin{proof}[Proof of \autoref{thm:hlevel-loops}]
- In order to show that $X$ is an $\nplusone$-type, we need to show that for any given $x, x' : X$,
-   the type $\id{x}{x'}$ is an $n$-type.
-  Following \autoref{lem:hlevel-if-inhab-hlevel} it suffices to give a map
-   \[ (\id{x}{x'}) \to \istype{n}(\id{x}{x'})  .\]
-  By path induction, it suffices to do this when $x\jdeq x'$, in which case it follows from the assumption that $\Omega(X, x)$ is an $n$-type.
-\end{proof}
-
 % \section{Preservation under constructors}
 % \label{sec:ntype-pres}
 
@@ -187,8 +156,8 @@ We now show that $n$-types are preserved by most type forming operations.
 
 
 \begin{thm}\label{thm:hlevel-prod}
- Let $n$ be a natural number, and let $A : \type$ and $B : A \to \type$.
-     If for all $a : A$, $B(a)$ is an $n$-type, then so is $\prd{x : A} B(x)$.
+ Let $n\geq -2$, and let $A : \type$ and $B : A \to \type$.
+ If for all $a : A$, $B(a)$ is an $n$-type, then so is $\prd{x : A} B(x)$.
 \end{thm}
 
 \begin{proof}
@@ -197,7 +166,7 @@ We now show that $n$-types are preserved by most type forming operations.
 
   For the inductive step, let $f, g : \prd{a:A}B(a)$.
   We need to show that $\id{f}{g}$ is an $n$-type.
-  By function extensionality and closure of $n$-types under equivalence, it suffices to show that $\prd{a : A} \id[B(a)]{f(a)}{g(a)}$ is an $n$-type.
+  By function extensionality and closure of $n$-types under equivalence, it suffices to show that $\prd{a : A} (\id[B(a)]{f(a)}{g(a)})$ is an $n$-type.
   But this follows from the inductive hypothesis.
 \end{proof}
 
@@ -245,39 +214,40 @@ by \autoref{thm:path-subset}.
   Thus, $\eqv{X}{X'}$ it is also a $(-2)$-type.
 \end{proof}
 
-\section{UIP and Hedberg's theorem}
+\section{Axiom K and Hedberg's theorem}
 \label{sec:hedberg}
 
-\begin{defn}
- Let $X : \type$. We say that $X$
- \begin{itemize}
-  \item has {\em uniqueness of identity proofs} (UIP, for short), if for all $x, y : X$ and $p, q : x =_X y$ we have $p = q$.
-  \item satisfies {\em Axiom K}, if for all $x : X$ and $p : (x =_A x)$ we have $p = \refl{}(x)$.
- \end{itemize}
-\end{defn}
+In \autoref{sec:basics-sets} we defined a type $X$ to be a \emph{set} if for all $x, y : X$ and $p, q : x =_X y$ we have $p = q$.
+In type theory this property goes by the name of \emph{uniqueness of identity proofs (UIP)}.
+We have seen also that it is equivalent to being a $0$-type in the sense of the previous section.
+Here is another equivalent characterization:
 
 \begin{thm}\label{thm:h-set-uip-K}
- For a type $X$ the following are equivalent:
- \begin{enumerate}
-  \item\label{enum:set-set} $X$ is a set.
-  \item\label{enum:set-uip} $X$ has UIP.
-  \item\label{enum:set-k} $X$ satisfies Axiom K.
- \end{enumerate}
+ A type $X$ is a set if and only if it satisfies \emph{Axiom K}: for all $x : X$ and $p : (x =_A x)$ we have $p = \refl{x}$.
 \end{thm}
 
-\begin{proof} (\ref{enum:set-set} $\Rightarrow$ \ref{enum:set-uip}) is clear by definition. (\ref{enum:set-uip} $\Rightarrow$ \ref{enum:set-k}) follows by instantiating UIP with $y := x$ and $q := \refl{x}$.
-Finally, we need to show that if $X$ satisfies Axiom K, then $X$ is a set. Let $x, y : X$. We need to show that for any $p, q : (\id{x}{y})$ we have $\id{p}{q}$. But elimination on $q$ reduces the problem precisely to Axiom K.
+\begin{proof}
+  Clearly Axiom K is a special case of UIP.
+  Conversely, if $X$ satisfies Axiom K, let $x, y : X$ and $p, q : (\id{x}{y})$; we want to show $p=q$.
+  But induction on $q$ reduces this goal precisely to Axiom K.
 \end{proof}
 
-\begin{defn}
- A type $X$ has {\em decidable equality}, if for all $x, y : X$ we have
+Another convenient way to show that a type is a set is by way of the following property.
+
+\begin{defn}\label{defn:decidable-equality}
+ A type $X$ has \textbf{decidable equality} if for all $x, y : X$ we have
  \[(x =_X y) + \neg (x =_X y).\]
 \end{defn}
 
-The following theorem is due to Hedberg~\cite{hedberg1998coherence}, for more information and generalizations
-see~\cite{krausgeneralizations}.
-\begin{thm}
- Let $X : \type$. If $X$ has decidable equality, then $X$ is a set.
+In the propositions-as-types language, we can say that $X$ has decidable equality if for every $x,y:X$, either $x=y$ or $x\neq y$.
+Note that this is a very constructive form of ``or''.
+LEM implies that \emph{any} type $X$ has \emph{decidable mere equality}, meaning
+\[\prd{x,y:X} \big(\brck{x=y} + \brck{x\neq y}\big).\]
+\autoref{defn:decidable-equality} asserts moreover that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
+This has the following strong consequence.
+
+\begin{thm}[Hedberg]\label{thm:hedberg}
+  If $X$ has decidable equality, then $X$ is a set.
 \end{thm}
 
 \begin{proof}
@@ -302,53 +272,138 @@ Fix $x : X$ and assume that for all $y : Y$ we have
  Next, we prove that for any $y : Y$, the map $\eta_y$ has a left inverse $\theta_y$.
    Once we have this left inverse $\theta_y$, we obtain the desired result as follows: given
      $p, p' : x = y$, we have
-   \[ p = \theta_y (\eta_y(p)) \stackrel{\ref{eq:eqdec-eta}}{=} \theta_y (\eta_y(p')) = p' . \]
+   \[ p = \theta_y (\eta_y(p)) \stackrel{\eqref{eq:eqdec-eta}}{=} \theta_y (\eta_y(p')) = p' . \]
  Define $\theta_y$ by
      $\theta_y(q) \defeq \opp{\eta_x(\refl{}(x))} \ct q$.
   Finally, we prove $\theta_y(\eta_y(p)) = p$ by path induction on $p$:
    \[\theta_x(\eta_x(\refl{}(x))) = \opp{\eta_x(\refl{}(x))} \ct \eta_x(\refl{}(x)) = \refl{}(x). \qedhere \]
 \end{proof}
 
+There is, of course, a strong connection between this theorem and \autoref{thm:not-lem}.
+The form of LEM denied by \autoref{thm:not-lem} clearly implies that every type has decidable equality, and hence is a set; which we know is not the case.
+
+Recall that in \autoref{thm:nat-set} we observe that $\nat$ is a set, using our characterization of its equality types in \autoref{sec:compute-nat}.
+A more traditional proof of this theorem uses only~\eqref{eq:zero-not-succ} and~\eqref{eq:suc-injective}, rather than the full characterization of \autoref{thm:path-nat}, with \autoref{thm:hedberg} to fill in the blanks.
+
 \begin{thm}\label{prop:nat-is-set}
- The type $\Nat$ of natural numbers is a set.
+ The type $\Nat$ of natural numbers has decidable equality, and hence is a set.
 \end{thm}
 
 \begin{proof}
- We will show that $\Nat$ has decidable equality, that is for all $x, y : \Nat$, we have $(x =_X y) + \neg (x =_X y)$.
- We proceed by induction on $x$ and case analysis on $y$.
+  Let $x, y : \Nat$ be given; we proceed by induction on $x$ and case analysis on $y$ to prove $(x=y)+\neg(x=y)$.
+  If $x \jdeq 0$ and $y \jdeq 0$, we take $\inl(\refl{}(0))$.
+  If $x \jdeq 0$ and $y \jdeq \suc(n)$, then by~\eqref{eq:zero-not-succ} we get $\neg (0 = \suc (n))$.
 
- % TODO: better phrase for "discrimination on the constructors"?
- If $x = 0$ and $y = 0$, we take $\inl(\refl{}(0))$. If $x = 0$ and $y = S(n)$,
- then by discrimination on the constructors we get $\neg (0 = S (n))$.
+  For the inductive step, let $x \jdeq \suc (n)$.
+  If $y \jdeq 0$, we use~\eqref{eq:zero-not-succ} again.
+  Finally, if $y \jdeq \suc (m)$, the induction hypothesis gives $(m = n)+\neg(m = n)$.
+  In the first case, if $p:m=n$, then $\ap \suc p:\suc(m)=\suc(n)$.
+  And in the second case,~\eqref{eq:suc-injective} yields $\neg(\suc(m)=\suc(n))$.
+\end{proof}
 
- For the inductive step let $x = S (n)$. If $y = 0$, we use discrimination on the constructors again.
- If $y = S (m)$, using the induction hypothesis we may determine whether $(m = n)$ or $\neg(m = n)$ and proceed accordingly.
+Although Hedberg's theorem appears rather special to sets ($0$-types), Axiom K generalizes naturally to $n$-types.
+Note that the ordinary Axiom K states that for all $x:X$, the loop space $\Omega(X,x)$ (see \cref{def:loopspace}) is contractible.
+Since $\Omega(X,x)$ is always inhabited (by $\refl{x}$), this is equivalent to its being a mere proposition (a $(-1)$-type).
+Since $0 = (-1)+1$, this suggests the following generalization.
+
+\begin{thm}\label{thm:hlevel-loops}
+  For any $n\geq -1$, a type $X$ type is an $\nplusone$-type if and only if for all $x : X$, the type $\Omega(X, x)$ is an $n$-type.
+\end{thm}
+
+Before proving this, we prove an auxiliary lemma:
+
+\begin{lem}\label{lem:hlevel-if-inhab-hlevel}
+  Given $n \geq -1$ and $X : \type$.
+  If, given any inhabitant of $X$ it follows that $X$ is an $n$-type, then $X$ is an $n$-type.
+\end{lem}
+\begin{proof}
+  Let $f : X \to \istype{n}(X)$ be the given map.
+  We need to show that for any $x, x' : X$, the type $\id{x}{x'}$ is an $\nminusone$-type.
+  But then $f(x)$ shows that $X$ is an $n$-type, hence all its path spaces are $\nminusone$-types.
+\end{proof}
+
+\begin{proof}[Proof of \autoref{thm:hlevel-loops}]
+  The ``only if'' direction is obvious, since $\Omega(X,x)\defeq (\id[X]xx)$.
+  Conversely, in order to show that $X$ is an $\nplusone$-type, we need to show that for any $x, x' : X$, the type $\id{x}{x'}$ is an $n$-type.
+  Following \autoref{lem:hlevel-if-inhab-hlevel} it suffices to give a map
+  \[ (\id{x}{x'}) \to \istype{n}(\id{x}{x'})  .\]
+  By path induction, it suffices to do this when $x\jdeq x'$, in which case it follows from the assumption that $\Omega(X, x)$ is an $n$-type.
+\end{proof}
+
+By a careful induction, we can deduce the following.
+
+\begin{thm}\label{thm:ntype-nloop}
+  For any $n\ge -1$, a type $X$ is an $n$-type if and only if $\Omega^{n+1}(X,x)$ is contractible for all $x:X$.
+\end{thm}
+\begin{proof}
+  TODO.
 \end{proof}
 
 
 \section{Truncations}
 \label{sec:truncations}
 
-The operation of $n$-truncation takes a type $A$ and makes the best
-approximation of $A$ as an $n$-type by equating (``killing'') all
-morphisms of level higher than $n$.  In this section, we explain the
-basic properties of truncations and we will construct truncations
-using higher inductive types in section \ref{sec:hittruncations}.
+In \autoref{subsec:prop-trunc} we introduced the propositional truncation, which makes the ``best approximation'' of a type that is a mere proposition, i.e.\ a $(-1)$-type.
+In \autoref{sec:hittruncations} we constructed this truncation as a higher inductive type, and gave one way to generalize it to a 0-truncation.
+We now explain a better generalization of this, which truncates any type into an $n$-type for any $n\geq -2$.
 
-Given a type $A:\type$ and an integer $n\ge-2$, its \emph{$n$-truncation} is a
-type $\trunc n A$ together with a map $\tprojf n:A\to\trunc nA$, such that
-$\trunc n A$ is $n$-truncated and for every family of $n$-types $P$ over $\trunc
-nA$ and $d:\prod_{a:A}P(\tproj na)$, we can define a section $\extend{d}$ of $P$
-by $\extend{d}(\tproj na)\defeq d(a)$.
+The idea is to make use of \autoref{thm:ntype-nloop}, which states that $A$ is an $n$-types just when $\Omega^{n+1}(A,a)$ is contractible for all $a:A$, and \autoref{lem:susp-loop-adj}, which implies that $\Omega^{n+1}(A,a) \simeq \Map_*(\Sn^{n+1},(A,a))$, where $\Sn^{n+1}$ is equipped with some basepoint which we may as well call \base.
+However, contractibility of $\Map_*(\Sn^{n+1},(A,a))$ is something that we can ensure directly by giving path constructors.
 
-In particular, if $E$ is some $n$-truncated type, we can consider the constant
-family of types equal to $E$ for every point of $A$ and we get that every map
-$f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by
-$\extend{f}(\tproj na)\defeq f(a)$.
+We might first of all try to  define $\trunc nA$ to be generated by a function $\tproj n- : A \to \trunc n A$, together with for each $r:\Sn^n \to \trunc n A$ and each $x:\Sn^n$, a path $s_r(x):r(x) = r(\base)$.
+But this does not quite work, for the same reason that \autoref{rmk:spokes-no-hub} fails.
+Instead, we use the full ``hub and spoke'' construction.
 
-We also have the nondependent $\eta$-rule which says that if two maps
-$g,g':\trunc nA\to{}E$ are such that $g(\tproj na)=g'(\tproj na)$ for every
-$a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$ and in particular $g=g'$.
+Thus, we take $\trunc nA$ to be the higher inductive type generated by:
+\begin{itemize}
+\item a function $\tproj n- : A \to \trunc n A$,
+\item for each $r:\Sn^n \to \trunc n A$, a point $h(r):\trunc n A$, and
+\item for each $r:\Sn^n \to \trunc n A$ and each $x:\Sn^n$, a path $s_r(x):r(x) = h(r)$.
+\end{itemize}
+
+The existence of these constructors is now enough to show:
+
+\begin{lem}
+  $\trunc n A$ is an $n$-type.
+\end{lem}
+\begin{proof}
+  We must show $\Omega^{n+1}(\trunc nA,b)$ is contractible for all $b:\trunc nA$, which by \autoref{lem:susp-loop-adj} is equivalent to $\Map_*(\Sn^{n+1},(\trunc nA,b))$.
+  As center of contraction for the latter, we choose the function $c_b:\Sn^{n+1} \to \trunc nA$ which is constant at $b$, together with $\refl b : c_b(\base) = b$.
+
+  Now, an arbitrary element of $\Map_*(\Sn^{n+1},(\trunc nA,b))$ consists of a map $r:\Sn^n \to \trunc n A$ together with a path $p:r(\base)=b$.
+  By function extensionality, to show $r = c_b$ it suffices to give, for each $x:\Sn^n$, a path $r(x)=c_b(x) \jdeq b$.
+  We choose this to be the composite $s_r(x) \ct \opp{s_r(\base)} \ct p$, where $s_r$ is the third constructor of $\trunc nA$.
+
+  Finally, we must show that when transported along this equality $r=c_b$, the path $p$ becomes $\refl b$.
+  By transport in path types, this means we need
+  \[\opp{(s_r(\base) \ct \opp{s_r(\base)} \ct p)} \ct p = \refl b.\]
+  But this is immediate from path operations.
+\end{proof}
+
+To show the desired universal property of the $n$-truncation, we need the induction principle.
+We extract this from the constructors in the usual way; it says that given $P:\trunc nA\to\type$ together with
+\begin{itemize}
+\item For each $a:A$, an element $g(a) : P(\tproj na)$,
+\item For each $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, an element $h'(r,r'):P(h(r))$.
+\item For each $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, and each $x:\Sn^n$, a dependent path $\dpath{P}{s_r(x)}{r'(x)}{h'(r,r')}$.
+\end{itemize}
+
+\begin{thm}\label{thm:truncn-ind}
+  For any type family $P:\trunc n A \to \type$ such that each $P(x)$ is an $n$-type, and any function $g : \prd{a:A} P(\tproj n a)$, there exists a section $f:\prd{x:\trunc n A} P(x)$ such that $f(\tproj n a)\defeq g(a)$ for all $a:A$.
+\end{thm}
+\begin{proof}
+  It will suffice to construct the second and third data listed above, since $g$ has exactly the type of the first datum.
+  Given $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, we have $h(r):\trunc n A$ and $s_r :\prd{x:\Sn^n} (r(x) = h(r))$.
+  Define $t:\Sn^n \to P(h(r))$ by $t(x) \defeq \trans{s_r(x)}{r'(x)}$.
+  Then since $P(h(r))$ is $n$-truncated, there exists a point $u:P(h(r))$ and a contraction $v:\prd{x:\Sn^n} (t(x) = u)$.
+  Define $h'(r,r') \defeq u$, giving the second datum.
+  Then (recalling the definition of dependent paths), $v$ has exactly the type required of the third datum.
+\end{proof}
+
+In particular, if $E$ is some $n$-type, we can consider the constant family of types equal to $E$ for every point of $A$.
+Thus, every map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by $\extend{f}(\tproj na)\defeq f(a)$.
+The induction principle also implies a nondependent $\eta$-rule, which says that if $E$ is an $n$-type and $g,g':\trunc nA\to{}E$ are such that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$; hence $g=g'$.
+This implies the following universal property.
 
 \begin{lem}[Universal property of truncations]
   Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
@@ -357,16 +412,12 @@ $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$ and in particular $g=g'$.
 \end{lem}
 
 \begin{proof}
-  Given that $B$ is $n$-truncated, any $f:A\to{}B$ can be extended to a map
-  $\extend{f}:\trunc nA\to{}B$.
-
-  The map $\extend{f}\circ\tprojf n$ is equal to $f$ because for every $a:A$ we
-  have $\extend{f}(\tproj na)=f(a)$ by definition and the map
-  $\extend{g\circ\tprojf n}$ is equal to $g$ because they both send $\tproj na$
-  to $g(\tproj na)$.
+  Given that $B$ is $n$-truncated, any $f:A\to{}B$ can be extended to a map $\extend{f}:\trunc nA\to{}B$.
+  The map $\extend{f}\circ\tprojf n$ is equal to $f$, because for every $a:A$ we have $\extend{f}(\tproj na)=f(a)$ by definition.
+  And the map $\extend{g\circ\tprojf n}$ is equal to $g$, because they both send $\tproj na$ to $g(\tproj na)$.
 \end{proof}
 
-The encode/decode method can also be used to calculate the path spaces of a truncation.
+We can characterize the path spaces of a truncation using the same method that we used in \autoref{sec:compute-coprod,sec:compute-nat} for coproducts and natural numbers (and which we will use in \autoref{cha:homotopy} to calculate homotopy groups).
 Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
 Indeed, for any $x,y:A$ there is a canonical map
 \begin{equation}
@@ -427,6 +478,16 @@ This definition uses the recursion principle for $\trunc n-$, which is correct b
   This is a special case of the previous lemma where $x=y=a$.
 \end{proof}
 
+\begin{cor}
+  Let $n\ge -2$ and $k\ge 0$ and $(A,a)$ a pointed type.  Then
+  \[\trunc n{\Omega^k(A,a)} = \Omega^k(\trunc{n+k}{(A,a)}). \]
+\end{cor}
+\begin{proof}
+  By induction on $k$, using the recursive definition of $\Omega^k$.
+\end{proof}
+
+We also observe that ``truncations are cumulative'': if we truncate to an $n$-type and then to a $k$-type with $k\le n$, then we might as well have truncated directly to a $k$-type.
+
 \begin{lem}
   Let $k,n\ge-2$ with $k\le{}n$ and $A:\type$. Then
   $\trunc k{\trunc nA}=\trunc kA$.
@@ -447,39 +508,44 @@ This definition uses the recursion principle for $\trunc n-$, which is correct b
   we also have $g\circ{}f=\idfunc[\trunc k{\trunc nA}]$ in the same way.
 \end{proof}
 
-\begin{lem}
-  We have $\trunc n{\unit}=\unit$.
-\end{lem}
-\begin{proof}
-  Indeed, $\unit$ is $n$-truncated for every $n$ hence $\trunc n{\unit}=\unit$ by
-  \autoref{reflectPequiv}.
-\end{proof}
+% \begin{lem}
+%   We have $\trunc n{\unit}=\unit$.
+% \end{lem}
+% \begin{proof}
+%   Indeed, $\unit$ is $n$-truncated for every $n$ hence $\trunc n{\unit}=\unit$ by
+%   \autoref{reflectPequiv}.
+% \end{proof}
 
 
 \section{Reflective subuniverses}
 \label{subsec:reflective-subuniverses}
 
-Reflective subuniverses are particularly nice subuniverses in the sense that
-every type $A:\type$ can be reflected down to a type $\reflect(A)$ in the
-subuniverse which is (in a precise way) the free type generated by $A$ in the
-subuniverse.
+So far, in this chapter, we have focused on $n$-types and the $n$-truncation operation.
+In fact, $n$-types and their truncation are a special case of a more general notion called a \emph{reflective subuniverse}, and many of their properties can be proven formally in this generality.
 
 \begin{defn}
-  A subuniverse $\P$ of $\type$ is a \emph{reflective subuniverse of $\type$} if
-  for every $A:\type$ we have a type $\reflect(A):\P$ and a map
-  $\project_A:A\to\reflect(A)$ satisfying the following universal property:
-
-  For every $A:\type$ and $B:\P$, the following map is an equivalence
-  \[\function{(\reflect(A)\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}\]
-
-  In other words, for every $B:\P$ and $g:A\to{}B$ there is a unique map
-  $\ext(g):\reflect(A)\to{}B$ making the following diagram commute.
-
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^{\project_A}[r] \ar_g[rd] \druppertwocell{=} & \reflect(A)
-    \ar@{-->}^{\ext(g)}[d] \\
-    & B}\]
+  A \textbf{subuniverse} of \type is a predicate $P:\type \to \prop$.
+  We write
+  \[\P \defeq \sm{A:\type} P(A).\]
 \end{defn}
+
+An inhabitant of $\P$ is a pair $(A,s)$ with $A:\type$ and $s:P(A)$, but we will often simply write it as $A$.
+Thus $A:\P$ means that $A:\type$ and $P(A)$ holds.
+For instance, $P$ could be \isprop, \isset, or more generally $\istype{n}$ for any $n\ge-2$, in which case \P would be \prop, \set, or $\typele{n}$.
+On the other hand, if $P(A)\defeq \unit$, then every type lies in \P, i.e.\ $\P=\type$.
+
+\begin{defn}
+  A subuniverse $\P$ of $\type$ is a \textbf{reflective subuniverse} if
+  for every $A:\type$ we have a type $\reflect(A):\P$ and a map
+  $\project_A:A\to\reflect(A)$ such that for every $A:\type$ and $B:\P$, the following map is an equivalence:
+  \[\function{(\reflect(A)\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}.\]
+\end{defn}
+
+In particular, this implies that for every $B:\P$ and $g:A\to{}B$ there is a unique map $\ext(g):\reflect(A)\to{}B$ making the following diagram commute (up to homotopy, of course).
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+\xymatrix{A \ar^{\project_A}[r] \ar_g[rd] \druppertwocell{=} & \reflect(A)
+  \ar@{-->}^{\ext(g)}[d] \\
+  & B}\]
 
 The universal property means that $\reflect$ is left adjoint to the inclusion
 $\iota:\P\to\type$ with $\project_A$ as the unit, because the last $B$ in the
@@ -495,29 +561,27 @@ Immediate from the universal property of truncations.
 \end{proof}
 
 \begin{lem}
-  Let \P be a subuniverse of \type. The fact that \P is reflective is \anhprop.
+  Let \P be a subuniverse of \type. The assertion that \P is reflective is \anhprop.
 \end{lem}
 
 \begin{proof}
   Let's assume that \P is reflective in two different ways
   $(\reflect,\project,\ext)$ and $(\reflect',\project',\ext')$. We need to
   construct an equivalence between $\reflect(A)$ and $\reflect'(A)$ for every
-  $A:\type$ and we need to prove that the following diagram commutes:
-
+  $A:\type$, and we need to prove that the following diagram commutes:
   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd] \druppertwocell{=} &
     \reflect(A) \ar@{->}^\sim[d] \\
     & \reflect'(A)}\]
+  (We can ignore the components $\ext$ and $\ext'$, since they belong to mere propositions---the assertion that precomposing with $\project$ and $\project'$ are equivalences.)
 
-  The type $\reflect'(A)$ is in \P, so we can define the map
+  Now the type $\reflect'(A)$ is in \P, so we can define the map
   \[\ext(\project'_A):\reflect(A)\to\reflect'(A)\]
   which is exactly the map making the previous diagram commute.
-
   We can also define
-  \[\ext'(\project_A):\reflect'(A)\to\reflect(A)\]
-
+  \[\ext'(\project_A):\reflect'(A)\to\reflect(A).\]
   In order to prove that the composite is the identity, we only need to prove
-  that $\ext'(\project_A)\circ\ext(\project'_A)\circ\project_A=\project_A$
+  that $\ext'(\project_A)\circ\ext(\project'_A)\circ\project_A=\project_A$,
   which is the case:
   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd]
@@ -525,12 +589,14 @@ Immediate from the universal property of truncations.
     \reflect(A) \ar@{->}^{\ext(\project'_A)}[d] \\
     & \reflect'(A) \ar@{->}^{\ext'(\project_A)}[d] \\
     & \reflect(A)}\]
+  The other composite is just as easy.
+  Thus, $\ext'(\project_A)$ is a quasi-inverse of $\ext(\project'_A)$, so the latter is an equivalence as desired.
 \end{proof}
 
 For the rest of this section, we assume that $\P$ is a reflective subuniverse of
 $\type$.
 
-The following lemma says that the counit of the adjunction is an equivalence.
+The following lemma says that the counit of the adjunction is an equivalence, as expected for a reflection.
 \begin{lem}
   \label{reflectPequiv}
   If $A:\P$, then the map $\project_A:A\to\reflect(A)$ is an equivalence.
@@ -539,11 +605,11 @@ The following lemma says that the counit of the adjunction is an equivalence.
   Given that $A$ is in $\P$, we can define $\ext(\idfunc[A]):\reflect(A)\to{}A$.
 
   Then we have $\ext(\idfunc[A])\circ\project_A=\idfunc[A]:A\to{}A$ by
-  definition, and in order to prove that
-  $\project_A\circ\ext(\idfunc[A])=\idfunc[\reflect(A)]$ we only need to prove
+  definition.  In order to prove that
+  $\project_A\circ\ext(\idfunc[A])=\idfunc[\reflect(A)]$, we only need to prove
   that $\project_A\circ\ext(\idfunc[A])\circ\project_A=
-  \idfunc[\reflect(A)]\circ\project_A$ which is again true.
-
+  \idfunc[\reflect(A)]\circ\project_A$.
+  This is again true:
   \[\xymatrix{
     A \ar^{\project_A}[r] \ar_{\idfunc[A]}[rd] &
     \reflect(A) \ar^>>>{\ext(\idfunc[A])}[d] \ar@/^40pt/^{\idfunc[\reflect(A)]}[dd] \\
@@ -551,10 +617,9 @@ The following lemma says that the counit of the adjunction is an equivalence.
     & \reflect(A)}\]
 \end{proof}
 
-The reflector $\reflect$ is a map $\type\to\P$ and using the universal property
-we should be able to prove that $\reflect$ is $(\infty,1)$-functorial. But we
-don't know how to express $(\infty,1)$-functoriality so we will only prove a
-few bits of it.
+The reflector $\reflect$ is a map $\type\to\P$, which (like any map in type theory) is a functor of $\infty$-groupoids.
+Using the universal property, we should be able to prove that $\reflect$ is in fact $(\infty,1)$-functorial, i.e.\ preserves composition of (not necessarily invertible) functions up to all higher homotopies.
+But we don't know how to express $(\infty,1)$-functoriality all at once, so we will only prove a few bits of it.
 
 \begin{defn}
   If $f:A\to{}B$, there is a map $\reflect(f):\reflect(A)\to\reflect(B)$ defined
@@ -652,20 +717,21 @@ few bits of it.
 %   which is the case, because they are both equal to $i\circ{}f$.
 % \end{proof}
 
+TODO: Should probably remark here on how a reflective subuniverse is closed under various things, like the retractions, the terminal object, finite products, arbitrary dependent products, and path spaces.
+
+\section{Localizations}
+\label{sec:localizations}
+
+\dots
 
 \section{Homotopy pushouts}
 \label{sec:pushouts}
 
 In \autoref{sec:colimits} we used higher inductive types to define pushouts of types.
-It will be useful for us to consider also the notion of pushout in certain subcategories of types.
-
-Let's consider \P a subuniverse of \type. More precisely we have a map
-$P:\type\to\prop$ and we use the notation $A:\P$ to mean that $A:\type$ and
-$P(A)$ holds. For instance \P could be \prop, \set, or more generally
-$\typele{n}$ for any $n\ge-2$.
+It will be useful for us to consider also pushouts in a subuniverse \P.
 
 \begin{defn}
-  A \emph{span} in $\P$ is 5-tuple $\Ddiag=(A,B,C,f,g)$ with
+  A \emph{span} in $\P$ is a 5-tuple $\Ddiag=(A,B,C,f,g)$ with
   $A,B,C:\P$ and $f:C\to{}A$ and $g:C\to{}B$.
   \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
 \end{defn}
@@ -771,7 +837,7 @@ For a general \P, pushouts may or may not exist, but if they do, then they are u
 \label{sec:pullbacks}
 
 Most of the previous section can be dualised to give a definition of
-pullbacks. More precisely we have the following
+pullbacks. More precisely, we have the following.
 
 \begin{defn}
   A \emph{cospan} in $\P$ is a diagram of the following form
@@ -1186,6 +1252,14 @@ conclude that every coherence condition is always satisfied.
 \label{sec:modalities}
 
 \dots
+
+\section*{Notes}
+
+\autoref{thm:hedberg} is due to Hedberg~\cite{hedberg1998coherence}; for more information and generalizations see~\cite{krausgeneralizations}.
+
+\section*{Exercises}
+
+
 
 %%% Local Variables: 
 %%% mode: latex

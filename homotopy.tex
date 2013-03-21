@@ -1,18 +1,3 @@
-%%% Macros that should probably be defined before
-
-% h-propositions
-\newcommand{\anhprop}{a mere proposition\xspace}
-\newcommand{\hprops}{mere propositions\xspace}
-
-%%% Local macros
-
-% Subuniverse
-\renewcommand{\P}{\ensuremath{\mathsf{P}}\xspace}
-% Reflector, projection and extension in an arbitrary reflective subuniverse
-\newcommand{\reflect}{\mathsf{r}}
-\newcommand{\project}{\mathsf{p}}
-\newcommand{\ext}{\mathsf{ext}}
-
 \chapter{Homotopy theory}
 \label{cha:homotopy}
 
@@ -420,10 +405,7 @@ Whitehead for $n$-types  &  &  \checkmark
   \label{tab:theorems}
 \end{table}
 
-
-\section{Some basic homotopy groups}
-
-In this section, we describe some basic examples of calculating homotopy
+We now describe some basic examples of calculating homotopy
 groups, which can be carried out using the tools we have developed so
 far.  Unless otherwise stated, the notation \type will denote a
 \emph{fixed} universe and several occurrences of the word \type will
@@ -431,7 +413,7 @@ always represent the same universe. The types \prop, \set, \typele{n}
 represent the types of propositions, sets and $n$-truncated types of
 this fixed universe \type.
 
-\subsection{\texorpdfstring{$\pi_1(S^1)$}{π₁(S¹)}}
+\section{\texorpdfstring{$\pi_1(S^1)$}{π₁(S¹)}}
 \label{sec:pi1-s1-intro}
 
 Our goal is to show that $\id {\pi_1(\Sn ^1)} {\Z}$.  In fact, we
@@ -519,7 +501,7 @@ tools used to prove contractibility---indeed, path induction \emph{is}
 contractibility of the path fibration composed with
 $\mathsf{transport}$, but they are applied in a different way.
 
-\subsubsection{Encode/decode proof}
+\subsection{Encode/decode proof}
 
 By definition, $\Omega(\Sn ^1)$ is $\id[\Sn ^1] \base \base$.  If we
 attempt to prove that $\id {\Omega(\Sn ^1)} {\Z}$ by directly
@@ -781,7 +763,176 @@ For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
 \end{proof}
 
 
-\subsection{Van Kampen's theorem}
+\section{Connectedness of suspensions}
+\label{sec:conn-susp}
+
+\begin{defn}
+  A type $A$ is called \emph{$n$-connected} if $\trunc nA$ is contractible.
+\end{defn}
+
+\begin{lem}
+  \label{connectedtotruncated}
+  Let $n\ge-2$, $A:\type$ and $B:\typele{n}$ and assume moreover that $A$ is
+  $n$-connected.
+
+  Then every map from $A$ to $B$ is constant in the sense that the constant map
+  operation
+  \[\function{B}{(A\to{}B)}{b}{\lambda{}x^A.b}\]
+  is an equivalence.
+\end{lem}
+\begin{proof}
+  This is just an application of the universal property. Note that
+  \[(\trunc nA\to{}B)=(\unit\to{}B)=B \qedhere\]
+\end{proof}
+
+The aim of this section is to prove that the operation of suspension increases
+connectedness.
+
+\begin{thm}
+  Let $n\ge-2$ and $A:\type$.
+
+  If $A$ is $n$-connected then the suspension of $A$ is $(n+1)$-connected.
+\end{thm}
+
+\begin{proof}
+  By definition, the suspension of $A$ is $\unit\sqcup^A\unit$, so we need to
+  prove that the following type is contractible:
+
+  \[\trunc{n+1}{\unit\sqcup^A\unit}\]
+
+  By \autoref{reflectcommutespushout} we know that
+  $\trunc{n+1}{\unit\sqcup^A\unit}$ is a pushout in $\typelep{n+1}$ of the diagram
+  \[\xymatrix{\trunc{n+1}A \ar[d] \ar[r] & \trunc{n+1}{\unit} \\
+    \trunc{n+1}{\unit} & }\]
+
+  Given that $\trunc{n+1}{\unit}=\unit$, the type
+  $\trunc{n+1}{\unit\sqcup^A\unit}$ is also a pushout of the following diagram in
+  $\typelep{n+1}$ (because both diagrams are equal)
+  \[\Ddiag=\xymatrix{\trunc{n+1}A \ar[d] \ar[r] & \unit \\
+    \unit & }\]
+
+  We will now prove that $\unit$ is also a pushout of $\Ddiag$ in
+  $\typelep{n+1}$.
+
+  \bigskip
+
+  Let $E$ be an $(n+1)$-truncated type, we need to prove that the following map
+  is an equivalence
+  \[\function{(\unit\to{}E)}{\cocone{\Ddiag}{E}}{y}
+  {(y,y,\lambda{}u^{\trunc{n+1}A}.\refl{y(\ttt)})}\]
+
+  where we recall that $\cocone{\Ddiag}{E}$ is the type
+  \[\sum_{f:\unit\to{}E}\sum_{g:\unit\to{}E}(\trunc{n+1}A\to
+  (f(\ttt)=_E{}g(\ttt)))\]
+
+  The map $\function{(\unit\to{}E)}{E}{f}{f(\ttt)}$ is an equivalence, hence
+  we also have
+  \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(\trunc{n+1}A\to(x=_Ey))\]
+
+  Now $A$ is $n$-connected hence so is $\trunc{n+1}A$ because
+  $\trunc n{\trunc{n+1}A}=\trunc nA=\unit$, and $(x=_Ey)$ is $n$-truncated because
+  $E$ is $(n+1)$-connected. Hence by \autoref{connectedtotruncated} the
+  following map is an equivalence
+  \[\function{(x=_Ey)}{(\trunc{n+1}A\to(x=_Ey))}{p}{\lambda{}z.p}\]
+
+  Hence we have
+  \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(x=_Ey)\]
+
+  But the following map is an equivalence
+  \[\function{E}{\sum_{x:E}\sum_{y:E}(x=_Ey)}{x}{(x,x,\refl{x})}\]
+
+  Hence
+  \[\cocone{\Ddiag}{E}=E\]
+
+  Finally we get an equivalence
+  \[(\unit\to{}E)\simeq\cocone{\Ddiag}{E}\]
+
+  We can now unfold the definitions in order to get the explicit expression of
+  this map, and we see easily that this is exactly the map we had at the
+  beginning.
+
+  \bigskip
+
+  Hence we proved that $\unit$ in a pushout of $\Ddiag$ in $\typelep{n+1}$. Using
+  uniqueness of pushouts we get that $\trunc{n+1}{\unit\sqcup^A\unit}=\unit$
+  which proves that the suspension of $A$ is $(n+1)$-connected.
+\end{proof}
+
+\begin{cor} \label{cor:sn-connected}
+  For all $n:\N$, the sphere $\Sn^n$ is $(n-1)$-connected.
+\end{cor}
+
+\begin{proof}
+  We prove this by induction on $n$.
+
+  For $n=0$ we have to prove that $\Sn^0$ is inhabited which is clear.
+
+  Let $n:\N$ such that $\Sn^n$ is $(n-1)$-connected. By definition $\Sn^{n+1}$
+  is the suspension of $\Sn^n$ hence by the previous lemma $\Sn^{n+1}$ is
+  $n$-connected.
+\end{proof}
+
+\section{\texorpdfstring{$\pi_{k \le n}$}{π\_(k≤n)} of an \texorpdfstring{$n$}{n}-connected space (includes \texorpdfstring{$\pi_{k < n}(\Sn ^n)$}{π\_(k<n)(Sⁿ)})}
+\label{sec:pik-le-n}
+
+\begin{lem}
+  Let $(A,a)$ be a pointed type and $n:\N$.
+
+  Then if $n>0$ the set $\pi_n(A,a)$ has a group structure and if $n>1$ it is
+  even an abelian group.
+\end{lem}
+
+\begin{proof}
+  TODO
+\end{proof}
+
+We can now say something about homotopy groups of $n$-truncated and
+$n$-connected types.
+
+\begin{lem}
+  If $A$ is $n$-truncated and $a:A$, then we have
+  \[\forall k>n,\ \pi_k(A,a)=\unit\]
+\end{lem}
+
+\begin{proof}
+  Indeed, taking the loop space of an $n$-truncated type gives an
+  $(n-1)$-truncated type, hence $\Omega^k(A,a)$ is $(n-k)$-truncated and we have
+  $(n-k)\le-1$ so $\Omega^k(A,a)$ is \anhprop. But $\Omega^k(A,a)$ is inhabited,
+  so it is actually contractible and
+  $\pi_k(A,a)=\trunc0{\Omega^k(A,a)}=\trunc0{\unit}=\unit$.
+\end{proof}
+
+\begin{lem} \label{lem:pik-nconnected}
+  If $A$ is $n$-connected and $a:A$, then we have
+  \[\forall k\le{}n,\ \pi_k(A,a)=\unit\]
+\end{lem}
+
+\begin{proof}
+  We have the following sequence of equalities:
+
+  \begin{align*}
+    \pi_k(A,a) &= \trunc0{\Omega^k(A,a)} \\
+    &= \Omega^k(\trunc k{(A,a)}) \\
+    &= \Omega^k(\trunc k{\trunc n{(A,a)}}) \\
+    &= \Omega^k(\trunc k{\unit}) \\
+    &= \Omega^k(\unit) \\
+    &= \unit
+  \end{align*}
+
+  The third line uses the fact that $k\le{}n$ in order to use that
+  $\truncf k\circ\truncf n=\truncf k$ and the fourth line uses the fact that $A$ is
+  $n$-connected.
+\end{proof}
+
+\begin{cor}[$\pi_{k<n}(\Sn ^n)$]
+For all $n$ and $k$, if $k < n$, then $\pi_k(\Sn ^n) = \unit$.  
+\end{cor}
+\begin{proof}
+$\Sn$ is $n\mathord{-}1$-connected by \autoref{cor:sn-connected}.  Therefore
+\autoref{lem:pik-nconnected} gives the result.  
+\end{proof}
+
+\section{Van Kampen's theorem}
 \label{sec:van-kampen}
 
 Van Kampen's theorem calculates the fundamental group $\pi_1$ of a pushout of spaces.
@@ -797,7 +948,7 @@ In van Kampen's theorem, our goal is only to characterize the fundamental group 
 However, it turns out that we can use the same technique directly for a truncated version of the path spaces, thereby characterizing not only the fundamental \emph{group} $\pi_1(W)$ but the whole 0-truncated path fibration.
 
 
-\subsubsection{Naive van Kampen}
+\subsection{Naive van Kampen}
 \label{sec:naive-vankampen}
 
 We begin with a ``naive'' version of van Kampen's theorem, which is useful but not quite as useful as the classical version.
@@ -1021,7 +1172,7 @@ To make them isomorphisms of groups, we could define a concatenation operation $
 This operation on $\code$ is evidently just concatenation of sequences; we leave the details to the reader.
 
 
-\subsubsection{van Kampen with a set of basepoints}
+\subsection{van Kampen with a set of basepoints}
 \label{sec:better-vankampen}
 
 When $A$, $B$, and $C$ are not all sets, however, the version of the van Kampen theorem proven in the previous section is not as useful, since it does not identify the path-space of $P$ with a set presented in terms of \emph{set-level data}.
@@ -1179,7 +1330,7 @@ Now we define $\code:P\to P\to \type$ by double induction as follows
 \end{eg}
 
 
-\subsection{Whitehead's theorem and Whitehead's principle}
+\section{Whitehead's theorem and Whitehead's principle}
 \label{sec:whitehead}
 
 In classical homotopy theory, a map $f:A\to B$ which induces an isomorphism $\pi_n(A,a) \cong \pi_n(B,f(a))$ for all basepoints $a$ in $A$ is necessarily a homotopy equivalence, as long as the spaces $A$ and $B$ are well-behaved (e.g.\ have the homotopy types of CW-complexes).
@@ -1265,10 +1416,12 @@ Now we can prove the truncated Whitehead's principle.
   However, $\Omega(A,x)$ and $\Omega(B,f(x))$ are $n$-types, and $\pi_k(\apfunc f) = \pi_{k+1}(f)$, so this follows from the inductive hypothesis.
 \end{proof}
 
-Note that if $A$ and $B$ are not $n$-truncated for any finite $n$, then there is no way for the induction to get started.
+Note that if $A$ and $B$ are not $n$-types for any finite $n$, then there is no way for the induction to get started.
 
-A map $f$ such that $\pi_k(f)$ is a bijection for all $k$ may be called \emph{$\infty$-connected} or a \emph{weak equivalence}.
-A type $Z$ is called \emph{$\infty$-truncated} or \emph{hypercomplete} if the induced map $(-\circ f):(B\to Z) \to (A\to Z)$ is an equivalence whenever $f$ is $\infty$-connected --- that is, if $Z$ thinks every $\infty$-connected map is an equivalence.
+A map $f$ such that $\pi_k(f)$ is a bijection for all $k$ is called \textbf{$\infty$-connected} or a \textbf{weak equivalence}.
+A type $Z$ is called \textbf{$\infty$-truncated} or \textbf{hypercomplete} if the induced map
+\[(-\circ f):(B\to Z) \to (A\to Z)\]
+is an equivalence whenever $f$ is $\infty$-connected --- that is, if $Z$ thinks every $\infty$-connected map is an equivalence.
 Then if we want to assume Whitehead's principle as an axiom, we may use either of the following equivalent forms.
 \begin{itemize}
 \item Every $\infty$-connected function is an equivalence.
@@ -1276,1001 +1429,33 @@ Then if we want to assume Whitehead's principle as an axiom, we may use either o
 \end{itemize}
 In higher topos models, the $\infty$-truncated types form a reflective subuniverse in the sense of \autoref{subsec:reflective-subuniverses} (the ``hypercompletion'' of an $\infty$-topos), but we do not know whether this is true in general.
 
+It may not be obvious that there \emph{are} any types which are not $n$-types for any $n$, but in fact there are.
+Indeed, in classical homotopy theory, $\Sn^n$ has this property for any $n\ge 2$.
+We have not proven this fact in homotopy type theory yet, but there are other types which we can prove to have ``infinite truncation level''.
+
+\begin{eg}
+  Suppose we have $B:\nat\to\type$ such that for each $n$, the type $B(n)$ contains an $n$-loop which is not equal to $n$-fold reflexivity, say $p_n:\Omega^n(B(n),b_n)$ with $p_n \neq \refl{b_n}^n$.
+  (For instance, we could define $B(n)\defeq \Sn^n$, once we have shown that $\pi_n(\Sn^n)=\Z$.)
+  Consider $C\defeq \prd{n:\nat} B(n)$, with the point $c:C$ defined by $c(n)\defeq b_n$.
+  Since loop spaces commute with products, for any $m$ we have
+  \[\eqvspaced{\Omega^m (C,c)}{\prd{n:\nat}\Omega^m(B(n),b_n)}.\]
+  Under this equivalence, $\refl{c}^m$ corresponds to the function $(n\mapsto \refl{b_n}^m)$.
+  Now define $q_m$ in the right-hand type by
+  \[ q_m(n) \defeq
+  \begin{cases}
+    p_n &\quad m=n\\
+    \refl{b_n}^m &\quad m\neq n.
+  \end{cases}
+  \]
+  If we had $q_m = (n\mapsto \refl{b_n}^m)$, then we would have $p_n = \refl{b_n}^n$, which is not the case.
+  Thus, $q_m \neq (n\mapsto \refl{b_n}^m)$, and so there is a point of $\Omega^m(C,c)$ which is unequal to $\refl{c}^m$.
+  Hence $C$ is not an $m$-type, for any $m:\nat$.
+\end{eg}
+
+\begin{eg}
+  TODO: It should be possible to show, assuming $\Sn^n:\UU$ for all $n:\nat$, that the universe \UU is not an $n$-type for any $n$, since $\Omega^{n+1}(\UU,\Sn^n)$ should be nontrivial.
+\end{eg}
 
-\section{More advanced tools}
-\label{sec:more-advanced-tools}
-
-In this section, we develop some more advanced tools for doing homotopy
-theory in HoTT, including the theory of pushouts and pullbacks in
-subcategories of types, the general notion of a reflective
-subuniverse, and the theory of truncations.  
-
-\subsection{Homotopy pushouts}
-\label{sec:pushouts}
-
-In \autoref{sec:colimits} we used higher inductive types to define pushouts of types.
-It will be useful for us to consider also the notion of pushout in certain subcategories of types.
-
-\subsubsection{Definition}
-\label{sec:push:definition}
-
-Let's consider \P a subuniverse of \type. More precisely we have a map
-$P:\type\to\prop$ and we use the notation $A:\P$ to mean that $A:\type$ and
-$P(A)$ holds. For instance \P could be \prop, \set, or more generally
-$\typele{n}$ for any $n\ge-2$.
-
-\begin{defn}
-  A \emph{span} in $\P$ is 5-tuple $\Ddiag=(A,B,C,f,g)$ with
-  $A,B,C:\P$ and $f:C\to{}A$ and $g:C\to{}B$.
-  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
-\end{defn}
-
-\begin{defn}
-  Given a span $\Ddiag=(A,B,C,f,g)$ and a type $D:\P$, a
-  \emph{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
-  $i:A\to{}D$, $j:B\to{}D$ and $h : \prod_{c:C}i(f(c))=j(g(c))$
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^j[d] \\ A \ar_i[r] & D
-  }\]
-
-  We denote by $\cocone{\Ddiag}{D}$ the type of all such cocones.
-\end{defn}
-
-The map $D\mapsto\cocone{\Ddiag}{D}$ is $(\infty,1)$-functorial, but we don't
-know how to express this internally in homotopy type theory, so we will only
-prove the bits of functoriality that we need.
-
-\begin{defn}
-  Given $D,E:\P$ and a map $t:D\to{}E$, there is a map
-  \[\function{\cocone{\Ddiag}{D}}{\cocone{\Ddiag}{E}}{c}{\composecocone{t}c}\]
-  defined by:
-  \[\composecocone{t}(i,j,h)=(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h)\]
-
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar_j[d]
-    \ar@/_/^{t\circ{}j}[rdd] & \\
-    A \ar^i[r] \ar@/^/_{t\circ{}i}[rrd] & D \ar[rd]|<<<<t & \\
-    & & E }\]
-\end{defn}
-
-\begin{lem}
-  For any types $D,E,F:\P$, functions $t:D\to{}E$, $u:E\to{}F$ and
-  $c:\cocone{\Ddiag}{D}$ we have
-  \[\composecocone{\idfunc[D]}c = c\]
-  \[\composecocone{(u\circ{}t)}c=\composecocone{u}(\composecocone{t}c)\]
-\end{lem}
-\begin{proof}
-  This follows easily from the unit laws and associativity of composition of
-  functions and from the functoriality of $f\mapsto{}\mapfunc{f}$ which has been proved
-  earlier.
-\end{proof}
-
-We can now define the notion of pushout.
-
-\begin{defn}
-  Given a span $\Ddiag$, a type $D:\P$ and a cocone
-  $c:\cocone{\Ddiag}{D}$, the pair $(D,c)$ is said to be a \emph{pushout}
-  of $\Ddiag$ in $\P$ if for every $E:\P$, the map
-  \[\function{(D\to{}E)}{\cocone{\Ddiag}{E}}{t}{\composecocone{t}c}\]
-  is an equivalence.
-\end{defn}
-
-This definition says that for every $E:\P$ and for every cocone under $\Ddiag$
-with base $E$, there is an essentially unique map $D\to{}E$ such that the whole
-diagram commutes, the proof of commutation being essentially unique too.
-
-Of course, we showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher inductive types.
-For a general \P, pushouts may or may not exist, but if they do, then they are unique.
-
-\begin{lem}
-  If $(D,c)$ and $(D',c')$ are two pushouts of $\Ddiag$ in $\P$, then
-  $(D,c)=(D',c')$.
-\end{lem}
-\begin{proof}
-  We first prove that the two types $D$ and $D'$ are equivalent.
-
-  Using the universal property of $D$ with $D'$, we see that the following map is an
-  equivalence
-  \[\function{(D\to{}D')}{\cocone{\Ddiag}{D'}}{t}{\composecocone{t}c}\]
-
-  In particular, there is a function $f:D\to{}D'$ satisfying $\composecocone{f}c=c'$. In the
-  same way there is a function $g:D'\to{}D$ such that $\composecocone{g}c'=c$.
-
-  In order to prove that $g\circ{}f=\idfunc[D]$ we use the universal property of
-  $D$ for $D$, which says that the following map is an equivalence:
-  \[\function{(D\to{}D)}{\cocone{\Ddiag}{D}}{t}{\composecocone{t}c}\]
-
-  Using the functoriality of $t\mapsto{}\composecocone{t}c$ we see that
-  \begin{align*}
-    \composecocone{(g\circ{}f)}c &= \composecocone{g}(\composecocone{f}c) \\
-    &= \composecocone{g}c' \\
-    &= c \\
-    &= \composecocone{\idfunc[D]}c
-  \end{align*}
-  hence
-  $g\circ{}f=\idfunc[D]$, because equivalences are injective. The same argument
-  with $D'$ instead of $D$ shows that $f\circ{}g=\idfunc[D']$.
-
-  Hence $D$ and $D'$ are equal, and the fact that $(D,c)=(D',c')$ follows from
-  the fact that the equivalence between $D$ and $D'$ we just defined sends $c$
-  to $c'$.
-\end{proof}
-
-\begin{cor}
-  The type of pushouts of $\Ddiag$ in $\P$ is \anhprop. In particular if
-  pushouts merely exist then they actually exist.
-\end{cor}
-
-
-\subsection{Homotopy pullbacks}
-\label{sec:pullbacks}
-
-Most of the previous section can be dualised to give a definition of
-pullbacks. More precisely we have the following
-
-\begin{defn}
-  A \emph{cospan} in $\P$ is a diagram of the following form
-  \[\xymatrix{& B \ar^g[d] \\ A \ar_f[r] & C}\]
-  with $A,B,C:\P$.
-\end{defn}
-
-\begin{defn}
-  If $\Ddiag$ is a cospan and $D:\P$, a \emph{cone over $\Ddiag$ with
-    base $D$} is a triple $(i,j,h)$ such as in the following diagram:
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{D \ar^j[r] \ar_i[d] \drtwocell{^h} & B \ar^g[d] \\
-    A \ar_f[r] & C
-  }\]
-
-  We denote by $\cone{\Ddiag}{D}$ the type of all such cones.
-\end{defn}
-
-The map $D\mapsto\cone{\Ddiag}{D}$ is contravariant in $D$, if $t:E\to{}D$ we
-have a map
-\[\function{\cone{\Ddiag}{D}}{\cone{\Ddiag}{E}}{c}{\composecone{t}{c}}\]
-defined by $\composecone{t}{(i,j,h)}=(i\circ{}t,j\circ{}t,h\circ{}t)$ and this
-map is (contravariantly) functorial.
-
-\begin{defn}
-  A pair $(D,c)$ where $D:\P$ and $c:\cone{\Ddiag}{D}$ is called a
-  \emph{pullback} of $\Ddiag$ in \P if for all $E:\P$ the map
-  \[\function{(E\to{}D)}{\cone{\Ddiag}{E}}{t}{\composecone{t}{c}}\]
-  is an equivalence.
-\end{defn}
-
-The construction of pullbacks in $\type$ is easier than the construction of
-pushouts.
-In particular, we don't need higher inductive types.
-
-\begin{defn}
-  Let $\Ddiag$ be a diagram in $\type$. We define the following type
-  \[A\times_CB=\setof{(a,b):A\times{}B | f(a) = g(b)}\]
-
-  There is a canonical cone $c_\times=(\pi_1,\pi_2,\pi_3)$ over $\Ddiag$ with
-  base $A\times_CB$ given by the following diagram
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A\times_CB \ar^-{\pi_2}[r] \ar_{\pi_1}[d] \drtwocell{^\pi_3\ }
-    & B \ar^g[d] \\ A \ar_f[r] & C}\]
-  where
-  \begin{align*}
-    \pi_1((a,b),p)&=a\\
-    \pi_2((a,b),p)&=b\\
-    \pi_3((a,b),p)&=p\\
-  \end{align*}
-\end{defn}
-
-\begin{lem}
-  Let $\Ddiag$ be a diagram in $\type$. Then $(A\times_CB,c_\times)$ is a
-  pullback of $\Ddiag$.
-\end{lem}
-\begin{proof}
-  Given a type $E$ and a cone $c=(i,j,h):\cone{\Ddiag}{E}$ we construct a map
-  $\mathsf{s}(c):E\to{}A\times_CB$ by
-  \[\mathsf{s}(c)(x)=((i(x), j(x)), h(x))\]
-  and we need to prove that $\composecone{\mathsf{s}(c)}{c_\times}=c$ and
-  $\mathsf{s}(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
-  $t:E\to{}A\times_CB$ and both are easy computations:
-  \begin{align*}
-    \composecone{\mathsf{s}(c)}{c_\times}
-    &=\composecone{\mathsf{s}(c)}{(\pi_1,\pi_2,\pi_3)} \\
-    &=(\pi_1\circ\mathsf{s}(c),\pi_2\circ\mathsf{s}(c),
-    \pi_3\circ\mathsf{s}(c))\\
-    &=(i,j,h)\\
-    &=c
-  \end{align*}
-  \begin{align*}
-    \mathsf{s}(\composecone{t}{c_\times})(x) &=
-    \mathsf{s}(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
-    &=(\pi_1(t(x)),\pi_2(t(x)),\pi_3(t(x)))\\
-    &=t(x)\qedhere
-  \end{align*}
-\end{proof}
-
-\begin{defn}
-  If $\Ddiag$ is a cospan and $D:\type$, then we define another
-  cospan called $D\to\Ddiag$:
-  \[\xymatrix{& (D\to B) \ar^{g\circ-}[d] \\ (D\to A) \ar_{f\circ-}[r] & (D\to
-    C)}\]
-
-  Similarly if $\Ddiag$ is a span and $D:\type$, then we have a
-  cospan $\Ddiag\to{}D$:
-  \[\xymatrix{& (B\to D) \ar^{-\circ{}g}[d] \\ (A\to D) \ar_{-\circ{}f}[r] &
-    (C\to D)}\]
-\end{defn}
-
-\begin{lem}
-  \label{coneispb}
-  If $\Ddiag$ is a cospan and $D:\P$, then
-  \[\cone{\Ddiag}{D}=(D\to{}A)\times_{(D\to{}C)}(D\to{}B)\]
-
-  If $\Ddiag$ is a span and $D:\P$, then
-  \[\cocone{\Ddiag}{D}=(A\to{}D)\times_{(C\to{}D)}(B\to{}D)\]
-\end{lem}
-\begin{proof}
-  In both cases the map from left to right is $(i,j,h)\mapsto(i,j,\funext(h))$
-  and the map from right to left is $(i,j,p)\mapsto(i,j,\happly(p))$ and they
-  are inverse to each other.
-\end{proof}
-
-\subsection{Reflective subuniverses of \texorpdfstring{$\type$}{U}}
-\label{subsec:reflective-subuniverses}
-
-Reflective subuniverses are particularly nice subuniverses in the sense that
-every type $A:\type$ can be reflected down to a type $\reflect(A)$ in the
-subuniverse which is (in a precise way) the free type generated by $A$ in the
-subuniverse.
-
-\begin{defn}
-  A subuniverse $\P$ of $\type$ is a \emph{reflective subuniverse of $\type$} if
-  for every $A:\type$ we have a type $\reflect(A):\P$ and a map
-  $\project_A:A\to\reflect(A)$ satisfying the following universal property:
-
-  For every $A:\type$ and $B:\P$, the following map is an equivalence
-  \[\function{(\reflect(A)\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}\]
-
-  In other words, for every $B:\P$ and $g:A\to{}B$ there is a unique map
-  $\ext(g):\reflect(A)\to{}B$ making the following diagram commute.
-
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^{\project_A}[r] \ar_g[rd] \druppertwocell{=} & \reflect(A)
-    \ar@{-->}^{\ext(g)}[d] \\
-    & B}\]
-\end{defn}
-
-The universal property means that $\reflect$ is left adjoint to the inclusion
-$\iota:\P\to\type$ with $\project_A$ as the unit, because the last $B$ in the
-universal property can be replaced by $\iota(B)$ given that $B$ is in $\P$.
-
-One example is truncations, as defined in \autoref{sec:truncations}.
-\begin{lem}[Truncations are reflective]
-  $\typele{n}$ is a reflective subuniverse of $\type$, with $\reflect$
-  given by $\trunc{n}{-}$.
-\end{lem}
-\begin{proof}
-Immediate from the universal property of truncations.  
-\end{proof}
-
-\begin{lem}
-  Let \P be a subuniverse of \type. The fact that \P is reflective is \anhprop.
-\end{lem}
-
-\begin{proof}
-  Let's assume that \P is reflective in two different ways
-  $(\reflect,\project,\ext)$ and $(\reflect',\project',\ext')$. We need to
-  construct an equivalence between $\reflect(A)$ and $\reflect'(A)$ for every
-  $A:\type$ and we need to prove that the following diagram commutes:
-
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd] \druppertwocell{=} &
-    \reflect(A) \ar@{->}^\sim[d] \\
-    & \reflect'(A)}\]
-
-  The type $\reflect'(A)$ is in \P, so we can define the map
-  \[\ext(\project'_A):\reflect(A)\to\reflect'(A)\]
-  which is exactly the map making the previous diagram commute.
-
-  We can also define
-  \[\ext'(\project_A):\reflect'(A)\to\reflect(A)\]
-
-  In order to prove that the composite is the identity, we only need to prove
-  that $\ext'(\project_A)\circ\ext(\project'_A)\circ\project_A=\project_A$
-  which is the case:
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd]
-    \ar@/_5mm/_{\project_A}[rdd] &
-    \reflect(A) \ar@{->}^{\ext(\project'_A)}[d] \\
-    & \reflect'(A) \ar@{->}^{\ext'(\project_A)}[d] \\
-    & \reflect(A)}\]
-\end{proof}
-
-For the rest of this section, we assume that $\P$ is a reflective subuniverse of
-$\type$.
-
-The following lemma says that the counit of the adjunction is an equivalence.
-\begin{lem}
-  \label{reflectPequiv}
-  If $A:\P$, then the map $\project_A:A\to\reflect(A)$ is an equivalence.
-\end{lem}
-\begin{proof}
-  Given that $A$ is in $\P$, we can define $\ext(\idfunc[A]):\reflect(A)\to{}A$.
-
-  Then we have $\ext(\idfunc[A])\circ\project_A=\idfunc[A]:A\to{}A$ by
-  definition, and in order to prove that
-  $\project_A\circ\ext(\idfunc[A])=\idfunc[\reflect(A)]$ we only need to prove
-  that $\project_A\circ\ext(\idfunc[A])\circ\project_A=
-  \idfunc[\reflect(A)]\circ\project_A$ which is again true.
-
-  \[\xymatrix{
-    A \ar^{\project_A}[r] \ar_{\idfunc[A]}[rd] &
-    \reflect(A) \ar^>>>{\ext(\idfunc[A])}[d] \ar@/^40pt/^{\idfunc[\reflect(A)]}[dd] \\
-    & A \ar_{\project_A}[d] \\
-    & \reflect(A)}\]
-\end{proof}
-
-The reflector $\reflect$ is a map $\type\to\P$ and using the universal property
-we should be able to prove that $\reflect$ is $(\infty,1)$-functorial. But we
-don't know how to express $(\infty,1)$-functoriality so we will only prove a
-few bits of it.
-
-\begin{defn}
-  If $f:A\to{}B$, there is a map $\reflect(f):\reflect(A)\to\reflect(B)$ defined
-  by
-  \[\reflect(f)\circ\project_A=\project_B\circ{}f\]
-  (or in other words $\reflect(f)=\ext(\project_B\circ{}f)$).
-
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
-    \ar@{-->}^-{\reflect(f)}[d]
-    \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
-
-  This operation satisfies the following functoriality conditions:
-  \begin{align*}
-    \reflect(\idfunc[A])=\idfunc[\reflect(A)]\\
-    \reflect(f\circ{}g)=\reflect(f)\circ\reflect(g)
-  \end{align*}
-
-  In order to define these equalities, we only need to define them after
-  composition by $\project(A)$, because of the universal property.
-
-  The first one is defined by
-
-  \[\xymatrix{
-    \reflect(\idfunc[A])\circ\project_A \ar@{==}[r] \ar@{=}[d] &
-    \idfunc[\reflect(A)]\circ\project_A \ar@{=}[d] \\
-    \project_A \ar@{=}[r] & \project_A
-  }\]
-
-  The second one is defined by
-
-  \[\xymatrix{
-    \reflect(f\circ g)\circ\project_A \ar@{==}[r] \ar@{=}[d] &
-    \reflect(f)\circ\reflect(g)\circ\project_A \ar@{=}[d] \\
-    \project_C\circ f\circ g \ar@{=}[r] & \reflect(f)\circ\project_B\circ g
-  }\]
-\end{defn}
-
-% \begin{proof}
-%   The map $\reflect(f)$ is defined to be the unique map
-%   $\reflect(A)\to\reflect(B)$ such that
-%   $\reflect(f)\circ\project_A=\project_B\circ{}f$ (using the universal property
-%   of $\reflect$), or in other words $\reflect(f)=\ext(\project_B\circ{}f)$.
-
-%   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-%   \xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
-%     \ar@{-->}^-{\reflect(f)}[d]
-%     \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
-%   In order to prove that $\reflect(\idfunc[A])=\idfunc[\reflect(A)]$, we only
-%   need to prove that
-%   $\reflect(\idfunc[A])\circ\project_A=\idfunc[\reflect(A)]\circ\project_A$. But
-%   both sides are equal to $\project_A$.
-
-%   Similarly, to prove that $\reflect(f\circ{}g)=\reflect(f)\circ\reflect(g)$ we
-%   only need to prove that $\reflect(f\circ{}g)\circ\project_A=
-%   \reflect(f)\circ\reflect(g)\circ\project_A$ and both sides are equal to
-%   $\project_C\circ{}f\circ{}g$.
-
-%   Note that by definition, the following diagram commutes:
-
-%   \[\xymatrix{
-%     \reflect(f\circ g)\circ\project_A \ar@{=}[r] \ar@{=}[d] &
-%     \reflect(f)\circ\reflect(g)\circ\project_A \ar@{=}[d] \\
-%     \project_C\circ f\circ g \ar@{=}[r] & \reflect(f)\circ\project_B\circ g
-%     }\]
-% \end{proof}
-
-\begin{defn}
-  For every $A,B:\type$, $C:\P$, $f:A\to{}B$ and $i:B\to{}C$ we have
-  \[\ext(i\circ{}f)=\ext(i)\circ\reflect(f)\]
-
-  \[\xymatrix{
-    A \ar^{\project_A}[r] \ar_f[d] & \reflect(A) \ar^{\reflect(f)}[d]
-    \ar@/^15mm/^{\ext(i\circ f)}[dd] \\
-    B \ar^{\project_B}[r] \ar_i[rd] & \reflect(B) \ar^{\ext(i)}[d] \\
-    & C}\]
-
-  This equality is defined by
-  \[\xymatrix{
-    \ext(i\circ f)\circ\project_A \ar@{==}[r] \ar@{=}[d] &
-    \ext(i)\circ\reflect(f)\circ\project_A \ar@{=}[d] \\
-    i\circ f \ar@{=}[r] & \ext(i)\circ\project_B\circ f
-  }\]
-
-\end{defn}
-
-% \begin{proof}
-%   \[\xymatrix{A \ar^{\project_A}[r] \ar_f[d] & \reflect(A) \ar^{\reflect(f)}[d]
-%     \\
-%     B \ar^{\project_B}[r] \ar_i[d] & \reflect(B) \ar^{\ext(i)}[ld] \\
-%     C &}\]
-
-%   We only have to prove that
-%   \[\ext(i\circ{}f)\circ\project_A=\ext(i)\circ\reflect(f)\circ\project_A\]
-%   which is the case, because they are both equal to $i\circ{}f$.
-% \end{proof}
-
-We now want to prove that pushouts in \P are related to pushouts in \type. We
-first need to explain how to reflect spans and cocones.
-
-\begin{defn}
-  Let
-  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
-  be a span in $\type$. We note $\reflect(\Ddiag)$ the following
-  span in $\P$:
-  \[\reflect(\Ddiag)=\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
-    \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }\]
-\end{defn}
-
-\begin{defn}
-  Let $D:\type$ and $c=(i,j,h):\cocone{\Ddiag}{D}$.
-  We define
-  \[\reflect(c)=(\reflect(i),\reflect(j),\reflect(h)):
-  \cocone{\reflect(\Ddiag)}{\reflect(D)}\]
-  where
-  \[\reflect(h):\prod_{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
-  is defined in the following way:
-
-  We have \[h:\prod_{c:C}i(f(c))=j(g(c))\]
-  hence
-  \[\funext(h):i\circ{}f=j\circ{}g\]
-  We can apply $\reflect$ and we get
-  \[\mapfunc{\reflect}(\funext(h)):\reflect(i\circ{}f)=\reflect(j\circ{}g)\]
-  Now we can compose with the fact that $\reflect$ commutes with composition and
-  we get the following (the proofs that $\reflect$ commutes with composition are
-  not written in order to keep terms readable, we will later see that they don't
-  get in the way):
-  \[\mapfunc{\reflect}(\funext(h)):
-  \reflect(i)\circ\reflect(f)=\reflect(j)\circ\reflect(g)\]
-  and then
-  \[\reflect(h)\defeq\happly(\mapfunc{\reflect}(\funext(h))):
-  \prod_{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
-\end{defn}
-
-\begin{lem}
-  \label{reflectcommutespushout}
-  Let $\Ddiag$ be a span in $\type$ and $(D,c)$ a pushout of $\Ddiag$
-  in $\type$. Then $(\reflect(D),\reflect(c))$ is a pushout of
-  $\reflect(\Ddiag)$ in $\P$.
-\end{lem}
-
-\begin{proof}
-  Let $E:\P$ and let's consider the following diagram:
-
-  \[\xymatrix{ (\reflect(D)\to E)
-    \ar^{t\mapsto{}\composecocone{t}{\reflect(c)}}[r] \ar_{f_1}^\sim[d]
-    &
-    \cocone{\reflect(\Ddiag)}{E}\\
-    (D\to E) \ar_{f_2}^\sim[d] &
-    (\reflect(A)\to{}E)\times_{(\reflect(C)\to{}E)}(\reflect(B)\to{}E)
-    \ar_{f_5}^\sim[u] \\
-    \cocone{\Ddiag}{E}\ar_-{f_3}^-\sim[r] & (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
-    \ar_{f_4}^\sim[u] }\]
-
-  We need to prove that the top arrow is an equivalence, we will do this by
-  proving that it is a composite of five equivalences.
-
-  The first equivalence, $f_1$, comes from the universal property of $\reflect$ and the fact
-  that $E$ is in \P:
-  \[f_1(t) \defeq t\circ\project_D.\]
-
-  The second equivalence comes from the universal property of $(D,c)$, as a pushout of
-  $\Ddiag$ in \type:
-  \[f_2(u) \defeq (u\circ{}i,u\circ{}j,\mapfunc{u}\circ{}h).\]
-
-  The third map comes from \autoref{coneispb}, and is defined by
-  \[f_3(i,j,h) \defeq (i,j,\funext(h)).\]
-
-  The fourth map comes from the universal property of $\reflect$ applied three
-  times and the fact that pullbacks are invariant under equivalence (everything
-  is invariant under equivalence anyway):
-  \[f_4(i,j,p) \defeq (\ext(i),\ext(j),\mapfunc{\ext}(p)).\]
-
-  Note that $\mapfunc{\ext}(p)$ has type $\ext(i\circ{}f)=\ext(j\circ{}g)$
-  instead of $\ext(i)\circ\reflect(f)=\ext(j)\circ\reflect(g)$ but we
-  (implicitely) concatenate with the proofs that
-  $\ext(i\circ{}f)=\ext(i)\circ\reflect(f)$ and the same for $j$ and $g$. Again,
-  we will see later that these proof do not get in the way.
-
-  The fifth equivalence comes from \autoref{coneispb}, and is defined by
-  \[f_5(a,b,q) \defeq (a,b,\happly(q)).\]
-
-  We now need to prove that the diagram commutes, so we can conclude that the map
-  $t\mapsto{}t\circ\reflect(c)$ is an equivalence.
-
-  We have
-  \begin{align*}
-    f_5(f_4(f_3(f_2(f_1(t))))) &= f_5(f_4(f_3(f_2(t\circ\project_D)))) \\
-    &= f_5(f_4(f_3(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
-    \mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=f_5(f_4(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
-    \funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=f_5(\ext(t\circ\project_D\circ{}i),\ext(t\circ\project_D\circ{}j),\\
-    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
-    \\
-    &=f_5(\ext(t\circ\project_D)\circ\reflect(i),
-    \ext(t\circ\project_D)\circ\reflect(j),\\
-    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
-    \\
-    &=f_5(t\circ\reflect(i),
-    t\circ\reflect(j),
-    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=(t\circ\reflect(i),t\circ\reflect(j),
-    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))))
-  \end{align*}
-
-  Note that in the two steps before the last equality we are using the fact
-  that if $a=a'$ and $b=b'$, then $(a,b,q)=(a',b',q)$. This is actually not
-  even well typed given that the type of $q$ depends on $a$ and $b$, so we
-  have to transport $q$ along the proofs $p:a=a'$ and $q:b=b'$. In the present
-  case we have $q:a\circ\reflect(f)=b\circ\reflect(g)$ hence the correct
-  statement is
-  \[(a,b,q)=(a',b',q')\] where
-  \[q'\defeq\map{(\lambda{}u.\,u\circ\reflect(f))}{\rev p} \ct q \ct
-  \map{(\lambda{}u.\,u\circ\reflect(g))}{p'})\] Again we will leave this
-  implicit and take care of it only when it will be needed.
-
-  \bigskip
-
-  In order to prove that the diagram commutes, we now only need to prove that
-  \begin{align*}
-    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) &=
-    \mapfunc{t}\circ\reflect(h)
-  \end{align*}
-  This is an equality in the type
-  \[(c:\reflect(C))\to{}t(\reflect(i)(\reflect(f)(c)))=
-  t(\reflect(j)(\reflect(g)(c)))\]
-  This type is equal to
-  \[t\circ\reflect(i)\circ\reflect(f) = t\circ\reflect(j)\circ\reflect(g)\]
-  via $\funext$ so we only need to prove
-  \begin{align*}
-    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)) &=
-    \funext(\mapfunc{t}\circ\reflect(h)) \\
-    &: t\circ\reflect(i)\circ\reflect(f) =
-    t\circ\reflect(j)\circ\reflect(g)
-  \end{align*}
-
-  Note that for any appropriately typed $t$ and $p$ we have
-  \[\funext(\mapfunc{t}\circ\happly(p))=\map{(\lambda{}u.\,t\circ{}u)}p\]
-  (by induction on $p$.)
-  Hence the previous equality becomes the following, using the definition of
-  $\reflect(h)$ and expanding $h$ to $\happly(\funext(h))$:
-  \[\map{\ext}{\map{(\lambda{}u.\,t\circ\project_D\circ{}u)}{\funext(h)}}=
-  \map{(\lambda{}u.\,t\circ{}u)}{\map{\reflect}{\funext(h)}}\]
-
-  The idea is now to do an induction on the path $\funext(h):i\circ f = j\circ
-  g$, which should be allowed because nothing in the previous expression seems to
-  depend on the fact that $\funext(h)$ goes from a composition to another
-  composition.  But let's not forget that there are implicit equalities on
-  both sides of the equation and they use the fact that $i\circ f$ and
-  $j\circ g$ are compositions, so first we need to deal with that.
-
-  % After that, using the fact that for every $k:C\to{}D$ we have
-
-  % \begin{align*}
-  %   \ext(t\circ\project_D\circ{}k) &= \ext(t\circ\project_D)\circ\reflect(k) \\
-  %   &= t\circ\reflect(k)
-  % \end{align*}
-
-  % We will have
-
-  % \[\ext\circ(\lambda{}u.\,t\circ\project_D\circ{}u)=
-  % (\lambda{}u.\,t\circ{}u)\circ\reflect\]
-
-  % Hence the result, using the functoriality of $f\mapsto{}f_*$.
-
-  \bigskip
-
-  % Let's prove that the implicit equalities around $\mapfunc{r}$ and
-  % $\mapfunc{\ext}$ cancel.
-  We have the following diagram:
-
-  \[\xymatrix{
-    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
-      t\circ\reflect(j\circ g) \ar@{=}[d] \\
-    t\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
-      t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D}\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
-      \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i}\circ\reflect(f) \ar@{=}[d] &
-      \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
-      \extend{t\circ\project_D\circ j\circ g}\\
-  }\]
-
-  \begin{itemize}
-  \item The top horizontal equality is
-    $\map{(\lambda{}u.\,t\circ{}u)}{\map{\reflect}{\funext(h)}}$ without the
-    implicit equalities around.
-  \item The first line of vertical equalities are the implicit equalities around
-    the term $\map{(\lambda{}u.\,t\circ{}u)}{\map{\reflect}{\funext(h)}}$ (the
-    right hand side of the equality we want to prove).
-  \item The next two lines of vertical equalities are around the left hand side
-    of the equality we want to prove and come from the long computation a few
-    pages ago.
-  \item The last line of vertical equalities are the implicit equalities around
-    $\mapfunc{\extendsmb}$.
-  \item The bottom horizontal equality is
-    $\map{\ext}{\map{(\lambda{}u.\,t\circ\project_D\circ{}u)}{\funext(h)}}$
-    without the implicit equalities around.
-  \end{itemize}
-
-  The commutativity of the diagram is the equality we want to prove and
-  the fact that the compositions $i\circ f$ and $j\circ g$ are being split in
-  the middle of the diagram is the reason why we cannot work directly, by induction on
-  $\funext(h)$.
-
-  So we will prove that the following diagram (where the vertical part is the
-  right hand side of the previous diagram) commutes. Note that on the right hand
-  side of this diagram, we do no longer use the fact that $j\circ g$ is a
-  composition of two functions, so induction on it will be allowed.
-
-  \[\xymatrix{
-    t\circ\reflect(j\circ g) \ar@{=}[d] & \\
-    t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] & \\
-    \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] &
-    \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[l] \ar@{=}[luu]
-    \ar@{=}[ldd] \\
-    \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] & \\
-    \extend{t\circ\project_D\circ j\circ g} & \\
-  }\]
-
-  The top square commutes because it is the concatenation of the two equalities
-  $t=\extend{t\circ\project_D}$ and $\reflect(j)\circ\reflect(g)=\reflect(j\circ
-  g)$ in two different orders (interchange law). In order to prove that the
-  bottom square commutes, we only have to prove that it commutes after
-  composition with $\project_C$ on the right. Let's write $u=t\circ\project_D$
-  and let's consider the following diagram.
-
-  \[\xymatrix@C=-30pt{
-    \extend{u}\circ\reflect(j)\circ\reflect(g)\circ\project_C
-      \ar@{=}[rrrr] \ar@{=}[ddd] \ar@{=}[rd] & & & &
-    \extend{u}\circ\reflect(j\circ g)\circ\project_C
-      \ar@{=}[ld] \ar@{=}[ddd] \\ &
-    \extend{u}\circ\reflect(j)\circ\project_B\circ g
-      \ar@{=}[rr] \ar@{=}[d] & {\phantom{thisisanuglyhack}} &
-    \extend{u}\circ\project_D\circ j\circ g
-      \ar@{=}[d] & \\ &
-    \extend{u\circ j}\circ\project_B\circ g
-      \ar@{=}[rr] \ar@{=}[ld] & &
-    u\circ j\circ g
-      \ar@{=}[rd] & \\
-    \extend{u\circ j}\circ\reflect(g)\circ\project_C
-      \ar@{=}[rrrr] & & & &
-    \extend{u\circ j\circ g}\circ\project_C
-  }\]
-
-  We need to prove that the outer square commutes.
-
-  \begin{itemize}
-  \item The left square commutes because of the interchange law
-  \item The top square commutes because of the definition of the equality
-    $\reflect(j\circ g)=\reflect(j)\circ\reflect(g)$
-  \item The bottom, right and interior squares commute because of the definition
-    of the equality $\extend{a}\circ\reflect(b)=\extend{a\circ b}$
-  \end{itemize}
-
-  This proves that the outer square commutes, hence the previous triangular
-  diagram commutes. We can do the same for the left part of the first
-  rectangular diagram so we now only have to prove that the following diagram
-  commutes:
-
-  \[\xymatrix{
-    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
-      t\circ\reflect(j\circ g) \ar@{=}[d] \\
-    \extend{t\circ\project_D}\circ\reflect(i\circ f) \ar@{=}[d] &
-      \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
-      \extend{t\circ\project_D\circ j\circ g}\\
-  }\]
-
-  And now we are finally allowed to induct on $\funext(h)$ because the diagram
-  is not relying anymore on the fact that $i\circ f$ and $j\circ g$ are
-  compositions.
-
-  \bigskip
-
-  This proves that the diagram commutes, hence the map
-  $t\mapsto{}\composecocone{t}\reflect(c)$ is an equivalence which proves that
-  the reflector commutes with pushouts.
-\end{proof}
-
-This proof was rather tedious, but we can hope that at some point we will
-understand better what $(\infty,1)$-functoriality means in homotopy type theory, and
-that we will be able to omit rigorously the equalities left implicit above and still
-conclude that every coherence condition is always satisfied.
-
-\begin{cor}
-  Every span $\Ddiag$ in $\P$ has a pushout in $\P$.
-\end{cor}
-
-\begin{proof}
-  According to \autoref{reflectPequiv} and to the diagram defining the action of
-  $\reflect$ on functions, the diagram $\reflect(\Ddiag)$ is equivalent to
-  $\Ddiag$. But we just proved that $\reflect(\Ddiag)$ has a pushout, namely the
-  reflection of the pushout in \type of $\Ddiag$, hence $\Ddiag$ has a pushout
-  in \P.
-\end{proof}
-
-\subsection{Truncations}
-\label{subsec:facts-about-truncations}
-
-The encode/decode method can also be used to calculate the path spaces of a truncation.
-Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
-Indeed, for any $x,y:A$ there is a canonical map
-\begin{equation}
-  f:\ttrunc n{x=_Ay}\to \Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)\label{eq:path-trunc-map}
-\end{equation}
-defined by
-\[f(\tproj n{p})\defeq \apfunc{\tproj {n+1}-}(p). \]
-This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the codomain of $f$ is $n$-truncated.
-
-\begin{thm}
-  For any $A$ and $x,y:A$ and $n\ge -2$, the map~\eqref{eq:path-trunc-map} is an equivalence; thus we have
-  \[ \eqv{\ttrunc n{x=_Ay}}{\Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)}. \]
-\end{thm}
-
-\begin{proof}
-  As in previous situations, we cannot directly define a quasi-inverse to~\eqref{eq:path-trunc-map} because there is no way to induct on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$.
-  Thus, instead we generalize its type, in order to have general elements of the type $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
-  Define $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ by
-  \[P(\tproj {n+1}x,\tproj {n+1}y)\defeq \trunc n{x=_Ay}\]
-  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated, and $\typele{n}$ is $(n+1)$-truncated by \autoref{thm:hleveln-of-hlevelSn}.
-  Now for every $u,v:\trunc{n+1}A$, there is a map
-  \[\encode:P(u,v) \to \big(u=_{\trunc{n+1}A}v\big)\]
-  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and $p:x=y$ by
-  \[\encode(\tproj n{p})\defeq \apfunc{\tproj{n+1}-} (p).\]
-  Since the codomain of $\encode$ is $n$-truncated, it suffices to define it only for $u$ and $v$ of this form, and then it's just the same definition as before.
-  We also define a function
-  \[ r : \prd{u:\trunc{n+1} A} P(u,u) \]
-  by induction on $u$, where $r(\tproj{n+1} x) \defeq \tproj n {\refl x}$.
-
-  Now we can define an inverse map
-  \[\decode: (u=_{\trunc{n+1}A}v) \to P(u,v)\]
-  by
-  \[\decode(p) \defeq \transfib{v\mapsto P(u,v)}{p}{r(u)}. \]
-  To show that the composite
-  \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \]
-  is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that $\decode(r(u)) = \refl{u}$.
-  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition of $r$ and $\decode$.
-  Finally, to show that 
-  \[ P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \]
-  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
-  Then we have
-  \begin{align*}
-    \decode(\encode(\tproj n p)) &= \decode(\apfunc{\tproj{n+1}-}(p))\\
-    &= \transfib{v\mapsto P(\tproj{n+1}x,v)}{\apfunc{\tproj{n+1}-}(p)}{\tproj n {\refl x}}\\
-    &= \transfib{v\mapsto \trunc n{u=v}}{p}{\tproj n {\refl x}}\\
-    &= \tproj n {\transfib{v \mapsto (u=v)}{p}{\refl x}}\\
-    &= \tproj n p.
-  \end{align*}
-  This completes the proof that \encode and \decode are quasi-inverses.
-  The stated result is then the special case where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
-\end{proof}
-
-\begin{cor}
-  Let $n\ge-2$ and $(A,a)$ be a pointed type. Then
-  \[\trunc n{\Omega(A,a)}=\Omega(\trunc{n+1}{(A,a)})\]
-\end{cor}
-\begin{proof}
-  This is a special case of the previous lemma where $x=y=a$.
-\end{proof}
-
-\begin{lem}
-  Let $k,n\ge-2$ with $k\le{}n$ and $A:\type$. Then
-  $\trunc k{\trunc nA}=\trunc kA$.
-\end{lem}
-\begin{proof}
-  We define two maps $f:\trunc k{\trunc nA}\to\trunc kA$ and
-  $g:\trunc kA\to\trunc k{\trunc nA}$ in the following way:
-
-  \[f(\tproj k{\tproj na})=\tproj ka\]
-  \[g(\tproj ka)=\tproj k{\tproj na}\]
-
-  The map $f$ is well-defined because $\trunc kA$ is $k$-truncated and also
-  $n$-truncated (because $k\le{}n$), and the map $g$ is well-defined because
-  $\trunc k{\trunc nA}$ is $k$-truncated.
-
-  The composition $f\circ{}g:\trunc kA\to\trunc kA$ satisfy
-  $(f\circ{}g)(\tproj ka)=\tproj ka$ hence $f\circ{}g=\idfunc[\trunc kA]$, and
-  we also have $g\circ{}f=\idfunc[\trunc k{\trunc nA}]$ in the same way.
-\end{proof}
-
-\begin{lem}
-  We have $\trunc n{\unit}=\unit$.
-\end{lem}
-\begin{proof}
-  Indeed, $\unit$ is $n$-truncated for every $n$ hence $\trunc n{\unit}=\unit$ by
-  \autoref{reflectPequiv}.
-\end{proof}
-
-\section{Connectedness}
-
-\begin{defn}
-  A type $A$ is called \emph{$n$-connected} if $\trunc nA$ is contractible.
-\end{defn}
-
-\begin{lem}
-  \label{connectedtotruncated}
-  Let $n\ge-2$, $A:\type$ and $B:\typele{n}$ and assume moreover that $A$ is
-  $n$-connected.
-
-  Then every map from $A$ to $B$ is constant in the sense that the constant map
-  operation
-  \[\function{B}{(A\to{}B)}{b}{\lambda{}x^A.b}\]
-  is an equivalence.
-\end{lem}
-\begin{proof}
-  This is just an application of the universal property. Note that
-  \[(\trunc nA\to{}B)=(\unit\to{}B)=B \qedhere\]
-\end{proof}
-
-\subsection{Connectedness of suspensions}
-
-The aim of this section is to prove that the operation of suspension increases
-connectedness.
-
-\begin{thm}
-  Let $n\ge-2$ and $A:\type$.
-
-  If $A$ is $n$-connected then the suspension of $A$ is $(n+1)$-connected.
-\end{thm}
-
-\begin{proof}
-  By definition, the suspension of $A$ is $\unit\sqcup^A\unit$, so we need to
-  prove that the following type is contractible:
-
-  \[\trunc{n+1}{\unit\sqcup^A\unit}\]
-
-  By \autoref{reflectcommutespushout} we know that
-  $\trunc{n+1}{\unit\sqcup^A\unit}$ is a pushout in $\typelep{n+1}$ of the diagram
-  \[\xymatrix{\trunc{n+1}A \ar[d] \ar[r] & \trunc{n+1}{\unit} \\
-    \trunc{n+1}{\unit} & }\]
-
-  Given that $\trunc{n+1}{\unit}=\unit$, the type
-  $\trunc{n+1}{\unit\sqcup^A\unit}$ is also a pushout of the following diagram in
-  $\typelep{n+1}$ (because both diagrams are equal)
-  \[\Ddiag=\xymatrix{\trunc{n+1}A \ar[d] \ar[r] & \unit \\
-    \unit & }\]
-
-  We will now prove that $\unit$ is also a pushout of $\Ddiag$ in
-  $\typelep{n+1}$.
-
-  \bigskip
-
-  Let $E$ be an $(n+1)$-truncated type, we need to prove that the following map
-  is an equivalence
-  \[\function{(\unit\to{}E)}{\cocone{\Ddiag}{E}}{y}
-  {(y,y,\lambda{}u^{\trunc{n+1}A}.\refl{y(\ttt)})}\]
-
-  where we recall that $\cocone{\Ddiag}{E}$ is the type
-  \[\sum_{f:\unit\to{}E}\sum_{g:\unit\to{}E}(\trunc{n+1}A\to
-  (f(\ttt)=_E{}g(\ttt)))\]
-
-  The map $\function{(\unit\to{}E)}{E}{f}{f(\ttt)}$ is an equivalence, hence
-  we also have
-  \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(\trunc{n+1}A\to(x=_Ey))\]
-
-  Now $A$ is $n$-connected hence so is $\trunc{n+1}A$ because
-  $\trunc n{\trunc{n+1}A}=\trunc nA=\unit$, and $(x=_Ey)$ is $n$-truncated because
-  $E$ is $(n+1)$-connected. Hence by \autoref{connectedtotruncated} the
-  following map is an equivalence
-  \[\function{(x=_Ey)}{(\trunc{n+1}A\to(x=_Ey))}{p}{\lambda{}z.p}\]
-
-  Hence we have
-  \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(x=_Ey)\]
-
-  But the following map is an equivalence
-  \[\function{E}{\sum_{x:E}\sum_{y:E}(x=_Ey)}{x}{(x,x,\refl{x})}\]
-
-  Hence
-  \[\cocone{\Ddiag}{E}=E\]
-
-  Finally we get an equivalence
-  \[(\unit\to{}E)\simeq\cocone{\Ddiag}{E}\]
-
-  We can now unfold the definitions in order to get the explicit expression of
-  this map, and we see easily that this is exactly the map we had at the
-  beginning.
-
-  \bigskip
-
-  Hence we proved that $\unit$ in a pushout of $\Ddiag$ in $\typelep{n+1}$. Using
-  uniqueness of pushouts we get that $\trunc{n+1}{\unit\sqcup^A\unit}=\unit$
-  which proves that the suspension of $A$ is $(n+1)$-connected.
-\end{proof}
-
-\begin{cor} \label{cor:sn-connected}
-  For all $n:\N$, the sphere $\Sn^n$ is $(n-1)$-connected.
-\end{cor}
-
-\begin{proof}
-  We prove this by induction on $n$.
-
-  For $n=0$ we have to prove that $\Sn^0$ is inhabited which is clear.
-
-  Let $n:\N$ such that $\Sn^n$ is $(n-1)$-connected. By definition $\Sn^{n+1}$
-  is the suspension of $\Sn^n$ hence by the previous lemma $\Sn^{n+1}$ is
-  $n$-connected.
-\end{proof}
-
-\subsection{\texorpdfstring{$\pi_{k \le n}$}{π\_(k≤n)} of an \texorpdfstring{$n$}{n}-connected space (includes \texorpdfstring{$\pi_{k < n}(\Sn ^n)$}{π\_(k<n)(Sⁿ)})}
-\label{sec:pik-le-n}
-
-\begin{lem}
-  Let $(A,a)$ be a pointed type and $n:\N$.
-
-  Then if $n>0$ the set $\pi_n(A,a)$ has a group structure and if $n>1$ it is
-  even an abelian group.
-\end{lem}
-
-\begin{proof}
-  TODO
-\end{proof}
-
-We can now say something about homotopy groups of $n$-truncated and
-$n$-connected types.
-
-\begin{lem}
-  If $A$ is $n$-truncated and $a:A$, then we have
-  \[\forall k>n,\ \pi_k(A,a)=\unit\]
-\end{lem}
-
-\begin{proof}
-  Indeed, taking the loop space of an $n$-truncated type gives an
-  $(n-1)$-truncated type, hence $\Omega^k(A,a)$ is $(n-k)$-truncated and we have
-  $(n-k)\le-1$ so $\Omega^k(A,a)$ is \anhprop. But $\Omega^k(A,a)$ is inhabited,
-  so it is actually contractible and
-  $\pi_k(A,a)=\trunc0{\Omega^k(A,a)}=\trunc0{\unit}=\unit$.
-\end{proof}
-
-\begin{lem} \label{lem:pik-nconnected}
-  If $A$ is $n$-connected and $a:A$, then we have
-  \[\forall k\le{}n,\ \pi_k(A,a)=\unit\]
-\end{lem}
-
-\begin{proof}
-  We have the following sequence of equalities:
-
-  \begin{align*}
-    \pi_k(A,a) &= \trunc0{\Omega^k(A,a)} \\
-    &= \Omega^k(\trunc k{(A,a)}) \\
-    &= \Omega^k(\trunc k{\trunc n{(A,a)}}) \\
-    &= \Omega^k(\trunc k{\unit}) \\
-    &= \Omega^k(\unit) \\
-    &= \unit
-  \end{align*}
-
-  The third line uses the fact that $k\le{}n$ in order to use that
-  $\truncf k\circ\truncf n=\truncf k$ and the fourth line uses the fact that $A$ is
-  $n$-connected.
-\end{proof}
-
-\begin{cor}[$\pi_{k<n}(\Sn ^n)$]
-For all $n$ and $k$, if $k < n$, then $\pi_k(\Sn ^n) = \unit$.  
-\end{cor}
-\begin{proof}
-$\Sn$ is $n\mathord{-}1$-connected by \autoref{cor:sn-connected}.  Therefore
-\autoref{lem:pik-nconnected} gives the result.  
-\end{proof}
 
 %%% Local Variables:
 %%% mode: latex

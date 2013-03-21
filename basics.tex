@@ -373,7 +373,7 @@ We note that $\apfunc{}$ behaves functorially, in all the ways that one might ex
   Left to the reader.
 \end{proof}
 
-Now, since \emph{dependently typed} functions are very important in type theory, we will also need a version of \autoref{lem:map} for these.
+Now, since \emph{dependently typed} functions are essential in type theory, we will also need a version of \autoref{lem:map} for these.
 However, this is not quite so simple to state, because if $f:\prd{x:A} B(x)$ and $p:x=y$, then $f(x):B(x)$ and $f(y):B(y)$ are elements of distinct types, so that \emph{a priori} we cannot even ask whether they are equal.
 The missing ingredient is that $p$ itself gives us a way to relate the types $B(x)$ and $B(y)$.
 
@@ -410,26 +410,31 @@ Given a path $p:x=y$ in the base space $A$ and a point $u:P(x)$ in the fiber ove
 The point $\trans p u$ is the other endpoint of this lifted path.
 We can also define the path itself in type theory:
 
-\begin{thm}[Path lifting property]\label{thm:path-lifting}
-Let $P:A\to\type$ be a type family over $A$ and assume we have $u:P(x)$ for $x:A$. Then we have the identity
-\begin{equation*}
-\mathsf{lift}(u,p):(x,u)=(y,\trans{p}{u})
-\end{equation*}
-in $\sm{x:A}P(x)$ for any $p:x=y$.
-\end{thm}
+\begin{lem}[Path lifting property]\label{thm:path-lifting}
+  Let $P:A\to\type$ be a type family over $A$ and assume we have $u:P(x)$ for some $x:A$.
+  Then for any $p:x=y$, we have
+  \begin{equation*}
+    \mathsf{lift}(u,p):(x,u)=(y,\trans{p}{u})
+  \end{equation*}
+  in $\sm{x:A}P(x)$.
+\end{lem}
+\begin{proof}
+  Left to the reader.
+  We will prove a more general theorem in \autoref{sec:compute-sigma}.
+\end{proof}
 
-\begin{proof}[First proof]
-Let $D:\prd{x,y:A}{p:x=y}\type$ be defined by
-\begin{equation*}
-D(x,y,p)\defeq (x,u)=(y,\trans{p}{u}).
-\end{equation*}
-Then $D(x,x,\refl{x})\defeq (x,u)=(x,\trans{\refl{x}}{u})$. By the conversion rule we have $\trans{\refl{x}}{u}\defeq u$, so we see that $D(x,x,\refl{x})\defeq (x,u)=(x,u)$. Therefore we find $d(x)\defeq\refl{(x,u)}:D(x,x,\refl{x})$. Now $J$ gives a term of type $\prd{x,y:A}{p:x=y}(x,u)=(y,\trans{p}{u})$.
-\end{proof}
-\begin{proof}[Second proof] 
-  By induction, it suffices to find a term of type $(x,u)=(x,\trans{\refl{x}}{u})$.
-  Note that $\trans{\refl{x}}{u}\jdeq u$, so we really need to find a term of type $(x,u)=(x,u)$.
-  But here we can take the reflexivity term.
-\end{proof}
+% \begin{proof}[First proof]
+% Let $D:\prd{x,y:A}{p:x=y}\type$ be defined by
+% \begin{equation*}
+% D(x,y,p)\defeq (x,u)=(y,\trans{p}{u}).
+% \end{equation*}
+% Then $D(x,x,\refl{x})\defeq (x,u)=(x,\trans{\refl{x}}{u})$. By the conversion rule we have $\trans{\refl{x}}{u}\defeq u$, so we see that $D(x,x,\refl{x})\defeq (x,u)=(x,u)$. Therefore we find $d(x)\defeq\refl{(x,u)}:D(x,x,\refl{x})$. Now $J$ gives a term of type $\prd{x,y:A}{p:x=y}(x,u)=(y,\trans{p}{u})$.
+% \end{proof}
+% \begin{proof}[Second proof] 
+%   By induction, it suffices to find a term of type $(x,u)=(x,\trans{\refl{x}}{u})$.
+%   Note that $\trans{\refl{x}}{u}\jdeq u$, so we really need to find a term of type $(x,u)=(x,u)$.
+%   But here we can take the reflexivity term.
+% \end{proof}
 
 Now we can prove the dependent version of \autoref{lem:map}.
 The topological intuition is that given $f:\prd{x:A} P(x)$ and a path $p:\id[A]xy$, we ought to be able to apply $f$ to $p$ and obtain a path in the total space of $P$ which ``lies over'' $p$, as shown below.
@@ -481,11 +486,16 @@ And, indeed, we can show that dependent functions produce such paths.
   But in this case, the desired equation is $\trans{(\refl{x})}{f(x)}\jdeq f(x)$, which holds judgmentally.
 \end{proof}
 
-Recall that a non-dependently typed function $f:A\to B$ is just the special case of a dependently typed function $f:\prd{x:A} P(x)$ when $P$ is a constant type family, $P(x) \defeq B$.
+We will refer generally to paths which ``lie over other paths'' in this sense as \emph{dependent paths}.
+They will play an increasingly important role starting in \autoref{cha:hits}.
+In \autoref{sec:computational} we will see that for a few particular kinds of type families, there are equivalent ways to represent the notion of dependent paths that are sometimes more convenient.
+
+Now recall that a non-dependently typed function $f:A\to B$ is just the special case of a dependently typed function $f:\prd{x:A} P(x)$ when $P$ is a constant type family, $P(x) \defeq B$.
 In this case, $\apdfunc{f}$ and $\apfunc{f}$ are closely related, because of the following lemma:
 
 \begin{lem}\label{thm:trans-trivial}
-  If $P:A\to\type$ is defined by $P(x) \defeq B$ for a fixed $B:\type$, then for any $x,y:A$ and $p:x=y$ and $b:B$ we have $\transfib P p b = b$.
+  If $P:A\to\type$ is defined by $P(x) \defeq B$ for a fixed $B:\type$, then for any $x,y:A$ and $p:x=y$ and $b:B$ we have a path
+  \[ \transconst Bpb : \transfib P p b = b. \]
 \end{lem}
 \begin{proof}[First proof]
   Fix a $b:B$, and let $D:\prd{x,y:A}{p:\id{x}{y}} \type$ be the type family defined by
@@ -500,14 +510,13 @@ In this case, $\apdfunc{f}$ and $\apfunc{f}$ are closely related, because of the
   But $\transfib P {\refl x} b \jdeq b$, so in this case what we have to prove is $b=b$, and we have $\refl{b}$ for this.
 \end{proof}
 
-Thus, by concatenating with the path defined in \autoref{thm:trans-trivial}, for any $x,y:A$ and $p:x=y$ and $f:A\to B$ we have functions
+Thus, by concatenating with $\transconst B p b$, for any $x,y:A$ and $p:x=y$ and $f:A\to B$ we obtain functions
 \begin{align}
   \big(f(x) = f(y)\big) &\to \big(\trans{p}{f(x)} = f(y)\big)\label{eq:ap-to-apd}
   \qquad\text{and} \\
   \big(\trans{p}{f(x)} = f(y)\big) &\to \big(f(x) = f(y)\big).\label{eq:apd-to-ap}
 \end{align}
 In fact, these functions are inverse equivalences (in the sense to be introduced in \autoref{sec:basics-equivalences}), and they relate $\apfunc f (p)$  to $\apdfunc f (p)$.
-Specifically, if we write $\transconst Bpb$ for the path defined in \autoref{thm:trans-trivial}, we have the following.
 
 \begin{lem}\label{thm:apd-const}
   For $f:A\to B$ and $p:\id[A]xy$, we have
@@ -528,7 +537,7 @@ Specifically, if we write $\transconst Bpb$ for the path defined in \autoref{thm
 \end{proof}
 
 But because the types of $\apdfunc{f}$ and $\apfunc{f}$ are different, it is often clearer to use different notations for them.
-We may sometimes use a notation $\apd f p$ for $\apdfunc{f}(p)$, which is similar to the notation $\ap f p$ for $\apfunc{f}$.
+We may sometimes use a notation $\apd f p$ for $\apdfunc{f}(p)$, which is similar to the notation $\ap f p$ for $\apfunc{f}(p)$.
 
 At this point, we hope the reader is starting to get a feel for proofs by induction on identity types.
 From now on we desist from giving both styles of proofs, allowing ourselves to use whatever is most clear and convenient (and often the second, more concise one).
@@ -712,7 +721,7 @@ In \autoref{cha:hlevels} we will study a more general form of this question in d
   The type $\emptyt$ is a set, for given any $x,y:\emptyt$ we may deduce anything we like by contradiction.
 \end{eg}
 
-\begin{eg}
+\begin{eg}\label{thm:nat-set}
   The type \nat of natural numbers is also a set.
   This follows from \autoref{thm:path-nat}, since all equality types $\id[\nat]xy$ are equivalent to either \unit or \emptyt, and any two inhabitants of \unit or \emptyt are equal.
   We will see another proof of this fact in \autoref{cha:hlevels}.
@@ -1442,7 +1451,7 @@ This principle consists of many lemmas, most of which we leave to the reader; th
 
 Another reason contractible types are interesting is that they extend the ladder of $n$-types mentioned in \autoref{sec:basics-sets} downwards one more step.
 
-\begin{lem}
+\begin{lem}\label{thm:prop-minusonetype}
   A type $A$ is a mere proposition if and only if for all $x,y:A$, the type $\id[A]xy$ is contractible.
 \end{lem}
 \begin{proof}
@@ -1603,7 +1612,7 @@ Inside of type theory, the propositional truncation $\brck-$ is also a monad, as
 
 \begin{ex}
   Show that if LEM holds, then for all $A:\type$ we have $\bbrck{(\brck A \to A)}$.
-  It is an open question whether this is true without LEM (although we expect not).
+  It is an open question whether this is provable without LEM (although we expect not).
 \end{ex}
 
 \begin{ex}
@@ -1634,7 +1643,7 @@ Inside of type theory, the propositional truncation $\brck-$ is also a monad, as
   Observe that if we assume instead that each $Y(x)$ is a set, then~\eqref{eq:dnshift} becomes equivalent to the axiom of choice~\eqref{eq:epis-split}.
 \end{ex}
 
-\begin{ex}
+\begin{ex}\label{ex:prop-trunc-ind}
   Show that the rules for the propositional truncation given in \autoref{subsec:prop-trunc} are sufficient to imply a dependent version of the induction principle: for any type family $B:\brck A \to \type$ such that each $B(x)$ is a mere proposition, if for every $a:A$ we have $B(\bproj a)$, then for every $x:\brck A$ we have $B(x)$.
 \end{ex}
 

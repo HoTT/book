@@ -3,7 +3,7 @@
 
 We now study in more detail the notion of \emph{equivalence of types} that was introduced briefly in \autoref{sec:basics-equivalences}.
 Specifically, we will give several different ways to define a type $\isequiv(f)$ having the properties mentioned there.
-Recall that we wanted $\isequiv(f)$ to have the following properties:
+Recall that we wanted $\isequiv(f)$ to have the following properties, which we restate here:
 \begin{enumerate}
 \item $\qinv(f) \to \isequiv (f)$.\label{item:beb1}
 \item $\isequiv (f) \to \qinv(f)$.\label{item:beb2}
@@ -24,10 +24,10 @@ We will define three different types having properties~\ref{item:beb1}--\ref{ite
 \item contractible functions.
 \end{itemize}
 We will also show that all these types are equivalent.
-These names are intentionally somewhat clunky, because after we know that they are all equivalent and have properties~\ref{item:beb1}--\ref{item:beb3}, we will revert to saying simply ``equivalence'' without needing to specify which specific definition we choose.
-But for purposes of the comparisons in this chapter, we need different names for each definition, to disambiguate them in our proofs.
+These names are intentionally somewhat cumbersome, because after we know that they are all equivalent and have properties~\ref{item:beb1}--\ref{item:beb3}, we will revert to saying simply ``equivalence'' without needing to specify which particular definition we choose.
+But for purposes of the comparisons in this chapter, we need different names for each definition.
 
-Before we embark on this journey, however, we begin with a little more explanation of why it is necessary.
+Before we examine the different notions of equivalence, however, we give a little more explanation of why a different concept than quasi-invertibility is needed.
 
 \section{Quasi-inverses}
 \label{sec:quasi-inverses}
@@ -166,7 +166,7 @@ Using $\tau(gy)$ gives us
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{gfgfgy \ar^-{gfg(\epsilon y)}[r] \ar_{gf(\eta (gy))}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
-Using the commutativity of $\eta$ with $f \circ g$ (\autoref{cor:hom-fg}), we have
+Using the commutativity of $\eta$ with $g \circ f$ (\autoref{cor:hom-fg}), we have
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{gfgfgy \ar^-{gfg(\epsilon y)}[r] \ar_{\eta (gfgy)}[d] & gfgy \ar^{g(\epsilon y)}[d] \\ gfgy \ar_{g(\epsilon y)}[r] & gy
   }\]
@@ -255,11 +255,13 @@ The following types put together the quasi-inverse $g$ with one of the homotopie
 \begin{defn}
   Let $f:A\to B$.
   \begin{itemize}
-  \item A function $g:B\ra A$ is a \textbf{left inverse} to $f$ if $g\circ f\htpy \idfunc[A]$.
-    If $f$ has a left inverse, it is \textbf{left invertible}; we have the type
-    \[ \linv(f) \defeq \sm{g:B\to A} (g\circ f\htpy \idfunc[A]). \]
-  \item Similarly, $g$ is a \textbf{right inverse} to $f$ if $f\circ g\htpy \idfunc[B]$, and we have
-    \[ \rinv(f) \defeq \sm{g:B\to A} (f\circ g\htpy \idfunc[B]). \]
+  \item Given a function $g:B\ra A$, we define the types 
+    \begin{align*}
+      \linv(f) &\defeq \sm{g:B\to A} (g\circ f\htpy \idfunc[A])\\
+      \rinv(f) &\defeq \sm{g:B\to A} (f\circ g\htpy \idfunc[B])
+    \end{align*}
+  of \textbf{left inverses} and \textbf{right inverses} to $f$, respectively.
+  We call $f$ \textbf{left invertible} if $\linv(f)$ is inhabited, and similarly \textbf{right invertible} if $\rinv(f)$ is inhabited.
   \end{itemize}
 \end{defn}
 
@@ -367,7 +369,7 @@ The difference is that instead of adding a \emph{higher} datum (a 2-dimensional 
 Note that our proofs about $\ishae(f)$ and $\biinv(f)$ made essential use of the fact that the fibers of an equivalence are contractible.
 In fact, it turns out that this property is itself a sufficient definition of equivalence.
 
-\begin{defn}\label{defn:equivalence}
+\begin{defn}[Contractible maps] \label{defn:equivalence}
   A map $f:A\ra B$ is \textbf{contractible} if for all $y:B$, the fiber $\hfib f y$ is contractible.
 \end{defn}
 
@@ -376,8 +378,11 @@ Thus, the type $\iscontr(f)$ is defined to be
   \iscontr(f) &\defeq \prd{y:B} \iscontr(\hfib f y)\\
   &\defeq \prd{y:B} \iscontr (\setof{x:A | f(x) = y}).\label{eq:iscontrf}
 \end{align}
-This terminology follows the general homotopy-theoretic practice of saying that a map has a certain property if all of its (homotopy) fibers have that property.
-In \autoref{cha:hlevels} we will learn to also call such a map \emph{$(-2)$-truncated}.
+Note that in \autoref{sec:contractibility} we defined what it means for a \emph{type} to be contractible.
+Here we are defining what it means for a \emph{map} to be contractible.
+Our terminology follows the general homotopy-theoretic practice of saying that a map has a certain property if all of its (homotopy) fibers have that property.
+Thus, a type $A$ is contractible just when the map $A\to\unit$ is contractible.
+From \autoref{cha:hlevels} onwards we will call contractible maps and types \emph{$(-2)$-truncated}.
 
 We have already shown in \autoref{thm:contr-hae} that $\ishae(f) \to \iscontr(f)$.
 Conversely:
@@ -413,7 +418,7 @@ It is also easy to see:
   Thus, \autoref{lem:equiv-iff-hprop} applies.
 \end{proof}
 
-Usually, we prove that a function is an equivalence by exhibiting a quasi-inverse, but sometimes this definition is convenient to use instead.
+Usually, we prove that a function is an equivalence by exhibiting a quasi-inverse, but sometimes this definition is more convenient.
 For instance, it implies that when proving a function to be an equivalence, we are free to assume that its codomain is inhabited.
 
 \begin{cor}\label{thm:equiv-inhabcod}
@@ -432,13 +437,14 @@ When $A$ and $B$ are sets and $f:A\to B$ is an equivalence, we also call it as \
 (We avoid these words for types that are not sets, since in homotopy theory and higher category theory they often denote a stricter notion of ``sameness'' than homotopy equivalence.)
 In set theory, a function is a bijection just when it is both injective and surjective.
 The same is true in type theory, if we formulate these conditions appropriately.
+For clarity, when dealing with types that are not sets, we will speak of \emph{monomorphisms} instead of injections.
 
 \begin{defn}
   Let $f:A\to B$.
   \begin{enumerate}
   \item We say $f$ is \textbf{surjective} if for every $b:B$ we have $\brck{\hfib f b}$.
     In other words, every fiber of $f$ is merely inhabited.
-  \item We say $f$ is a \textbf{monomorphism} if for every $x,y:A$ the function $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence.
+  \item We say $f$ is a \textbf{monomorphism} (or a \textbf{mono}) if for every $x,y:A$ the function $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence.
   \end{enumerate}
 \end{defn}
 
@@ -447,7 +453,7 @@ Note that if $A$ and $B$ are sets, then by \autoref{lem:equiv-iff-hprop}, $f$ is
   \prd{x,y:A} (\id[B]{f(x)}{f(y)}) \to (\id[A]xy).\label{eq:injective}
 \end{equation}
 In this case we say that $f$ is \textbf{injective}.
-We avoid that word for types that are not sets, because it might be interpreted as~\eqref{eq:injective} (which is an ill-behaved notion for non-sets).
+We avoid that word for types that are not sets, because it might be interpreted as~\eqref{eq:injective}, which is an ill-behaved notion for non-sets.
 It is also true that any function between sets is surjective if and only if it is an \emph{epimorphism} in a suitable sense, but this also fails for more general types, and surjectivity is generally the more important notion.
 
 \begin{thm}\label{thm:mono-surj-equiv}
@@ -475,7 +481,7 @@ It is also true that any function between sets is surjective if and only if it i
   Both surjectivity and monomorphy are mere propositions; now apply \autoref{lem:equiv-iff-hprop}.
 \end{proof}
 
-Of course, this cannot be used as a definition of ``equivalence'', since the definition of monomorphy refers to equivalences.
+Of course, this cannot be used as a definition of ``equivalence'', since the definition of monomorphisms refers to equivalences.
 However, this characterization can still be useful; see \autoref{sec:whitehead}.
 We will generalize it in \autoref{cha:hlevels}.
 

@@ -1,7 +1,4 @@
 \newcommand{\fcomp}{\circ}
-\newcommand{\pairpath}{\ensuremath{\mathsf{pair}^{\mathord{=}}}\xspace}
-% \newcommand{\projpath}[1]{\proj{#1}^{\mathord{=}}}
-\newcommand{\projpath}[1]{\ensuremath{\apfunc{\proj{#1}}}\xspace}
 
 \section{The computational behavior of type formers}
 \label{sec:computational}
@@ -254,18 +251,20 @@ an introduction form (\pairpath{}{}), the forward direction as
 elimination forms (\projpath{1} and \projpath{2}), and the equivalence
 as giving $\beta$ and $\eta$ rules for these.  
 
-The action of transport on $\Sigma$-types is a generalization of the
-action for binary cartesian products:
+Note that the lifted path $\mathsf{lift}(u,p)$  of $p:x=y$ at $u:P(x)$ defined in \autoref{thm:path-lifting} may be identified with the special case of the introduction form
+\[\pairpath(p,\refl{\trans p u}):(x,u) = (y,\trans p u).\]
+This appears in the statement of action of transport on $\Sigma$-types, which is also a generalization of the action for binary cartesian products:
+
 \begin{thm}
-Suppose we have a type family $P:A\to\type$ and a type family $Q:\big(\sm{x:A} P(x)\big)\to\type$. Then we get the type family
-\begin{equation*}
-x:A\vdash \sm{u:P(x)} Q(x,u):\type
-\end{equation*}
-For any path $p:x=y$ and any $(u,z):\sum(u:P(x)),\ Q(x,u)$ we have
-\begin{equation*}
-\trans{p}{u,z}=(\trans{p}{u},\trans{\mathsf{lift}(u,p)}{z}).
-\end{equation*}
-The path $\mathsf{lift}(u,p)$ is defined in \autoref{thm:path-lifting}.
+  Suppose we have type families $P:A\to\type$ and $Q:\big(\sm{x:A} P(x)\big)\to\type$.
+  Then we can construct the type family over $A$ defined by
+  \begin{equation*}
+    x \mapsto  \sm{u:P(x)} Q(x,u).
+  \end{equation*}
+  For any path $p:x=y$ and any $(u,z):\sum(u:P(x)),\ Q(x,u)$ we have
+  \begin{equation*}
+    \trans{p}{u,z}=\big(\trans{p}{u},\,\trans{\pairpath(p,\refl{\trans pu})}{z}\big).
+  \end{equation*}
 \end{thm}
 
 \begin{proof}
@@ -274,7 +273,7 @@ Immediate by path induction.
 
 We leave it to the reader to state and prove a generalization of
 \autoref{thm:ap-prod} (see \autoref{ex:ap-sigma}), and to characterize
-the reflexivity, inverses, and composition of $\sm{x:A} B$
+the reflexivity, inverses, and composition of $\Sigma$-types
 componentwise.
 
 
@@ -368,20 +367,53 @@ This can be proven easily by path induction.
 
 Transporting dependent functions is similar, but more complicated.
 Suppose given $X$ and $p$ as before, type families $A:X\to \type$ and $B:\prd{x:X} (A(x)\to\type)$, and also a dependent function $f : \prd{a:A(x_1)} B(x_1,a)$.
-Then
+Then for $p:\id[A]{x_1}{x_2}$ and $a:A(x_2)$, we have
 \begin{align*}
-  \transfib{\Pi_A(B)}{p}{f} =
-  \;\Big(x \mapsto \transfib{\hat{B}}{\opp{(\mathsf{lift}(x,\opp{p}))}}{f (\transfib{A}{\opp p}x)}\Big)
+  \transfib{\Pi_A(B)}{p}{f}(a) =
+  \Transfib{\hat{B}}{\opp{(\pairpath(\opp{p},\refl{ \trans{\opp p}{a} }))}}{f(\transfib{A}{\opp p}{a})}
 \end{align*}
 where $\Pi_A(B)$ and $\hat{B}$ denote respectively the type families
-\[
+\begin{equation}\label{eq:transport-arrow-families}
 \begin{array}{rclcl}
 \Pi_A(B) &\defeq& \big(x\mapsto \prd{a:A(x)} B(x,a) \big) &:& X\to \type\\
 \hat{B} &\defeq& \big(w \mapsto B(\proj1w,\proj2w) \big) &:& \big(\sm{x:X} A(x)\big) \to \type.
 \end{array}
-\]
+\end{equation}
 If these formulas look a bit intimidating, don't worry about the details.
 The basic idea is just the same as for the non-dependent function type: we transport the argument backwards, apply the function, and then transport the result forwards again.
+
+Now recall that for a general type family $P:X\to\type$, in \autoref{sec:functors} we defined the type of \emph{dependent paths} over $p:\id[X]xy$ from $u:P(x)$ to $v:P(y)$ to be $\id[P(y)]{\trans{p}{u}}{v}$.
+When $P$ is a family of function types, there is an equivalent way to represent this which is often more convenient.
+
+\begin{lem}\label{thm:dpath-arrow}
+  Given type families $A,B:X\to\type$ and $p:\id[X]xy$, and also $f:A(x)\to B(x)$ and $g:A(y)\to B(y)$, we have an equivalence
+  \[ \eqvspaced{ \big(\trans{p}{f} = {g}\big) } { \Big(\prd{a:A(x)}  \trans{p}{f(a)} = g(\trans{p}{a}) \Big) }. \]
+  Moreover, if $q:\trans{p}{f} = {g}$ corresponds under this equivalence to $\hat q$, then for $a:A(x)$, the path
+  \[ \happly(q,\trans p a) : (\trans p f)(\trans p a) = g(\trans p a)\]
+  is equal to the composite
+  \begin{alignat*}{2}
+    (\trans p f)(\trans p a)
+    &= \trans p {f (\trans {\opp p}{\trans p a})}
+    &&\quad\text{by~\eqref{eq:transport-arrow}}\\
+    &= \trans p {f(a)}\\
+    &= g(\trans p a)
+    &&\quad\text{by $\hat{q}$.}
+  \end{alignat*}
+\end{lem}
+\begin{proof}
+  By path induction, we may assume $p$ is reflexivity, in which case the desired equivalence reduces to function extensionality.
+  The second statement then follows by the computation rule for function extensionality.
+\end{proof}
+
+As usual, the case of dependent functions is similar, but more complicated.
+
+\begin{lem}\label{thm:dpath-forall}
+  Given type families $A:X\to\type$ and $B:\prd{x:X} A(x)\to\type$ and $p:\id[X]xy$, and also $f:\prd{a:A(x)} B(x,a)$ and $g:\prd{a:A(y)} B(y,a)$, we have an equivalence
+  \[ \eqvspaced{ \big(\trans{p}{f} = {g}\big) } { \Big(\prd{a:A(x)}  \transfib{\hat{B}}{\pairpath(p,\refl{\trans pa})}{f(a)} = g(\trans{p}{a}) \Big) } \]
+  with $\hat{B}$ as in~\eqref{eq:transport-arrow-families}.
+\end{lem}
+
+We leave it to the reader to prove this and to formulate a suitable computation rule.
 
 
 \subsection{The Universe}
@@ -406,6 +438,10 @@ We perform this identification by way of the following canonical function.
   Thus, we can define $\idtoeqv(p)$ to be $\transf{p}$ (together with the above proof that it is an equivalence).
 \end{proof}
 
+We would like to say that \idtoeqv is an equivalence.
+However, as with $\happly$ for function types, the type theory described in \autoref{cha:typetheory} is insufficient to guarantee this.
+Thus, as we did for function extensionality, we formulate this property as an axiom: Voevodsky's \emph{univalence axiom}.
+
 \begin{axiom}[Univalence]
   For any $A,B:\type$, the function~\eqref{eq:uidtoeqv} is an equivalence.
 \end{axiom}
@@ -421,7 +457,7 @@ As with function extensionality, the univalence axiom should eventually be built
 \end{rmk}
 
 In particular, univalence means that \emph{equivalent types may be identified}.
-As we did in \autoref{sec:compute-cartprod,sec:compute-pi}, it is useful to break this equivalence into:
+As we did in previous sections, it is useful to break this equivalence into:
 
 \begin{itemize}
 \item An introduction rule for {(\id[\type]{A}{B})}:
@@ -505,42 +541,61 @@ For example:
   to homotopies $\prd{x:A} \id[B(x)] {\happly(p)(x)}{\happly(q)(x)}$.  
 \end{itemize}
 
-Next we consider $\transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q}$, i.e.\ transport in a path fibration. This is given by pre- and post-composition, analogously to transport at $\to$.
+Next we consider transport in families of paths, i.e.\ transport in $C:A\to\type$ where each $C(x)$ is an identity type.
+The simplest case is when $C(x)$ is a type of paths in $A$ itself, perhaps with one endpoint fixed.
 
-\begin{thm}\label{thm:transport-path}
-Let $ A : \type$ with $a,a':A$ and $B : A \to \type$ and $f,g : \prd{x:A} B(x)$ and $p :
-\id[A]{a}{a'}$ and $q : \id[B(a)]{f(a)}{g(a)}$.  
-
-A common case is when $B(x)$ does not mention the variable $x$:
-\begin{equation*}
-\id[f(a') = g(a')]{\transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q}}
-{\opp{(\apfunc{f}{p})} \ct q \ct \apfunc{g}{p}}
-\end{equation*}
-
-When $B(x)$ is dependent, the rule is
-\begin{equation*}
-\transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q} = 
-\opp{(\apfunc{f}{p})} \ct \apdfunc{(\transfibf{A}{p})}(q) \ct \apfunc{g}{p}
-\end{equation*}
-
-\end{thm}
+\begin{lem}\label{cor:transport-path-prepost}
+  For any $A$ and $a:A$, with $p:x_1=x_2$, we have
+  \begin{alignat*}{2}
+    \transfib{x \mapsto (\id{a}{x})} {p} {q} &= q \ct p
+    && \qquad\text{for } q:a=x_1\\
+    \transfib{x \mapsto (\id{x}{a})} {p} {q} &= \opp {p} \ct q 
+    && \qquad\text{for } q:x_1=a\\
+    \transfib{x \mapsto (\id{x}{x})} {p} {q} &= \opp{p} \ct q \ct p
+    && \qquad\text{for } q:x_1=x_1.
+  \end{alignat*}
+\end{lem}
 \begin{proof}
-Path induction on $p$, followed by the unit law for composition.
+  Path induction on $p$, followed by the unit laws for composition.
 \end{proof}
 
-Because $\apfunc{(x \mapsto x)}$ is the identity function, and 
-$\apfunc{(x \mapsto c)}$ (where $c$ is a constant) is \refl{c}, the
-following are special cases:
-\begin{cor}\label{cor:transport-path-prepost}
-\[
-\begin{array}{l}
-\transfib{x \mapsto \id{c}{x}} {p} {q} = q \ct p \\
-\transfib{x \mapsto \id{x}{c}} {p} {q} = \opp {p} \ct q \\
-\end{array}
-\]
-\end{cor}
 In other words, transporting with ${x \mapsto \id{c}{x}}$ is post-composition, and transporting with ${x \mapsto \id{x}{c}}$ is contravariant pre-composition.
 These may be familiar as the functorial actions of the covariant and contravariant hom-functors $\hom(c,-)$ and $\hom(-,c)$ in category theory.
+
+Combining \autoref{cor:transport-path-prepost,thm:transport-compose}, we obtain a more general form:
+
+\begin{thm}\label{thm:transport-path}
+  For $f,g:A\to B$, with $p : \id[A]{a}{a'}$ and $q : \id[B]{f(a)}{g(a)}$, we have
+  \begin{equation*}
+    \id[f(a') = g(a')]{\transfib{x \mapsto \id[B]{f(x)}{g(x)}}{p}{q}}
+    {\opp{(\apfunc{f}{p})} \ct q \ct \apfunc{g}{p}}.
+  \end{equation*}
+\end{thm}
+
+Because $\apfunc{(x \mapsto x)}$ is the identity function, and $\apfunc{(x \mapsto c)}$ (where $c$ is a constant) is \refl{c}, \autoref{cor:transport-path-prepost} is a special case.
+A yet more general version is when $B$ can be a family of types indexed on $A$:
+
+\begin{thm}\label{thm:transport-path2}
+  Let $B : A \to \type$ and $f,g : \prd{x:A} B(x)$, with $p : \id[A]{a}{a'}$ and $q : \id[B(a)]{f(a)}{g(a)}$.
+  Then we have
+  \begin{equation*}
+    \transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q} = 
+    \opp{(\apfunc{f}{p})} \ct \apdfunc{(\transfibf{A}{p})}(q) \ct \apfunc{g}{p}
+  \end{equation*}
+\end{thm}
+
+Finally, as in \autoref{sec:compute-pi}, for families of identity types there is another equivalent characterization of dependent paths.
+
+\begin{thm}\label{thm:dpath-path}
+  For $p:\id[A]a{a'}$ with $q:a=a$ and $r:a'=a'$, we have
+  \[ \eqvspaced{ \big(\transfib{x\mapsto (x=x)}{p}{q} = r \big) }{ \big( q \ct p = p \ct r \big) } \]
+\end{thm}
+\begin{proof}
+  Path induction on $p$, followed by the fact that composing with the unit equalities $q\ct 1 = q$ and $r = 1\ct r$ is an equivalence.
+\end{proof}
+
+There are more general equivalences involving the application of functions, akin to \autoref{thm:transport-path,thm:transport-path2}.
+
 
 \subsection{Coproducts}
 \label{sec:compute-coprod}
@@ -562,11 +617,11 @@ However, because these types also admit a negative presentation which differs on
 
 Consider the coproduct type $A+B$, which is ``presented'' by the injections $\inl:A\to A+B$ and $\inr:B\to A+B$.
 Intuitively, we expect that $A+B$ contains exact copies of $A$ and $B$ disjointly, so that we should have
-\begin{gather}
-  \eqv{(\inl(a_1)=\inl(a_2))}{(a_1=a_2)} \label{eq:inlinj}\\
-  \eqv{(\inr(b_1)=\inr(b_2))}{(b_1=b_2)}\\
-  \eqv{(\inl(a)= \inr(b))}{\emptyt} \label{eq:inlrdj}
-\end{gather}
+\begin{align}
+  {(\inl(a_1)=\inl(a_2))}&\simeq {(a_1=a_2)} \label{eq:inlinj}\\
+  {(\inr(b_1)=\inr(b_2))}&\simeq {(b_1=b_2)}\\
+  {(\inl(a)= \inr(b))} &\simeq {\emptyt} \label{eq:inlrdj}
+\end{align}
 We prove this as follows.
 Fix an element $a_0:A$; our goal is to characterize the type family
 \[(x\mapsto (\inl(a)=x)) : A+B \to \type.\]
@@ -715,10 +770,14 @@ We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
 \end{proof}
 
 In particular, we have
-\[ \encode(\suc(m),0) : (\suc(m)=0) \to \emptyt \]
+\begin{equation}
+  \encode(\suc(m),0) : (\suc(m)=0) \to \emptyt\label{eq:zero-not-succ}
+\end{equation}
 which shows that ``$0$ is not the successor of any natural number''.
 We also have the composite
-\[ (\suc(m)=\suc(n)) \xrightarrow{\encode} \code(\suc(m),\suc(n)) \jdeq \code(m,n) \xrightarrow{\decode} (m=n) \]
+\begin{equation}
+  (\suc(m)=\suc(n)) \xrightarrow{\encode} \code(\suc(m),\suc(n)) \jdeq \code(m,n) \xrightarrow{\decode} (m=n)\label{eq:suc-injective}
+\end{equation}
 which shows that the function $\suc$ is injective.
 
 We will study more general positive types in Chapters~\ref{cha:induction} and~\ref{cha:hits}.

@@ -134,113 +134,279 @@ and just assume that levels can be assigned in a consistent way. We
 may write $A:\UU$ omitting the level. This way we can even write
 $\UU:\UU$ which can be read as $\UU_i:\UU_{i+1}$ having left the
 indizes implicit. 
+
+\section{Function types}
+\label{sec:function-types}
+
+Given types $A,B :\UU$ we can construct the type $A \to B:\UU$ of functions with domain $A$
+and codomain $B$. Unlike in set theory functions are not defined as
+functional relations but functions in type theory are a primitive
+concept. We explain the function type by prescribing what we can do with them, 
+how to construct them and what equalities they induce.
+
+Given a function $f : A \to B$ and an element of the domain $a : A$ we
+can \textbf{apply} the function to obtain an element of the codomain
+$f(a) : B$. 
+
+But how can we construct elements of $A \to B$? There are two ways:
+either by direct definition or by using
+$\lambda$-abstraction. Introducing a function by definition means that
+we introduce a function by giving it a name, lets say $f$ and saying
+we define $f : A \to B$ by giving an equation
+\[ f(x) \defeq b \]
+where $x$ is a variable and $b$ is an expression which may use $x$.
+We have to check that $b : B$ assuming $x:A$.
+
+Now we can compute $f(a)$ by replacing the variable $x$ in $b$ with
+$a$. As an example consider the function $f : \Nat \to \Nat$ which is
+defined by $f(x) = x+x$. Now $f(2)$ is judgmentally equal to $2+2$.
+
+If we don't want to introduce a name for the function we can use
+$\lambda$-abstraction. Given $b : B$ assuming $x:A$ as above we can
+construct 
+\[ \lam{x:A}b : A \to B \]
+Applying a $\lambda$-abstraction to an argument $a:A$ introduces the
+definitional equality 
+\[(\lam{x:A}b)(a) \jdeq b'\]
+ where $b'$ is the
+expression $b$ where all occurences of $x$ have been replaced by $a$.
+This is called $\beta$-conversion, or $\beta$-reduction if we use this
+equality in a computation by replacing the left hand side with the
+right hand side. Reusing the same example we have that
+\[ \lam{x:\nat}x+x : \nat \to \nat \]
+and the judgemental equality
+\[ (\lam{x:\nat}x+x)(2) \jdeq 2+2. \]
+
+Note that we usually do not assume $\eta$-conversion which 
+says that $\lam{x:A}f(x)$ is judgementally equal to $f$, if $f$ does not contain 
+occurences of $x$. However, we will be able to prove this equality
+using equality types since it follows from the principle of functional
+extensionality which we are going to assume.
+
+The introduction of functions by explicit definitions can be reduced
+to ordinary definitions using $\lambda$-abstraction: we can read 
+the definition of $f: A\to B$ by
+\[ f(x) \defeq b \]
+as 
+\[ f \defeq \lam{x:A}b .\]
+
+When doing calculations involving variables we have to be a bit
+careful when replacing a variable with an expression involving
+variables because we want to preserve the binding structure of
+expressions we build. This is the structure introduced by binders like
+$\lambda$ and other examples which we will see soon like $\Pi$ and
+$\Sigma$. As an example consider $f : \nat \to (\nat \to \nat)$
+defined as 
+\[ f(x) \defeq \lam{y:\nat} x + y \]
+Now if we have assumed somewhere that $y : \nat$ what is 
+$f(y)$. It would be wrong to just naively replace $x$ by $y$
+everywhere to $\lam{y:\nat} y + y$ because this means that $y$ gets
+\emph{captured}. Previously $y$ was referring to our assumption and
+now it is referring to the parameter of the anonymous function. 
+
+But what is $f(y)$ if not $\lam{y:\nat} y + y$? Note that bound
+variables like $y$ in the expression $\lam{y:\nat} x + y$
+have only a local meaning and can be consistently replaced by any
+other variable. Indeed $\lam{y:\nat} x + y$ is judgementally equal to
+$\lam{z:\nat} x + z$ - this is called $\alpha$-conversion. Now
+using $\alpha$-conversion we can give an answer to the question 
+what is $f(y)$ namely  $\lam{z:\nat} y + z$. Clearly, this is not
+the only option there are many other choices of names but this doesn't
+matter because all of them are $\alpha$-equivalent.
+
+It seems that we can only define functions in one variable. One
+way to define functions in several parameters would be to use the
+cartesian product which we will introduce later. E.g. a function with
+parameters $A$ and $B$ and results in $C$ can be given the type 
+$A \times B \to C$. However, there is another choice which avoids
+using product types --- this is called \textbf{currying} in functional
+programming. Using currying we use instead the type $A \to (B \to C)$
+which can be written without the brackets $A \to B \to C$ because
+by convention $\to$ associates to the right. Given $a : A$ and $b : B$
+we can apply a function $f : A \to B \to C$ to obtain $f(a)(b) :
+C$. To avoid the proliferation of brackets we allow ourselves to
+write $f(a)(b)$ as $f(a,b)$ even though there are no products
+involved. Our notation for explicit definitions naturaly extends to
+this situtaion we can define a named function $f : A \to B \to C$ by
+giving an equation
+\[ f(x,y) \defeq c\]
+where $c:C$ assuming $x:A$ and $y:B$. Using $\lambda$-abstraction this
+corresponds to
+\[ f \defeq \lam{x:A}{y:B} c \]
+We use currying for functions of any number of arguments not just 2 but
+leave it to the reader to infer the rules for $n>2$.
  
-In the sequel we shall write $a(x)$ for a term with a variable $x$ and
-$a(b)$ for the same term where each occurence of $x$ has been
-replaced by $b$. Moreover, we shall assume that this substitution
-operation avoids the capture of bound variables, if necessary by
-consistently renaming bound variables ($\alpha$-conversion).
-As an example consider $b(x) \defeq \prd{y:A}x = y$, we don't want
-$B(y)$ to be equal to $\prd{y:A}y = y$ because the variable $y$ we are
-substitute doesn't refer to the bound variable. Instead we rename the
-bound variable to avoid capture $B(y) \jdeq \prd{y':A}y = y'$.
+% In the sequel we shall write $a(x)$ for a term with a variable $x$ and
+% $a(b)$ for the same term where each occurence of $x$ has been
+% replaced by $b$. Moreover, we shall assume that this substitution
+% operation avoids the capture of bound variables, if necessary by
+% consistently renaming bound variables ($\alpha$-conversion).
+% As an example consider $b(x) \defeq \prd{y:A}x = y$, we don't want
+% $B(y)$ to be equal to $\prd{y:A}y = y$ because the variable $y$ we are
+% substitute doesn't refer to the bound variable. Instead we rename the
+% bound variable to avoid capture $B(y) \jdeq \prd{y':A}y = y'$.
 
-A \textbf{family of types} over an indexing type $A:\UU$ and a 
-type $B(x) : \UU$ given $x:A$. This can be generalized to a sequence of indexing
-types $A_i(x_0,\dots x_{i-1})$ each depending on the previous indexing
-types and a family $B(x_0,\dots,x_n) : \UU$ depending on all of them. In the
-propositions as types view families correspond to predicates:
-assigning to each element of the indexing types a type corresponding
-to the proposition that this particular instance of the predicate holds.
+% A \textbf{family of types} over an indexing type $A:\UU$ and a 
+% type $B(x) : \UU$ given $x:A$. This can be generalized to a sequence of indexing
+% types $A_i(x_0,\dots x_{i-1})$ each depending on the previous indexing
+% types and a family $B(x_0,\dots,x_n) : \UU$ depending on all of them. In the
+% propositions as types view families correspond to predicates:
+% assigning to each element of the indexing types a type corresponding
+% to the proposition that this particular instance of the predicate holds.
 
-An example is the type $\Vect(A,n)$ of
-vectors ($n$-tuples) of elements $a_i : A$ for $0 < i< n$ of type $A$:
-$\seq{a_0,\dots,a_n} : \Vect(A,n)$ which is family indexed
-over $A:\UU$ and $n : \Nat$. Another example is the type $x =_A y$ which is a
-family indexed over $A:\UU$ and $x,y : A$.
+% An example is the type $\Vect(A,n)$ of
+% vectors ($n$-tuples) of elements $a_i : A$ for $0 < i< n$ of type $A$:
+% $\seq{a_0,\dots,a_n} : \Vect(A,n)$ which is family indexed
+% over $A:\UU$ and $n : \Nat$. Another example is the type $x =_A y$ which is a
+% family indexed over $A:\UU$ and $x,y : A$.
 
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:pi-types}
 
-Functions are a primitive concept in type theory, i.e. they are not
-viewed as a special case of relations. We assume functions to be
-constructive that is given an element of the input type we can
-effectively compute the result of the function applied to this
-element. In type theory we introduce the general concept of a
-dependent function type which allows the codomain to vary over the
-domain of the function --- this corresponds to the infinite cartesian
-product of types as the notation suggests. 
+In type theory we are often using a more general version of function
+types called a $\Pi$-type or dependent function type. The elements of
+a $\Pi$-type are functions whose domain type can vary depending on the
+element of the domain the function is applied to. The name $\Pi$-type
+is used because this type corresponds to the infinite cartesian
+product over a given type.
 
-Given a type $A$
-and a family $B(x)$ indexed over $x:A$ we can form the type
-\[\prd{x:A}B(x)\] of dependent functions. Non-dependent functions arise
-in the special case when $B$ is a constant family (i.e., $B$ does not
-dependent on $x$) in which case we write $A \to B$.
+To model a type varying over a given type $A$ we use functions whose
+domain is a universe $B : A \to \UU$. These functions are called
+\textbf{families of types} and they correspond to families of sets as used in
+set theory. An example of a family is the family of finite sets $\Fin
+: \nat \to \UU$ where $\Fin(n)$ is a type with exactly $n$ elements
+which we denote as $0_n,1_n,\dots,(n-1)_n$. 
 
-Given a type $A$ an example of a dependent function of type
-$\prd{n:\Nat}\Vect(A,n)$
-is the function $f$ which constructs an $n$-tuple of $a$s, i.e. 
-\[ f(a) \defeq \seq{\underbrace{a,a,\dots a}_{\mbox{$n$-times}}} \] % \vec{\underbrace{a}{$n$-times}}
- Another example
-of a dependent function is the proof of reflexivity which has the type
-$\prd{x:A}x = x$.
+Now given a type $A:\UU$ and a family $B:A \to \UU$ we construct the
+type of dependent functions $\prd{x:A}B(x) : \UU$. In the case that 
+$B$ is a constant function, that is $B(x) \jdeq C$ for $x:A$ the type
+$\prd{x:A}B(x) : \UU$ is judgentally equal to $A \to B$. Indeed, all
+the constructions of $\Pi$-types are generalisations of the
+corresponding constructions on ordinary function types.
 
-Given a dependent function $f : \prd{x:A}B(x)$ and $a : A$ we can
-apply $f$ to $a$ which we write as $f(a) : B(a)$.  Such a function $f$ may be introduced by a defining equation
-  \[ f(x)\defeq b(x)\mbox{ for } x:A,\]
-where $b(x)$ is a term of type $B(x)$ for $x:A$. So if $a$ is a term of type $A$ we may substitute $a$ for $x$ in the defining equation to give a definitional equality
-  \[ f(a)\jdeq b(a):B(a)\]
-and we have $f(a):B(a)$. We use the same syntax for substitution and function application hence this rule may look a bit tautological. Here $f(a)$ is function application whle $b(a)$ is the substitution of $a$ for $x$.
+We can introduce dependent functions by explicit definitions: to
+define $f : \prd{x:A}B(x)$ where $f$ is the name of a function to be
+defined we need a $b : B(x)$ assuming $x:A$ and we write
+\[ f(x : A) \defeq b \]
+Alternatively, we can use $\lambda$-abstraction 
+\[ \lam{x:A} b : \prd{x:A} B(x) \]
+The equalities are the same as for the ordinary function type, i.e.
+given $a:A$ we have $f(a) \jdeq b'$ and  
+$(\lam{x:A} b)(a) \jdeq b'$ where $b' $ is obtained by replacing all
+occurences of $x$ in $b$ by $a$.
 
-If we want to avoid giving a name to a function we can use
-$\lambda$-abstraction 
-\[\lam{x:A}b(x) : \prd{x:A}B[x]\]
-$\lambda$-abstractions induce the judgmental equality
-\[(\lam{x:A}b(x))(a) \jdeq b(a)\]
-($\beta$-equality). Note that
-we do not assume $\eta$-equality $\lam{x:A} f(x) \jdeq f$ (where
-$x$ does not occur in $f$) but this is provable for propositional
-equality using functional extensionality.
+An example of a dependent function is $\fmax : \Pi{x:\nat} \Fin(n+1)$
+which returns the largest element in a finite type, $\fmax(n) \defeq
+n_{n+1}$. 
+Another source of dependent function types
+are function which are \emph{polymorphic} over a given universe,
+e.g. the polymorphic indentity function $\idf : \prd{A:U} A \to A$
+which we define as $\idf(A) \defeq \lam{x:A}x$.
 
-For example we may define a function $f : \Nat \to \Nat$ by defining $f(n)
-\defeq n+2$ and then $f(2) \jdeq 2+2$. If we want to avoid giving the function a name we can use
-$\lambda$-abstraction, i.e. we can write $\lam{n:\Nat}n+2 : \Nat
-\to \Nat$. 
+As for ordinary functions we use currying to define functions in
+several parameters. However in the dependent case the 2nd domain may
+depend on the first one and the codomain may depend on both. That is
+given $A:U$, $B : A \to U$ and $C : \prd{x:A}(B(x) \to C$ we construct
+the type $\prd{x:A}{y : B(x)} C(x,y)$ of function with two
+arguments. Given $a:A$ and $b:B(a)$ we build $f(a)(b) : C(a,b)$ which
+as before we write as $f(a,b) : C(a,b)$.
 
-There are other means by which to define a function,
-e.g. using the fact that $\Nat$ is inductively defined we can define
-functions by primitive recursion which induces a number of
-definitional equalities. In general we may use the
-elimination principle associated to a particular type to define
-functions - we will introduce these elimination principles with the
-type they eliminate over.
 
-Functions in several arguments correspond to iterated function types,
-i.e. a function $f$ with arguments in $A$ and $B$ and results in $C$ has
-the type $f : \prd{x:A}\prd{y : B(x)}C(x,y)$ which can be also
-written as $f : \prd{x:A,y:B[x]}C(x,y)$. Given an element $a:A$ we can apply
-$f$ to it obtaining $f(a) : \prd{y:B[a]}C(a,y)$. Given also an element $b:B$ we
-can continue applying $f$ obtaining $f(a)(b) : C(a,b)$ which we may also
-write as $f(a,b):C[a,b]$. Using this device of \emph{currying} we can
-represent $n$-ary functions without using product types. 
-This device is commonly used in functional programming for
-non-dependent functions. Consequently the symbol $\to$ is
-right-associative,  $A \to B \to C \jdeq A \to (B \to C)$ so that we can avoid
-brackets when writing the types of $n$-ary non-dependent functions.
+% When we view propositions as types the non-dependent function type
+% corresponds to implication, i.e. given types $P,Q$ a proof of $P \to
+% Q$ is a function $f$ assigning to each proof $p:P$ a proof $f(p) : Q$.
 
-When we view propositions as types the non-dependent function type
-corresponds to implication, i.e. given types $P,Q$ a proof of $P \to
-Q$ is a function $f$ assigning to each proof $p:P$ a proof $f(p) : Q$.
+% The dependent function type corresponds to universal
+% quantification: Given a type $A$ and a family $P(x)$ assuming $x:A$
+% which we view as a predicate over $A$ we can form $\prd{x:A}B(x)$
+% whose elements are proofs that $B(x)$ holds for all $x:A$ by assigning
+% to each $a:A$ a proof $f(a) : B(a)$.
 
-The dependent function type corresponds to universal
-quantification: Given a type $A$ and a family $P(x)$ assuming $x:A$
-which we view as a predicate over $A$ we can form $\prd{x:A}B(x)$
-whose elements are proofs that $B(x)$ holds for all $x:A$ by assigning
-to each $a:A$ a proof $f(a) : B(a)$.
+% We summarize that from the type-theoretic point of view the concepts
+% of an ordinary function, implication and universal quantification are
+% unified using the notion of a dependent function type or $\Pi$-type.
 
-We summarize that from the type-theoretic point of view the concepts
-of an ordinary function, implication and universal quantification are
-unified using the notion of a dependent function type or $\Pi$-type.
+\section{Finite product types}
+\label{sec:finite-product-types}
+
+Given types $A,B:\UU$ we introduce the type $A\times B:\UU$ which
+corresponds to the cartesian product of two types. Its elements are
+pairs $\tup{a}{b} : A \times B$ where $a:A$ and $b:B$. We also
+introduce a nullary product type which is called the unit type $\unit
+: \UU$ which has only one element $\star : \unit$.
+
+How can we define functions out of a product type? Let us first
+consider the definition of a non-dependent function $f : A\times B \to
+C$. To define such a function it is enough to prescibe how $f$ is
+behaving when applied to a pair $f(\tup{a}{b})$. This is achieved by
+providing a function $g : A \to B \to C$ and defining
+\[ f(\tup{a}{b}) \defeq g(a)(b) \]
+We avoid here to write $g(a,b)$ to emphasize that $g$ is not a
+function over a product. 
+
+In particular we can derive the functions
+\begin{eqnarray*}
+  \fst & : & A \times B \to A \\
+  \snd & : & A \times B \to B
+\end{eqnarray*}
+with the defining equations 
+\begin{eqnarray*}
+  \fst(\tup{a}{b}) & \defeq & a \\
+  \snd(\tup{a}{b}) & \defeq & b
+\end{eqnarray*}
+
+We can package this principle into a constant which we call the
+\emph{recursor} for product
+types, that is given types $A,B : \UU$ we have
+\[\rec{A\times B} : \prd{C:\UU'}(A \to B \to C) \to A \times B \to C\]
+with the defining equation
+\[\rec{A\times B}(C,g,\tup{a}{b}) = g(a)(b). \]
+The name recursor is a bit unfortunate since no recursion is taking
+place. However, this will change once we consider inductive types like
+the natural numbers.
+Note that the universes $\UU,\UU'$ may be different, i.e. we can
+construct functions in higher or lower universes. 
+We leave it as a simple exercise to show that the recursor can be
+derived from the projections.
+% Ex: Derive from projections
+
+We also have a recursor for the unit type:
+\[\rec{\unit} : \prd{C:\UU'}C \to \unit \to C\]
+with the defining equation
+\[ \rec{\unit}(C,c,\star) \defeq c \]
+However, this eliminator is completely useless
+because we could have defined such a function directly
+by simply ignoring the argument of type $\unit$.
+
+To be able to derive dependent functions over the product type we have
+to generalize the previous section. Given $C: A \times B \to U$ we
+define a function $f : \prd{x : A \times B} C(x)$ by providing a
+function $g : \prd{x:A}\prd{y:B} C(\tup{x}{y})$ and the defining equation
+\[ f(x,y) \defeq g(x)(y) \]
+% example ?
+
+We can package this principle into another constant which we call
+\emph{induction} for product types, that is given $A,B : \UU$ we have
+\[ \ind{A\times B} : \prd{C:A \times B \to \UU'} (\prd{x:A}{y:B}
+C(\tup{x}{y})) \to \prd{x:A \times B} C(x) \]
+with the defining equation 
+\[ \ind{A\times B}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
+It is easy to see that the recursor is a special case of induction
+in the case that the family $C$ is constant.
+We can read induction propositionally as saying that a property which
+is true for all pairs holds for all elements of the product type.
+
+Induction for the unit type turns out to be more useful then the
+recursor: 
+\[ \ind{\unit} : \prd{C:\unit \to \UU'} C(\star) \to \prd{x:\unit}C(x)\]
+with the defining equation
+\[ \ind{\unit}(C,c,\star) \defeq c \]
+Induction enables us to \emph{prove} that the only inhabitant of the
+unit type is $\star$, this is something we couldn't have derived
+without it.
+% expand
+
+
 
 \section{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:sigma-types}

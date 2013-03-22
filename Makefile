@@ -11,9 +11,3 @@ clean:
 	rm -f main.out
 	rm -f main.pdf
 
-etc/refdict.py: $(wildcard *.aux)
-	echo "# AUTOMATICALLY GENERATED, DO NOT HANDLE WITH BARE HANDS" > $@
-	echo "ref_index = {" >> $@
-	sed -f etc/aux2refdict.sed $^
-	echo "}" >> $@
-

@@ -1,13 +1,12 @@
-all pdf: *.tex
-	pdflatex main.tex
-	pdflatex main.tex
-	bibtex main
-	pdflatex main.tex
+all: main.pdf
+
+main.pdf: *.tex
+	(which latexmk && latexmk -pdf main.tex) || ( \
+	pdflatex main.tex && \
+	pdflatex main.tex && \
+	bibtex main && \
+	pdflatex main.tex)
 
 clean:
-	/bin/rm -f main.out
-	rm -f main.aux
-	rm -f main.log
-	rm -f main.out
-	rm -f main.pdf
+	(which latexmk && latexmk -c main.tex) || /bin/rm -f main.{out,log,pdf,fls,fdb_latexmk}
 

@@ -1,4 +1,5 @@
 \newcommand{\rclim}{\mathsf{lim}} % HIT constructor for Cauchy reals
+\newcommand{\rcrat}{\mathsf{rat}} % Embedding of rationals into Cauchy reals
 \newcommand{\Qp}{\Q_{+}}
 
 \chapter{Real Numbers}
@@ -121,16 +122,16 @@ where
 \[ (u,a) \approx (v,b) \defeq (u (b + 1) = v (a + 1)). \]
 %
 In other words, a pair $(u, a)$ represents the rational number $u / (1 + a)$. There can be
-no division by zero because we cunningly added one to the natural denominator~$a$. Here
-too we have a canonical choice of representatives, namely fractions in lowest terms. Thus
-we may apply \autoref{lem:quotient-when-canonical-representatives} to obtain a set \Q,
-which again has a decidable equality.
+no division by zero because we cunningly added one to the denominator~$a$. Here too we
+have a canonical choice of representatives, namely fractions in lowest terms. Thus we may
+apply \autoref{lem:quotient-when-canonical-representatives} to obtain a set \Q, which
+again has a decidable equality.
 
 We do not bother to write down the arithmetical operations on \Q as we trust our readers
 know how to compute with fractions even in the case when one is added to the denominator.
-Let us just remember that there is an entirely unproblematic construction of the ordered
-field of rational number \Q, with a decidable equality and decidable order. The field \Q
-can also be characterized as the initial one.
+Let us just record the conclusion that there is an entirely unproblematic construction of
+the ordered field of rational number \Q, with a decidable equality and decidable order.
+The field \Q can also be characterized as the initial one.
 
 \begin{rmk}
   We could have constructed \Z and \Q without appeal to any quotients because both \Z and
@@ -155,8 +156,8 @@ type of positive rational numbers:
 By applying the type-theoretic choice to the condition we get a function $M : \Qp \to \N$,
 called the \emph{modulus of convergence}, such that $x_{M(\epsilon)}$ is within $\epsilon$
 from the limit. In fact, the composition $x \circ M : \Qp \to \Q$ carries the same
-information about the limit as the original Cauchy sequence. For our construction of
-Cauchy reals such approximation functions will be more convenient that Cauchy sequences.
+information about the limit as the original Cauchy sequence. For our purposes it is more
+convenient to work with such approximation functions than Cauchy sequences.
 
 \begin{defn}\label{defn:cauchy-approximation}
   A \textbf{Cauchy approximation} is a map $x : \Qp \to \Q$ which satisfies
@@ -202,27 +203,29 @@ gets the idea that we should add limits of limits as well, and then limits of li
 limits, and so on (after infinitely many steps, there will be some more). Crucially, we
 must quotient by the coincidence relation simulteneously with the inductive construction,
 or else we will face again the problem of lifting a sequence of reals to a sequence of
-representatives. Higher-inductive types are the perfect solution. (It would be possible to
-perform the same construction in constructive set theory as well.)
+representatives. Higher-inductive types are the perfect solution.
 
 \subsection{Construction of Cauchy Reals}
 \label{sec:constr-cauchy-reals}
 
 The construction of Cauchy reals $\RC$ is a \emph{higher inductive-recursive definition},
 because it involves a simultaneous definition of $\RC$ and an auxiliary proximity
-relation~$\sim$. The idea is as follows: a real number is constructed from a Cauchy
-approximation $x : \N \to \Q + \RC$ satisfying~\eqref{eq:cauchy-approx} (thus the
-construction is bootstrapped by rational approximations). But to
-express~\eqref{eq:cauchy-approx} and~\eqref{eq:cauchy-coincide} for $\RC$ without
+relation~$\sim$. The idea is as follows: a real number is constructed either as a rational
+number, or as a Cauchy approximation $x : \Qp \to \RC$ of previously constructed reals.
+But to express~\eqref{eq:cauchy-approx} and~\eqref{eq:cauchy-coincide} for $\RC$ without
 referring to yet to be constructed arithmetical operations and the order relation, we must
 simultaneously define a relation $x \sim_\epsilon y$ whose intuitive meaning is $|x - y| <
 \epsilon$.
 
 \begin{defn}\label{defn:cauchy-reals}
-  The \textbf{Cauchy reals \RC} is the higher-inductive-recursive type given by the following data:
+  The \textbf{Cauchy reals \RC} is the higher inductive-recursive type given by the
+  following data:
   % 
   \begin{itemize}
-  \item \emph{points:} for any $x : \Qp \to \Q + \RC$ such that
+  \item \emph{rational points:} 
+    for any $q : \Q$ there is a real $\rcrat(q)$.
+  \item \emph{limit points}:
+    for any $x : \Qp \to \RC$ such that
     %
     \begin{equation}
       \label{eq:RC-cauchy}
@@ -231,31 +234,41 @@ simultaneously define a relation $x \sim_\epsilon y$ whose intuitive meaning is 
     %
     there is a point $\rclim(x) : \RC$.
     %
-  \item \emph{paths:} for all $x, y : \Qp \to \Q + \RC$ satisfying~\eqref{eq:RC-cauchy} and
+  \item \emph{paths between rational and limit points:}
+    if $q : \Q$ and $x : \Qp \to \RC$ satisfies~\eqref{eq:RC-cauchy}, and
     %
     \begin{equation}
-      \label{eq:RC-coincide}
+      \label{eq:RC-rat-eq-lim}
+      \prd{\epsilon : \Qp} \rcrat(q) \sim_{\epsilon} \rclim(x)
+    \end{equation}
+    %
+    then there is a path $\id[\RC]{\rcrat(q)}{\rclim(x)}$.
+  \item \emph{paths between limit points:}
+    for all $x, y : \Qp \to \RC$ satisfying~\eqref{eq:RC-cauchy} and
+    %
+    \begin{equation}
+      \label{eq:RC-lim-eq-lim}
       \prd{\delta, \epsilon : \Qp} x_\delta \sim_{\delta + \epsilon} y_\epsilon
     \end{equation}
     %
     there is a path $\id[\RC]{\rclim(x)}{\rclim(y)}$.
   \end{itemize}
   % 
-  Simultaneously, the relation $u \sim_\epsilon v$ is defined for $u, v : \Q + \RC$ and
+  Simultaneously, the relation $u \sim_\epsilon v$ is defined for $u, v : \RC$ and
   $\epsilon : \Qp$ by recursion:
   % 
   \begin{align*}
-    \inl(q) \sim_\epsilon \inl(r)  &\defeq
+    \rcrat(q) \sim_\epsilon \rcrat(r)  &\defeq
     |q - r| < \epsilon
     \\
-    \inl(q) \sim_\epsilon \inr(\rclim(y)) &\defeq
-    \sm{\delta, \theta : \Qp} \inl(q) \sim_{\epsilon - \delta - \theta} y_\delta
+    \rcrat(q) \sim_\epsilon \rclim(y) &\defeq
+    \brck{\sm{\delta, \theta : \Qp} \rcrat(q) \sim_{\epsilon - \delta - \theta} y_\delta}
     \\
-    \inr(\rclim(x)) \sim_\epsilon \inl(r) &\defeq
-    \sm{\delta, \theta : \Qp} x_\delta \sim_{\epsilon - \delta - \theta} \inl(r)
+    \rclim(x) \sim_\epsilon \rcrat(r) &\defeq
+    \brck{\sm{\delta, \theta : \Qp} x_\delta \sim_{\epsilon - \delta - \theta} \rcrat(r)}
     \\
-    \inr(\rclim(x)) \sim_\epsilon \inr(\rclim(y)) &\defeq
-    \sm{\delta, \eta, \theta : \Qp} x_\delta \sim_{\epsilon - \delta - \eta - \theta} y_\eta.
+    \rclim(x) \sim_\epsilon \rclim(y) &\defeq
+    \brck{\sm{\delta, \eta, \theta : \Qp} x_\delta \sim_{\epsilon - \delta - \eta - \theta} y_\eta}.
   \end{align*}  
   %
   (Note: the definition continues with \autoref{lem:RC-well-defined} below.)
@@ -265,9 +278,9 @@ We are not done yet, for we still have to verify that $\sim$ respects the identi
 of~$\RC$. We also remind ourselves of proof-relevance: a real number is represented not
 just by a Cauchy approximation $x$, but also a proof $p$ of~\eqref{eq:RC-cauchy}, so we
 should have written $\rclim(x,p)$ instead of just $\rclim(x)$; and a similar observation
-stands for~\eqref{eq:RC-coincide} and construction of paths. By the way, the mysterious
-$\theta$'s appearing in the definition of $\sim$ are there to give extra ``wiggle room''
-which ensures that $\sim$ behaves like $<$ and not like $\leq$.
+stands for~\eqref{eq:RC-rat-eq-lim} and~\eqref{eq:RC-lim-eq-lim} and construction of paths.
+By the way, the mysterious $\theta$'s appearing in the definition of $\sim$ are there to
+give extra ``wiggle room'' which ensures that $\sim$ behaves like $<$ and not like $\leq$.
 
 The definition of $\RC$ is valid if we can show that $u = u'$, $v = v'$ and $u
 \sim_\epsilon v$ implies $u' \sim_\epsilon v'$. But this requires yet another auxiliary
@@ -284,18 +297,18 @@ lemma, which must thus also be established simultaneously with the inductive con
 
 \begin{proof}
   \mbox{}
+  %
   \begin{enumerate}
-  \item 
-    The first statement has eight cases, depending on whether $u, v, w$ are in $\Q$ or
-    $\RC$. Luckily, many are easy or symmetric, so once you have seen a couple you are
-    either convinced or you can do the rest yourself:
+  \item The first statement has eight cases, depending on whether $u, v, w$ are rationals
+    or limit points. Luckily, many are easy or symmetric, so once you have seen a couple
+    you are either convinced or you can do the rest yourself:
     % 
     \begin{itemize}
-    \item Suppose $\inl(q) \sim_\delta \inr(x) \sim_\epsilon \inr(y)$. There are $\delta',
+    \item Suppose $\rcrat(q) \sim_\delta \inr(x) \sim_\epsilon \inr(y)$. There are $\delta',
       \theta', \delta'', \eta'', \theta'' : \Qp$ such that
       % 
       \begin{equation*}
-        \inl(q)
+        \rcrat(q)
         \sim_{\delta - \delta' - \theta'}
         x_{\delta'}
         \qquad\text{and}\qquad
@@ -308,11 +321,11 @@ lemma, which must thus also be established simultaneously with the inductive con
       conclude by the induction hypothesis
       % 
       \begin{equation*}
-        \inl(q) \sim_{(\delta - \delta' - \theta') + (\delta' + \delta'') + (\epsilon -
+        \rcrat(q) \sim_{(\delta - \delta' - \theta') + (\delta' + \delta'') + (\epsilon -
           \delta'' - \eta'' - \theta'')} y_{\eta''}
       \end{equation*}
       % 
-      which is $\inl(q) \sim_{\delta - \eta'' - (\theta' + \theta'')} y_{\eta''}$, as required.
+      which is $\rcrat(q) \sim_{\delta - \eta'' - (\theta' + \theta'')} y_{\eta''}$, as required.
       % 
     \item Suppose $\inr(x) \sim_\delta \inr(y) \sim_\epsilon \inr(z)$. There are $\delta',
       \eta', \theta', \delta'', \eta'', \theta'' : \Qp$ such that
@@ -338,25 +351,25 @@ lemma, which must thus also be established simultaneously with the inductive con
     so we are left with two to check (here we use the wiggle room provided by $\theta$):
     %
     \begin{itemize}
-    \item Suppose $\rclim(x) = \rclim(y)$ and $\inl(q) \sim_\epsilon \inr(\rclim(x))$. We
-      need to prove that $\inl(q) \sim_\epsilon \inr(\rclim(y))$. Observe that there are
+    \item Suppose $\rclim(x) = \rclim(y)$ and $\rcrat(q) \sim_\epsilon \rclim(x)$. We
+      need to prove that $\rcrat(q) \sim_\epsilon \rclim(y)$. Observe that there are
       $\delta, \theta : \Qp$ such that
       %
       \begin{equation*}
-        \inl(q) \sim_{\epsilon - \delta - \theta} x_\delta.
+        \rcrat(q) \sim_{\epsilon - \delta - \theta} x_\delta.
       \end{equation*}
       %
       By taking into account $x_\delta \sim_{\delta + \theta/3} y_{\theta/3}$ we conclude
       by the induction hypothesis that      
       %
       \begin{equation*}
-        \inl(q) \sim_{(\epsilon - \delta - \theta) + (\delta + \theta/3)} y_{\theta/3}
+        \rcrat(q) \sim_{(\epsilon - \delta - \theta) + (\delta + \theta/3)} y_{\theta/3}
       \end{equation*}
       %
-      which is $\inl(q) \sim_{\epsilon - \theta/3 + \theta/3} y_{\theta/3}$, as required.
+      which is $\rcrat(q) \sim_{\epsilon - \theta/3 + \theta/3} y_{\theta/3}$, as required.
       %
-    \item Suppose $\rclim(x) = \rclim(y)$, and $\inr(\rclim(y)) \sim_\epsilon
-      \inr(\rclim(z))$. To prove $\inr(\rclim(x)) \sim_\epsilon \inr(\rclim(z))$, observe
+    \item Suppose $\rclim(x) = \rclim(y)$, and $\rclim(y) \sim_\epsilon
+      \rclim(z)$. To prove $\rclim(x) \sim_\epsilon \rclim(z)$, observe
       that there are $\delta, \eta, \theta : \Qp$ such that
       %
       \begin{equation*}
@@ -378,16 +391,35 @@ lemma, which must thus also be established simultaneously with the inductive con
   This completes the construction of Cauchy reals.
 \end{proof}
 
+You may be worried that the proof of the lemma was too quick because we hypothesized
+existence of all those $\delta$'s, $\epsilon$'s and $\theta$'s, where only mere
+existence was granted. All is fine however, because the conclusions of both statements are
+mere propositions, too.
+
 We are immediately able to populate $\RC$ with many real numbers. For suppose $q : \N \to
 \Q$ is a traditional Cauchy sequence of rational numbers, and let $M : \Qp \to \N$ be its
-modulus of convergence. Then $\inl \circ q \circ M : \Qp \to \Q + \RC$ is a Cauchy
-approximation and so $\rclim(\inl \circ q \circ m)$ is a real number. Thus the rationals
-$\Q$ embed into $\RC$ via constant sequences, and various famous real numbers $\sqrt{2}$,
-$\pi$, $e$, \dots as well because they are are all limits of Cauchy sequences of
+modulus of convergence. Then $\rcrat \circ q \circ M : \Qp \to \RC$ is a Cauchy
+approximation and so $\rclim(\rcrat \circ q \circ m)$ is a real number. Various famous
+real numbers $\sqrt{2}$, $\pi$, $e$, \dots are are all limits of such Cauchy sequences of
 rationals.
 
+% \begin{thm}\label{RC-is-set}
+%   The Cauchy reals are a set.
+% \end{thm}
 
-\textbf{TODO:} Discuss whether we got a set. Did we? Should we truncate?
+% \begin{proof}
+%   We first show that $\left(\prd{\epsilon : \Qp} u \sim_\epsilon v\right) \to \id{u}{v}$
+%   for all $u, v : \RC$. We proceed by induction on $u$ and $v$.
+
+%   Since $\rcrat(q) \sim_\epsilon \rcrat(r)$ is defined as $|q - r| < \epsilon$, the case
+%   $u = \rcrat{q}$, $v = \rcrat{r}$ is easy.
+
+%   Suppose $\rclim{x} \sim_\epsilon \rclim{y}$ for all $\epsilon : \Qp$. We establish
+%   equality of $\rclim(x)$ and $\rclim(y)$ through~\eqref{eq:RC-lim-eq-lim}. Consider any
+%   $\delta, \epsilon : \Qp$.
+
+% \end{proof}
+
 
 \subsection{Arithmetical operations}
 \label{sec:arithm-oper}

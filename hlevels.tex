@@ -330,27 +330,93 @@ Before proving this, we prove an auxiliary lemma:
   By path induction, it suffices to do this when $x\jdeq x'$, in which case it follows from the assumption that $\Omega(X, x)$ is an $n$-type.
 \end{proof}
 
-By a careful induction, we can deduce the following.
+The following theorem will see how we may detect the homotopy level of a type using spheres. The basic idea is that if a type $A$ has
+homotopy level $n+1$, then all the maps from $\Sn^n$ to $A$ are null-homotopic. 
 
+\begin{defn}
+A function $f:X\to A$ is said to be \emph{null-homotopic} if there is a term of type
+\begin{equation*}
+\mathsf{hNull}(f):=\sum(a:A),\ f=(\lambda x.a)\big. .
+\end{equation*}
+\end{defn}
+
+\begin{lem}\label{lem:hnull_to_map_hnull}
+If a function $f:X\to A$ is null-homotopic, then so is
+\[\apfunc(f)(x,y):(x= y)\to(f(x)= f(y)).\]
+\end{lem}
+
+\begin{proof}
+Suppose we have a term $H:\sum(a:A),\ f=\lambda x.a$. A proof by path induction on $p:x= y$ reveals that there is a homotopy
+\begin{equation*}
+\apfunc{f}(x,y)=\lambda p.(\pi_2 H(y))^{-1}\bullet(\pi_2 H(x)).
+\end{equation*}
+\end{proof}
+
+\begin{comment}
+\begin{defn}
+We define the $-1$-sphere $\Sn^{-1}$ to be $\varnothing$ and for each $n:\N_{\geq-1}$ we define
+$\Sn^{n+1}:=\susp(\Sn^n)$, i.e.\ the $n+1$-sphere $\Sn^{n+1}$ is the suspension of the $n$-sphere $\Sn^n$.
+We refer to the two points $\mathsf{unit}\to\Sn^{n}$ as the north pole $\north^{n}$ and the south pole $\south^n$. The basic
+constructor of $\Sn^{n+1}$ of type
+\begin{equation*}
+\prod(x:\Sn^n),\ \mathsf{n}^{n+1}=\Sn^{n+1}
+\end{equation*}
+is called $\merid^{n}$ for meridian.
+\end{defn}
+\end{comment}
+
+\begin{thm}\label{thm:sphere_n_hnull_to_hlevel_sn}
+For every $n:\N$, a type $A$ has homotopy level $n+1$ if all the functions from $\Sn^n$ to $A$ are null-homotopic.
+\end{thm}
+
+\begin{proof}
+The exact statement which we will prove is
+\begin{equation*}
+\prod(n:\N)(A:\type),\ \big(\prod(f:\Sn^n\to A),\ \mathsf{hNull}(f)\big)\to\mathsf{isLevel}(n+1,A).
+\end{equation*}
+The proof is by induction on $n$, so we require that $A$ is in a universe. In the case $n\equiv 0$ we have that
+\begin{equation*}
+\big(\prod(f:\Sn^{0}\to A),\ \mathsf{hNull}(f)\big)\simeq\prod(x,y:A),\ x= y,
+\end{equation*}
+so we see immediately that a type $A$ is a proposition whenever every function $f:\Sn^0\to A$ is null-homotopic.
+
+Suppose that there is a term of type
+\begin{equation*}
+\prod(A:\type),\ \big(\prod(f:\Sn^n\to A)(t:\Sn^n),\ f(t)= f(\north^n)\big)\to\mathsf{isLevel}(n+1,A).
+\end{equation*}
+and let $A$ be a type and let 
+\begin{equation*}
+H:\prod(f:\Sn^{n+1}\to A)(t:\Sn^{n+1}),\ f(t)= f(\north^{n+1}).
+\end{equation*}
+We wish to show that $A$ has homotopy level $n+2$, which we will do by showing that $x= y$ has homotopy level $n+1$ for each $x,y:A$.
+Suppose that $x,y:A$, by the induction hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
+We have that $\Sn^n\to(x= y)$ is equivalent to $\sum(f:S^{n+1}\to A),\
+(f(\north^{n+1})= x)\times(f(\south^{n+1})= y)$. Suppose that $f:\Sn^n\to A$ is a function and suppose that
+$\tilde{f}$ corresponds to $f$ via the indicated equivalence. Then $\tilde{f}$ is null-homotopic and hence $\lambda
+t.\tilde{f}(\merid^n(t))$ is null-homotopic (by \autoref{lem:hnull_to_map_hnull}). It follows that $f$ is null-homotopic.
+\end{proof}
+
+We conclude that:
 \begin{thm}\label{thm:ntype-nloop}
   For any $n\ge -1$, a type $X$ is an $n$-type if and only if $\Omega^{n+1}(X,x)$ is contractible for all $x:X$.
 \end{thm}
-\begin{proof}
-  TODO.
-\end{proof}
-
 
 \section{Truncations}
 \label{sec:truncations}
 
-In \autoref{subsec:prop-trunc} we introduced the propositional truncation, which makes the ``best approximation'' of a type that is a mere proposition, i.e.\ a $(-1)$-type.
-In \autoref{sec:hittruncations} we constructed this truncation as a higher inductive type, and gave one way to generalize it to a 0-truncation.
+In \autoref{subsec:prop-trunc} we introduced the propositional truncation, which makes the ``best approximation'' of a type that is a mere
+proposition, i.e.\ a $(-1)$-type.
+In \autoref{sec:hittruncations} we constructed this truncation as a higher inductive type, and gave one way to generalize it to a
+0-truncation.
 We now explain a better generalization of this, which truncates any type into an $n$-type for any $n\geq -2$.
 
-The idea is to make use of \autoref{thm:ntype-nloop}, which states that $A$ is an $n$-types just when $\Omega^{n+1}(A,a)$ is contractible for all $a:A$, and \autoref{lem:susp-loop-adj}, which implies that $\Omega^{n+1}(A,a) \simeq \Map_*(\Sn^{n+1},(A,a))$, where $\Sn^{n+1}$ is equipped with some basepoint which we may as well call \base.
+The idea is to make use of \autoref{thm:ntype-nloop}, which states that $A$ is an $n$-types just when $\Omega^{n+1}(A,a)$ is contractible
+for all $a:A$, and \autoref{lem:susp-loop-adj}, which implies that $\Omega^{n+1}(A,a) \simeq \Map_*(\Sn^{n+1},(A,a))$, where $\Sn^{n+1}$ is
+equipped with some basepoint which we may as well call \base.
 However, contractibility of $\Map_*(\Sn^{n+1},(A,a))$ is something that we can ensure directly by giving path constructors.
 
-We might first of all try to  define $\trunc nA$ to be generated by a function $\tproj n- : A \to \trunc n A$, together with for each $r:\Sn^n \to \trunc n A$ and each $x:\Sn^n$, a path $s_r(x):r(x) = r(\base)$.
+We might first of all try to  define $\trunc nA$ to be generated by a function $\tproj n- : A \to \trunc n A$, together with for each
+$r:\Sn^n \to \trunc n A$ and each $x:\Sn^n$, a path $s_r(x):r(x) = r(\base)$.
 But this does not quite work, for the same reason that \autoref{rmk:spokes-no-hub} fails.
 Instead, we use the full ``hub and spoke'' construction.
 
@@ -367,10 +433,13 @@ The existence of these constructors is now enough to show:
   $\trunc n A$ is an $n$-type.
 \end{lem}
 \begin{proof}
-  We must show $\Omega^{n+1}(\trunc nA,b)$ is contractible for all $b:\trunc nA$, which by \autoref{lem:susp-loop-adj} is equivalent to $\Map_*(\Sn^{n+1},(\trunc nA,b))$.
-  As center of contraction for the latter, we choose the function $c_b:\Sn^{n+1} \to \trunc nA$ which is constant at $b$, together with $\refl b : c_b(\base) = b$.
+  We must show $\Omega^{n+1}(\trunc nA,b)$ is contractible for all $b:\trunc nA$, which by \autoref{lem:susp-loop-adj} is equivalent to
+$\Map_*(\Sn^{n+1},(\trunc nA,b))$.
+  As center of contraction for the latter, we choose the function $c_b:\Sn^{n+1} \to \trunc nA$ which is constant at $b$, together with
+$\refl b : c_b(\base) = b$.
 
-  Now, an arbitrary element of $\Map_*(\Sn^{n+1},(\trunc nA,b))$ consists of a map $r:\Sn^n \to \trunc n A$ together with a path $p:r(\base)=b$.
+  Now, an arbitrary element of $\Map_*(\Sn^{n+1},(\trunc nA,b))$ consists of a map $r:\Sn^n \to \trunc n A$ together with a path
+$p:r(\base)=b$.
   By function extensionality, to show $r = c_b$ it suffices to give, for each $x:\Sn^n$, a path $r(x)=c_b(x) \jdeq b$.
   We choose this to be the composite $s_r(x) \ct \opp{s_r(\base)} \ct p$, where $s_r$ is the third constructor of $\trunc nA$.
 
@@ -385,11 +454,13 @@ We extract this from the constructors in the usual way; it says that given $P:\t
 \begin{itemize}
 \item For each $a:A$, an element $g(a) : P(\tproj na)$,
 \item For each $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, an element $h'(r,r'):P(h(r))$.
-\item For each $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, and each $x:\Sn^n$, a dependent path $\dpath{P}{s_r(x)}{r'(x)}{h'(r,r')}$.
+\item For each $r:\Sn^n \to \trunc n A$ and $r':\prd{x:\Sn^n}, P(r(x))$, and each $x:\Sn^n$, a dependent path
+$\dpath{P}{s_r(x)}{r'(x)}{h'(r,r')}$.
 \end{itemize}
 
 \begin{thm}\label{thm:truncn-ind}
-  For any type family $P:\trunc n A \to \type$ such that each $P(x)$ is an $n$-type, and any function $g : \prd{a:A} P(\tproj n a)$, there exists a section $f:\prd{x:\trunc n A} P(x)$ such that $f(\tproj n a)\defeq g(a)$ for all $a:A$.
+  For any type family $P:\trunc n A \to \type$ such that each $P(x)$ is an $n$-type, and any function $g : \prd{a:A} P(\tproj n a)$, there
+exists a section $f:\prd{x:\trunc n A} P(x)$ such that $f(\tproj n a)\defeq g(a)$ for all $a:A$.
 \end{thm}
 \begin{proof}
   It will suffice to construct the second and third data listed above, since $g$ has exactly the type of the first datum.
@@ -402,7 +473,8 @@ We extract this from the constructors in the usual way; it says that given $P:\t
 
 In particular, if $E$ is some $n$-type, we can consider the constant family of types equal to $E$ for every point of $A$.
 Thus, every map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by $\extend{f}(\tproj na)\defeq f(a)$.
-The induction principle also implies a nondependent $\eta$-rule, which says that if $E$ is an $n$-type and $g,g':\trunc nA\to{}E$ are such that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$; hence $g=g'$.
+The induction principle also implies a nondependent $\eta$-rule, which says that if $E$ is an $n$-type and $g,g':\trunc nA\to{}E$ are such
+that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$; hence $g=g'$.
 This implies the following universal property.
 
 \begin{lem}[Universal property of truncations]
@@ -417,7 +489,8 @@ This implies the following universal property.
   And the map $\extend{g\circ\tprojf n}$ is equal to $g$, because they both send $\tproj na$ to $g(\tproj na)$.
 \end{proof}
 
-We can characterize the path spaces of a truncation using the same method that we used in \autoref{sec:compute-coprod,sec:compute-nat} for coproducts and natural numbers (and which we will use in \autoref{cha:homotopy} to calculate homotopy groups).
+We can characterize the path spaces of a truncation using the same method that we used in \autoref{sec:compute-coprod,sec:compute-nat} for
+coproducts and natural numbers (and which we will use in \autoref{cha:homotopy} to calculate homotopy groups).
 Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
 Indeed, for any $x,y:A$ there is a canonical map
 \begin{equation}
@@ -425,7 +498,8 @@ Indeed, for any $x,y:A$ there is a canonical map
 \end{equation}
 defined by
 \[f(\tproj n{p})\defeq \apfunc{\tproj {n+1}-}(p). \]
-This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the codomain of $f$ is $n$-truncated.
+This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the
+codomain of $f$ is $n$-truncated.
 
 \begin{thm}
   For any $A$ and $x,y:A$ and $n\ge -2$, the map~\eqref{eq:path-trunc-map} is an equivalence; thus we have
@@ -433,16 +507,20 @@ This definition uses the recursion principle for $\trunc n-$, which is correct b
 \end{thm}
 
 \begin{proof}
-  As in previous situations, we cannot directly define a quasi-inverse to~\eqref{eq:path-trunc-map} because there is no way to induct on an equality between $\tproj {n+1}x$ and $\tproj {n+1}y$.
-  Thus, instead we generalize its type, in order to have general elements of the type $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  As in previous situations, we cannot directly define a quasi-inverse to~\eqref{eq:path-trunc-map} because there is no way to induct on an
+equality between $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Thus, instead we generalize its type, in order to have general elements of the type $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj
+{n+1}y$.
   Define $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ by
   \[P(\tproj {n+1}x,\tproj {n+1}y)\defeq \trunc n{x=_Ay}\]
-  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated, and $\typele{n}$ is $(n+1)$-truncated by \autoref{thm:hleveln-of-hlevelSn}.
+  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated, and $\typele{n}$ is $(n+1)$-truncated by
+\autoref{thm:hleveln-of-hlevelSn}.
   Now for every $u,v:\trunc{n+1}A$, there is a map
   \[\encode:P(u,v) \to \big(u=_{\trunc{n+1}A}v\big)\]
   defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and $p:x=y$ by
   \[\encode(\tproj n{p})\defeq \apfunc{\tproj{n+1}-} (p).\]
-  Since the codomain of $\encode$ is $n$-truncated, it suffices to define it only for $u$ and $v$ of this form, and then it's just the same definition as before.
+  Since the codomain of $\encode$ is $n$-truncated, it suffices to define it only for $u$ and $v$ of this form, and then it's just the same
+definition as before.
   We also define a function
   \[ r : \prd{u:\trunc{n+1} A} P(u,u) \]
   by induction on $u$, where $r(\tproj{n+1} x) \defeq \tproj n {\refl x}$.
@@ -453,11 +531,14 @@ This definition uses the recursion principle for $\trunc n-$, which is correct b
   \[\decode(p) \defeq \transfib{v\mapsto P(u,v)}{p}{r(u)}. \]
   To show that the composite
   \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \]
-  is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that $\decode(r(u)) = \refl{u}$.
-  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition of $r$ and $\decode$.
+  is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that
+$\decode(r(u)) = \refl{u}$.
+  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition
+of $r$ and $\decode$.
   Finally, to show that 
   \[ P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \]
-  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
+  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are
+considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
   Then we have
   \begin{align*}
     \decode(\encode(\tproj n p)) &= \decode(\apfunc{\tproj{n+1}-}(p))\\
@@ -486,7 +567,8 @@ This definition uses the recursion principle for $\trunc n-$, which is correct b
   By induction on $k$, using the recursive definition of $\Omega^k$.
 \end{proof}
 
-We also observe that ``truncations are cumulative'': if we truncate to an $n$-type and then to a $k$-type with $k\le n$, then we might as well have truncated directly to a $k$-type.
+We also observe that ``truncations are cumulative'': if we truncate to an $n$-type and then to a $k$-type with $k\le n$, then we might as
+well have truncated directly to a $k$-type.
 
 \begin{lem}
   Let $k,n\ge-2$ with $k\le{}n$ and $A:\type$. Then
@@ -521,7 +603,8 @@ We also observe that ``truncations are cumulative'': if we truncate to an $n$-ty
 \label{subsec:reflective-subuniverses}
 
 So far, in this chapter, we have focused on $n$-types and the $n$-truncation operation.
-In fact, $n$-types and their truncation are a special case of a more general notion called a \emph{reflective subuniverse}, and many of their properties can be proven formally in this generality.
+In fact, $n$-types and their truncation are a special case of a more general notion called a \emph{reflective subuniverse}, and many of
+their properties can be proven formally in this generality.
 
 \begin{defn}
   A \textbf{subuniverse} of \type is a predicate $P:\type \to \prop$.
@@ -531,7 +614,8 @@ In fact, $n$-types and their truncation are a special case of a more general not
 
 An inhabitant of $\P$ is a pair $(A,s)$ with $A:\type$ and $s:P(A)$, but we will often simply write it as $A$.
 Thus $A:\P$ means that $A:\type$ and $P(A)$ holds.
-For instance, $P$ could be \isprop, \isset, or more generally $\istype{n}$ for any $n\ge-2$, in which case \P would be \prop, \set, or $\typele{n}$.
+For instance, $P$ could be \isprop, \isset, or more generally $\istype{n}$ for any $n\ge-2$, in which case \P would be \prop, \set, or
+$\typele{n}$.
 On the other hand, if $P(A)\defeq \unit$, then every type lies in \P, i.e.\ $\P=\type$.
 
 \begin{defn}
@@ -541,7 +625,8 @@ On the other hand, if $P(A)\defeq \unit$, then every type lies in \P, i.e.\ $\P=
   \[\function{(\reflect(A)\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}.\]
 \end{defn}
 
-In particular, this implies that for every $B:\P$ and $g:A\to{}B$ there is a unique map $\ext(g):\reflect(A)\to{}B$ making the following diagram commute (up to homotopy, of course).
+In particular, this implies that for every $B:\P$ and $g:A\to{}B$ there is a unique map $\ext(g):\reflect(A)\to{}B$ making the following
+diagram commute (up to homotopy, of course).
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
 \xymatrix{A \ar^{\project_A}[r] \ar_g[rd] \druppertwocell{=} & \reflect(A)
   \ar@{-->}^{\ext(g)}[d] \\
@@ -573,7 +658,8 @@ Immediate from the universal property of truncations.
   \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd] \druppertwocell{=} &
     \reflect(A) \ar@{->}^\sim[d] \\
     & \reflect'(A)}\]
-  (We can ignore the components $\ext$ and $\ext'$, since they belong to mere propositions---the assertion that precomposing with $\project$ and $\project'$ are equivalences.)
+  (We can ignore the components $\ext$ and $\ext'$, since they belong to mere propositions---the assertion that precomposing with $\project$
+and $\project'$ are equivalences.)
 
   Now the type $\reflect'(A)$ is in \P, so we can define the map
   \[\ext(\project'_A):\reflect(A)\to\reflect'(A)\]
@@ -618,7 +704,8 @@ The following lemma says that the counit of the adjunction is an equivalence, as
 \end{proof}
 
 The reflector $\reflect$ is a map $\type\to\P$, which (like any map in type theory) is a functor of $\infty$-groupoids.
-Using the universal property, we should be able to prove that $\reflect$ is in fact $(\infty,1)$-functorial, i.e.\ preserves composition of (not necessarily invertible) functions up to all higher homotopies.
+Using the universal property, we should be able to prove that $\reflect$ is in fact $(\infty,1)$-functorial, i.e.\ preserves composition of
+(not necessarily invertible) functions up to all higher homotopies.
 But we don't know how to express $(\infty,1)$-functoriality all at once, so we will only prove a few bits of it.
 
 \begin{defn}
@@ -717,7 +804,8 @@ But we don't know how to express $(\infty,1)$-functoriality all at once, so we w
 %   which is the case, because they are both equal to $i\circ{}f$.
 % \end{proof}
 
-TODO: Should probably remark here on how a reflective subuniverse is closed under various things, like the retractions, the terminal object, finite products, arbitrary dependent products, and path spaces.
+TODO: Should probably remark here on how a reflective subuniverse is closed under various things, like the retractions, the terminal object,
+finite products, arbitrary dependent products, and path spaces.
 
 \section{Localizations}
 \label{sec:localizations}
@@ -790,7 +878,8 @@ This definition says that for every $E:\P$ and for every cocone under $\Ddiag$
 with base $E$, there is an essentially unique map $D\to{}E$ such that the whole
 diagram commutes, the proof of commutation being essentially unique too.
 
-Of course, we showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher inductive types.
+Of course, we showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of
+higher inductive types.
 For a general \P, pushouts may or may not exist, but if they do, then they are unique.
 
 \begin{lem}
@@ -896,22 +985,22 @@ In particular, we don't need higher inductive types.
 \end{lem}
 \begin{proof}
   Given a type $E$ and a cone $c=(i,j,h):\cone{\Ddiag}{E}$ we construct a map
-  $\mathsf{s}(c):E\to{}A\times_CB$ by
-  \[\mathsf{s}(c)(x)=((i(x), j(x)), h(x))\]
-  and we need to prove that $\composecone{\mathsf{s}(c)}{c_\times}=c$ and
-  $\mathsf{s}(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
+  $\Sn(c):E\to{}A\times_CB$ by
+  \[\Sn(c)(x)=((i(x), j(x)), h(x))\]
+  and we need to prove that $\composecone{\Sn(c)}{c_\times}=c$ and
+  $\Sn(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
   $t:E\to{}A\times_CB$ and both are easy computations:
   \begin{align*}
-    \composecone{\mathsf{s}(c)}{c_\times}
-    &=\composecone{\mathsf{s}(c)}{(\pi_1,\pi_2,\pi_3)} \\
-    &=(\pi_1\circ\mathsf{s}(c),\pi_2\circ\mathsf{s}(c),
-    \pi_3\circ\mathsf{s}(c))\\
+    \composecone{\Sn(c)}{c_\times}
+    &=\composecone{\Sn(c)}{(\pi_1,\pi_2,\pi_3)} \\
+    &=(\pi_1\circ\Sn(c),\pi_2\circ\Sn(c),
+    \pi_3\circ\Sn(c))\\
     &=(i,j,h)\\
     &=c
   \end{align*}
   \begin{align*}
-    \mathsf{s}(\composecone{t}{c_\times})(x) &=
-    \mathsf{s}(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
+    \Sn(\composecone{t}{c_\times})(x) &=
+    \Sn(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
     &=(\pi_1(t(x)),\pi_2(t(x)),\pi_3(t(x)))\\
     &=t(x)\qedhere
   \end{align*}

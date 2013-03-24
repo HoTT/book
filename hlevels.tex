@@ -405,7 +405,7 @@ Thus, every map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E
 The induction principle also implies a nondependent $\eta$-rule, which says that if $E$ is an $n$-type and $g,g':\trunc nA\to{}E$ are such that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$; hence $g=g'$.
 This implies the following universal property.
 
-\begin{lem}[Universal property of truncations]
+\begin{lem}[Universal property of truncations]\label{thm:trunc-reflective}
   Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
   equivalence:
   \[\function{(\trunc nA\to{}B)}{A\to{}B}{g}{g\circ\tprojf n}\]
@@ -557,7 +557,7 @@ One example is truncations, as defined in \autoref{sec:truncations}.
   given by $\trunc{n}{-}$.
 \end{lem}
 \begin{proof}
-Immediate from the universal property of truncations.  
+  Immediate from the universal property of truncations, \autoref{thm:trunc-reflective}.
 \end{proof}
 
 \begin{lem}
@@ -617,6 +617,9 @@ The following lemma says that the counit of the adjunction is an equivalence, as
     & \reflect(A)}\]
 \end{proof}
 
+Note that the converse is always true: if $\project_A$ is an equivalence, then $A:\P$.
+This is easy using univalence and the fact that $\reflect(A):\P$.
+
 The reflector $\reflect$ is a map $\type\to\P$, which (like any map in type theory) is a functor of $\infty$-groupoids.
 Using the universal property, we should be able to prove that $\reflect$ is in fact $(\infty,1)$-functorial, i.e.\ preserves composition of (not necessarily invertible) functions up to all higher homotopies.
 But we don't know how to express $(\infty,1)$-functoriality all at once, so we will only prove a few bits of it.
@@ -624,39 +627,36 @@ But we don't know how to express $(\infty,1)$-functoriality all at once, so we w
 \begin{defn}
   If $f:A\to{}B$, there is a map $\reflect(f):\reflect(A)\to\reflect(B)$ defined
   by
-  \[\reflect(f)\circ\project_A=\project_B\circ{}f\]
+  \begin{equation}
+    \reflect(f)\circ\project_A=\project_B\circ{}f\label{eq:project-natural}
+  \end{equation}
   (or in other words $\reflect(f)=\ext(\project_B\circ{}f)$).
+\end{defn}
 
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
-    \ar@{-->}^-{\reflect(f)}[d]
-    \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
+\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+\xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
+  \ar@{-->}^-{\reflect(f)}[d]
+  \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
 
-  This operation satisfies the following functoriality conditions:
+Moreover, this operation satisfies the following functoriality conditions:
   \begin{align*}
     \reflect(\idfunc[A])=\idfunc[\reflect(A)]\\
     \reflect(f\circ{}g)=\reflect(f)\circ\reflect(g)
   \end{align*}
-
   In order to define these equalities, we only need to define them after
   composition by $\project(A)$, because of the universal property.
-
-  The first one is defined by
-
+  The first is defined by
   \[\xymatrix{
     \reflect(\idfunc[A])\circ\project_A \ar@{==}[r] \ar@{=}[d] &
     \idfunc[\reflect(A)]\circ\project_A \ar@{=}[d] \\
     \project_A \ar@{=}[r] & \project_A
   }\]
-
   The second one is defined by
-
   \[\xymatrix{
     \reflect(f\circ g)\circ\project_A \ar@{==}[r] \ar@{=}[d] &
     \reflect(f)\circ\reflect(g)\circ\project_A \ar@{=}[d] \\
     \project_C\circ f\circ g \ar@{=}[r] & \reflect(f)\circ\project_B\circ g
   }\]
-\end{defn}
 
 % \begin{proof}
 %   The map $\reflect(f)$ is defined to be the unique map
@@ -687,8 +687,23 @@ But we don't know how to express $(\infty,1)$-functoriality all at once, so we w
 %     }\]
 % \end{proof}
 
+Note also that the defining equation~\eqref{eq:project-natural} asserts the first level of $(\infty,1)$-naturality for the transformation $\project$.
+This implies a generalization of \autoref{thm:h-level-retracts}.
+
+\begin{lem}\label{thm:reflsubuniv-retract}
+  A reflective subuniverse is closed under retractions.
+  That is, if $B$ is in $\P$ and $A$ is a retract of $B$, then $A$ is in $\P$.
+\end{lem}
+\begin{proof}
+  By functoriality and naturality, $\project_A$ is a retract of $\project_B$ (as functions).
+  But $\project_B$ is an equivalence, hence so is $\project_A$; thus $A$ is in $\P$.
+  \note{Should mention somewhere that equivalences are closed under retracts.}
+\end{proof}
+
+We also have the following ``functoriality'' property for the factorizations.
+
 \begin{defn}
-  For every $A,B:\type$, $C:\P$, $f:A\to{}B$ and $i:B\to{}C$ we have
+  Given types $A,B:\type$ and any $C:\P$, for any functions $f:A\to{}B$ and $i:B\to{}C$ we have
   \[\ext(i\circ{}f)=\ext(i)\circ\reflect(f)\]
 
   \[\xymatrix{
@@ -717,18 +732,171 @@ But we don't know how to express $(\infty,1)$-functoriality all at once, so we w
 %   which is the case, because they are both equal to $i\circ{}f$.
 % \end{proof}
 
-TODO: Should probably remark here on how a reflective subuniverse is closed under various things, like the retractions, the terminal object, finite products, arbitrary dependent products, and path spaces.
-
 \section{Localizations}
 \label{sec:localizations}
 
-\dots
+[Where does this go?]
 
-\section{Homotopy pushouts}
+
+\section{Limits in reflective subuniverses}
+\label{sec:pullbacks}
+
+In \autoref{sec:universal-properties} we observed that certain type forming operations have universal properties in the $(\infty,1)$-category of types.
+For instance, we had an equivalence
+\[ \eqvspaced{(X\to A\times B) }{(X\to A)\times (X\to B)}. \]
+We can ask for objects in any subuniverse with similar universal properties, for instance:
+
+\begin{defn}
+  Let $A,B:\P$, with $\P$ any subuniverse.
+  A \textbf{product} of $A$ and $B$ in $\P$ is an object $C:\P$ together with functions $p:C\to A$ and $q:C\to B$ such that for any $X:\P$, the induced map
+  \[ (X\to C) \to (X\to A)\times (X\to B) \]
+  is an equivalence.
+\end{defn}
+
+Of course, if the product type $A\times B$ lies in $\P$, then it is a product of $A$ and $B$ in $\P$.
+As usual in category theory, if the subuniverse is reflective, then this is automatic.
+
+\begin{thm}\label{thm:reflsubuniv-prod}
+  If $\P$ is a reflective subuniverse and $A,B:\P$, then $A\times B$ is also in $\P$.
+\end{thm}
+\begin{proof}
+  Since $A,B:\P$, the projections $\proj1:A\times B\to A$ and $\proj2:A\times B\to B$ factor uniquely through $\reflect(A\times B)$, yielding $\ext(\proj1)$ and $\ext(\proj2)$.
+  But now by the universal property of $A\times B$, we have a unique map $h:\reflect(A\times B) \to A\times B$ such that $\proj1 \circ h = \ext(\proj1)$ and $\proj2\circ h = \ext(\proj2)$.
+  It follows that $h$ is a retraction of $\project_{A\times B}$.
+  Thus, $A\times B$ is a retract of $\reflect(A\times B)$, hence by \autoref{thm:reflsubuniv-retract} it is in $\P$.
+\end{proof}
+
+A similar argument shows that $\unit$ is in every reflective subuniverse.
+Somewhat more interesting is the case of (homotopy) pullbacks, which requires some more definitions to state precisely.
+
+\begin{defn}
+  A \emph{cospan} in $\P$ is a diagram of the following form
+  \[\xymatrix{& B \ar^g[d] \\ A \ar_f[r] & C}\]
+  with $A,B,C:\P$.
+\end{defn}
+
+\begin{defn}
+  If $\Ddiag$ is a cospan and $D:\P$, a \emph{cone over $\Ddiag$ with
+    base $D$} is a triple $(i,j,h)$ such as in the following diagram:
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{D \ar^j[r] \ar_i[d] \drtwocell{^h} & B \ar^g[d] \\
+    A \ar_f[r] & C
+  }\]
+
+  We denote by $\cone{\Ddiag}{D}$ the type of all such cones.
+\end{defn}
+
+The map $D\mapsto\cone{\Ddiag}{D}$ is contravariant in $D$, if $t:E\to{}D$ we
+have a map
+\[\function{\cone{\Ddiag}{D}}{\cone{\Ddiag}{E}}{c}{\composecone{t}{c}}\]
+defined by $\composecone{t}{(i,j,h)}=(i\circ{}t,j\circ{}t,h\circ{}t)$ and this
+map is (contravariantly) functorial.
+
+\begin{defn}
+  A pair $(D,c)$ where $D:\P$ and $c:\cone{\Ddiag}{D}$ is called a
+  \emph{pullback} of $\Ddiag$ in \P if for all $E:\P$ the map
+  \[\function{(E\to{}D)}{\cone{\Ddiag}{E}}{t}{\composecone{t}{c}}\]
+  is an equivalence.
+\end{defn}
+
+As remarked earlier, pullbacks in \type can be constructed directly in the expected way.
+
+\begin{defn}
+  Let $\Ddiag$ be a cospan in $\type$. We define the following type
+  \[A\times_CB=\setof{(a,b):A\times{}B | f(a) = g(b)}\]
+
+  There is a canonical cone $c_\times=(\pi_1,\pi_2,\pi_3)$ over $\Ddiag$ with
+  base $A\times_CB$ given by the following diagram
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{A\times_CB \ar^-{\pi_2}[r] \ar_{\pi_1}[d] \drtwocell{^\pi_3\ }
+    & B \ar^g[d] \\ A \ar_f[r] & C}\]
+  where
+  \begin{align*}
+    \pi_1((a,b),p)&=a\\
+    \pi_2((a,b),p)&=b\\
+    \pi_3((a,b),p)&=p\\
+  \end{align*}
+\end{defn}
+
+\begin{lem}
+  Let $\Ddiag$ be a diagram in $\type$. Then $(A\times_CB,c_\times)$ is a
+  pullback of $\Ddiag$.
+\end{lem}
+\begin{proof}
+  Given a type $E$ and a cone $c=(i,j,h):\cone{\Ddiag}{E}$ we construct a map
+  $\mathsf{s}(c):E\to{}A\times_CB$ by
+  \[\mathsf{s}(c)(x)=((i(x), j(x)), h(x))\]
+  and we need to prove that $\composecone{\mathsf{s}(c)}{c_\times}=c$ and
+  $\mathsf{s}(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
+  $t:E\to{}A\times_CB$ and both are easy computations:
+  \begin{align*}
+    \composecone{\mathsf{s}(c)}{c_\times}
+    &=\composecone{\mathsf{s}(c)}{(\pi_1,\pi_2,\pi_3)} \\
+    &=(\pi_1\circ\mathsf{s}(c),\pi_2\circ\mathsf{s}(c),
+    \pi_3\circ\mathsf{s}(c))\\
+    &=(i,j,h)\\
+    &=c
+  \end{align*}
+  \begin{align*}
+    \mathsf{s}(\composecone{t}{c_\times})(x) &=
+    \mathsf{s}(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
+    &=(\pi_1(t(x)),\pi_2(t(x)),\pi_3(t(x)))\\
+    &=t(x)\qedhere
+  \end{align*}
+\end{proof}
+
+We observe in passing that pullbacks are preserved by function spaces.
+
+\begin{defn}
+  If $\Ddiag$ is a cospan and $D:\type$, then we define another
+  cospan called $D\to\Ddiag$:
+  \[\xymatrix{& (D\to B) \ar^{g\circ-}[d] \\ (D\to A) \ar_{f\circ-}[r] & (D\to
+    C)}\]
+
+  Similarly if $\Ddiag$ is a span and $D:\type$, then we have a
+  cospan $\Ddiag\to{}D$:
+  \[\xymatrix{& (B\to D) \ar^{-\circ{}g}[d] \\ (A\to D) \ar_{-\circ{}f}[r] &
+    (C\to D)}\]
+\end{defn}
+
+\begin{lem}
+  \label{coneispb}
+  If $\Ddiag$ is a cospan and $D:\P$, then
+  \[\cone{\Ddiag}{D}=(D\to{}A)\times_{(D\to{}C)}(D\to{}B)\]
+
+  If $\Ddiag$ is a span and $D:\P$, then
+  \[\cocone{\Ddiag}{D}=(A\to{}D)\times_{(C\to{}D)}(B\to{}D)\]
+\end{lem}
+\begin{proof}
+  In both cases the map from left to right is $(i,j,h)\mapsto(i,j,\funext(h))$
+  and the map from right to left is $(i,j,p)\mapsto(i,j,\happly(p))$ and they
+  are inverse to each other.
+\end{proof}
+
+Finally, we have the analogous result to \autoref{thm:reflsubuniv-prod}.
+
+\begin{thm}\label{thm:reflsubuniv-pb}
+  If $A \xrightarrow{f}  C \xleftarrow{g} B$ is a cospan in a reflective $\P$, then $A\times_C B$ is also in $\P$.
+\end{thm}
+\begin{proof}
+  Essentially just like \autoref{thm:reflsubuniv-prod}.
+\end{proof}
+
+\begin{cor}\label{thm:reflsubuniv-idtype}
+  If $\P$ is reflective, then for any $A:\P$ and $x,y:A$, the identity type $(x=_A y)$ is also in $\P$.
+\end{cor}
+\begin{proof}
+  $(x=_A y)$ is equivalent to the pullback of the diagonal function $f:A\to A\times A$, defined by $f(a)\defeq (a,a)$, and the function $g:\unit\to A\times A$, defined by $g(\ttt)\defeq (x,y)$.
+\end{proof}
+
+TODO: Reflective subuniverses are also exponential ideals.
+
+
+\section{Colimits in reflective subuniverses}
 \label{sec:pushouts}
 
-In \autoref{sec:colimits} we used higher inductive types to define pushouts of types.
-It will be useful for us to consider also pushouts in a subuniverse \P.
+Recall that in \autoref{sec:colimits}, we used higher inductive types to define pushouts of types, and proved their universal property.
+We can, of course, consider pushouts in subuniverses as well.
 
 \begin{defn}
   A \emph{span} in $\P$ is a 5-tuple $\Ddiag=(A,B,C,f,g)$ with
@@ -790,7 +958,7 @@ This definition says that for every $E:\P$ and for every cocone under $\Ddiag$
 with base $E$, there is an essentially unique map $D\to{}E$ such that the whole
 diagram commutes, the proof of commutation being essentially unique too.
 
-Of course, we showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher inductive types.
+We showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher inductive types.
 For a general \P, pushouts may or may not exist, but if they do, then they are unique.
 
 \begin{lem}
@@ -832,122 +1000,10 @@ For a general \P, pushouts may or may not exist, but if they do, then they are u
   pushouts merely exist then they actually exist.
 \end{cor}
 
-
-\section{Homotopy pullbacks}
-\label{sec:pullbacks}
-
-Most of the previous section can be dualised to give a definition of
-pullbacks. More precisely, we have the following.
-
-\begin{defn}
-  A \emph{cospan} in $\P$ is a diagram of the following form
-  \[\xymatrix{& B \ar^g[d] \\ A \ar_f[r] & C}\]
-  with $A,B,C:\P$.
-\end{defn}
-
-\begin{defn}
-  If $\Ddiag$ is a cospan and $D:\P$, a \emph{cone over $\Ddiag$ with
-    base $D$} is a triple $(i,j,h)$ such as in the following diagram:
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{D \ar^j[r] \ar_i[d] \drtwocell{^h} & B \ar^g[d] \\
-    A \ar_f[r] & C
-  }\]
-
-  We denote by $\cone{\Ddiag}{D}$ the type of all such cones.
-\end{defn}
-
-The map $D\mapsto\cone{\Ddiag}{D}$ is contravariant in $D$, if $t:E\to{}D$ we
-have a map
-\[\function{\cone{\Ddiag}{D}}{\cone{\Ddiag}{E}}{c}{\composecone{t}{c}}\]
-defined by $\composecone{t}{(i,j,h)}=(i\circ{}t,j\circ{}t,h\circ{}t)$ and this
-map is (contravariantly) functorial.
-
-\begin{defn}
-  A pair $(D,c)$ where $D:\P$ and $c:\cone{\Ddiag}{D}$ is called a
-  \emph{pullback} of $\Ddiag$ in \P if for all $E:\P$ the map
-  \[\function{(E\to{}D)}{\cone{\Ddiag}{E}}{t}{\composecone{t}{c}}\]
-  is an equivalence.
-\end{defn}
-
-The construction of pullbacks in $\type$ is easier than the construction of
-pushouts.
-In particular, we don't need higher inductive types.
-
-\begin{defn}
-  Let $\Ddiag$ be a diagram in $\type$. We define the following type
-  \[A\times_CB=\setof{(a,b):A\times{}B | f(a) = g(b)}\]
-
-  There is a canonical cone $c_\times=(\pi_1,\pi_2,\pi_3)$ over $\Ddiag$ with
-  base $A\times_CB$ given by the following diagram
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A\times_CB \ar^-{\pi_2}[r] \ar_{\pi_1}[d] \drtwocell{^\pi_3\ }
-    & B \ar^g[d] \\ A \ar_f[r] & C}\]
-  where
-  \begin{align*}
-    \pi_1((a,b),p)&=a\\
-    \pi_2((a,b),p)&=b\\
-    \pi_3((a,b),p)&=p\\
-  \end{align*}
-\end{defn}
-
-\begin{lem}
-  Let $\Ddiag$ be a diagram in $\type$. Then $(A\times_CB,c_\times)$ is a
-  pullback of $\Ddiag$.
-\end{lem}
-\begin{proof}
-  Given a type $E$ and a cone $c=(i,j,h):\cone{\Ddiag}{E}$ we construct a map
-  $\mathsf{s}(c):E\to{}A\times_CB$ by
-  \[\mathsf{s}(c)(x)=((i(x), j(x)), h(x))\]
-  and we need to prove that $\composecone{\mathsf{s}(c)}{c_\times}=c$ and
-  $\mathsf{s}(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
-  $t:E\to{}A\times_CB$ and both are easy computations:
-  \begin{align*}
-    \composecone{\mathsf{s}(c)}{c_\times}
-    &=\composecone{\mathsf{s}(c)}{(\pi_1,\pi_2,\pi_3)} \\
-    &=(\pi_1\circ\mathsf{s}(c),\pi_2\circ\mathsf{s}(c),
-    \pi_3\circ\mathsf{s}(c))\\
-    &=(i,j,h)\\
-    &=c
-  \end{align*}
-  \begin{align*}
-    \mathsf{s}(\composecone{t}{c_\times})(x) &=
-    \mathsf{s}(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
-    &=(\pi_1(t(x)),\pi_2(t(x)),\pi_3(t(x)))\\
-    &=t(x)\qedhere
-  \end{align*}
-\end{proof}
-
-\begin{defn}
-  If $\Ddiag$ is a cospan and $D:\type$, then we define another
-  cospan called $D\to\Ddiag$:
-  \[\xymatrix{& (D\to B) \ar^{g\circ-}[d] \\ (D\to A) \ar_{f\circ-}[r] & (D\to
-    C)}\]
-
-  Similarly if $\Ddiag$ is a span and $D:\type$, then we have a
-  cospan $\Ddiag\to{}D$:
-  \[\xymatrix{& (B\to D) \ar^{-\circ{}g}[d] \\ (A\to D) \ar_{-\circ{}f}[r] &
-    (C\to D)}\]
-\end{defn}
-
-\begin{lem}
-  \label{coneispb}
-  If $\Ddiag$ is a cospan and $D:\P$, then
-  \[\cone{\Ddiag}{D}=(D\to{}A)\times_{(D\to{}C)}(D\to{}B)\]
-
-  If $\Ddiag$ is a span and $D:\P$, then
-  \[\cocone{\Ddiag}{D}=(A\to{}D)\times_{(C\to{}D)}(B\to{}D)\]
-\end{lem}
-\begin{proof}
-  In both cases the map from left to right is $(i,j,h)\mapsto(i,j,\funext(h))$
-  and the map from right to left is $(i,j,p)\mapsto(i,j,\happly(p))$ and they
-  are inverse to each other.
-\end{proof}
-
-\section{Pushouts in reflective subuniverses}
-\label{sec:pushouts-subuniv}
-
-We now want to prove that pushouts in \P are related to pushouts in \type. We
-first need to explain how to reflect spans and cocones.
+As in the case of pullbacks, if \P is reflective, then pushouts in \P always exist.
+However, unlike the case of pullbacks, pushouts in \P are not the same as the pushouts in \type: they are obtained by applying the reflector.
+Before proving this, we first need to explain how to reflect spans and cocones.
+For the rest of this section, let \P be a reflective subuniverse.
 
 \begin{defn}
   Let
@@ -1247,6 +1303,9 @@ conclude that every coherence condition is always satisfied.
   reflection of the pushout in \type of $\Ddiag$, hence $\Ddiag$ has a pushout
   in \P.
 \end{proof}
+
+Similar (but simpler) arguments prove that any reflective subuniverse has an initial object (namely $\reflect(\emptyt)$), coproducts (constructed as $\reflect(A+B)$), coequalizers, and so on.
+
 
 \section{Modalities and factorization systems}
 \label{sec:modalities}

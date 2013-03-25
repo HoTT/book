@@ -330,70 +330,59 @@ Before proving this, we prove an auxiliary lemma:
   By path induction, it suffices to do this when $x\jdeq x'$, in which case it follows from the assumption that $\Omega(X, x)$ is an $n$-type.
 \end{proof}
 
-The following theorem will see how we may detect the homotopy level of a type using spheres. The basic idea is that if a type $A$ has
-homotopy level $n+1$, then all the maps from $\Sn^n$ to $A$ are null-homotopic. 
+The following theorem will see how we may detect the homotopy level of a type using spheres.
+The basic idea is that if $A$ is an $n$-type, then all the maps from $\Sn^{n+1}$ to $A$ are null-homotopic.
 
 \begin{defn}
 A function $f:X\to A$ is said to be \emph{null-homotopic} if there is a term of type
 \begin{equation*}
-\mathsf{hNull}(f):=\sum(a:A),\ f=(\lambda x.a)\big. .
+\mathsf{hNull}(f)\defeq\sm{a:A} (f=(\lambda x.a)) .
 \end{equation*}
 \end{defn}
 
 \begin{lem}\label{lem:hnull_to_map_hnull}
 If a function $f:X\to A$ is null-homotopic, then so is
-\[\apfunc(f)(x,y):(x= y)\to(f(x)= f(y)).\]
+\[\apfunc f : (x= y)\to (f(x)= f(y)).\]
 \end{lem}
 
 \begin{proof}
-Suppose we have a term $H:\sum(a:A),\ f=\lambda x.a$. A proof by path induction on $p:x= y$ reveals that there is a homotopy
+Suppose we have a term $H:\sm{a:A} (f=\lambda x.a)$. A proof by path induction on $p:x= y$ reveals that there is a homotopy
 \begin{equation*}
-\apfunc{f}(x,y)=\lambda p.(\pi_2 H(y))^{-1}\bullet(\pi_2 H(x)).
+\apfunc{f} = \lambda p.(\pi_2 H(y))^{-1}\ct (\pi_2 H(x)).\qedhere
 \end{equation*}
 \end{proof}
 
-\begin{comment}
-\begin{defn}
-We define the $-1$-sphere $\Sn^{-1}$ to be $\varnothing$ and for each $n:\N_{\geq-1}$ we define
-$\Sn^{n+1}:=\susp(\Sn^n)$, i.e.\ the $n+1$-sphere $\Sn^{n+1}$ is the suspension of the $n$-sphere $\Sn^n$.
-We refer to the two points $\mathsf{unit}\to\Sn^{n}$ as the north pole $\north^{n}$ and the south pole $\south^n$. The basic
-constructor of $\Sn^{n+1}$ of type
-\begin{equation*}
-\prod(x:\Sn^n),\ \mathsf{n}^{n+1}=\Sn^{n+1}
-\end{equation*}
-is called $\merid^{n}$ for meridian.
-\end{defn}
-\end{comment}
+Recall from \autoref{sec:suspension} that we can define the $n$-sphere $\Sn^n$ inductively as the suspension of the $(n-1)$-sphere, starting with $\Sn^{-1}\defeq \emptyt$.
 
 \begin{thm}\label{thm:sphere_n_hnull_to_hlevel_sn}
-For every $n:\N$, a type $A$ has homotopy level $n+1$ if all the functions from $\Sn^n$ to $A$ are null-homotopic.
+For every $n:\N$, a type $A$ is an $n$-type if all the functions from $\Sn^{n+1}$ to $A$ are null-homotopic.
 \end{thm}
 
 \begin{proof}
 The exact statement which we will prove is
 \begin{equation*}
-\prod(n:\N)(A:\type),\ \big(\prod(f:\Sn^n\to A),\ \mathsf{hNull}(f)\big)\to\mathsf{isLevel}(n+1,A).
+\prd{n:\N}{A:\type} \big(\prd{f:\Sn^n\to A} \mathsf{hNull}(f)\big)\to\istype{\nminusone}(A).
 \end{equation*}
-The proof is by induction on $n$, so we require that $A$ is in a universe. In the case $n\equiv 0$ we have that
+The proof is by induction on $n$.  In the case $n\jdeq 0$ we have that
 \begin{equation*}
-\big(\prod(f:\Sn^{0}\to A),\ \mathsf{hNull}(f)\big)\simeq\prod(x,y:A),\ x= y,
+\big(\prd{f:\Sn^{0}\to A} \mathsf{hNull}(f)\big)\simeq\prd{x,y:A} (x= y),
 \end{equation*}
 so we see immediately that a type $A$ is a proposition whenever every function $f:\Sn^0\to A$ is null-homotopic.
 
-Suppose that there is a term of type
+Now suppose that there is a term of type
 \begin{equation*}
-\prod(A:\type),\ \big(\prod(f:\Sn^n\to A)(t:\Sn^n),\ f(t)= f(\north^n)\big)\to\mathsf{isLevel}(n+1,A).
+\prd{A:\type}{f:\Sn^n\to A}{t:\Sn^n} (f(t)= f(\north^n)\big)\to\istype{\nminusone}(A).
 \end{equation*}
 and let $A$ be a type and let 
 \begin{equation*}
-H:\prod(f:\Sn^{n+1}\to A)(t:\Sn^{n+1}),\ f(t)= f(\north^{n+1}).
+H:\prd{f:\Sn^{n+1}\to A}{t:\Sn^{n+1}} (f(t)= f(\north^{n+1})).
 \end{equation*}
-We wish to show that $A$ has homotopy level $n+2$, which we will do by showing that $x= y$ has homotopy level $n+1$ for each $x,y:A$.
-Suppose that $x,y:A$, by the induction hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
-We have that $\Sn^n\to(x= y)$ is equivalent to $\sum(f:S^{n+1}\to A),\
-(f(\north^{n+1})= x)\times(f(\south^{n+1})= y)$. Suppose that $f:\Sn^n\to A$ is a function and suppose that
-$\tilde{f}$ corresponds to $f$ via the indicated equivalence. Then $\tilde{f}$ is null-homotopic and hence $\lambda
-t.\tilde{f}(\merid^n(t))$ is null-homotopic (by \autoref{lem:hnull_to_map_hnull}). It follows that $f$ is null-homotopic.
+We wish to show that $A$ is an $n$-type, which we will do by showing that $x= y$ is an $\nminusone$-type for each $x,y:A$.
+Suppose that $x,y:A$; then by the induction hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
+We have that $\Sn^n\to(x= y)$ is equivalent to
+\[\sm{f:S^{n+1}\to A} (f(\north^{n+1})= x)\times(f(\south^{n+1})= y).\]
+Suppose that $f:\Sn^n\to A$ is a function and suppose that $\tilde{f}$ corresponds to $f$ via the indicated equivalence. Then $\tilde{f}$ is null-homotopic, and hence $\lambda t.\tilde{f}(\merid^n(t))$ is null-homotopic (by \autoref{lem:hnull_to_map_hnull}).
+It follows that $f$ is null-homotopic.
 \end{proof}
 
 We conclude that:

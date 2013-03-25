@@ -17,7 +17,9 @@ It turns out that the defining rules of identity types, as described in the prev
 
 This interpretation depends on the ability to \emph{iterate} the identity types.
 Recall that type theory (unlike, say, first-order logic) does not distinguish between individuals (e.g.\ $x:A$), which may be the subjects of propositions, and proofs of propositions (e.g.\ evidence for $\id[A]{x}{y}$).
-Thus, the identity type can be iterated: we can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of identifications between identifications $p,q$, and the type $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on. (Obviously, $\id[A]{x}{y}$ the notation has its limitations here. The $\idtype[A]{x}{y}$ style is only slightly better in iterations: $\idtype[{\idtype[{\idtype[A]{x}{y}}]{p}{q}}]{r}{s}$.)
+Thus, the identity type can be iterated: we can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of identifications between identifications $p,q$, and the type $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on.
+(Obviously, the notation ``$\id[A]{x}{y}$'' has its limitations here.
+The style $\idtype[A]{x}{y}$ is only slightly better in iterations: $\idtype[{\idtype[{\idtype[A]{x}{y}}]{p}{q}}]{r}{s}$.)
 
 If the  type $A$ is ``set-like'', such as \nat, these iterated identity types will be uninteresting (see \autoref{sec:basics-sets}).
 However, under the interpretation of $p,q : \id[A]{x}{y}$ as paths from $x$ to $y$, an element $r : \id[{\id[A]{x}{y}}]{p}{q}$ can be
@@ -112,8 +114,9 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   Thus, in order to apply the induction principle for identity types to this $D$, we need a function of type
   \begin{equation}\label{eq:concatD}
     \prd{x:A} D(x,x,\refl{x})
-    \jdeq \prd{x,z:A}{q:x=z} (x=z).
   \end{equation}
+  which is to say, of type
+  \[ \prd{x,z:A}{q:x=z} (x=z). \]
   Now let $E:\prd{x,z:A}{q:x=z}\type$ be the type family $E(x,z,q)\defeq (x=z)$.
   Note that $E(x,x,\refl x) \jdeq (x=x)$.
   Thus, we have the function
@@ -122,9 +125,9 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   \end{equation*}
   By the induction principle for identity types applied to $E$, we obtain a function
   \begin{equation*}
-    d(x,z,q) : \prd{x,z:A}{q:x=z} E(x,z,q) \jdeq \prd{x,z:A}{q:x=z} (x=z)
+    d(x,z,q) : \prd{x,z:A}{q:x=z} E(x,z,q).
   \end{equation*}
-  which is~\eqref{eq:concatD}.
+  But $E(x,z,q)\jdeq (x=z)$, so this is~\eqref{eq:concatD}.
   Thus, we can use this function $d$ and apply the induction principle for identity types to $D$, to obtain our desired function of type
   \begin{equation*}
     \prd{x,y,z:A}{q:y=z}{p:x=y} (x=z).
@@ -632,8 +635,8 @@ Jumping right to the dependently typed version, suppose we have a type $X$ and t
 Then we have a function
 \begin{equation}
   \label{eq:sigma-ump-map}
-  \Big(\prd{x:X} \textstyle\sum_{a:A(x)} P(x,a)\Big)  \;\to\;
-  \Big(\sm{g:\textstyle\prod_{x:X} A(x)} \textstyle\prod_{x:X} P(x,g(x))\Big)
+  \Big(\dprd{x:X}\dsm{a:A(x)} P(x,a)\Big)  \;\to\;
+  \Big(\dsm{g:\prd{x:X} A(x)} \dprd{x:X} P(x,g(x))\Big)
 \end{equation}
 Note that if we have $P(x,a) \defeq B(x)$ for some $B:X\to\type$, then~\eqref{eq:sigma-ump-map} reduces to~\eqref{eq:prod-umpd-map}.
 
@@ -666,14 +669,14 @@ We will return to this point in \autoref{sec:logic}.)
 The above universal property for pair types is for ``mapping in'', which is familiar from the category-theoretic notion of products.
 However, pair types also have a universal property for ``mapping out'', which may look less familiar.
 In the case of cartesian products, the non-dependent version simply expresses the cartesian closedness adjunction:
-\[ (A\times B) \to C \;\simeq\; A\to (B\to C).\]
+\[ \eqvspaced{\big((A\times B) \to C\big)}{\big(A\to (B\to C)\big)}.\]
 The dependent version of this is formulated for a type family $C:A\times B\to \type$:
-\[ \prd{w:A\times B} C(w) \;\simeq\; \prd{x:A}{y:B} C(x,y). \]
+\[ \eqvspaced{\Big(\prd{w:A\times B} C(w)\Big)}{\Big(\prd{x:A}{y:B} C(x,y)\Big)}. \]
 Here the left-to-right function is simply the induction principle for $A\times B$, while the right-to-left is evaluation at a pair.
 We leave it to the reader to prove that these are quasi-inverses.
 There is also a version for $\Sigma$-types:
 \begin{equation}
-  \prd{w:\textstyle\sum_{x:A} B(x)} C(w) \;\simeq\; \prd{x:A}{y:B(x)} C(x,y)\label{eq:sigma-lump}
+  \eqvspaced{\Big(\prd{w:\sm{x:A} B(x)} C(w)\Big)}{\Big(\prd{x:A}{y:B(x)} C(x,y)\Big)}\label{eq:sigma-lump}
 \end{equation}
 Again, the left-to-right function is the induction principle.
 
@@ -681,7 +684,7 @@ Some other induction principles are also part of universal properties of this so
 For instance, path induction is the right-to-left direction of an equivalence as follows:
 \begin{equation}
   \label{eq:path-lump}
-  \prd{x:A}{p:a=x} B(x,p) \;\simeq\; B(a,\refl a)
+  \eqvspaced{\Big(\prd{x:A}{p:a=x} B(x,p)\Big)}{B(a,\refl a)}
 \end{equation}
 for any $a:A$ and type family $B:\prd{x:A} (a=x) \to\type$.
 However, inductive types with recursion, like the natural numbers, have more complicated universal properties; see \autoref{cha:induction}.
@@ -714,7 +717,7 @@ In \autoref{cha:hlevels} we will study a more general form of this question in d
 
 \begin{eg}
   The type \unit is a set.
-  For by \autoref{thm:path-unit}, for any $x,y:\unit$ we have $\eqv{(x=y)}{\unit}$.
+  For by \autoref{thm:path-unit}, for any $x,y:\unit$ the type $(x=y)$ is equivalent to \unit.
   Since any two elements of \unit are equal, this implies that any two elements of $x=y$ are equal.
 \end{eg}
 
@@ -1051,7 +1054,9 @@ For instance, recall that in \autoref{sec:basics-equivalences} we defined
 where each type $\isequiv (f)$ was supposed to be a mere proposition.
 It follows that if two equivalences have equal underlying functions, then they are equal as equivalences.
 
-Henceforth, if $P:A\to \type$ is a family of mere propositions, we will allow ourselves to write $\setof{x:A | P(x)}$ as an alternative notation for $\sm{x:A} P(x)$.
+Henceforth, if $P:A\to \type$ is a family of mere propositions, we may write
+\[\setof{x:A | P(x)}\]
+as an alternative notation for $\sm{x:A} P(x)$.
 If $A$ is a set, we call $\setof{x:A | P(x)}$ a \textbf{subset} of $A$; for general $A$ we might call it a \textbf{subtype}.
 
 As another example, we may define the ``subuniverses'' of sets and of mere propositions in a universe \UU:
@@ -1078,7 +1083,7 @@ It follows automatically if $\UU_{i+1}$ satisfies LEM (see \autoref{ex:lem-impre
 One use for impredicativity is to define powersets.
 It is natural to define the powerset of a set $A$ to be $A\to\prop_\UU$; but in the absence of impredicativity, this definition depends (even up to equivalence) on the choice of the universe \UU.
 Impredicativity means that we may as well take it to be the smallest universe $\UU_0$, since any other universe would give an equivalent result.
-See also \autoref{sec:object-classification}.
+See also \autoref{subsec:object-classification}.
 
 
 \subsection{The logic of mere propositions}
@@ -1165,7 +1170,7 @@ Assume a type $X$ and type families $A:X\to\type$ and $P:\prd{x:X} A(x)\to\type$
 \end{itemize}
 The \textbf{axiom of choice} asserts that under these assumptions,
 \begin{multline}\label{eq:ac}
-  \left(\prd{x:X} \Brck{\sm{a:A(x)} P(x,a)}\right)
+  \Big(\prd{x:X} \Brck{\sm{a:A(x)} P(x,a)}\Big)
   \to\\
   \Brck{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
 \end{multline}

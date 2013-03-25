@@ -188,7 +188,7 @@ example, thinking of $p : \id[A] M N$ as a ``path'' from $M$ to $N$),
 but it's important to keep in mind that we can only talk about these
 things through the abstraction of an $\infty$-groupoid.
 
-There are few really nice advantages of doing synthetic homotopy theory
+There are a few really nice advantages of doing synthetic homotopy theory
 in type theory.  First, you can use proof assistants like Agda and Coq
 to check your proofs.  Second, we're starting to see examples where
 working in type theory is suggesting new ways of doing proofs.  Third,
@@ -197,9 +197,10 @@ variety of other categories that ``look like'' the category of
 $\infty$-groupoids ($(\infty,1)$-toposes), and, if so, proving a result
 in type theory will show that it holds in these settings as well. It
 remains to be seen how much homotopy theory we can do synthetically, but
-there are already some positive indication, which are listed below.
+there are already some positive indications, which are listed below.
 
-The main tools we use to do homotopy theory in type theory are:
+The main tools we use to do homotopy theory in type theory are described in the
+following sections.
 
 \subsubsection{Higher inductive types} To do some homotopy theory, we need some
   basic spaces (the circle, the sphere, the torus) and constructions for
@@ -209,12 +210,12 @@ The main tools we use to do homotopy theory in type theory are:
 
 \subsubsection{Homotopy groups}  Having defined some spaces, we can start
   calculating some algebraic invariants of them.  The homotopy groups
-  have an extremely natural definition in the setting of
+  have a natural definition in the setting of
   $\infty$-groupoids, which we import easily into type theory.  The fundamental group of $X$ at $x_0$
   is (to a first approximation---see below) just the identity type
   $\id[X] {x_0} {x_0}$, or the morphisms of the $\infty$-groupoid;
   $\pi_2(X,x_0$) is just the identity type $\id[{\id[X] {x_0} {x_0}}]
-  {\refl{}}{\refl{}}$ the 2-morphisms, and so on.  So, calculating a
+  {\refl{}}{\refl{}}$, or the 2-morphisms, and so on.  So, calculating a
   homotopy group is just giving an equivalence between an identity type
   and some other type, and proving that this equivalence preserves the
   group structure.  For example, calculating the fundamental group of
@@ -227,35 +228,41 @@ definition of a type $X$ presents $X$ as a free $\infty$-groupoid, and this
 presentation \emph{determines} but does not \emph{explicitly describe}
 the higher identity types of $X$.  The identity types are populated by
 both the generators ($\lloop$, for the circle), and all of the groupoid
-operations (identity, composition, inverses, ...).  As the above table
+operations (identity, composition, inverses, ...).  As the table above
 for spheres shows, in higher dimensions the $\infty$-groupoid operations
-create quite a complex structure.  Thus, the higher-inductive
+create a complex structure.  Thus, the higher-inductive
 presentation of a space allows you to pose the question "what does the
 identity type of $X$ really turn out to be?", though it can take some
-significant math to answer it.  This is a higher-dimensional
-generalization of a familiar fact in type theory: even for ordinary
-inductive types like natural numbers or booleans, it takes a bit of work
-to prove that $\mathsf{true}$ is different from $\mathsf{false}$---characterizing the
-identity type on booleans is a theorem, not part of the definition
-(see \autoref{sec:compute-coprod}).
+significant mathematics to answer it.  This is a higher-dimensional
+generalization of a familiar fact in type theory: that characterizing 
+the identity type of $X$ can take some work, even if $X$ is an ordinary
+inductive type, such as the natural numbers or booleans.  For example,
+the theorem that $\mathsf{true}$ is different from $\mathsf{false}$ does not
+follow immediately from the definition, see \autoref{sec:compute-coprod}.
 
 One detail that was glossed over above is that the (iterated) identity
 type really gives what is called the \emph{path space} of a space, which
 is not just the \emph{set} of $k$-dimensional paths, but a whole space
 of them, with their higher homotopies.  To extract the set of
-paths-modulo-homotopy, we can use truncation, as described in
+paths modulo homotopy, we can use truncation, as described in
 \autoref{cha:hits}.  For example, the fundamental group of a
 space is defined to be the 0-truncation of the space of loops at $x_0$,
-which produces the set of paths modulo homotopy, killing the higher
+which produces the set of loops modulo homotopy, killing the higher
 homotopies of the loop space.
 
 Using iterated loop spaces (\cref{def:loopspace}), we can make the
 following definition:
+
 \begin{defn}
-  Given $n:\N$ and $(A,a)$ a pointed type, we define the homotopy groups of $A$
+  Given $n:\N$ and $(A,a)$ a pointed type, we define the \textbf{homotopy groups} of $A$
   at $a$ by
-  \[\pi_n(A,a)=\trunc0{\Omega^n(A,a)}\]
+  \[\pi_n(A,a)\defeq \trunc0{\Omega^n(A,a)}\]
 \end{defn}
+
+Of course, \emph{a priori} these are only sets.
+However, if $n\ge 1$, then the path concatenation and inversion operations on $\Omega^n(A)$ induce operations on $\pi_n(A)$ making it into a group in a straightforward way.
+If $n\ge 2$, then the group $\pi_n(A)$ is abelian, by the Eckmann--Hilton argument (\autoref{thm:eckmann-hilton}).
+
 
 \subsubsection{Univalence}  The univalence axiom plays an essential role in
   calculating homotopy groups (this is a formal claim: without
@@ -263,10 +270,10 @@ following definition:
   paths, including, for example, the loop on the circle, are reflexivity).  You
   can see this in the calculation of the the fundamental group of the
   circle below: the map from $\id[\Sn ^1] \base \base$ to $\Z$
-  is defined by mapping a path on the circle to an isomorphism on
+  is defined by mapping a loop on the circle to an automorphism of the set
   $\Z$, so that, for example, $\lloop \ct \opp \lloop$ is sent
-  to $successor \ct predecessor$, and then applying the isomorphism to
-  0. Univalence allows non-trivial paths in the universe, and this is
+  to $successor \ct predecessor$, and then applying the automorphism to
+  0. Univalence produces non-trivial paths in the universe, and this is
   used to extract information from paths in higher inductive types.
 
 \subsubsection{Homotopy-theoretic and type-theoretic methods}  In the
@@ -278,7 +285,7 @@ pushout/pullback diagrams.  Others are more type-theoretic, and consist
 mainly of calculations with the $\infty$-groupoid structure, in a style
 that is very similar to how computer-scientists use type theory to
 reason about programs.  The line between the two styles is fuzzy, and
-many proofs have aspects of both styles; but there is enough of a
+many proofs have aspects of both styles, but there is enough of a
 difference in ``feel'' that it is worth commenting on.  We will present
 some examples of both styles below, and describe an example of the
 difference in \autoref{sec:pi1-s1-intro}.
@@ -293,12 +300,14 @@ cases, they have been computer-checked.
 \begin{thm}[Homotopy Groups of Spheres] \mbox{}
 \begin{itemize}
 \item $\pi_n(\Sn ^n) = \Z$ for $n \ge 1$.
-\item $\pi_k(\Sn ^n) = 1$ for $k < n$.  
+\item $\pi_k(\Sn ^n) = 0$ for $k < n$.  
 \item $\pi_3(\Sn ^2) = \Z$
 \item $\pi_{n+1}(\Sn ^n) = \Z_2$ for $n \ge 3$.    
 \item $\pi_k(\Sn ^n) = \pi_{k+1}(\Sn ^{n+1})$ whenever $k \le 2n - 2$.  
 \end{itemize}
 \end{thm}
+
+Here we use the standard convention that $0$ denotes the trivial (Abelian) group.
 
 \begin{thm}[Hopf Fibration]
 There is a fibration $H$ over $\Sn ^2$ whose fibers are $\Sn ^1$ and
@@ -306,7 +315,7 @@ whose total space is $\Sn ^3$.
 \end{thm}
 
 \begin{thm}
-  If $X$ is $n$-connected, then $\pi_k(X) = 1$ for $k < n$.
+  If $X$ is $n$-connected, then $\pi_k(X) = 0$ for $k < n$.
 \end{thm}
 
 Recall from \autoref{sec:suspension} that $\susp X$ denotes the suspension of $X$.
@@ -323,12 +332,12 @@ Recall from \autoref{sec:colimits} that $X \sqcup^C Y$ is the pushout of $X$ and
   $j$-connected, then for all $x:X$ and $y:Y$, the map $\glue : C(x,y)
   \rightarrow X \sqcup^C Y$ is $i+j$-connected.  In
   particular, $\trunc {i+j} {P(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y]
-    {(\inl(x))} {(\inr(y))}}$.\note{What is $P$?}
+    {(\inl(x))} {(\inr(y))}}$.\note{What is $P$?}\note{What is $\glue$?}\note{What is $C(x,y)$?}
 \end{thm}
 
 \begin{thm}[Eilenberg--Mac Lane Spaces]
 For any abelian group $G$ and positive number $n$, there is a type
-$K(G,n)$ such that $\pi_n(K(G,n)) = G$, and  $\pi_k(K(G,n)) = 1$
+$K(G,n)$ such that $\pi_n(K(G,n)) = G$, and  $\pi_k(K(G,n)) = 0$
 for $k\neq n$.
 \end{thm}
 
@@ -356,8 +365,8 @@ $\Sn ^3$, a significant result in its own right, whereas the
 type-theoretic proof bypasses this result, replacing it with
 calculations using the definition of the Hopf fibration.  It is
 currently unclear whether the type-theoretic style can be used to prove
-some of the most difficult theorems, such as the total space of Hopf
-fibration and $\pi_3(\Sn ^2)$ and $\pi_4(\Sn ^3)$, which we have done in
+some of the most difficult theorems, such as identifying the total space of the Hopf
+fibration and computing $\pi_3(\Sn ^2)$ and $\pi_4(\Sn ^3)$, which we have done in
 the homotopy-theoretic style.
 
 \autoref{tab:theorems} lists the proofs we have done in each style, and
@@ -425,7 +434,7 @@ $\Z$ is a set, so $\id {\trunc 0 {\Z}} {\Z}$
 (FIXME: do we have this somewhere?).  
 \note{What definition of $\Z$ do we want to use?}
 
-Our proof that $\Omega_1(\Sn ^1)$ is $\Z$ can be seen as a
+Our proof that $\Omega(\Sn ^1)$ is $\Z$ can be seen as a
 type-theoretic version of a proof in classical homotopy theory.  The
 classical proof we start from is usually formulated using ``universal
 covering spaces'', but we will give an equivalent sketch using
@@ -435,11 +444,9 @@ B \to B$, where the points of $P_{x_0} B$ are paths in $B$ starting at
 $x_0$, and the map $p$ selects the other endpoint of such a path.  The
 space $P_{x_0} B$ is \emph{contractible}, i.e., homotopy equivalent to a
 point, since we can ``retract'' any path to its initial endpoint $x_0$.
-Moreover, the fiber over $x_0$ is the loop space $\Omega_1(B,x_0)$.
+Moreover, the fiber over $x_0$ is the loop space $\Omega(B,x_0)$.
 
-Now consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which
-looks like a helix projecting down onto the circle:
-\begin{center}
+\begin{figure}\centering
   \begin{tikzpicture}[xscale=1.4,yscale=.6]
     \node (R) at (2,1) {$\mathbb{R}$};
     \node (S1) at (2,-2) {$S^1$};
@@ -459,8 +466,12 @@ looks like a helix projecting down onto the circle:
     \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 1}] at (0,1.2) {};
     \node[fill,circle,inner sep=1pt,label={above left:\scriptsize 2}] at (0,2.2) {};
   \end{tikzpicture}
-\end{center}
-The map $w$ sends each point on the helix to the point on the circle
+  \caption{The winding map in classical topology}\label{fig:winding}
+\end{figure}
+
+Now consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which
+looks like a helix projecting down onto the circle (see \autoref{fig:winding}).
+This map $w$ sends each point on the helix to the point on the circle
 that it is ``sitting above''; this map is a fibration, and the fiber
 over each point is isomorphic to the integers.  If we lift the path that
 goes counterclockwise around the loop on the bottom, we go up one level in the
@@ -473,7 +484,7 @@ Now a basic fact is that a map $E_1\to E_2$ of fibrations over $B$
 which is a homotopy equivalence between $E_1$ and $E_2$ induces a
 homotopy equivalence on fibers.  Since $\mathbb{R}$ and $P_{\base} S^1$
 are both contractible, they are homotopy equivalent, and thus the fibers
-over \base, $\Z$ and $\Omega_1(\Sn ^1)$, are isomorphic.
+over \base, $\Z$ and $\Omega(\Sn ^1)$, are isomorphic.
 
 \smallskip
 
@@ -485,7 +496,7 @@ fibration and the cover are contractible. Indeed, this was the first
 proof of this result in HoTT.
 
 We later discovered that there is an alternative proof, which has a more
-type-theoretic feel.  In this proof, you directly construct fiberwise
+type-theoretic feel.  In this proof, we directly construct fiberwise
 maps between the path fibration and the universal cover, and prove that
 they are mutually inverse by calculation.  We will call this the
 \emph{type-theoretic} or \emph{encode/decode} proof, because
@@ -943,7 +954,7 @@ In this section we will describe a proof of van Kampen's theorem which uses the 
 There is another more homotopy-theoretic approach, which uses the machinery of reflective subuniverses to be described in \autoref{sec:more-advanced-tools}.
 
 We do need a more refined version of the encode/decode technique, however.
-In \autoref{sec:pi1-s1-intro} (as well as in \autoref{sec:compute-coprod,sec:compute-nat}) we used it to characterize the entire path spaces of a (higher) inductive type $W$ --- deriving as a consequence a characterization of the loop space $\Omega(W)$, and thereby also of its 0-truncation $\pi_1(W)$.
+In \autoref{sec:pi1-s1-intro} (as well as in \autoref{sec:compute-coprod,sec:compute-nat}) we used it to characterize the path space of a (higher) inductive type $W$ --- deriving as a consequence a characterization of the loop space $\Omega(W)$, and thereby also of its 0-truncation $\pi_1(W)$.
 In van Kampen's theorem, our goal is only to characterize the fundamental group $\pi_1(W)$, and we do not have any explicit description of the loop spaces or the path spaces to use.
 However, it turns out that we can use the same technique directly for a truncated version of the path spaces, thereby characterizing not only the fundamental \emph{group} $\pi_1(W)$ but the whole 0-truncated path fibration.
 
@@ -1091,7 +1102,7 @@ and for $rka$ we take the composite equality
 where the first equality is by the observation above about transporting in $\code$, and the second is an instance of the set quotient relation used to define $\code$.
 
 We will now prove:
-\begin{thm}[Naive van Kampen]
+\begin{thm}[Naive van Kampen]\label{thm:naive-van-kampen}
   For all $u,v:P$ there is an equivalence
   \[ \Pi_1P(u,v) \simeq \code(u,v). \]
 \end{thm}
@@ -1175,7 +1186,9 @@ This operation on $\code$ is evidently just concatenation of sequences; we leave
 \subsection{van Kampen with a set of basepoints}
 \label{sec:better-vankampen}
 
-When $A$, $B$, and $C$ are not all sets, however, the version of the van Kampen theorem proven in the previous section is not as useful, since it does not identify the path-space of $P$ with a set presented in terms of \emph{set-level data}.
+The version of van Kampen's theorem proven in the previous section (\autoref{thm:naive-van-kampen}) applies to pushouts of arbitrary types, but in all the examples we considered, the type $A$ was a set.
+When this is not the case, \autoref{thm:naive-van-kampen} is not as useful, since it does not identify the path-space of $P$ with a set presented in terms of \emph{set-level data}.
+Specifically, note that even for fixed elements $b:B$ and $c:C$, the definition of the set $\code(i(b),j(c))$ involves arbitrary elements of the type $A$, which might contain arbitrary higher homotopy.
 For this reason, in this section we consider a better sort of van Kampen theorem, which is closely analogous to an improvement that is well-known to be important in classical algebraic topology, where $A$ (at least) is equipped with a \emph{set of base points}.
 
 In fact, it turns out to be unnecessary for the proof to assume that the ``set of basepoints'' is a \emph{set} --- it might just as well be an arbitrary type.

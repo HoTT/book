@@ -13,13 +13,13 @@ We can think of inhabitants of $x=y$ as either
 \item isomorphisms/equivalences from $x$ to $y$.
 \end{enumerate}
 The first is more traditional in type theory; but in homotopy type theory we often take the latter perspectives as well.
-It turns out that the defining rules of identity types, as described in the previous chapter, give them structure which corresponds precisely to that of a space or a higher groupoid.
+It turns out that the defining rules of identity types, as described in the previous chapter, give them structure which corresponds precisely to that of the continuous paths and (higher) homotopies between them in a space, or a (weak) higher-dimensional groupoid.
 
 This interpretation depends on the ability to \emph{iterate} the identity types.
-Recall that type theory (unlike, say, first-order logic) does not distinguish between individuals (e.g.\ $x$), which are the subjects of propositions, and proofs of propositions (e.g.\ evidence for $\id[A]{x}{y}$).
-Thus, the identity type can be iterated: we can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of equalities between identifications $p,q$, and the type $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on.
+Recall that type theory (unlike, say, first-order logic) does not distinguish between individuals (e.g.\ $x:A$), which may be the subjects of propositions, and proofs of propositions (e.g.\ evidence for $\id[A]{x}{y}$).
+Thus, the identity type can be iterated: we can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of identifications between identifications $p,q$, and the type $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on. (Obviously, $\id[A]{x}{y}$ the notation has its limitations here. The $\idtype[A]{x}{y}$ style is only slightly better in iterations: $\idtype[{\idtype[{\idtype[A]{x}{y}}]{p}{q}}]{r}{s}$.)
 
-If the original type $A$ is ``set-like'', such as \nat, these iterated identity types will be uninteresting (see \autoref{sec:basics-sets}).
+If the  type $A$ is ``set-like'', such as \nat, these iterated identity types will be uninteresting (see \autoref{sec:basics-sets}).
 However, under the interpretation of $p,q : \id[A]{x}{y}$ as paths from $x$ to $y$, an element $r : \id[{\id[A]{x}{y}}]{p}{q}$ can be
 thought of as a \emph{path between paths}, or a \emph{homotopy}, and visualized as a 2-dimensional path that fills in the space between $p$ and $q$.
 Similarly, $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$ is the type of 3-dimensional paths between two 2-dimensional paths, and so on.
@@ -72,13 +72,13 @@ We begin with symmetry of equality, which, in topological language, means that `
 \begin{proof}[First proof]
   Let $D:\prd{x,y:A}{p:x= y} \type$ be the type family defined by $D(x,y,p)\defeq (y= x)$.
   In other words, $D$ is a function assigning to any $x,y:A$ and $p:x=y$ a type, namely the type $y=x$.
-  Then we have
+  Then we have an element
   \begin{equation*}
     d\defeq \lambda x.\refl{x}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
-  Thus, the eliminator $J$ for identity types gives us a term $J_{D,d}(x,y,p): (y= x)$ for each $p:(x= y)$.
+  Thus, the eliminator $J$ for identity types gives us an element $J_{D,d}(x,y,p): (y= x)$ for each $p:(x= y)$.
   We can now define the desired function $\opp{(-)}$ to be $\lambda p. J_{D,d}(x,y,p)$, i.e.\ we set $\opp{p} \defeq J_{D,d}(x,y,p)$.
-  The conversion rule~\eqref{eq:Jconv} gives $\opp{\refl{x}}\jdeq \refl{x}$.
+  The conversion rule~\eqref{eq:Jconv} gives $\opp{\refl{x}}\jdeq \refl{x}$, as required.
 \end{proof}
 
 We have written out this proof in a very formal style, which may be helpful while the induction rule on identity types is unfamiliar.
@@ -98,7 +98,7 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{lem}\label{lem:concat}
   For every type $A$ and every $x,y,z:A$ there is a function
   \begin{equation*}
-    (x= y) \to (y= z)\to (x=  z)
+  (x= y) \to   \big((y= z)\to (x=  z)\big)
   \end{equation*}
   written $(p,q)\mapsto p\ct q$, such that $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
 \end{lem}
@@ -187,7 +187,7 @@ For instance, we need to know that concatenation is \emph{associative}, and that
 \end{lem}
 
 Note, in particular, that~\ref{item:omg1}--\ref{item:omg4} are themselves propositional equalities, living in the identity types \emph{of} identity types, such as $p=_{x=y}q$ for $p,q:x=y$.
-Topologically, they are \emph{paths of paths}.
+Topologically, they are \emph{paths of paths}, i.e.\ homotopies.
 It is a familiar fact in topology that when we concatenate a path $p$ with the reversed path $\opp p$, we don't literally obtain a constant path (which corresponds to the equality $\refl{}$ in type theory) --- instead we have a homotopy, or higher path, from $p\ct\opp p$ to the constant path.
 
 \begin{proof}[Proof of~\autoref{thm:omg}]
@@ -285,7 +285,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
   Such an equality between any two particular proofs can, again, be proven by induction, reducing all the paths in question to reflexivities and then observing that both proofs reduce themselves to reflexivities.
 \end{rmk}
 
-We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence laws, which are themselves higher paths, and so on all the way up to infinity.
+We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence laws, which are themselves higher paths, and so on ``all the way up to infinity" (this is made precise using e.g.\ the the notion of a globular operad).
 However, for most purposes it is unnecessary to make the whole infinite-dimensional structure explicit.
 One of the nice things about homotopy type theory is that all of this structure can be \emph{proven} starting from only the inductive property of identity types, so we can make explicit as much or as little of it as we need.
 In particular, in this book we will not need any of the complicated combinatorics involved in making precise notions such as ``coherent structure at all higher levels''.
@@ -330,10 +330,10 @@ In traditional type theory, this is equivalently the statement that functions re
 Topologically, this corresponds to saying that every function is ``continuous'', i.e.\ preserves paths.
 
 \begin{lem}\label{lem:map}
-  Suppose that $f:A\to B$ is a function and that $p:(\id[A]xy)$.
+  Suppose that $f:A\to B$ is a function.
   Then for any $x,y:A$ there is an operation
   \begin{equation*}
-    \apfunc f : (x=y) \to (f(x)= f(y)).
+    \apfunc f : (x=_A y) \to (f(x)=_B f(y)).
   \end{equation*}
   Moreover, for each $x:A$ we have $\apfunc{f}(\refl{x})\jdeq \refl{f(x)}$.
 \end{lem}
@@ -403,7 +403,7 @@ In this case, we may write
 \[\transfib P p - : P(x) \to P(y).\]
 
 Recall that a type family $P$ over a type $A$ can be seen as a property of elements of $A$, which holds at $x$ in $A$ if $P(x)$ is inhabited.
-Then the transportation lemma says that if $x$ is equal to $y$, then $P(x)$ holds if and only if $P(y)$ holds.
+Then the transportation lemma says that $P$ respects equality, in the sense that if $x$ is equal to $y$, then $P(x)$ holds if and only if $P(y)$ holds.
 In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are \emph{equivalent}.
 
 Topologically, the transportation lemma can be viewed as a ``path lifting'' operation in a fibration.
@@ -464,7 +464,7 @@ Thus, up to equivalence, it makes sense to define ``a path from $u$ to $v$ lying
 And, indeed, we can show that dependent functions produce such paths.
 
 \begin{lem}[Dependent map]\label{lem:mapdep}
-  Suppose $f:\prd{x: A} P(x)$; then we have
+  Suppose $f:\prd{x: A} P(x)$; then we have a map
   \[\apdfunc f :(x=y) \to \big(\id[P(y)]{\trans p{f(x)}}{f(y)}\big).\]
 \end{lem}
 
@@ -491,7 +491,7 @@ We will refer generally to paths which ``lie over other paths'' in this sense as
 They will play an increasingly important role starting in \autoref{cha:hits}.
 In \autoref{sec:computational} we will see that for a few particular kinds of type families, there are equivalent ways to represent the notion of dependent paths that are sometimes more convenient.
 
-Now recall that a non-dependently typed function $f:A\to B$ is just the special case of a dependently typed function $f:\prd{x:A} P(x)$ when $P$ is a constant type family, $P(x) \defeq B$.
+Now recall from section \ref{sec:pi-types} that a non-dependently typed function $f:A\to B$ is just the special case of a dependently typed function $f:\prd{x:A} P(x)$ when $P$ is a constant type family, $P(x) \defeq B$.
 In this case, $\apdfunc{f}$ and $\apfunc{f}$ are closely related, because of the following lemma:
 
 \begin{lem}\label{thm:trans-trivial}
@@ -537,7 +537,7 @@ In fact, these functions are inverse equivalences (in the sense to be introduced
   In this case, what we have to prove is $\refl{f(x)} = \refl{f(x)} \ct \refl{f(x)}$, which is true judgmentally.
 \end{proof}
 
-But because the types of $\apdfunc{f}$ and $\apfunc{f}$ are different, it is often clearer to use different notations for them.
+Because the types of $\apdfunc{f}$ and $\apfunc{f}$ are different, it is often clearer to use different notations for them.
 We may sometimes use a notation $\apd f p$ for $\apdfunc{f}(p)$, which is similar to the notation $\ap f p$ for $\apfunc{f}(p)$.
 
 At this point, we hope the reader is starting to get a feel for proofs by induction on identity types.
@@ -646,7 +646,7 @@ Note that if we have $P(x,a) \defeq B(x)$ for some $B:X\to\type$, then~\eqref{eq
   \begin{equation}
     x\mapsto (\proj1(f(x)),\proj2(f(x))).\label{eq:prod-ump-rt2}
   \end{equation}
-  Now for any $x:X$, by \autoref{thm:eta-sigma} ($\eta$-equivalence for $\Sigma$-types) we have $(\proj1(f(x)),\proj2(f(x))) = f(x)$.
+  Now for any $x:X$, by \autoref{thm:eta-sigma} ($\eta$-equivalence for $\Sigma$-types) we have $$(\proj1(f(x)),\proj2(f(x))) = f(x).$$
   Thus, by function extensionality,~\eqref{eq:prod-ump-rt2} is equal to $f$.
 
   On the other hand, given $(g,h)$, the round-trip composite yields the pair $(x\mapsto g(x),x\mapsto h(x))$.
@@ -660,8 +660,8 @@ If we read $\Sigma$ as ``there exists'' and $\Pi$ (sometimes) as ``for all'', we
 \item $\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))$ as ``there exists a choice function $g:\prd{x:X} A(x)$ such that for all $x:X$ we have $P(x,g(x))$''.
 \end{itemize}
 Thus, \autoref{thm:ttac} says that not only is the axiom of choice ``true'', it hypotheses are equivalent to its conclusion.
-(On the other hand, it should also be clear to the classical mathematician that~\eqref{eq:sigma-ump-map} does not carry the intended meaning of the axiom of choice, since we have specified the values of $g$ already and there are no choices left to be made.
-We will return to this point in \autoref{sec:logic}.
+(On the other hand, the classical mathematician may find that~\eqref{eq:sigma-ump-map} does not carry the usual meaning of the axiom of choice, since we have already specified the values of $g$, and there are no choices left to be made.
+We will return to this point in \autoref{sec:logic}.)
 
 The above universal property for pair types is for ``mapping in'', which is familiar from the category-theoretic notion of products.
 However, pair types also have a universal property for ``mapping out'', which may look less familiar.
@@ -690,11 +690,11 @@ However, inductive types with recursion, like the natural numbers, have more com
 \section{Sets and $n$-types}
 \label{sec:basics-sets}
 
-While types in general behave like higher groupoids, there is a subclass of them that behave more like the sets in a traditional set-theoretic system.
+While types in general behave like spaces or higher groupoids, there is a subclass of them that behave more like the sets in a traditional set-theoretic system.
 Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms and higher morphisms; while topologically, we may consider spaces having the discrete topology.
 More generally, we may consider groupoids or spaces that are \emph{equivalent} to ones of this sort; since everything we do in type theory is up to homotopy, we can't expect to tell the difference.
 
-Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopy information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
+Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopical information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
 Fortunately, because everything in homotopy type theory is automatically functorial/continuous, it turns out to be sufficient to ask this at the bottom level.
 
 \begin{defn}\label{defn:set}
@@ -746,9 +746,9 @@ Most of the type forming operations we have considered so far also preserve sets
   Now using function extensionality again, the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are $p$ and $q$.
 \end{eg}
 
-For more examples, see \autoref{ex:isset-coprod,ex:isset-sigma}.
+For more examples, see \autoref{ex:isset-coprod,ex:isset-sigma}.  For a more systematic investigation of the subsystem (category) of all sets in homotopy type theory, see chapter \ref{cha:set-math} below.
 
-In fact, sets are just the first rung on a ladder of what are called \emph{homotopy $n$-types}.
+Sets are just the first rung on a ladder of what are called \emph{homotopy $n$-types}.
 The next rung consists of \emph{$1$-types}, which are analogous to $1$-groupoids in category theory.
 The defining property of a set (which we may also call a \emph{$0$-type}) is that it has no non-trivial paths.
 Similarly, the defining property of a $1$-type is that it has no non-trivial paths between paths:
@@ -811,7 +811,7 @@ Such types may be regarded as \emph{propositions in a narrow sense}, and their s
 \label{sec:logic}
 
 Type theory, formal or informal, is a collection of rules for manipulating types and their elements.
-But when writing mathematics informally in human language, we generally use familiar words, particularly logical connectives such as ``and'' and ``or'', and logical quantifiers such as ``for all'' and ``there exists''.
+But when writing mathematics informally in natural language, we generally use familiar words, particularly logical connectives such as ``and'' and ``or'', and logical quantifiers such as ``for all'' and ``there exists''.
 In contrast to set theory, type theory offers us more than one choice for how to regard these English phrases as operations on types.
 This potential ambiguity needs to be resolved, by setting out local or global conventions, by introducing new annotations to informal mathematics, or both.
 This requires some getting used to, but is offset by the fact that because type theory permits this finer analysis of logic, we can represent mathematics more faithfully, with fewer ``abuses of language'' than in set-theoretic foundations.
@@ -827,7 +827,7 @@ For instance, in \autoref{thm:ttac} we saw that the statement
 \begin{equation}\label{eq:english-ac}
   \parbox{\textwidth-2cm}{``If for all $x:X$ there exists an $a:A(x)$ such that $P(x,a)$, then there exists a function $g:\prd{x:A} A(x)$ such that for all $x:X$ we have $P(x,g(x))$,''}
 \end{equation}
-which looks like the classical \emph{axiom of choice}, is always true under this reading. This is a noteworthy, and often useful, feature of the propositions-as-types logic, but it also illustrates how significantly it differs from the classical interpretation of logic.
+which looks like the classical \emph{axiom of choice}, is always true under this reading. This is a noteworthy, and often useful, feature of the propositions-as-types logic, but it also illustrates how significantly it differs from the classical interpretation of logic, under which the axiom of choice is not a logical truth, but an additional ``axiom".
 
 On the other hand, we can now also show that corresponding statements looking like the classical \emph{law of double negation} and \emph{law of excluded middle} are incompatible with the univalence axiom.
 

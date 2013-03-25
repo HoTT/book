@@ -188,7 +188,7 @@ example, thinking of $p : \id[A] M N$ as a ``path'' from $M$ to $N$),
 but it's important to keep in mind that we can only talk about these
 things through the abstraction of an $\infty$-groupoid.
 
-There are few really nice advantages of doing synthetic homotopy theory
+There are a few really nice advantages of doing synthetic homotopy theory
 in type theory.  First, you can use proof assistants like Agda and Coq
 to check your proofs.  Second, we're starting to see examples where
 working in type theory is suggesting new ways of doing proofs.  Third,
@@ -197,9 +197,10 @@ variety of other categories that ``look like'' the category of
 $\infty$-groupoids ($(\infty,1)$-toposes), and, if so, proving a result
 in type theory will show that it holds in these settings as well. It
 remains to be seen how much homotopy theory we can do synthetically, but
-there are already some positive indication, which are listed below.
+there are already some positive indications, which are listed below.
 
-The main tools we use to do homotopy theory in type theory are:
+The main tools we use to do homotopy theory in type theory are described in the
+following sections.
 
 \subsubsection{Higher inductive types} To do some homotopy theory, we need some
   basic spaces (the circle, the sphere, the torus) and constructions for
@@ -209,12 +210,12 @@ The main tools we use to do homotopy theory in type theory are:
 
 \subsubsection{Homotopy groups}  Having defined some spaces, we can start
   calculating some algebraic invariants of them.  The homotopy groups
-  have an extremely natural definition in the setting of
+  have a natural definition in the setting of
   $\infty$-groupoids, which we import easily into type theory.  The fundamental group of $X$ at $x_0$
   is (to a first approximation---see below) just the identity type
   $\id[X] {x_0} {x_0}$, or the morphisms of the $\infty$-groupoid;
   $\pi_2(X,x_0$) is just the identity type $\id[{\id[X] {x_0} {x_0}}]
-  {\refl{}}{\refl{}}$ the 2-morphisms, and so on.  So, calculating a
+  {\refl{}}{\refl{}}$, or the 2-morphisms, and so on.  So, calculating a
   homotopy group is just giving an equivalence between an identity type
   and some other type, and proving that this equivalence preserves the
   group structure.  For example, calculating the fundamental group of
@@ -227,26 +228,26 @@ definition of a type $X$ presents $X$ as a free $\infty$-groupoid, and this
 presentation \emph{determines} but does not \emph{explicitly describe}
 the higher identity types of $X$.  The identity types are populated by
 both the generators ($\lloop$, for the circle), and all of the groupoid
-operations (identity, composition, inverses, ...).  As the above table
+operations (identity, composition, inverses, ...).  As the table above
 for spheres shows, in higher dimensions the $\infty$-groupoid operations
-create quite a complex structure.  Thus, the higher-inductive
+create a complex structure.  Thus, the higher-inductive
 presentation of a space allows you to pose the question "what does the
 identity type of $X$ really turn out to be?", though it can take some
-significant math to answer it.  This is a higher-dimensional
-generalization of a familiar fact in type theory: even for ordinary
-inductive types like natural numbers or booleans, it takes a bit of work
-to prove that $\mathsf{true}$ is different from $\mathsf{false}$---characterizing the
-identity type on booleans is a theorem, not part of the definition
-(see \autoref{sec:compute-coprod}).
+significant mathematics to answer it.  This is a higher-dimensional
+generalization of a familiar fact in type theory: that characterizing 
+the identity type of $X$ can take some work, even if $X$ is an ordinary
+inductive type, such as the natural numbers or booleans.  For example,
+the theorem that $\mathsf{true}$ is different from $\mathsf{false}$ does not
+follow immediately from the definition, see \autoref{sec:compute-coprod}.
 
 One detail that was glossed over above is that the (iterated) identity
 type really gives what is called the \emph{path space} of a space, which
 is not just the \emph{set} of $k$-dimensional paths, but a whole space
 of them, with their higher homotopies.  To extract the set of
-paths-modulo-homotopy, we can use truncation, as described in
+paths modulo homotopy, we can use truncation, as described in
 \autoref{cha:hits}.  For example, the fundamental group of a
 space is defined to be the 0-truncation of the space of loops at $x_0$,
-which produces the set of paths modulo homotopy, killing the higher
+which produces the set of loops modulo homotopy, killing the higher
 homotopies of the loop space.
 
 Using iterated loop spaces (\cref{def:loopspace}), we can make the
@@ -263,10 +264,10 @@ following definition:
   paths, including, for example, the loop on the circle, are reflexivity).  You
   can see this in the calculation of the the fundamental group of the
   circle below: the map from $\id[\Sn ^1] \base \base$ to $\Z$
-  is defined by mapping a path on the circle to an isomorphism on
+  is defined by mapping a loop on the circle to an automorphism of the set
   $\Z$, so that, for example, $\lloop \ct \opp \lloop$ is sent
-  to $successor \ct predecessor$, and then applying the isomorphism to
-  0. Univalence allows non-trivial paths in the universe, and this is
+  to $successor \ct predecessor$, and then applying the automorphism to
+  0. Univalence produces non-trivial paths in the universe, and this is
   used to extract information from paths in higher inductive types.
 
 \subsubsection{Homotopy-theoretic and type-theoretic methods}  In the
@@ -278,7 +279,7 @@ pushout/pullback diagrams.  Others are more type-theoretic, and consist
 mainly of calculations with the $\infty$-groupoid structure, in a style
 that is very similar to how computer-scientists use type theory to
 reason about programs.  The line between the two styles is fuzzy, and
-many proofs have aspects of both styles; but there is enough of a
+many proofs have aspects of both styles, but there is enough of a
 difference in ``feel'' that it is worth commenting on.  We will present
 some examples of both styles below, and describe an example of the
 difference in \autoref{sec:pi1-s1-intro}.
@@ -323,7 +324,7 @@ Recall from \autoref{sec:colimits} that $X \sqcup^C Y$ is the pushout of $X$ and
   $j$-connected, then for all $x:X$ and $y:Y$, the map $\glue : C(x,y)
   \rightarrow X \sqcup^C Y$ is $i+j$-connected.  In
   particular, $\trunc {i+j} {P(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y]
-    {(\inl(x))} {(\inr(y))}}$.\note{What is $P$?}
+    {(\inl(x))} {(\inr(y))}}$.\note{What is $P$?}\note{What is $\glue$?}\note{What is $C(x,y)$?}
 \end{thm}
 
 \begin{thm}[Eilenberg--Mac Lane Spaces]

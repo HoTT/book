@@ -13,13 +13,13 @@ We can think of inhabitants of $x=y$ as either
 \item isomorphisms/equivalences from $x$ to $y$.
 \end{enumerate}
 The first is more traditional in type theory; but in homotopy type theory we often take the latter perspectives as well.
-It turns out that the defining rules of identity types, as described in the previous chapter, give them structure which corresponds precisely to that of a space or a higher groupoid.
+It turns out that the defining rules of identity types, as described in the previous chapter, give them structure which corresponds precisely to that of the continuous paths and (higher) homotopies between them in a space, or a (weak) higher-dimensional groupoid.
 
 This interpretation depends on the ability to \emph{iterate} the identity types.
-Recall that type theory (unlike, say, first-order logic) does not distinguish between individuals (e.g.\ $x$), which are the subjects of propositions, and proofs of propositions (e.g.\ evidence for $\id[A]{x}{y}$).
-Thus, the identity type can be iterated: we can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of equalities between identifications $p,q$, and the type $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on.
+Recall that type theory (unlike, say, first-order logic) does not distinguish between individuals (e.g.\ $x:A$), which may be the subjects of propositions, and proofs of propositions (e.g.\ evidence for $\id[A]{x}{y}$).
+Thus, the identity type can be iterated: we can form the type $\id[{\id[A]{x}{y}}]{p}{q}$ of identifications between identifications $p,q$, and the type $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$, and so on. (Obviously, $\id[A]{x}{y}$ the notation has its limitations here. The $\idtype[A]{x}{y}$ style is only slightly better in iterations: $\idtype[{\idtype[{\idtype[A]{x}{y}}]{p}{q}}]{r}{s}$.)
 
-If the original type $A$ is ``set-like'', such as \nat, these iterated identity types will be uninteresting (see \autoref{sec:basics-sets}).
+If the  type $A$ is ``set-like'', such as \nat, these iterated identity types will be uninteresting (see \autoref{sec:basics-sets}).
 However, under the interpretation of $p,q : \id[A]{x}{y}$ as paths from $x$ to $y$, an element $r : \id[{\id[A]{x}{y}}]{p}{q}$ can be
 thought of as a \emph{path between paths}, or a \emph{homotopy}, and visualized as a 2-dimensional path that fills in the space between $p$ and $q$.
 Similarly, $\id[{\id[{\id[A]{x}{y}}]{p}{q}}]{r}{s}$ is the type of 3-dimensional paths between two 2-dimensional paths, and so on.
@@ -72,13 +72,13 @@ We begin with symmetry of equality, which, in topological language, means that `
 \begin{proof}[First proof]
   Let $D:\prd{x,y:A}{p:x= y} \type$ be the type family defined by $D(x,y,p)\defeq (y= x)$.
   In other words, $D$ is a function assigning to any $x,y:A$ and $p:x=y$ a type, namely the type $y=x$.
-  Then we have
+  Then we have a term
   \begin{equation*}
     d\defeq \lambda x.\refl{x}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
   Thus, the eliminator $J$ for identity types gives us a term $J_{D,d}(x,y,p): (y= x)$ for each $p:(x= y)$.
   We can now define the desired function $\opp{(-)}$ to be $\lambda p. J_{D,d}(x,y,p)$, i.e.\ we set $\opp{p} \defeq J_{D,d}(x,y,p)$.
-  The conversion rule~\eqref{eq:Jconv} gives $\opp{\refl{x}}\jdeq \refl{x}$.
+  The conversion rule~\eqref{eq:Jconv} gives $\opp{\refl{x}}\jdeq \refl{x}$, as required.
 \end{proof}
 
 We have written out this proof in a very formal style, which may be helpful while the induction rule on identity types is unfamiliar.
@@ -98,7 +98,7 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{lem}\label{lem:concat}
   For every type $A$ and every $x,y,z:A$ there is a function
   \begin{equation*}
-    (x= y) \to (y= z)\to (x=  z)
+  (x= y) \to   \big((y= z)\to (x=  z)\big)
   \end{equation*}
   written $(p,q)\mapsto p\ct q$, such that $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
 \end{lem}
@@ -187,7 +187,7 @@ For instance, we need to know that concatenation is \emph{associative}, and that
 \end{lem}
 
 Note, in particular, that~\ref{item:omg1}--\ref{item:omg4} are themselves propositional equalities, living in the identity types \emph{of} identity types, such as $p=_{x=y}q$ for $p,q:x=y$.
-Topologically, they are \emph{paths of paths}.
+Topologically, they are \emph{paths of paths}, i.e.\ homotopies.
 It is a familiar fact in topology that when we concatenate a path $p$ with the reversed path $\opp p$, we don't literally obtain a constant path (which corresponds to the equality $\refl{}$ in type theory) --- instead we have a homotopy, or higher path, from $p\ct\opp p$ to the constant path.
 
 \begin{proof}[Proof of~\autoref{thm:omg}]
@@ -285,7 +285,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
   Such an equality between any two particular proofs can, again, be proven by induction, reducing all the paths in question to reflexivities and then observing that both proofs reduce themselves to reflexivities.
 \end{rmk}
 
-We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence laws, which are themselves higher paths, and so on all the way up to infinity.
+We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence laws, which are themselves higher paths, and so on ``all the way up to infinity" (this is made precise using e.g.\ the the notion of a globular operad).
 However, for most purposes it is unnecessary to make the whole infinite-dimensional structure explicit.
 One of the nice things about homotopy type theory is that all of this structure can be \emph{proven} starting from only the inductive property of identity types, so we can make explicit as much or as little of it as we need.
 In particular, in this book we will not need any of the complicated combinatorics involved in making precise notions such as ``coherent structure at all higher levels''.
@@ -330,10 +330,10 @@ In traditional type theory, this is equivalently the statement that functions re
 Topologically, this corresponds to saying that every function is ``continuous'', i.e.\ preserves paths.
 
 \begin{lem}\label{lem:map}
-  Suppose that $f:A\to B$ is a function and that $p:(\id[A]xy)$.
+  Suppose that $f:A\to B$ is a function.
   Then for any $x,y:A$ there is an operation
   \begin{equation*}
-    \apfunc f : (x=y) \to (f(x)= f(y)).
+    \apfunc f : (x=_A y) \to (f(x)=_B f(y)).
   \end{equation*}
   Moreover, for each $x:A$ we have $\apfunc{f}(\refl{x})\jdeq \refl{f(x)}$.
 \end{lem}
@@ -403,7 +403,7 @@ In this case, we may write
 \[\transfib P p - : P(x) \to P(y).\]
 
 Recall that a type family $P$ over a type $A$ can be seen as a property of elements of $A$, which holds at $x$ in $A$ if $P(x)$ is inhabited.
-Then the transportation lemma says that if $x$ is equal to $y$, then $P(x)$ holds if and only if $P(y)$ holds.
+Then the transportation lemma says that $P$ respects equality, in the sense that if $x$ is equal to $y$, then $P(x)$ holds if and only if $P(y)$ holds.
 In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are \emph{equivalent}.
 
 Topologically, the transportation lemma can be viewed as a ``path lifting'' operation in a fibration.

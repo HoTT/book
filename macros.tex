@@ -15,38 +15,54 @@
 \newcommand{\seq}[1]{\langle #1\rangle}
 
 %%% Dependent products %%%
+\def\prdsym{\textstyle\prod}
 %% Call the macro like \prd{x,y:A}{p:x=y} with any number of
 %% arguments.  Make sure that whatever comes *after* the call doesn't
 %% begin with an open-brace, or it will be parsed as another argument.
 \makeatletter
-%% This version does {\textstyle\prod}(x,y:A)(p:x=y),
-% \def\prd{{\textstyle\prod}\@prd}
-% \def\@prd#1{(#1)\@ifnextchar\bgroup{\@prd}{,}}
-%% This version does
-%% {\textstyle\prod}(x,y:A)\;{\textstyle\prod}(p:x=y),
-\def\prdsym{\textstyle\prod}
-\def\prd#1{{\textstyle\prod}(#1)\@ifnextchar\bgroup{\;\prd}{,\ }}
-%% This version does ({\textstyle\prod}x,y:A)\;({\textstyle\prod}p:x=y),
-%\def\prd#1{\big({\textstyle\prod} #1\big)\@ifnextchar\bgroup{\;\prd}{,}}
-%% This version does \prod_{(x,y:A)} \prod_{(p:x=y)}
-% \def\prd#1{\prod_{(#1)}\@ifnextchar\bgroup{\prd}{}}
-%% This version does {\textstyle\prod}_{(x,y:A)} {\textstyle\prod}_{(p:x=y)}
-% \def\prd#1{{\textstyle\prod}_{(#1)}\@ifnextchar\bgroup{\prd}{}}
-%% This one is Agda style
-% \def\prd#1{(#1)\to\@ifnextchar\bgroup{\prd}{}}
+% Currently the macro is configured to produce
+%     {\textstyle\prod}(x:A) \; {\textstyle\prod}(y:B),\ 
+% in display-math mode, and
+%     \prod_{(x:A)} \prod_{y:B}
+% in text-math mode.
+\def\prd#1{\@ifnextchar\bgroup%
+  {\mathchoice{\@lprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}\prd}%
+  {\mathchoice{\@@lprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}}}
+% Helper macros for three styles
+\def\lprd#1{\@ifnextchar\bgroup{\@lprd{#1}\lprd}{\@@lprd{#1}}}
+\def\@lprd#1{\mathchoice{{\textstyle\prod}}{\prod}{\prod}{\prod}({\textstyle #1})\;}
+\def\@@lprd#1{\mathchoice{{\textstyle\prod}}{\prod}{\prod}{\prod}({\textstyle #1}),\ }
+\def\tprd#1{\@tprd{#1}\@ifnextchar\bgroup{\tprd}{}}
+\def\@tprd#1{\mathchoice{{\textstyle\prod_{(#1)}}}{\prod_{(#1)}}{\prod_{(#1)}}{\prod_{(#1)}}}
+\def\dprd#1{\@dprd{#1}\@ifnextchar\bgroup{\dprd}{}}
+\def\@dprd#1{\prod_{(#1)}\,}
+
+%%% Lambda abstractions?
 \def\lam#1{{\textstyle\lambda}(#1)\@ifnextchar\bgroup{\;\lam}{,\ }}
 
-
 %%% Dependent products written with \forall, in the same style
-\def\fall#1{{\forall}(#1)\@ifnextchar\bgroup{\;\fall}{,\ }}
+% \def\fall#1...
 
 %%% Existential quantifier %%%
-\def\exis#1{{\exists}(#1)\@ifnextchar\bgroup{\;\exis}{,\ }}
+% \def\exis#1...
 
 %%% Dependent sums %%%
-\def\smsym {\textstyle\sum}
-\def\sm#1{{\textstyle\sum}(#1)\@ifnextchar\bgroup{\;\sm}{,\ }}
+\def\smsym{\textstyle\sum}
+% Use in the same way as \prd
+\def\sm#1{\@ifnextchar\bgroup%
+  {\mathchoice{\@lsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}\sm}%
+  {\mathchoice{\@@lsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}}}
+\def\lsm#1{\@ifnextchar\bgroup{\@lsm{#1}\lsm}{\@@lsm{#1}}}
+\def\@lsm#1{\mathchoice{{\textstyle\sum}}{\sum}{\sum}{\sum}({\textstyle #1})\;}
+\def\@@lsm#1{\mathchoice{{\textstyle\sum}}{\sum}{\sum}{\sum}({\textstyle #1}),\ }
+\def\tsm#1{\@tsm{#1}\@ifnextchar\bgroup{\tsm}{}}
+\def\@tsm#1{\mathchoice{{\textstyle\sum_{(#1)}}}{\sum_{(#1)}}{\sum_{(#1)}}{\sum_{(#1)}}}
+\def\dsm#1{\@dsm{#1}\@ifnextchar\bgroup{\dsm}{}}
+\def\@dsm#1{\sum_{(#1)}\,}
+
 \makeatother
+
+% Other notations related to dependent sums
 \let\setof\Set    % from package 'braket', write \setof{ x:A | P(x) }.
 \newcommand{\pair}{\ensuremath{\mathsf{pair}}\xspace}
 \newcommand{\tup}[2]{( #1,#2)}

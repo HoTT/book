@@ -50,7 +50,7 @@ for every $a:A$.
 The notation $J$ is traditional for this function, but we will not use it very much.
 Usually, every time we apply this induction rule we will either not care about the specific function being defined, or we will immediately give it a different name.
 
-Informally, the induction principle for identity types says that if we want to construct an object (or prove a statement) which depends on an inhabitant $p:\id[A]xy$ of an identity type, then it suffices to perform the construction (or the proof) in the special case when $x$ and $y$ are the same (judgmentally) and $p$ is a reflexivity term $\refl{x}$ (judgmentally).
+Informally, the induction principle for identity types says that if we want to construct an object (or prove a statement) which depends on an inhabitant $p:\id[A]xy$ of an identity type, then it suffices to perform the construction (or the proof) in the special case when $x$ and $y$ are the same (judgmentally) and $p$ is the reflexivity element $\refl{x}:x=x$ (judgmentally).
 When writing informally, we may express this with a phrase such as ``by induction, it suffices to assume\dots''.
 This reduction to the ``reflexivity case'' is analogous to the reduction to the ``base case'' and ``inductive step'' in an ordinary proof by induction on the natural numbers, and also to the ``left case'' and ``right case'' in a proof by case analysis on a disjoint union or disjunction.
 
@@ -199,11 +199,11 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \end{equation*}
     Then $D(x,x,\refl{x})$ is $\refl{x}=\refl{x}\ct\refl{x}$.
     Since $\refl{x}\ct\refl{x}\jdeq\refl{x}$, it follows that $D(x,x,\refl{x})\jdeq (\refl{x}=\refl{x})$.
-    Thus, there is a term
+    Thus, there is a function
     \begin{equation*}
       d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now $J$ gives a term $J(D,d,p):(p= p\ct\refl{y})$ for each $p:x= y$.
+    Now the induction principle for identity types gives an element $J(D,d,p):(p= p\ct\refl{y})$ for each $p:x= y$.
     The other equality is proven similarly.
 
     \noindent
@@ -219,7 +219,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now $J$ gives a term $J(D,d,p):\opp{p}\ct p=\refl{y}$ for each $p:x= y$ in $A$.
+    Now path induction gives an element $J(D,d,p):\opp{p}\ct p=\refl{y}$ for each $p:x= y$ in $A$.
     The other equality is similar.
 
     \noindent \emph{(Second proof)} By induction, it suffices to assume $p$ is $\refl x$.
@@ -234,7 +234,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       d\defeq\lambda x.\refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now $J$ gives a term $J(D,d,p):\opp{\opp{p}}= p$ for each $p:x= y$.
+    Now path induction gives an element $J(D,d,p):\opp{\opp{p}}= p$ for each $p:x= y$.
 
     \noindent \emph{(Second proof)} By induction, it suffices to assume $p$ is $\refl x$.
     But in this case, we have $\opp{\opp{p}}\jdeq \opp{\opp{\refl x}} \jdeq \refl x$.
@@ -246,7 +246,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       \prd{z,w:A}{q:x= z}{r:z= w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
-    To construct a term in this type, let $D_2:\prd{x,z:A}{q:x=z} \type$ be the type family
+    To construct an element of this type, let $D_2:\prd{x,z:A}{q:x=z} \type$ be the type family
     \begin{equation*}
       D_2 (x,z,q) \defeq \prd{w:A}{r:z=w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
@@ -254,7 +254,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       \prd{w:A}{r:x=w} \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
     \end{equation*}
-    To construct a term in \emph{this} type, let $D_3:\prd{x,w:A}{r:x=w} \type$ be the type family
+    To construct an element of \emph{this} type, let $D_3:\prd{x,w:A}{r:x=w} \type$ be the type family
     \begin{equation*}
       D_3(x,w,r) \defeq \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
     \end{equation*}
@@ -263,7 +263,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
       \big(\refl{x}\ct(\refl{x}\ct \refl{x})= (\refl{x}\ct \refl{x})\ct \refl{x}\big)
     \end{equation*}
     which is definitionally equal to the type $(\refl{x} = \refl{x})$, and is therefore inhabited by $\refl{\refl{x}}$.
-    Applying the identity elimination rule three times, therefore, we obtain a term of the overall desired type.
+    Applying the identity elimination rule three times, therefore, we obtain an element of the overall desired type.
 
     \noindent \emph{(Second proof)} By induction, it suffices to assume $p$, $q$, and $r$ are all $\refl x$.
     But in this case, we have
@@ -429,12 +429,12 @@ We can also define the path itself in type theory:
 % \begin{equation*}
 % D(x,y,p)\defeq (x,u)=(y,\trans{p}{u}).
 % \end{equation*}
-% Then $D(x,x,\refl{x})\defeq (x,u)=(x,\trans{\refl{x}}{u})$. By the conversion rule we have $\trans{\refl{x}}{u}\defeq u$, so we see that $D(x,x,\refl{x})\defeq (x,u)=(x,u)$. Therefore we find $d(x)\defeq\refl{(x,u)}:D(x,x,\refl{x})$. Now $J$ gives a term of type $\prd{x,y:A}{p:x=y}(x,u)=(y,\trans{p}{u})$.
+% Then $D(x,x,\refl{x})\defeq (x,u)=(x,\trans{\refl{x}}{u})$. By the conversion rule we have $\trans{\refl{x}}{u}\defeq u$, so we see that $D(x,x,\refl{x})\defeq (x,u)=(x,u)$. Therefore we find $d(x)\defeq\refl{(x,u)}:D(x,x,\refl{x})$. Now path induction gives a function of type $\prd{x,y:A}{p:x=y}(x,u)=(y,\trans{p}{u})$.
 % \end{proof}
 % \begin{proof}[Second proof] 
-%   By induction, it suffices to find a term of type $(x,u)=(x,\trans{\refl{x}}{u})$.
-%   Note that $\trans{\refl{x}}{u}\jdeq u$, so we really need to find a term of type $(x,u)=(x,u)$.
-%   But here we can take the reflexivity term.
+%   By induction, it suffices to find an element of $(x,u)=(x,\trans{\refl{x}}{u})$.
+%   Note that $\trans{\refl{x}}{u}\jdeq u$, so we really need to find an element of $(x,u)=(x,u)$.
+%   But here we can use reflexivity.
 % \end{proof}
 
 Now we can prove the dependent version of \autoref{lem:map}.
@@ -475,7 +475,7 @@ And, indeed, we can show that dependent functions produce such paths.
   \end{equation*}
   Then $D(x,x,\refl{x})$ is $\trans{(\refl{x})}{f(x)}= f(x)$.
   But since $\trans{(\refl{x})}{f(x)}\jdeq f(x)$, we get that $D(x,x,\refl{x})\jdeq (f(x)= f(x))$.
-  Thus, we find the term
+  Thus, we find the function
   \begin{equation*}
     d\defeq\lambda x.\refl{f(x)}:\prd{x:A} D(x,x,\refl{x})
   \end{equation*}
@@ -502,9 +502,9 @@ In this case, $\apdfunc{f}$ and $\apfunc{f}$ are closely related, because of the
   Fix a $b:B$, and let $D:\prd{x,y:A}{p:\id{x}{y}} \type$ be the type family defined by
   \[ D(x,y,p) \defeq (\transfib P p b = b). \]
   Then $D(x,x,\refl x)$ is $(\transfib P{\refl{x}}{b} = b)$, which is judgmentally equal to $(b=b)$ by the computation rule for transporting.
-  Thus, we have the term
+  Thus, we have the function
   \[ d \defeq \lambda x.\refl{b} : \prd{x:A} D(x,x,\refl x). \]
-  Now $J$ gives us a term in $\prd{x,y:A}{p:x=y}(\transfib P p b = b)$, as desired.
+  Now path induction gives us an element of $\prd{x,y:A}{p:x=y}(\transfib P p b = b)$, as desired.
 \end{proof}
 \begin{proof}[Second proof]
   By induction, it suffices to assume $y$ is $x$ and $p$ is $\refl x$.
@@ -821,7 +821,7 @@ In this section we will explain the issues involved, and justify the choices we 
 \subsection{Propositions as types?}
 \label{subsec:pat?}
 
-Until now, we have been following the straightforward ``propositions as types'' philosophy described in \autoref{sec:pat}, according to which English phrases such as ``there exists an $x:A$ such that $P(x)$'' are interpreted by corresponding types such as $\sm{x:A} P(x)$, with the proof of a statement being regarded as judging some specific term to inhabit that type.
+Until now, we have been following the straightforward ``propositions as types'' philosophy described in \autoref{sec:pat}, according to which English phrases such as ``there exists an $x:A$ such that $P(x)$'' are interpreted by corresponding types such as $\sm{x:A} P(x)$, with the proof of a statement being regarded as judging some specific element to inhabit that type.
 However, we have also seen some ways in which the ``logic'' resulting from this reading seems unfamiliar to a classical mathematician.
 For instance, in \autoref{thm:ttac} we saw that the statement
 \begin{equation}\label{eq:english-ac}
@@ -1002,7 +1002,7 @@ We discussed some of the benefits of this in the introduction.
 For instance, in classical mathematics, double negations are frequently used unnecessarily.
 A very simple example is the common assumption that a set $A$ is ``nonempty'', which literally means it is \emph{not} the case that $A$ contains \emph{no} elements.
 Almost always what is really meant is the positive assertion that $A$ \emph{does} contain at least one element, and by removing the double negation we make the statement less dependent on LEM.
-Thus we say that a type $A$ is \textbf{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct a term belonging to $A$, usually unnamed).
+Thus we say that a type $A$ is \textbf{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct an element of $A$, usually unnamed).
 
 Similarly, it is not uncommon in classical mathematics to find unnecessary proofs by contradiction.
 Of course, proof by contradiction proceeds by way of the law of double negation: we assume $\neg A$ and derive a contradiction, thereby deducing $\neg \neg A$, and thus by DN we obtain $A$.

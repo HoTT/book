@@ -318,7 +318,7 @@ lemma, which must thus also be established simultaneously with the inductive con
     you are either convinced or you can do the rest yourself:
     % 
     \begin{itemize}
-    \item Suppose $\rcrat(q) \sim_\delta \inr(x) \sim_\epsilon \inr(y)$. There merely are
+    \item Suppose $\rcrat(q) \sim_\delta \rclim(x) \sim_\epsilon \rclim(y)$. There merely are
       $\delta', \theta', \delta'', \eta'', \theta'' : \Qp$ such that
       % 
       \begin{equation*}
@@ -341,7 +341,7 @@ lemma, which must thus also be established simultaneously with the inductive con
       % 
       which is $\rcrat(q) \sim_{\delta - \eta'' - (\theta' + \theta'')} y_{\eta''}$, as required.
       % 
-    \item Suppose $\inr(x) \sim_\delta \inr(y) \sim_\epsilon \inr(z)$. There merely are
+    \item Suppose $\rclim(x) \sim_\delta \rclim(y) \sim_\epsilon \rclim(z)$. There merely are
       $\delta', \eta', \theta', \delta'', \eta'', \theta'' : \Qp$ such that
       % 
       \begin{equation*}
@@ -434,10 +434,66 @@ Similarly, to construct a map $f : \RC \to A$ where $A$ is a set, it suffices to
 \item prove $f(\rclim(x)) = f(\rclim(y))$ for all $x, y : \Qp \to \RC$
   satisfying~\eqref{eq:RC-lim-eq-lim}.
 \end{enumerate}
-%
+
+We also need an induction principle for statements about all Cauchy approximations. The
+following lemma explains how this can be done.
+
+\begin{lem} \label{RC-seq-induction}
+  Define the type of Cauchy approximations
+  %
+  \begin{equation*}
+    C \defeq \sm{x : \Qp \to \RC} \prd{\epsilon, \delta : \Qp} x_\delta \sim_{\delta + \epsilon} x_\epsilon.
+  \end{equation*}
+  %
+  Suppose $P : C \to \prop$ respects coincidence of Cauchy approximations,
+  %
+  \begin{equation*}
+    \prd{x,y : C}
+    \left( \prd{\epsilon : \Qp} x \sim_\epsilon y \right)
+    \to P(x) \to P(y).
+  \end{equation*}
+  %
+  To show $\prd{x : C} P(x)$ it suffices to verify
+  %
+  \begin{equation*} \label{eq:RC-seq-induction-i}
+    \prd{q : \Q} P(\lam{\blank : \Qp} \rcrat(q))
+  \end{equation*}
+  %
+  and
+  %
+  \begin{equation} \label{eq:RC-seq-induction-ii}
+    \prd{x : C}
+    \left(\prd{\delta : \Qp}{y : C} x_\delta = \rclim(y) \to P(y) \right)
+    \to P(x).
+  \end{equation}
+\end{lem}
+
+\begin{proof}
+  We define an auxiliary function $Q : \RC \to \prop$ by induction as follows:
+  %
+  \begin{align*}
+    Q(\rcrat(q)) &\defeq P(\lam{\blank : \Qp} q), \\
+    Q(\rclim(x)) &\defeq P(x).
+  \end{align*}
+  %
+  To validate the definition we must show that it respects equality on $\RC$. If
+  $\rclim(x) = \rclim(y)$ is constructed through~\eqref{eq:RC-lim-eq-lim} then
+  $\prd{\epsilon : \Qp} x \sim_\epsilon y$ and so $P(x)$ and $P(y)$ are equivalent by
+  assumption. If $\rcrat(q) = \rclim(x)$ is constructed through~\eqref{eq:RC-rat-eq-lim},
+  then $\prd{\epsilon : \Qp} (\lam{\blank : \Qp} q) \sim_\epsilon x$ and so $P(\lam{\blank
+    : \Qp} q)$ and $P(x)$ are equivalent.
+
+  It suffices to show $\prd{u : \RC} Q(u)$, which we do by induction. The case
+  $Q(\rcrat(q))$ holds by~\eqref{eq:RC-seq-induction-i}. Consider a Cauchy approximation
+  $x : \Qp \to \RC$, and assume $Q(x_\epsilon)$ holds for all $\epsilon : \Qp$. We show
+  that $P(x)$ holds using~\eqref{eq:RC-seq-induction-ii}. Suppose $\delta : \Qp$, $y : C$
+  and $x_\delta = \rclim(y)$. By assumption $Q(x_\delta)$ holds, but then $Q(\rclim(y))$
+  holds too, which is just $P(y)$.
+\end{proof}
+
 We demonstrate the techiniques with a couple of lemmas. The first one establishes enough
 properties of $\sim$ to make it clear that $\sim$ is a (base of) uniformity, while the
-second one gets artihmetic going. We use the obvious fact that $\sim_\epsilon$ is a
+second one gets artithmetic going. We use the obvious fact that $\sim_\epsilon$ is a
 symmetric mere proposition.
 
 \begin{lem}\label{RC-sim-uniformity-properties}
@@ -599,12 +655,12 @@ and reading it left to right to \emph{openness} of $\sim$,
   thus $x_\delta \sim_{\epsilon + \delta + \theta} y_\delta$.
 \end{proof}
 
-\begin{lemma} \label{RC-Lipschitz-eq}
+\begin{lem} \label{RC-Lipschitz-eq}
   Suppose $f,g : \RC \to \RC$ are Lipschitz maps, in the sense that there is $L : \Qp$
   such that $u \sim_\epsilon v$ implies $f(u) \sim_{L \epsilon} f(v)$ and $g(u) \sim_{L
     \epsilon} g(v)$, for all $u, v : \RC$ and $\epsilon : \Qp$. If $f(\rcrat(q)) =
   g(\rcrat(q))$ for all $q : \Qp$ then $f = g$.
-\end{lemma}
+\end{lem}
 
 \begin{proof}
   We show that $f(u) = g(u)$ for all $u : \RC$ by induction on $u$. When $u$ is
@@ -707,29 +763,71 @@ and reading it left to right to \emph{openness} of $\sim$,
 \subsection{Arithmetical operations}
 \label{sec:arithm-oper}
 
-Defining a function on $\RC$ by induction is tedious. Luckily we have proved lemmas that
-get us going. We showed how to extend a Lipschitz function from $\Q$ to $\RC$ in
-\autoref{RC-extend-Q-Lipschitz}. A similar lemma can be proved for functions in two
-variables, so we can extend addition and subtraction from $\Q$ to $\RC$. A (multivariate
-version of) \autoref{RC-Lipschitz-eq} guarantees that the extensions satisfy the axioms
-for a commutative group.
+It is tedious to define a function on $\RC$ with bare hands, but
+\autoref{RC-Lipschitz-eq,RC-extend-Q-Lipschitz} make it easy to get arithmetic going. (To
+make everything watertight we would actually need corresponding statements for functions
+in two variables, but we leave those as exercises.)
 
-The function $\min, \max : \Q \times \Q \to \Q$ and the absolute value $|{-}| : \Q \to \Q$
-are Lipschitz as well, so we can extend them to $\RC$. This way we get a lattice structure
-on $\RC$.
+Addition and subtraction are Lipschitz functions on rationals, so they extend to reals and
+the extensions satisfy the same equations. This shows that $(\RC, {+}, {-}, 0)$ is a
+commutative group.
 
-\begin{thm}
-  $\RC$ is an ordered commutative group.
+\begin{thm} \label{RC-commutative-group}
+  The Cauchy reals form a commutative group.
 \end{thm}
 
-Multiplication is Lipschitz on any bounded interval.
+Next, $\min$ and $\max$ are Lipschitz as well, so they can be extended to give $\RC$ the
+structure of a lattice, which interacts as expected with the commutative group structure.
+The mere binary relation $\leq$, defined for $u, v : \RC$ by
+%
+\begin{equation*}
+  (u \leq v) \defeq \max(u,v) = v
+\end{equation*}
+%
+is a partial order on $\RC$, for which $\min$ and $\max$ are the infimum and supremum. The
+strict order $<$ is defined constructively as
+%
+\begin{equation*}
+  (u < v) \defeq
+  \brck{\sm{q, r : \Q} (q < r) \times (x \leq \rcrat(q)) \times (\rcrat(r) \leq y)}.
+\end{equation*}
+%
+That is, a witness for $u < v$ is a pair or rational numbers $q < r$ such that $x \leq
+\rcrat(q)$ and $\rcrat(r) \leq v$. The strict order is irreflexive and transitive, but we
+have to be careful about linearity. We shall address this in \autoref{sec:RC-order}, for
+now we focus on expressing $u \sim_\epsilon v$ with standard concepts. Note that the
+absolute value $|{-}|$ is a Lipschitz function on $\Q$, which therefore extends to $\RC$
+and has the expected properties.
 
-\begin{thm}
-  $\RC$ is an ordered ring.
+\begin{thm} \label{RC-sim-eqv-le}
+  $\eqv{(u \sim_\epsilon v)}{(|u - v| < \rcrat(\epsilon))}$
+  for all $u, v : \RC$ and $\epsilon : \Qp$.
 \end{thm}
+
+\begin{proof}
+  We first prove by induction that $u \sim_\epsilon v$ implies $|u - v| < \epsilon$. If
+  $\rcrat(q) \sim_\epsilon \rcrat(r)$ then by definition $|q - r| < \epsilon$ and so
+  $|\rcrat(q) - \rcrat(r)| < \epsilon$. If $\rcrat(q) \sim_\epsilon \rclim(y)$ then there
+  merely exist $\delta, \theta : \Qp$ such that $\rcrat(q) \sim_{\epsilon - \delta -
+    \theta} y_\delta$. By induction hypothesis $|\rcrat(q) - y_\delta| < \epsilon - \delta
+  - \theta$. By definition of $<$ there merely exist $s, t : \Q$ such that $s < t$,
+  $|\rcrat(q) - \delta_y| \leq \rcrat(s)$ and $\rcrat(t) \leq \rcrat(\epsilon - \delta -
+  \theta)$.
+
+
+\end{proof}
+
+
+
 
 \subsection{Order}
-\label{sec:order}
+\label{sec:RC-order}
+
+\begin{lem} \label{RC-le-linear}
+  For all $u, v, w : \RC$, if $u < w$ then merely $v < w$ or $u < v$.
+\end{lem}
+
+
 
 \subsection{Completeness}
 \label{sec:completeness}

@@ -1,5 +1,6 @@
 \newcommand{\rclim}{\mathsf{lim}} % HIT constructor for Cauchy reals
 \newcommand{\rcrat}{\mathsf{rat}} % Embedding of rationals into Cauchy reals
+\newcommand{\CAP}{\mathcal{C}}    % The type of Cauchy approximations
 \newcommand{\Qp}{\Q_{+}}
 
 \chapter{Real Numbers}
@@ -434,67 +435,116 @@ Similarly, to construct a map $f : \RC \to A$ where $A$ is a set, it suffices to
 \item prove $f(\rclim(x)) = f(\rclim(y))$ for all $x, y : \Qp \to \RC$
   satisfying~\eqref{eq:RC-lim-eq-lim}.
 \end{enumerate}
+%
+We demonstrate the technique with a series of relatively boring lemmas whose purpose is to
+avoid a series of absolutely boring lemmas in~\autoref{sec:arithm-oper}. At least we try
+to explain every lemma in memorable terms. The first one says that every real is the limit
+of a Cauchy approximation:
 
-We also need an induction principle for statements about all Cauchy approximations. The
-following lemma explains how this can be done.
+\begin{lem} \label{RC-lim-onto}
+  For every $u : \RC$ there merely exists a Cauchy approximation $x : \Qp \to RC$ such
+  that $u = \rclim(x)$. Consequently, if $P$ is a mere proposition such that
+  $P(\rclim(x))$ holds for all Cauchy approximations $x : \Qp \to \RC$, then $P(u)$ holds
+  for all $u : \RC$.
+\end{lem}
+
+\begin{proof}
+  We prove the statement by induction. A real $\rcrat(q)$ is equal to $\rclim(\lam{\blank
+    : \Qp} q)$, while a real $\rclim(x)$ is of course of the form $\rclim(x)$.
+  %
+  Next, suppose $P$ is a mere proposition on $\RC$ satisfying the stated condition, and
+  consider any $u : \RC$. There merely exists~$x$ such that $u = \rclim(x)$, hence
+  $P(\rclim(x))$ by assumption and so $P(u)$ as well.
+\end{proof}
+
+\noindent
+%
+Define the type of Cauchy approximations
+% 
+\begin{equation}
+  \CAP \defeq
+  \sm{x : \Qp \to \RC} \prd{\epsilon, \delta : \Qp} x_\delta \sim_{\delta + \epsilon} x_\epsilon.
+\end{equation}
+% 
+Next, a map on reals may be defined by a map on Cauchy approximations that respects
+coincidence:
+
+\begin{lem} \label{RC-lim-factor}
+  Suppose $f : \CAP \to A$, where $A$ is a set, respects coincidence of Cauchy
+  approximations,
+  %
+  \begin{equation*}
+    \prd{x, y : \CAP}
+    \left( \prd{\epsilon : \Qp} x \sim_\epsilon y \right)
+    \to f(x) = f(y).
+  \end{equation*}
+  %
+  Then there is a unique $\bar{f} : \RC \to A$ such that $f = \bar{f} \circ \rclim$.
+\end{lem}
+
+\begin{proof}
+  We define $\bar{f}$ by induction on $\RC$ as
+  %
+  \begin{align*}
+    \bar{f}(\rcrat(q)) &\defeq f(\lam{\blank : \Qp} q), \\
+    \bar{f}(\rclim(x)) &\defeq f(x).
+  \end{align*}
+  %
+  To validate the definition we must show that it respects equality on $\RC$. If
+  $\rclim(x) = \rclim(y)$ is constructed through~\eqref{eq:RC-lim-eq-lim} then
+  $\prd{\epsilon : \Qp} x \sim_\epsilon y$ and so $f(x) = f(y)$ by assumption. If
+  $\rcrat(q) = \rclim(x)$ is constructed through~\eqref{eq:RC-rat-eq-lim}, then
+  $\prd{\epsilon : \Qp} (\lam{\blank : \Qp} q) \sim_\epsilon x$ and so again
+  $f(\lam{\blank : \Qp} q) = f(x)$.
+  %
+  Uniqueness of $\bar{f}$ follows from \autoref{RC-lim-onto}.
+\end{proof}
+
+\noindent
+The next lemma is a kind of induction principle for Cauchy approximations.
 
 \begin{lem} \label{RC-seq-induction}
-  Define the type of Cauchy approximations
   %
-  \begin{equation*}
-    C \defeq \sm{x : \Qp \to \RC} \prd{\epsilon, \delta : \Qp} x_\delta \sim_{\delta + \epsilon} x_\epsilon.
-  \end{equation*}
+  Suppose $P : \CAP \to \prop$ respects coincidence of Cauchy approximations. To show
+  $\prd{x : \CAP} P(x)$ it suffices to verify
   %
-  Suppose $P : C \to \prop$ respects coincidence of Cauchy approximations,
-  %
-  \begin{equation*}
-    \prd{x,y : C}
-    \left( \prd{\epsilon : \Qp} x \sim_\epsilon y \right)
-    \to P(x) \to P(y).
-  \end{equation*}
-  %
-  To show $\prd{x : C} P(x)$ it suffices to verify
-  %
-  \begin{equation*} \label{eq:RC-seq-induction-i}
+  \begin{equation} \label{eq:RC-seq-induction-i}
     \prd{q : \Q} P(\lam{\blank : \Qp} \rcrat(q))
-  \end{equation*}
+  \end{equation}
   %
   and
   %
   \begin{equation} \label{eq:RC-seq-induction-ii}
-    \prd{x : C}
-    \left(\prd{\delta : \Qp}{y : C} x_\delta = \rclim(y) \to P(y) \right)
+    \prd{x : \CAP}
+    \left(\prd{\delta : \Qp}{y : \CAP} x_\delta = \rclim(y) \to P(y) \right)
     \to P(x).
   \end{equation}
 \end{lem}
 
 \begin{proof}
-  We define an auxiliary function $Q : \RC \to \prop$ by induction as follows:
+  When we apply \autoref{RC-lim-factor} to $P$ we get $\bar{P} : \RC \to \prop$ such that,
+  for all $q : \Q$ and $x : \CAP$,
   %
   \begin{align*}
-    Q(\rcrat(q)) &\defeq P(\lam{\blank : \Qp} q), \\
-    Q(\rclim(x)) &\defeq P(x).
+    Q(\rcrat(q)) \jdeq P(\lam{\blank : \Qp} q)
+    %
+    \qquad\text{and}\qquad
+    %
+    Q(\rclim(x)) \jdeq P(x).
   \end{align*}
   %
-  To validate the definition we must show that it respects equality on $\RC$. If
-  $\rclim(x) = \rclim(y)$ is constructed through~\eqref{eq:RC-lim-eq-lim} then
-  $\prd{\epsilon : \Qp} x \sim_\epsilon y$ and so $P(x)$ and $P(y)$ are equivalent by
-  assumption. If $\rcrat(q) = \rclim(x)$ is constructed through~\eqref{eq:RC-rat-eq-lim},
-  then $\prd{\epsilon : \Qp} (\lam{\blank : \Qp} q) \sim_\epsilon x$ and so $P(\lam{\blank
-    : \Qp} q)$ and $P(x)$ are equivalent.
-
   It suffices to show $\prd{u : \RC} Q(u)$, which we do by induction. The case
   $Q(\rcrat(q))$ holds by~\eqref{eq:RC-seq-induction-i}. Consider a Cauchy approximation
   $x : \Qp \to \RC$, and assume $Q(x_\epsilon)$ holds for all $\epsilon : \Qp$. We show
-  that $P(x)$ holds using~\eqref{eq:RC-seq-induction-ii}. Suppose $\delta : \Qp$, $y : C$
-  and $x_\delta = \rclim(y)$. By assumption $Q(x_\delta)$ holds, but then $Q(\rclim(y))$
-  holds too, which is just $P(y)$.
+  that $Q(\rclim(x))$ holds using~\eqref{eq:RC-seq-induction-ii}. Suppose $\delta : \Qp$,
+  $y : C$ and $x_\delta = \rclim(y)$. By induction hypothesis $Q(x_\delta)$ holds, but
+  then $Q(\rclim(y))$ holds too, which is just $P(y)$.
 \end{proof}
 
-We demonstrate the techiniques with a couple of lemmas. The first one establishes enough
-properties of $\sim$ to make it clear that $\sim$ is a (base of) uniformity, while the
-second one gets artithmetic going. We use the obvious fact that $\sim_\epsilon$ is a
-symmetric mere proposition.
+\noindent
+%
+We next show that $\sim$ is like (the base) of a uniformity. We use the obvious fact that
+$\sim_\epsilon$ is a symmetric mere proposition.
 
 \begin{lem}\label{RC-sim-uniformity-properties}
   \mbox{}
@@ -654,6 +704,9 @@ and reading it left to right to \emph{openness} of $\sim$,
   %
   thus $x_\delta \sim_{\epsilon + \delta + \theta} y_\delta$.
 \end{proof}
+
+The last two lemmas say that Lipschitz functions extend from $\Q$ to $\RC$. We present
+here univariate versions, even though we shall require multivariate ones as well.
 
 \begin{lem} \label{RC-Lipschitz-eq}
   Suppose $f,g : \RC \to \RC$ are Lipschitz maps, in the sense that there is $L : \Qp$

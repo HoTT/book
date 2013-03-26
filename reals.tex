@@ -1,5 +1,6 @@
 \newcommand{\rclim}{\mathsf{lim}} % HIT constructor for Cauchy reals
 \newcommand{\rcrat}{\mathsf{rat}} % Embedding of rationals into Cauchy reals
+\newcommand{\rceq}{\mathsf{eq}_{\RC}} % HIT path constructor
 \newcommand{\CAP}{\mathcal{C}}    % The type of Cauchy approximations
 \newcommand{\Qp}{\Q_{+}}
 
@@ -206,13 +207,6 @@ must quotient by the coincidence relation simultaneously with the inductive cons
 or else we will face again the problem of lifting a sequence of reals to a sequence of
 representatives. Higher-inductive types are the perfect solution.
 
-Before embarking on the construction we have to ask ourselves one more question: are the
-reals a set, or a higher $n$-type? From a historical perspective it seems that we would
-like a set. Also, if we do not require the reals to form a set, then we seem to get a
-complete field which is not archimedean. While it might be interesting to pursue this
-direction, we avoid strange territories by making sure that our construction yields a set.
-
-
 \subsection{Construction of Cauchy Reals}
 \label{sec:constr-cauchy-reals}
 
@@ -224,9 +218,6 @@ But to express~\eqref{eq:cauchy-approx} and~\eqref{eq:cauchy-coincide} for $\RC$
 referring to yet to be constructed arithmetical operations and the order relation, we must
 simultaneously define a relation $x \sim_\epsilon y$ whose intuitive meaning is $|x - y| <
 \epsilon$.
-
-An additional technicality arises because we want $\RC$ to be a set. We know from
-\autoref{sec:truncations} that this can be done by the ``hub and spokes'' construction.
 
 \begin{defn}\label{defn:cauchy-reals}
   The \textbf{Cauchy reals \RC} is the higher inductive-recursive type given by the
@@ -243,32 +234,21 @@ An additional technicality arises because we want $\RC$ to be a set. We know fro
       \prd{\delta, \epsilon : \Qp} x_\delta \sim_{\delta + \epsilon} x_\epsilon
     \end{equation}
     %
-    there is a point $\rclim(x) : \RC$. We call $x$ a \emph{Cauchy approximation}, too.
+    there is a point $\rclim(x) : \RC$. We call $x$ a \emph{Cauchy approximation}.
     %
-  \item \emph{paths between rational and limit points:}
-    if $q : \Q$ and $x : \Qp \to \RC$ satisfies~\eqref{eq:RC-cauchy}, and
-    %
-    \begin{equation}
-      \label{eq:RC-rat-eq-lim}
-      \prd{\epsilon, \theta : \Qp} \rcrat(q) \sim_{\epsilon + \theta} x_\epsilon
-    \end{equation}
-    %
-    then there is a path $\id[\RC]{\rcrat(q)}{\rclim(x)}$.
-  \item \emph{paths between limit points:}
-    for all $x, y : \Qp \to \RC$ satisfying~\eqref{eq:RC-cauchy} and
+  \item \emph{paths:}
+    for $u, v : \RC$ such that
     %
     \begin{equation}
-      \label{eq:RC-lim-eq-lim}
-      \prd{\delta, \epsilon, \theta : \Qp} x_\delta \sim_{\delta + \epsilon + \theta} y_\epsilon
+      \label{eq:RC-path}
+      \prd{\epsilon : \Qp} u \sim_\epsilon v
     \end{equation}
     %
-    there is a path $\id[\RC]{\rclim(x)}{\rclim(y)}$.
-  \item \emph{$0$-truncation paths:} for all $x, y : \RC$ and $\alpha, \beta : \id{x}{y}$
-    there is a path $\alpha = \beta$.
+    then there is a path $\rceq(u, v) : \id[\RC]{u}{v}$.
   \end{itemize}
   % 
   Simultaneously, the relation $u \sim_\epsilon v$ is defined for $u, v : \RC$ and
-  $\epsilon : \Qp$ by recursion:
+  $\epsilon : \Q$ by recursion:
   % 
   \begin{align*}
     \rcrat(q) \sim_\epsilon \rcrat(r)  &\defeq
@@ -291,11 +271,12 @@ We are not done yet, for we still have to verify that $\sim$ respects the identi
 of~$\RC$. We also remind ourselves of proof-relevance: a real number is represented not
 just by a Cauchy approximation $x$, but also a proof $p$ of~\eqref{eq:RC-cauchy}, so we
 should have written $\rclim(x,p)$ instead of just $\rclim(x)$; and a similar observation
-stands for~\eqref{eq:RC-rat-eq-lim} and~\eqref{eq:RC-lim-eq-lim} and construction of
-paths. By the way, the mysterious $\theta$'s appearing in the definition are there to give
-extra ``wiggle room'' which ensures that $\sim$ behaves like $<$ and not like $\leq$.
+stands for~\eqref{eq:RC-paths} and construction of paths. These abuses of notation are
+mitigated by the fact that we are omitting mere propositions. The mysterious $\theta$'s
+appearing in the definition are there to give extra ``wiggle room'' which ensures that
+$\sim$ behaves like $<$ and not like $\leq$.
 
-The definition of $\RC$ is valid if we can show that $u = u'$, $v = v'$ and $u
+To complete the construction of $\RC$ we must show that $u = u'$, $v = v'$ and $u
 \sim_\epsilon v$ implies $u' \sim_\epsilon v'$. But this requires yet another auxiliary
 lemma, which must thus also be established simultaneously with the inductive construction.
 
@@ -314,7 +295,7 @@ lemma, which must thus also be established simultaneously with the inductive con
   \mbox{}
   %
   \begin{enumerate}
-  \item The first statement has eight cases, depending on whether $u, v, w$ are rationals
+  \item The first statement has eight cases, depending on whether $u, v, w$ are rational
     or limit points. Luckily, many are easy or symmetric, so once you have seen a couple
     you are either convinced or you can do the rest yourself:
     % 
@@ -362,46 +343,40 @@ lemma, which must thus also be established simultaneously with the inductive con
       which is $x_{\delta'} \sim_{\delta + \epsilon - \delta' - \eta'' - (\theta' +
         \theta'')} z_{\eta''}$, as required.      
     \end{itemize}
-  \item The second statement has eight cases, of which we show two representative ones
-    (here we use the wiggle room provided by $\theta$):
+  \item The second statement has a number of cases, of which we show a representative
+    case (here we use the wiggle room provided by $\theta$), and leave others as exercise.
     %
-    \begin{itemize}
-    \item Suppose a path $\rclim(x) = \rclim(y)$ is constructed
-      through~\eqref{eq:RC-lim-eq-lim} and $\rcrat(q) \sim_\epsilon \rclim(x)$. We need to
-      prove that $\rcrat(q) \sim_\epsilon \rclim(y)$. Observe that there merely are
-      $\delta, \theta : \Qp$ such that
+    Suppose $\rceq(\rclim(x), \rclim(y)) : \rclim(x) = \rclim(y)$ and $\rcrat(q)
+      \sim_\epsilon \rclim(x)$. We need to prove $\rcrat(q) \sim_\epsilon \rclim(y)$.
+      By assumption there merely exist $\delta, \theta : \Qp$ such that
       %
       \begin{equation*}
         \rcrat(q) \sim_{\epsilon - \delta - \theta} x_\delta.
       \end{equation*}
       %
-      By taking into account $x_\delta \sim_{\delta + \theta/2} y_{\theta/4}$ we conclude
-      by \autoref{RC-well-defined-i}
-      %
+      By applying~\eqref{eq:RC-path} with $\theta/2$ as $\epsilon$ we get $\alpha, \beta,
+      \gamma : \Qp$ such that
+      % 
       \begin{equation*}
-        \rcrat(q) \sim_{(\epsilon - \delta - \theta) + (\delta + \theta/2)} y_{\theta/4}
+        x_\alpha \sim_{\theta/2 - \alpha - \beta - \gamma} y_\beta.
       \end{equation*}
       %
-      which is $\rcrat(q) \sim_{\epsilon - \theta/4 - \theta/4} y_{\theta/4}$, as required.
-      %
-    \item Suppose $\rclim(x) = \rclim(y)$ is constructed through~\eqref{eq:RC-lim-eq-lim},
-      and $\rclim(y) \sim_\epsilon \rclim(z)$. To prove $\rclim(x) \sim_\epsilon
-      \rclim(z)$, observe that there merely are $\delta, \eta, \theta : \Qp$ such that
+      By taking into account
       %
       \begin{equation*}
-        y_\delta \sim_{\epsilon - \delta - \eta - \theta} z_\eta.
+        x_\delta \sim_{\delta + \alpha} x_\alpha
       \end{equation*}
       %
-      By taking into account $x_{\theta/4} \sim_{\delta + \theta/2} y_\delta$ we conclude
-      by \autoref{RC-well-defined-i}
+      we get, using \autoref{RC-well-defined-i} of induction hypothesis,
       %
       \begin{equation*}
-        x_{\theta/4} \sim_{(\delta + \theta/2) + (\epsilon - \delta - \eta - \theta)} z_\eta
+        \rcrat(q)
+        \sim_{\epsilon - \delta - \theta + \delta + \alpha + \theta/2 - \alpha - \beta - \gamma}
+        y_\beta
       \end{equation*}
       %
-      which is $x_{\theta/4} \sim_{\epsilon - \theta/4 - \eta - \theta/4} z_\eta$, as
-      required.
-    \end{itemize}
+      which is $\rcrat(q) \sim_{\epsilon - \beta - (\theta/2 + \gamma)} y_\beta$, therefore
+      $\rcrat(q) \sim_\epsilon \rclim(y)$.
   \end{enumerate}
   %
   This completes the construction of Cauchy reals.
@@ -414,9 +389,18 @@ approximation and so $\rclim(\rcrat \circ q \circ m)$ is a real number. Various 
 real numbers $\sqrt{2}$, $\pi$, $e$, \dots are are all limits of such Cauchy sequences of
 rationals.
 
+\begin{thm}
+  The Cauchy reals are a set.
+\end{thm}
+
+\begin{proof}
+  The mere relation $P(u,v) \defeq \prd{\epsilon : \Qp} u \sim_\epsilon v$ is reflexive by
+  construction, therefore $\RC$ is a set by Theorem~\ref{egbert-lemma}.
+\end{proof}
+
 We may use the higher-inductive nature of $\RC$ to prove mere properties of reals and
-define maps from reals into sets by induction. Explicitly, to prove that a mere property
-$P$ holds for all reals, it suffices to:
+define maps from reals by induction. Explicitly, to prove that a mere property $P$ holds
+for all reals, it suffices to:
 %
 \begin{enumerate}
 \item prove $P(\rcrat(q))$ for all $q : \Q$, and
@@ -424,127 +408,92 @@ $P$ holds for all reals, it suffices to:
   P(x_\epsilon)$ then $P(\rclim(x))$.
 \end{enumerate}
 %
-Similarly, to construct a map $f : \RC \to A$ where $A$ is a set, it suffices to:
+Similarly, to construct a map $f : \RC \to A$ it suffices to:
 %
 \begin{enumerate}
 \item for every $q : \Q$ construct $f(\rcrat(q)) : A$,
 \item for every Cauchy approximation $x : \Qp \to \RC$, construct $f(x) : A$,
   assuming that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$,
-\item prove $f(\rcrat(q)) = f(x)$ for all $q : \Q$ and $x : \Qp \to \RC$
-  satisfying~\eqref{eq:RC-rat-eq-lim}, and
-\item prove $f(\rclim(x)) = f(\rclim(y))$ for all $x, y : \Qp \to \RC$
-  satisfying~\eqref{eq:RC-lim-eq-lim}.
+\item prove $f(u) = f(v)$ for all $u, v : \RC$ satisfying~\eqref{eq:RC-path}.
 \end{enumerate}
 %
-We demonstrate the technique with a series of relatively boring lemmas whose purpose is to
-avoid a series of absolutely boring lemmas in~\autoref{sec:arithm-oper}. At least we try
-to explain every lemma in memorable terms. The first one says that every real is the limit
-of a Cauchy approximation:
+We demonstrate the techinque by proving a series of lemmas that establish the basic
+properties of~$\sim$ and show how Lipschitz functions may be extended from~$\Q$ to~$\RC$. 
+We use the obvious fact that $\sim_\epsilon$ is a symmetric mere proposition.
 
-\begin{lem} \label{RC-lim-onto}
-  For every $u : \RC$ there merely exists a Cauchy approximation $x : \Qp \to RC$ such
-  that $u = \rclim(x)$. Consequently, if $P$ is a mere proposition such that
-  $P(\rclim(x))$ holds for all Cauchy approximations $x : \Qp \to \RC$, then $P(u)$ holds
-  for all $u : \RC$.
-\end{lem}
-
-\begin{proof}
-  We prove the statement by induction. A real $\rcrat(q)$ is equal to $\rclim(\lam{\blank
-    : \Qp} q)$, while a real $\rclim(x)$ is of course of the form $\rclim(x)$.
-  %
-  Next, suppose $P$ is a mere proposition on $\RC$ satisfying the stated condition, and
-  consider any $u : \RC$. There merely exists~$x$ such that $u = \rclim(x)$, hence
-  $P(\rclim(x))$ by assumption and so $P(u)$ as well.
-\end{proof}
-
-\noindent
-%
-Define the type of Cauchy approximations
+The first batch of lemmas explain how to prove properties of Cauchy approximations ``by
+induction''. For this purpose, define the type of Cauchy approximations
 % 
-\begin{equation}
+\begin{equation*}
   \CAP \defeq
   \sm{x : \Qp \to \RC} \prd{\epsilon, \delta : \Qp} x_\delta \sim_{\delta + \epsilon} x_\epsilon.
-\end{equation}
-% 
-Next, a map on reals may be defined by a map on Cauchy approximations that respects
-coincidence:
+\end{equation*}
 
-\begin{lem} \label{RC-lim-factor}
-  Suppose $f : \CAP \to A$, where $A$ is a set, respects coincidence of Cauchy
-  approximations,
-  %
-  \begin{equation*}
-    \prd{x, y : \CAP}
-    \left( \prd{\epsilon : \Qp} x \sim_\epsilon y \right)
-    \to f(x) = f(y).
-  \end{equation*}
-  %
-  Then there is a unique $\bar{f} : \RC \to A$ such that $f = \bar{f} \circ \rclim$.
+\begin{lem} \label{RC-lim-onto}
+  Every real merely is a limit point: $\prd{u : \RC} \brck{\sm{x : \CAP} u = \rclim(x)}$.
 \end{lem}
 
 \begin{proof}
-  We define $\bar{f}$ by induction on $\RC$ as
+  A rational point $\rcrat(q)$ is equal to $\rclim(\lam{\blank : \Qp} q)$, while a limit
+  point is $\rclim(x)$ is of course equal to itself.
+\end{proof}
+
+\begin{lem} \label{RC-lim-factor}
+  If $f : \CAP \to A$ respects conincidence of Cauchy approximations,
+  %
+  \begin{equation*}
+    \prd{x, y : \CAP} \rclim(x) = \rclim(y) \to f(x) = f(y).
+  \end{equation*}
+  %
+  then it factors uniquely through $\rclim : \CAP \to \RC$.
+\end{lem}
+
+\begin{proof}
+  We seek $\bar{f} : \RC \to A$ such that $f = \bar{f} \circ \rclim$. Uniqueness of
+  $\bar{f}$ is guaranteed by \autoref{RC-lim-onto}. We construct $\bar{f}$ recursively by
   %
   \begin{align*}
     \bar{f}(\rcrat(q)) &\defeq f(\lam{\blank : \Qp} q), \\
     \bar{f}(\rclim(x)) &\defeq f(x).
   \end{align*}
   %
-  To validate the definition we must show that it respects equality on $\RC$. If
-  $\rclim(x) = \rclim(y)$ is constructed through~\eqref{eq:RC-lim-eq-lim} then
-  $\prd{\epsilon : \Qp} x \sim_\epsilon y$ and so $f(x) = f(y)$ by assumption. If
-  $\rcrat(q) = \rclim(x)$ is constructed through~\eqref{eq:RC-rat-eq-lim}, then
-  $\prd{\epsilon : \Qp} (\lam{\blank : \Qp} q) \sim_\epsilon x$ and so again
-  $f(\lam{\blank : \Qp} q) = f(x)$.
-  %
-  Uniqueness of $\bar{f}$ follows from \autoref{RC-lim-onto}.
+  To see that $\bar{f}$ is well defined, suppose $\prd{\epsilon : \Qp} u \sim_\epsilon v$
+  for $u, v : \RC$. We proceed by induction. If $u$ and $v$ are both rational points, then
+  they are equal so $\bar{f}(u) = \bar{f}(v)$. If $u$ is $\rcrat(q)$ and $v = \rclim(x)$
+  then $\rclim(\lam{\blank : \Qp} q) = \rclim(x)$, as can be readily verified, therefore
+  $\bar{f}(\rcrat(q)) = f(\lam{\blank : \Qp} q)) = \bar{f}(\rclim(x)) = \bar{f}(x)$. The
+  last case holds by assumption.
 \end{proof}
 
-\noindent
-The next lemma is a kind of induction principle for Cauchy approximations.
-
 \begin{lem} \label{RC-seq-induction}
-  %
   Suppose $P : \CAP \to \prop$ respects coincidence of Cauchy approximations. To show
-  $\prd{x : \CAP} P(x)$ it suffices to verify
+  $\prd{x : C} P(x)$ it suffices to verify
   %
-  \begin{equation} \label{eq:RC-seq-induction-i}
+  \begin{equation*} \label{eq:RC-seq-induction-i}
     \prd{q : \Q} P(\lam{\blank : \Qp} \rcrat(q))
-  \end{equation}
+  \end{equation*}
   %
   and
   %
   \begin{equation} \label{eq:RC-seq-induction-ii}
-    \prd{x : \CAP}
-    \left(\prd{\delta : \Qp}{y : \CAP} x_\delta = \rclim(y) \to P(y) \right)
+    \prd{x : C}
+    \left(\prd{\delta : \Qp}{y : C} x_\delta = \rclim(y) \to P(y) \right)
     \to P(x).
   \end{equation}
 \end{lem}
 
 \begin{proof}
-  When we apply \autoref{RC-lim-factor} to $P$ we get $\bar{P} : \RC \to \prop$ such that,
-  for all $q : \Q$ and $x : \CAP$,
-  %
-  \begin{align*}
-    Q(\rcrat(q)) \jdeq P(\lam{\blank : \Qp} q)
-    %
-    \qquad\text{and}\qquad
-    %
-    Q(\rclim(x)) \jdeq P(x).
-  \end{align*}
-  %
-  It suffices to show $\prd{u : \RC} Q(u)$, which we do by induction. The case
-  $Q(\rcrat(q))$ holds by~\eqref{eq:RC-seq-induction-i}. Consider a Cauchy approximation
-  $x : \Qp \to \RC$, and assume $Q(x_\epsilon)$ holds for all $\epsilon : \Qp$. We show
-  that $Q(\rclim(x))$ holds using~\eqref{eq:RC-seq-induction-ii}. Suppose $\delta : \Qp$,
-  $y : C$ and $x_\delta = \rclim(y)$. By induction hypothesis $Q(x_\delta)$ holds, but
-  then $Q(\rclim(y))$ holds too, which is just $P(y)$.
+  Let $Q : \RC \to \prop$ be the factorization of $P$ constructed in
+  \autoref{RC-lim-factor}, so that $Q(\rcrat(q)) \jdeq P(\lam{\blank : \Qp} \rcrat(q))$
+  and $Q(\rclim(x)) \jdeq P(x)$. It suffices to show $\prd{u : \RC} Q(u)$, which we do by
+  induction. The case $Q(\rcrat(q))$ holds by~\eqref{eq:RC-seq-induction-i}. Consider a
+  Cauchy approximation $x : \Qp \to \RC$, and assume $Q(x_\epsilon)$ holds for all
+  $\epsilon : \Qp$. We show that $P(x)$ holds using~\eqref{eq:RC-seq-induction-ii}.
+  Suppose $\delta : \Qp$, $y : C$ and $x_\delta = \rclim(y)$. By assumption $Q(x_\delta)$
+  holds, but then $Q(\rclim(y))$ holds too, which is just $P(y)$.
 \end{proof}
 
-\noindent
-%
-We next show that $\sim$ is like (the base) of a uniformity. We use the obvious fact that
-$\sim_\epsilon$ is a symmetric mere proposition.
+The next lemma shows that $\sim$ behaves like a uniformity.
 
 \begin{lem}\label{RC-sim-uniformity-properties}
   \mbox{}
@@ -567,28 +516,27 @@ $\sim_\epsilon$ is a symmetric mere proposition.
       },
     \end{equation*}
 
-
   \item \label{RC-sim-lim-rounded}
     For all Cauchy approximations $x : \Qp \to \RC$, $u : \RC$ and $\epsilon : \Qp$,
     %
-    \begin{equation*}
+    \begin{equation} \label{eq:RC-sim-lim-rounded-i}
       \eqv{
         (\rclim(x) \sim_\epsilon u)
       }{
         \brck{\sm{\delta, \theta : \Qp} x_\delta \sim_{\epsilon - \delta - \theta} u}
       }
-    \end{equation*}
+    \end{equation}
     %
     and symmetrically
     %
-    \begin{equation*}
+    \begin{equation*} \label{eq:RC-sim-lim-rounded-i}
       \eqv{
         (u \sim_\epsilon \rclim(x))
       }{
         \brck{\sm{\delta, \theta : \Qp} u \sim_{\epsilon - \delta - \theta} x_\delta}
       }.
     \end{equation*}
-    
+
   \item \label{RC-sim-self}
     $\rclim(x) \sim_{\delta + \epsilon} x_\epsilon$ for all $\delta, \epsilon : \Qp$
     and Cauchy approximations $x : \Qp \to \RC$.
@@ -626,14 +574,19 @@ $\sim_\epsilon$ is a symmetric mere proposition.
           x_\delta \sim_{(\epsilon - \theta') - \delta - \theta} \rcrat(q)}
       \\
       &\simeq
-      \brck{\sm{\theta' : \Qp} \rclim(x) \simeq_{\epsilon - \theta'} \rcrat(q)}.
+      \brck{\sm{\theta' : \Qp} \rclim(x) \sim_{\epsilon - \theta'} \rcrat(q)}.
     \end{align*}
     %
     There is another symmetric case, while the last one is similar enough that we leave it
     as an exercise.
 
-  \item When $u$ is $\rcrat(q)$ the two equivalences hold by definition of $\sim$. If
-    $u$ is $\rclim(y)$ then we get
+  \item It is not hard to see that \eqref{eq:RC-sim-lim-rounded-i} and
+    \eqref{eq:RC-sim-lim-rounded-ii}, seen as mere predicates on $x$, respect coincidence
+    of Cauchy approximations, therefore \autoref{RC-seq-induction} is applicable. If we
+    substitute $\lam{\blank : \Qp} q$ for $x$ we get true statements by definition
+    of~$\sim$. It remains to verify the second condition of~\autoref{RC-seq-induction},
+    which we do by induction on $u$. When $u$ is $\rcrat(q)$ the two equivalences hold by
+    definition of $\sim$. If $u$ is $\rclim(y)$ then we get
     %
     \begin{align*}
       \rclim(x) \sim_\epsilon \rclim(y) &\jdeq
@@ -648,8 +601,8 @@ $\sim_\epsilon$ is a symmetric mere proposition.
       \brck{\sm{\delta, \theta : \Qp} x_\delta \sim_{\epsilon - \delta - \theta} \rclim(y)},
     \end{align*}
     % 
-    where we used the induction hypothesis for $x_\delta$ in the second step. (WHY CAN WE
-    DO THAT?) The other case is symmetric.
+    where we used the ``induction hypothesis'' for $x_\delta$ in the second step. The
+    other case is symmetric.
 
   \item As $x$ is a Cauchy approximation, $x_{\delta/3} \sim_{(\epsilon + \delta) -
       \delta/3 - \delta/3} x_\epsilon$, hence $\rclim(x) \sim_{\epsilon + \delta}
@@ -671,40 +624,6 @@ and reading it left to right to \emph{openness} of $\sim$,
   (u \sim_\epsilon v) \to \brck{\sm{\epsilon : \Qp} (\delta < \epsilon) \times u \sim_\delta v}.
 \end{equation*}
 
-\begin{lem} \label{RC-weak-archimedean}
-  For all $u, v : \RC$, $\eqv{(u = v)}{\prd{\theta : \Qp} u \sim_\theta v}$.
-\end{lem}
-
-\begin{proof}
-  We only need to verify that $\prd{\theta : \Qp} u \sim_\theta v$ implies $u = v$,
-  which we do by induction. It is obvious that $\prd{\theta : \Qp} \rcrat(q)
-  \sim_\theta \rcrat(r)$ implies $q = r$.
-
-  Suppose $\prd{\theta' : \Qp} \rcrat(q) \sim_{\theta'} \rclim(x)$. We prove $\rcrat(q) =
-  \rclim(x)$ by establishing~\eqref{eq:RC-rat-eq-lim}. Consider any $\epsilon, \theta :
-  \Qp$. By assumption and \autoref{RC-sim-self} of \autoref{RC-sim-uniformity-properties}
-  %
-  \begin{equation*}
-    \rcrat(q) \sim_{\theta/2} \rclim(x) \sim_{\theta/2 + \epsilon} x_\epsilon,
-  \end{equation*}
-  %
-  thus $\rcrat(q) \sim_{\epsilon + \theta} x_\epsilon$. We omit the symmetric case.
-
-  Suppose $\prd{\theta' : \Qp} \rclim(x) \sim_{\theta'} \rclim(y)$. We prove $\rclim(x) =
-  \rclim(y)$ by establishing~\eqref{eq:RC-lim-eq-lim}. Consider any $\delta, \epsilon,
-  \theta : \Qp$. By assumption and \autoref{RC-sim-self} of
-  \autoref{RC-sim-uniformity-properties}
-  %
-  \begin{equation*}
-    x_\delta \sim_{\delta + \theta/3}
-    \rclim(x) \sim_{\theta/3}
-    \rclim(y) \sim_{\theta/3 + \epsilon}
-    y_\epsilon,
-  \end{equation*}
-  %
-  thus $x_\delta \sim_{\epsilon + \delta + \theta} y_\delta$.
-\end{proof}
-
 The last two lemmas say that Lipschitz functions extend from $\Q$ to $\RC$. We present
 here univariate versions, even though we shall require multivariate ones as well.
 
@@ -717,31 +636,32 @@ here univariate versions, even though we shall require multivariate ones as well
 
 \begin{proof}
   We show that $f(u) = g(u)$ for all $u : \RC$ by induction on $u$. When $u$ is
-  $\rcrat(q)$ this holds by assumption. When $u$ is $\rclim(x)$ we use
-  \autoref{RC-weak-archimedean}. For any $\theta : \Qp$,
+  $\rcrat(q)$ this holds by assumption. When $u$ is $\rclim(x)$ we prove $f(\rclim(x)) =
+  g(\rclim(x))$ using~\eqref{eq:RC-path}. For any $\epsilon : \Qp$, using
+  \autoref{RC-sim-self} of \autoref{RC-sim-uniformity-properties},
   %
   \begin{equation*}
-    \rclim(x) \sim_{\theta/(2 L)}
-    x_{\theta/(4 L)} =
-    x_{\theta/(4 L)} \sim_{\theta/(2 L)}
+    \rclim(x) \sim_{\epsilon/(2 L)}
+    x_{\epsilon/(4 L)} =
+    x_{\epsilon/(4 L)} \sim_{\epsilon/(2 L)}
     \rclim(x).
   \end{equation*}
   %
   Now, by the Lipschitz condition and the induction hypothesis
   %
   \begin{equation*}
-    f(\rclim(x)) \sim_{\theta/2}
-    f(x_{\theta/4}) =
-    g(x_{\theta/4}) \sim_{\theta/2}
+    f(\rclim(x)) \sim_{\epsilon/2}
+    f(x_{\epsilon/4}) =
+    g(x_{\epsilon/4}) \sim_{\epsilon/2}
     g(\rclim(x)),
   \end{equation*}
   %
-  therefore $f(\rclim(x)) \sim_\theta h(\rclim(x))$, as required.
+  therefore $f(\rclim(x)) \sim_\epsilon g(\rclim(x))$, as required.
 \end{proof}
 
 \begin{lem}\label{RC-extend-Q-Lipschitz}
-  Suppose $f : \Q \to \Q$ is a Lipschitz map with a Lipschitz constant $L : \Qp$ (so that
-  $|f(q) - f(r)| \leq L \cdot |q - r|$ for all $q, r : \Q$). There is a unique $\bar{f} :
+  Suppose $f : \Q \to \Q$ is a Lipschitz map with a Lipschitz constant $L : \Qp$, so that
+  $|f(q) - f(r)| \leq L \cdot |q - r|$ for all $q, r : \Q$. There is a unique $\bar{f} :
   \RC \to \RC$ for which $\bar{f} \circ \rcrat = \rcrat \circ f$ and the Lipschitz
   condition holds: for all $u, v : \RC$ and $\epsilon : \Qp$,
   %
@@ -771,55 +691,67 @@ here univariate versions, even though we shall require multivariate ones as well
   hypothesis $y_\delta \jdeq f(x_{\delta/L}) \sim_{\delta + \epsilon} f(x_{\epsilon/L})
   \jdeq y_\epsilon$.
 
-  Next, we must show that $\bar{f}$ preserves equality. First, suppose $q : \RC$ and
-  $x : \Qp \to \RC$ satisfy~\eqref{eq:RC-rat-eq-lim}, and consider any $\epsilon : \Qp$.
-  Because $\rcrat(q) \sim_{\epsilon/L} x_{\epsilon/L}$, the induction hypothesis gives
+  It remains to show, for all $u, v : \RC$:
   %
-  \begin{equation*}
-    \bar{f}(\rcrat(q)) \jdeq \rcrat(f(q))
-    \sim_{\epsilon} f(x_{\epsilon/L}) \jdeq \bar{f}(\rclim(x))_\epsilon,
-  \end{equation*}
+  \begin{itemize}
+  \item preservation of equality: if $\prd{\epsilon : \Qp} u \sim_\epsilon v$ then
+    $\bar{f}(u) = \bar{f}(v)$, and
+  \item the Lipschitz condition: for all $\epsilon : \Qp$ if $u \sim_\epsilon v$ then
+    $\bar{f}(u) \sim_{L \epsilon} \bar{f}(v)$.
+  \end{itemize}
   %
-  therefore $\bar{f}(\rcrat(q)) = \bar{f}(\rclim(x))$. Second, suppose $x, y : \Qp \to
-  \RC$ satisfy~\eqref{eq:RC-lim-eq-lim}, and consider any $\delta, \epsilon : \Qp$.
-  Because $x_{\delta/L} \sim_{(\delta + \epsilon)/L} y_{\epsilon/L}$, by the induction
-  hypothesis
-  %
-  \begin{equation*}
-    \bar{f}(\rclim(x))_\delta \jdeq \bar{f}(x_{\delta/L}) \sim_{\delta + \epsilon}
-    \bar{f}(y_{\epsilon}) \jdeq \bar{f}(\rclim(y))_\epsilon,
-  \end{equation*}
-  %
-  therefore $\bar{f}(x) = \bar{f}(y)$.
-
-  To see that $\bar{f}$ satisfies the Lipschitz condition, consider these three cases (the
-  remaining one is symmetric to the second case):
+  We prove both statements simultaneously by induction on $u$ and $v$. There are four
+  cases to consider (we omit one symmetric case):
   %
   \begin{enumerate}
-  \item If $\rcrat(q) \sim_\epsilon \rcrat(r)$ then $|f(q) - f(r)| \leq L \cdot |q - r| <
-    L \epsilon$, therefore $\bar{f}(\rcrat(q)) \jdeq \rcrat(f(q)) \sim_{L \epsilon}
-    \rcrat(f(r)) \jdeq \bar{f}(\rcrat(r))$.
-  \item Suppose $\rclim(x) \sim_\epsilon \rcrat(q)$. There merely exist $\eta, \theta :
-    \Qp$ such that $x_\eta \sim_{\epsilon - \eta - \theta} \rcrat(q)$, therefore by
-    induction hypothesis $(\bar{f}(\rclim(x)))_{L \eta} = \bar{f}(x_\eta) \sim_{L \epsilon - L
-      \eta - L \theta} \rcrat(f(q)) = \bar{f}(\rcrat(q))$, which proves
-    $\bar{f}(\rclim(x)) \sim_{L \epsilon} \bar{f}(\rcrat(q))$.
-  \item Suppose $\rclim(y) \sim_\epsilon \rclim(y)$. There merely exist $\delta, \eta,
-    \theta \Qp$ such that $x_\delta \sim_{\epsilon - \delta - \eta - \theta} y_\eta$,
-    therefore by induction hypothesis $(\bar{f}(\rclim(x)))_{L \delta} = \bar{f}(x_\delta)
-    \sim_{L \epsilon - L \delta - L \eta - L \theta} \bar{f}(y_\eta) =
-    (\bar{f}(\rclim(y)))_{L \eta}$, which proves $\bar{f}(\rclim(x)) \sim_{L \epsilon}
-    \bar{f}(\rclim(y))$. 
+
+  \item When $u$ is $\rcrat(q)$ and $v$ is $\rcrat(r)$, preservation of equality holds because
+    $\prd{\epsilon : \Qp} \rcrat(q) \sim \rcrat(r)$ implies $q = r$, and the Lipschitz condition
+    reduces to an assumption.
+
+  \item When $u$ is $\rclim(x)$ and $v$ is $\rcrat(q)$ we proceed as follows.
+    %
+    \begin{itemize}
+    \item Preservation of equality: given any $\epsilon : \Qp$, there merely exist $\eta,
+      \theta : \Qp$ such that $x_\eta \sim_{\epsilon/L - \eta - \theta} \rcrat(q)$. By
+      induction hypothesis $\bar{f}(x_\eta) \sim_{\epsilon - L \eta - L \theta}
+      \bar{f}(\rcrat(q))$, therefore $\bar{f}(x) \sim_\epsilon \bar{f}(\rcrat(q))$.
+
+    \item Lipschitz condition:
+      %
+      supposing $\rclim(x) \sim_\epsilon \rcrat(q)$, there merely exist $\eta, \theta :
+      \Qp$ such that $x_\eta \sim_{\epsilon - \eta - \theta} \rcrat(q)$, therefore by
+      induction hypothesis $\bar{f}(x_\eta) \sim_{L \epsilon - L \eta - L \theta}
+      \rcrat(f(q))$, which proves $\bar{f}(\rclim(x)) \sim_{L \epsilon}
+      \bar{f}(\rcrat(q))$.
+    \end{itemize}
+
+  \item When $u$ is $\rclim(x)$ and $v$ is $\rclim(y)$ we proceed as follows:
+    %
+    \begin{itemize}
+    \item Preservation of equality: given any $\epsilon : \Qp$, there merely exist
+      $\delta, \eta, \theta : \Qp$ such that $x_\delta \sim_{\epsilon/L - \delta - \eta -
+        \theta} y_\eta$. By induction hypothesis $\bar{f}(x_\delta) \sim_{\epsilon - L
+        \delta - L \eta - L \theta} \bar{f}(y_\eta)$, therefore $\bar{f}(x) \sim_\epsilon
+      \bar{f}(y)$.
+
+    \item Lipschitz condition:
+      %
+      supposing $\rclim(x) \sim_\epsilon \rclim(y)$, there merely exist $\delta, \eta,
+      \theta : \Qp$ such that $x_\delta \sim_{\epsilon - \delta - \eta - \theta} y_\eta$,
+      therefore by induction hypothesis $\bar{f}(x_\delta) \sim_{L \epsilon - L \delta - L
+        \eta - L \theta} \bar{f}(y_\eta)$, which proves $\bar{f}(\rclim(x)) \sim_{L
+        \epsilon} \bar{f}(\rclim(y))$.
+    \end{itemize}
   \end{enumerate}
 \end{proof}
 
 \subsection{Arithmetical operations}
 \label{sec:arithm-oper}
 
-It is tedious to define a function on $\RC$ with bare hands, but
-\autoref{RC-Lipschitz-eq,RC-extend-Q-Lipschitz} make it easy to get arithmetic going. (To
-make everything watertight we would actually need corresponding statements for functions
-in two variables, but we leave those as exercises.)
+It is tedious to define a function on $\RC$ with bare hands, but we can use (the
+multivariate variant of) \autoref{RC-Lipschitz-eq,RC-extend-Q-Lipschitz} to define the
+additive and the lattice structure of the reals.
 
 Addition and subtraction are Lipschitz functions on rationals, so they extend to reals and
 the extensions satisfy the same equations. This shows that $(\RC, {+}, {-}, 0)$ is a

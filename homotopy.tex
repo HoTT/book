@@ -746,7 +746,7 @@ The maps $\encode$ and $\decode$ are quasi-inverses by
 
 Instantiating at {\base} gives
 \begin{cor}\label{cor:omega-s1}
-$\eqv {(\id{\base}{\base})} {\Z}$.
+$\eqv {\Omega(\Sn^1,\base)} {\Z}$.
 \end{cor}
 
 A simple induction shows that this equivalence takes addition to
@@ -767,7 +767,101 @@ For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
 \subsection{The homotopy-theoretic proof}
 \label{subsec:pi1s1-homotopy-theory}
 
-TODO.
+In \autoref{sec:pi1s1-universal-cover}, we defined the universal cover $\code:\Sn^1\to\type$ in type theory, and in \autoref{subsec:pi1s1-homotopy-theory} we defined a map $\encode : \prd{x:\Sn^1} (\base=x) \to \code(x)$ from the path fibration to the universal cover.
+What remains for the classical proof is to show that this map induces an equivalence on total spaces because both are contractible, and to deduce from this that it must be an equivalence on each fiber.
+
+We have already seen in \autoref{thm:contr-paths} that the total space $\sm{x:\Sn^1} (\base=x)$ is contractible.
+For the other, we have:
+
+\begin{lem}
+  The type $\sm{x:\Sn^1}\code(x)$ is contractible.
+\end{lem}
+\begin{proof}
+  We apply the flattening lemma (\autoref{thm:flattening}) with the following values:
+  \begin{itemize}
+  \item $A\defeq\unit$ and $B\defeq\unit$, with $f$ and $g$ the obvious functions.
+    Thus, the base higher inductive type $W$ in the flattening lemma is equivalent to $\Sn^1$.
+  \item $C:A\to\type$ is constant at \Z.
+  \item $D:\prd{b:B} (\eqv{\Z}{\Z})$ is constant at $\Zsuc$.
+  \end{itemize}
+  Then the type family $P:\Sn^1\to\type$ defined in the flattening lemma is equivalent to $\code:\Sn^1\to\type$.
+  Thus, the flattening lemma tells us that $\sm{x:\Sn^1}\code(x)$ is equivalent to higher inductive type with the following generators, which we denote $R$:
+  \begin{itemize}
+  \item A function $\mathsf{c}: \Z \to R$.
+  \item For each $z:\Z$, a path $\mathsf{p}_z:\mathsf{c}(z) = \mathsf{c}(\Zsuc(z))$.
+  \end{itemize}
+  We might call this type the \emph{homotopical reals}; it plays the same role as the topological space $\mathbb{R}$ in the classical proof.
+
+  Thus, it remains to show that $R$ is contractible.
+  As center of contraction we choose $\mathsf{c}(0)$; we must now show that $x=\mathsf{c}(0)$ for all $x:R$.
+  We do this by induction on $R$.
+  Firstly, when $x$ is $\mathsf{c}(z)$, we must give a path $q_z:\mathsf{c}(0) = \mathsf{c}(z)$, which we can do by induction on $z:\Z$:
+  \begin{alignat*}{2}
+    q_0 &\defeq \refl{\mathsf{c}(0)}\\
+    q_{n+1} &\defeq q_n \ct \mathsf{p}_n && \quad n\ge 0\\
+    q_{n-1} &\defeq q_n \ct \opp{\mathsf{p}_{n-1}} && \quad n\le 0.
+  \end{alignat*}
+  Secondly, we must show that for any $z:\Z$, the path $q_z$ is transported along $\mathsf{p}_z$ to $q_{z+1}$.
+  By transport of paths, this means we want $q_z \ct \mathsf{p}_z = q_{z+1}$.
+  This is easy by induction on $z$, using the definition of $q_z$.
+  This completes the proof that $R$ is contractible, and thus so is $\sm{x:\Sn^1}\code(x)$.
+\end{proof}
+
+\begin{cor}\label{thm:encode-total-equiv}
+  The map induced by \encode:
+  \[ \tsm{x:\Sn^1} (\base=x) \to \tsm{x:\Sn^1}\code(x) \]
+  is an equivalence.
+\end{cor}
+\begin{proof}
+  Both types are contractible.
+\end{proof}
+
+Now we need the following lemma.
+
+\begin{lem}\label{thm:total-fiber-equiv}
+  Suppose that $B,C:A\to \type$ are type families and $f:\prd{x:A} B(x)\to C(x)$ is a function such that the induced map $\sm{x:A}B(x) \to \sm{x:A}C(x)$ is an equivalence.
+  Then for each $x:A$, the function $f_x : B(x) \to C(x)$ is an equivalence.
+\end{lem}
+\begin{proof}
+  Let $g:\sm{x:A}C(x) \to \sm{x:A}B(x)$ be a quasi-inverse to the given map $(x,b) \mapsto (x,f_x(b))$.
+  Thus, we have
+  \begin{alignat*}{2}
+    g(x,f_x(b)) &= (x,b) && \quad \text{for $x:A$ and $b:B(x)$}\\
+    (\proj1(g(x,c)),f_{\proj1(g(x,c))}(\proj2(g(x,c)))) &= (x,c)
+    && \quad\text{for $x:A$ and $c:C(x)$}.
+  \end{alignat*}
+  By paths in $\Sigma$-types, these equalities can be unraveled into
+  \begin{align*}
+    p_{x,b} &: \proj1(g(x,f_x(b))) = x\\
+    q_{x,b} &: \trans{(p_{x,b})}{\proj2(g(x,f_x(b)))} = b\\
+    r_{x,c} &: \proj1(g(x,c)) = x\\
+    s_{x,c} &: \trans{(r_{x,c})}{f_{\proj1(g(x,c))}(\proj2(g(x,c)))} = c.
+  \end{align*}
+  Moreover, we may assume that this quasi-inverse is in fact half adjoint equivalence data as in \autoref{sec:hae}.
+  In particular, this implies that $p_{x,b} = r_{x,f_x(b)}$.
+
+  Now fix an $x:A$, and define $h:C(x) \to B(x)$ by $h(c)\defeq \trans{(r_{x,c})}{\proj2(g(x,c))}$.
+  Since $f$ is natural with respect to transport, we have
+  \[ f_x(h(c)) \jdeq f_x ( \trans{(r_{x,c})}{\proj2(g(x,c))} )
+  = \trans{(r_{x,c})}{f_{\proj1(g(x,c))}(\proj2(g(x,c)))} \overset{s_{x,c}}{=} c.
+  \]
+  On the other hand, we have
+  \[ h(f_x(b)) \jdeq \trans{(r_{x,f_x(b)})}{\proj2(g(x,f_x(b)))}
+  = \trans{(p_{x,b})}{\proj2(g(x,f_x(b)))}
+  \overset{q_{x,b}}{=} b.
+  \]
+  Thus, $h$ is a quasi-inverse to $f_x$.
+\end{proof}
+
+\begin{thm}
+  $\eqv {\Omega(\Sn^1,\base)} {\Z}$.
+\end{thm}
+\begin{proof}
+  Apply \autoref{thm:total-fiber-equiv} to $\encode$, using \autoref{thm:encode-total-equiv}.
+\end{proof}
+
+In essence, the two proofs are not very different: the type-theoretic one may be seen as a ``reduction'' or ``unpackaging'' of the homotopy-theoretic one.
+Each has its advantages; the interplay between the two points of view is part of the interest of the subject.
 
 
 \section{Connectedness of suspensions}

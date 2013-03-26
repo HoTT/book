@@ -425,26 +425,41 @@ this fixed universe \type.
 \section{\texorpdfstring{$\pi_1(S^1)$}{π₁(S¹)}}
 \label{sec:pi1-s1-intro}
 
-Our goal is to show that $\id {\pi_1(\Sn ^1)} {\Z}$.  In fact, we
-will show that the loop space $\id {\Omega(\Sn ^1)} {\Z}$.  This is a stronger
-statement, because $\id{\pi_1(\Sn ^1)} {\trunc 0 {\Omega(\Sn ^1)}}$ by
-definition, so if $\id {\Omega(\Sn ^1)} {\Z}$, then $\id {\trunc
+In this section, our goal is to show that $\id {\pi_1(\Sn ^1)} {\Z}$.
+In fact, we will show that the loop space ${\Omega(\Sn ^1)}$ is equivalent to \Z.
+This is a stronger statement, because $\id{\pi_1(\Sn ^1)} {\trunc 0 {\Omega(\Sn ^1)}}$ by
+definition; so if $\id {\Omega(\Sn ^1)} {\Z}$, then $\id {\trunc
   0 {\Omega(\Sn ^1)}} {\trunc 0 {\Z}}$ by congruence, and
 $\Z$ is a set, so $\id {\trunc 0 {\Z}} {\Z}$
 (FIXME: do we have this somewhere?).  
 \note{What definition of $\Z$ do we want to use?}
+Moreover, knowing that ${\Omega(\Sn ^1)}$ is a set will imply that $\pi_n(\Sn^1)$ is trivial for $n>1$, so we will actually have calculated \emph{all} the homotopy groups of $\Sn^1$.
 
-Our proof that $\Omega(\Sn ^1)$ is $\Z$ can be seen as a
-type-theoretic version of a proof in classical homotopy theory.  The
-classical proof we start from is usually formulated using ``universal
-covering spaces'', but we will give an equivalent sketch using
-\emph{fibrations} which transfers more directly to type theory.  For any
-point $x_0\in B$, there is a canonical \emph{path fibration} $p:P_{x_0}
-B \to B$, where the points of $P_{x_0} B$ are paths in $B$ starting at
-$x_0$, and the map $p$ selects the other endpoint of such a path.  The
-space $P_{x_0} B$ is \emph{contractible}, i.e., homotopy equivalent to a
-point, since we can ``retract'' any path to its initial endpoint $x_0$.
-Moreover, the fiber over $x_0$ is the loop space $\Omega(B,x_0)$.
+It is not too hard to define functions in both directions between $\Omega(\Sn^1)$ and \Z.
+We can define $f:\Z\to\Omega(\Sn^1)$ using the ``sign-case induction principle'' for \Z:
+\begin{alignat*}{2}
+  f(0) &\defeq \refl{\base}\\
+  f(n+1) &\defeq f(n) \ct \lloop
+  &&\quad n\ge 0\\
+  f(n-1) &\defeq f(n) \ct \opp\lloop
+  &&\quad n\le 0.
+\end{alignat*}
+Defining $g:\Omega(\Sn^1)\to\Z$ is a bit trickier.
+Note that the successor function $\Zsuc:\Z\to\Z$ is an equivalence, and hence induces a path $\ua(\Zsuc):\Z=\Z$ in the universe \type.
+Thus, the recursion principle of $\Sn^1$ induces a map $c:\Sn^1\to\type$ by $c(\base)\defeq \Z$ and $\apfunc c (\lloop) \defid \ua(\Zsuc)$.
+Then we have $\apfunc{c} : (\base=\base) \to (\Z=\Z)$, and we can define $g(p)\defeq \apfunc{c}(p)(0)$.
+
+With these definitions, we can even prove that $g(f(n))=n$ for any $n:\Z$, using the same induction principle for $n$.
+(We will prove something more general a little later on.)
+However, the other equality $f(g(p))=p$ is significantly harder, and seems to require a different idea.
+The requisite idea can be explained both in terms of classical homotopy theory and in terms of type theory; we will explain each in turn.
+
+In classical homotopy theory, there is a standard proof of $\pi_1(\Sn^1)=\Z$ using universal covering spaces.
+Our proof can be regarded as a type-theoretic version of this proof, but modified to use fibrations rather than covering spaces.
+Recall that \emph{fibrations} over a space $B$ in homotopy theory correspond to type families $B\to\type$ in type theory.
+In particular, for a point $x_0:B$, the type family $(x\mapsto (x_0=x))$ corresponds to the \emph{path fibration} $P_{x_0} B \to B$, in which the points of $P_{x_0} B$ are paths in $B$ starting at $x_0$, and the map to $B$ selects the other endpoint of such a path.
+This total space $P_{x_0} B$ is contractible, since we can ``retract'' any path to its initial endpoint $x_0$ --- we have seen the type-theoretic version of this as \autoref{thm:contr-paths}.
+Moreover, the fiber over $x_0$ is the loop space $\Omega(B,x_0)$ --- in type theory this is obvious by definition of the loop space.
 
 \begin{figure}\centering
   \begin{tikzpicture}[xscale=1.4,yscale=.6]
@@ -469,22 +484,66 @@ Moreover, the fiber over $x_0$ is the loop space $\Omega(B,x_0)$.
   \caption{The winding map in classical topology}\label{fig:winding}
 \end{figure}
 
-Now consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which
-looks like a helix projecting down onto the circle (see \autoref{fig:winding}).
-This map $w$ sends each point on the helix to the point on the circle
-that it is ``sitting above''; this map is a fibration, and the fiber
-over each point is isomorphic to the integers.  If we lift the path that
-goes counterclockwise around the loop on the bottom, we go up one level in the
-helix, incrementing the integer in the fiber.  Similarly, going
-clockwise around the loop on the bottom corresponds to going down
-one level in the helix, decrementing this count.  This fibration is
-called the \emph{universal cover} of the circle.
+Now in classical homotopy theory, with $\Sn^1$ referring to a topological space, we may proceed as follows.
+Consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which looks like a helix projecting down onto the circle (see \autoref{fig:winding}).
+This map $w$ sends each point on the helix to the point on the circle that it is ``sitting above''.
+This map is a fibration, and the fiber over each point is isomorphic to the integers.
+If we lift the path that goes counterclockwise around the loop on the bottom, we go up one level in the helix, incrementing the integer in the fiber.
+Similarly, going clockwise around the loop on the bottom corresponds to going down one level in the helix, decrementing this count.
+This fibration is called the \emph{universal cover} of the circle.
 
-Now a basic fact is that a map $E_1\to E_2$ of fibrations over $B$
-which is a homotopy equivalence between $E_1$ and $E_2$ induces a
-homotopy equivalence on fibers.  Since $\mathbb{R}$ and $P_{\base} S^1$
-are both contractible, they are homotopy equivalent, and thus the fibers
-over \base, $\Z$ and $\Omega(\Sn ^1)$, are isomorphic.
+Now a basic fact in classical homotopy theory is that a map $E_1\to E_2$ of fibrations over $B$ which is a homotopy equivalence between $E_1$ and $E_2$ induces a homotopy equivalence on all fibers.
+Since $\mathbb{R}$ and $P_{\base} S^1$ are both contractible topological spaces, they are homotopy equivalent, and thus their fibers $\Z$ and $\Omega(\Sn ^1)$ over the basepoint are also homotopy equivalent.
+
+Let's consider how we might express this proof in type theory.
+We have already remarked that the path fibration of $\Sn^1$ is represented by the type family $(x\mapsto (\base=x))$.
+Moreover, we actually have the universal cover as well!
+It was hidden in our definition of the function $g$, namely as the type family $c:\Sn^1\to\type$ which we defined by $\Sn^1$-recursion.
+We separate out this definition for future reference.
+
+\begin{defn}[Universal Cover of $\Sn ^1$]
+  Define $\code : \Sn ^1 \to \type$ by circle-recursion, with 
+  \begin{align*}
+    \code(\base) &\defeq \Z \\
+    \apfunc{\code}({\lloop}) &\defid \ua(\Zsuc).
+  \end{align*}
+\end{defn}
+
+To define a function by circle recursion, we need to find a point and a
+loop in the target.  In this case, the target is $\type$, and the point
+we choose is $\Z$, corresponding to our expectation that the
+fiber of the universal cover should be the integers.  The loop we choose
+is the successor/predecessor isomorphism on $\Z$, which
+corresponds to the fact that going around the loop in the base goes up
+one level on the helix.  Univalence is necessary for this part of the
+proof, because we need a \emph{non-trivial} equivalence on $\Z$.  
+
+We call this the fibration of ``codes'', because its elements are \emph{data} that act as codes for paths on the circle: the integer $n$ codes for the path which loops around the circle $n$ times.
+
+From this definition, it is simple to calculate that transporting with
+$\code$ takes $\lloop$ to the successor function, and 
+$\opp{\lloop}$ to the predecessor function:
+\begin{lem} \label{lem:transport-s1-code}
+\id{\transfib \code \lloop x} {x + 1} and 
+\id{\transfib \code {\opp \lloop} x} {x - 1}
+\end{lem}
+\begin{proof}
+For the first, we calculate as follows:
+\[
+\begin{array}{lll}
+ & {\transfib \code \lloop x} &\\
+= & \transfib {A \mapsto A} {(\ap{\code}{\lloop})} x & \text{associativity}\\
+= & \transfib {A \mapsto A} {\ua (\Zsuc)} x & \text{reduction for circle-recursion}\\
+= & x + 1 & \text{reduction for \ua}
+\end{array}
+\]
+The second follows from the first, because $\transfib B p-$  and ${\transfib B {\opp p}{-}}$ are always inverses, so ${\transfib\code {\opp \lloop}{-}}$ must be the inverse of $\Zsuc$.
+\end{proof}
+
+Looking at the classical proof, we can now see what was wrong with our first approach.
+We defined $f$ and $g$ only on the fibers\dots
+
+
 
 \smallskip
 
@@ -526,59 +585,8 @@ P(x:\Sn ^1) \defeq (\id[\Sn ^1] \base x)
 with one end-point free.  
 
 We show that $P(x)$ is equal to another fibration, which gives a more
-explicit description of the paths---we call this other fibration
-``codes'', because its elements are \emph{data} that act as codes for
-paths on the circle.  In this case, the codes fibration is the universal
-cover of the circle.
+explicit description of the paths---
 
-\begin{defn}[Universal Cover of $\Sn ^1$]
-Define $\code(x:\Sn ^1) : \type$ by circle-recursion, with 
-\[
-\begin{array}{l}
-\code(\base) \defeq \Z \\
-\ap{\code}{\lloop} \defeq \ua(\Zsuc) \\
-\end{array}
-\]
-where $\Zsuc$ is the equivalence $\eqv {\Z} {\Z}$ given by
-adding one, which by univalence determines a path from $\Z$ to
-$\Z$ in \type.  
-\end{defn}
-
-To define a function by circle recursion, we need to find a point and a
-loop in the target.  In this case, the target is $\type$, and the point
-we choose is $\Z$, corresponding to our expectation that the
-fiber of the universal cover should be the integers.  The loop we choose
-is the successor/predecessor isomorphism on $\Z$, which
-corresponds to the fact that going around the loop in the base goes up
-one level on the helix.  Univalence is necessary for this part of the
-proof, because we need a \emph{non-trivial} equivalence on $\Z$.  
-
-From this definition, it is simple to calculate that transporting with
-$\code$ takes $\lloop$ to the successor function, and 
-$\opp{\lloop}$ to the predecessor function:
-\begin{lem} \label{lem:transport-s1-code}
-\id{\transfib \code \lloop x} {x + 1} and 
-\id{\transfib \code {\opp \lloop} x} {x - 1}
-\end{lem}
-\begin{proof}
-For the first, we calculate as follows:
-\[
-\begin{array}{lll}
- & {\transfib \code \lloop x} &\\
-= & \transfib {A \mapsto A} {(\ap{\code}{\lloop})} x & \text{associativity}\\
-= & \transfib {A \mapsto A} {\ua (\Zsuc)} x & \text{reduction for circle-recursion}\\
-= & x + 1 & \text{reduction for \ua}
-\end{array}
-\]
-The second follows from the first, because 
-$\transfibf B p$ and 
-and ${\transfibf B {\opp p}}$ are always inverses, so 
-$\id{\transfibf \code {\opp \lloop}}$ must be the inverse of the
-$- + 1$.  
-\end{proof}
-
-In the remainder of the proof, we will show that $P$ and $\code$ are
-equivalent.  
 
 \paragraph{Encoding}
 

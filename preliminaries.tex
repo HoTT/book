@@ -647,75 +647,6 @@ do not identify propositions with $\bool$ (instead we identify
 propositions with types). Hence the type $A \to \bool$ does not
 represent all subsets of $A$ but only the decidable ones.
 
-
-% \section{Finite types}
-% \label{sec:finite-types}
-
-% A finite type can be presented by listing its elements. In homotopy
-% type theory there is only one finite type for each finite cardinal
-% since finite types with the same number of elements are equivalent.
-% Indeed, we only need three finite types to generate all others: 
-% \begin{itemize}
-% \item the empty type $\emptyt$ with no elements,
-% \item the unit type $\unit$ with exactly one element $\star:\unit$,
-% \item and the type of booleans $\bool$ with exactly two elements
-%   $\btrue,\bfalse : \bool$
-% \end{itemize}
-% The elimination principles for all three types are straightforward:
-% \begin{itemize}
-% \item If $C(x)$ is a family on $x:\emptyt$ then we have $f:\prd{z:\emptyt}C(z)$ with no defining equation.
-% \item If $C[x]$ is a family on $x:\unit$ and $c:C(\star)$ then we have $f:\prd{z:\unit}C(z)$ with defining equation
-%   \[ f(\star)\defeq c.\]
-% \item If $C(x)$ is a family on $x:\bool$, $c_0:C(\bfalse)$ 
-% and $c_1:C(\btrue)$ then we have $f:\prd{z:\bool}C(z)$ with the
-% defining equations
-% \begin{eqnarray*}
-% f(\bfalse) & \defeq& c_0\\
-% f(\btrue) & \defeq & c_1
-% \end{eqnarray*}
-% \end{itemize}
-% Using $\Sigma$-types we can derive the coproduct (or disjoint union) $A+B$
-% of two types $A,B$ which in particular shows that we can construct all
-% finite types using $\emptyt$ and $S(X) = X+1$. We define
-% \[A + B \defeq \sm{x:\bool}F(x)\]
-% where $F : \bool \to \UU$ is
-% defined as $F(\bfalse) \defeq A$ and $F(\btrue)\defeq B$. The
-% injections can be defined as:
-% \begin{align*}
-% & \inl :  A \to A+B\\
-% & \inl(a) \defeq (\bfalse,a)\\
-% & \inr :  B \to A+B\\
-% & \inr(b) \defeq (\btrue,b)
-% \end{align*}
-% We can derive the elimination principle for $A+B$:
-% Given  $C(x)$ is a family on $x:A+A'$ and
-% \begin{eqnarray*}
-% c_\inl & : & \prd_{x:A}C(\inl(x)) \\
-% c_\inr & : & \prd{x':A'}C(\inr(x'))
-% \end{eqnarray*}
-% then we can define $f:\prd_{z:A+A'}C(z)$ with defining equations
-% \begin{eqnarray*}
-% f(\inl(x)) & \defeq& c_\inl(x)  \\
-% f(\inr(x) & \defeq & c_\inr(x)  
-% \end{eqnarray*}
-
-% The technique to derive $+$ from $\Sigma$ can also be used to derive
-% $\times$ form $\Pi$ namely given $A,B:\UU$ we can define 
-% \[ A \times B \defeq \prd{x:\bool}F(x)\] where $F$ is defined as for
-% $+$ above. The projections can be derived by applications to $\bfalse$
-% and $\btrue$. To derive the eliminator we need the principle of
-% functional extensionality. Hence there are two ways to derive $A\times
-% B$ : either as a non-dependent $\Sigma$-type or as a special case of
-% $\Pi$ where the domain is boolean.
-
-% The types $\emptyt$ and $\unit$ represent the logical constants
-% \emph{False} and \emph{True}. Indeed, \emph{False} has no proof while
-% \emph{True} has one trivial proof. Unlike in classical mathematics we
-% do not identify propositions with $\bool$ (instead we identify
-% propositions with types). Hence the type $A \to \bool$ does not
-% represent all subsets of $A$ but only the decidable ones.
-
-
 \section{Identity types}
 \label{sec:identity-types}
 
@@ -727,107 +658,184 @@ proof-relevant understanding of identity types: there can be more than
 one reason that two objects are equal corresponding two the fact that
 there can be more than one paths between two points.
 
-Given a type $A$ and two elements $a,b:A$ we can form the type $a=_A
-b$ in the same universe. The canonical way to prove an equality is
-reflexivity $\refl{a} : a =_A a$ which proves that identical elements
-are equal. In type theory objects in this type are intended to
-represent proofs of the proposition that $a$ and $a'$ are identical.
-So, in particular there is an object $\refl{a}: a =_A a'$ whenever
-$a:A$. In Homotopy Type Theory, when $A$ is understood as a space and
-$a,a'$ are understood as points of the space the type $Id_A(a,a')$ is
-to be understood as the type of paths from the point $a$ to the point
-$a'$.
+Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point f view that there is a path between $a$ and $b$. In particular there is a canonical element
+$\refl : \prd{a:A} a =_A a$ --- the proof of reflexivity.
 
 There are two different but equivalent elimination principles for
 identity types:
 \begin{description}
 \item[Martin-L\"{o}f Rule:] 
-Given a family $C(x,y,p)$ indexed by $x,y:A$ and $p:x=_A y$ and 
-\[c:\prd{x:A} C(x,x,\refl{x})\]
-we can derive a function $f:\prd{x,y:A,p:x = y}C(x,y,p)$ with the
-defining equation 
+Given a family 
+\[ C : \prd{x,y:A}\prd{p:x =_A y} \UU \]
+and a function
+\[ c :  \prd{x:A} C(x,x,\refl{x})\]
+we can construct a function
+\[ f : \prd{x,y:A}{p:x =_A y} C(x,y,p) \]
+with the defining equality 
 \[ f(x,x,\refl{x}) \defeq c(x) \]
+
+The Martin-L\"of rule corresponds to the following induction principle:
+\begin{align*}
+ \ind{=_A}^{ML} : & \prd{C : \prd{x,y:A}\prd{p:x =_A y} \UU}  \\
+     & \prd{x:A} C(x,x,\refl{x})  \\
+     & \to  \prd{x,y:A}{p:x =_A y} C(x,y,p)
+\end{align*}
+with the equality
+\[ \ind{=_A}^{ML}(C,c,x,x,\refl{x}) \defeq c(x) \]
+This induction constant is also called $J$.
+
 \item[Paulin-Mohring Rule:] 
-Given $x:A$ and a family $D(x,y,q)$ indexed by $y:A,q:x=_A y$ and 
-\[ d(x):D(x,x,\refl{x}) \]
-we can derive a function $g(x):\prd{y:A,q:x = y}C[y,q]$ with the defining
-equation 
-\[ g(x)(x,\refl{x}) \defeq d(x) \]
+
+Fix an element $a:A$, given a family
+\[ C : \prd{x:A}{p : a =_A x} \UU \]
+and en element
+\[ c : C(a,\refl{a}) \]
+we obtain a function
+\[ f : \prd{x:A}{p:a = x} C(x,p) \]
+with the defining equality
+\[ f(a,\refl{a}) \defeq c \]
+
+Correspondingly, there is an induction constant
+\begin{align*}
+\ind{=_A}^{PM} : & \prd{a:A}{C : \prd{x:A}{p : a =_A x} \UU} \\
+& C(a,\refl{a}) \\
+& \to \prd{x:A}{p : a =_A x} C(x,p) 
+\end{align*}
+with the equality
+\[ \ind{=_A}^{PM}(a,C,c,a,\refl{a}) \defeq c \]
+%\[ g(x)(x,\refl{x}) \defeq d(x) \]
 \end{description}
 These principles arise from different views on the identity type,
 while the Martin-L\"of rule is based on the view that the identity
 type is a binary relation in the type-theoretic sense, i.e. a family
 indexed by two variables, the Paulin-Mohring rule is based on viewing
-the identity type over a given $x:A$, that is $x =_A -$ as a predicate
+the identity type over a given $a:A$, that is $a =_A -$ as a predicate
 indexed only by one variable.
 
 It is easy to see that the Martin-L\"of rule follows from the
-Paulin-Mohring rule: Assume as given $C(x,y,p)$ and $c$ as in the
-premise of the Martin-L\"of rule: now given $x:A$ we define $D(x)(y,q) :=
-C(x,y,q)$ and $d(x) \defeq c(x)$ we obtain $g(x):\prd{y:A,q:a = y}C(x,y,q)$
-with the defining equation $g(x)(x,\refl{x}) \defeq c(x)$. Now
-abstracting $x$ we obtain $f : \prd{x,y:A,p:x =_A y}C(x,y,p)$ with the
-defining equation $f(x) \defeq g(x)$ and hence 
+Paulin-Mohring rule: We assume 
+the premises of the Martin-L\"of rule
 \begin{eqnarray*}
-f(x,x,\refl{x}) & \jdeq & g(x)(x,\refl{x})  \\
-                   & \jdeq & c(x)
+C & : & \prd{x,y:A}\prd{p:x =_A y} \UU  \\
+c & :  & \prd{x:A} C(x,x,\refl{x})
 \end{eqnarray*}
-as required.
-
-The other direction is a bit more involved: We assume the Martin-L\"of
-rule and derive two principles:
-\begin{description}
-\item[transport] Given a family $P(x)$ over
-$x:A$ and $p : a =_A b, x : P(a)$ we obtain $\trans{p}{x} : P(b)$ with
-the defining equation $\trans{\refl{a}}{x} \defeq x$.
-\item[singleton is contractible]  Given $x:A$ we define 
-\[ \sgl(x) := \Sigma y:A, x =_A y \]
-and we show that 
-\[\sctr(x) : \prd{p : \sgl(x)} (x,\refl{x}) =_{\sgl(x)}  p \]
-with
-\[ \sctr(x)(\tup{x}{\refl{x}}) \defeq \refl{\tup{x}{\refl{x}}} \]
-\end{description}
-Now to derive the Paulin-Mohring rule assume $D(x,y,q)$ and
-$d(x):D(x,x,\refl{x})$. We derive $E(x,p)$ indexed over $p:\sgl(x)$
-with $E(x,p) \defeq D(x,\fst(x),\snd(x))$. Using the equations for
-the projections we also have that $d(x) : E(x,\tup{x}{\refl{x}})$.
-Now using transport along $\sctr$ we derive 
-$h(x) : \prd{s : \sgl{x}}E(x)(s)$ as 
-\[h(x)(s) \defeq \trans{\sctr(s)}{d(x)}\]
-and now $g(x):\prd{y:A,q:x = y}C(y,q)$ can be obtained as
-$g(x)(y,q) \defeq h(x)(\tup{y}{q})$ with 
+now given an element $x:A$ we can instantiate both obtaining
 \begin{eqnarray*}
-g(x)(x , \refl{x}) & \jdeq & h(x)(\tup{x}{\refl{x}} \\
-& \jdeq & \trans{\sctr(\tup{x}{\refl{x})}}{d(x)}\\
-& \jdeq & \trans{\refl{\tup{x}{\refl{x}}}}{d(x)}\\
-& \jdeq & d(x).
+C' & : & \prd{y:A}\prd{p:x =_A y} \UU  \\
+C' & \defeq & C(x) \\
+c' & : & C'(x,\refl{x}) \\
+c' & \defeq & c(x)
 \end{eqnarray*}
+Clearly, $C'$ and $c'$ match the premises of the Paulin-Mohring rule and hence we can construct 
+\begin{eqnarray*}
+g : \prd{y:A}{p : x = y} C'(y,p)
+\end{eqnarray*}
+with the defining equality
+\[ g(x,\refl{x}) \defeq c' \]
+Now we observe that $g$'s codomain is equal to $C(x,y,p)$ and discharging our assumption
+$x:A$ we can derive a function 
+\[ f : \prd{x,y:A}{p : x =_A y} C(x,y,p) \]
+with the required definitional equality.
 
-To derive transport from the Martin-L\"of rule for $P(x)$ over
-$x:A$ and $C(x,y,q)\defeq P(x) \to P(y)$ and $c(x) : P(x) \to P(x)$ is
-the identity function $c(x)(p) \defeq p$ we obtain 
-$f : \prd{x,y:A}{q : x = y} P(x) \to P(y)$ with
-$f (x,x,\refl{x})(p) \defeq p$ which we denote as 
-$\trans{q}{p} \defeq f(x,y,q)(p)$.
+In terms of induction constants we can derive $\ind{=_A}^{ML}$ from $\ind{=_A}^{PM}$ using
+\[ \ind{=_A}^{ML}(C,c,x,y,p) \defeq \ind{=_A}^{PM}(x,C(x),c(x),y,p) \]
 
-We are left to derive $\sctr$ from the Martin-L\"of rule:
-We use $C(x,y,p) \defeq \tup{y}{p} =_{\sgl(x)} \tup{x}{\refl{x}}$
-with $c(x) \defeq \refl{\tup{x}{\refl{x}}}$ and using the Martin-L\"of
-  rule: 
-\[f : \prd{x,y:A}{p:x = y} \tup{y}{p} =_{\sgl(x)} \tup{x}{\refl{x}}\]
- with $f(x,x,\refl{x}) \defeq \refl{\tup{x}{\refl{x}}}$. We now define
-$\sctr(x)(p) = f(x,\fst(p),\snd(p)$.
+The other direction is a bit more tricky: To derive the Paulin-Mohring rule from the Martin-L\"of rule 
+we assume $a : A$ and the premises of the Paulin-Mohring rule:
+\begin{eqnarray*}
+C & : & \prd{x:A}{p : a =_A x} \UU \\  
+c & : & C(a,\refl{a})
+\end{eqnarray*}
+it is not clear how we can use a particular instance of the Martin-L\"of rule to derive the conclusion of 
+the Paulin-Mohring rule. However, we can generalize this and construct an instance of the Martin-L\"of rule which shows 
+all possible instantiations of the Paulin-Mohring rule:
+\begin{eqnarray*}
+D & : & \prd{x,y:A}\prd{p:x =_A y} \UU \\
+D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p)
+\end{eqnarray*}
+we can construct the function
+\begin{eqnarray*}
+d & : & \prd{x : A} D(x,x,\refl{x}) \\
+d & \defeq & \lam{C:\prd{z:A}{p : x =_A z} \UU}\lam{x:C(x,\refl{x})} x
+\end{eqnarray*}
+and hence using the Martin-L\"of rule obtain
+\[ f : \prd{x,y:A}{p:x =_A y} D(x,y,p) \]
+with $f(x,x,\refl(x)) \defeq d(x)$. Unfolding the definition of $D$ we can expand the type of $f$:
+\[ f : \prd{x,y:A}{p:x =_A y}{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p) \]
+now given $x:A$ and $p:a =_A x$ we can derive the conclusion of the Paulin-Mohring rule:
+\[ f(a,x,p,C,c) : C(x,p) \]
+We notice that we can also derive the correct definitional equality.
 
-We are going to use the Paulin-Mohring rule to show that $=$ is an
-equivalence relation. Assuming a type $A$ we show that there is a function
-$p^{-1} : b = a$ given $p : a = b$ using the family $b = a$ and
-the defining equation
-\[ (\refl{a})^{-1} = \refl{a} \]
-Similarily we can show transitivity: assume there is $p : a = b$ and
-we want to derive $p \ct - : b = c \to a = b$ by
-\[ p \ct \refl{b} \defeq p.\]
-Since we already have the constructor $\refl{}$ we have shown that $=_A$
-is an equivalence relation. 
+In terms of induction constants the construction becomes:
+\begin{align*}
+\ind{=_A}^{PM}(a,C,c,x,p) \defeq \\
+\ind{=_A}^{ML}( & \lam{x,y:A}{p:x =_A y} \prd{C : \prd{z:A}{p : x =_A z} \UU} \\
+&\qquad C(x,\refl{x}) \to C(y,p),\\
+& \lam{C:\prd{z:A}{p : x =_A z} \UU}\lam{x:C(x,\refl{x})} x,\\
+& a,x,p,C,c) 
+\end{align*}
+% \[ 
+% \Ind{=_A}_{ML}(\lam{x,y:A}{p:x =_A y} \prd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p)
+  
+% \end{eqnarray*}
+
+% \[
+
+% and en element
+% \[ \]
+
+% \begin{description}
+% \item[transport] Given a family $P(x)$ over
+% $x:A$ and $p : a =_A b, x : P(a)$ we obtain $\trans{p}{x} : P(b)$ with
+% the defining equation $\trans{\refl{a}}{x} \defeq x$.
+% \item[singleton is contractible]  Given $x:A$ we define 
+% \[ \sgl(x) := \Sigma y:A, x =_A y \]
+% and we show that 
+% \[\sctr(x) : \prd{p : \sgl(x)} (x,\refl{x}) =_{\sgl(x)}  p \]
+% with
+% \[ \sctr(x)(\tup{x}{\refl{x}}) \defeq \refl{\tup{x}{\refl{x}}} \]
+% \end{description}
+% Now to derive the Paulin-Mohring rule assume $D(x,y,q)$ and
+% $d(x):D(x,x,\refl{x})$. We derive $E(x,p)$ indexed over $p:\sgl(x)$
+% with $E(x,p) \defeq D(x,\fst(x),\snd(x))$. Using the equations for
+% the projections we also have that $d(x) : E(x,\tup{x}{\refl{x}})$.
+% Now using transport along $\sctr$ we derive 
+% $h(x) : \prd{s : \sgl{x}}E(x)(s)$ as 
+% \[h(x)(s) \defeq \trans{\sctr(s)}{d(x)}\]
+% and now $g(x):\prd{y:A,q:x = y}C(y,q)$ can be obtained as
+% $g(x)(y,q) \defeq h(x)(\tup{y}{q})$ with 
+% \begin{eqnarray*}
+% g(x)(x , \refl{x}) & \jdeq & h(x)(\tup{x}{\refl{x}} \\
+% & \jdeq & \trans{\sctr(\tup{x}{\refl{x})}}{d(x)}\\
+% & \jdeq & \trans{\refl{\tup{x}{\refl{x}}}}{d(x)}\\
+% & \jdeq & d(x).
+% \end{eqnarray*}
+
+% To derive transport from the Martin-L\"of rule for $P(x)$ over
+% $x:A$ and $C(x,y,q)\defeq P(x) \to P(y)$ and $c(x) : P(x) \to P(x)$ is
+% the identity function $c(x)(p) \defeq p$ we obtain 
+% $f : \prd{x,y:A}{q : x = y} P(x) \to P(y)$ with
+% $f (x,x,\refl{x})(p) \defeq p$ which we denote as 
+% $\trans{q}{p} \defeq f(x,y,q)(p)$.
+
+% We are left to derive $\sctr$ from the Martin-L\"of rule:
+% We use $C(x,y,p) \defeq \tup{y}{p} =_{\sgl(x)} \tup{x}{\refl{x}}$
+% with $c(x) \defeq \refl{\tup{x}{\refl{x}}}$ and using the Martin-L\"of
+%   rule: 
+% \[f : \prd{x,y:A}{p:x = y} \tup{y}{p} =_{\sgl(x)} \tup{x}{\refl{x}}\]
+%  with $f(x,x,\refl{x}) \defeq \refl{\tup{x}{\refl{x}}}$. We now define
+% $\sctr(x)(p) = f(x,\fst(p),\snd(p)$.
+
+% We are going to use the Paulin-Mohring rule to show that $=$ is an
+% equivalence relation. Assuming a type $A$ we show that there is a function
+% $p^{-1} : b = a$ given $p : a = b$ using the family $b = a$ and
+% the defining equation
+% \[ (\refl{a})^{-1} = \refl{a} \]
+% Similarily we can show transitivity: assume there is $p : a = b$ and
+% we want to derive $p \ct - : b = c \to a = b$ by
+% \[ p \ct \refl{b} \defeq p.\]
+% Since we already have the constructor $\refl{}$ we have shown that $=_A$
+% is an equivalence relation. 
 
 \section{Inductive types}
 \label{sec:inductive-types}

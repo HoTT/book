@@ -425,26 +425,63 @@ this fixed universe \type.
 \section{\texorpdfstring{$\pi_1(S^1)$}{π₁(S¹)}}
 \label{sec:pi1-s1-intro}
 
-Our goal is to show that $\id {\pi_1(\Sn ^1)} {\Z}$.  In fact, we
-will show that the loop space $\id {\Omega(\Sn ^1)} {\Z}$.  This is a stronger
-statement, because $\id{\pi_1(\Sn ^1)} {\trunc 0 {\Omega(\Sn ^1)}}$ by
-definition, so if $\id {\Omega(\Sn ^1)} {\Z}$, then $\id {\trunc
+In this section, our goal is to show that $\id {\pi_1(\Sn ^1)} {\Z}$.
+In fact, we will show that the loop space ${\Omega(\Sn ^1)}$ is equivalent to \Z.
+This is a stronger statement, because $\id{\pi_1(\Sn ^1)} {\trunc 0 {\Omega(\Sn ^1)}}$ by
+definition; so if $\id {\Omega(\Sn ^1)} {\Z}$, then $\id {\trunc
   0 {\Omega(\Sn ^1)}} {\trunc 0 {\Z}}$ by congruence, and
 $\Z$ is a set, so $\id {\trunc 0 {\Z}} {\Z}$
 (FIXME: do we have this somewhere?).  
 \note{What definition of $\Z$ do we want to use?}
+Moreover, knowing that ${\Omega(\Sn ^1)}$ is a set will imply that $\pi_n(\Sn^1)$ is trivial for $n>1$, so we will actually have calculated \emph{all} the homotopy groups of $\Sn^1$.
 
-Our proof that $\Omega(\Sn ^1)$ is $\Z$ can be seen as a
-type-theoretic version of a proof in classical homotopy theory.  The
-classical proof we start from is usually formulated using ``universal
-covering spaces'', but we will give an equivalent sketch using
-\emph{fibrations} which transfers more directly to type theory.  For any
-point $x_0\in B$, there is a canonical \emph{path fibration} $p:P_{x_0}
-B \to B$, where the points of $P_{x_0} B$ are paths in $B$ starting at
-$x_0$, and the map $p$ selects the other endpoint of such a path.  The
-space $P_{x_0} B$ is \emph{contractible}, i.e., homotopy equivalent to a
-point, since we can ``retract'' any path to its initial endpoint $x_0$.
-Moreover, the fiber over $x_0$ is the loop space $\Omega(B,x_0)$.
+\subsection{Initial thoughts}
+\label{sec:pi1s1-initial-thoughts}
+
+It is not too hard to define functions in both directions between $\Omega(\Sn^1)$ and \Z.
+We can define a map $\Z\to\Omega(\Sn^1)$ using the ``sign-case induction principle'' for \Z:
+
+\begin{defn}
+Define $\lloop^- : \Z \rightarrow \id{\base}{\base}$ by 
+\[
+\lloop^n = \begin{cases} \lloop \ct \lloop \ct ... \ct \lloop \text{ ($n$ times) } & \text{for positive n} \\
+ \opp \lloop \ct \opp \lloop \ct ... \ct \opp \lloop \text{ ($n$ times)} & \text{for negative n} \\
+  \refl{} & \text{for 0}  
+\end{cases}
+\]
+\end{defn}
+
+To be a little more precise, we should insert an additional induction over positive natural numbers:
+\begin{alignat*}{2}
+  \lloop^0 &\defeq \refl{\base}\\
+  \lloop^{n+1} &\defeq \lloop^n \ct \lloop
+  &&\quad n\ge 0\\
+  \lloop^{n-1} &\defeq \lloop^n \ct \opp\lloop
+  &&\quad n\le 0.
+\end{alignat*}
+
+Defining a function $g:\Omega(\Sn^1)\to\Z$ in the other direction is a bit trickier.
+Note that the successor function $\Zsuc:\Z\to\Z$ is an equivalence, and hence induces a path $\ua(\Zsuc):\Z=\Z$ in the universe \type.
+Thus, the recursion principle of $\Sn^1$ induces a map $c:\Sn^1\to\type$ by $c(\base)\defeq \Z$ and $\apfunc c (\lloop) \defid \ua(\Zsuc)$.
+Then we have $\apfunc{c} : (\base=\base) \to (\Z=\Z)$, and we can define $g(p)\defeq \apfunc{c}(p)(0)$.
+
+With these definitions, we can even prove that $g(\lloop^n)=n$ for any $n:\Z$, using the same induction principle for $n$.
+(We will prove something more general a little later on.)
+However, the other equality $\lloop^{g(p)}=p$ is significantly harder.
+The obvious thing to try is path induction, but path induction does not apply to loops like $p:(\base=\base)$ that have \emph{both} endpoints fixed!
+A new idea is required, one which can be explained both in terms of classical homotopy theory and in terms of type theory.
+We begin with the former.
+
+
+\subsection{The classical proof}
+\label{sec:pi1s1-classical-proof}
+
+In classical homotopy theory, there is a standard proof of $\pi_1(\Sn^1)=\Z$ using universal covering spaces.
+Our proof can be regarded as a type-theoretic version of this proof, but modified to use fibrations rather than covering spaces.
+Recall that \emph{fibrations} over a space $B$ in homotopy theory correspond to type families $B\to\type$ in type theory.
+In particular, for a point $x_0:B$, the type family $(x\mapsto (x_0=x))$ corresponds to the \emph{path fibration} $P_{x_0} B \to B$, in which the points of $P_{x_0} B$ are paths in $B$ starting at $x_0$, and the map to $B$ selects the other endpoint of such a path.
+This total space $P_{x_0} B$ is contractible, since we can ``retract'' any path to its initial endpoint $x_0$ --- we have seen the type-theoretic version of this as \autoref{thm:contr-paths}.
+Moreover, the fiber over $x_0$ is the loop space $\Omega(B,x_0)$ --- in type theory this is obvious by definition of the loop space.
 
 \begin{figure}\centering
   \begin{tikzpicture}[xscale=1.4,yscale=.6]
@@ -469,79 +506,32 @@ Moreover, the fiber over $x_0$ is the loop space $\Omega(B,x_0)$.
   \caption{The winding map in classical topology}\label{fig:winding}
 \end{figure}
 
-Now consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which
-looks like a helix projecting down onto the circle (see \autoref{fig:winding}).
-This map $w$ sends each point on the helix to the point on the circle
-that it is ``sitting above''; this map is a fibration, and the fiber
-over each point is isomorphic to the integers.  If we lift the path that
-goes counterclockwise around the loop on the bottom, we go up one level in the
-helix, incrementing the integer in the fiber.  Similarly, going
-clockwise around the loop on the bottom corresponds to going down
-one level in the helix, decrementing this count.  This fibration is
-called the \emph{universal cover} of the circle.
+Now in classical homotopy theory, where $\Sn^1$ denotes a topological space, we may proceed as follows.
+Consider the ``winding'' map $w:\mathbb{R}\to \Sn ^1$, which looks like a helix projecting down onto the circle (see \autoref{fig:winding}).
+This map $w$ sends each point on the helix to the point on the circle that it is ``sitting above''.
+This map is a fibration, and the fiber over each point is isomorphic to the integers.
+If we lift the path that goes counterclockwise around the loop on the bottom, we go up one level in the helix, incrementing the integer in the fiber.
+Similarly, going clockwise around the loop on the bottom corresponds to going down one level in the helix, decrementing this count.
+This fibration is called the \emph{universal cover} of the circle.
 
-Now a basic fact is that a map $E_1\to E_2$ of fibrations over $B$
-which is a homotopy equivalence between $E_1$ and $E_2$ induces a
-homotopy equivalence on fibers.  Since $\mathbb{R}$ and $P_{\base} S^1$
-are both contractible, they are homotopy equivalent, and thus the fibers
-over \base, $\Z$ and $\Omega(\Sn ^1)$, are isomorphic.
+Now a basic fact in classical homotopy theory is that a map $E_1\to E_2$ of fibrations over $B$ which is a homotopy equivalence between $E_1$ and $E_2$ induces a homotopy equivalence on all fibers.
+Since $\mathbb{R}$ and $P_{\base} S^1$ are both contractible topological spaces, they are homotopy equivalent, and thus their fibers $\Z$ and $\Omega(\Sn ^1)$ over the basepoint are also homotopy equivalent.
 
-\smallskip
+\subsection{The universal cover in type theory}
+\label{sec:pi1s1-universal-cover}
 
-It is possible to directly formalize this classical homotopy-theoretic
-proof in type theory, by (1) defining the universal cover, (2) proving
-that a homotopy equivalence between total spaces induces an equivalence
-on fibers, and (3) proving that the total spaces of both the path
-fibration and the cover are contractible. Indeed, this was the first
-proof of this result in HoTT.
-
-We later discovered that there is an alternative proof, which has a more
-type-theoretic feel.  In this proof, we directly construct fiberwise
-maps between the path fibration and the universal cover, and prove that
-they are mutually inverse by calculation.  We will call this the
-\emph{type-theoretic} or \emph{encode/decode} proof, because
-\emph{encode} and \emph{decode} are the names we use for the fiberwise
-maps between the path fibration and the cover below.  Both proofs use
-the same construction of the cover (step 1 above).  Where the classical
-proof induces an equivalence on fibers from an equivalence between total
-spaces (step 2), the encode/decode proof constructs the inverse map
-(\emph{decode}) explicitly as a map between fibers.  Where the classical
-proof uses contractibility (step 3), the type-theoretic proof uses path
-induction, circle induction, and integer induction.  These are the same
-tools used to prove contractibility---indeed, path induction \emph{is}
-contractibility of the path fibration composed with
-$\mathsf{transport}$, but they are applied in a different way.
-
-\subsection{Encode/decode proof}
-
-By definition, $\Omega(\Sn ^1)$ is $\id[\Sn ^1] \base \base$.  If we
-attempt to prove that $\id {\Omega(\Sn ^1)} {\Z}$ by directly
-constructing an equivalence, we will get stuck, because type theory
-gives you little leverage for working with loops.  Instead, we
-generalize the theorem statement to the path fibration, and analyze the
-whole fibration
-\[
-P(x:\Sn ^1) \defeq (\id[\Sn ^1] \base x)
-\]
-with one end-point free.  
-
-We show that $P(x)$ is equal to another fibration, which gives a more
-explicit description of the paths---we call this other fibration
-``codes'', because its elements are \emph{data} that act as codes for
-paths on the circle.  In this case, the codes fibration is the universal
-cover of the circle.
+Let's consider how we might express the preceeding proof in type theory.
+We have already remarked that the path fibration of $\Sn^1$ is represented by the type family $(x\mapsto (\base=x))$.
+Moreover, we actually have the universal cover as well!
+It was hidden in our definition of the function $g$, namely as the type family $c:\Sn^1\to\type$ which we defined by $\Sn^1$-recursion.
+We separate out this definition for future reference.
 
 \begin{defn}[Universal Cover of $\Sn ^1$]
-Define $\code(x:\Sn ^1) : \type$ by circle-recursion, with 
-\[
-\begin{array}{l}
-\code(\base) \defeq \Z \\
-\ap{\code}{\lloop} \defeq \ua(\Zsuc) \\
-\end{array}
-\]
-where $\Zsuc$ is the equivalence $\eqv {\Z} {\Z}$ given by
-adding one, which by univalence determines a path from $\Z$ to
-$\Z$ in \type.  
+  Define $\code : \Sn ^1 \to \type$ by circle-recursion, with 
+  \begin{align*}
+    \code(\base) &\defeq \Z \\
+    \apfunc{\code}({\lloop}) &\defid \ua(\Zsuc).
+  \end{align*}
 \end{defn}
 
 To define a function by circle recursion, we need to find a point and a
@@ -552,6 +542,8 @@ is the successor/predecessor isomorphism on $\Z$, which
 corresponds to the fact that going around the loop in the base goes up
 one level on the helix.  Univalence is necessary for this part of the
 proof, because we need a \emph{non-trivial} equivalence on $\Z$.  
+
+We call this the fibration of ``codes'', because its elements are \emph{data} that act as codes for paths on the circle: the integer $n$ codes for the path which loops around the circle $n$ times.
 
 From this definition, it is simple to calculate that transporting with
 $\code$ takes $\lloop$ to the successor function, and 
@@ -570,21 +562,40 @@ For the first, we calculate as follows:
 = & x + 1 & \text{reduction for \ua}
 \end{array}
 \]
-The second follows from the first, because 
-$\transfibf B p$ and 
-and ${\transfibf B {\opp p}}$ are always inverses, so 
-$\id{\transfibf \code {\opp \lloop}}$ must be the inverse of the
-$- + 1$.  
+The second follows from the first, because $\transfib B p-$  and ${\transfib B {\opp p}{-}}$ are always inverses, so ${\transfib\code {\opp \lloop}{-}}$ must be the inverse of $\Zsuc$.
 \end{proof}
 
-In the remainder of the proof, we will show that $P$ and $\code$ are
-equivalent.  
+We can now see what was wrong with our first approach: we defined $f$ and $g$ only on the fibers $\Omega(\Sn^1)$ and \Z, when we should have defined a whole morphism \emph{of fibrations} over $\Sn^1$.
+In type theory, this means we should have defined functions having types
+\begin{align}
+  \prd{x:\Sn^1} &((\base=x) \to \code(x)) \qquad\text{and/or} \label{eq:pi1s1-encode}\\
+  \prd{x:\Sn^1} &(\code(x) \to (\base=x))\label{eq:pi1s1-decode}
+\end{align}
+instead of only the special cases of these when $x$ is \base.
+From a type theoretic perspective, this observation is also an instance of a common observation: when attempting to prove something about particular inhabitants of some inductive type, it is often easier to generalize the statement so that it refers to \emph{all} inhabitants of that type, which we can then prove by induction.
+Looked at in this way, the proof of $\Omega(\Sn^1)=\Z$ fits into the same pattern as the characterization of the identity types of coproducts and natural numbers in \autoref{sec:compute-coprod,sec:compute-nat}.
 
-\paragraph{Encoding}
+At this point, there are two ways to finish the proof.
+We can continue mimicking the classical argument by constructing~\eqref{eq:pi1s1-encode} or~\eqref{eq:pi1s1-decode} (it doesn't matter which), proving that a homotopy equivalence between total spaces induces an equivalence on fibers, and then that the total space of the universal cover is contractible.
+The first type-theoretic proof of $\Omega(\Sn^1)=\Z$ followed this pattern; we call it the \emph{homotopy-theoretic} proof.
 
-Next, we define a function \encode that maps paths to codes:
+Later, however, we discovered that there is an alternative proof, which has a more type-theoretic feel and more closely follows the proofs in \autoref{sec:compute-coprod,sec:compute-nat}.
+In this proof, we directly construct both~\eqref{eq:pi1s1-encode} and~\eqref{eq:pi1s1-decode}, and prove that they are mutually inverse by calculation.
+We will call this the \emph{type-theoretic} or \emph{encode/decode} proof, because we call the functions~\eqref{eq:pi1s1-encode} and~\eqref{eq:pi1s1-decode} \emph{encode} and \emph{decode} respectively.
+Both proofs use the same construction of the cover given above.
+Where the classical proof induces an equivalence on fibers from an equivalence between total spaces, the encode/decode proof constructs the inverse map (\emph{decode}) explicitly as a map between fibers.
+And where the classical proof uses contractibility, the type-theoretic proof uses path induction, circle induction, and integer induction.
+These are the same tools used to prove contractibility---indeed, path induction \emph{is} essentially contractibility of the path fibration composed with $\mathsf{transport}$---but they are applied in a different way.
+
+Since this is a book about homotopy type theory, we present the type-theoretic proof first.
+A homotopy theorist who gets lost is encouraged to skip to the homotopy-theoretic proof (\autoref{subsec:pi1s1-homotopy-theory})
+
+\subsection{The type-theoretic proof}
+\label{subsec:pi1s1-encode-decode}
+
+We begin with the function~\eqref{eq:pi1s1-decode} that maps paths to codes:
 \begin{defn}
-Define $\encode : \prd{x : \Sn ^1} \rightarrow P(x) \rightarrow  \code(x)$ by 
+Define $\encode : \prd{x : \Sn ^1} \rightarrow (\base=x) \rightarrow  \code(x)$ by 
 \[
 \encode \: p \defeq \transfib{\code} p 0
 \]
@@ -597,17 +608,20 @@ The interesting thing about this function is that it computes a concrete
 number from a loop on the circle, when this loop is represented using
 the abstract groupoidal framework of HoTT.  To gain an
 intuition for how it does this, observe that by the above lemmas,
-$\transfib \code \lloop x$ is $-+1$ and $\transfibf \code {\opp
-  \lloop} x$ is $x - 1$.  Further, $\mathsf{transport}$ is functorial
-(\autoref{cha:basics}), so $\transfibf{\code} {\lloop \ct \lloop}$ is
-$(\transfibf \code \lloop) \circ (\transfib \code \lloop)$, etc.  Thus, when $p$ is a
-composition like 
+$\transfib \code \lloop x$ is the successor function $\Zsuc$ and $\transfib \code {\opp
+  \lloop} x$ is the predecessor function $\Zpred$.
+Further, $\mathsf{transport}$ is functorial (\autoref{cha:basics}), so
+\[\transfib{\code} {\lloop \ct \lloop}{-}
+\quad\text{is}\quad
+(\transfib \code \lloop-) \circ (\transfib \code \lloop-)\]
+and so on.
+Thus, when $p$ is a composition like 
 \[
 \lloop \ct \opp \lloop \ct \lloop \ct ...
 \]
-$\transfibf{\code}{p}$ will compute a composition of functions like
+$\transfib{\code}{p}{-}$ will compute a composition of functions like
 \[
-(- + 1) \circ (- -1) \circ (- + 1) \circ ... 
+\Zsuc \circ \Zpred \circ \Zsuc \circ ... 
 \]
 Applying this composition of functions to 0 will compute the
 \emph{winding number} of the path---how many times it goes around the
@@ -617,55 +631,30 @@ $\encode$ follows from the reduction rules for higher-inductive types and
 univalence, and the action of $\mathsf{transport}$ on compositions and inverses.
 
 Note that the instance $\encode' \defeq \encode_{\base}$ has type 
-$\id \base \base \rightarrow \Z$, which will be one half of the
-equivalence between $\id{\base}{\base}$ and $\Z$.  
+$(\id \base \base) \rightarrow \Z$.
+This will be one half of our desired equivalence; indeed, it is exactly the function $g$ defined in \autoref{sec:pi1s1-initial-thoughts}.
 
-\paragraph{Decoding}  
-
-Decoding an integer as a path is defined by recursion:
-
-\begin{defn}
-Define $\lloop^- : \Z \rightarrow \id{\base}{\base}$ by 
-\[
-\lloop^n = \begin{cases} \lloop \ct \lloop \ct ... \ct \lloop \text{ ($n$ times) } & \text{for positive n} \\
- \opp \lloop \ct \opp \lloop \ct ... \ct \opp \lloop \text{ ($n$ times)} & \text{for negative n} \\
-  \refl{} & \text{for 0}  
-\end{cases}
-\]
-\end{defn}
-
-Since what we want overall is an equivalence between $\id \base \base$
-and $\Z$, we might expect to be able to prove that $\encode'$
-and $\lloop^-$ give an equivalence.  The problem comes in trying to prove
-the ``decode after encode'' direction, where we would need to show that
-$\id {\lloop^{\encode' p}} p$ for all $p$.  We would like to apply path
-induction, but path induction does not apply to loops like a with both
-endpoints fixed!  The way to solve this problem is to generalize the
-theorem to show that $\id {\lloop^{{\encode_x p}}} p$ for all $x: \Sn ^1$
-and $p : \id \base x$.  However, this does not make sense as is, because
-$\lloop^-$ is defined only for \id{\base}{\base}, whereas here it is
-applied to a \id{\base}{x}.  Thus, we generalize 
-$\lloop$ as follows:
+Similarly, the function~\eqref{eq:pi1s1-decode} is a generalization of the function $\lloop^-$ from \autoref{sec:pi1s1-initial-thoughts}.
 
 %% deliberately making a ``definition'' with a proof here :-) --Dan
 \begin{defn}
-Define $\decode : \prd{x : \Sn ^1}{\code(x) \rightarrow P(x)}$ by 
+Define $\decode : \prd{x : \Sn ^1}\code(x) \rightarrow (\base=x)$ by 
 circle induction on $x$.  It suffices to give a function 
-${\code(\base) \rightarrow P(\base)}$, for which we use $\lloop^-$, and 
+${\code(\base) \rightarrow (\base=\base)}$, for which we use $\lloop^-$, and 
 to show that $\lloop^-$ respects the loop.  
 \end{defn}
 
 \begin{proof}
 To show that $\lloop^-$ respects the loop, it suffices to give a path
 from $\lloop^-$ to itself that lies over $\lloop$. 
-Formally, this means a path from $\transfib {(x' \mapsto Cover x'
-\rightarrow P(x'))} {\lloop} {\lloop^-}$ to $loop^-$.  We define such a
+Formally, this means a path from $\transfib {(x' \mapsto \code(x')
+\rightarrow (\base=x'))} {\lloop} {\lloop^-}$ to $\lloop^-$.  We define such a
 path as follows:
 
 \[
 \begin{array}{lll}
-  & \transfib {(x' \mapsto \code(x') \rightarrow P(x'))} \lloop {\lloop^-} & \\
-= & \transfibf P \lloop \circ {\lloop^-} \circ \transfibf \code {\opp \lloop} & \\
+  & \transfib {(x' \mapsto \code(x') \rightarrow (\base=x'))} \lloop {\lloop^-} & \\
+= & \transfibf {x'\mapsto (\base=x')} \lloop \circ {\lloop^-} \circ \transfibf \code {\opp \lloop} & \\
 = & (- \ct \lloop) \circ (\lloop^-) \circ \transfibf \code {\opp \lloop} & \\
 = & (- \ct \lloop) \circ (\lloop^-) \circ (- - 1) & \\
 = & (n \mapsto \lloop^{n - 1} \ct \lloop) \\                       
@@ -673,7 +662,7 @@ path as follows:
 \]
 
 From line 1 to line 2, we apply the definition of $\mathsf{transport}$
-when the outer connective of the fibration is $\rightarrow$, whcih
+when the outer connective of the fibration is $\rightarrow$, which
 reduces the $\mathsf{transport}$ to pre- and post-composition with
 $\mathsf{transport}$ at the domain and range types.  From line 2 to line
 3, we apply the definition of $\mathsf{transport}$ when the type family
@@ -685,7 +674,8 @@ $n$, \id{\lloop^{n - 1} \ct \lloop}{\lloop^{n}}, which is an easy
 induction, using the groupoid laws.  
 \end{proof}
 
-\paragraph{Decoding after encoding}
+We can now show that $\encode$ and $\decode$ are quasi-inverses.
+What used to be the difficult direction is now easy!
 
 \begin{lem} \label{lem:s1-decode-encode}  For all 
 for all $x: \Sn ^1$ and $p : \id \base x$, $\id
@@ -694,16 +684,17 @@ for all $x: \Sn ^1$ and $p : \id \base x$, $\id
 
 \begin{proof}
 By path induction, it suffices to show that 
-$\id {\decode_{\base}({{\encode_{\base}(\refl{\base})}})} {\refl{\base}}$.  But
+$\id {\decode_{\base}({{\encode_{\base}(\refl{\base})}})} {\refl{\base}}$.
+But
 ${\encode_{\base}(\refl{\base})} \jdeq 
  \transfib{\code}{\refl{\base}} 0 \jdeq 0$, and $\decode_{\base}(0)
  \jdeq \lloop^ 0 \jdeq \refl{\base}$.  
 \end{proof}
 
-\paragraph{Encoding after decoding}
+The other direction is not much harder.
 
 \begin{lem} \label{lem:s1-encode-decode} For all 
-for all $x: \Sn ^1$ and $c : \code(x)$, $\id
+$x: \Sn ^1$ and $c : \code(x)$, we have $\id
 {\encode_x({{\decode_x(c)}})} c$.  
 \end{lem}
 
@@ -739,31 +730,30 @@ $\transfib{\code}{\lloop}{0}$, which by
 \end{array}
 \]
 
-\item The cases for negatives are analogous.  
+\item The cases for negatives are analogous.  \qedhere
 \end{itemize}
 \end{proof}
 
-\paragraph{Tying it all togehter}
+Finally, we conclude the theorem.
 
 \begin{thm}
-There is a family of equivalences $\prd{x : \Sn ^1} {\eqv {P(x)} {\code(x)}}$.  
+There is a family of equivalences $\prd{x : \Sn ^1} (\eqv {(\base=x)} {\code(x)})$.
 \end{thm}
 \begin{proof}
-The maps $\encode$ and $\decode$ are mutually inverse by 
-\autoref{lem:s1-decode-encode,lem:s1-decode-encode},
-and this can be improved to an equivalence.  
+The maps $\encode$ and $\decode$ are quasi-inverses by
+\autoref{lem:s1-decode-encode,lem:s1-decode-encode}.
 \end{proof}
 
 Instantiating at {\base} gives
 \begin{cor}\label{cor:omega-s1}
-$\eqv {(\id{\base}{\base})} {\Z}$
+$\eqv {(\id{\base}{\base})} {\Z}$.
 \end{cor}
 
 A simple induction shows that this equivalence takes addition to
-compostion, so $\Omega(\Sn ^1) = \Z$ as groups.  
+composition, so that $\Omega(\Sn ^1) = \Z$ as groups.
 
 \begin{cor}
-$\id{\pi_k(\Sn ^1)} {\Z}$ if $k = 1$ and $1$ otherwise.  
+$\id{\pi_1(\Sn ^1)} {\Z}$, while $\id{\pi_k(\Sn ^1)}0$ for $k>1$.
 \end{cor}
 \begin{proof}
 For $k=1$, we sketched the proof from \autoref{cor:omega-s1} above.
@@ -772,6 +762,12 @@ For $k > 1$, $\trunc 0 {\Omega^{n+1}(\Sn ^1)} = \trunc 0
   $1$ because $\Z$ is a set and $\pi_n$ of a set is trivial (FIXME
   lemmas to cite?).
 \end{proof}
+
+
+\subsection{The homotopy-theoretic proof}
+\label{subsec:pi1s1-homotopy-theory}
+
+TODO.
 
 
 \section{Connectedness of suspensions}

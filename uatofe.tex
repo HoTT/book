@@ -1,266 +1,23 @@
-\begin{comment}
-\section{Equivalences}
+\chapter{Univalence implies Function Extensionality}
+
+
+TODO: fix numbering, fix transport, fix lambdas, find the relevant lemma, make sure it does not use UA or FE.
+
+We include in this appendix a proof that the Univalence Axiom implies Function
+Extensionality. Thus, in this chapter we work \emph{without} either the Univalence Axiom
+or Function Extensionality. We prove this in two steps. First we show that the Univalence
+axiom implies the following weak form of function extensionality, defined below, which in turns implies the usual function extensionality.
 
 \begin{defn}
-A homotopy from $f:\prod(x:A),\ P(x)$ to $g:\prod(x:A),\ P(x)$ is a term of type
+Suppose $P : A \to \type$ is a family of types over a type $A$. The \emph{weak function extensionality principle} asserts that there is a function
 \begin{equation*}
-f\htpy g\defeq\prod(x:A),\ f(x)= g(x).
+\left(\prd{x:A}\iscontr(P(x))\right)
+  \to\iscontr \left(\prd{x:A}P(x)\right).
 \end{equation*}
 \end{defn}
 
-\begin{lem}\label{lem:homotopy_map}
-Suppose that $H:f\htpy g$ is a homotopy for the functions $f,g:A\to B$ and let $p:x= y$ be a path in $A$. Then the square
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {f(y) & g(y) \\ f(x) & g(x) \\};
-\draw[patharrow] (m-2-1) -- node[left] {$f(p)$} (m-1-1);
-\draw[patharrow] (m-1-1) -- node[above] {$H(y)$} (m-1-2);
-\draw[patharrow] (m-2-1) -- node[below] {$H(x)$} (m-2-2);
-\draw[patharrow] (m-2-2) -- node[right] {$g(p)$} (m-1-2);
-\end{tikzpicture}
-\end{equation*}
-commutes.
-\end{lem}
-
-\begin{proof}
-The proof is an exercise in the use of path induction.
-\end{proof}
-
-\begin{defn}
-A function $f:A\to B$ is said to be an isomorphism if there is a term of type
-\begin{equation*}
-\mathsf{isIso}(f)\defeq\sum(g:B\to A),\ (f\circ g\sim\idmap{B})\times(g\circ f\sim\idfunc{A}).
-\end{equation*}
-\end{defn}
-
-\begin{defn}
-A type $A$ is said to be contractible if there is a term of type
-\begin{equation*}
-\mathsf{isContr}(A)\defeq\sum(x:A)\prod(y:A),\ y= x.
-\end{equation*}
-\end{defn}
-
-\begin{lem}
-Retracts of a contractible space are contractible.
-\end{lem}
-
-\begin{defn}
-The homotopy fiber of a function $f:A\to B$ at a point $b:B$ is defined to be
-\begin{equation*}
-\mathsf{hFiber}(f,b)\defeq\sum(x:A),\ f(x)= b.
-\end{equation*}
-\end{defn}
-
-\begin{defn}
-A function $f:A\to B$ is said to be an equivalence if there is a term of type
-\begin{equation*}
-\mathsf{isEquiv}(f)\defeq\prod(b:B),\ \mathsf{isContr}(\mathsf{hFiber}(f,b)).
-\end{equation*}
-\end{defn}
-
-\begin{rem}
-Suppose that $f:A\to B$ is a function with a witness $H:\mathsf{isEquiv}(f)$ that it is an equivalence. Then we have
-\begin{align*}
-f^{-1} & \defeq \lambda b.\proj{1}\proj{1}(H(b)) & & : B\to A\\
-\epsilon & \defeq \lambda b.\proj{2}\proj{1}(H(b)) & & : \prod(b:B),\ f(f^{-1}(b))= b\\
-\eta & \defeq \lambda x.\proj{1}(\proj{2}(H(f(x)))(\langle x,\refl{f(x)}\rangle) & & : \prod(x:A),\ x= f^{-1}(f(x))\\
-\tau & \defeq \lambda x.\proj{2}(\proj{2}(H(f(x)))(\langle x,\refl{f(x)}\rangle) & & : \prod(x:A),\ \eta(x)\cdot\refl{f(x)}= \epsilon(f(x)).
-\end{align*}
-We use a centered dot $\cdot$ to denote transportation. The transportation is taken with respect to the dependent type $\lambda a.(f(a)= f(x))$. Using path induction, it is possible to show that if $p:a= a^\prime$ is a path in $A$ and if $q:f(a)= b$ is a path in $B$, then there is a path $p\cdot q= q\bullet f(p)^{-1}$. Thus, we obtain a term
-\begin{equation*}
-\tau^\prime:\prod(x:A),\ f(\eta(x))^{-1}= \epsilon(f(x)).
-\end{equation*}
-In other words, we get for every $x:A$ a commuting triangle which is familiar from the definition of adjoints:
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {f(x) & f(g(f(x))) \\ & f(x) \\};
-\draw[patharrow] (m-1-1) -- node[above] {$f(\eta(x))$} (m-1-2);
-\draw[patharrow] (m-1-2) -- node[right] {$\epsilon(f(x))$} (m-2-2);
-\draw[patharrow] (m-1-1) -- node[auto,swap] {$\refl{f(x)}$} (m-2-2);
-\end{tikzpicture}
-\end{equation*}
-In particular, we see that every equivalence is an isomorphism for which we have these commuting triangles as well. In this way, the property of being an equivalence is a bit stronger than being an isomorphism. Nevertheless, isomorphisms are equivalences.
-\end{rem}
-
-\begin{prop}
-Suppose that a function $f:A\to B$ is an isomorphism with
-\begin{equation*}
-\langle g,\varepsilon,\eta\rangle:\mathsf{isIso}(f).
-\end{equation*}
-Then $f$ is an equivalence.
-\end{prop}
-
-\begin{proof}
-We have to show that
-\begin{equation*}
-\prod(b:B)\sum(a:A)(p:f(a)= b)\prod(x:A)(q:f(x)= b), \langle x,q\rangle= \langle a,p\rangle.
-\end{equation*}
-Let $b:B$. Then we find $\langle g(b):A$ and $\epsilon(b):f(g(b))= b$. So it is left to show that
-\begin{equation*}
-\prod(x:A)(q:f(x)= b), \langle x,q\rangle= \langle g(b),\varepsilon(b)\rangle
-\end{equation*}
-Let $x:A$ and $q:f(x)= b$. To find a path $\langle x,q\rangle=\langle g(b),\varepsilon(b)\rangle$ it suffices to find a term of type
-\begin{equation*}
-\sum(\alpha:x= g(b)),\ \alpha\cdot q=\varepsilon(b)
-\end{equation*}
-Again, we may compute the transport: there is a path $\alpha\cdot q= q\bullet f(\alpha)^{-1}$, so it suffices to find a term of type
-\begin{equation*}
-\sum(\alpha:x= g(b)),\ q\bullet f(\alpha)^{-1}=\varepsilon(b)
-\end{equation*}
-Note that we have the composition
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {x & gf(x) & gfgf(x) & gf(x) & g(b) \\};
-\draw[patharrow] (m-1-1) -- node[above] {$\eta(x)$} (m-1-2);
-\draw[patharrow] (m-1-2) -- node[above] {$g(\varepsilon(f(x))^{-1})$} (m-1-3);
-\draw[patharrow] (m-1-3) -- node[above] {$gf(\eta(x))$} (m-1-4);
-\draw[patharrow] (m-1-4) -- node[above] {$g(q)$} (m-1-5);
-\end{tikzpicture}
-\end{equation*}
-which we take as our $\alpha$. Then we have
-\begin{equation*}
-q\bullet f(\eta(x)\bullet g(\varepsilon(f(x))^{-1})\bullet gf(\eta(x))\bullet g(q))^{-1},
-\end{equation*}
-from which we have to find a path to $\varepsilon(b)$, i.e. we have to show that the rectangle
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {fgfgf(x) & fgf(x) & fg(b) \\ fgf(x) & f(x) & b \\};
-\draw[patharrow] (m-1-1) -- node[above] {$fgf(\eta(x))$} (m-1-2);
-\draw[patharrow] (m-1-2) -- node[above] {$fg(q)$} (m-1-3);
-\draw[patharrow] (m-1-3) -- node[right] {$\varepsilon(b)$} (m-2-3);
-\draw[patharrow] (m-1-1) -- node[left]  {$fg(\varepsilon(f(x)))$} (m-2-1);
-\draw[patharrow] (m-2-1) -- node[below] {$f(\eta(x))$} (m-2-2);
-\draw[patharrow] (m-2-2) -- node[below] {$q$} (m-2-3);
-\draw[patharrow,densely dotted] (m-1-2) -- node[right] {$\varepsilon(f(x))$} (m-2-2);
-\end{tikzpicture}
-\end{equation*}
-commutes. We can do this by showing that the two smaller squares commute. The commutativity of the square on the right is a direct consequence of lemma \ref{lem:homotopy_map}. We wish to apply the same lemma to show th commutativity of the square on the left. However, to be able to apply lemma \ref{lem:homotopy_map}, we have to show that there is a path
-\begin{equation*}
-fg(\varepsilon(b))=\varepsilon(fg(b))
-\end{equation*}
-for any term $b:B$. This is also a consequence of lemma \ref{lem:homotopy_map}, because it gives that the square
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {fg(b) & fgfg(b) \\ b & fg(b) \\};
-\draw[patharrow] (m-2-1) -- node[left] {$\varepsilon(b)$} (m-1-1);
-\draw[patharrow] (m-1-1) -- node[above] {$\varepsilon(fg(b))$} (m-1-2);
-\draw[patharrow] (m-2-1) -- node[below] {$\varepsilon(b)$} (m-2-2);
-\draw[patharrow] (m-2-2) -- node[right] {$fg(\varepsilon(b))$} (m-1-2);
-\end{tikzpicture}
-\end{equation*}
-commutes. This finishes the proof that isomorphisms are equivalences.
-\end{proof}
-
-Before we move on to the discussion about the univalence axiom, we will derive a property of equivalences which is useful in showing that weak function extensionality implies strong function extensionality. It is the assertion that a fiberwise map $\tau:\prod(x:A),\ P(x)\to Q(x)$ between two dependent types over a type $A$ is a fiberwise equivalence if and only if it induces an equivalence on total spaces, i.e. from $\sum(x:A),\ P(x)$ to $\sum(x:A),\ Q(x)$. This property has other applications, for instance in the proof that the loop space of the circle is equivalent to the type of integers, but that is of course outside the scope of these notes.
-
-\begin{defn}
-A fiberwise map $\tau:\prod(x:A),\ P(x)\to Q(x)$ induces the function
-\begin{equation*}
-\Sigma_A\tau\defeq\lambda \langle x,u\rangle.\langle x,\tau(x,u)\rangle:\sum(x:A),\ P(x)\to\sum(x:A),\ Q(x)
-\end{equation*}
-between the total spaces of $P$ and $Q$.
-\end{defn}
-
-\begin{lem}
-Suppose that $\tau:\prod(x:A),\ P(x)\to Q(x)$ is a fiberwise map. Then we have an equivalence
-\begin{equation*}
-\mathsf{hFiber}(\tau(x),v)\simeq\mathsf{hFiber}(\Sigma_A\tau,\langle x,v\rangle)
-\end{equation*}
-for any $x:A$ and $v:Q(x)$. 
-\end{lem}
-
-\begin{proof}
-Using path induction, one can show that there is a path
-\begin{equation*}
-\gamma(\tau,p,u):\tau(p\cdot u)= p\cdot\tau(u)
-\end{equation*}
-for any path $p:x= y$ in $A$ (this property can be regarded as the naturality of $\tau$ with respect to paths). Thus, we can define the functions
-\begin{align*}
-\varphi & \defeq \lambda \langle\langle a,u\rangle,\langle p,q\rangle\rangle.\langle p\cdot u,q\bullet\gamma(\tau,p,u)\rangle & & : \mathsf{hFiber}(\Sigma_A\tau,\langle x,v\rangle)\to\mathsf{hFiber}(\tau(x),v)\\
-\psi & \defeq \lambda\langle u,q\rangle.\langle\langle x,u\rangle,\langle\refl{x},q\rangle\rangle & & : \mathsf{hFiber}(\tau(x),v)\to\mathsf{hFiber}(\Sigma_A\tau,\langle x,v\rangle)
-\end{align*}
-To show that $\varphi$ is an equivalence, it suffices to show that there are homotopies $\psi\circ\varphi\sim\idf$ and $\varphi\circ\psi\sim\idf$.
-\begin{enumerate}
-\item To show that $\psi(\varphi(\langle\langle a,u\rangle,\langle p,q\rangle\rangle))=\langle\langle a,u\rangle,\langle p,q\rangle\rangle$, note that the path $p$ occurs free, i.e.\ there are no restrictions on its endpoints. Hence we can use path induction and then it is obvious.
-\item To show that $\varphi(\psi(\langle u,q\rangle))=\langle u,q\rangle$, we only have to note that $\gamma(\tau,\refl{x},u)=\refl{\tau(u)}$ by the conversion rule of the path induction principle.
-\end{enumerate}
-\end{proof}
-
-\begin{cor}\label{cor:total_equiv_fiber_equiv}
-For $\tau:\prod(x:A),\ P(x)\to Q(x)$, the function $\Sigma_A\tau$ is an equivalence if and only if $\tau(x)$ is an equivalence for each $x:A$. 
-\end{cor}
-
-Another useful basic equivalence is the following:
-
-\begin{lem}\label{lem:hfiber_projone_is_fiber}
-Suppose $P:A\to\type$ is a dependent type. Then there is an equivalence $\mathsf{hFiber}(\proj{1},a)\simeq P(a)$ for any $a:A$.
-\end{lem}
-\end{comment}
-
-\chapter{The univalence axiom implies function extensionality}
-
-\section{From univalence to weak function extensionality}
-
-\begin{comment}
-In the statement of the univalence axiom, we need a universe $\type:\type$. Usually, such a universe is defined \`a la Tarski, i.e. it comes along with a decoding function $\mathsf{T}:\type\to\type$ and then we regard a term $x:\type$ as the code for the type $\mathsf{T}(x)$. But in these notes we will ignore this and we will simply write $A:\type$ for some type $A$ which is coded in $\type$. On the UF-wiki there are notes by Luo, arguing that it is ok to notationally ignore the decoding function\footnote{see \url{http://uf-ias-2012.wikispaces.com/file/detail/LuoUniverse.pdf}}.
-
-In particular, using universes enables us to consider the path space $A= B$ between two types. In this section, whenever we consider types we assume that these are types \emph{in} the universe $\type$. 
-
-\begin{lem}
-For any two types $A$ and $B$, there is a function
-\begin{equation*}
-\upsilon(A,B):(A= B)\to (A\simeq B).
-\end{equation*}
-\end{lem}
-
-\begin{proof}
-Using path induction, it suffices to define $\upsilon(A,A)(\refl{A})$, which we take to be $\langle \idfunc{A},\alpha\rangle$, where $\alpha$ is the proof that $\idfunc{A}$ is an equivalence (exercise).
-\end{proof}
-
-\begin{defn}
-The term $\langle\idfunc{A},\alpha\rangle:A\simeq A$ of the previous proof is denoted by $\mathsf{idEquiv}_A$.
-\end{defn}
-
-\begin{defn}
-A universe $\type$ is said to be univalent if there is a term of type
-\begin{equation*}
-\mathsf{isUnivalent}(\type)\defeq\prod(A,B:\type),\ \mathsf{isEquiv}(\upsilon(A,B)).
-\end{equation*}
-\end{defn}
-
-The univalence axiom asserts that the identity type is equivalent to the relation of equivalences. Therefore, it should come as no surprise that we can show an induction principle for equivalences similar to that of path induction if we assume the univalence axiom.
-
-\begin{prop}
-Suppose that $\type$ is a univalent universe and let 
-\begin{equation*}
-D:\prod\{A,B:\type\},\ (A\simeq B)\to\type
-\end{equation*}
-be a dependent type over $\simeq$. If there is a term
-\begin{equation*}
-d:\prod(A:\type),\ D(\mathsf{idEquiv}_A)
-\end{equation*}
-then there is a section
-\begin{equation*}
-J(D,d):\prod\{A,B:\type\}(e:A\simeq B),\ D(e)
-\end{equation*}
-such that $J(D,d,\mathsf{idEquiv}_A)= d(A)$. 
-\end{prop}
-
-\begin{proof}
-Suppose we have $D$ and $d$ as in the statement of the proposition and let $e:A\simeq B$ be an equivalence. Note that by the univalence axiom, there is a path
-\begin{equation*}
-\upsilon(A,B)(\upsilon(A,B)^{-1}(e))= e
-\end{equation*}
-and hence we can find a term of type $D(e)$ by finding a term of type 
-\begin{equation*}
-D(\upsilon(A,B)(\upsilon(A,B)^{-1}(e))).
-\end{equation*}
-Then it is clearly enough to find a term of type $D(\upsilon(A,B,p))$ for any $p:A= B$. Now we can apply path induction, so it suffices to find a term of $D(\upsilon(A,A,\refl{A}))$. Recall that $\upsilon(A,A,\refl{A})$ is defined to be $\mathsf{idEquiv}_A$, so we find $d(A)$ here.
-\end{proof}
-\end{comment}
-
-\begin{lem}
-Assuming univalence, for any $A,B,X:\type$ and any $e:\eqv{A}{B}$, there is an equivalence
+\begin{lem} \label{UA-eqv-hom-eqv}
+Assuming $\type$ is univalent, for any $A,B,X:\type$ and any $e:\eqv{A}{B}$, there is an equivalence
 \begin{equation*}
 \eqv{(X\to A)}{(X\to B)}
 \end{equation*}
@@ -271,79 +28,57 @@ of which the underlying map is given by postcomposition with the underlying func
 Immediate by induction on $\eqv{}{}$. 
 \end{proof}
 
-This corollary is the first step towards proving the function extensionality principle. There are a few versions of the function extensionality principle. In this section we consider the weak function extensionality principle.
-
-\begin{defn}
-Suppose that $A:\type$ is a type and that $P:A\to\type$ is a dependent type over $A$. The weak function extensionality principle asserts that there is a function
+\begin{cor}
+Let $P:A\to\type$ be a dependent type over $A:\type$ whose fibers are contractible, i.e., $\prd{x:A}\iscontr(P(x))$.
+Then the projection $\proj{1}:(\sm{x:A}P(x))\to A$ is an equivalence. Assuming $\type$ is univalent, it follows immediately that precomposition with $\proj{1}$ gives an equivalence
 \begin{equation*}
-(\prd{x:A}\mathsf{isContr}(P(x)))\to\mathsf{isContr}(\prd{x:A}P(x)).
+\alpha : \eqv{(A\to\sm{x:A}P(x))}{(A\to A)}.
 \end{equation*}
-\end{defn}
+\end{cor}
 
-Recall that for $\proj{1}:\sm{x:A}P(X)\to A$ and $x:A$ we have an equivalence
-\begin{equation*}
-\eqv{\hfiber{\proj{1}}{a}}{P(x)}.
-\end{equation*}
+\begin{proof}
+  Recall that for $\proj{1}:\sm{x:A}P(X)\to A$ and $x:A$ we have an equivalence
+  \begin{equation*}
+    \eqv{\hfiber{\proj{1}}{x}}{P(x)}.
+  \end{equation*}
+  therefore $\proj{1}$ is an equivalence. Now we apply \autoref{UA-eqv-hom-eqv}.
+\end{proof}
 
-\begin{lem}
-Let $P:A\to\type$ be a dependent type over $A:\type$ for which there is a term of type
-\begin{equation*}
-\prd{x:A}\mathsf{isContr}(P(x)).
-\end{equation*}
-Then the function $\proj{1}:(\sm{x:A}P(x))\to A$ is an equivalence. Assuming univalence, we get as an immediate corollary an equivalence
-\begin{equation*}
-(A\to\sm{x:A}P(x))\to (A\to A).
-\end{equation*}
-of which the underlying function $\alpha$ is given by precomposition with $\mathsf{projone}$.
-\end{lem}
-
-In particular, the homotopy fiber of the above mentioned equivalence at $\idfunc{A}$ is contractible. Therefore, we can show that the univalence axiom implies the weak function extensionality principle by showing that the product space $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc{A}}$.
+In particular, the homotopy fiber of the above equivalence at $\idfunc[A]$ is contractible. Therefore, we can show that univalence implies weak function extensionality by showing that the product space $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$.
 
 \begin{thm}
-In a univalent universe, suppose that $P:A\to\type$ is a dependent type over $A$ with contractible fibers and let $\alpha$ be the function of the previous lemma. Then $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc{A}}$. As a consequence, $\prd{x:A}P(x)$ is contractible. In other words, the univalence axiom implies the weak function extensionality principle.
+In a univalent universe $\type$, suppose that $P:A\to\type$ is a dependent type over $A$ with contractible fibers and let $\alpha$ be the function of the previous lemma. Then $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$. As a consequence, $\prd{x:A}P(x)$ is contractible. In other words, the univalence axiom implies the weak function extensionality principle.
 \end{thm}
 
 \begin{proof}
 Define the functions
 \begin{align*}
-\varphi & \defeq \lambda f.\langle\lambda x.\langle x,f(x)\rangle,\refl{\idfunc{A}}\rangle & & : (\prd{x:A}P(x))\to\hfiber{\alpha}{\idfunc{A}}\\
-\psi & \defeq \lambda\langle g,p\rangle.\lambda x.p\cdot(\proj{2} g(x)) & & : \hfiber{\alpha}{\idfunc{A}}\to(\prd{x:A}P(x)).
+\varphi & \defeq \lambda f.\langle\lambda x.\langle x,f(x)\rangle,\refl{\idfunc[A]}\rangle & & : (\prd{x:A}P(x))\to\hfiber{\alpha}{\idfunc[A]}\\
+\psi & \defeq \lambda\langle g,p\rangle.\lambda x.p\cdot(\proj{2} g(x)) & & :
+ \hfiber{\alpha}{\idfunc[A]}\to \prd{x:A}P(x) .
 \end{align*}
 Then $\psi(\varphi(f))=\lambda x.f(x)$, which is $f$ by the $\eta$-rule for dependent products.
 \end{proof}
 
-\section{From weak to strong function extensionality}
-
-\begin{lem}
-For any dependent type $P:A\to\type$ and any two functions $f,g:\prd{x:A}P(x)$, there is a function
-\begin{equation*}
-\happly (f,g):(f= g)\to(f\htpy g).
-\end{equation*}
-\end{lem}
-
-\begin{proof}
-Immediate by path induction.
-\end{proof}
-
-\begin{defn}
-The strong function extensionality principle is the statement that the function $\happly (f,g)$ is an equivalence for any $f,g:\prd{x:A}P(x)$. 
-\end{defn}
+We now show that weak function extensionality implies the usual function extensionality.
+Recall from~\eqref{eq:happly} the function $\happly (f,g) : (f = g)\to(f\htpy g)$ which
+converts equality of functions to homotopy.
 
 \begin{thm}
-Weak function extensionality implies strong function extensionality.
+Weak function extensionality implies the function extensionality \autoref{axiom:funext}.
 \end{thm}
 
 \begin{proof}
 We want to show that
 \begin{equation*}
-\prd{A:\type}{P:A\to\type}{f,g:\prd{x:A}P(x)}\mathsf{isEquiv}(\happly (f,g)).
+\prd{A:\type}{P:A\to\type}{f,g:\prd{x:A}P(x)}\isequiv(\happly (f,g)).
 \end{equation*}
 Since a fiberwise map between dependent types incudes an equivalence on total spaces
-if and only if it is fiberwise an equivalence \ref{whichlemma}, it suffices to show that the function of type
+if and only if it is fiberwise an equivalence \autoref{whichlemma}, it suffices to show that the function of type
 \begin{equation*}
-(\sm{g:\prd{x:A}P(x)}(f= g))\to(\sm{g:\prd{x:A}P(x)}(f\htpy g))
+(\sm{g:\prd{x:A}P(x)}(f= g)) \to \sm{g:\prd{x:A}P(x)}(f\htpy g)
 \end{equation*}
-induced by $\lambda g.\happly (f,g)$ is an equivalence. Note that the type on the left is contractible, hence it suffices to show that
+induced by $\lam{g : \prd{x:A}P(x)} \happly (f,g)$ is an equivalence. Note that the type on the left is contractible, hence it suffices to show that
 \begin{equation*}
 \sm{g:\prd{x:A}P(x)}\prd{x:A}f(x)= g(x)
 \end{equation*}
@@ -353,4 +88,9 @@ is contractible. It is obvious that $\sm{g:\prd{x:A}P(x)}\prd{x:A}f(x)= g(x)$ is
 \end{equation*}
 The latter type is a product of contractible types, which is contractible by the weak function extensionality principle.
 \end{proof}
-\end{document}
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 

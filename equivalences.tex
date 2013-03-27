@@ -486,6 +486,49 @@ Of course, this cannot be used as a definition of ``equivalence'', since the def
 However, this characterization can still be useful; see \autoref{sec:whitehead}.
 We will generalize it in \autoref{cha:hlevels}.
 
+\subsection{Fiberwise equivalences}
+
+\begin{defn}
+Suppose $A$ is a type and $P,Q:A\to\type$ are dependent types over $A$. A
+fiberwise transformation from $P$ to $Q$ is a term of type
+$\prd{x:A}P(x)\to Q(x)$.
+\end{defn}
+
+\begin{defn}
+Suppose that $f$ is a fiberwise transformation between dependent types $P$ and
+$Q$ over a type $A$. Then $f$ induces the function
+\begin{equation*}
+\mathsf{total}(f)\defeq\lam{w}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)}
+:\sm{x:A}P(x)\to\sm{x:A}Q(x).
+\end{equation*}
+\end{defn}
+
+\begin{thm}
+Suppose that $f$ is a fiberwise transformation between dependent types $P$ and
+$Q$ over a type $A$ and let $x:A$ and $v:Q(x)$. Then we have an equivalence
+\begin{equation*}
+\eqv{\hfib{\total{f}}{\pairr{x,v}}}{\hfib{f(x)}{v}}.
+\end{equation*}
+\end{thm}
+
+TODO: find relevant references for the properties used in the following proof.
+
+\begin{proof}
+\begin{align*}
+\hfib{\total{f}}{\pairr{x,v}} 
+& \defeq \sm{w:\sm{x:A}P(x)}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)}=\pairr{x,v}\\
+& \eqv{}{} \sm{w:\sm{x:A}P(x)}{p:\proj{1}w=x}\trans{p}{f(\proj{1}w,\proj{2}w)}=v\\
+& \eqv{}{} \sm{a:A}{u:P(a)}{p:a=x}\trans{p}{f(a,u)}=v\\
+& \eqv{}{} \sm{u:P(x)}f(x,u)=v\\
+& \defeqop \hfib{f(x)}{v}
+\end{align*}
+\end{proof}
+
+\begin{thm}\label{thm:total-fiber-equiv}
+Suppose that $f$ is a fiberwise transformation between dependent types
+$P$ and $Q$ over a type $A$. Then $\total{f}$ is an equivalence if and only
+if each $f(x):P(x)\to Q(x)$ is an equivalence.
+\end{thm}
 
 
 \section{Concluding remarks}

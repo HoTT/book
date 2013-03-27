@@ -260,6 +260,11 @@ Here is another equivalent characterization:
   which we get from $f(H)$.
 \end{proof}
 
+\begin{cor}\label{notnotstable-equality-to-set}
+If a type $A$ has the property that $\neg\neg(x=y)\to(x=y)$ for any $x,y:A$,
+then $A$ is a set.
+\end{cor}
+
 Another convenient way to show that a type is a set is by way of the following property.
 
 \begin{defn}\label{defn:decidable-equality}
@@ -274,37 +279,26 @@ LEM implies that \emph{any} type $X$ has \emph{decidable mere equality}, meaning
 \autoref{defn:decidable-equality} asserts moreover that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
 This has the following strong consequence.
 
+\begin{lem}
+For any type $A$ we have $(A+\neg A)\to(\neg\neg A\to A)$.
+\end{lem}
+
+\begin{proof}
+Suppose $x:A+\neg A$. We have two cases to consider.
+If $x\defeq\inl{a}$ for some $a:A$, then we have the constant function $\neg\neg A
+\to A$ which maps everything to $a$. If $x\defeq\inr{f}$ for some $f:\neg A$,
+we have the term $g(f):\emptyt$ for any $g:\neg\neg A$. Hence we may use
+ex falso quodlibet to get a term of $A$ for any $g:\neg\neg A$.
+\end{proof}
+
 \begin{thm}[Hedberg]\label{thm:hedberg}
   If $X$ has decidable equality, then $X$ is a set.
 \end{thm}
 
 \begin{proof}
-Fix $x : X$ and assume that for all $y : Y$ we have
-  \[\alpha(y) : (x = y) + \neg (x = y). \]
-  For any $y : Y$ we define
-      $  \eta_y : (x = y) \to (x = y) $
-    by
-    \[ \eta_y(p) := \begin{cases}
-                     q & \text{ if } \alpha(y) = \inl(q) \\
-                     \mathsf{elim}_\emptyt(f(p)) & \text{ if } \alpha(y) = \inr(f).
-                    \end{cases}
-\]
-
-(Recall that $\emptyt$-elimination allows us to conclude anything, given an element of $\emptyt$.)
-
-\noindent
- By case analysis we see that for any $p, p' : x = y$ we have
- \begin{equation}\eta_y(p) = \eta_y(p') . \label{eq:eqdec-eta}\end{equation}
-
- \noindent
- Next, we prove that for any $y : Y$, the map $\eta_y$ has a left inverse $\theta_y$.
-   Once we have this left inverse $\theta_y$, we obtain the desired result as follows: given
-     $p, p' : x = y$, we have
-   \[ p = \theta_y (\eta_y(p)) \stackrel{\eqref{eq:eqdec-eta}}{=} \theta_y (\eta_y(p')) = p' . \]
- Define $\theta_y$ by
-     $\theta_y(q) \defeq \opp{\eta_x(\refl{}(x))} \ct q$.
-  Finally, we prove $\theta_y(\eta_y(p)) = p$ by path induction on $p$:
-   \[\theta_x(\eta_x(\refl{}(x))) = \opp{\eta_x(\refl{}(x))} \ct \eta_x(\refl{}(x)) = \refl{}(x). \qedhere \]
+If $X$ has decidable equality, it follows that $\neg\neg(x=y)\to(x=y)$ for any
+$x,y:X$. Therefore, Hedbergs theorem follows from 
+\autoref{notnotstable-equality-to-set}.
 \end{proof}
 
 There is, of course, a strong connection between this theorem and \autoref{thm:not-lem}.

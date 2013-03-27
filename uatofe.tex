@@ -7,12 +7,12 @@ We include in this appendix a proof that the Univalence Axiom implies Function
 Extensionality. Thus, in this chapter we work \emph{without} either the Univalence Axiom
 or Function Extensionality. We prove this in two steps. First we show that the Univalence
 axiom implies the following weak form of function extensionality, defined below, which in turn implies the usual function extensionality.
-
+We assume that $\type$ is a universe, which we will explicitly indicate where we assume that it is univalent. Also let $P : A \to \type$ be a family of types over a type $A$ and let $C\defeq\prd{x:A}P(x)$.
 \begin{defn}
-Suppose $P : A \to \type$ is a family of types over a type $A$. The \emph{weak function extensionality principle} asserts that there is a function
+The \emph{weak function extensionality principle} asserts that there is a function
 \begin{equation*}
 \left(\prd{x:A}\iscontr(P(x))\right)
-  \to\iscontr \left(\prd{x:A}P(x)\right).
+  \to\iscontr(C).
 \end{equation*}
 \end{defn}
 
@@ -29,7 +29,7 @@ Immediate by induction on $\eqv{}{}$.
 \end{proof}
 
 \begin{cor}
-Let $P:A\to\type$ be a dependent type over $A:\type$ whose fibers are contractible, i.e., $\prd{x:A}\iscontr(P(x))$.
+Let the dependent type $P:A\to\type$ have fibers that are contractible, i.e., $\prd{x:A}\iscontr(P(x))$.
 Then the projection $\proj{1}:(\sm{x:A}P(x))\to A$ is an equivalence. Assuming $\type$ is univalent, it follows immediately that precomposition with $\proj{1}$ gives an equivalence
 \begin{equation*}
 \alpha : \eqv{(A\to\sm{x:A}P(x))}{(A\to A)}.
@@ -44,18 +44,18 @@ Then the projection $\proj{1}:(\sm{x:A}P(x))\to A$ is an equivalence. Assuming $
   therefore $\proj{1}$ is an equivalence. Now we apply \autoref{UA-eqv-hom-eqv}.
 \end{proof}
 
-In particular, the homotopy fiber of the above equivalence at $\idfunc[A]$ is contractible. Therefore, we can show that univalence implies weak function extensionality by showing that the product space $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$.
+In particular, the homotopy fiber of the above equivalence at $\idfunc[A]$ is contractible. Therefore, we can show that univalence implies weak function extensionality by showing that the product space $C$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$.
 
 \begin{thm}
-In a univalent universe $\type$, suppose that $P:A\to\type$ is a dependent type over $A$ with contractible fibers and let $\alpha$ be the function of the previous lemma. Then $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$. As a consequence, $\prd{x:A}P(x)$ is contractible. In other words, the univalence axiom implies the weak function extensionality principle.
+In a univalent universe $\type$, suppose that $P:A\to\type$ is a dependent type over $A$ with contractible fibers and let $\alpha$ be the function of the previous lemma. Then $C$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$. As a consequence, $C$ is contractible. In other words, the univalence axiom implies the weak function extensionality principle.
 \end{thm}
 
 \begin{proof}
 Define the functions
 \begin{align*}
-\varphi & \defeq \lambda f.\langle\lambda x.\langle x,f(x)\rangle,\refl{\idfunc[A]}\rangle & & : (\prd{x:A}P(x))\to\hfiber{\alpha}{\idfunc[A]}\\
+\varphi & \defeq \lambda f.\langle\lambda x.\langle x,f(x)\rangle,\refl{\idfunc[A]}\rangle & & : C\to\hfiber{\alpha}{\idfunc[A]}\\
 \psi & \defeq \lambda\langle g,p\rangle.\lambda x.p\cdot(\proj{2} g(x)) & & :
- \hfiber{\alpha}{\idfunc[A]}\to \prd{x:A}P(x) .
+ \hfiber{\alpha}{\idfunc[A]}\to C .
 \end{align*}
 Then $\psi(\varphi(f))=\lambda x.f(x)$, which is $f$ by the $\eta$-rule for dependent products.
 \end{proof}
@@ -71,18 +71,18 @@ Weak function extensionality implies the function extensionality \autoref{axiom:
 \begin{proof}
 We want to show that
 \begin{equation*}
-\prd{A:\type}{P:A\to\type}{f,g:\prd{x:A}P(x)}\isequiv(\happly (f,g)).
+\prd{A:\type}{P:A\to\type}{f,g:C}\isequiv(\happly (f,g)).
 \end{equation*}
 Since a fiberwise map between dependent types incudes an equivalence on total spaces
 if and only if it is fiberwise an equivalence \autoref{whichlemma}, it suffices to show that the function of type
 \begin{equation*}
-(\sm{g:\prd{x:A}P(x)}(f= g)) \to \sm{g:\prd{x:A}P(x)}(f\htpy g)
+(\sm{g:C}(f= g)) \to \sm{g:C}(f\htpy g)
 \end{equation*}
-induced by $\lam{g : \prd{x:A}P(x)} \happly (f,g)$ is an equivalence. Note that the type on the left is contractible, hence it suffices to show that
+induced by $\lam{g : C} \happly (f,g)$ is an equivalence. Note that the type on the left is contractible, hence it suffices to show that
 \begin{equation*}
-\sm{g:\prd{x:A}P(x)}\prd{x:A}f(x)= g(x)
+\sm{g:C}\prd{x:A}f(x)= g(x)
 \end{equation*}
-is contractible. It is obvious that $\sm{g:\prd{x:A}P(x)}\prd{x:A}f(x)= g(x)$ is a retract of the type
+is contractible. It is obvious that $\sm{g:C}\prd{x:A}f(x)= g(x)$ is a retract of the type
 \begin{equation*}
 \prd{x:A}\sm{u:P(x)}f(x)= u.
 \end{equation*}
@@ -94,3 +94,4 @@ The latter type is a product of contractible types, which is contractible by the
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End: 
+

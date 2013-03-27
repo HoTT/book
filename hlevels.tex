@@ -233,29 +233,37 @@ Here is another equivalent characterization:
 \end{proof}
 
 \begin{thm}\label{thm:h-set-refrel-in-paths-sets}
-  Suppose the identity on $X$ contains a mere reflexive relation $R$. Then $R(x,y)$ is
-  equivalent to $\id[X]{x}{y}$ and so $X$ is a set.
+  Suppose $R$ is a reflexive mere relation on a type $X$ implying identity.
+  Then $R(x,y)$ is equivalent to $\id[X]{x}{y}$, and thus $X$ is a set.
 \end{thm}
 
 \begin{proof}
-Let $\rho$ be a witness of the reflexivity of $R$ and let $f : \prd{x,y:X} R(x,y)
-\to x = y$. To show that each $f(x,y)$ is an equivalence, it suffices to show that~$f$
-induces an equivalence of total spaces:
-\begin{equation*}
-\eqv{\sm{y:X}R(x,y)}{\sm{y:X}x=y}.
-\end{equation*}
-Note that the type on the right is contractible, so we have to show that
-$\sm{y:X}R(x,y)$ is contractible. As the center of contraction we take the
-term $\pairr{x,\rho(x)}$ and it remains to show that
-\begin{equation*}
-\prd{y:X}{H:R(x,y)}\pairr{y,H}=\pairr{x,\rho(x)}.
-\end{equation*}
-Since $R$ is propositional, the above type is equivalent to the type
-\begin{equation*}
-\prd{y:X}R(x,y)\to y=x,
-\end{equation*}
-which we get from our assumption $f$ and from symmetry of identity.
+  Let $\rho : \prd{x:X} R(x,x)$ be a witness for reflexivity of $R$ and let $f
+  : \prd{x,y:X} R(x,y) \to \id[X]{x}{y}$ be a witness that $R$ implies
+  identity. To show that each $f(x,y) : R(x,y) \to \id[X]{x}{y}$ is an
+  equivalence, it suffices, by Lemma \ref{thm:total-fiber-equiv}, to show that
+  $f$ induces an equivalence of total spaces:
+  \begin{equation*}
+    \eqv{\sm{y:X}R(x,y)}{\sm{y:X}\id[X]{x}{y}}.
+  \end{equation*}
+  By Lemma \ref{thm:contr-paths}, the type on the right is contractible, so it
+  suffices to show that the type on the left is contractible. As the center of
+  contraction we take the pair $\pairr{x,\rho(x)}$.  It remains to show, for
+  every ${y:X}$ and every ${H:R(x,y)}$ that
+  \begin{equation*}
+    \id{\pairr{x,\rho(x)}}{\pairr{y,H}}.
+  \end{equation*}
+  Since $R(x,y)$ is a mere proposition, by Theorem \ref{thm:path-sigma} it suffices to show that
+  \begin{equation*}
+    \id[X]{x}{y},
+  \end{equation*}
+  which we get from $f(H)$.
 \end{proof}
+
+\begin{cor}\label{notnotstable-equality-to-set}
+If a type $A$ has the property that $\neg\neg(x=y)\to(x=y)$ for any $x,y:A$,
+then $A$ is a set.
+\end{cor}
 
 Another convenient way to show that a type is a set is by way of the following property.
 
@@ -271,37 +279,26 @@ LEM implies that \emph{any} type $X$ has \emph{decidable mere equality}, meaning
 \autoref{defn:decidable-equality} asserts moreover that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
 This has the following strong consequence.
 
+\begin{lem}
+For any type $A$ we have $(A+\neg A)\to(\neg\neg A\to A)$.
+\end{lem}
+
+\begin{proof}
+Suppose $x:A+\neg A$. We have two cases to consider.
+If $x\defeq\inl{a}$ for some $a:A$, then we have the constant function $\neg\neg A
+\to A$ which maps everything to $a$. If $x\defeq\inr{f}$ for some $f:\neg A$,
+we have the term $g(f):\emptyt$ for any $g:\neg\neg A$. Hence we may use
+ex falso quodlibet to get a term of $A$ for any $g:\neg\neg A$.
+\end{proof}
+
 \begin{thm}[Hedberg]\label{thm:hedberg}
   If $X$ has decidable equality, then $X$ is a set.
 \end{thm}
 
 \begin{proof}
-Fix $x : X$ and assume that for all $y : Y$ we have
-  \[\alpha(y) : (x = y) + \neg (x = y). \]
-  For any $y : Y$ we define
-      $  \eta_y : (x = y) \to (x = y) $
-    by
-    \[ \eta_y(p) := \begin{cases}
-                     q & \text{ if } \alpha(y) = \inl(q) \\
-                     \mathsf{elim}_\emptyt(f(p)) & \text{ if } \alpha(y) = \inr(f).
-                    \end{cases}
-\]
-
-(Recall that $\emptyt$-elimination allows us to conclude anything, given an element of $\emptyt$.)
-
-\noindent
- By case analysis we see that for any $p, p' : x = y$ we have
- \begin{equation}\eta_y(p) = \eta_y(p') . \label{eq:eqdec-eta}\end{equation}
-
- \noindent
- Next, we prove that for any $y : Y$, the map $\eta_y$ has a left inverse $\theta_y$.
-   Once we have this left inverse $\theta_y$, we obtain the desired result as follows: given
-     $p, p' : x = y$, we have
-   \[ p = \theta_y (\eta_y(p)) \stackrel{\eqref{eq:eqdec-eta}}{=} \theta_y (\eta_y(p')) = p' . \]
- Define $\theta_y$ by
-     $\theta_y(q) \defeq \opp{\eta_x(\refl{}(x))} \ct q$.
-  Finally, we prove $\theta_y(\eta_y(p)) = p$ by path induction on $p$:
-   \[\theta_x(\eta_x(\refl{}(x))) = \opp{\eta_x(\refl{}(x))} \ct \eta_x(\refl{}(x)) = \refl{}(x). \qedhere \]
+If $X$ has decidable equality, it follows that $\neg\neg(x=y)\to(x=y)$ for any
+$x,y:X$. Therefore, Hedbergs theorem follows from 
+\autoref{notnotstable-equality-to-set}.
 \end{proof}
 
 There is, of course, a strong connection between this theorem and \autoref{thm:not-lem}.

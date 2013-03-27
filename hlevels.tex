@@ -239,14 +239,19 @@ Here is another equivalent characterization:
 
 \begin{proof}
   Let $\rho : \prd{x:X} R(x,x)$ witness the reflexivity of $R$, and let $f : \prd{x,y:X} R(x,y) \to (\id[X]{x}{y})$ be a witness that $R$ implies identity.
-  Then for any $x:X$ and $p:\id[X]xx$, we have
-  \[\apdfunc{f(x)}(p) : \transfib{y\mapsto (R(x,y) \to (x=y))}{p}{f(x,x)} = f(x,x).
+  The idea of the proof is the same as that of \autoref{thm:prop-set}: the function $f$ must be continuous in its arguments $x$ and $y$.
+  However, it is slightly more notationally complicated because we have to deal with the additional argument of type $R(x,y)$.
+
+  First of all, for any $x:X$ and $p:\id[X]xx$, consider $\apdfunc{f(x)}(p)$.
+  This is a dependent path from $f(x,x)$ to itself.
+  Since $f(x,x)$ is still a function $R(x,x) \to (\id[X]xy)$, by \autoref{thm:dpath-arrow} this yields a path
+  \[\trans{p}{f(x,x,r)} = f(x,x,\trans{p}r).
   \]
-  By transport in function types and path types, the left-hand side of this equality is the function $R(x,x) \to (x=x)$ which sends $r:R(x,x)$ to $f(x,x,\trans{(\opp p)}r) \ct p$.
-  But since $R(x,x)$ is a mere proposition, this is equal to $f(x,x,r)\ct p$.
-  Thus, we have
-  \[ \happly(\apdfunc{f(x)}(p),\rho(x)) : f(x,x,\rho(x)) \ct p = f(x,x,\rho(x)) \]
-  and hence $p=\refl{x}$ by cancellation.
+  On the left-hand side, we have transport in an identity type, which is concatenation.
+  And on the right-hand side, we have $\trans{p}r = r$, since both lie in the mere proposition $R(x,x)$.
+  Thus, substituting $r\defeq \rho(x)$, we obtain
+  \[ f(x,x,\rho(x)) \ct p = f(x,x,\rho(x)). \]
+  By cancellation, $p=\refl{x}$.
   So $X$ satisfies Axiom K, and hence is a set.
 \end{proof}
 

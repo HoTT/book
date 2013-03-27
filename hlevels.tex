@@ -238,31 +238,25 @@ Here is another equivalent characterization:
 \end{thm}
 
 \begin{proof}
-  Let $\rho : \prd{x:X} R(x,x)$ be a witness for reflexivity of $R$ and let $f
-  : \prd{x,y:X} R(x,y) \to \id[X]{x}{y}$ be a witness that $R$ implies
-  identity. To show that each $f(x,y) : R(x,y) \to \id[X]{x}{y}$ is an
-  equivalence, it suffices, by Lemma \ref{thm:total-fiber-equiv}, to show that
-  $f$ induces an equivalence of total spaces:
-  \begin{equation*}
-    \eqv{\sm{y:X}R(x,y)}{\sm{y:X}\id[X]{x}{y}}.
-  \end{equation*}
-  By Lemma \ref{thm:contr-paths}, the type on the right is contractible, so it
-  suffices to show that the type on the left is contractible. As the center of
-  contraction we take the pair $\pairr{x,\rho(x)}$.  It remains to show, for
-  every ${y:X}$ and every ${H:R(x,y)}$ that
-  \begin{equation*}
-    \id{\pairr{x,\rho(x)}}{\pairr{y,H}}.
-  \end{equation*}
-  Since $R(x,y)$ is a mere proposition, by Theorem \ref{thm:path-sigma} it suffices to show that
-  \begin{equation*}
-    \id[X]{x}{y},
-  \end{equation*}
-  which we get from $f(H)$.
+  Let $\rho : \prd{x:X} R(x,x)$ witness the reflexivity of $R$, and let $f : \prd{x,y:X} R(x,y) \to (\id[X]{x}{y})$ be a witness that $R$ implies identity.
+  The idea of the proof is the same as that of \autoref{thm:prop-set}: the function $f$ must be continuous in its arguments $x$ and $y$.
+  However, it is slightly more notationally complicated because we have to deal with the additional argument of type $R(x,y)$.
+
+  First of all, for any $x:X$ and $p:\id[X]xx$, consider $\apdfunc{f(x)}(p)$.
+  This is a dependent path from $f(x,x)$ to itself.
+  Since $f(x,x)$ is still a function $R(x,x) \to (\id[X]xy)$, by \autoref{thm:dpath-arrow} this yields a path
+  \[\trans{p}{f(x,x,r)} = f(x,x,\trans{p}r).
+  \]
+  On the left-hand side, we have transport in an identity type, which is concatenation.
+  And on the right-hand side, we have $\trans{p}r = r$, since both lie in the mere proposition $R(x,x)$.
+  Thus, substituting $r\defeq \rho(x)$, we obtain
+  \[ f(x,x,\rho(x)) \ct p = f(x,x,\rho(x)). \]
+  By cancellation, $p=\refl{x}$.
+  So $X$ satisfies Axiom K, and hence is a set.
 \end{proof}
 
 \begin{cor}\label{notnotstable-equality-to-set}
-If a type $A$ has the property that $\neg\neg(x=y)\to(x=y)$ for any $x,y:A$,
-then $A$ is a set.
+  If a type $X$ has the property that $\neg\neg(x=y)\to(x=y)$ for any $x,y:X$, then $X$ is a set.
 \end{cor}
 
 Another convenient way to show that a type is a set is by way of the following property.
@@ -274,10 +268,10 @@ Another convenient way to show that a type is a set is by way of the following p
 
 In the propositions-as-types language, we can say that $X$ has decidable equality if for every $x,y:X$, either $x=y$ or $x\neq y$.
 Note that this is a very constructive form of ``or''.
-LEM implies that \emph{any} type $X$ has \emph{decidable mere equality}, meaning
+LEM implies (using \autoref{thm:isprop-forall}) that \emph{any} type $X$ has \emph{decidable mere equality}, meaning
 \[\prd{x,y:X} \big(\brck{x=y} + \brck{x\neq y}\big).\]
 \autoref{defn:decidable-equality} asserts moreover that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
-This has the following strong consequence.
+This turns out to imply that $X$ is a set, by way of \autoref{thm:h-set-refrel-in-paths-sets} and the following lemma.
 
 \begin{lem}
 For any type $A$ we have $(A+\neg A)\to(\neg\neg A\to A)$.

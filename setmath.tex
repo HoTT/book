@@ -14,6 +14,7 @@ naturally be developed by considering sets with isomorphisms as equalities. This
 the univalence axiom.
 
 \section{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}W-pretopos}
+\label{sec:piw-pretopos}
 
 We will show that $\set$ is a $\Pi$W-pretopos. We start by proving that it is a regular category, namely that:
 %
@@ -42,6 +43,7 @@ where $g$ coequalizes $\pi_1$ and $\pi_2$. The result
 that the image of a function $f$ is the coequalizer of its kernel pair is a consequence of the principle of unique choice.
 
 \subsection{The image of a function}
+\label{sec:image}
 
 The truncations allow us to define a stable factorization
 system.\footnote{\url{http://uf-ias-2012.wikispaces.com/file/view/images.pdf/401765624/images.pdf}}
@@ -364,17 +366,10 @@ relation $R:A\to A\to\prop$, there is a coequalizer $c_R$ of the pair
 $\pi_1,\pi_2:\sm{x,y:A} R(x,y)\to A$ and, moreover, the $\pi_1$ and $\pi_2$
 for the kernel pair of $c_R$.
 
-We present two constructions of a quotient by a $\prop$-valued equivalence relation $R$. 
-The first one uses as a higher inductive type. We freely add a path $x= y$ whenever $x$ 
-and $y$ are related by $R$ and we truncate the quotient to become a set.
-Instead of giving the truncated higher inductive definition, we use the coequalizer which was defined above.
-
-\begin{defn}
-Let $A$ be a set and let $R:A\to A\to\prop$ be a binary relation over
-$A$, not necessarily an equivalence relation. 
-We define $A/R$ to be the coequalizer of the two projections
-$\pi_1,\pi_2:\sm{x,y:A} R(x,y)\to A$ in $\set$.
-\end{defn} 
+We have already seen, in \autoref{sec:set-quotients}, two general ways to construct the quotient of a set by an equivalence relation $R:A\to A\to\prop$.
+The first can be described as the set-coequalizer of the two projections
+\[\pi_1,\pi_2:\sm{x,y:A} R(x,y)\to A.\]
+The important property of such a quotient is the following.
 
 \begin{defn}
 A relation $R:A\to A\to\prop$ is said to be \emph{effective} if the square
@@ -390,11 +385,8 @@ A relation $R:A\to A\to\prop$ is said to be \emph{effective} if the square
 is a pullback. 
 \end{defn}
 
-The following lemma uses univalence for propositions.
-
 \begin{lem}\label{lem:sets_exact}
-Suppose $\pairr{A,R}$ is an equivalence relation. Then there is an
-equivalence
+Suppose $\pairr{A,R}$ is an equivalence relation. Then there is an equivalence
 \begin{equation*}
 (c_R(x)= c_R(y))\simeq R(x,y)
 \end{equation*}
@@ -424,44 +416,20 @@ the path $p_R(r)^{-1}:c_R(y)= c_R(x)$. We automatically get a path from
 $p_R(r)^{-1}\cdot r=\rho(x)$, finishing the proof.
 \end{proof}
 
-\subsection{Voevodsky's impredicative quotients}\label{sec:resizing}
-The second solution is due to Voevodsky~\cite{pelayo2013preliminary}.
-He defines the quotient $A/\!\!/R $ as the type of equivalence classes of $R$, 
-i.e.\ as the image of $R$ in $A\to\prop$. This gives a direct
-construction of quotients, but it requires a resizing rule. We fix an equivalence relation $\pairr{A,R}$.
-
-\begin{defn}
-A predicate $P:A\to\prop$ is said to be an equivalence class with 
-respect to $R $ if there is an element of
-\begin{equation*}
-\mathsf{isEqClass}(R ,P)\defeq \sm{x:A}\prd{y:A} R (x,y)\simeq P(y).
-\end{equation*}
-\end{defn}
-
-\begin{defn}\label{def:VVquotient}
-We define
-\begin{equation*}
-A/\!\!/ R \defeq\sm{P:A\to\prop} \|\mathsf{isEqClass}(R ,P)\|.
-\end{equation*}
-\end{defn}
-
-Using univalence on propositions, the following is an easy consequence of the definition:
-
-\begin{lem}
-The type $A/\!\!/ R $ is equivalent to $\im(R)$.
-\end{lem}
-
-In \ref{lem:images_are_coequalizers} we have shown that images are
+The second construction of quotients, which uses impredicativity of mere propositions, was as the set of equivalence classes of $R$ (a subset of its power set):
+\[ A\sslash R \defeq \setof{ P:A\to\prop | P \text{ is an equivalence class of } R} \]
+Note that if we regard $R$ as a function from $A$ to $A\to \prop$, then $A\sslash R$ is equivalent to $\im(R)$, as constructed in \autoref{sec:image}.
+Now in \ref{lem:images_are_coequalizers} we have shown that images are
 coequalizers. In particular, we immediately get the coequalizer diagram
 \begin{equation*}
 \begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A/\!\!/ R.  \\};
+\matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A\sslash  R.  \\};
 \draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
 \draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- (m-1-3);
 \end{tikzpicture}
 \end{equation*}
-We can use this to show that any equivalence relation is effective.
+We can use this to give an alternative proof that any equivalence relation is effective and that the two definitions of quotients agree.
 
 \begin{thm}\label{prop:kernels_are_effective}
 For any function $f:A\to B$ between any two sets, 
@@ -495,14 +463,14 @@ for any function $f$.
 \end{proof}
 
 \begin{thm}
-Equivalence relations are effective and there is an equivalence $A/R \simeq A/\!\!/ R $. 
+Equivalence relations are effective and there is an equivalence $A/R \simeq A\sslash  R $. 
 \end{thm}
 
 \begin{proof}
 We need to analyze the coequalizer diagram
 \begin{equation*}
 \begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A/\!\!/ R. \\};
+\matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A\sslash  R. \\};
 \draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
 \draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- (m-1-3);
@@ -514,13 +482,13 @@ summarize, we get that $(R (x)= R (y))\simeq R (x,y)$, so $R $ is effective sinc
 the diagram
 \begin{equation*}
 \begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} R (x,y) & A & A/\!\!/ R. \\};
+\matrix (m) [std] {\sm{x,y:A} R (x,y) & A & A\sslash  R. \\};
 \draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
 \draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- (m-1-3);
 \end{tikzpicture}
 \end{equation*}
-is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \simeq A/\!\!/ R $.
+is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \simeq A\sslash  R $.
 \end{proof}
 
 \subsection{Predicativity}\label{sec:resizing}
@@ -546,7 +514,7 @@ Let $U$ be a universe and $X:U$, if $f:X\twoheadrightarrow Y$ is a surjection, $
 equivalent to $Y$.
 \end{lem}
 \begin{proof}
-Define $Z\defeq X/\!\!/\ker f$ using the type of equivalence classes; see~\ref{def:VVquotient}. 
+Define $Z\defeq X\sslash \ker f$ using the type of equivalence classes; see~\ref{def:VVquotient}. 
 Then $Z:U$, since $\prop_U$ is in the lowest universe. Finally, we observe that $Z\defeq X/\ker f\simeq\im f\simeq Y$.
 \end{proof}
 

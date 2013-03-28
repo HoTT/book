@@ -165,7 +165,7 @@ Any two h-initial $\nat$-algebras $\chi_i$ and $\chi'_i$ are equal.
 \end{thm}
 
 We now have the following theorem; the proof is only sketched as it involves a large amount of technical detail.
-\begin{thm}
+\begin{thm}\label{thm:nat-hinitial}
 The $\nat$-algebra $(\nat, \zero, \s)$ is homotopy initial.
 \end{thm}
 \begin{proof}[Sketch of proof]
@@ -224,24 +224,30 @@ To improve this situation, we first observe that we have the following definable
        : \natp \to\nat$.
 \end{itemize}
 Since the composition of $g$ and $f$ satisfies the same recurrences as the identity function on $\nat$, Theorem~\ref{thm:nat-uniq} gives that $\prd{n : \nat} \id{g(f(n))}{n}$. The `primed' version of the same theorem gives $\prd{n : \natp} \id{f(g(n))}{n}$.
+Thus, $f$ and $g$ are quasi-inverses, so that $\eqv{\nat}{\natp}$.
 
-This makes it possible to transfer functions on $\nat$ to functions on $\natp$ (and vice versa) by using the maps $f$ and $g$ from above:
+This equivalence makes it possible to transfer functions on $\nat$ to functions on $\natp$ (and vice versa) by using the maps $f$ and $g$ from above:
 \[ \dblp \defeq \lambda(n :\natp), f(\dbl(g(n))) \]
 It is an easy exercise to show that this version of $\dblp$ is equal to the earlier one.
 
-The ability to transfer functions in this way is an improvement over `priming' but the easy result
-$\prd{n : \natp} \dblp(\Sp(n))=\Sp(\Sp(\dblp(n)))$ still has to be reproved
-by induction on $n:\natp$ using lots of $f$'s and $g$'s.
+The ability to transfer functions in this way is an improvement over simple ``priming''.
+However, easy results such as
+\[\prd{n : \natp} \dblp(\Sp(n))=\Sp(\Sp(\dblp(n)))\]
+still technically has to be reproved by induction on $n:\natp$, or else transferred explicitly across the equivalence to \nat, using lots of $f$s and $g$s.
+Here is where the Univalence Axiom steps in: since $\eqv{\nat}{\natp}$, we also have $\id[\type]{\nat}{\natp}$, i.e.\ $\nat$ and $\natp$ are
+\emph{equal} as types.
+Now functions, lemmas, and proofs (and more) can be be transported directly along such paths, with considerably less overhead.
+For example, we can easily obtain a function carrying a proof of $\prd{n : \nat} \dbl(\S(n))=\S(\S(\dbl(n)))$ to a proof of the corresponding lemma for $\natp$.
 
-Here is where the Univalence Axiom steps in: using function extensionality, the identities $\prd{n : \nat} \id{g(f(n))}{n}$
-and $\prd{n : \natp} \id{f(g(n))}{n}$ imply that $g\circ{}f = \idfunc[\nat]$ and $f\circ{}g = \idfunc[\natp]$. Thus
-$\nat$ and $\natp$ are in fact equivalent as types.
-The Univalence Axiom then gives us that $\nat$ and $\natp$ are
-\emph{equal} as types, which means that there is
-a path from $\nat$ to $\natp$ (and back). Functions, lemmas and proofs (and more)
-can be now be transported along such paths, with considerably less overhead. For example, using the
-Univalence Axiom, we can easily obtain a function carrying a proof of
-$\prd{n : \natp} \dblp(\Sp(n))=\Sp(\Sp(\dblp(n)))$ to a proof of the corresponding lemma in $\nat$.
+These conclusions are not confined to the natural numbers: they apply to any inductive type.
+If we have an inductively defined type $W$, say, and some other type $W'$ which satisfies the same induction principle as $W$, then it follows that $\eqv{W}{W'}$, and hence $W=W'$.
+We use the derived recursion principles for $W$ and $W'$ to construct maps $W\to W'$ and $W'\to W$, respectively, and then the induction principles for each to prove that both composites are equal to identities.
+For instance, in \autoref{cha:typetheory} we saw that the coproduct $A+B$ could also have been defined as $\sm{x:\bool} \rec{\bool}(\UU,A,B,x)$.
+The latter type satisfies the same induction principle as the former; hence they are canonically equivalent.
+
+This is, of course, very similar to the familiar fact in category theory that if two objects have the same \emph{universal property}, then they are equivalent.
+In fact, in \autoref{thm:nat-hinitial} we saw that the natural numbers do have a universal property, so that this sort of uniqueness can be regarded as a special case of the category-theoretic principle.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

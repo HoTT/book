@@ -784,7 +784,7 @@ We can use the eliminator for equality to establish that equality is an equivale
 \section{The natural numbers}
 \label{sec:inductive-types}
 
-The type we have introduced so far preserve finiteness. The simplest infinite type we can think of and which also turns out to be extremely useful is the type $\nat : \UU$ of natural numbers. The elements of $\nat$ are constructed using $0 : \nat$ and the successor operation $\suc : \nat \to \nat$. When denoting natural numbers we adopt the usual decimal notation $1 = \suc(0), 2 = \suc(1), 3 = \suc(2), \dots$.
+The types we have introduced so far preserve finiteness. The simplest infinite type we can think of and which also turns out to be extremely useful is the type $\nat : \UU$ of natural numbers. The elements of $\nat$ are constructed using $0 : \nat$ and the successor operation $\suc : \nat \to \nat$. When denoting natural numbers we adopt the usual decimal notation $1 = \suc(0), 2 = \suc(1), 3 = \suc(2), \dots$.
 
 To construct a non-dependent function $f : \nat \to C$ out of the natural numbers, it is enough to provide $c_0 : C$ and $c_s : \nat \to C \to C$. This gives rise to $f$ with the defining equations
 \begin{eqnarray*}
@@ -908,11 +908,53 @@ Using $\ind{nat}$ we can construct an expression
 \section{Propositions as types}
 \label{sec:pat}
 
-\textbf{TODO:} A discussion of how to speak type formers in English, e.g.\ ``for all $x:A$, something or other'' means ``$\prd{x:A}$ something or other'', and so on.
-For now, we will use ``$A$ or $B$'' to mean $A+B$ and ``there exists $x:A$'' to mean $\sm{x:A}$, but perhaps we should mention that we will refine it further later on.
-For instance, sometimes classical statements involving these connectives need to be interpreted differently (see \autoref{subsec:prop-subsets} and wherever we discuss $(-1)$-truncations).
+To state that a proposition is true in type theory corresponds to exhibiting an element of a type corresponding to a proposition. We will however, in general not construct an explicit term representing this proof but instead present the proofs in prose so that \emph{in principle} they could be translated into an element of a type. This is no different to reasoning in classical set theory where we don't expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory. One important difference is, however, that we cannot use certain classical principle such as the law of excluded middle or indirect proofs (i.e. proving $A$ by proving $\neg\neg A$.
 
-We will say that a type $A$ is \textbf{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct a term belonging to $A$, usually unnamed).
+We start with propositional logic: a proposition can be translated into a type following the following rules:
+\begin{center}
+\begin{tabular}{c|l}
+  \textbf{English} & \textbf{Translation into Type Theory}\\\hline
+  True & $\unit$ \\
+  False & $\emptyt$ \\
+  $A$ and $B$ & $A \times B$ \\
+  $A$ or $B$ & $A + B$ \\
+  If $A$ then $B$ & $A \to B$ \\
+  $A$ if, and only if, $B$ & $(A \to B) \times (B \to A)$ \\
+  Not $A$ &  $A \to \emptyt$
+\end{tabular}
+\end{center}
+Clearly, this is something we don't want to do in general --- however, it is good to have a precise reference when in doubt. As an exercise we can verify 
+propositional tautologies, like \emph{If not ($A$ or $B$), then  (not $A$) and (not $B$)} by exhibiting an element of 
+\[ ((A + B) \to \emptyt) \to (A \to \emptyt) \times (B \to \emptyt) \]
+for any types $A$, $B$ using the rules we have just introduced. However, not all classical tautologies hold: for example the rule 
+\emph{If not ($A$ and $B$) then (not $A$) or (not $B$)} is not constructively valid and hence we cannot, in general, construct an element of the corresponding type
+\[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt)\]
+The intuitive reason is that the premise doesn't offer any information that would help us to decide wither we should prove the disjunction using $\inl$ or $\inr$.
+
+In predicate logic types play a dual role: they serve is propositions and as types in the conventional sense, i.e. domains we quantify over. Indeed, we are going to exploit this duality meaning that we can also quantify over the type of proofs of a proposition. A predicate over a type $A$ is representing as a family $P : A \to U$ assigning to every element $a : A$ a type $P(a)$ corresponding to the proposition that $P$ holds for $a$. We extend our translation with an explanation of the quantifiers:
+\begin{center}
+\begin{tabular}{c|l}
+  \textbf{English} & \textbf{Translation into Type Theory}\\\hline
+  For all $x:A$, $P(x)$ holds & $\prd{x:A} P(x)$ \\
+  There exists $x:A$ such that $P(x)$ & $\sm{x:A}$ $P(x)$ \\
+\end{tabular}
+\end{center}
+As before we can translate tautologies of predicate logic into types of predicate logic, for example \emph{If for all $x:A$, $P(x)$ and $Q(x)$ then (for all $x:A$, $P(x)$) and  (for all $x:A$, $Q(x)$)  } which translates to
+\[ (\prd{x:A} P(x) \times Q(x)) \to (\prd{x:A} P(x)) \times (\prd{x:A} Q(x)) \]
+and we can verify the tautology by constructing an element for any $A:\UU$ and $P,Q : A \to \UU$. 
+
+We can use the universes to represent higher order logic even though in a limited way if we do not add additional assumptions. For example we can represent the proposition \emph{for all properties $P : A \to \UU$ if $P(a)$ then $P(b)$} can be represented as
+\[ \prd{P : A \to \UU} P(a) \to P(b) \]
+where $A : \UU$ and $a,b : A$. However, unless we assume the existence of an impredicative universe of propositions, note that the proposition lives in a different, higher universe, then the propositions we are quantifying over.
+
+We have descibed here a proof-relevant translation or propositions, where the proofs of disjunctions and existential statements carry some information. Using the language of homotopy type theory which we are going to introduce in the next section there is an alternative way to interpret the word \emph{proposition} as a (-1)-type, i.e. a type which doesn't carry any information. In this case we would say \emph{there merely exists} or \emph{merely $A$ or $B$}.
+
+
+% \textbf{TODO:} A discussion of how to speak type formers in English, e.g.\ ``for all $x:A$, something or other'' means ``$\prd{x:A}$ something or other'', and so on.
+% For now, we will use ``$A$ or $B$'' to mean $A+B$ and ``there exists $x:A$'' to mean $\sm{x:A}$, but perhaps we should mention that we will refine it further later on.
+% For instance, sometimes classical statements involving these connectives need to be interpreted differently (see \autoref{subsec:prop-subsets} and wherever we discuss $(-1)$-truncations).
+
+% We will say that a type $A$ is \textbf{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct a term belonging to $A$, usually unnamed).
 
 
 

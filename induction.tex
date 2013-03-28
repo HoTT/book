@@ -565,13 +565,14 @@ However, it is not at all clear how to ``apply $f$ to $\alpha$'', since both are
 
 We could write down a ``recursion principle'' for $C$ by just supposing (unjustifiably) that there is some way to apply $f$ to $\alpha$ and obtain a function $P\to\nat$.
 Then the input to the recursion rule would ask for a type $P$ together with a function
-\[ h:(C\to\nat) \to (P\to\nat) \to P \]
-and produce a function $f:C\to P$.
-However, what would the computation rule for $f$ be?
+\begin{equation}
+  h:(C\to\nat) \to (P\to\nat) \to P\label{eq:fake-recursor}
+\end{equation}
+where the two arguments of $h$ are $\alpha$ and ``the result of applying $f$ to $\alpha$''.
+However, what would the computation rule for the resulting function $f:C\to P$ be?
 Looking at other computation rules, we would expect something like ``$f(g(\alpha)) \jdeq h(\alpha,f(\alpha))$'' for $\alpha:C\to\nat$, but as we have seen, ``$f(\alpha)$'' does not make sense.
 The induction principle of $C$ is even more problematic; it's not even clear how to write down the hypotheses.
-(In fact, the situation is even worse than this: even if we ignore the absence of a computation rule and an induction principle, such ``inductive definitions'' are inconsistent.
-See \autoref{ex:loop,ex:loop2}.)
+(See also \autoref{ex:loop,ex:loop2}.)
 
 This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors} of the type being defined, so that we can ``apply $f$ to them'' to get the result of the ``recursive call''.
 In other words, if we replace all occurrences of the type being defined with a variable $X:\type$, then each domain of a constructor must be an expression that can be made into a covariant functor of $X$.
@@ -579,12 +580,61 @@ This is the case for all the examples we have considered so far.
 For instance, with the constructor $\inl:A\to A+B$, the relevant functor is constant at $A$ (i.e.\ $X\mapsto A$), while for the constructor $\suc:\nat\to\nat$, the functor is the identity functor ($X\mapsto X$).
 
 However, this necessary condition is also not sufficient.
-Covariance prevents the inductive type from occurring on the left of a single function type, as in the ``constructor'' $g:(C\to\nat)\to C$ above, since this yields a contravariant functor rather than a covariant one.
+Covariance prevents the inductive type from occurring on the left of a single function type, as in the argument $C\to\nat$ of the ``constructor'' $g$ considered above, since this yields a contravariant functor rather than a covariant one.
 However, since the composite of two contravariant functors is covariant, \emph{double} function types such as $((X\to \nat)\to \nat)$ are once again covariant.
+This enables us to reproduce Cantorian-style paradoxes.
 
-\dots
+For instance, consider an ``inductive type'' $D$ with the following constructor:
+\begin{itemize}
+\item $k:((D\to\prop)\to\prop)\to D$.
+\end{itemize}
+Assuming such a type exists, we define functions
+\begin{align*}
+  r&:D\to ((D\to\prop)\to\prop)\\
+  r(k(\theta)) &\defeq \theta\\
+  f&:(D\to\prop) \to D \\
+  f(\delta) &\defeq k(\lam x (x=\delta))\\
+  p&:(D\to \prop) \to ((D\to\prop)\to \prop)\\
+  p(\delta) &\defeq \lam x \delta(f(x)).
+\end{align*}
+Here $r$ is defined by the recursion principle of $D$, while $f$ and $p$ are defined explicitly.
+Then for any $\delta:D\to\prop$, we have $r(f(\delta)) = \lam x(x=\delta)$.
 
-\medskip
+In particular, therefore, if $f(\delta)=f(\delta')$, then we have a path $s:(\lam x(x=\delta)) = (\lam x(x=\delta'))$.
+Thus, $\happly(s,\delta) : (\delta=\delta) = (\delta=\delta')$, and so in particular $\delta=\delta'$ holds.
+Hence, $f$ is ``injective'' (although \emph{a priori} $D$ may not be a set).
+This already sounds suspicious --- we have an ``injection'' of the ``power set'' of $D$ into $D$ --- and with a little more work we can massage it into a contradiction.
+
+Suppose given $\theta:(D\to\prop)\to\prop$, and define $\delta:D\to\prop$ by
+\begin{equation}
+  \delta(d) \defeq \exis{\gamma:D\to\prop} (f(\gamma) = d) \times \theta(\gamma).\label{eq:Pinj}
+\end{equation}
+We claim that $p(\delta)=\theta$.
+By function extensionality, it suffices to show $p(\delta)(\gamma) =_\prop \theta(\gamma)$ for any $\gamma:D\to\prop$.
+And by univalence, for this it suffices to show that each implies the other.
+Now by definition of $p$, we have
+\begin{align*}
+  p(\delta)(\gamma) &\jdeq \delta(f(\gamma))\\
+  &\jdeq \exis{\gamma':D\to\prop} (f(\gamma') = f(\gamma)) \times \theta(\gamma')
+\end{align*}
+Clearly this holds if $\theta(\gamma)$, since we may take $\gamma'\defeq \gamma$.
+On the other hand, if we have $\gamma'$ with $f(\gamma') = f(\gamma)$ and $\theta(\gamma')$, then $\gamma'=\gamma$ since $f$ is injective, hence also $\theta(\gamma)$.
+
+This completes the proof that $p(\delta)=\theta$.
+Thus, every element $\theta:(D\to\prop)\to\prop$ is the image under $p$ of some element $\delta:D\to\prop$.
+However, if we define $\theta$ by a classic diagonalization:
+\[ \theta(\gamma) \defeq \neg p(\gamma)(\gamma) \quad\text{for all $\gamma:D\to\prop$} \]
+then from $\theta = p(\delta)$ we deduce $p(\delta)(\delta) = \neg p(\delta)(\delta)$.
+This is a contradiction: no proposition can be equivalent to its negation.
+(Supposing $P\leftrightarrow \neg P$, if $P$, then $\neg P$, and so $\emptyt$; hence $\neg P$, but then $P$, and so $\emptyt$.)
+
+\begin{rmk}
+  There is a question of universe size to be addressed.
+  In general, an inductive type must live in a universe that already contains all the types going into its definition.
+  Thus if in the definition of $D$, the ambiguous notation \prop means $\prop_{\UU}$, then we do not have $D:\UU$ but only $D:\UU'$ for some larger universe $\UU'$ with $\UU:\UU'$.
+  In a predicative theory, therefore, the right-hand side of~\eqref{eq:Pinj} lives in $\prop_{\UU'}$, not $\prop_\UU$.
+  So this contradiction does require the resizing rule for mere propositions mentioned in \autoref{subsec:prop-subsets}.
+\end{rmk}
 
 This counterexample suggests that we should ban an inductive type from ever appearing on the left of an arrow in the domain of its constructors, even if that appearance is nested in other arrows so as to eventually become covariant.
 (Similarly, we also forbid it from appearing in the domain of a dependent function type.)
@@ -651,11 +701,11 @@ Show that for any dependent type $E : \two \to \type$, the space of dependent fu
 
 \begin{ex}\label{ex:loop}
   Suppose that in the ``inductive definition'' of the type $C$ at the beginning of \autoref{sec:strictly-positive}, we replace the type \nat by \emptyt.
-  Using only the ``obvious'' recursion principle for such a definition, construct an element of \emptyt.
+  Using only a ``recursion principle'' for such a definition with hypotheses analogous to~\eqref{eq:fake-recursor}, construct an element of \emptyt.
 \end{ex}
 
 \begin{ex}\label{ex:loop2}
-  Similarly, derive a contradiction from an ``inductive type'' $D$ with one constructor $(D\to D) \to D$.
+  Similarly to the previous exercise, derive a contradiction from an ``inductive type'' $D$ with one constructor $(D\to D) \to D$.
 \end{ex}
 
 % Local Variables:

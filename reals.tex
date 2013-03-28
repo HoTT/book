@@ -132,62 +132,59 @@ $\Omega$:
 
 \noindent
 %
-Without further ado, we translate the informal definition into type theory.
+Without further ado, we translate the informal definition into type theory. We use the
+logical notation from \autoref{subsec:prop-trunc}.
 
 \begin{defn}
   A \emph{Dedekind cut} is a pair $(L, U)$ of mere propositions $L : \Q \to \Omega$ and $U
   : \Q \to \Omega$ which is:
   %
   \begin{enumerate}
-  \item \emph{inhabited}: $\brck{\sm{q : \Q} L(q)}$ and $\brck{\sm{r : Q} U(r)}$,
+  \item \emph{inhabited}: $\exis{q : \Q} L(q)$ and $\exis{r : Q} U(r)$,
   \item \emph{rounded:} for all $q, r : \Q$,
     %
     \begin{equation*}
-      L(q) = {\brck{\sm{r : \Q} (q < r) \times L(r)}}
+      L(q) = \exis{r : \Q} (q < r) \land L(r)
       \quad\text{and}\quad
-      U(r) = \brck{\sm{r : \Q} (q < r) \times L(r)},
+      U(r) = \exis{r : \Q} (q < r) \land L(r),
     \end{equation*}
-  \item \emph{disjoint:} $L(q) \times U(q) \to \emptyt$ for for all $q : \Q$,
-  \item \emph{located:} $(q < r) \to \brck{L(q) + U(r)}$ for all $q, r : \Q$.
+  \item \emph{disjoint:} $L(q) \land U(q) \to \bot$ for for all $q : \Q$,
+  \item \emph{located:} $(q < r) \Rightarrow L(q) \lor U(r)$ for all $q, r : \Q$.
   \end{enumerate}
   %
   We let $\dcut(L, U)$ denote the conjunction of these conditions. The type of
   \emph{Dedekind reals} is
   %
   \begin{equation*}
-    \RD \defeq \sm{L, U : \Q \to \Omega} \dcut(L, U).
+    \RD \defeq \setof{ (L, U) : (\Q \to \Omega) \times (\Q \to \Omega) | \dcut(L,U)}.
   \end{equation*}
 \end{defn}
 
 It is apparent that $\dcut(L, U)$ is a mere relation, and since $\Q \to \Omega$ is a set
 the Dedekind reals form a set too. 
-
+%
 The construction of the algebraic and order-theoretic structure of Dedekind reals proceeds
 much like as in usual mathematics, so we do not dwell on details. Writing $L_x$ and $U_x$
 for the lower and upper cut of a real number $x : \RD$, we define $\leq$ and $<$ by
 %
 \begin{align*}
-  (x \leq y) &\defeq \prd{q : \Q} L_x(q) \to L_y(q) \\
-  (x < y) &\defeq \brck{\sm{q : \Q} U_x(q) \times L_y(q)
+  (x \leq y) &\ \defeq \ \fall{q : \Q} L_x(q) \Rightarrow L_y(q), \\
+  (x < y)    &\ \defeq \ \exis{q : \Q} U_x(q) \land L_y(q).
 \end{align*}
 %
 The relation $\leq$ is a partial order, and $<$ is transitive and irreflexive. The
 trichotomy law
 %
 \begin{equation*}
-  \prd{x, y : \RD} \brck{(x < y) + (x = y) + (y < x)}
+  (x < y) \lor (x = y) \lor (y < x)
 \end{equation*}
 %
 is valid if we assume excluded middle, but without it we get the intuitionistic version
 %
 \begin{equation*}
-  \prd{x, y, z : \RD} (x < y) \to \brck{(x < z) + (z < y)}.
+  (x < y) \to (x < z) \lor (z < y).
 \end{equation*}
 %
-
-
-
-
 
 \section{Cauchy Reals}
 \label{sec:cauchy-reals}

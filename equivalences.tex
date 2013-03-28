@@ -431,6 +431,23 @@ For instance, it implies that when proving a function to be an equivalence, we a
 \end{proof}
 
 
+\section{On the definition of equivalences}
+\label{sec:concluding-remarks}
+
+We have shown that all three definitions of equivalence satisfy the three desirable properties and are pairwise equivalent:
+\[ \iscontr(f) \simeq \ishae(f) \simeq \biinv(f) . \]
+(There are yet more possible definitions of equivalence, but we will stop with these three.
+See \autoref{ex:brck-qinv} and the exercises in this chapter for some more.)
+Thus, we may choose any one of them as ``the'' definition of $\isequiv (f)$.
+For definiteness, we choose to define
+\[ \isequiv(f) \defeq \ishae(f).\]
+This choice is advantageous for formalization, since $\ishae(f)$ contains the most directly useful data.
+On the other hand, for other purposes, $\biinv(f)$ is ofter easier to deal with, since it contains no 2-dimensional paths and its two symmetrical halves can be treated independently.
+However, for purposes of this book, the specific choice will make little difference.
+
+In the rest of this chapter, we study some other properties and characterizations of equivalences.
+
+
 \section{Monomorphisms and surjections}
 \label{sec:mono-surj}
 
@@ -486,21 +503,21 @@ Of course, this cannot be used as a definition of ``equivalence'', since the def
 However, this characterization can still be useful; see \autoref{sec:whitehead}.
 We will generalize it in \autoref{cha:hlevels}.
 
+
 \section{Fiberwise equivalences}
+\label{sec:fiberwise-equivalences}
+
+In homotopy theory, a type family $P:A\to\type$ corresponds to a \emph{fibration} over $A$, and we may sometimes use that name equivalently.
+Similarly, its \emph{total space} is the $\Sigma$-type $\sm{x:A} P(x)$, and the fibration itself is the projection $\proj1:\sm{x:A} P(x) \to A$.
+
+Another piece of homotopical terminology is that given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A}P(x)\to Q(x)$ as a \emph{fiberwise map} or a \emph{fiberwise transformation}.
+Such a map induces a function on total spaces:
 
 \begin{defn}
-Suppose $A$ is a type and $P,Q:A\to\type$ are dependent types over $A$. A
-fiberwise transformation from $P$ to $Q$ is a term of type
-$\prd{x:A}P(x)\to Q(x)$.
-\end{defn}
-
-\begin{defn}
-Suppose that $f$ is a fiberwise transformation between dependent types $P$ and
-$Q$ over a type $A$. Then $f$ induces the function
-\begin{equation*}
-\mathsf{total}(f)\defeq\lam{w}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)}
-:\sm{x:A}P(x)\to\sm{x:A}Q(x).
-\end{equation*}
+  Given type families $P,Q:A\to\type$ and a map $f:\prd{x:A} P(x)\to Q(x)$, we define
+  \begin{equation*}
+    \total(f) \defeq \lam{w}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)} : \sm{x:A}P(x)\to\sm{x:A}Q(x).
+  \end{equation*}
 \end{defn}
 
 \begin{thm}\label{fibwise-fiber-total-fiber-equiv}
@@ -510,18 +527,20 @@ $Q$ over a type $A$ and let $x:A$ and $v:Q(x)$. Then we have an equivalence
 \eqv{\hfib{\total{f}}{\pairr{x,v}}}{\hfib{f(x)}{v}}.
 \end{equation*}
 \end{thm}
-
-TODO: find relevant references for the properties used in the following proof.
-
 \begin{proof}
-\begin{align*}
+  We calculate:
+\begin{alignat*}{2}
 \hfib{\total{f}}{\pairr{x,v}} 
-& \defeq \sm{w:\sm{x:A}P(x)}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)}=\pairr{x,v}\\
-& \eqv{}{} \sm{a:A}{u:P(a)}\pairr{a,f(a,u)}=\pairr{x,v}\\
-& \eqv{}{} \sm{a:A}{u:P(a)}{p:a=x}\trans{p}{f(a,u)}=v\\
-& \eqv{}{} \sm{u:P(x)}f(x,u)=v\\
-& \defeqop \hfib{f(x)}{v}
-\end{align*}
+& \jdeq \sm{w:\sm{x:A}P(x)}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)}=\pairr{x,v}\\
+& \eqv{}{} \sm{a:A}{u:P(a)}\pairr{a,f(a,u)}=\pairr{x,v}
+&&\quad\text{by~\eqref{eq:sigma-lump}}\\
+& \eqv{}{} \sm{a:A}{u:P(a)}{p:a=x}\trans{p}{f(a,u)}=v
+&&\quad\text{by \autoref{thm:path-sigma}}\\
+& \eqv{}{} \sm{a:A}{p:a=x}{u:P(a)}\trans{p}{f(a,u)}=v\\
+& \eqv{}{} \sm{u:P(x)}f(x,u)=v
+&&\quad\text{by~\eqref{eq:path-lump}}\\
+& \jdeq \hfib{f(x)}{v} && \qedhere
+\end{alignat*}
 \end{proof}
 
 \begin{thm}\label{thm:total-fiber-equiv}
@@ -533,25 +552,11 @@ if each $f(x):P(x)\to Q(x)$ is an equivalence.
 \begin{proof}
 Let $f$, $P$, $Q$ and $A$ be as in the statement of the theorem.
 By \autoref{fibwise-fiber-total-fiber-equiv} it follows for all
-$x:A$ and $v:P(x)$ that
+$x:A$ and $v:Q(x)$ that
 $\hfib{\total{f}}{\pairr{x,v}}$ is contractible if and only if
-$\hfib{f(x)}{v}$ is contractible. Hence we get the result as an
-immediate corollary.
+$\hfib{f(x)}{v}$ is contractible.
+Thus, $\hfib{\total{f}}{w}$ is contractible for all $w:\sm{x:A}Q(x)$ if and only if $\hfib{f(x)}{v}$ is contractible for all $x:A$ and $v:Q(x)$.
 \end{proof}
-
-\section{Concluding remarks}
-\label{sec:concluding-remarks}
-
-We have shown that all three definitions of equivalence satisfy the three desirable properties and are pairwise equivalent:
-\[ \iscontr(f) \simeq \ishae(f) \simeq \biinv(f) . \]
-(There are yet more possible definitions of equivalence, but we will stop with these three.
-See \autoref{ex:brck-qinv} and the exercises in this chapter for some more.)
-Thus, we may choose any one of them as ``the'' definition of $\isequiv (f)$.
-For definiteness, we choose to define
-\[ \isequiv(f) \defeq \ishae(f).\]
-This choice is advantageous for formalization, since $\ishae(f)$ contains the most directly useful data.
-On the other hand, for other purposes, $\biinv(f)$ is ofter easier to deal with, since it contains no 2-dimensional paths and its two symmetrical halves can be treated independently.
-However, for purposes of this book, the specific choice will make little difference.
 
 
 

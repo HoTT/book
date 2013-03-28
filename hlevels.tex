@@ -232,17 +232,27 @@ Here is another equivalent characterization:
   But induction on $q$ reduces this goal precisely to Axiom K.
 \end{proof}
 
+The following theorem is another useful way to show that types are sets.
+
 \begin{thm}\label{thm:h-set-refrel-in-paths-sets}
   Suppose $R$ is a reflexive mere relation on a type $X$ implying identity.
-  Then $R(x,y)$ is equivalent to $\id[X]{x}{y}$, and thus $X$ is a set.
+  Then $X$ is a set, and $R(x,y)$ is equivalent to $\id[X]{x}{y}$ for all $x,y:X$.
 \end{thm}
 
 \begin{proof}
   Let $\rho : \prd{x:X} R(x,x)$ witness the reflexivity of $R$, and let $f : \prd{x,y:X} R(x,y) \to (\id[X]{x}{y})$ be a witness that $R$ implies identity.
-  The idea of the proof is the same as that of \autoref{thm:prop-set}: the function $f$ must be continuous in its arguments $x$ and $y$.
+  Note first that the two statements in the theorem are equivalent.
+  For on one hand, if $X$ is a set, then $\id[X]xy$ is a mere proposition, and since it is logically equivalent to the mere proposition $R(x,y)$ by hypothesis, it must also be equivalent to it.
+  On the othre hand, if $\id[X]xy$ is equivalent to $R(x,y)$, then like the latter it is a mere proposition for all $x,y:X$, and hence $X$ is a set.
+
+  We give two proofs of this theorem.
+  The first shows directly that $X$ is a set; the second shows directly that $R(x,y)\simeq (x=y)$.
+
+  \textbf{First proof:} we show that $X$ is a set.
+  The idea is the same as that of \autoref{thm:prop-set}: the function $f$ must be continuous in its arguments $x$ and $y$.
   However, it is slightly more notationally complicated because we have to deal with the additional argument of type $R(x,y)$.
 
-  First of all, for any $x:X$ and $p:\id[X]xx$, consider $\apdfunc{f(x)}(p)$.
+  Firstly, for any $x:X$ and $p:\id[X]xx$, consider $\apdfunc{f(x)}(p)$.
   This is a dependent path from $f(x,x)$ to itself.
   Since $f(x,x)$ is still a function $R(x,x) \to (\id[X]xy)$, by \autoref{thm:dpath-arrow} this yields a path
   \[\trans{p}{f(x,x,r)} = f(x,x,\trans{p}r).
@@ -253,6 +263,21 @@ Here is another equivalent characterization:
   \[ f(x,x,\rho(x)) \ct p = f(x,x,\rho(x)). \]
   By cancellation, $p=\refl{x}$.
   So $X$ satisfies Axiom K, and hence is a set.
+
+  \textbf{Second proof:} we show that each $f(x,y) : R(x,y) \to \id[X]{x}{y}$ is an equivalence.
+  By \autoref{thm:total-fiber-equiv}, it suffices to show that $f$ induces an equivalence of total spaces:
+  \begin{equation*}
+    \eqv{\big(\sm{y:X}R(x,y)\big)}{\big(\sm{y:X}\id[X]{x}{y}\big)}.
+  \end{equation*}
+  By \autoref{thm:contr-paths}, the type on the right is contractible, so it
+  suffices to show that the type on the left is contractible. As the center of
+  contraction we take the pair $\pairr{x,\rho(x)}$.  It remains to show, for
+  every ${y:X}$ and every ${H:R(x,y)}$ that
+  \begin{equation*}
+    \id{\pairr{x,\rho(x)}}{\pairr{y,H}}.
+  \end{equation*}
+  But since $R(x,y)$ is a mere proposition, by \autoref{thm:path-sigma} it suffices to show that
+  $\id[X]{x}{y}$, which we get from $f(H)$.
 \end{proof}
 
 \begin{cor}\label{notnotstable-equality-to-set}

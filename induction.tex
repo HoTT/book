@@ -559,15 +559,21 @@ To see that not everything which ``looks like an inductive definition'' makes se
 \begin{itemize}
 \item $g:(C\to \nat) \to C$.
 \end{itemize}
-What would the recursion principle of $C$ be?
-It seems clear that it should require a type $P$ together with a function $h:(P\to \nat)\to P$, and allow us to construct a function $f:C\to P$.
-But what would the computation rule for $f$ be?
-Looking at other computation rules, we would expect something like ``$f(g(\alpha)) \jdeq h(f(\alpha))$'' for $\alpha:C\to\nat$, but ``$f(\alpha)$'' does not make sense --- there is no way to take a function $C\to\nat$ and ``apply'' a function $f:C\to P$ to it and obtain a function $P\to \nat$.
+The recursion principle for such a type $C$ ought to say that given a type $P$, in order to construct a function $f:C\to P$, it suffices to consider the case when the input $c:C$ is of the form $g(\alpha)$ for some $\alpha:C\to\nat$.
+Moreover, we would expect to be able to use the ``recursive data'' of $f$ applied to $\alpha$ in some way.
+However, it is not at all clear how to ``apply $f$ to $\alpha$'', since both are functions with domain $C$.
+
+We could write down a ``recursion principle'' for $C$ by just supposing (unjustifiably) that there is some way to apply $f$ to $\alpha$ and obtain a function $P\to\nat$.
+Then the input to the recursion rule would ask for a type $P$ together with a function
+\[ h:(C\to\nat) \to (P\to\nat) \to P \]
+and produce a function $f:C\to P$.
+However, what would the computation rule for $f$ be?
+Looking at other computation rules, we would expect something like ``$f(g(\alpha)) \jdeq h(\alpha,f(\alpha))$'' for $\alpha:C\to\nat$, but as we have seen, ``$f(\alpha)$'' does not make sense.
 The induction principle of $C$ is even more problematic; it's not even clear how to write down the hypotheses.
 (In fact, the situation is even worse than this: even if we ignore the absence of a computation rule and an induction principle, such ``inductive definitions'' are inconsistent.
 See \autoref{ex:loop,ex:loop2}.)
 
-This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors} of the type being defined.
+This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors} of the type being defined, so that we can ``apply $f$ to them'' to get the result of the ``recursive call''.
 In other words, if we replace all occurrences of the type being defined with a variable $X:\type$, then each domain of a constructor must be an expression that can be made into a covariant functor of $X$.
 This is the case for all the examples we have considered so far.
 For instance, with the constructor $\inl:A\to A+B$, the relevant functor is constant at $A$ (i.e.\ $X\mapsto A$), while for the constructor $\suc:\nat\to\nat$, the functor is the identity functor ($X\mapsto X$).
@@ -595,23 +601,22 @@ For instance, the following is a valid constructor type:
 All of these function types can also be dependent functions ($\Pi$-types).
 
 Now once we have such an inductive definition, what can we do with it?
-Firstly, there is a \emph{recursion principle} stating that for any type $P$ equipped with the same data given to $W$ by the constructors, we have an induced function $f:W\to P$.
+Firstly, there is a \emph{recursion principle} stating that in order to define a function $f:W\to P$, it suffices to consider the case when the input $w:W$ arises from one of the constructors, allowing ourselves to recursively call $f$ on the inputs to that constructor.
 For the example constructor~\eqref{eq:example-constructor}, we would require $P$ to be equipped with a function of type
 \begin{equation}\label{eq:example-rechyp}
-  d:(A\to P) \to (B\to C \to P) \to D \to P \to P
+  d:(A\to W) \to (A\to P) \to (B\to C\to W) \to (B\to C \to P) \to D \to W \to P \to P.
 \end{equation}
-and similarly for any other constructors of $W$.
 Under these hypotheses, the recursion principle yields $f:W\to P$, which moreover ``preserves the constructor data'' in the evident way --- this is the computation rule, where we use covariance of the inputs.
 For instance, in the example~\eqref{eq:example-constructor}, the computation rule says that for any $\alpha:A\to W$, $\beta:B\to C\to W$, $\delta:d$, and $\omega:W$, we have
-\[ f(c(\alpha,\beta,\delta,\omega)) \jdeq d(f\circ \alpha, f\circ \beta, \delta, f(\omega)). \]
-As we have before in particular cases, when defining a particular function $f$, we may write these rules with $\defeq$ as a way of specifying the data $d$ and say that $f$ is defined by them.
+\begin{equation}
+  f(c(\alpha,\beta,\delta,\omega)) \jdeq d(\alpha,f\circ \alpha,\beta, f\circ \beta, \delta, \omega,f(\omega)).\label{eq:example-comp}
+\end{equation}
+As we have before in particular cases, when defining a particular function $f$, we may write these rules with $\defeq$ as a way of specifying the data $d$, and say that $f$ is defined by them.
 
 The \emph{induction principle} for a general inductive type $W$ is only a little more complicated.
 Of course, we start with a type family $P:W\to\type$, which we require to be equipped with constructor data ``lying over'' the constructor data of $W$.
-That means we transform the type of each constructor by replacing all occurrences of $W$ not by $P$, but by an element $w:W$ together with an element of $P(w)$.
-Similarly, we replace a function argument such as $A\to W$ by a function $\alpha:A\to W$ together with another function of type $\prd{a:A} P(\alpha(a))$.
-
-In the example of~\eqref{eq:example-constructor}, the corresponding hypothesis for the induction principle would require
+That means the ``recursive call'' arguments such as $A\to P$ above must be replaced by dependent functions with types such as $\prd{a:A} P(\alpha(a))$.
+In the full example of~\eqref{eq:example-constructor}, the corresponding hypothesis for the induction principle would require
 \begin{multline*}
 d : \dprd{\alpha:A\to W}\left(\dprd{a:A} P(\alpha(a))\right) \to
 \dprd{\beta:B\to C\to W} \left(\dprd{b:B}{c:C} P(\beta(b,c))\right) \to\\
@@ -619,10 +624,7 @@ d : \dprd{\alpha:A\to W}\left(\dprd{a:A} P(\alpha(a))\right) \to
 \dprd{\omega:W} P(\omega) \to
 P(c(\alpha,\beta,\delta,\omega)).
 \end{multline*}
-The corresponding computation rule would be
-\[ f(c(\alpha,\beta,\delta,\omega)) \jdeq
-d(\alpha, f\circ\alpha, \beta, f\circ \beta, \delta, \omega, f(\omega)).
-\]
+The corresponding computation rule looks identical to~\eqref{eq:example-comp}.
 
 We will not attempt to give a formal presentation of the grammar of a valid inductive definition and its resulting induction and recursion principles.
 This is possible to do (indeed, it is necessary to do if implementing a computer proof assistant), but provides no additional insight.

@@ -1,3 +1,5 @@
+\newcommand{\vset}{\mathsf{set}}  % point constructor for cummulative hierarchy V
+
 \chapter{Set Theory}
 \label{cha:set-math}
 
@@ -891,6 +893,104 @@ Similarly, we have unions $Y_1 \cup Y_2$, intersections $Y_1 \cap Y_2$, and so o
 
 Construction of $V$ as a HIT, mimicking Peter Aczel's construction of a type-theoretic
 model of CZF.
+
+\marginpar{Is this a valid HIT?}
+
+\begin{defn}
+  The \emph{cummulative hierachy $V$} relative to a type universe $\UU$ is the
+  higher-inductive type with:
+  %
+  \begin{enumerate}
+  \item \emph{points:} for every $A : \UU$ and $f : A \to V$ there is a point $\vset(A, f)$,
+  \item \emph{paths:} for all $A, B : \UU$, $f : A \to V$ and $g : B \to V$ such that
+    %
+    \begin{equation} \label{eq:V-path}
+      (\fall{a:A} \exis{b:B} \id[V]{f(a)}{g(b)}) \land (\fall{b:B} \exis{a:A} \id[V]{f(a)}{g(b)})
+    \end{equation}
+    %
+    there is a path $\id[V]{\vset(A,f)}{\vset(B,g)}$.
+  \end{enumerate}
+\end{defn}
+
+\noindent
+%
+In set-theoretic language the element $\vset(A,f)$ could be understood as $\{ f(a) \mid a
+\in A \}$, but of course we cannot write this in type theory. The hierarchy $V$ is
+bootstraped with the empty map $o : \emptyt \to V$, which corresponds to the empty set.
+Then the singleton $\unit \to V$, defined as $\ttt \mapsto \vset(\emptyt, o)$ enters $V$, and so
+on. The type $V$ lives in the same universe as the base universe $U$.
+
+\begin{thm} \label{V-is-set}
+  The cummulative hierarchy $V$ is $0$-truncated.
+\end{thm}
+
+\begin{proof}
+  A confusing way of stating the therem is ``$V$ is a set.'' Because~\eqref{eq:V-path} is
+  a mere proposition which is obviously reflexive, therefore
+  \autoref{thm:h-set-refrel-in-paths-sets} applies.
+\end{proof}
+
+The elementhood relation $\in$ is defined on $V$ by
+%
+\begin{equation*}
+  (x \in \vset(A,f)) \defeq \exis{a : A} x = f(a).
+\end{equation*}
+%
+To see that the definition is valid, suppose we have a path $\vset(A, f) = \vset(B, g)$
+constructed through~\eqref{eq:V-path}. If $x \in \vset(A,f)$ then there is $a : A$ such
+that $x = f(a)$, but by~\eqref{eq:V-path} there is $b : B$ such that $f(a) = g(b)$, hence
+$x = g(b)$ and $x \in \vset(B,f)$. The converse is symmetric.
+
+Each $v \in V$ determines its \emph{type of elements} $\setof{ x : V | x \in y }$.
+
+The subset relation $\subseteq$ is defined on $V$ by
+%
+\begin{equation*}
+  (x \subseteq y) \defeq \fall{z : V} z \in x \Leftrightarrow z \in y.
+\end{equation*}
+
+A \emph{class} is a mere predicate on~$V$. We say that \emph{$C : V \to \prop$ is a
+  $V$-set} if there merely exists $x \in V$ such that
+%
+\begin{equation*}
+  \fall{y : V} C(y) \Leftrightarrow y \in x.
+\end{equation*}
+
+\begin{thm}
+  The following hold for $(V, {\in})$:
+  %
+  \begin{enumerate}
+  \item \emph{extensionality:}
+    %
+    \begin{equation*}
+      \fall{x, y : V} x \subseteq y \land y \subseteq x \Leftrightarrow x = y.
+    \end{equation*}
+  \item \emph{replacement:} given any $r : V \to V$ and $x : V$, the class $C(y) \defeq
+    \exis{z : V} z \in x \land y = r(z)$ is a $V$-set. If $C(y)$ then there merely exists
+    $z : V$ and $a : A$ such that $z = f(a)$ and $y = r(z)$, therefore $y \in w$.
+    Conversely, if $y \in w$ then there merely exists $a : A$ such that $y = r(f(a))$, so
+    if we take $z \defeq f(a)$ we see that $C(y)$ holds.
+  \end{enumerate}
+\end{thm}
+
+
+\begin{proof}
+  \mbox{}
+  %
+  \begin{enumerate}
+  \item Extensionality: if $\vset(A,f) \subseteq \vset(B, g)$ then $f(a) \in \vset(B, g)$
+    for every $a : A$, therefore for every $a : A$ there merely exists $b : B$ such that
+    $f(a) = g(b)$. The assumption $\vset(B, g) \subseteq \vset(A, f)$ gives the other half
+    of~\eqref{eq:V-path}, therefore $\vset(A,f) = \vset(B,g)$.
+
+  \item Replacement: the statement ``$C$ is a $V$-set'' is a mere proposition, so we may
+    proceed by induction as follows. Supposing $x$ is $\vset(A, f)$, we claim that $w
+    \defeq \vset(A, r \circ f)$ is the set we are looking for.
+
+  \end{enumerate}
+\end{proof}
+
+\textbf{TODO:} What sort of set theory did we get?
 
 
 \input{ordcard}

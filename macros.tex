@@ -37,8 +37,13 @@
 \def\dprd#1{\@dprd{#1}\@ifnextchar\bgroup{\dprd}{}}
 \def\@dprd#1{\prod_{(#1)}\,}
 
-%%% Lambda abstractions?
+%%% Lambda abstractions without explicitly typed variables.
+% Call as \lam{x}{y}{z}.  If there is more than one argument, they *must* be enclosed in braces.
 \def\lam#1{{\lambda}#1\@ifnextchar\bgroup{.\,\lam}{.\,}}
+%%% and with them.  Call as \lamt{x:A}{y:B}.
+\def\lamt#1{{\lambda}\@lamtarg#1\@endlamtarg\@ifnextchar\bgroup{.\,\lamt}{.\,}}
+\def\@lamtarg#1:#2\@endlamtarg{\@lamtvar{#2},#1\@endlamtvar}
+\def\@lamtvar#1,#2{{#2}^{#1}\@ifnextchar,{.\,{\lambda}\@lamtvar{#1}}{\let\@endlamtvar\relax}}
 
 %%% Dependent products written with \forall, in the same style
 \def\fall#1{\forall (#1)\@ifnextchar\bgroup{.\,\fall}{.\,}}

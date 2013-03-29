@@ -101,43 +101,10 @@ Each type former consists of a way to construct types (possibly making use of pr
 In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
 
 
-\section{Universes}
-\label{sec:universes}
-
-A universe is a type whose elements are types. As in naive set theory
-we may wish for a universe of all types $\UU_\infty$ including itself
-$\UU_\infty : \UU_\infty$ but as in set
-theory this is unsound, i.e. we can deduce that every type,
-including the empty type representing the proposition False, is inhabited. Using a
-representation of sets as trees we can directly encode Russell's
-paradox \cite{thierry:trees}, or alternatively, in order to avoid the use of
-inductive types to define trees, we can follow Girard \cite{girard:paradox} and encode the Burali-Forti paradox,
-which shows that the collection of all ordinals cannot be an ordinal.
-
-To avoid these paradoxes we introduce a hierarchy of universes
-\[ \UU_0 : \UU_1 : \UU_2 : \dots \]
-where every universe $\UU_i$ is an element of the next universe
-$\UU_{i+1}$. Moreover we assume that our universes are
-\emph{cumulative}, that is that all the elements of the $i$th
-universe are also elements of the $i+1$th universe, i.e. if
-$A:\UU_i$ then $A:\UU_{i+1}$
-\footnote{This rule breaks the principle that every element
-  has a uniquely determined type. This could be avoided by introducing
-  an explicit lifting operator.}
-
-We say that our type theory is predicative if types in a universe $\UU_i$ are introduced only with reference to types in the same or lower universes. Most (all ?) constructions introduced in this book are predicative. An impredicative type is one which is obtained by quantifying over all types at a certain level including itself. In classical mathematics we can quantify over all truth values, which are identified with the type of booleans. Doing the same in type theory would involve quantifying over all types at the current level and is hence impredicative. As a consequence, assuming the principle of excluded middle, which identifies the small type of booleans with the universe, leads to an impredicative theory.
-
-When we say that $A$ is a type we mean that it inhabits some universe
-$\UU_i$. We usually want to avoid to mention the level $i$ explicitely
-and just assume that levels can be assigned in a consistent way. We
-may write $A:\UU$ omitting the level. This way we can even write
-$\UU:\UU$ which can be read as $\UU_i:\UU_{i+1}$ having left the
-indizes implicit. 
-
 \section{Function types}
 \label{sec:function-types}
 
-Given types $A,B :\UU$ we can construct the type $A \to B:\UU$ of functions with domain $A$
+Given types $A,B$ we can construct the type $A \to B$ of functions with domain $A$
 and codomain $B$. Unlike in set theory functions are not defined as
 functional relations but functions in type theory are a primitive
 concept. We explain the function type by prescribing what we can do with functions, 
@@ -250,6 +217,50 @@ Currying a function of three or more arguments is a straightforward extension of
 % over $A:\UU$ and $n : \Nat$. Another example is the type $x =_A y$ which is a
 % family indexed over $A:\UU$ and $x,y : A$.
 
+\section{Universes and families}
+\label{sec:universes}
+
+So far we have been using the expression $A$ is a type informally. We
+are going to make this more precise by introducing \textbf{universes}.
+A universe is a type whose elements are types. As in naive set theory
+we may wish for a universe of all types $\UU_\infty$ including itself
+$\UU_\infty : \UU_\infty$ but as in set
+theory this is unsound, i.e. we can deduce that every type,
+including the empty type representing the proposition False, is inhabited. Using a
+representation of sets as trees we can directly encode Russell's
+paradox \cite{thierry:trees}.
+%  or alternatively, in order to avoid the use of
+% inductive types to define trees, we can follow Girard \cite{girard:paradox} and encode the Burali-Forti paradox,
+% which shows that the collection of all ordinals cannot be an ordinal.
+
+To avoid the paradox we introduce a hierarchy of universes
+\[ \UU_0 : \UU_1 : \UU_2 : \dots \]
+where every universe $\UU_i$ is an element of the next universe
+$\UU_{i+1}$. Moreover we assume that our universes are
+\emph{cumulative}, that is that all the elements of the $i$th
+universe are also elements of the $i+1$th universe, i.e. if
+$A:\UU_i$ then $A:\UU_{i+1}$
+% \footnote{This rule breaks the principle that every element
+%   has a uniquely determined type. This could be avoided by introducing
+%   an explicit lifting operator.}
+
+% We say that our type theory is predicative if types in a universe $\UU_i$ are introduced only with reference to types in the same or lower universes. Most vconstructions introduced in this book are predicative. An impredicative type is one which is obtained by quantifying over all types at a certain level including itself. In classical mathematics we can quantify over all truth values, which are identified with the type of booleans. Doing the same in type theory would involve quantifying over all types at the current level and is hence impredicative. As a consequence, assuming the principle of excluded middle, which identifies the small type of booleans with the universe, leads to an impredicative theory.
+
+When we say that $A$ is a type we mean that it inhabits some universe
+$\UU_i$. We usually want to avoid to mention the level $i$ explicitely
+and just assume that levels can be assigned in a consistent way. We
+may write $A:\UU$ omitting the level. This way we can even write
+$\UU:\UU$ which can be read as $\UU_i:\UU_{i+1}$ having left the
+indizes implicit. 
+
+To model a type varying over a given type $A$ we use functions whose
+domain is a universe $B : A \to \UU$. These functions are called
+\textbf{families of types} and they correspond to families of sets as used in
+set theory. An example of a family is the family of finite sets $\Fin
+: \nat \to \UU$ where $\Fin(n)$ is a type with exactly $n$ elements
+which we denote as $0_n,1_n,\dots,(n-1)_n$. 
+
+
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:pi-types}
 
@@ -259,13 +270,6 @@ a $\Pi$-type are functions whose codomain type can vary depending on the
 element of the domain the function is applied to. The name $\Pi$-type
 is used, because this type corresponds to the infinite cartesian
 product over a given type.
-
-To model a type varying over a given type $A$ we use functions whose
-domain is a universe $B : A \to \UU$. These functions are called
-\textbf{families of types} and they correspond to families of sets as used in
-set theory. An example of a family is the family of finite sets $\Fin
-: \nat \to \UU$ where $\Fin(n)$ is a type with exactly $n$ elements
-which we denote as $0_n,1_n,\dots,(n-1)_n$. 
 
 Now given a type $A:\UU$ and a family $B:A \to \UU$ we construct
 the type of dependent functions $\prd{x:A}B(x) : \UU$. If $B$ is
@@ -289,7 +293,7 @@ which returns the largest element in a finite type, $\fmax(n) \defeq
 n_{n+1}$. 
 Another source of dependent function types
 are function which are \emph{polymorphic} over a given universe,
-e.g. the polymorphic indentity function $\idf : \prd{A:U} A \to A$
+e.g. the polymorphic identity function $\idf : \prd{A:U} A \to A$
 which we define as $\idf(A) \defeq \lam{x:A}x$.
 
 As for ordinary functions we use currying to define functions in
@@ -374,16 +378,16 @@ function $g : \prd{x:A}\prd{y:B} C(\tup{x}{y})$ and the defining equation
 \[ f(x,y) \defeq g(x)(y) \] 
 An example is that we can prove the principle of surjective pairing, i.e.
 we can construct a function
-\[ \spr : \prd{x:A \times B} \tup{\fst(x)}{\snd{x}} =_{A\times B} x \]
+\[ \spr : \prd{x:A \times B} \tup{\fst {(x)}}{\snd {(x)}} =_{A\times B} x \]
 Here we are using the identity type which we are going to introduce below. All
 we need here is to know that there s a proof of reflexivity $\refl{x} : x =_A x$ for $x:A$. 
 Given this we can define
 \[ \spr(\tup{a}{b}) \defeq \refl{\tup{a}{b}} \]
 This construction works, because in the case that $x \defeq \tup{a}{b}$ we can 
 calculate 
-\[ \tup{\fst(\tup{a}{b})}{\snd{\tup{a}{b}}} \jdeq \tup{a}{b} \]
+\[ \tup{\fst(\tup{a}{b})}{\snd{(\tup{a}{b})}} \jdeq \tup{a}{b} \]
 using the defining equations for the projections. And hence 
-\[ \refl{\tup{a}{b}} : \tup{\fst(\tup{a}{b})}{\snd{\tup{a}{b}}} = \tup{a}{b} \]
+\[ \refl{\tup{a}{b}} : \tup{\fst(\tup{a}{b})}{\snd{(\tup{a}{b})}} = \tup{a}{b} \]
 This means that to prove a property for all elements of a product it is enough 
 to prove it for its canonical elements, the tuples. This trivial example shows that the construction of a dependent function corresponds to a proof by induction.
 % example ?
@@ -656,7 +660,7 @@ a particular feature of type theory. Moreover, homotopy type theory is
 based on a reinterpretation of identity types embracing a
 proof-relevant understanding of identity types: there can be more than
 one reason that two objects are equal corresponding two the fact that
-there can be more than one paths between two points.
+there can be more than one path between two points.
 
 Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point f view that there is a path between $a$ and $b$. In particular there is a canonical element
 $\refl : \prd{a:A} a =_A a$ --- the proof of reflexivity.
@@ -784,7 +788,7 @@ We can use the eliminator for equality to establish that equality is an equivale
 \section{The natural numbers}
 \label{sec:inductive-types}
 
-The type we have introduced so far preserve finiteness. The simplest infinite type we can think of and which also turns out to be extremely useful is the type $\nat : \UU$ of natural numbers. The elements of $\nat$ are constructed using $0 : \nat$ and the successor operation $\suc : \nat \to \nat$. When denoting natural numbers we adopt the usual decimal notation $1 = \suc(0), 2 = \suc(1), 3 = \suc(2), \dots$.
+The types we have introduced so far preserve finiteness. The simplest infinite type we can think of and which also turns out to be extremely useful is the type $\nat : \UU$ of natural numbers. The elements of $\nat$ are constructed using $0 : \nat$ and the successor operation $\suc : \nat \to \nat$. When denoting natural numbers we adopt the usual decimal notation $1 = \suc(0), 2 = \suc(1), 3 = \suc(2), \dots$.
 
 To construct a non-dependent function $f : \nat \to C$ out of the natural numbers, it is enough to provide $c_0 : C$ and $c_s : \nat \to C \to C$. This gives rise to $f$ with the defining equations
 \begin{eqnarray*}
@@ -852,13 +856,13 @@ For $\ass_s$ we exploit $\suc(m)+n \jdeq \suc(m+n)$ and hence
 Hence we can define
 \[\ass_s(n,h,j,k) \defeq \apfunc{\suc}(n+(j+k),(n+j)+k,h(j,k)) \]
 
-Using $\ind{nat}$ we can construct an expression 
-\begin{align*}
-  \ind{nat}(&\lam{i:\nat}\prd{j,k:nat} i + (j + k) = (i + j) + k ,\\
-  & \lam{j,k:\nat}\refl{j+k}, \\
-  & \lam{n:\nat}{h:\prd{j,k:\nat} i + (j + k) = (i + j) + n}{j,k:\nat}\apfunc{\suc}(n+(j+k),(n+j)+k,h(j,k)) )\\
-& : \prd{i,j,k:\nat} i + (j + k) = (i + j) + k
-\end{align*}
+% Using $\ind{nat}$ we can construct an expression 
+% \begin{align*}
+%   \ind{nat}(&\lam{i:\nat}\prd{j,k:nat} i + (j + k) = (i + j) + k ,\\
+%   & \lam{j,k:\nat}\refl{j+k}, \\
+%   & \lam{n:\nat}{h:\prd{j,k:\nat} i + (j + k) = (i + j) + n}{j,k:\nat}\apfunc{\suc}(n+(j+k),(n+j)+k,h(j,k)) )\\
+% & : \prd{i,j,k:\nat} i + (j + k) = (i + j) + k
+% \end{align*}
 
 % The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
 %   \[ 0:\nat\]
@@ -908,11 +912,57 @@ Using $\ind{nat}$ we can construct an expression
 \section{Propositions as types}
 \label{sec:pat}
 
-\textbf{TODO:} A discussion of how to speak type formers in English, e.g.\ ``for all $x:A$, something or other'' means ``$\prd{x:A}$ something or other'', and so on.
-For now, we will use ``$A$ or $B$'' to mean $A+B$ and ``there exists $x:A$'' to mean $\sm{x:A}$, but perhaps we should mention that we will refine it further later on.
-For instance, sometimes classical statements involving these connectives need to be interpreted differently (see \autoref{subsec:prop-subsets} and wherever we discuss $(-1)$-truncations).
+To state that a proposition is true in type theory corresponds to exhibiting an element of a type corresponding to a proposition. We will however, in general not construct an explicit term representing this proof but instead present the proofs in prose so that \emph{in principle} they could be translated into an element of a type. This is no different to reasoning in classical set theory where we don't expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory. One important difference is, however, that we cannot use certain classical principle such as the law of excluded middle or indirect proofs (i.e. proving $A$ by proving not not $A$.
 
-We will say that a type $A$ is \textbf{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct a term belonging to $A$, usually unnamed).
+We start with propositional logic: a proposition can be translated into a type following the following rules:
+\begin{center}
+\begin{tabular}{c|l}
+  \textbf{English} & \textbf{Translation into Type Theory}\\\hline
+  True & $\unit$ \\
+  False & $\emptyt$ \\
+  $A$ and $B$ & $A \times B$ \\
+  $A$ or $B$ & $A + B$ \\
+  If $A$ then $B$ & $A \to B$ \\
+  $A$ if, and only if, $B$ & $(A \to B) \times (B \to A)$ \\
+  Not $A$ &  $A \to \emptyt$
+\end{tabular}
+\end{center}
+Clearly, most of the time we are not going to construct explicit representations of proofs, however, it is good to know that we can do it in principle especaally when in doubt. As an exercise we can verify 
+propositional tautologies, like \emph{If not ($A$ or $B$), then  (not $A$) and (not $B$)} by exhibiting an element of 
+\[ ((A + B) \to \emptyt) \to (A \to \emptyt) \times (B \to \emptyt) \]
+for any types $A$, $B$ using the rules we have just introduced. However, not all classical tautologies hold: for example the rule 
+\emph{If not ($A$ and $B$) then (not $A$) or (not $B$)} is not constructively valid and hence we cannot, in general, construct an element of the corresponding type
+\[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt)\]
+The intuitive reason is that the premise doesn't offer any information that would help us to decide wither we should prove the disjunction using $\inl$ or $\inr$.
+
+In predicate logic types play a dual role: they serve is propositions and as types in the conventional sense, i.e. domains we quantify over. Indeed, we are going to exploit this duality meaning that we can also quantify over the type of proofs of a proposition. A predicate over a type $A$ is representing as a family $P : A \to U$ assigning to every element $a : A$ a type $P(a)$ corresponding to the proposition that $P$ holds for $a$. We extend our translation with an explanation of the quantifiers:
+\begin{center}
+\begin{tabular}{c|l}
+  \textbf{English} & \textbf{Translation into Type Theory}\\\hline
+  For all $x:A$, $P(x)$ holds & $\prd{x:A} P(x)$ \\
+  There exists $x:A$ such that $P(x)$ & $\sm{x:A}$ $P(x)$ \\
+\end{tabular}
+\end{center}
+As before we can translate tautologies of predicate logic into types of predicate logic, for example \emph{If for all $x:A$, $P(x)$ and $Q(x)$ then (for all $x:A$, $P(x)$) and  (for all $x:A$, $Q(x)$)  } which translates to
+\[ (\prd{x:A} P(x) \times Q(x)) \to (\prd{x:A} P(x)) \times (\prd{x:A} Q(x)) \]
+and we can verify the tautology by constructing an element for any $A:\UU$ and $P,Q : A \to \UU$. 
+
+We can use the universes to represent higher order logic even though in a limited way if we do not add additional assumptions. For example we can represent the proposition \emph{for all properties $P : A \to \UU$ if $P(a)$ then $P(b)$} can be represented as
+\[ \prd{P : A \to \UU} P(a) \to P(b) \]
+where $A : \UU$ and $a,b : A$. However, unless we assume the existence
+of an impredicative universe of propositions, this
+proposition  lives in a different, higher universe, then the
+propositions we are quantifying over, that is
+\[ \prd{P : A \to \UU_i} P(a) \to P(b) : \UU_{i+1} \]
+
+We have descibed here a proof-relevant translation or propositions, where the proofs of disjunctions and existential statements carry some information. Using the language of homotopy type theory which we are going to introduce in the next section there is an alternative way to interpret the word \emph{proposition} as a (-1)-type, i.e. a type which doesn't carry any information. In this case we would say \emph{there merely exists} or \emph{merely $A$ or $B$}.
+
+
+% \textbf{TODO:} A discussion of how to speak type formers in English, e.g.\ ``for all $x:A$, something or other'' means ``$\prd{x:A}$ something or other'', and so on.
+% For now, we will use ``$A$ or $B$'' to mean $A+B$ and ``there exists $x:A$'' to mean $\sm{x:A}$, but perhaps we should mention that we will refine it further later on.
+% For instance, sometimes classical statements involving these connectives need to be interpreted differently (see \autoref{subsec:prop-subsets} and wherever we discuss $(-1)$-truncations).
+
+% We will say that a type $A$ is \textbf{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct a term belonging to $A$, usually unnamed).
 
 
 

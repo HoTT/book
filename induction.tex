@@ -165,7 +165,7 @@ Any two h-initial $\nat$-algebras $\chi_i$ and $\chi'_i$ are equal.
 \end{thm}
 
 We now have the following theorem; the proof is only sketched as it involves a large amount of technical detail.
-\begin{thm}
+\begin{thm}\label{thm:nat-hinitial}
 The $\nat$-algebra $(\nat, \zero, \s)$ is homotopy initial.
 \end{thm}
 \begin{proof}[Sketch of proof]
@@ -224,24 +224,30 @@ To improve this situation, we first observe that we have the following definable
        : \natp \to\nat$.
 \end{itemize}
 Since the composition of $g$ and $f$ satisfies the same recurrences as the identity function on $\nat$, Theorem~\ref{thm:nat-uniq} gives that $\prd{n : \nat} \id{g(f(n))}{n}$. The `primed' version of the same theorem gives $\prd{n : \natp} \id{f(g(n))}{n}$.
+Thus, $f$ and $g$ are quasi-inverses, so that $\eqv{\nat}{\natp}$.
 
-This makes it possible to transfer functions on $\nat$ to functions on $\natp$ (and vice versa) by using the maps $f$ and $g$ from above:
+This equivalence makes it possible to transfer functions on $\nat$ to functions on $\natp$ (and vice versa) by using the maps $f$ and $g$ from above:
 \[ \dblp \defeq \lambda(n :\natp), f(\dbl(g(n))) \]
 It is an easy exercise to show that this version of $\dblp$ is equal to the earlier one.
 
-The ability to transfer functions in this way is an improvement over `priming' but the easy result
-$\prd{n : \natp} \dblp(\Sp(n))=\Sp(\Sp(\dblp(n)))$ still has to be reproved
-by induction on $n:\natp$ using lots of $f$'s and $g$'s.
+The ability to transfer functions in this way is an improvement over simple ``priming''.
+However, easy results such as
+\[\prd{n : \natp} \dblp(\Sp(n))=\Sp(\Sp(\dblp(n)))\]
+still technically has to be reproved by induction on $n:\natp$, or else transferred explicitly across the equivalence to \nat, using lots of $f$s and $g$s.
+Here is where the Univalence Axiom steps in: since $\eqv{\nat}{\natp}$, we also have $\id[\type]{\nat}{\natp}$, i.e.\ $\nat$ and $\natp$ are
+\emph{equal} as types.
+Now functions, lemmas, and proofs (and more) can be be transported directly along such paths, with considerably less overhead.
+For example, we can easily obtain a function carrying a proof of $\prd{n : \nat} \dbl(\S(n))=\S(\S(\dbl(n)))$ to a proof of the corresponding lemma for $\natp$.
 
-Here is where the Univalence Axiom steps in: using function extensionality, the identities $\prd{n : \nat} \id{g(f(n))}{n}$
-and $\prd{n : \natp} \id{f(g(n))}{n}$ imply that $g\circ{}f = \idfunc[\nat]$ and $f\circ{}g = \idfunc[\natp]$. Thus
-$\nat$ and $\natp$ are in fact equivalent as types.
-The Univalence Axiom then gives us that $\nat$ and $\natp$ are
-\emph{equal} as types, which means that there is
-a path from $\nat$ to $\natp$ (and back). Functions, lemmas and proofs (and more)
-can be now be transported along such paths, with considerably less overhead. For example, using the
-Univalence Axiom, we can easily obtain a function carrying a proof of
-$\prd{n : \natp} \dblp(\Sp(n))=\Sp(\Sp(\dblp(n)))$ to a proof of the corresponding lemma in $\nat$.
+These conclusions are not confined to the natural numbers: they apply to any inductive type.
+If we have an inductively defined type $W$, say, and some other type $W'$ which satisfies the same induction principle as $W$, then it follows that $\eqv{W}{W'}$, and hence $W=W'$.
+We use the derived recursion principles for $W$ and $W'$ to construct maps $W\to W'$ and $W'\to W$, respectively, and then the induction principles for each to prove that both composites are equal to identities.
+For instance, in \autoref{cha:typetheory} we saw that the coproduct $A+B$ could also have been defined as $\sm{x:\bool} \rec{\bool}(\UU,A,B,x)$.
+The latter type satisfies the same induction principle as the former; hence they are canonically equivalent.
+
+This is, of course, very similar to the familiar fact in category theory that if two objects have the same \emph{universal property}, then they are equivalent.
+In fact, in \autoref{thm:nat-hinitial} we saw that the natural numbers do have a universal property, so that this sort of uniqueness can be regarded as a special case of the category-theoretic principle.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -559,26 +565,82 @@ To see that not everything which ``looks like an inductive definition'' makes se
 \begin{itemize}
 \item $g:(C\to \nat) \to C$.
 \end{itemize}
-What would the recursion principle of $C$ be?
-It seems clear that it should require a type $P$ together with a function $h:(P\to \nat)\to P$, and allow us to construct a function $f:C\to P$.
-But what would the computation rule for $f$ be?
-Looking at other computation rules, we would expect something like ``$f(g(\alpha)) \jdeq h(f(\alpha))$'' for $\alpha:C\to\nat$, but ``$f(\alpha)$'' does not make sense --- there is no way to take a function $C\to\nat$ and ``apply'' a function $f:C\to P$ to it and obtain a function $P\to \nat$.
-The induction principle of $C$ is even more problematic; it's not even clear how to write down the hypotheses.
-(In fact, the situation is even worse than this: even if we ignore the absence of a computation rule and an induction principle, such ``inductive definitions'' are inconsistent.
-See \autoref{ex:loop,ex:loop2}.)
+The recursion principle for such a type $C$ ought to say that given a type $P$, in order to construct a function $f:C\to P$, it suffices to consider the case when the input $c:C$ is of the form $g(\alpha)$ for some $\alpha:C\to\nat$.
+Moreover, we would expect to be able to use the ``recursive data'' of $f$ applied to $\alpha$ in some way.
+However, it is not at all clear how to ``apply $f$ to $\alpha$'', since both are functions with domain $C$.
 
-This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors} of the type being defined.
+We could write down a ``recursion principle'' for $C$ by just supposing (unjustifiably) that there is some way to apply $f$ to $\alpha$ and obtain a function $P\to\nat$.
+Then the input to the recursion rule would ask for a type $P$ together with a function
+\begin{equation}
+  h:(C\to\nat) \to (P\to\nat) \to P\label{eq:fake-recursor}
+\end{equation}
+where the two arguments of $h$ are $\alpha$ and ``the result of applying $f$ to $\alpha$''.
+However, what would the computation rule for the resulting function $f:C\to P$ be?
+Looking at other computation rules, we would expect something like ``$f(g(\alpha)) \jdeq h(\alpha,f(\alpha))$'' for $\alpha:C\to\nat$, but as we have seen, ``$f(\alpha)$'' does not make sense.
+The induction principle of $C$ is even more problematic; it's not even clear how to write down the hypotheses.
+(See also \autoref{ex:loop,ex:loop2}.)
+
+This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors} of the type being defined, so that we can ``apply $f$ to them'' to get the result of the ``recursive call''.
 In other words, if we replace all occurrences of the type being defined with a variable $X:\type$, then each domain of a constructor must be an expression that can be made into a covariant functor of $X$.
 This is the case for all the examples we have considered so far.
 For instance, with the constructor $\inl:A\to A+B$, the relevant functor is constant at $A$ (i.e.\ $X\mapsto A$), while for the constructor $\suc:\nat\to\nat$, the functor is the identity functor ($X\mapsto X$).
 
 However, this necessary condition is also not sufficient.
-Covariance prevents the inductive type from occurring on the left of a single function type, as in the ``constructor'' $g:(C\to\nat)\to C$ above, since this yields a contravariant functor rather than a covariant one.
+Covariance prevents the inductive type from occurring on the left of a single function type, as in the argument $C\to\nat$ of the ``constructor'' $g$ considered above, since this yields a contravariant functor rather than a covariant one.
 However, since the composite of two contravariant functors is covariant, \emph{double} function types such as $((X\to \nat)\to \nat)$ are once again covariant.
+This enables us to reproduce Cantorian-style paradoxes.
 
-\dots
+For instance, consider an ``inductive type'' $D$ with the following constructor:
+\begin{itemize}
+\item $k:((D\to\prop)\to\prop)\to D$.
+\end{itemize}
+Assuming such a type exists, we define functions
+\begin{align*}
+  r&:D\to ((D\to\prop)\to\prop)\\
+  r(k(\theta)) &\defeq \theta\\
+  f&:(D\to\prop) \to D \\
+  f(\delta) &\defeq k(\lam x (x=\delta))\\
+  p&:(D\to \prop) \to ((D\to\prop)\to \prop)\\
+  p(\delta) &\defeq \lam x \delta(f(x)).
+\end{align*}
+Here $r$ is defined by the recursion principle of $D$, while $f$ and $p$ are defined explicitly.
+Then for any $\delta:D\to\prop$, we have $r(f(\delta)) = \lam x(x=\delta)$.
 
-\medskip
+In particular, therefore, if $f(\delta)=f(\delta')$, then we have a path $s:(\lam x(x=\delta)) = (\lam x(x=\delta'))$.
+Thus, $\happly(s,\delta) : (\delta=\delta) = (\delta=\delta')$, and so in particular $\delta=\delta'$ holds.
+Hence, $f$ is ``injective'' (although \emph{a priori} $D$ may not be a set).
+This already sounds suspicious --- we have an ``injection'' of the ``power set'' of $D$ into $D$ --- and with a little more work we can massage it into a contradiction.
+
+Suppose given $\theta:(D\to\prop)\to\prop$, and define $\delta:D\to\prop$ by
+\begin{equation}
+  \delta(d) \defeq \exis{\gamma:D\to\prop} (f(\gamma) = d) \times \theta(\gamma).\label{eq:Pinj}
+\end{equation}
+We claim that $p(\delta)=\theta$.
+By function extensionality, it suffices to show $p(\delta)(\gamma) =_\prop \theta(\gamma)$ for any $\gamma:D\to\prop$.
+And by univalence, for this it suffices to show that each implies the other.
+Now by definition of $p$, we have
+\begin{align*}
+  p(\delta)(\gamma) &\jdeq \delta(f(\gamma))\\
+  &\jdeq \exis{\gamma':D\to\prop} (f(\gamma') = f(\gamma)) \times \theta(\gamma')
+\end{align*}
+Clearly this holds if $\theta(\gamma)$, since we may take $\gamma'\defeq \gamma$.
+On the other hand, if we have $\gamma'$ with $f(\gamma') = f(\gamma)$ and $\theta(\gamma')$, then $\gamma'=\gamma$ since $f$ is injective, hence also $\theta(\gamma)$.
+
+This completes the proof that $p(\delta)=\theta$.
+Thus, every element $\theta:(D\to\prop)\to\prop$ is the image under $p$ of some element $\delta:D\to\prop$.
+However, if we define $\theta$ by a classic diagonalization:
+\[ \theta(\gamma) \defeq \neg p(\gamma)(\gamma) \quad\text{for all $\gamma:D\to\prop$} \]
+then from $\theta = p(\delta)$ we deduce $p(\delta)(\delta) = \neg p(\delta)(\delta)$.
+This is a contradiction: no proposition can be equivalent to its negation.
+(Supposing $P\leftrightarrow \neg P$, if $P$, then $\neg P$, and so $\emptyt$; hence $\neg P$, but then $P$, and so $\emptyt$.)
+
+\begin{rmk}
+  There is a question of universe size to be addressed.
+  In general, an inductive type must live in a universe that already contains all the types going into its definition.
+  Thus if in the definition of $D$, the ambiguous notation \prop means $\prop_{\UU}$, then we do not have $D:\UU$ but only $D:\UU'$ for some larger universe $\UU'$ with $\UU:\UU'$.
+  In a predicative theory, therefore, the right-hand side of~\eqref{eq:Pinj} lives in $\prop_{\UU'}$, not $\prop_\UU$.
+  So this contradiction does require the resizing rule for mere propositions mentioned in \autoref{subsec:prop-subsets}.
+\end{rmk}
 
 This counterexample suggests that we should ban an inductive type from ever appearing on the left of an arrow in the domain of its constructors, even if that appearance is nested in other arrows so as to eventually become covariant.
 (Similarly, we also forbid it from appearing in the domain of a dependent function type.)
@@ -595,23 +657,22 @@ For instance, the following is a valid constructor type:
 All of these function types can also be dependent functions ($\Pi$-types).
 
 Now once we have such an inductive definition, what can we do with it?
-Firstly, there is a \emph{recursion principle} stating that for any type $P$ equipped with the same data given to $W$ by the constructors, we have an induced function $f:W\to P$.
+Firstly, there is a \emph{recursion principle} stating that in order to define a function $f:W\to P$, it suffices to consider the case when the input $w:W$ arises from one of the constructors, allowing ourselves to recursively call $f$ on the inputs to that constructor.
 For the example constructor~\eqref{eq:example-constructor}, we would require $P$ to be equipped with a function of type
 \begin{equation}\label{eq:example-rechyp}
-  d:(A\to P) \to (B\to C \to P) \to D \to P \to P
+  d:(A\to W) \to (A\to P) \to (B\to C\to W) \to (B\to C \to P) \to D \to W \to P \to P.
 \end{equation}
-and similarly for any other constructors of $W$.
 Under these hypotheses, the recursion principle yields $f:W\to P$, which moreover ``preserves the constructor data'' in the evident way --- this is the computation rule, where we use covariance of the inputs.
 For instance, in the example~\eqref{eq:example-constructor}, the computation rule says that for any $\alpha:A\to W$, $\beta:B\to C\to W$, $\delta:d$, and $\omega:W$, we have
-\[ f(c(\alpha,\beta,\delta,\omega)) \jdeq d(f\circ \alpha, f\circ \beta, \delta, f(\omega)). \]
-As we have before in particular cases, when defining a particular function $f$, we may write these rules with $\defeq$ as a way of specifying the data $d$ and say that $f$ is defined by them.
+\begin{equation}
+  f(c(\alpha,\beta,\delta,\omega)) \jdeq d(\alpha,f\circ \alpha,\beta, f\circ \beta, \delta, \omega,f(\omega)).\label{eq:example-comp}
+\end{equation}
+As we have before in particular cases, when defining a particular function $f$, we may write these rules with $\defeq$ as a way of specifying the data $d$, and say that $f$ is defined by them.
 
 The \emph{induction principle} for a general inductive type $W$ is only a little more complicated.
 Of course, we start with a type family $P:W\to\type$, which we require to be equipped with constructor data ``lying over'' the constructor data of $W$.
-That means we transform the type of each constructor by replacing all occurrences of $W$ not by $P$, but by an element $w:W$ together with an element of $P(w)$.
-Similarly, we replace a function argument such as $A\to W$ by a function $\alpha:A\to W$ together with another function of type $\prd{a:A} P(\alpha(a))$.
-
-In the example of~\eqref{eq:example-constructor}, the corresponding hypothesis for the induction principle would require
+That means the ``recursive call'' arguments such as $A\to P$ above must be replaced by dependent functions with types such as $\prd{a:A} P(\alpha(a))$.
+In the full example of~\eqref{eq:example-constructor}, the corresponding hypothesis for the induction principle would require
 \begin{multline*}
 d : \dprd{\alpha:A\to W}\left(\dprd{a:A} P(\alpha(a))\right) \to
 \dprd{\beta:B\to C\to W} \left(\dprd{b:B}{c:C} P(\beta(b,c))\right) \to\\
@@ -619,10 +680,7 @@ d : \dprd{\alpha:A\to W}\left(\dprd{a:A} P(\alpha(a))\right) \to
 \dprd{\omega:W} P(\omega) \to
 P(c(\alpha,\beta,\delta,\omega)).
 \end{multline*}
-The corresponding computation rule would be
-\[ f(c(\alpha,\beta,\delta,\omega)) \jdeq
-d(\alpha, f\circ\alpha, \beta, f\circ \beta, \delta, \omega, f(\omega)).
-\]
+The corresponding computation rule looks identical to~\eqref{eq:example-comp}.
 
 We will not attempt to give a formal presentation of the grammar of a valid inductive definition and its resulting induction and recursion principles.
 This is possible to do (indeed, it is necessary to do if implementing a computer proof assistant), but provides no additional insight.
@@ -649,11 +707,11 @@ Show that for any dependent type $E : \two \to \type$, the space of dependent fu
 
 \begin{ex}\label{ex:loop}
   Suppose that in the ``inductive definition'' of the type $C$ at the beginning of \autoref{sec:strictly-positive}, we replace the type \nat by \emptyt.
-  Using only the ``obvious'' recursion principle for such a definition, construct an element of \emptyt.
+  Using only a ``recursion principle'' for such a definition with hypotheses analogous to~\eqref{eq:fake-recursor}, construct an element of \emptyt.
 \end{ex}
 
 \begin{ex}\label{ex:loop2}
-  Similarly, derive a contradiction from an ``inductive type'' $D$ with one constructor $(D\to D) \to D$.
+  Similarly to the previous exercise, derive a contradiction from an ``inductive type'' $D$ with one constructor $(D\to D) \to D$.
 \end{ex}
 
 % Local Variables:

@@ -91,8 +91,8 @@ The variable $y$ represents our inductive hypothesis. Like for Booleans, we also
 \end{itemize}
 The dependent function $\rec\nat(E;e_z;e_s)$ can thus be understood as being defined recursively on the argument $x : \nat$, via the recurrences $e_z$ and $e_s$: When $x$ is zero, the function simply returns $e_z$. When $x$ is the successor of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and plugging in the specific predecessor $n$ and the recursive call value $\rec\nat(E;e_z;e_s;n)$.
 
-As an example we look at how to define a function on natural numbers which doubles its argument. We wish to apply dependent elimination with the constant type family $E \defeq \lambda(x : \nat), \nat$ since the intended type of $\dbl$ is $\nat \to \nat$. We first need to supply the value of $\dbl(\z)$, which is easy: we put $e_z \defeq \z$. Next, to compute the value of $\dbl(\s(n))$ for a natural number $n$, we first compute the value of $\dbl(n)$ and then perform the successor operation twice. This is captured by the recurrence $e_s(n,y) \defeq \s(\s(y))$; the variable $y$ stands for the result of the recursive call $\dbl(n)$. Thus, we define
-\[ \dbl \defeq \rec\nat(\big(\lambda(x :\nat), \nat\big); \; \z; \;  \big(\lambda(n: \nat) \lambda (y:\nat), \s(\s(y))\big)) \]
+As an example we look at how to define a function on natural numbers which doubles its argument. We wish to apply dependent elimination with the constant type family $E \defeq \lam{x:\nat} \nat$ since the intended type of $\dbl$ is $\nat \to \nat$. We first need to supply the value of $\dbl(\z)$, which is easy: we put $e_z \defeq \z$. Next, to compute the value of $\dbl(\s(n))$ for a natural number $n$, we first compute the value of $\dbl(n)$ and then perform the successor operation twice. This is captured by the recurrence $e_s(n,y) \defeq \s(\s(y))$; the variable $y$ stands for the result of the recursive call $\dbl(n)$. Thus, we define
+\[ \dbl \defeq \rec\nat(\big(\lam{x:\nat} \nat\big); \; \z; \;  \big(\lam{n:\nat}{y:\nat} \s(\s(y))\big)) \]
 This indeed has the correct computational behavior: for example, we have 
 \begin{align*}
 \dbl(\s(\s(\z))) & \equiv e_s(\s(\z), \dbl(\s(\z))) \\
@@ -105,7 +105,7 @@ This indeed has the correct computational behavior: for example, we have
 as desired, where an arbitrary evaluation strategy was chosen.
 
 There are many similar cases when one wants to use dependent elimination into a constant family.
-This is referred to as \emph{simple elimination}, which corresponds to recursion---instead of proving a separate statement $P(n)$ for each natural number $n$ as done in the dependent case, we are recursively constructing a function into a simple type $C$. In this case, we omit the $\lambda$-binder for simplicity and write $\rec\nat(C; \ldots)$ instead of $\rec\nat(\lambda (n : \nat), C; \ldots)$
+This is referred to as \emph{simple elimination}, which corresponds to recursion---instead of proving a separate statement $P(n)$ for each natural number $n$ as done in the dependent case, we are recursively constructing a function into a simple type $C$. In this case, we omit the $\lambda$-binder for simplicity and write $\rec\nat(C; \ldots)$ instead of $\rec\nat(\lam{n:\nat} C; \ldots)$
 
 The dependent elimination principle is quite strong and allows us to prove a variety of interesting theorems. For example, by specifying the terms $e_z$ and $e_s$, we  uniquely determine how the recursor behaves on canonical terms, and thus on all natural numbers. If we now have another function which obeys the same recurrence, then our intuition suggests these two functions should be equal. It turns out this is indeed the case and we have the following \emph{uniqueness principle}:
 
@@ -205,7 +205,7 @@ transfer results from one appearance of the natural numbers to any other.
 
 Recall the example of the function $\dbl$ defined above. A similar function
 for our new natural numbers is readily defined by duplication and adding primes:
-\[ \dblp \defeq \rec\natp(\natp; \; \zp; \;  \lambda(n: \natp) \lambda (m:\natp), \Sp(\Sp(m))) \]
+\[ \dblp \defeq \rec\natp(\natp; \; \zp; \;  \lam{n:\natp}{m:\natp} \Sp(\Sp(m))) \]
 Simple as this may seem, it has the obvious drawback of leading to a
 proliferation of duplicates. Not only functions have to be
 duplicated, but also all lemmas and their proofs. For example,
@@ -217,16 +217,16 @@ equal and can be substituted for each other whenever the need arises.
 
 To improve this situation, we first observe that we have the following definable maps:
 \begin{itemize}
-\item $f \defeq \rec\nat(\nat; \; \zp; \;  \lambda(n: \nat), \Sp)
+\item $f \defeq \rec\nat(\nat; \; \zp; \;  \lam{n:\nat} \Sp)
        : \nat \to\natp$,
-\item $g \defeq \rec\natp(\natp; \; \z; \;  \lambda(n: \natp), \s)
+\item $g \defeq \rec\natp(\natp; \; \z; \;  \lam{n:\natp}, \s)
        : \natp \to\nat$.
 \end{itemize}
 Since the composition of $g$ and $f$ satisfies the same recurrences as the identity function on $\nat$, Theorem~\ref{thm:nat-uniq} gives that $\prd{n : \nat} \id{g(f(n))}{n}$. The `primed' version of the same theorem gives $\prd{n : \natp} \id{f(g(n))}{n}$.
 Thus, $f$ and $g$ are quasi-inverses, so that $\eqv{\nat}{\natp}$.
 
 This equivalence makes it possible to transfer functions on $\nat$ to functions on $\natp$ (and vice versa) by using the maps $f$ and $g$ from above:
-\[ \dblp \defeq \lambda(n :\natp), f(\dbl(g(n))) \]
+\[ \dblp \defeq \lam{n:\natp} f(\dbl(g(n))) \]
 It is an easy exercise to show that this version of $\dblp$ is equal to the earlier one.
 
 The ability to transfer functions in this way is an improvement over simple ``priming''.
@@ -311,7 +311,7 @@ In the case of natural numbers, the label $\true $ has arity 0, since it constru
 where the superscript \textbf{w} serves to distinguish this version of natural numbers from the previously used one.
 Similarly, we can define the type of lists over $A$ as a W-type with $\disj{\one}{A}$ many labels: one nullary label for the empty list, plus one unary label for each $a : A$, corresponding to appending $a$ to the head of a list:
 
-\[ \lst A \defeq \wtype{x:\disj{\one}{A}} \rec{\disj{\one}{A}}(\bbU; \; \zero; \; \lambda{(a:A)}, \one) \]
+\[ \lst A \defeq \wtype{x:\disj{\one}{A}} \rec{\disj{\one}{A}}(\bbU; \; \zero; \; \lam{a:A} \one) \]
 Schematically, we define a general W-type as follows:
 \[ \wtype{x:A} B(x) : \type \defeq \myInd \left\{
 \begin{array}{ll}
@@ -321,12 +321,12 @@ Schematically, we define a general W-type as follows:
 
 The constructor $\supp$ (short for supremum) takes a label $a : A$ and a function $f : B(a) \to \wtype{a:A} B(a)$ representing the arguments to $a$, and constructs a new element of $\wtype{x:A} B(x)$. Using our previous encoding of natural numbers as W-types, we can for instance define
 \begin{align*}
-\zw \defeq \supp(\true, \; \lambda(x : \zero), \rec\zero(\natw;x))
+\zw \defeq \supp(\true, \; \lam{x:\zero} \rec\zero(\natw;x))
 \end{align*}
 Put differently, we use the label $\true$ to construct $\zw$. Then, $\rec\two(\bbU;\zero;\one; \true)$ evaluates to $\zero$, as it should since $\true$ is a nullary label. Thus, we need to construct a function $f : \zero \to \natw$, which represents the (zero) arguments supplied to $\true$. This is of course trivial, using simple elimination on $\zero$ as shown. Similarly, we can define
 \begin{align*}
-1^\mathbf{w} \defeq \supp(\false, \; \lambda(x : \one), 0^\mathbf{w}) \\
-2^\mathbf{w} \defeq \supp(\false, \; \lambda(x : \one), 1^\mathbf{w})
+1^\mathbf{w} \defeq \supp(\false, \; \lam{x:\one} 0^\mathbf{w}) \\
+2^\mathbf{w} \defeq \supp(\false, \; \lam{x:\one} 1^\mathbf{w})
 \end{align*}
 and so on.
 
@@ -346,17 +346,17 @@ How would we define the function $\dbl$ on natural numbers encoded as a W-type? 
 which will represent the recurrence for the $\dbl$ function; for simplicity we denote the type $\rec\two(\bbU;\zero;\one)$ by $B$.
 
 Clearly, $e$ will be a function taking $a : \two$ as its first argument. The next step is to perform case analysis on $a$ and proceed based on whether it is $\true$ or $\false$. This suggests the following form
-\[ e \defeq \lambda(a : \two), \; \rec\two(C,e_t,e_f,a) \]
+\[ e \defeq \lam{a:\two} \rec\two(C,e_t,e_f,a) \]
 where \[C \defeq \prd{f : B(a) \to \natw}{g : B(a) \to \natw} \natw\]
 If $a$ is $\true$, the type $B(a)$ becomes $\zero$. Thus, given $f : \zero \to \natw$ and $g : \zero \to \natw$, we want to construct an element of $\natw$. Since the label $\true$ represents $\zero$, it needs zero inductive arguments and the variables $f$ and $g$ are irrelevant. We return $\zw$ as a result:
-\[ e_t \defeq \lambda(f:\zero \to \natw)\lambda(g:\zero \to \natw), \; \zw \]
+\[ e_t \defeq \lam{f:\zero \to \natw}{g:\zero \to \natw} \zw \]
 Analogously, if $a$ is $\false$, the type $B(a)$ becomes $\one$.
 Since the label $\false$ represents the successor operator, it needs one inductive argument---the predecessor---which is represented by the variable $f : \one \to \natw$.
 The value of the recursive call on the predecessor is represented by the variable $g : \one \to \natw$.
 Thus, taking this value (namely $g(\ttt)$) and applying the successor operator twice thus yields the desired result:
 \begin{align*}
- e_f \defeq & \; \lambda(f:\one \to \natw)\lambda(g:\one \to \natw), \\
-  & \; \supp(\false, (\lambda (x:\one), \; \supp(\false, (\lambda (y : \one), \; g(\ttt)))))
+e_f \defeq & \; \lam{f:\one \to \natw}{g:\one \to \natw} \\
+  & \; \supp(\false, (\lam{x:\one} \supp(\false, (\lam{y : \one} g(\ttt)))))
 \end{align*}
 Putting this together, we thus have
 \[ \dbl \defeq \rec\natw(\natw; e) \]
@@ -366,24 +366,24 @@ The associated computation rule for the function $\rec{\wtype{x:A} B(x)}(E;e) : 
 \begin{itemize}
 \item For any $a : A$ and $f : B(a) \to \wtype{x:A} B(x)$ we have 
 \begin{align*}
-& \rec{\wtype{x:A} B(x)}(E;e;\supp(a,f)) \equiv \\ & e(a,f,\big(\lambda (b : B(a)), \; \rec{\wtype{x:A} B(x)}(E;f(b))\big))
+& \rec{\wtype{x:A} B(x)}(E;e;\supp(a,f)) \equiv \\ & e(a,f,\big(\lam{b:B(a)} \rec{\wtype{x:A} B(x)}(E;f(b))\big))
 \end{align*}
 \end{itemize}
 In other words, the function $\rec{\wtype{x:A} B(x)}(E;e)$ satisfies the recurrence $e$.
 
 By the above computation rule, the function $\dbl$ behaves as expected:
 \begin{align*}
-\dbl(\zw) & \equiv \rec\natw(\natw; e; \supp(\true, \; \lambda(x : \zero), \rec\zero(\natw;x))) \\
-& \equiv e(\true, \big(\lambda(x : \zero), \; \rec\zero(\natw;x)\big), \\
- & \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; \big(\lambda(x : \zero), \; \dbl(\rec\zero(\natw;x))\big)) \\
- & \equiv e_t(\big(\lambda(x : \zero), \; \rec\zero(\natw;x)\big), \big(\lambda(x : \zero), \; \dbl(\rec\zero(\natw;x))\big)) \\
+\dbl(\zw) & \equiv \rec\natw(\natw; e; \supp(\true, \; \lam{x:\zero} \rec\zero(\natw;x))) \\
+& \equiv e(\true, \big(\lam{x:\zero} \rec\zero(\natw;x)\big), \\
+ & \;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\;\; \big(\lam{x:\zero} \dbl(\rec\zero(\natw;x))\big)) \\
+ & \equiv e_t(\big(\lam{x:\zero} \rec\zero(\natw;x)\big), \big(\lam{x:\zero} \dbl(\rec\zero(\natw;x))\big)) \\
  & \equiv \zw \\
  \\
-\dbl(1^\mathbf{w}) & \equiv \rec\natw(\natw; e; \supp(\false, \; \lambda(x : \one), \zw)) \\
-& \equiv e(\false, \big(\lambda(x : \one), \zw\big), \big(\lambda(x : \one), \; \dbl(\zw)\big)) \\
- & \equiv e_f(\big(\lambda(x : \one), \zw\big), \big(\lambda(x : \one), \; \dbl(\zw)\big)) \\
- & \equiv \supp(\false, (\lambda (x:\one), \; \supp(\false,(\lambda (y : \one), \; \dbl(\zw))))) \\
- & \equiv \supp(\false, (\lambda (x:\one), \; \supp(\false,(\lambda (y : \one), \; \zw)))) \\
+\dbl(1^\mathbf{w}) & \equiv \rec\natw(\natw; e; \supp(\false, \; \lam{x:\one} \zw)) \\
+& \equiv e(\false, \big(\lam{x:\one} \zw\big), \big(\lam{x:\one} \dbl(\zw)\big)) \\
+ & \equiv e_f(\big(\lam{x:\one} \zw\big), \big(\lam{x:\one} \dbl(\zw)\big)) \\
+ & \equiv \supp(\false, (\lam{x:\one} \supp(\false,(\lam{y:\one} \dbl(\zw))))) \\
+ & \equiv \supp(\false, (\lam{x:\one} \supp(\false,(\lam{y:\one} \zw)))) \\
  & \equiv 2^\mathbf{w}
 \end{align*}
 and so on.
@@ -395,8 +395,8 @@ W-types:
 \begin{thm}\label{thm:w-uniq}
 Let $g,h : \prd{w:\wtype{x:A}B(x)} E(w)$ be two functions which satisfy the recurrence $e : \prd{a,f} (\prd{b : B(a)} E(f(b))) \to E(\supp(a,f))$ up to propositional equality, i.e., such that
 \begin{align*}
-\prd{a,f} \id{g(\supp(a,f))}{e(a,f,\lambda (b: B(a)), g(f(b)))} \\
-\prd{a,f} \id{h(\supp(a,f))}{e(a,f,\lambda (b: B(a)), h(f(b)))}
+ \prd{a,f} \id{g(\supp(a,f))}{e(a,f,\lam{b:B(a)} g(f(b)))} \\
+ \prd{a,f} \id{h(\supp(a,f))}{e(a,f,\lam{b:B(a)} h(f(b)))}
 \end{align*}
 Then $g$ and $h$ are equal. 
 \end{thm}
@@ -410,9 +410,9 @@ A \emph{$\w$-algebra} for a type $A : \type$ and type family $B : A \to \type$ i
 \end{defn}
 
 \begin{defn}
-Fix $A : \type, B : A \to \type$ and any $\w$-algebras $(C,c),(D,d) : \walg \; A \; B$. A \emph{$\w$-homomorphism} between them is a function $h : C \to D$ such that $h(c(a,f)) = d(a,\lambda (b : B(a)), \; h(f(b)))$ for any $a : A$ and $f : B(a) \to C$. Thus,
+  Fix $A : \type, B : A \to \type$ and any $\w$-algebras $(C,c),(D,d) : \walg \; A \; B$. A \emph{$\w$-homomorphism} between them is a function $h : C \to D$ such that $h(c(a,f)) = d(a,\lam{b:B(a)} h(f(b)))$ for any $a : A$ and $f : B(a) \to C$. Thus,
 \begin{align*}
-\whom \; A \; B \; (C, c) \; (D,d) \defeq \sm {h : C \to D} \\ \prd{a:A}{f:B(a)\to C} \id{h(c(a,f))}{\lambda (b : B(a)), \; h(f(b))}
+  \whom \; A \; B \; (C, c) \; (D,d) \defeq \sm {h : C \to D} \\ \prd{a:A}{f:B(a)\to C} \id{h(c(a,f))}{\lam{b:B(a)} h(f(b))}
 \end{align*}
 \end{defn}
 
@@ -437,8 +437,8 @@ For any type $A : \type$ and type family $B : A \to \type$, the $\w$-algebra $(\
 In the previous section we showed how to encode natural numbers as W-types, with 
 \begin{align*}
 \natw & \defeq \wtype{b:\two} \rec\two(\bbU;\zero;\one) \\
-\zw & \defeq \supp(\true, (\lambda (x : \zero), \; \rec\zero(\natw;x))) \\
-\sw & \defeq \lambda (n : \natw), \; \supp(\false, (\lambda (x : \one), \; n))
+\zw & \defeq \supp(\true, (\lam{x:\zero} \rec\zero(\natw;x))) \\
+\sw & \defeq \lam{n:\natw} \supp(\false, (\lam{x:\one} n))
 \end{align*}
 We also showed how one can define a $\dbl$ function on $\natw$ using simple elimination. When it comes to dependent elimination, however, this encoding is no longer satisfactory: given $E : \natw \to \type$ and recurrences $e_z : E(\zw)$ and $e_s : \prd{n : \natw}{y : E(n)} E(\sw(n))$, we can only construct a dependent function $r(E,e_z,e_s) : \prd{n : \natw} E(n)$ satisfying the given recurrences \emph{propositionally}. This means that the computation rules for natural numbers, which give definitional equalities, cannot be derived from the rules for W-types in any obvious way.
 
@@ -446,7 +446,7 @@ This problem goes away if instead of the conventional inductive types we conside
 \begin{itemize}
 \item For any $a : A$ and $f : B(a) \to \wtypeh{x:A} B(x)$ we have 
 \begin{align*}
-& \rec{\wtypeh{x:A} B(x)}(E;\supp(a,f)) = \\ & e(a,f,\big(\lambda (b : B(a)), \; \rec{\wtypeh{x:A} B(x)}(E;f(b))\big))
+& \rec{\wtypeh{x:A} B(x)}(E;\supp(a,f)) = \\ & e(a,f,\big(\lam{b:B(a)} \rec{\wtypeh{x:A} B(x)}(E;f(b))\big))
 \end{align*}
 \end{itemize}
 
@@ -457,7 +457,7 @@ Homotopy-inductive types have an obvious disadvantage when it comes to computati
                       & \; \prd{E : W \to \type} \\
                       & \; \prd{e : \prd{a,f} (\prd{b : B(a)} E(f(b))) \to E(\supp(a,f))} \\
                       & \; \sm{\rec : \prd{w : W} E(w)} \\
-                      & \; \prd{a,f} \rec{}(\supp(a,f)) = e(a,\lambda (b: B(a)), \rec{}(f(b)))
+                      & \; \prd{a,f} \rec{}(\supp(a,f)) = e(a,\lam{b:B(a)} \rec{}(f(b)))
 \end{align*}
 
 \begin{thm}
@@ -477,7 +477,7 @@ The associated computation rule for $\rec{\wtypeh{x:A} B(x)}(C,c) : (\wtype{x:A}
 \begin{itemize}
 \item For any $a : A$ and $f : B(a) \to \wtypeh{x:A} B(x)$ we have 
 \begin{align*}
-& \rec{\wtypeh{x:A} B(x)}(C;c;\supp(a,f)) = \\ & c(a,\lambda (b : B(a)), \; \rec{\wtypeh{x:A} B(x)}(C;c;f(b)))
+  & \rec{\wtypeh{x:A} B(x)}(C;c;\supp(a,f)) = \\ & c(a,\lam{b:B(a)} \rec{\wtypeh{x:A} B(x)}(C;c;f(b)))
 \end{align*}
 i.e., there is a witness $\beta(C;c;a;f)$ for the above equality.
 \end{itemize}
@@ -486,8 +486,8 @@ Furthermore, we have the following uniqueness rule, saying that any two function
 \begin{itemize}
 \item Let $C : \type$ and $c : \prd{a:A} (B(a) \to C) \to C$ be given. Let $g,h : (\wtypeh{x:A} B(x)) \to C$ be two functions which satisfy the recurrence $c$ up to propositional equality, i.e., such that we have terms
 \begin{align*}
-\beta_g : \prd{a,f} \id{g(\supp(a,f))}{c(a,\lambda (b: B(a)), g(f(b)))} \\
-\beta_h : \prd{a,f} \id{h(\supp(a,f))}{c(a,\lambda (b: B(a)), h(f(b)))}
+  \beta_g : \prd{a,f} \id{g(\supp(a,f))}{c(a,\lam{b: B(a)} g(f(b)))} \\
+  \beta_h : \prd{a,f} \id{h(\supp(a,f))}{c(a,\lam{b: B(a)} h(f(b)))}
 \end{align*}
 Then $g$ and $h$ are equal, i.e.\ there is an equality $\alpha(C;c;f;g,\beta_g;\beta_h) : g = h$.
 \end{itemize}
@@ -497,9 +497,9 @@ We note that in the dependent case the uniqueness rule is derivable from depende
 \item
 For any $a : A$ and $f : B(a) \to C$, the following diagram commutes propositionally:
 \[\xymatrix{
-\;\;\;\;\; g(\supp(x,f)) \ar_{\alpha(\supp(x,f))}[d] \ar^{\beta_g \;\;\;\;\;\;\;\;\;\;}[r] & c(a,\lambda (b: B(a)), g(f(b)))
-\ar^{c(a,-)(\funext \; \lambda (b), \; \alpha(f(b)))}[d] \\
-\;\;\;\;\; h(\supp(x,f)) \ar_{\beta_h \;\;\;\;\;\;\;\;\;\;}[r] & c(a,\lambda (b: B(a)), h(f(b))) \\
+  \;\;\;\;\; g(\supp(x,f)) \ar_{\alpha(\supp(x,f))}[d] \ar^{\beta_g \;\;\;\;\;\;\;\;\;\;}[r] & c(a,\lam{b:B(a)} g(f(b)))
+  \ar^{c(a,-)(\funext \; \lam{b} \alpha(f(b)))}[d] \\
+  \;\;\;\;\; h(\supp(x,f)) \ar_{\beta_h \;\;\;\;\;\;\;\;\;\;}[r] & c(a,\lam{b: B(a)} h(f(b))) \\
 }\]
 where $\alpha$ abbreviates the path $\alpha(C;c;f;g,\beta_g;\beta_h) : g = h$.
 \end{itemize}
@@ -511,13 +511,13 @@ Putting all of this data together yields another characterization of $\wtype{x:A
                       & \; \prd{C : \type} \\
                       & \; \prd{c : \prd{a} (B(a) \to C) \to C} \\
                       & \; \sm{\rec : W \to C} \\
-                      & \; \sm{\beta : \prd{a,f} \rec{}(\supp(a,f)) = c(a,\lambda (b: B(a)), \rec{}(f(b)))} \\
+                      & \; \sm{\beta : \prd{a,f} \rec{}(\supp(a,f)) = c(a,\lam{b: B(a)} \rec{}(f(b)))} \\
                       & \; \prd{g : W \to C} \\
                       & \; \prd{h : W \to C} \\
-                      & \; \prd{\beta_g : \prd{a,f} g(\supp(a,f)) = c(a,\lambda (b: B(a)), g(f(b)))} \\
-                      & \; \prd{\beta_h : \prd{a,f} h(\supp(a,f)) = c(a,\lambda (b: B(a)), h(f(b)))} \\
+                      & \; \prd{\beta_g : \prd{a,f} g(\supp(a,f)) = c(a,\lam{b: B(a)} g(f(b)))} \\
+                      & \; \prd{\beta_h : \prd{a,f} h(\supp(a,f)) = c(a,\lam{b: B(a)} h(f(b)))} \\
                       & \; \sm{\alpha : \prd {w : W} g(w) = h(w)} \\
-                      & \; \alpha(\supp(x,f)) \ct \beta_h = \beta_g \ct c(a,-)(\funext \; \lambda (b), \; \alpha(f(b)))
+                      & \; \alpha(\supp(x,f)) \ct \beta_h = \beta_g \ct c(a,-)(\funext \; \lam{b} \alpha(f(b)))
 \end{align*}
 
 \begin{thm}
@@ -598,14 +598,14 @@ Assuming such a type exists, we define functions
   r&:D\to ((D\to\prop)\to\prop)\\
   r(k(\theta)) &\defeq \theta\\
   f&:(D\to\prop) \to D \\
-  f(\delta) &\defeq k(\lam x (x=\delta))\\
+  f(\delta) &\defeq k(\lam{x} (x=\delta))\\
   p&:(D\to \prop) \to ((D\to\prop)\to \prop)\\
-  p(\delta) &\defeq \lam x \delta(f(x)).
+  p(\delta) &\defeq \lam{x} \delta(f(x)).
 \end{align*}
 Here $r$ is defined by the recursion principle of $D$, while $f$ and $p$ are defined explicitly.
-Then for any $\delta:D\to\prop$, we have $r(f(\delta)) = \lam x(x=\delta)$.
+Then for any $\delta:D\to\prop$, we have $r(f(\delta)) = \lam{x}(x=\delta)$.
 
-In particular, therefore, if $f(\delta)=f(\delta')$, then we have a path $s:(\lam x(x=\delta)) = (\lam x(x=\delta'))$.
+In particular, therefore, if $f(\delta)=f(\delta')$, then we have a path $s:(\lam{x}(x=\delta)) = (\lam{x}(x=\delta'))$.
 Thus, $\happly(s,\delta) : (\delta=\delta) = (\delta=\delta')$, and so in particular $\delta=\delta'$ holds.
 Hence, $f$ is ``injective'' (although \emph{a priori} $D$ may not be a set).
 This already sounds suspicious --- we have an ``injection'' of the ``power set'' of $D$ into $D$ --- and with a little more work we can massage it into a contradiction.

@@ -37,13 +37,19 @@
 \def\dprd#1{\@dprd{#1}\@ifnextchar\bgroup{\dprd}{}}
 \def\@dprd#1{\prod_{(#1)}\,}
 
-%%% Lambda abstractions without explicitly typed variables.
-% Call as \lam{x}{y}{z}.  If there is more than one argument, they *must* be enclosed in braces.
-\def\lam#1{{\lambda}#1\@ifnextchar\bgroup{.\,\lam}{.\,}}
-%%% and with them.  Call as \lamt{x:A}{y:B}.
-\def\lamt#1{{\lambda}\@lamtarg#1\@endlamtarg\@ifnextchar\bgroup{.\,\lamt}{.\,}}
-\def\@lamtarg#1:#2\@endlamtarg{\@lamtvar{#2},#1\@endlamtvar}
-\def\@lamtvar#1,#2{{#2}^{#1}\@ifnextchar,{.\,{\lambda}\@lamtvar{#1}}{\let\@endlamtvar\relax}}
+%%% Lambda abstractions.
+% Each variable being abstracted over is a separate argument.  If
+% there is more than one such argument, they *must* be enclosed in
+% braces.  Arguments can be untyped, as in \lam{x}{y}, or typed with a
+% colon, as in \lam{x:A}{y:B}.  In the latter case, the colons are
+% automatically noticed and (with current implementation) the type is
+% placed in a superscript.  You can even give more than one variable
+% the same type, as in \lam{x,y:A}.
+\def\lam#1{{\lambda}\@lamarg#1:\@endlamarg\@ifnextchar\bgroup{.\,\lam}{.\,}}
+\def\@lamarg#1:#2\@endlamarg{\if\relax\detokenize{#2}\relax #1\else\@lamvar{\@lameatcolon#2},#1\@endlamvar\fi}
+\def\@lamvar#1,#2{{#2}^{#1}\@ifnextchar,{.\,{\lambda}\@lamvar{#1}}{\let\@endlamvar\relax}}
+\def\@lameatcolon#1:{#1}
+\let\lamt\lam
 
 %%% Dependent products written with \forall, in the same style
 \def\fall#1{\forall (#1)\@ifnextchar\bgroup{.\,\fall}{.\,}}

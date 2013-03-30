@@ -180,7 +180,7 @@ using product types --- it is called \textbf{currying} in functional
 programming; we write $f : A \to (B \to C)$.
 We may also write it without the parentheses, as $f : A \to B \to C$, with
 associativity to the right as the default convention.  Given $a : A$ and $b : B$
-we can apply $f$ to obtain 
+we can apply $f$ to $a$ and then apply the result to $b$ to obtain 
 $f(a)(b) : C$. To avoid the proliferation of parentheses we allow ourselves to
 write $f(a)(b)$ as $f(a,b)$ even though there are no products
 involved. Our notation for definitions with explicit parameters extends to
@@ -299,11 +299,11 @@ which we define as $\idf(A) \defeq \lamt{x:A}x$.
 
 As for ordinary functions we use currying to define functions in
 several parameters. However in the dependent case the second domain may
-depend on the first one and the codomain may depend on both. That is
+depend on the first one and the codomain may depend on both. That is,
 given $A:U$, $B : A \to U$ and $C : \prd{x:A}B(x) \to C(x,y)$ we construct
-the type $\prd{x:A}{y : B(x)} C(x,y)$ of function with two
-arguments. Given $a:A$ and $b:B(a)$ we build $f(a)(b) : C(a,b)$ which
-as before we write as $f(a,b) : C(a,b)$.
+the type $\prd{x:A}{y : B(x)} C(x,y)$ of functions with two
+arguments. Given $a:A$ and $b:B(a)$ we build $f(a)(b) : C(a,b)$, which,
+as before, we write as $f(a,b) : C(a,b)$.
 
 
 % When we view propositions as types the non-dependent function type
@@ -331,14 +331,14 @@ introduce a nullary product type which is called the unit type $\unit
 
 How can we define functions out of a product type? Let us first
 consider the definition of a non-dependent function $f : A\times B \to
-C$. To define such a function it is enough to prescibe how $f$ is
-behaving when applied to a pair $f(\tup{a}{b})$. This is achieved by
+C$. To define such a function it is enough to prescibe the result
+when $f$ is applied to a pair $\tup{a}{b}$.  This is achieved by
 providing a function $g : A \to B \to C$ and defining
 \[ f(\tup{a}{b}) \defeq g(a)(b) \]
 We avoid writing $g(a,b)$ here in order to emphasize that $g$ is not a
 function on a product. 
 
-In particular we can derive the functions
+In particular, we can derive the functions
 \begin{eqnarray*}
   \fst & : & A \times B \to A \\
   \snd & : & A \times B \to B
@@ -356,7 +356,7 @@ types, that is given types $A,B : \UU$ we have
 with the defining equation
 \[\rec{A\times B}(C,g,\tup{a}{b}) = g(a)(b). \]
 The name recursor is a bit unfortunate since no recursion is taking
-place. However, this will change once we consider inductive types like
+place. However, this will change once we consider inductive types, such as
 the natural numbers.
 Note that the universes $\UU,\UU'$ may be different, i.e. we can
 construct functions in higher or lower universes. 
@@ -634,7 +634,7 @@ coproducts.
 
 Indeed, we can play the same game for products and $\Pi$-types:
 \[ A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x) \]
-Tupling can be constructed using induction for bool:
+Pairs can be constructed using induction for bool:
 \[ \tup{a}{b} \defeq \ind{\bool}(\rec{\bool}(\UU,A,B),a,b) \]
 While the projections are straightforward applications
 \begin{eqnarray*}
@@ -649,8 +649,8 @@ theory.
 
 Unlike in classical mathematics we
 do not identify propositions with $\bool$ (instead we identify
-propositions with types). Hence the type $A \to \bool$ does not
-represent all subsets of $A$ but only the decidable ones.
+propositions with types). Hence the type $A \to \bool$ 
+represents only the decidable subsets of $A$.
 
 \section{Identity types}
 \label{sec:identity-types}
@@ -660,10 +660,10 @@ standard set theoretic constructions, the identity type seems to be
 a particular feature of type theory. Moreover, homotopy type theory is
 based on a reinterpretation of identity types embracing a
 proof-relevant understanding of identity types: there can be more than
-one reason that two objects are equal corresponding two the fact that
-there can be more than one path between two points.
+one reason that two objects are equal, corresponding to the fact that
+there can be more than one path between two points of a space.
 
-Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point f view that there is a path between $a$ and $b$. In particular there is a canonical element
+Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point f view that there is a path between $a$ and $b$. In particular, there is a canonical element
 $\refl : \prd{a:A} a =_A a$ --- the proof of reflexivity.
 
 There are two different but equivalent elimination principles for
@@ -751,7 +751,7 @@ we assume $a : A$ and the premises of the Paulin-Mohring rule:
 C & : & \prd{x:A}{p : a =_A x} \UU \\  
 c & : & C(a,\refl{a})
 \end{eqnarray*}
-it is not clear how we can use a particular instance of the Martin-L\"of rule to derive the conclusion of 
+It is not clear how we can use a particular instance of the Martin-L\"of rule to derive the conclusion of 
 the Paulin-Mohring rule. However, we can generalize this and construct an instance of the Martin-L\"of rule which shows 
 all possible instantiations of the Paulin-Mohring rule:
 \begin{eqnarray*}
@@ -824,7 +824,7 @@ Using $\rec{\nat}$ we can present $\add : \nat \to \nat \to \nat$ as the followi
 \rec{\nat}(\nat \to \nat,\lamt{n:\nat} n,\lamt{n:\nat}{g:\nat \to \nat}{m :\nat} \suc(g(m))) : \nat \to \nat \to \nat  
 \]
 Note that we can define more than the usual primitive recursive functions, because we can use higher function types. 
-In particular the Ackermann function is definable in our setting.
+In particular, the Ackermann function is definable in our setting.
 
 We follow the same approach as before and show how to generalize primitive recursion to dependent functions, giving rise to an induction principle. Assume as given a family $C : \nat \to \UU$ and $c_0 : C(n)$ and $c_s : \prd{n:\nat} C(n) \to C(\suc(n))$ we construct $f : \prd{n:\nat} C(n)$ with the defining equations:
 \begin{eqnarray*}

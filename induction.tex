@@ -91,6 +91,17 @@ Furthermore, the resulting proof $\rec\two(E;e_t;e_f): \prd{b : \two}E(b)$ behav
 
 Thus, the induction principle for the type $\two$ of Booleans allow us to reason by \emph{case analysis}.
 Since neither of the two constructors takes any arguments, this is all we need for Booleans.
+For instance, it allows us to validate our intuition that every element of $\bool$ is either $\btrue$ or $\bfalse$:
+
+\begin{lem}\label{thm:allbool-trueorfalse}
+  For all $x:\bool$, we have $(x=\btrue) + (x=\bfalse)$.
+\end{lem}
+\begin{proof}
+  Let $E(x)\defeq (x=\btrue) + (x=\bfalse)$.
+  By the induction principle, to prove $\prd{x:\bool} E(x)$ it suffices to prove $E(\btrue)$ and $E(\bfalse)$.
+  But we have $\inl(\refl{\btrue}):E(\btrue)$ and $\inr(\refl{\bfalse}):E(\bfalse)$.
+\end{proof}
+
 For natural numbers, however, case analysis is generally not sufficient: in the case corresponding to the inductive step $s(n)$, we also want to presume that the statement being proven has already been shown for $n$.
 This gives us the following induction principle:
 \begin{itemize}
@@ -631,7 +642,7 @@ For any $A : \type$ and $B : A \to \type$, the type $\w_h (A,B)$ is a mere propo
 \end{thm}
 
 It turns out all three characterizations of W-types are in fact equivalent:
-\begin{thm}
+\begin{thm}\label{thm:homotopy-induction-times-3}
 For any $A : \type$ and $B : A \to \type$, we have
 \[ \w_d(A,B) \simeq \w_s(A,B) \simeq \w_h(A,B) \]
 \end{thm}
@@ -852,9 +863,158 @@ That is, we fix a known type $P$, and give constructors for an inductive type $A
 We will not use any inductive-recursive definitions in this book.
 
 
-
-\section{Identity systems}
+\section{Identity types and identity systems}
 \label{sec:identity-systems}
+
+We now wish to point out that the \emph{identity types}, which play so central a role in homotopy type theory, may also be considered to be defined inductively.
+Specifically, they are an ``inductive family'' with indices, in the sense of \autoref{sec:generalizations}.
+In fact, there are \emph{two} ways to describe identity types as an inductive family, resulting in the two induction principles (Martin-L\"of and Paulin-Mohring).
+
+In both definitions, the type $A$ is a parameter.
+For the first definition, we inductively define a family $=_A : A\to A\to \type$, with two indices belonging to $A$, by the following constructor:
+\begin{itemize}
+\item For any $a:A$, an element $\refl A : a=_A a$.
+\end{itemize}
+By analogy with the other inductive families, we may extract the induction principle from this definition.
+It states that given any $C:\prd{a,b:A} (a=_A b) \to \type$, along with $d:\prd{a:A} C(a,a,\refl{a})$, there exists $f:\prd{a,b:A}{p:a=_A b} C(a,b,p)$ such that $f(a,a,\refl a)\jdeq d(a)$.
+This is exactly the Martin-L\"of induction principle for identity types.
+
+For the second definition, we consider one element $a_0:A$ to be a parameter along with $A:\type$, and we inductively define a family $(a_0 =_A -):A\to \type$, with \emph{one} index belonging to $A$, by the following constructor:
+\begin{itemize}
+\item An element $\refl{a_0} : a_0 =_A a_0$.
+\end{itemize}
+Note that because $a_0:A$ was fixed as a parameter, the constructor $\refl{a_0}$ does not appear inside the inductive definition as a function, but only an element.
+The induction principle for this definition says that given $C:\prd{b:A} (a_0 =_A b) \to \type$ along with an element $d:C(a_0,\refl{a_0})$, there exists $f:\prd{b:A}{p:a_0 =_A b} C(b,p)$ with $f(a_0,\refl{a_0})\jdeq d$.
+This is exactly the Paulin-Mohring induction principle.
+
+The view of identity types as inductive types has historically caused some confusion, because of the intuition mentioned in \autoref{sec:bool-nat} that all the elements of an inductive type should be obtained by repeatedly applying its constructors.
+For ordinary inductive types such as \bool and \nat, this is provable: we saw in \autoref{thm:allbool-trueorfalse} that indeed every element of \bool is either $\btrue$ or $\bfalse$, and similarly one can prove that every element of \nat is either $0$ or a successor.
+
+However, this is \emph{not} true for identity types: there is only one constructor $\refl{}$, but not every path is equal to the constant path.
+More precisely, we cannot prove, using only the induction principle for identity types (either one), that every inhabitant of $a=_A a$ is equal to $\refl a$.
+In order to actually exhibit a counterexample, we need some additional principle such as the univalence axiom --- recall that in \autoref{thm:type-is-not-a-set} we used univalence to exhibit a particular path $\bool=_\type\bool$ which is not equal to $\refl{\bool}$.
+
+The point is that, as validated by the study of homotopy-initial algebras, an inductive definition should be regarded as \emph{freely generated} by its constructors.
+Of course, a freely generated structure may contain elements other than its generators: for instance, the free group on two symbols $x$ and $y$ contains not only $x$ and $y$ but also words such as $xy$, $yx^{-1}y$, and $x^3y^2x^{-2}yx$.
+In general, the elements of a free structure are obtained by applying not only the generators, but also the operations of the ambient structure, such as the group operations if we are talking about free groups.
+
+In the case of inductive types, we are talking about freely generated \emph{types} --- so what are the ``operations'' of the structure of a type?
+If types are viewed as like \emph{sets}, as was traditionally the case in type theory, then there are no such operations, and hence we expect there to be no elements in an inductive type other than those resulting from its constructors.
+In homotopy type theory, we view types as like \emph{spaces} or $\infty$-groupoids, in which case there are many operations on the \emph{paths} (concatenation, inversion, etc.) --- this will be important in \autoref{cha:hits} --- but there are still no operations on the \emph{objects} (elements).
+Thus, it is still true for us that, e.g., every element of \bool is either $\btrue$ or $\bfalse$, and every element of $\nat$ is either $0$ or a successor.
+
+However, as we saw in \autoref{cha:basics}, viewing types as $\infty$-groupoids entails also viewing functions as functors, and this includes type families $B:A\to\type$.
+Thus, the identity type $(a_0 =_A -)$, viewed as an inductive type family in the Paulin-Mohring style, is actually a \emph{freely generated functor} $A\to\type$.
+Specifically, it is the functor $F:A\to\type$ freely generated by one element $\refl{a_0}: F(a_0)$.
+And a functor does have operations on objects, namely the action of the morphisms (paths) of $A$.
+
+In category theory, the \emph{Yoneda lemma} tells us that for any category $A$ and object $a_0$, the functor freely generated by an element of $F(a_0)$ is the representable functor $\hom_A(a_0,-)$.
+Thus, we should expect the identity type $(a_0 =_A -)$ to be this representable functor, and this is indeed exactly how we view it: $(a_0 =_A b)$ is the space of morphisms (paths) in $A$ from $a_0$ to $b$.
+
+\medskip
+
+One reason for viewing identity types as inductive families is to apply the uniqueness principles of \autoref{sec:appetizer-univalence,sec:htpy-inductive}.
+Specifically, we can characterize the family of identity types of a type $A$, up to equivalence, by giving another family of types over $A\times A$ satisfying the same induction principle.
+This suggests the following definitions and theorem.
+
+\begin{defn}
+  Let $A$ be a type and $a_0:A$ an element.
+  \begin{itemize}
+  \item A \textbf{pointed predicate} over $(A,a_0)$ is a family $R:A\to\type$ equipped with an element $r_0:R(a_0)$.
+  \item For pointed predicates $(R,r_0)$ and $(S,s_0)$, a family of maps $g:\prd{b:A} R(b) \to S(b)$ is \textbf{pointed} if $g(r_0)=s_0$.
+    We have
+    \[ \mathsf{ppmap}(R,S) \defeq \sm{g:\prd{b:A} R(b) \to S(b)} (g(r_0)=s_0).\]
+  \item An \textbf{identity system at $a_0$} is a pointed predicate $(R,r_0)$ such that for any type family $D:\prd{b:A} R(b) \to \type$ and $d:D(a_0,r_0)$, there exists a function $f:\prd{b:A}{r:R(b)} D(b,r)$ such that $f(a_0,r_0)=d$.
+\end{itemize}
+\end{defn}
+
+\begin{thm}\label{thm:identity-systems}
+  For a pointed predicate $(R,r_0)$, the following are logically equivalent.
+  \begin{enumerate}
+  \item $(R,r_0)$ is an identity system at $a_0$.\label{item:identity-systems1}
+  \item For any pointed predicate $(S,s_0)$, the type $\mathsf{ppmap}(R,S)$ is contractible.\label{item:identity-systems2}
+  \item For any $b:A$, the function $\transfib{R}{-}{r_0} : (a_0 =_A b) \to R(b)$ is an equivalence.\label{item:identity-systems3}
+  \item The type $\sm{b:A} R(b)$ is contractible.\label{item:identity-systems4}
+  \end{enumerate}
+\end{thm}
+
+Note that the equivalences~\ref{item:identity-systems1}$\Leftrightarrow$\ref{item:identity-systems2}$\Leftrightarrow$\ref{item:identity-systems3} are a version of \autoref{thm:homotopy-induction-times-3} for identity types, regarded as inductive families in the Paulin-Mohring style.
+Of course,~\ref{item:identity-systems2}--\ref{item:identity-systems4} are mere propositions, so that logical equivalence implies actual equivalence.
+(Condition~\ref{item:identity-systems1} is also a mere proposition, but we will not prove this.)
+
+\begin{proof}
+  First, assume~\ref{item:identity-systems1} and let $(S,s_0)$ be a pointed predicate.
+  Define $D(b,r) \defeq S(b)$ and $d\defeq s_0: S(a_0) \jdeq D(a_0,r_0)$.
+  Since $R$ is an identity system, we have $f:\prd{b:A} R(b) \to S(b)$ with $f(a_0,r_0) = s_0$; hence $\mathsf{ppmap}(R,S)$ is inhabited.
+  Now suppose $(f,f_r),(g,g_r) : \mathsf{ppmap}(R,S)$, and define $D(b,r) \defeq (f(b,r) = g(b,r))$, and let $d \defeq f_r \ct \opp{g_r} : f(a_0,r_0) = s_0 = g(a_0,r_0)$.
+  Then again since $R$ is an identity system, we have $h:\prd{b:A}{r:R(b)} D(b,r)$ such that $h(a_0,r_0) = f_r \ct \opp{g_r}$.
+  By the characterization of paths in $\Sigma$-types and path types, these data yield an equality $(f,f_r) = (g,g_r)$.
+  Hence $\mathsf{ppmap}(R,S)$ is an inhabited mere proposition, and thus contractible; so~\ref{item:identity-systems2} holds.
+
+  Now suppose~\ref{item:identity-systems2}, and define $S(b) \defeq (a_0=b)$ with $s_0 \defeq \refl{a_0}:S(a_0)$.
+  Then $(S,s_0)$ is a pointed predicate, and $\lam{b:B}{p:a_0=b} \transfib{R}{p}{r} : \prd{b:A} S(b) \to R(b)$ is a pointed family of maps from $S$ to $R$.
+  By assumption, $\mathsf{ppmap}(R,S)$ is contractible, hence inhabited, so there also exists a pointed family of maps from $R$ to $S$.
+  And the composites in either direction are pointed families of maps from $R$ to $R$ and from $S$ to $S$, respectively, hence equal to identities since $\mathsf{ppmap}(R,R)$ and $\mathsf{ppmap}(S,S)$ are contractible.
+  Thus~\ref{item:identity-systems3} holds.
+
+  Now supposing~\ref{item:identity-systems3}, condition~\ref{item:identity-systems4} follows from \autoref{thm:contr-paths}, using the fact that $\Sigma$-types respect equivalences (the ``if'' direction of \autoref{thm:total-fiber-equiv}).
+
+  Finally, assume~\ref{item:identity-systems4}, and let $D:\prd{b:A} R(b)\to  \type$ and $d:D(a_0,r_0)$.
+  We can equivalently express $D$ as a family $D':\sm{b:A} R(b) \to \type$.
+  Now since $\sm{b:A} R(b)$ is contractible, we have
+  \[p:\prd{u:\sm{b:A} R(b)} (a_0,r_0) = u. \]
+  Moreover, since the path types of a contractible type are again contractible, we have $p((a_0,r_0)) = \refl{(a_0,r_0)}$.
+  Define $f(u) \defeq \transfib{D'}{p(u)}{d}$, yielding $f:\prd{u:\sm{b:A} R(b)} D'(u)$, or equivalently $f:\prd{b:A}{r:R(b)} D(b,r)$.
+  Finally, we have
+  \[f(a_0,r_0) \jdeq \transfib{D'}{p((a_0,r_0))}{d} = \transfib{D'}{\refl{(a_0,r_0)}}{d} = d.\]
+  Thus,~\ref{item:identity-systems1} holds.
+\end{proof}
+
+We can deduce a similar result for identity types in the Martin-L\"of style.
+
+\begin{defn}
+  An \textbf{identity system} over a type $A$ is a family $R:A\to A\to \type$ equipped with a function $r_0:\prd{a:A} R(a,a)$ such that for any type family $D:\prd{a,b:A} R(a,b) \to \type$ and $d:\prd{a:A} D(a,a,r_0(a))$, there exists a function $f:\prd{a,b:A}{r:R(b)} D(a,b,r)$ such that $f(a,a,r_0(a))=d(a)$ for all $a:A$.
+\end{defn}
+
+\begin{thm}\label{thm:ML-identity-systems}
+  For $R:A\to A\to\type$ equipped with $r_0:\prd{a:A} R(a,a)$, the following are logically equivalent.
+  \begin{enumerate}
+  \item $(R,r_0)$ is an identity system over $A$.\label{item:MLis1}
+  \item For all $a_0:A$, the pointed predicate $(R(a_0),r_0(a_0))$ is an identity system at $a_0$.\label{item:MLis2}
+  \item For any $S:A\to A\to\type$ and $s_0:\prd{a:A} S(a,a)$, the type
+    \[ \sm{g:\prd{a,b:A} R(a,b) \to S(a,b)} \prd{a:A} g(a,a,r_0(a)) = s_0(a) \]
+    is contractible.\label{item:MLis3}
+  \item For any $a,b:A$, the map $\transfib{R(a)}{-}{r_0(a)} : (a =_A b) \to R(a,b)$ is an equivalence.\label{item:MLis4}
+  \item For any $a:A$, the type $\sm{b:A} R(a,b)$ is contractible.\label{item:MLis5}
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  The equivalence~\ref{item:MLis1}$\Leftrightarrow$\ref{item:MLis2} follows exactly the proof of equivalence between the Martin-L\"of and Paulin-Mohring induction principles for identity types; see \autoref{sec:identity-types}.
+  The equivalence with~\ref{item:MLis4} and~\ref{item:MLis5} then follows from \autoref{thm:identity-systems}, while~\ref{item:MLis3} is straightforward.
+\end{proof}
+
+One reason this characterization is interesting is that it provides an alternative way to state univalence and function extensionality.
+The univalence axiom for a universe \UU says exactly that the type family
+\[ (\eqv--) : \UU\to\UU\to\UU \]
+together with $\idfunc[-] : \prd{A:\UU} (\eqv AA)$ satisfies \autoref{thm:ML-identity-systems}\ref{item:MLis4}.
+Therefore, it is equivalent to the corresponding version of~\ref{item:MLis1}, which we can state as follows.
+
+\begin{cor}[Equivalence induction]
+  Given any type family $D:\prd{A,B:\UU} (\eqv AB) \to \type$ and function $d:\prd{A:\UU} D(A,A,\idfunc[A])$, there exists $f:\prd{A,B:\UU}{e:\eqv AB} D(A,B,e)$ such that $f(A,A,\idfunc[A]) = d(A)$ for all $A:\UU$.
+\end{cor}
+
+In other words, to prove something about all equivalences, it suffices to prove it about identity maps.
+We have already used this principle (without stating it in generality) in \autoref{lem:qinv-autohtpy}.
+
+Similarly, function extensionality says that for any $B:A\to\type$, the type family
+\[ (-\htpy -) : \big(\prd{a:A} B(a)\big) \to \big(\prd{a:A} B(a)\big) \to \type
+\]
+together with $\lam{f:\prd{a:A} B(a)}{a:A} \refl{f(a)}$ satisfies \autoref{thm:ML-identity-systems}\ref{item:MLis4}.
+Thus, it is also equivalent to the corresponding version of~\ref{item:MLis1}.
+
+\begin{cor}[Homotopy induction]
+  Given any $D:\prd{f,g:\prd{a:A} B(a)} (f\htpy g) \to \type$ and $d:\prd{f:\prd{a:A} B(a)} D(f,f,\lam{x}\refl{f(x)})$, there exists $k:\prd{f,g:\prd{a:A} B(a)}{h:f\htpy g} D(f,g,h)$ such that $k(f,f,\lam{x}\refl{f(x)}) = d(f)$ for all $f$.
+\end{cor}
 
 
 \section*{Exercises}

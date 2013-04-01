@@ -162,16 +162,56 @@ logical notation from \autoref{defn:logical-notation}.
 
 It is apparent that $\dcut(L, U)$ is a mere proposition, and since $\Q \to \Omega$ is a set
 the Dedekind reals form a set too. 
+
+There is an embedding $\Q \to \RD$ which associates with each rational $q : \Q$ the cut
+$(L_q, U_q)$ where
 %
+\begin{equation*}
+  L_q(r) \defeq (r < q)
+  \qquad\text{and}\qquad
+  U_q(r) \defeq (q < r).
+\end{equation*}
+%
+We shall simply write $q$ for the cut $(L_q, U_q)$ associated with a real number.
+
 The construction of the algebraic and order-theoretic structure of Dedekind reals proceeds
-as usual, so we do not dwell on details. Writing $L_x$ and $U_x$ for the lower and upper
-cut of a real number $x : \RD$, we define $\leq$ and $<$ by
+as usual in intuitionistic logic. Rather than dwelling on details we point out the
+differences between the classical and intuitionistic setup. Writing $L_x$ and $U_x$ for
+the lower and upper cut of a real number $x : \RD$, we define addition as%
+%
+\begin{align*}
+  L_{x + y}(q) &\defeq \exis{r, s : \Q} L_x(r) \land L_y(s) \land q = r + s, \\
+  U_{x + y}(q) &\defeq \exis{r, s : \Q} U_x(r) \land U_y(s) \land q = r + s
+\end{align*}
+%
+and the additive inverse by
+%
+\begin{align*}
+  L_{-x}(q) &\defeq \exis{r : \Q} U_x(r) \land q = - r, \\
+  U_{-x}(q) &\defeq \exis{r : \Q} L_x(r) \land q = - r.
+\end{align*}
+%
+With these operations $(\RD, 0, {+}, {-})$ is a commutative group. It is harder to define
+multiplication, so we skip it. To treat multiplicative inverses, we must first introduce
+order. Define $\leq$ and $<$ as
 %
 \begin{align*}
   (x \leq y) &\ \defeq \ \fall{q : \Q} L_x(q) \Rightarrow L_y(q), \\
   (x < y)    &\ \defeq \ \exis{q : \Q} U_x(q) \land L_y(q).
 \end{align*}
-%
+
+\begin{lem} \label{dedekind-in-cut-as-le}
+  For all $x : \RD$ and $q, r : \Q$, $L_x(q) \Leftrightarrow (q < x)$ and $U_x(r)
+  \Leftrightarrow (x < r)$.
+\end{lem}
+
+\begin{proof}
+  If $L_x(q)$ then by roundedness there merely is $r > q$ such that $L_x(r)$, and since
+  $U_q(r)$ it follows that $q < x$. Conversely, if $q < x$ then there is $r : \Q$ such
+  that $U_q(r)$ and $L_x(r)$, hence $L_x(q)$ because $L_x$ is a lower set. The other half
+  of the proof is symmetric.
+\end{proof}
+
 The relation $\leq$ is a partial order, and $<$ is transitive and irreflexive. The
 trichotomy law
 %
@@ -181,10 +221,48 @@ trichotomy law
 %
 is valid if we assume excluded middle, but without it we get the intuitionistic version
 %
-\begin{equation*}
+\begin{equation} \label{eq:RD-linear-order}
   (x < y) \Rightarrow (x < z) \lor (z < y).
+\end{equation}
+%
+To see this, suppose $x < y$. Then there merely exists $q : \Q$ such that $U_x(q)$ and
+$L_y(q)$. By roundedness there merely exist $r, s : \Q$ such that $r < q < s$, $U_x(r)$
+and $L_y(s)$. Then, by locatedness $L_z(r)$ or $U_z(s)$. In the first case we get $x < z$
+and in the second $z < y$. At first sight it might not be clear
+what~\eqref{eq:RD-linear-order} has to do with the linear order. But if we take $x \jdeq
+u - \epsilon$ and $y \jdeq u + \epsilon$ for $\epsilon > 0$, then we get
+%
+\begin{equation*}
+  (u - \epsilon < z) \lor (z < u + \epsilon).
 \end{equation*}
 %
+This is linear order ``up to a small numerical error'', i.e., since it is unreasonable to
+expect that we can actually compute with infinite precision, we should not be surprised
+that we can decide~$<$ only up to whatever finite precision we have computed.
+
+Let us turn attention to multiplicative inverses.
+
+
+The archimedean axiom can be stated in several ways. We find it most illuminating in the
+form which says that $\Q$ is dense in $\RD$. Let $\Qp = \setof{ q : \Q | q > 0 }$ be the
+type of positive rational numbers.
+
+\begin{thm}[Archimedean axiom] \label{dedekind-archimedean}
+  %
+  For every $x : \RD$ and $\epsilon : \Qp$ there merely exist $q, r : \Q$ such that $q < x
+  < r$ and $r - q < \epsilon$.
+\end{thm}
+
+\begin{proof}
+  There merely exist $q_0, r_0 : \Q$ such that $L_x(q)$ and $U_x(q)$.
+\end{proof}
+
+
+Dedekind completeness.
+
+Cauchy completeness.
+
+
 
 \section{Cauchy Reals}
 \label{sec:cauchy-reals}
@@ -882,6 +960,35 @@ Also, $Sigma = 2^N/\sim$.
 \label{sec:intuitionistic-vs-classical-analysis}
 
 TODO: Example theorems: mean-value theorem.
+
+
+\section*{Notes}
+\label{sec:reals-notes}
+
+\section*{Exercises}
+\label{sec:reals-exercises}
+
+\begin{ex}
+  Show that $\leq$ is the negation of $<$ on $\RD$. Is $<$ the negation of $\leq$?
+\end{ex}
+
+
+\begin{ex} \label{ex:reals-non-constant-into-Z}
+  \mbox{}
+  %
+  \begin{enumerate}
+  \item Assuming excluded middle, construct a non-constant map $\RD \to \Z$.
+  \item Suppose $f : \RD \to \Z$ is a map such that $f(0) = 0$ and $f(x) \neq 0$ for all
+    $x > 0$. Derive from this the following limited form of excluded middle, known as the
+    \emph{Limited Principle of Omniscience (LPO)}: for every $\alpha : \N \to \bool$,
+    %
+    \begin{equation*}
+      (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
+    \end{equation*}
+    %
+  \end{enumerate}
+\end{ex}
+
 
 
 %%% Local Variables: 

@@ -1,6 +1,6 @@
 all: main.pdf
 
-main.pdf: *.tex
+main.pdf: *.tex cover.png
 	(which latexmk && latexmk -pdf main.tex) || ( \
 	pdflatex main.tex && \
 	pdflatex main.tex && \

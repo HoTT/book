@@ -30,7 +30,7 @@ A rule of first-order logic such as ``from $A$ and $B$ infer $A\wedge B$'' is ac
 Note that the judgment ``$A$ has a proof'' exists at a different level from the \emph{proposition} $A$ itself, which is an internal statement of the theory.
 % In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
 
-The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, a ``point'' of $A$).
+The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, a ``point of $A$'').
 When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness} to the provability of $A$, or \emph{evidence} of the truth of $A$.
 In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
 % (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
@@ -74,12 +74,13 @@ Thus, for us, type theory will be a deductive system based on two forms of judgm
   $a \jdeq_A b$ & $a$ and $b$ are definitionally equal objects of type $A$.
 \end{tabular}
 \end{center}
-When introducing a definitional equality, i.e., defining one thing to equal another, we will use the symbol ``$\defeq$''.
+When introducing a definitional equality, i.e., defining one thing is equal to another, we will use the symbol ``$\defeq$''.
 Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
 
-Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.\footnote{In formalized type theory, commas and turnstiles can bind even more loosely.
+Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.
+\footnote{In formalized type theory, commas and turnstiles can bind even more loosely.
   For instance, $x:A,y:B\vdash c:C$ is parsed as $((x:A),(y:B))\vdash (c:C)$.
-  However, in this book we will not use any notation of this sort.}
+  However, in this book we will not use any notation of this sort.}\nopagebreak
 Thus, for instance, ``$p:x=y$'' should be parsed as ``$p:(x=y)$'', which makes sense since ``$x=y$'' is a type, and not as ``$(p:x)=y$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
 Similarly, ``$A\jdeq x=y$'' can only be parsed as ``$A\jdeq(x=y)$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
 This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, if we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (which is standard practice in type theory; see \autoref{sec:pi-types}).
@@ -87,7 +88,8 @@ This is perhaps also an appropriate place to mention that the common mathematica
 Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
 For example, we may construct an object $m + n : \Nat$ under the assumptions that $m,n : \Nat$.
 Another example is that assuming $A$ is a type, $x,y : A$, and $p : x =_A y$, we may construct an element $p^{-1} : y =_A x$.
-The collection of all such assumptions is called the \emph{context}; from a topological point of view it may be thought of as a ``parameter space''.
+The sequence of all such assumptions is called the \emph{context}; from a topological point of view it may be thought of as a ``parameter space''.
+Later assumptions may depend on previous ones, as in the example: the assumption $x:A$ can only be made \textbf{after} the assumption $A$ is a type has been introduced.
 
 If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
 When types are regarded as propositions, we may omit the names of their proofs.
@@ -224,7 +226,7 @@ Currying a function of three or more arguments is a straightforward extension of
 So far we have been using the expression $A$ is a type informally. We
 are going to make this more precise by introducing \textbf{universes}.
 A universe is a type whose elements are types. As in naive set theory
-we may wish for a universe of all types $\UU_\infty$ including itself
+we might have wished for a universe of all types $\UU_\infty$ including itself
 $\UU_\infty : \UU_\infty$ but as in set
 theory this is unsound, i.e. we can deduce that every type,
 including the empty type representing the proposition False, is inhabited. Using a
@@ -254,8 +256,8 @@ may write $A:\UU$ omitting the level. This way we can even write
 $\UU:\UU$ which can be read as $\UU_i:\UU_{i+1}$ having left the
 indizes implicit. 
 
-To model a type varying over a given type $A$ we use functions whose
-domain is a universe $B : A \to \UU$. These functions are called
+To model a type varying over a given type $A$ we use functions $B : A \to \UU$  whose
+codomain is a universe. These functions are called
 \textbf{families of types} and they correspond to families of sets as used in
 set theory. An example of a family is the family of finite sets $\Fin
 : \nat \to \UU$ where $\Fin(n)$ is a type with exactly $n$ elements
@@ -265,25 +267,25 @@ which we denote as $0_n,1_n,\dots,(n-1)_n$.
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:pi-types}
 
-In type theory we are often using a more general version of function
+In type theory we often use a more general version of function
 types called a $\Pi$-type or dependent function type. The elements of
 a $\Pi$-type are functions whose codomain type can vary depending on the
 element of the domain the function is applied to. The name $\Pi$-type
 is used, because this type corresponds to the infinite cartesian
 product over a given type.
 
-Now given a type $A:\UU$ and a family $B:A \to \UU$ we construct
+Given a type $A:\UU$ and a family $B:A \to \UU$ we construct
 the type of dependent functions $\prd{x:A}B(x) : \UU$. If $B$ is
 constant then the dependent product type is the ordinary function type:
-\[(\prd{x:A} B) \jdeq (A \to B).\]
+\[\prd{x:A} B \jdeq A \to B.\]
 Indeed, all the constructions of $\Pi$-types are generalisations of the corresponding constructions on ordinary function types.
 
 We can introduce dependent functions by explicit definitions: to
 define $f : \prd{x:A}B(x)$ where $f$ is the name of a function to be
 defined we need a $b : B(x)$ assuming $x:A$ and we write
-\[ f(x : A) \defeq b \]
+\[ f(x) \defeq b \qquad \mbox{for $x:A$}\]
 Alternatively, we can use $\lambda$-abstraction 
-\[ \lamt{x:A} b : \prd{x:A} B(x) \]
+\[ \lamt{x:A} b \ :\ \prd{x:A} B(x) \]
 The equalities are the same as for the ordinary function type, i.e.
 given $a:A$ we have $f(a) \jdeq b'$ and  
 $(\lamt{x:A} b)(a) \jdeq b'$ where $b' $ is obtained by replacing all
@@ -300,7 +302,7 @@ which we define as $\idf(A) \defeq \lamt{x:A}x$.
 As for ordinary functions we use currying to define functions in
 several parameters. However in the dependent case the second domain may
 depend on the first one and the codomain may depend on both. That is,
-given $A:U$, $B : A \to U$ and $C : \prd{x:A}B(x) \to C(x,y)$ we construct
+given $A:U$, $B : A \to U$ and $C : \prd{x:A}B(x) \to \UU$ we construct
 the type $\prd{x:A}{y : B(x)} C(x,y)$ of functions with two
 arguments. Given $a:A$ and $b:B(a)$ we build $f(a)(b) : C(a,b)$, which,
 as before, we write as $f(a,b) : C(a,b)$.
@@ -481,9 +483,10 @@ with the defining equation
 And as before the recursor arises as the special case of induction
 when the family $C$ is constant.
 
-As an example we derive the \emph{type-theoretic axiom of choice}
+As an example we derive  the \emph{type-theoretic axiom of choice}
 which isn't really an axiom, because it is provable from the rules
-for $\Sigma$-types. We assume types $A,B : \UU$ and a 
+for $\Sigma$-types. We will discuss this in more detail later in \autoref{subsec:pat?}. 
+We assume types $A,B : \UU$ and a 
 family $R : A \to B \to \UU$ to derive
 \[ \ac : (\prd{x:A} \sm{y :B} R(x,y)) \to (\sm{f:A\to B}
 \prd{x:A} R(x,f(x))) \]
@@ -571,8 +574,8 @@ constant.
 Induction for the empty type
 \[ \ind{\emptyt} : \prd{C:\emptyt \to \UU}\prd{z:\emptyt} C(z) \]
 gives us a way to define a trivial dependent function out of the
-empty type. In the presence of $\eta$-equality it is derivable
-from the recursor.
+empty type. % In the presence of $\eta$-equality it is derivable
+% from the recursor.
 % ex
 
 \section{The type of booleans}
@@ -625,14 +628,13 @@ and
   \inr(a) & \defeq & \tup{\btrue}{a} \\
 \end{eqnarray*}
 We leave it as an exercise to derive induction. Does the derived
-induction constant satsifies the same defining equations?
+induction constant satisfies the same defining equations?
 %ex
-Certainly this construction just reflects the fact that
-$\Sigma$-types are general big disjoint union from which as a
-special case with index $\bool$ we can derive ordinary binary
-coproducts. 
+This also reflects the view that $\Sigma$-types are large sums 
+indexed by any set. If the indexing set is just a 2 element set we
+recover ordinary binary disjoint union.
 
-Indeed, we can play the same game for products and $\Pi$-types:
+Indeed, we can apply the same idea to products and $\Pi$-types:
 \[ A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x) \]
 Pairs can be constructed using induction for bool:
 \[ \tup{a}{b} \defeq \ind{\bool}(\rec{\bool}(\UU,A,B),a,b) \]
@@ -663,8 +665,8 @@ proof-relevant understanding of identity types: there can be more than
 one reason that two objects are equal, corresponding to the fact that
 there can be more than one path between two points of a space.
 
-Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point f view that there is a path between $a$ and $b$. In particular, there is a canonical element
-$\refl : \prd{a:A} a =_A a$ --- the proof of reflexivity.
+Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point of view that there is a path between $a$ and $b$. In particular, there is a canonical element
+\[\refl : \prd{a:A} a =_A a\] --- the proof of reflexivity.
 
 There are two different but equivalent elimination principles for
 identity types:
@@ -693,7 +695,7 @@ This induction constant is also called $J$.
 
 Fix an element $a:A$, given a family
 \[ C : \prd{x:A}{p : a =_A x} \UU \]
-and en element
+and an element
 \[ c : C(a,\refl{a}) \]
 we obtain a function
 \[ f : \prd{x:A}{p:a = x} C(x,p) \]
@@ -712,10 +714,9 @@ with the equality
 \end{description}
 These principles arise from different views on the identity type,
 while the Martin-L\"of rule is based on the view that the identity
-type is a binary relation in the type-theoretic sense, i.e. a family
-indexed by two variables, the Paulin-Mohring rule is based on viewing
-the identity type over a given $a:A$, that is $a =_A -$ as a predicate
-indexed only by one variable.
+type is the least reflexive relation, the Paulin-Mohring rule defines 
+equality with respect to a given element $a:A$ as the least predicate
+over $A$ which holds for $a$.
 
 It is easy to see that the Martin-L\"of rule follows from the
 Paulin-Mohring rule: We assume 
@@ -780,9 +781,15 @@ In terms of induction constants the construction becomes:
 & a,x,p,C,c) 
 \end{align*}
 
-The construction given above uses universes: that is if we want to model $\ind{=_A}^{PM}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$ we need to use $\ind{=_A}^{ML}$ with $D:\prd{x,y:A}\prd{p:x =_A y} \UU_{i+1}$ since $D$ quantifies over al $C$ of the given type. While this is compatible with our definition of universes, one may wonder wether we can derive $\ind{=_A}^{PM}$ without using universes. This is indeed possible: we can show that $\ind{=_A}^{ML}$ entails transport (see ??) and contractibility of singletons (see ???) and that these two principles allow us to derive $ind{=_A}^{PM}$ without using universes. We leave the details of this construction as an exercise.
+The construction given above uses universes: that is if we want to
+model $\ind{=_A}^{PM}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$ we need
+to use $\ind{=_A}^{ML}$ with $D:\prd{x,y:A}\prd{p:x =_A y} \UU_{i+1}$
+since $D$ quantifies over all $C$ of the given type. While this is
+compatible with our definition of universes, one may wonder wether we
+can derive $\ind{=_A}^{PM}$ without using universes. This is indeed
+possible: we can show that $\ind{=_A}^{ML}$ entails \autoref{lem:transport} and  \autoref{thm:contr-paths} and that these two principles allow us to derive $ind{=_A}^{PM}$ without using universes. We leave the details of this construction as an exercise.
 
-We can use the eliminator for equality to establish that equality is an equivalence relation, that evey function preserves equality and that every family is stable under equality. We leave the details to the next chapter where this principles are explained and derived in the context of homotopy type theory. 
+We can use the eliminator for equality to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter where these principles are explained and derived in the context of homotopy type theory. 
 
 
 
@@ -839,7 +846,10 @@ with the defining equations
 \ind{\nat}(C,c_0,c_s,\suc(n)) & \defeq & c_s(n,\rec{nat}(C,C_0,c_s,n)  
 \end{eqnarray*}
 
-As an example consider the \emph{proof} that $+$ is associative. We need $\apfunc{\suc} : \prd{m,n:\nat} m =_\nat n \to \suc(m) =_\nat \suc(n)$ which is easily derivable using the induction principle for equality types (see ??? for the general definition of $\apfunc{-}$). To derive
+As an example consider an explicit proof that $+$ is associative
+\footnote{We hasten to add that this is not how we do proofs in this
+  book, but serves only as an example for the explicit use of induction.}
+We need $\apfunc{\suc} : \prd{m,n:\nat} m =_\nat n \to \suc(m) =_\nat \suc(n)$ which is easily derivable using the induction principle for equality types (see \autoref{lem:map}). To derive
 \[\ass : \prd{i,j,k:\nat} i + (j + k) = (i + j) + k \]
 it is sufficient to supply
 \begin{align*}

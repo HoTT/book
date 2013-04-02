@@ -1454,7 +1454,829 @@ Similar (but simpler) arguments prove that any reflective subuniverse has an ini
 \section{Modalities and factorization systems}
 \label{sec:modalities}
 
-\dots
+\subsection{Definition and basic properties of modalities}
+
+\begin{defn}
+A modality is an operation $\modal:\type\to\type$ for which there are
+\begin{enumerate}
+\item functions $\mreturn_A:A\to\modal(A)$ for every type $A$. 
+
+We define $\ismodal A\defeq \mathsf{isEquiv}(\mreturn_A)$ and $\type_\modal\defeq\sum A:\type, \ismodal A$.
+\item for every $A:\type$ and every dependent type $P:\modal(A)\to\type$, a function
+\begin{equation*}
+R^\modal_A:\big(\prod(a:A),\ \modal(P(\mreturn(a)))\big)\to\prod(z:\modal(A)),\ \modal(P(z)).
+\end{equation*}
+\item A path $R^\modal_A(f)(\mreturn(a))= f(a)$ for each $f:\prod(a:A),\ \modal(P(\mreturn(a)))$.
+\item For any $z,z':\modal(A)$ the type $z= z$ is modal.
+\end{enumerate}
+\end{defn}
+
+Consequently, $\modal$ is an idempotent monad on $\type$.
+
+\begin{defn}
+We define $\modaltype:=\sum(X:\type),\ \mathsf{isEquiv}(\mreturn^\modal_X)$. 
+\end{defn}
+
+\begin{prop}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
+Let $A$ be a type and let $P:\modal(A)\to\modaltype$. Then the function
+\begin{equation*}
+\prod(z:\modal(A)),\ P(z)\to\prod(a:A),\ P(\mreturn(a))
+\end{equation*}
+given by $\lambda s.s\circ \mreturn$ is an equivalence.
+\end{prop}
+
+\begin{proof}
+We only need to find a homotopy
+\begin{equation*}
+\prod(z:\modal(A)),\ s(z)= R^\modal_X(s\circ \mreturn)(z)
+\end{equation*}
+for each $s:\prod(z:\modal(A)),\ P(z)$. By assumption we have that $P(z)$ is
+modal for each $z:\modal(A)$ and hence it follows that $s(z)= R^\modal_X(s\circ \mreturn)(z)$
+is modal for each $z$. Hence it suffices to find a function of type
+\begin{equation*}
+\prod(a:A),\ s(\mreturn(a))= R^\modal_X(s\circ \mreturn)(\mreturn(a)),
+\end{equation*}
+which follows straight from the definition of modalities.
+\end{proof}
+
+In particular, for every type $A$ and every modal type $B$, we have an equivalence $\modal A\to B\simeq A\to B$.
+
+\subsection*{Modal colimits}
+The colimit of a diagram of modal types is in general not modal. For instance,
+the suspension of $\varnothing$ is not a proposition but a set.
+Moreover, the suspension of the circle is the sphere, which has no finite 
+homotopy level in the classical theory. Therefore we need to define a notion of 
+modal colimit, which is a colimit in the subcategory of modal types.
+
+\begin{defn}
+Let $\pairr{P,Q}$ be a diagram of shape $\pairr{I,J}$ with the property that each
+$P(i)$ is modal. Then there is a cocone $\pairr{\alpha^\modal,\beta^\modal}$
+ with vertex $\modal(\mathsf{colim}(P,Q))$ given by
+\begin{align*}
+\alpha^\modal & := \mreturn\circ\alpha\\
+\beta^\modal & := \mreturn\circ\beta,
+\end{align*}
+where $\pairr{\alpha,\beta}$ is the colimiting cocone with vertex
+$\mathsf{colim}(P,Q)$ and where $\mreturn:\mathsf{colim}(P,Q)\to\modal(\mathsf{colim}(P,Q))$
+is the unit of the modality.
+\end{defn}
+
+\begin{lem}
+The cocone $\pairr{\alpha^\modal,\beta^\modal}$ has the property that
+\begin{equation*}
+\mathsf{isEquiv}(\mathsf{coconeMap}(X,\pairr{\alpha^\modal,\beta^\modal}))
+\end{equation*}
+for every modal type $X$. In other words, $\modal(\mathsf{colim}(P,Q))$ is the
+colimit in $\modaltype$. 
+\end{lem}
+
+\begin{proof}
+Recall that $\modal(\mathsf{colim}(P,Q))$ has the property that for any modal
+type $X$ the function $\lambda s.s\circ \mreturn$ is an equivalence
+\begin{equation*}
+(\modal(\mathsf{colim}(P,Q))\to X)\simeq (\mathsf{colim}(P,Q)\to X).
+\end{equation*}
+Since $\mathsf{colim}(P,Q)$ is colimiting, it follows that
+\begin{equation*}
+(\mathsf{colim}(P,Q)\to X)\simeq\mathsf{cocone}(X)
+\end{equation*}
+by $\mathsf{coconeMap}(X,\pairr{\alpha,\beta})$. Composing these two equivalences
+gives the function $\mathsf{coconeMap}(X,\pairr{\alpha^\circ,\beta^\circ})$,
+which is therefore an equivalence.
+\end{proof}
+
+\subsection{Localization}
+The localization will make all the maps $B a \to
+\mathcal{L}_P(X)$ constant in a free way.
+\begin{defn}\label{defn:localization_as_hit}
+Let $P:B\to\type$ be a dependent type. The localization $\mathcal{L}_P$ with
+respect to $P$ is an operator of type $\mathsf{Type}\to\mathsf{Type}$, where
+for each $X:\type$, the type $\mathcal{L}_P(X)$ is constructed as a higher
+inductive type. The basic constructors of $\mathcal{L}_P(X)$ are
+\begin{align*}
+i & : X\to\mathcal{L}_P(X)
+\intertext{and terms}
+\alpha(f) & : \mathcal{L}_P(X)\\
+\beta(f) & : \prod(u:P(b)),\ f(u)=\alpha(f)\\
+\gamma(f) & : \prod\{w:\mathcal{L}_P(X)\}(H:f\sim\lambda u.w),\ w=\alpha(f)\\
+\delta(f) & : \prod\{w:\mathcal{L}_P(X)\}(H:f\sim\lambda u.w)(u:P(b)),\ \gamma(f,H)
+\bullet H(u)=\beta(f,u)
+\end{align*}
+for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$. The induction principle for
+$\mathcal{L}_P(X)$ is that for every dependent type $\Lambda:\mathcal{L}_P(X)
+\to\type$ over $\mathcal{L}_P(X)$, if there are
+\begin{align*}
+I & : \prod(x:X),\ \Lambda(i(x))
+\intertext{and for every $b:B$, $f:P(b)\to\mathcal{L}_P(X)$ and $F:\prod(u:P(b)),\ \Lambda(f(u))$}
+\epsilon(F) & : \Lambda(\alpha(f))\\
+\zeta(F) & : \prod(u:P(b)),\ \beta(f,u)\cdot F(f(u))= \epsilon(F)
+\intertext{and for every $w_0:\mathcal{L}_P(X)$, $w_1:\Lambda(w_0)$, 
+$H_0:f\sim\lambda u.w$ and $H_1:\prod(u:P(b)),\ H_0(u)\cdot F(f(u))= w_1$
+a path}
+\mreturn(F,H_1) & : \gamma(f,H_0)\cdot w_1= \epsilon(F)
+\end{align*}
+a path $\theta(F,H_1,u)$ witnessing the commutativity of the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {\beta(f,u)\cdot F(f(u)) & & \varepsilon(F) \\
+\gamma(f,H_0)\cdot H_0(u)\cdot F(f(u)) & & \gamma(f,H_0)\cdot w_1 \\};
+\draw[patharrow] (m-2-3) -- node[below] {$(\gamma(f,H_0)\cdot H_1(u))^{-1}$} (m-2-1);
+\draw[patharrow] (m-2-1) -- node[left]  {$\delta(f,H_0,u)\cdot F(f(u))$} (m-1-1);
+\draw[patharrow] (m-1-1) -- node[above] {$\zeta(f,u)$} (m-1-3);
+\draw[patharrow] (m-2-3) -- node[right] {$\mreturn(F,H_1)$} (m-1-3);
+\end{tikzpicture}
+\end{equation*}
+(note that in this diagram, we have not taken the canonical path
+\begin{equation*}
+\gamma(f,H_0)\cdot (H_0(u)\cdot F(f(u)))=(\gamma(f,H_0)\bullet H_0(u))\cdot F(f(u)),
+\end{equation*}
+but it should obviously be there), then there is a section $s:\prod(w:\mathcal{L}_P(X))$
+with the property that there is a term
+\begin{align*}
+\kappa & : \prod(x:X),\ s(i(x))= I(x)
+\intertext{and for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$ there are terms}
+\mu(f) & : s(\alpha(f))= \epsilon(s\circ f)\\
+\nu(f) & : \prod(u:P(b)),\ \mu(f)\bullet s(\beta(f,u))=\zeta(s\circ f,\beta(f))\\
+\xi(f) & : \prod(w:\mathcal{L}_P(X))(H:f\sim\lambda u.w),\ \mu(f)\bullet s(\gamma(f,H))=\mreturn(s\circ f,s\circ H)
+\end{align*}
+and a term $o(f,H,u)$ witnessing the commutativity of the diagram
+\begin{equation}
+\begin{tikzpicture}
+\matrix (m) [std] {\mu(f)\bullet s(\beta(f,u))\bullet (\delta(f,h,u)\cdot s(f(u)))\bullet (\gamma(f,H)\cdot s(H(u)))^{-1} & & \mu(f)\circ
+s(\gamma(f,H)) \\ \zeta(s\circ f,s\circ\beta(f))\bullet (\delta(f,h,u)\cdot s(f(u)))\bullet (\gamma(f,H)\cdot s(H(u)))^{-1} & &
+\mreturn(f,H)\\};
+\draw[patharrow] (m-2-1) -- node[below] {$\theta(s\circ f,s\circ H,u)$} (m-2-3);
+\draw[patharrow] (m-1-3) -- node[right] {$\xi(f)$} (m-2-3);
+\draw[patharrow] (m-1-1) -- node[right]  {$\nu(f)^{-1}\rightwhisker ((\delta(f,H,u)\cdot s(f(u)))\bullet(\gamma(f,H)\cdot s(H(u)))$}(m-2-1);
+\draw[patharrow] (m-1-1) -- node[above,yshift=1ex] {$s(\gamma(f,H))^{-1}\leftwhisker s(\delta(f,H,u))\rightwhisker s(\beta(f,u))$}(m-1-3);
+\end{tikzpicture}
+\end{equation}
+\end{defn}
+
+\section{Orthogonal factorization in type theory}
+Every modality $\modal$ defines 
+a stable factorization system $(\mathcal{E}_\modal,\mathcal{M}_\modal)$ with:
+\begin{equation*}
+\mathcal{E}_\modal(f)\equiv \prod(b:B),\
+\mathsf{isContr}(\modal\mathsf{hFiber}(f,b)).
+\end{equation*}
+and \Mcirc\ the class of functions all of which fibers are
+modal, \emph{modal functions} for short. Specializing to the $n$-truncation, we show that there is a stable orthogonal
+factorization
+system $(\mathcal{E},\mathcal{M})$ where $\mathcal{E}$ is the
+class of $n$-connected functions and $\mathcal{M}$ is the
+class of $n$-truncated functions.
+
+\subsection{Connectivity}
+\begin{defn}
+A function $f:A\to B$ is said to be $\modal$-connected if there is a term of type
+\begin{equation*}
+\mathsf{conn}_\modal(f):=\prod(b:B),\ \mathsf{isContr}(\modal\mathsf{hFiber}(f,b)). 
+\end{equation*}
+A type $A$ is said to be \modal-connected if the unique function
+$A_!:A\to\mathsf{unit}$ is \modal-connected. Likewise, a dependent type
+$P:A\to\type$ is said to be \modal-connected if $P(x)$ is \modal-connected for
+every $x:A$. 
+\end{defn}
+
+A type $A$ is \modal-connected precisely when there is a term of type $\mathsf{isContr}\modal A$. Thus, a function $f:A\to B$ is
+$\modal$-connected if and only if $\mathsf{hFiber}(f,b)$ is \modal-connected for every $b:B$. 
+A dependent type $P:A\to\type$ is \modal-connected
+precisely when $\proj1:\sum(x:A),\ P(x)\to A$ is an \modal-connected function.
+
+Every function is $(-2)$-connected and that a function is $(-1)$-connected precisely when it is surjective.
+
+\begin{defn}\label{defn:retract}
+A function $g:A\to B$ is said to be a retract of a function $f:X\to Y$ if there is a diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & X & A \\ B & Y & B \\};
+\draw[ar] (m-1-1) -- node[above] {$s$} (m-1-2);
+\draw[ar] (m-1-2) -- node[above] {$r$} (m-1-3);
+\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
+\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left] {$g$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$s^\prime$} (m-2-2);
+\draw[ar] (m-2-2) -- node[below] {$r^\prime$} (m-2-3);
+\end{tikzpicture}
+\end{equation*}
+for which there are
+\begin{enumerate}
+\item a homotopy $R:r\circ s=\idfunc{A}$.
+\item a homotopy $R^\prime:r^\prime\circ s^\prime=\idfunc{B}$.
+\item a homotopy $L:f\circ s\sim s^=\circ g$.
+\item a homotopy $K:g\circ r\sim r^=\circ f$.
+\item paths $H(a)$ witnessing the commutativity of the square
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {g(r(s(a))) & r^\prime(f(s(a))) \\ g(a) & r^\prime(s^\prime(g(a))) \\};
+\draw[patharrow] (m-1-1) -- node[left] {$g(R(a)))$} (m-2-1);
+\draw[patharrow] (m-1-1) -- node[above] {$K(s(a))$} (m-1-2);
+\draw[patharrow] (m-2-2) -- node[below] {$R^\prime(g(a))$} (m-2-1);
+\draw[patharrow] (m-1-2) -- node[right] {$r^\prime(L(a))$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+for every $a:A$. 
+\end{enumerate}
+\end{defn}
+
+
+\begin{lem}\label{lem:func_retract_to_fiber_retract}
+If a function $g:A\to B$ is a retract of a function $f:X\to Y$, then $\mathsf{hFiber}(g,b)$ is a retract of $\mathsf{hFiber}(f,s^\prime(b))$
+for every $b:B$, where $s':B\to Y$ is as in definition \ref{defn:retract}. 
+\end{lem}
+
+\begin{proof}
+Suppose that $g:A\to B$ is a retract of $f:X\to Y$. Then we have the functions
+\begin{align*}
+\varphi & :=\lambda\pairr{a,p}.\pairr{s(a),s^\prime(p)\bullet L(a)} & & :\mathsf{hFiber}(g,b)\to\mathsf{hFiber}(f,s^\prime(b))\\
+\psi & := \lambda\pairr{x,q}.\pairr{r(x),R^\prime(b)\bullet r^\prime(q)\bullet K(x)} & &
+:\mathsf{hFiber}(f,s^\prime(b))\to\mathsf{hFiber}(g,b)
+\end{align*}
+Then we have $\psi(\varphi(\pairr{a,p}))\equiv\pairr{r(s(a)),R^\prime(b)\bullet r^\prime(s^\prime(p)\bullet L(a))\bullet K(s(a))}$. Our goal
+is to show that
+\begin{equation*}
+\prod(b:B)(\pairr{a,p}:\mathsf{hFiber}(g,b)),\ \psi(\varphi(\pairr{a,p}))= \pairr{a,p},
+\end{equation*}
+which is of course equivalent to the type
+\begin{equation*}
+\prod(a:A),\ \psi(\varphi(\pairr{a,\idfunc{g(a)}})=\pairr{a,\idfunc{g(a)}}
+\end{equation*}
+By assumption, we have the path $R(a):r(s(a))= a$. So it is left to show that there is a path
+\begin{equation*}
+R(a)\cdot (R^\prime(g(a))\bullet r^\prime(L(a))\bullet K(s(a)))= \idfunc{g(a)}.
+\end{equation*}
+This transportation computes as $R^\prime(g(a))\bullet r^\prime(L(a))\bullet K(s(a))\bullet g(R(a))$, so the required path is given by
+$H(a)$. This finishes the proof that $\mathsf{hFiber}(g,b)$ is a retract of $\mathsf{hFiber}(f,s^\prime(b))$ for every $b:B$.
+\end{proof}
+
+
+\begin{lem}
+Suppose that $g$ is a retract of a $\modal$-connected function $f$, then $g$ is
+$\modal$-connected.
+\end{lem}
+
+\begin{proof}
+This is a direct consequence of lemma \ref{lem:func_retract_to_fiber_retract}.
+\end{proof}
+
+\begin{cor}
+If $g$ is homotopic to an $\modal$-connected function $f$, then $g$ is $\modal$-connected.
+\end{cor}
+
+\begin{lem}\label{lem:nconnected_postcomp}
+Suppose that $f:A\to B$ is $\modal$-connected. Then $g:B\to C$ is $\modal$-connected if and only if $g\circ f$ is
+$\modal$-connected.
+\end{lem}
+
+\begin{proof}
+Let $c:C$. We have the equivalences
+\begin{align*}
+\modal\mathsf{hFiber}(g\circ f,c)& \simeq \modal \sum(w:\mathsf{hFiber}(g,c)),\ \mathsf{hFiber}(f,\proj1 w)\\
+& \simeq \modal\sum(w:\mathsf{hFiber}(g,c)),\ \modal\mathsf{hFiber}(f,\proj1 w)\\
+& \simeq \modal\mathsf{hFiber}(g,c).
+\end{align*}
+It follows that $\modal\mathsf{hFiber}(g,c)$ is contractible if and only if $\modal\mathsf{hFiber}(g\circ f,c)$ is
+contractible.
+\end{proof}
+
+The function $\mreturn:A\to\modal A$ is an example of a \modal-connected function is. Another prime example is the
+canonical function $A\to\im_\modal(f)$ to the image of a function $f:A\to B$; see section \ref{sec:image_factorization}.
+
+The fact that $\mreturn:A\to\modal A$ is \modal-connected is an immediate corollary of the following proposition.
+
+\begin{lem}\label{prop:nconnected_tested_by_lv_n_dependent types}
+A function $f:A\to B$ is \modal-connected if and only if for every $P:B\to\type_\modal$, the function
+\begin{equation*}
+\varphi :\big(\prod(b:B),\ P(b)\big)\to\big(\prod(a:A),\ P(f(a))\big)
+\end{equation*}
+defined by $\varphi(s):=s\circ f$ is an equivalence.
+\end{lem}
+
+\begin{proof}
+Suppose that $f$ is \modal-connected and let $P:B\to\type$ be a dependent type over $B$. Then we have the equivalences
+\begin{align*}
+\prod(b:B),\ P(b) & \simeq \prod(b:B),\ \modal\mathsf{hFiber}(f,b)\to P(b)\\
+& \simeq \prod(b:B),\ \mathsf{hFiber}(f,b)\to P(b)\\
+& \simeq \prod(b:B)(a:A)(p:f(a)= b),\ P(b)\\
+& \simeq \prod(a:A),\ P(f(a)).
+\end{align*}
+We omit the proof that this equivalence is indeed given by $\lambda s.s\circ f$. 
+
+For the other direction, suppose that the function $\lambda s.s\circ f$ from $(\prod(b:B),\ P(b))$ to $(\prod(a:A),\ P(f(a)))$ is an
+equivalence for each dependent type $P:B\to\type$ of homotopy level $n$. Considering the dependent type 
+\begin{equation*}
+b:B\vdash\modal\mathsf{hFiber}(f,b):\modaltype,
+\end{equation*}
+we obtain from the assumed equivalence a term $c$ of type $\prod(b:B),\ \modal\mathsf{hFiber}(f,b)$ with
+$c(f(a))\equiv\mreturn(\pair{a,\idfunc{f(a)}})$. To show that each $\modal\mathsf{hFiber}(f,b)$ is contractible 
+we will find a function of type
+\begin{equation*}
+\prod(b:B)(w:\modal\mathsf{hFiber}(f,b)),\ w= c(b).
+\end{equation*}
+By the universal property of \modal\ the above type is equivalent to
+\begin{equation*}
+\prod(b:B)(a:A)(p:f(a)= b),\ \mreturn(\pairr{a,p})= c(b),
+\end{equation*}
+which is furthermore equivalent to the type
+\begin{equation*}
+\prod(a:A),\ \mreturn(\pairr{a,\idfunc{f(a)}})= c(f(a)).
+\end{equation*}
+This property holds by our choice of $c(f(a))$. 
+\end{proof}
+
+\begin{cor}\label{cor:totrunc_is_connected}
+The canonical function $\mreturn:A\to\modal A$ is \modal-connected.
+\end{cor}
+
+\begin{proof}
+For every dependent type $P:\modal A\to\modaltype$, the requested equivalence exists by proposition
+\ref{prop:lv_n_deptype_sec_equiv_by_precomp}.
+\end{proof}
+
+The following two corollaries are mere reformulations of proposition \ref{prop:nconnected_tested_by_lv_n_dependent types}:
+
+\begin{cor}
+A function $f:A\to B$ is \modal-connected if and only if for every modal function $g:X\to B$, the function
+\begin{equation*}
+\varphi:\big(\prod(b:B),\ \mathsf{hFiber}(g,b)\big)\to\big(\prod(a:A),\ \mathsf{hFiber}(g,f(a))\big)
+\end{equation*}
+defined by $\varphi(s):=s\circ f$ is an equivalence.
+\end{cor}
+
+\begin{cor}
+A function $f:A\to B$ is \modal-connected if and only if for every modal function $g:X\to B$, the function
+\begin{equation*}
+\varphi :\big(\sum(h:B\to X),\ g\circ h\sim \idfunc{B}\big)\to\big(\sum(k:A\to X),\ g\circ k\sim f\big)
+\end{equation*}
+defined by $\varphi(h,H):=\pairr{h\circ f,H\circ f}$ is an equivalence.
+\end{cor}
+
+When we apply the above proposition to functions with codomain $\mathsf{unit}$ we obtain an assertion which is not very
+interesting by itself, but it gives some intuition on how we should look at proposition \ref{prop:nconnected_tested_by_lv_n_dependent
+types}:
+
+\begin{cor}
+A type $A$ is \modal-connected if and only if there is an equivalence
+\begin{equation*}
+(A\to B)\simeq B
+\end{equation*}
+for every modal type $B$.
+\end{cor}
+
+\begin{lem}\label{lem:nconnected_to_leveln_to_equiv}
+Let $B$ be a modal type and let $f:A\to B$ be a function. Then the induced function $g:\modal A\to B$ is an
+equivalence if and only if $f$ is \modal-connected.
+\end{lem}
+
+\begin{proof}
+Note that $f$ is homotopic to $g\circ\mreturn$. By corollary \ref{cor:totrunc_is_connected} we know that $\mreturn$ is \modal-connected, so
+by
+lemma \ref{lem:nconnected_postcomp} $f$ is \modal-connected if and only if $g$ is \modal-connected. Since $g$ is a function between
+modal types, the homotopy fibers of $g$ are modal. Hence it follows that $g$ is \modal-connected if and only if $g$ is an equivalence.
+\end{proof}
+
+A useful variation to lemma \ref{lem:nconnected_postcomp} is:
+\begin{lem}\label{lem:nconnected_postcomp_variation}
+Let $f:A\to B$ be a function and $P:A\to\type$ and $Q:B\to\type$ be dependent types. Suppose that $g:\prod\{a:A\},\ P(a)\to Q(f(a))$
+is a fiberwise \modal-connected function, i.e.\ each $g(a)$ is assumed to be \modal-connected. Then the function
+\begin{equation*}
+\varphi\equiv\lambda\pairr{a,u}.\pairr{f(a),g(u)}:\big(\sum(a:A),\ P(a)\big)\to\big(\sum(b:B),\ Q(b)\big)
+\end{equation*}
+is \modal-connected if and only if $f$ is \modal-connected.
+\end{lem}
+
+\begin{proof}
+For $b:B$ and $v:Q(b)$ we have
+\begin{align*}
+\modal\mathsf{hFiber}(\varphi,\pairr{b,v}) & \simeq \modal\sum(a:A)(u:P(a))(p:f(a)= b),\ f(p)\cdot g(u)= v\\
+& \simeq \modal\sum(w:\mathsf{hFiber}(f,b))(u:P(\proj1(w))),\ g(u)= f(p)^{-1}\cdot v\\
+& \simeq \modal\sum(w:\mathsf{hFiber}(f,b)),\ \modal\mathsf{hFiber}(g(\proj1 w),f(p)^{-1}\cdot v)\\
+& \simeq \modal\mathsf{hFiber}(f,b)
+\end{align*}
+where the transportations along $f(p)$ and $f(p)^{-1}$ are taken with respect to the dependent type $Q$. Therefore, both of them are
+contractible whenever either of them is contractible.
+\end{proof}
+
+\begin{lem}\label{cor:trunc_prod}
+For any two types $A,B$ we have an equivalence $\modal (A\times B) \simeq
+\modal A \times \modal B$.
+\end{lem}
+\begin{proof}
+ We show that $\modal A \times \modal B$ satisfies the universal property of $\modal (A\times B)$.
+ Indeed, for each modal $C$ we have equivalences:
+ \begin{align*}
+&\modal A \times \modal B \to C\\
+&\modal A \to C^{\modal B}\simeq C^B\\
+&A\to C^B\\
+&A\times B \to C
+ \end{align*}
+\end{proof}
+
+\subsection{Orthogonal factorization through the \modal-image.}\label{sec:image_factorization}
+\begin{defn}\label{def:modal_image}
+Let $f:A\to B$ be a function. The \emph{\modal-image} of $f$ is defined as
+\begin{equation*}
+\im_\modal(f):=\sum(b:B),\ \modal\mathsf{hFiber}(f,b)
+\end{equation*}
+We also define $\mathsf{im}(f)$ for $\mathsf{im}_{-1}(f)$. 
+\end{defn}
+
+
+\begin{lem}
+Let $P:A\to\type$ be defined by $P(x):=\mathsf{unit}$. Then
+$\|A\|\simeq\mathsf{im}(P)$.
+\end{lem}
+
+\begin{proof}
+First we have to show that $\mathsf{im}(P)$ is a proposition. Suppose that $\pairr{X,u}:\mathsf{im}(P)$, we are essentially done showing
+that
+$\mathsf{im}(P)$ is a proposition if we show that $X\simeq \mathsf{unit}$. Note that $X\simeq\mathsf{unit}$ is a proposition, so there is an
+equivalence
+\begin{equation*}
+\|\mathsf{hFiber}(P,X)\|\to (X\simeq\mathsf{unit}))\simeq(\mathsf{hFiber}(P,X)\to(X\simeq\mathsf{unit})).
+\end{equation*}
+The latter type is clearly inhabited and the type $\|\mathsf{hFiber}(P,X)\|$ is inhabited by assumption. Therefore, there is a term
+of $X\simeq\mathsf{unit}$.
+
+Note that for any proposition $B$, there is an equivalence
+\begin{equation*}
+(\mathsf{im}(P)\to B)\simeq \big(\big(\sum(X:\type)(a:A),\ X\simeq P(a)\big)\to B\big) \simeq A\to B,
+\end{equation*}
+so $\mathsf{im}(P)$ satisfies the same universal property as $\| A\|$. 
+Therefore they are equivalent.
+\end{proof}
+
+\begin{lem}\label{prop:nconn_fiber_to_total}
+Let $P,Q:A\to\type$ be dependent types and consider a fiberwise transformation
+\begin{equation*}
+f:\prod(a:A),\ P(a)\to Q(a)
+\end{equation*}
+from $P$ to $Q$. Then $\Sigma_A f$ is \modal-connected if and only if each $f(a)$ is \modal-connected. 
+\end{lem}
+
+\begin{proof}
+Recall that we have the equivalence
+\begin{equation*}
+\mathsf{hFiber}(\Sigma_A f,\pairr{x,v})\simeq\mathsf{hFiber}(f(x),v)
+\end{equation*}
+for each $x:A$ and $v:Q(x)$. Hence $\modal\mathsf{hFiber}(\Sigma_A f,\pairr{x,v})$ is contractible if and only if
+$\modal\mathsf{hFiber}(f(x),v)$ is contractible.
+\end{proof}
+
+\begin{lem}\label{prop:to_image_is_connected}
+For any function $f:A\to B$, the canonical function $\tilde{f}:A\to\im_\modal(f)$ is \modal-connected. 
+Consequently, any function factors as an \modal-connected function followed by a modal function.
+\end{lem}
+
+\begin{proof}
+Note that $A\simeq\sum(b:B),\ \mathsf{hFiber}(f,b)$. The function $\tilde{f}$ is the function on total spaces induced by the fiberwise
+transformation
+\begin{equation*}
+\lambda b.\eta^{\mathsf{hFiber}(f,b)}:\prod(b:B),\ \mathsf{hFiber}(f,b)\to\modal\mathsf{hFiber}(f,b).
+\end{equation*}
+Since each $\eta$ is \modal-connected by corollary \ref{cor:totrunc_is_connected}, the statement follows from
+proposition \ref{prop:nconn_fiber_to_total}.
+\end{proof}
+
+In the following proposition we set up some machinery to prove the unique factorization theorem.
+
+\begin{prop}\label{prop:factor_equiv_fiber}
+Suppose we have a commutative diagram of functions
+\begin{equation*}
+\begin{tikzpicture}
+\node (A) at (-3em,0) {$A$};
+\node (B) at (3em,0) {$B$};
+\node (X1) at (0,1.5em) {$X_1$};
+\node (X2) at (0,-1.5em) {$X_2$};
+\draw[ar] (A) -- node[auto] {$g_1$} (X1);
+\draw[ar] (X1) -- node[auto] {$h_1$} (B);
+\draw[ar] (A) -- node[auto,swap] {$g_2$} (X2);
+\draw[ar] (X2) -- node[auto,swap] {$h_2$} (B);
+\end{tikzpicture}
+\end{equation*}
+with $H:h_1\circ g_1\sim h_2\circ g_2$, where $g_1$ and $g_2$ are \modal-connected and where $h_1$ and $h_2$ are modal.
+Then there is an equivalence
+\begin{equation*}
+E(H,b):\mathsf{hFiber}(h_1,b)\simeq\mathsf{hFiber}(h_2,b)
+\end{equation*}
+for any $b:B$ such that the underlying map $\underline{E}(H,h_1(g_1(a)))$ of $E(H,h_1(g_1(a))$ maps $\pairr{g_1(a),\idfunc{h_1(g_1(a))}}$ to
+$\pairr{g_2(a),H(a)^{-1}}$ for any $a:A$.
+\end{prop}
+
+\begin{proof}
+Let $b:B$. Then we have the following equivalences:
+\begin{align*}
+\mathsf{hFiber}(h_1,b) & \simeq \sum(w:\mathsf{hFiber}(h_1,b)),\ \modal \mathsf{hFiber}(g_1,\proj1 w)\\
+& \simeq \modal\sum(w:\mathsf{hFiber}(h_1,b)),\ \mathsf{hFiber}(g_1,\proj1 w)\\
+& \simeq \modal\mathsf{hFiber}(h_1\circ g_1,b)
+\end{align*}
+and likewise for $h_2$ and $g_2$. Here, the first equivalence holds because $g_1$ is assumed to be \modal-connected; the second equivalence
+holds because $h_1$ is assumed to be modal and the third equivalence holds by lemma \ref{lem:hfiber_basics}. Also, since we have a
+homotopy $H:h_1\circ g_1\sim h_2\circ g_2$, there is an obvious equivalence $\mathsf{hFiber}(h_1\circ g_1,b)\simeq\mathsf{hFiber}(h_2\circ
+g_2,b)$. Hence we obtain
+\begin{equation*}
+\mathsf{hFiber}(h_1,b)\simeq\mathsf{hFiber}(h_2,b)
+\end{equation*}
+for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the term
+$\pairr{g_1(a),\idfunc{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
+\begin{align*}
+\pairr{g_1(a),\idfunc{h_1(g_1(a))}} & 
+    \mapsto \pairr{\pairr{g_1(a),\idfunc{h_1(g_1(a))}}, \eta( \pairr{a,\idfunc{g_1(a)}} )}\\
+  & \mapsto \eta( \pairr{\pairr{g_1(a),\idfunc{h_1(g_1(a))}}, \pairr{a,\idfunc{g_1(a)}} }\\
+  & \mapsto \eta( \pairr{a,\idfunc{h_1(g_1(a))}})\\
+  & \mapsto \eta( \pairr{a,H(a)^{-1}})\\
+  & \mapsto \eta( \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\idfunc{g_2(a)}}}\\
+  & \mapsto \pairr{\pairr{g_2(a),H(a)^{-1}}, \eta(\pairr{a,\idfunc{g_2(a)}}) }\\
+  & \mapsto \pairr{g_2(a),H(a)^{-1}}
+\end{align*}
+\end{proof}
+
+The equivalences $E(H,b)$ are such that $E(H^{-1},b)= E(H,b)^{-1}$.
+
+From propositions \ref{prop:to_image_is_connected} and \ref{prop:factor_equiv_fiber} we get the following unique factorization result:
+
+\begin{thm}
+For each $f:A\to B$, the space $\mathsf{factorizations}_\modal(f)$ defined by
+\begin{equation*}
+\sum(X:\type)(g:A\to X)(h:X\to B),\ (h\circ g\sim f)\times\mathsf{conn}_\modal(g)\times\ismodal\ h.
+\end{equation*}
+is contractible. By proposition \ref{prop:to_image_is_connected} we know that there is the term
+\begin{equation*}
+\pairr{\im(f),\tilde{f},\proj1,\theta,\varphi,\psi}:\mathsf{factorizations}_\modal(f)
+\end{equation*}
+where $\theta:\proj1\circ\tilde{f}\sim f$ is the canonical homotopy, where $\varphi$ is the proof of proposition
+\ref{prop:to_image_is_connected}, and where $\psi$ is the obvious proof that $\proj1:\im(f)\to B$ has modal fibers.
+\end{thm}
+
+In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker operations. Recall that if we have paths
+$p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whisker operation provides a path $q\bullet p=
+q\bullet p^\prime$, wich is denoted by $q\leftwhisker s$. Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim
+f^\prime$ is a homotopy, then there is a homotopy $g\leftwhisker H:g\circ f\sim g\circ f^\prime$.
+
+\begin{proof}
+By proposition \ref{prop:to_image_is_connected} we know that there is a term of $\mathsf{factorizations}_\modal(f)$, hence it is enough to
+show that $\mathsf{factorizations}_\modal(f)$ is a proposition. Suppose we have two \modal-factorizations
+\begin{equation*}
+\pairr{X_1,g_1,h_1,H_1,\varphi_1,\psi_1}\qquad\text{and}\qquad\pairr{X_2,g_2,h_2,H_2,\varphi_2,\psi_2}
+\end{equation*}
+of $f$. Then we have the homotopy $H:=H_2^{-1}\circ H_1:h_1\circ g_1\sim h_2\circ g_2$. By the univalence axiom, it suffices to show that
+\begin{enumerate}
+\item there is an equivalence $e:X_1\simeq X_2$,
+\item there is a homotopy $\zeta:\underline{e}\circ g_1\sim g_2$,
+% \note{Is it easy enough to see that these terms are the various transports?}
+\item there is a homotopy $\eta:h_2\circ\underline{e}\sim h_1$,
+\item there is a homotopy $H_1 \circ(h_1\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_2)\sim H_2$.
+\end{enumerate}
+where $\underline{e}$ is the function underlying the equivalence. We prove these four assertions in that order.
+\begin{enumerate}
+\item By proposition \ref{prop:factor_equiv_fiber}, we have a fiberwise equivalence
+% \note{It could be a nice exercise for the book to show
+% that if $f_1:A_1\to B$ and $f_2:A_2\to B$ have equivalent fibers, then $A_1\simeq A_2$}.
+\begin{equation*}
+\prod(b:B),\ \mathsf{hFiber}(h_1,b)\to\mathsf{hFiber}(h_2,b).
+\end{equation*}
+This induces an equivalence of total spaces, i.e.\ we have
+\begin{equation*}
+\sum(b:B),\ \mathsf{hFiber}(h_1,b)\simeq\sum(b:B),\ \mathsf{hFiber}(h_2,b)
+\end{equation*}
+Of course, we also have the familiar equivalences $X_1\simeq\sum(b:B),\ \mathsf{hFiber}(h_1,b)$ and $X_2\simeq\sum(b:B),\
+\mathsf{hFiber}(h_2,b)$. This gives us our equivalence $e(H):X_1\simeq X_2$. The reader may verify that the underlying function
+$\underline{e}(H)$ of $e(H)$ is defined by
+\begin{equation*}
+\underline{e}(H,x):=\proj1\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}})
+\end{equation*}
+\item By proposition \ref{prop:factor_equiv_fiber} we have $\underline{e}(H,g_1(a))=g_2(a)$. Thus we get $\zeta(a):=\idfunc{g_2(a)}$. 
+\item For every $x:X_1$, we have
+\begin{equation*}
+\proj2\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}}):h_2(\underline{e}(H,x))= h_1(x),
+\end{equation*}
+giving us a homotopy $\eta:h_2\circ \underline{e}\sim h_1$.
+\item By proposition \ref{prop:factor_equiv_fiber} we have $\eta(g_1(a))=H(a)^{-1}$ and by {\it ii.} we have
+$h_2(\zeta(a))=\idfunc{h_2(g_2(a))}$. Thus we have
+\begin{align*}
+(H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\bullet h_2(\zeta(a))^{-1}\bullet \eta(g_1(a))\\
+& = H_1(a)\bullet H(a)^{-1}\\
+& = H_2(a).
+\end{align*}
+\end{enumerate}
+\end{proof}
+
+\begin{cor}
+A function $f:A\to B$ is \modal-connected if and only if there is a term of type
+\begin{equation*}
+\prod C, \prod(g:\modalfunc(B\to C)),\ \mathsf{isContr}\big(\sum(h:\modalfunc(B\to C)),\ \underline{h}\circ
+f\sim\underline{g}\circ f\big).
+\end{equation*}
+\end{cor}
+
+\subsection{The principle of modal choice}\label{sec:ac_truncated}
+
+In this section generalize the principle of unique choice to a lemma we call the principle of modal
+choice, or simply $\mathsf{AC}_{\modal}$. We also introduce various degrees of surjectivity and see how they interact with modal choice.
+We will derive
+the principle of unique choice from the following more general discussion in corollary \ref{cor:auc}.
+
+\begin{defn}
+Suppose $P:A\to\type$ is a dependent type over a type $A$. We write $\{A\mid P\}\defeq\sum A\|P\|$ and define:
+\begin{align*}
+\existsmodal(x:A),\ P(x) & \equiv \modal\sum A,P\\
+\existsmodalunique(P) & \equiv  (\existsmodal(x:A),\ P(x))\times\ismodal(\{A\mid P\}).
+\end{align*}
+\end{defn}
+
+\begin{lem}\label{lem:modal_Sigma}
+ Suppose that $A$ is modal and for each $a:A$, $B a$ is modal. Then $\sum A B$ is modal.
+\end{lem}
+\begin{proof}
+We first define a map $\modal \sum A B\to \sum A B$ and then show that it is inverse to $\eta$. Consider $\hat{\proj1}:\modal \sum A B
+\to \modal A$. Because $A$ is modal, this gives us an element $a:A$. Combining this with $\hat{\proj2^a}:\modal \sum A B \to \modal (B
+a)$ and the modality of $B a$, we obtain an element of $\sum A B$. It is easy to check that this is in fact an inverse.
+\end{proof}
+
+\begin{lem}\label{lem:hlevel_sum_destructed}
+Let $P:A\to\modaltype$. If $\ismodal(\{A\mid P\})$, then the total space $\sum(x:A),\ P(x)$ is modal. 
+\end{lem}
+\begin{proof}
+Define $\tilde{P}:\{A\mid P\}\to \type$ by $\tilde{P}(a;p)\defeq P(a)$.
+Then $\sum A P\simeq \sum \{A\mid P\} \tilde{P}$. The latter is a sum of modal types and hence itself modal by lemma~\ref{lem:modal_Sigma}.
+\end{proof}
+
+\begin{lem}[Iota]\label{lem:iota}
+For every dependent type $P:A\to\modaltype$, there is a function
+\begin{equation*}
+\exists!_\modal(P)\to\sum(x:A),\ P(x).
+\end{equation*}
+\end{lem}
+
+\begin{proof}
+Since $\ismodal(\{A\mid P\})$, by lemma \ref{lem:hlevel_sum_destructed}, 
+it follows that $\sum(x:A),\ P(x)$ is modal, so there is
+an equivalence $\existsmodal(x:A),\ P(x)\simeq\sum(x:A),\ P(x)$.
+\end{proof}
+
+\begin{thm}[The principle of modal choice]
+Let $P:X\to\type$ and $R:\prod(x:X),$ $(P(x)\to\modaltype)$. Then there is a function of type
+\begin{equation*}
+\prod(x:X),\ \existsmodalunique(R(x))\to\sum\big(f:\prod(x:X),\ P(x)\big)\prod(x:X),\ R(x,f(x)).
+\end{equation*}
+\end{thm}
+
+\begin{proof}
+Suppose that $\prod(x:X),\ \existsmodalunique(R(x))$. By lemma \ref{lem:iota}, 
+we can find a term of type $\sum(u:P(x)),\ R(x,u)$
+for every $x:X$. The statement now follows from the usual principle of choice.
+\end{proof}
+
+For truncation we obtain the principle of unique choice. 
+However, the of principle of unique choice is usually stated quite differently:
+the type $\ismodal(\{A\mid P\})$ may be replaced by the type
+\begin{equation*}
+\mathsf{atMostOne}(P) \equiv  \prod(x,y:A),\ P(x)\to P(y)\to(x= y)
+\end{equation*}
+However, a term of $\ismodal_{-1}(P)$ can be deduced from a term of $\mathsf{atMostOne}(P)$. This is the content of the following
+lemma. In order to prove this, we will use that there is an equivalence
+\begin{equation*}
+\mathsf{isprop}(P)\simeq \prod(x,y:A),\ P(x)\to P(y)\to\mathsf{isContr}(x= y)
+\end{equation*}
+This is not hard to verify, and a proof relies on the fact that $\pairr{x,u}=\pairr{x^\prime,u^\prime}$ is equivalent to the type
+$x= x^\prime$ for any two terms $\pairr{x,u},\pairr{x^\prime,u^\prime}:\sum(x:A),\ \|P(x)\|$.
+
+% The following lemma will be used later on in the proof that images are strict coequalizers, see
+% proposition\ref{prop:images_are_coequalizers}.
+
+\begin{lem}\label{lem:atmostone_to_atlevel}
+For any $P:A\to\type$, there is a function of type
+\begin{equation*}
+\mathsf{atMostOne}(P)\to\ismodal_{-1}(P).
+\end{equation*}
+\end{lem}
+
+\begin{proof}
+We will show that there is a function of type
+\begin{equation*}
+\mathsf{atMostOne}(P)\to\prod(x,y:A),\ P(x)\to P(y)\to\mathsf{isContr}(x= y).
+\end{equation*}
+Let $H$ be a term of type $\mathsf{atMostOne}(P)$ and let $x,y:A$, $u:P(x)$ and $v:P(y)$. Our goal is to show that $x= y$ is
+contractible by showing that for any $p:x= y$ there is a path $p= H(x,y,u,v)$. The idea is that we apply $H$ to the paths $p$ and
+$H(x,y,u,v)$ to obtain a path between them. The following general statement is useful to compute the terms $H(p,z,u,w)$:
+
+\begin{lem}
+Suppose that $H:\prod(x,y:A),\ P(x)\to P(y)\to (x= y)$. Then for any $p:x= x^\prime$ and $q:y= y^\prime$ there are paths
+\begin{align*}
+(p\cdot H(x))(y,u^\prime,v) & = H(x,y,p^{-1}\cdot u^\prime,v)\bullet p^{-1} & & [u^\prime:P(x^\prime),\ v:P(y)]\\
+(q\cdot H(x,y))(u,v^\prime) & = q\bullet H(x,y,u,p^{-1}\cdot v^\prime) & & [u : P(x),\ v^\prime :P(y^\prime)].
+\end{align*} 
+\end{lem}
+The proof of this statement is by path induction. We see from the above that the path $H(p,H(x,y,u,v))$ induces a witness of the
+commutativity of the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {x & y \\ x & y \\};
+\draw[patharrow] (m-2-2) -- node[below] {$p^{-1}$} (m-2-1);
+\draw[patharrow] (m-2-1) -- node[left]  {$H(x,x,u,u)$} (m-1-1);
+\draw[patharrow] (m-1-1) -- node[above] {$H(x,y,u,v)$} (m-1-2);
+\draw[patharrow] (m-2-2) -- node[right] {$H(y,y,v,v)$} (m-1-2);
+\end{tikzpicture}
+\end{equation*}
+Therefore, the assertion would follow if there is a function of type
+\begin{equation*}
+\mathsf{atMostOne}(P)\to\sum(H^\prime:\mathsf{atMostOne}(P))\prod(x:X)(u:P(x)),\ H^\prime(x,x,u,u)=\idfunc{x}.
+\end{equation*}
+This is easy, since we can define the function $H^\prime:\prod(x,y:X),\ P(x)\to P(y)\to(x= y)$ by
+\begin{equation*}
+H^\prime(x,y,u,v)\equiv H(x,y,u,v)\bullet H(x,x,u,u)^{-1}.
+\end{equation*}
+\end{proof}
+
+\begin{defn}
+Suppose $P:A\to\type$ is a dependent type over $A$. We define
+\begin{equation*}
+\exists!(x:A),\ P(x)\equiv \|\sum(x:A),\ P(x)\|\times\mathsf{atMostOne}(P).
+\end{equation*}
+\end{defn}
+
+\begin{cor}[The principle of unique choice]\label{cor:auc}
+Let $P:X\to\type$ and $R:\prod(x:X),$ $(P(x)\to\mathsf{hProp})$. Then there is a function
+\begin{equation*}
+\big(\prod(x:X),\ \exists !(u:P(x)),\ R(x,u)\big)\to\sum\big(f:\prod(x:X),\ P(x)\big)\prod(x:X),\ R(x,f(x)).
+\end{equation*}
+\end{cor}
+
+\subsection{Images are stable under pullbacks}
+In this section we will show that pullbacks and images commute.
+
+\begin{lem}\label{lem:hfiber_wrt_pullback}
+Suppose that the square
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & C \\ B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$g$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left] {$f$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$h$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+is a pullback square and let $b:B$. Then $\mathsf{hFiber}(f,b)\simeq\mathsf{hFiber}(g,h(b))$.
+\end{lem}
+
+\begin{proof}
+This follows from pasting of pullbacks, since the type $X$ in the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {X & A & C \\ \mathsf{unit} & B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- (m-1-3);
+\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
+\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
+\draw[ar] (m-1-1) -- (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$b$} (m-2-2);
+\draw[ar] (m-2-2) -- node[below] {$h$} (m-2-3);
+\end{tikzpicture}
+\end{equation*}
+is the pullback of the left square if and only if it is the pullback of the outer rectangle: $\mathsf{hFiber}(f,b)$ is the pullback of the
+square on the left and $\mathsf{hFiber}(g,h(b))$ is the pullback of the outer rectangle.
+\end{proof}
+
+\begin{thm}
+Consider functions $f:A\to B$, $g:C\to D$ and the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & C \\ \im_\modal(f) & \im_\modal(g) \\ B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$\tilde{g}_n$} (m-2-2);
+\draw[ar] (m-2-2) -- node[right] {$\proj1$} (m-3-2);
+\draw[ar] (m-1-1) -- node[left] {$\tilde{f}_n$} (m-2-1);
+\draw[ar] (m-2-1) -- (m-2-2);
+\draw[ar] (m-2-1) -- node[left] {$\proj1$} (m-3-1);
+\draw[ar] (m-3-1) -- node[below] {$h$} (m-3-2);
+\end{tikzpicture}
+\end{equation*}
+Then the outer rectangle is a pullback if and only if the bottom square is a pullback. In either of these equivalent cases, the top square
+is also a pullback. Consequently, images are stable under pullbacks.
+\end{thm}
+
+\begin{proof}
+Suppose first that the outer square is a pullback. Note that we have the equivalences
+\begin{align*}
+B\times_D\im_\modal(g) & \equiv\sum(b:B)(w:\im_\modal(g)),\ h(b)=\proj1 w\\
+& \simeq \sum(b:B)(d:D)(w:\modal\mathsf{hFiber}(g,d)),\ h(b)= d\\
+& \simeq \sum(b:B),\ \modal\mathsf{hFiber}(g,h(b)).\\
+& \simeq \sum(b:B),\ \modal\mathsf{hFiber}(f,b)\\
+& \equiv \im_\modal(f).
+\end{align*}
+In the last equivalence we have used lemma \ref{lem:hfiber_wrt_pullback}.
+
+Now suppose that the bottom square is a pullback, of which we denote the top arrow by $\psi$. By the pasting lemma for pullbacks, it
+suffices to show that the top square is a pullback. We have the equivalences
+\begin{align*}
+\im(f)\times_{\im(g)} C & \equiv \sum(w:\im(f))(c:C),\ \psi(w)=\tilde{g}_n(c)\\
+& \simeq \sum(b:B)(w:\im(g))(p:h(b)=\proj1 w)(c:C),\ w=\tilde{g}_n(c)\\
+& \simeq \sum(b:B)(c:C),\ h(b)= g(c)\\
+& \simeq \sum(b:B),\ \mathsf{hFiber}(f,b)\\
+& \simeq A.
+\end{align*}
+\end{proof}
 
 \section*{Notes}
 

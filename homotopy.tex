@@ -328,12 +328,14 @@ Recall from \autoref{sec:suspension} that $\susp X$ denotes the suspension of $X
 Recall from \autoref{sec:colimits} that $X \sqcup^C Y$ is the pushout of $X$ and $Y$ along $C$.
 
 \begin{thm}[Blakers-Massey Theorem]\label{Blakers-Massey}
-  If $X$ is $i$-connected and $Y$ is
-  $j$-connected, then for all $x:X$ and $y:Y$, the map $\glue : C(x,y)
+  Assume two pointed spaces $(X,x_0)$ and $(Y,y_0)$, where $C : X \times Y
+  \to \type$.  
+  If $\sm{x:X} C(x,y_0)$ is $i$-connected and $\sm{y:Y} C(x_0,y)$ is
+  $j$-connected, then for all $x:X$ and $y:Y$, the pushout constructor $\glue : C(x,y)
   \rightarrow X \sqcup^C Y$ is $i+j$-connected.  In
-  particular, $\trunc {i+j} {P(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y]
-    {(\inl(x))} {(\inr(y))}}$.
-    \note{What are $P$, $\glue$, and $C(x,y)$?} % https://github.com/HoTT/book/issues/22
+  particular, 
+  $\trunc {i+j} {C(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y] {(\inl(x))} {(\inr(y))}}$
+  for all $x,y$.
 \end{thm}
 
 \begin{thm}[Eilenberg--Mac Lane Spaces]\label{Eilenberg-Mac-Lane-Spaces}
@@ -419,9 +421,7 @@ Whitehead for $n$-types  &  &  \checkmark\checkmark
   \label{tab:theorems}
 \end{table}
 
-We now describe some basic examples of calculating homotopy
-groups, which can be carried out using the tools we have developed so
-far.  Unless otherwise stated, the notation \type will denote a
+Unless otherwise stated, the notation \type will denote a
 \emph{fixed} universe and several occurrences of the word \type will
 always represent the same universe. The types \prop, \set, \typele{n}
 represent the types of propositions, sets and $n$-truncated types of
@@ -696,7 +696,7 @@ $x: \Sn ^1$ and $c : \code(x)$, we have $\id
 \begin{proof}
 The proof is by circle induction.  It suffices to show the case for
 \base, because the case for \lloop is a path between paths in
-$\Z$, which can be given by appealing to the fact that $\Z$ is a set.  
+$\Z$, which is immediate because $\Z$ is a set.  
 
 Thus, it suffices to show, for all $n : \Z$, that
 \[
@@ -704,6 +704,7 @@ Thus, it suffices to show, for all $n : \Z$, that
 \]
 The proof is by induction, with cases for $0$,$1$,$-1$,$n+1$, and
 $n-1$.  
+\note{Gap between this and the induction principle for Z stated in the quotients section}
 
 \begin{itemize}
 
@@ -731,7 +732,7 @@ $\transfib{\code}{\lloop}{0}$, which by
 
 Finally, we conclude the theorem.
 
-\begin{thm}
+\begin{thm} 
 There is a family of equivalences $\prd{x : \Sn ^1} (\eqv {(\base=x)} {\code(x)})$.
 \end{thm}
 \begin{proof}
@@ -1594,6 +1595,105 @@ We have not proven this fact in homotopy type theory yet, but there are other ty
   \note{TODO}                   % https://github.com/HoTT/book/issues/41
   TODO: It should be possible to show, assuming $\Sn^n:\UU$ for all $n:\nat$, that the universe \UU is not an $n$-type for any $n$, since $\Omega^{n+1}(\UU,\Sn^n)$ should be nontrivial.
 \end{eg}
+
+\section{The General Form of an Encode/Decode Proof}
+
+We have used the encode/decode technique to characterize the path spaces
+of various types, including coproducts (\cref{thm:path-coprod}), natural
+numbers (\cref{thm:path-nat}), truncations (\cref{thm:path-truncation}),
+the circle (\cref{{cor:omega-s1}}), and pushouts
+(\cref{thm:van-Kampen}).  Variants of this technique are used in the
+proofs of many of the other theorems mentioned in the introduction to
+this section, such as $\pi_n(\Sn^n)$, the Freudenthal Suspension
+Theorem, Blakers-Massey, and $K(G,n)$.  While it is tempting to try to
+abstract this methodology into a lemma, this is difficult because
+slightly different variants are needed for different problems.  For
+example, different variations on the same methodology can be used to
+characterize a loop space (as in \cref{thm:path-coprod,cor:omega-s1}) or
+a whole path space (as in \cref{thm:path-nat}), to give a complete
+characterization of a loop space ($\Omega_1(\Sn ^1)$) or only to
+characterize some truncation of it ($\pi_k(\Sn)$), and to calculate
+homotopy groups or to prove that a map is $n$-connected (Freudenthal and
+Blakers-Massey).
+
+However, we can state lemmas for specific variants of the methodology.
+The proofs of these lemmas are almost trivial; the main point is to
+clarify the methodology by stating them in generality.  The simplest
+case is using an encode/decode proof to characterize the loop space of a
+type, as in \cref{thm:path-coprod} and \cref{{cor:omega-s1}}.
+
+\begin{lem}{Encode/decode for Loop Spaces} \\
+Given a pointed type $(A,a_0)$ and a fibration
+$\code : A \to \type$, if 
+\begin{enumerate}
+\item $c_0 : \code(a_0)$
+\item $\decode : \prd{x:A} \code(x) \to \id{a_0}{x}$
+\item for all $c : \code(a_0)$, \id{\transfib{\code}{\decode(c)}{c_0}}{c}
+\item $\id{\decode(c_0)}{\refl{}}$
+\end{enumerate}
+then $(\id{a_0}{a_0})$ is equivalent to $\code(a_0)$
+\end{lem}
+
+\begin{proof}
+Define
+$\encode : \prd{x:A} \id{a_0}{x} \to \code(x)$ by
+\[
+\encode_x(\alpha) = \transfib{\code}{\alpha}{c_0}
+\]
+We show that $\encode_{a_0}$ and $\decode_{a_0}$ are quasi-inverses.  
+The compostion $\encode_{a_0} \circ \decode_{a_0}$ is immediate by
+assumption (iii).  For the other composition, we show
+\[
+\prd{x:A}{p : \id{a_0}{x}} \id{\decode_{x} (\encode_{x} p)}{p}
+\] 
+By path induction, it suffices to show 
+$\id{{\decode_{{a_0}} (\encode_{{a_o}} \refl{})}}{\refl{}}$.
+After reducing the $\mathsf{transport}$, it suffices to show 
+$\id{{\decode_{{a_0}} (c_0)}}{\refl{}}$, which is assumption (iv).  
+\end{proof}
+
+If a fiberwise equivalence between $\id{a_0}{-}$ and $\code$ is desired,
+it suffices to strengthen condition (iii) to
+\[
+\prd{x:A}{c : \code(x)}, \id{\encode_{x}(\decode_{x}(c))}{c}
+\]
+However, to calculate a loop space (e.g. $\Omega(\Sn ^1)$), this
+stronger assumption is not necessary.  
+
+Another variation, which comes up often when calculating homotopy
+groups, characterizes the truncation of a loop space:
+\begin{lem}{Encode/decode for Truncations of Loop Spaces}
+
+Assume a pointed type $(A,a_0)$ and a fibration
+$\code : A \to \type$, where for every $x$, $\code(x)$ is a $k$-type.
+Define 
+\[
+\encode : \prd{x:A} \trunc{k}{\id{a_0}{x}} \to \code(x) \\
+\]
+by truncation recursion (using the fact
+that $\code(x)$ is a $k$-type), mapping $\alpha : \id{a_0}{x}$ to 
+\transfib{\code}{\alpha}{c_0}.  If
+\begin{enumerate}
+\item $c_0 : \code(a_0)$
+\item $\decode : \prd{x:A} \code(x) \to \trunc{k}{\id{a_0}{x}}$
+\item for all $c : \code(a_0)$, \id{\encode_{a_0}(\decode_{a0}(c))}{c}
+\item $\id{\decode(c_0)}{\tproj{}{\refl{}}}$
+\end{enumerate}
+then $\trunc{k}{\id{a_0}{a_0}}$ is equivalent to $\code(a_0)$
+\end{lem}
+
+\begin{proof}
+$\decode \circ \encode$ is immediate by (iii).  
+
+To prove $\encode \circ \decode$, we first do a truncation induction, by
+which it suffices to show
+\[
+\prd{x:A}{p : \id{a_0}{x}} \id{\decode_{x} (\encode_{x} \tproj{}{p})}{\tproj{p}}
+\] 
+The truncation induction is allowed because paths in a $k$-type are a
+$k$-type.  To show this type, we do a path induction, and after reducing
+the \encode, use assumption (iv).
+\end{proof}
 
 \section*{Notes}
 

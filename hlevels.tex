@@ -532,7 +532,7 @@ defined by
 This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the
 codomain of $f$ is $n$-truncated.
 
-\begin{thm}
+\begin{thm} \label{thm:path-truncation}
   For any $A$ and $x,y:A$ and $n\ge -2$, the map~\eqref{eq:path-trunc-map} is an equivalence; thus we have
   \[ \eqv{\ttrunc n{x=_Ay}}{\Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)}. \]
 \end{thm}
@@ -1461,47 +1461,49 @@ Similar (but simpler) arguments prove that any reflective subuniverse has an ini
 \begin{defn}
 A modality is an operation $\modal:\type\to\type$ for which there are
 \begin{enumerate}
-\item functions $\mreturn_A:A\to\modal(A)$ for every type $A$. 
-
-We define $\ismodal A\defeq \mathsf{isEquiv}(\mreturn_A)$ and $\type_\modal\defeq\sum A:\type, \ismodal A$.
+\item functions $\mreturn^\modal_A:A\to\modal(A)$ for every type $A$.
 \item for every $A:\type$ and every dependent type $P:\modal(A)\to\type$, a function
 \begin{equation*}
-R^\modal_A:\big(\prod(a:A),\ \modal(P(\mreturn(a)))\big)\to\prod(z:\modal(A)),\ \modal(P(z)).
+R^\modal_A:\big(\prod(a:A),\ \modal(P(\mreturn^\modal_A(a)))\big)\to\prod(z:\modal(A)),\ \modal(P(z)).
 \end{equation*}
-\item A path $R^\modal_A(f)(\mreturn(a))= f(a)$ for each $f:\prod(a:A),\ \modal(P(\mreturn(a)))$.
-\item For any $z,z':\modal(A)$ the type $z= z$ is modal.
+\item A path $R^\modal_A(f)(\mreturn^\modal_A(a))= f(a)$ for each $f:\prod(a:A),\ \modal(P(\mreturn^\modal_A(a)))$.
+\item For any $z,z':\modal(A)$ the type $\mreturn^\modal_{z=z'}$ is an equivalence.
 \end{enumerate}
 \end{defn}
 
-Consequently, $\modal$ is an idempotent monad on $\type$.
+From the definition we see that a modality $\modal$ is an idempotent monad on $\type$.
 
 \begin{defn}
-We define $\modaltype:=\sum(X:\type),\ \mathsf{isEquiv}(\mreturn^\modal_X)$. 
+  We say that $A$ is {\em modal} if the type $\ismodal A\defeq \mathsf{isEquiv}(\mreturn^\modal_A)$ is inhabited.
 \end{defn}
 
-\begin{prop}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
+\begin{defn}
+  We define $\modaltype:=\sum(X:\type),\ismodal X$. 
+\end{defn}
+
+\begin{thm}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
 Let $A$ be a type and let $P:\modal(A)\to\modaltype$. Then the function
 \begin{equation*}
-\prod(z:\modal(A)),\ P(z)\to\prod(a:A),\ P(\mreturn(a))
+\prod(z:\modal(A)),\ P(z)\to\prod(a:A),\ P(\mreturn^\modal_A(a))
 \end{equation*}
-given by $\lambda s.s\circ \mreturn$ is an equivalence.
-\end{prop}
+given by $\lambda s.s\circ \mreturn^\modal_A$ is an equivalence.
+\end{thm}
 
 \begin{proof}
 We only need to find a homotopy
 \begin{equation*}
-\prod(z:\modal(A)),\ s(z)= R^\modal_X(s\circ \mreturn)(z)
+\prod(z:\modal(A)),\ s(z)= R^\modal_X(s\circ \mreturn^\modal_A)(z)
 \end{equation*}
 for each $s:\prod(z:\modal(A)),\ P(z)$. By assumption we have that $P(z)$ is
-modal for each $z:\modal(A)$ and hence it follows that $s(z)= R^\modal_X(s\circ \mreturn)(z)$
+modal for each $z:\modal(A)$ and hence it follows that $s(z)= R^\modal_X(s\circ \mreturn^\modal_A)(z)$
 is modal for each $z$. Hence it suffices to find a function of type
 \begin{equation*}
-\prod(a:A),\ s(\mreturn(a))= R^\modal_X(s\circ \mreturn)(\mreturn(a)),
+\prod(a:A),\ s(\mreturn^\modal_A(a))= R^\modal_X(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a)),
 \end{equation*}
 which follows straight from the definition of modalities.
 \end{proof}
 
-In particular, for every type $A$ and every modal type $B$, we have an equivalence $\modal A\to B\simeq A\to B$.
+In particular, for every type $A$ and every modal type $B$, we have an equivalence $(\modal A\to B)\simeq (A\to B)$.
 
 \subsection*{Modal colimits}
 The colimit of a diagram of modal types is in general not modal. For instance,
@@ -1943,7 +1945,7 @@ proposition \ref{prop:nconn_fiber_to_total}.
 
 In the following proposition we set up some machinery to prove the unique factorization theorem.
 
-\begin{prop}\label{prop:factor_equiv_fiber}
+\begin{thm}\label{prop:factor_equiv_fiber}
 Suppose we have a commutative diagram of functions
 \begin{equation*}
 \begin{tikzpicture}
@@ -1964,7 +1966,7 @@ E(H,b):\mathsf{hFiber}(h_1,b)\simeq\mathsf{hFiber}(h_2,b)
 \end{equation*}
 for any $b:B$ such that the underlying map $\underline{E}(H,h_1(g_1(a)))$ of $E(H,h_1(g_1(a))$ maps $\pairr{g_1(a),\idfunc{h_1(g_1(a))}}$ to
 $\pairr{g_2(a),H(a)^{-1}}$ for any $a:A$.
-\end{prop}
+\end{thm}
 
 \begin{proof}
 Let $b:B$. Then we have the following equivalences:

@@ -41,15 +41,16 @@
 % Each variable being abstracted over is a separate argument.  If
 % there is more than one such argument, they *must* be enclosed in
 % braces.  Arguments can be untyped, as in \lam{x}{y}, or typed with a
-% colon, as in \lam{x:A}{y:B}.  In the latter case, the colons are
-% automatically noticed and (with current implementation) the type is
-% placed in a superscript.  You can even give more than one variable
-% the same type, as in \lam{x,y:A}.
+% colon, as in \lam{x:A}{y:B}.
 \def\lam#1{{\lambda}\@lamarg#1:\@endlamarg\@ifnextchar\bgroup{.\,\lam}{.\,}}
 \def\@lamarg#1:#2\@endlamarg{\if\relax\detokenize{#2}\relax #1\else\@lamvar{\@lameatcolon#2},#1\@endlamvar\fi}
-\def\@lamvar#1,#2{{#2}^{#1}\@ifnextchar,{.\,{\lambda}\@lamvar{#1}}{\let\@endlamvar\relax}}
+\def\@lamvar#1,#2\@endlamvar{(#2:#1)}
+% \def\@lamvar#1,#2{{#2}^{#1}\@ifnextchar,{.\,{\lambda}\@lamvar{#1}}{\let\@endlamvar\relax}}
 \def\@lameatcolon#1:{#1}
 \let\lamt\lam
+% This version silently eats any typing annotation.
+\def\lamu#1{{\lambda}\@lamuarg#1:\@endlamuarg\@ifnextchar\bgroup{.\,\lamu}{.\,}}
+\def\@lamuarg#1:#2\@endlamuarg{#1}
 
 %%% Dependent products written with \forall, in the same style
 \def\fall#1{\forall (#1)\@ifnextchar\bgroup{.\,\fall}{.\,}}

@@ -153,7 +153,7 @@ in $\set$ defining the mapping cone. The type $C_f$ is contractible.
 
 \begin{proof}
 Let $f:A\to B$ be a function between sets.
-To show that $\mathsf{epi}(f)\to\mathsf{epi}'(f)$, let $H:\mathsf{epi}(f)$,
+To show that $\mathsf{epi}(f)\to\mathsf{epi}'(f)$, assume $f$ is an epimorphism,
 let $X$ be a set and let $g:B\to X$ be a function. Then we find
 \begin{equation*}
 \pairr{g,\refl{g\circ f}}:\sm{h:B\to X} g\circ f\sim h\circ f.
@@ -171,7 +171,7 @@ hence it suffices to show that
 This follows at once from the assumption that $f$ is an epimorphism.
 
 To show that $\mathsf{epi}'(f)\to\mathsf{isContr}(C_f)$, suppose that
-$H:\mathsf{epi}'(f)$. The basic constructor of $C_f$ corresponding to
+$\mathsf{epi}'(f)$. The basic constructor of $C_f$ corresponding to
 $\mathsf{unit}\to C_f$ gives us an element $t:C_f$. We have to show that
 \begin{equation*}
 \prd{x:C_f} x= t.
@@ -180,7 +180,7 @@ Note that $x= t$ is a proposition, hence we can use induction on
 $C_f$: it suffices to find
 \begin{align*}
 I_0 & : \prd{b:B} \iota(b)= t\\
-I_1 & : \prd{a:A} \alpha_1(a)\cdot I_0(f(a))=\refl{t}.
+I_1 & : \prd{a:A} \opp{\alpha_1(a)} \ct I_0(f(a))=\refl{t}.
 \end{align*}
 where $\alpha_1:\prd{a:A} \iota(f(a))= t$ is a basic constructor
 of $C_f$. Note that $\alpha_1$ is a homotopy from $\iota\circ f$ to
@@ -189,29 +189,30 @@ $\mathsf{const}_t\circ f$, so we find the terms
 \pairr{\iota,\refl{\iota\circ f}},\pairr{\mathsf{const}_t,\alpha_1}:
 \sm{h:B\to C_f} \iota\circ f\sim h\circ f.
 \end{equation*}
-By the assumption $H:\mathsf{epi}'(f)$, it follows that there is a path
+By the assumption of $\mathsf{epi}'(f)$, it follows that there is a path
 \begin{equation*}
 \gamma:\pairr{\iota,\refl{\iota\circ f}}=\pairr{\mathsf{const}_t,\alpha_1}
 \end{equation*}
-Hence we get $I_0$ from $A:\iota=\mathsf{const}_t$. Moreover,
-we get $ R:A\cdot\refl{\iota\circ f}=\alpha_1$.
-Note that $(A\cdot\refl{\iota\circ f})(a)= I_0(f(a))$, so it follows
-that $I_0(f(a))= \alpha_1(a)$ for all $a:A$, which gives us $I_1$.
+Hence, we may define $I_0(b)\defeq \happly(\projpath1(\gamma),b):\iota(b)=t$.
+We also have
+\[\projpath2(\gamma) : \trans{\projpath1(\gamma)}{\refl{\iota\circ f}} = \alpha_1. \]
+This transport involves precomposition with $f$, which commutes with $\happly$.
+Thus, from transport in path types we obtain $I_0(f(a)) = \alpha_1(a)$ for any $a:A$, which gives us $I_1$.
 
-To show that $\mathsf{isContr}(C_f)\to\mathsf{surj}(f)$,
-let $H:\mathsf{isContr}(C_f)$. Using the univalence axiom, we construct
-a dependent type $P:C_f\to\prop$. Note that $\prop$ is
-a set, so we can use induction on $C_f$. We define
+To show that $\mathsf{isContr}(C_f)\to\mathsf{surj}(f)$, assume $\mathsf{isContr}(C_f)$.
+We first construct a dependent type $P:C_f\to\prop$ by recursion on $C_f$, which is valid since \prop is a set.
+On the point constructors, we define
 \begin{align*}
 P(t) & \defeq \mathsf{unit}\\
-P(\iota(b)) & \defeq \|\hfiber{f}b\|.
+P(\iota(b)) & \defeq \brck{\hfiber{f}b}.
 \end{align*}
-For $a:A$ the type $\|\hfiber{f}{f(a)}\|$ is canonically
-equivalent to $\mathsf{unit}$, which finishes the construction of $P$.
-Since $C_f$ is assumed to be contractible it follows that $P(x)$ is
-equivalent to $P(t)$ for any $x:C_f$. In particular we find that
-$\|\hfiber{f}b\|$ is contractible for each $b:B$, showing
-that $f$ is surjective.
+To complete the construction of $P$, it remains to give a path $\brck{\hfiber{f}{f(a)}} =_\prop \unit$ for all $a:A$.
+However, $\brck{\hfiber{f}{f(a)}}$ is inhabited by $(f(a),\refl{f(a)})$.
+Since it is a mere proposition, this means it is contractible --- and thus equivalent, hence equal, to \unit.
+This completes the definition of $P$.
+Now, since $C_f$ is assumed to be contractible, it follows that $P(x)$ is equivalent to $P(t)$ for any $x:C_f$.
+In particular, $P(\iota(b))\jdeq \brck{\hfiber{f}b}$ is equivalent to $P(t)\jdeq \unit$ for each $b:B$, and hence contractible.
+Thus, $f$ is surjective.
 
 To show that $\mathsf{surj}(f)\to\mathsf{epi}(f)$,
 let $f:A\to B$ be a surjective function and consider a set $C$ and two functions
@@ -1016,6 +1017,9 @@ A \emph{class} is a mere predicate on~$V$. We say that \emph{$C : V \to \prop$ i
 
 \input{ordcard}
 
+\subsection{Notes}
+\autoref{thm:1surj_to_surj_to_pem} was posed as a problem by Bishop~\cite[Problem 2,p58]{Bishop1967}. Diaconescu~\cite{Diaconescu} proved
+it in a formal constructive set theory.
 % Local Variables:
 % TeX-master: "main"
 % End:

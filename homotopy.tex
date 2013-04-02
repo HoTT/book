@@ -1039,6 +1039,206 @@ $\Sn$ is $n\mathord{-}1$-connected by \autoref{cor:sn-connected}.  Therefore
 \autoref{lem:pik-nconnected} gives the result.  
 \end{proof}
 
+\section{The Hopf fibration}
+\label{sec:hopf}
+
+In this section we will define the \emph{Hopf fibration} which was already
+mentioned in \ref{hopf-fibration}:
+
+\begin{thm}[Hopf Fibration]
+There is a fibration $H$ over $\Sn ^2$ whose fibers are $\Sn ^1$ and
+whose total space is $\Sn ^3$.
+\end{thm}
+
+The Hopf fibration will allow us to compute several homotopy groups of
+spheres. Indeed, we have the following long exact sequence of homotopy groups
+associated to the Hopf fibration (see
+\autoref{sec:long-exact-sequence-homotopy-groups}):
+
+\[
+\xymatrix{
+  \pi_k(\Sn^1) \ar[r] & \pi_k(\Sn^3) \ar[r] & \pi_k(\Sn^2) \ar[lld] \\
+  \vdots & \vdots & \vdots \ar[lld] \\
+  \pi_2(\Sn^1) \ar[r] & \pi_2(\Sn^3) \ar[r] & \pi_2(\Sn^2) \ar[lld] \\
+  \pi_1(\Sn^1) \ar[r] & \pi_1(\Sn^3) \ar[r] & \pi_1(\Sn^2)}
+\]
+
+We’ve already computed all $\pi_n(\Sn^1)$ and $\pi_k(\Sn^n)$ for $k<n$, so the
+long exact sequence becomes the following:
+
+\[
+\xymatrix{
+  0 \ar[r] & \pi_k(\Sn^3) \ar[r] & \pi_k(\Sn^2) \ar[lld] \\
+  \vdots & \vdots & \vdots \ar[lld] \\
+  0 \ar[r] & \pi_3(\Sn^3) \ar[r] & \pi_3(\Sn^2) \ar[lld] \\
+  0 \ar[r] & 0 \ar[r] & \pi_2(\Sn^2) \ar[lld] \\
+  \Z \ar[r] & 0 \ar[r] & 0}
+\]
+
+In particular we get the following result:
+
+\begin{cor}
+  We have $\eqv{\pi_2(\Sn^2)}{\Z}$ and $\eqv{\pi_k(\Sn^3)}{\pi_k(\Sn^2)}$ for
+  every $k\ge3$ (where the map is induced by the Hopf fibration, seen as a map
+  from the total space $\Sn^3$ to the base space $\Sn^2$).
+\end{cor}
+
+Given that the double loop space of the circle is contractible, we actually get
+the slightly more precise result that the Hopf fibration induces an equivalence
+$\eqv{\Omega^2(\Sn^3)}{\Omega^2(\Sn^2)}$. In classical homotopy theory this
+would be a consequence of Whitehead’s theorem, but Whitehead’s theorem is not
+necessarily valid in homotopy type theory (we will never use the more precise
+version though).
+
+We first start with a lemma explaining how to construct fibrations over
+pushouts.
+
+\begin{lem}\label{lem:fibration-over-pushout}
+  Let $\Ddiag=Y\stackrel j\longleftarrow X\stackrel k\to Z$ be a span and assume
+  that we have
+  \begin{itemize}
+  \item Two fibrations $E_Y:Y\to\type$ and $E_Z:Z\to\type$
+  \item An equivalence $e_X$ between $E_Y\circ j:X\to\type$ and $E_Z\circ
+    k:X\to\type$, ie
+    \[e_X:\prd{x:X}\eqv{E_Y(j(x))}{E_Z(k(x))}\]
+  \end{itemize}
+
+  Then we can construct a fibration $E:Y\sqcup^XZ\to\type$ such that
+  \begin{itemize}
+  \item For all $y:Y$, $E(\inl(y))\judgeq E_Y(y)$
+  \item For all $z:Z$, $E(\inr(z))\judgeq E_Z(z)$
+  \item For all $x:X$, $\map E{\glue(x)}=\ua(e_X(x))$ (note that both sides of
+    the equation are paths in $\type$ from $E_Y(j(x))$ to $E_Z(k(x))$)
+  \end{itemize}
+
+  Moreover the total space of this fibration fits in the following pushout
+  square:
+
+  \[\xymatrix{
+    \sm{x:X}E_Y(j(x)) \ar[r]_\sim^{e_X} \ar[d]_j & \sm{x:X}E_Z(k(x)) \ar[r]^k
+    & \sm{z:Z}E_Z(z) \ar[d]^\inr \\
+    \sm{y:Y}E_Y(y) \ar[rr]_\inl & & \sm{t:Y\sqcup^XZ}E(t)
+  }\]
+\end{lem}
+
+\begin{proof}
+  We define $E$ by simple elimination on the pushout $Y\sqcup^XZ$. We need for
+  that to specify the value of $E$ on elements of the form $\inl(y)$, $\inr(z)$
+  and the action of $E$ on paths $\glue(x)$.
+  \begin{align*}
+    E(\inl(y)) & \defeq E_Y(y)\\
+    E(\inr(z)) & \defeq E_Z(z)\\
+    \map E{\glue(x)} & \defid \ua(e_X(x))
+  \end{align*}
+
+  To see that the total space of this fibration is a pushout, we apply the
+  flattening lemma (\autoref{thm:flattening}) with the following values:
+  \begin{itemize}
+  \item $A\defeq Y+Z$, $B\defeq X$ and $f,g:B\to A$ are defined by
+    $f(x)\defeq\inl(j(x))$, $g(x)\defeq\inr(k(x))$
+  \item The type family $C:A\to\type$ is defined by
+    \begin{align*}
+      C(\inl(y)) & \defeq E_Y(y)\\
+      C(\inr(z)) & \defeq E_Z(z)
+    \end{align*}
+  \item The family of equivalences $D:\prd{b:B}C(f(b))\simeq C(g(b))$ is defined
+    to be $e_X$
+  \end{itemize}
+
+  The base higher inductive type $W$ in the flattening lemma is equivalent to
+  the pushout $Y\sqcup^XZ$ and the type family $P:Y\sqcup^XZ\to\type$ is
+  equivalent to the $E$ defined above.
+
+  Thus the flattening lemma tells us that $\sm{t:Y\sqcup^XZ}E(t)$ is equivalent
+  the higher inductive type ${E^{\mathrm{tot}}}'$ with the following generators:
+  \begin{itemize}
+  \item A function $\mathsf{z}:\sm{a:Y+Z}C(a)\to {E^{\mathrm{tot}}}'$
+  \item For each $x:X$ and $t:E_Y(j(x))$, a path
+    $\mathsf{z}(\inl(j(x)),t)=\mathsf{z}(\inr(k(x)),e_C(t))$
+  \end{itemize}
+
+  Using the flattening lemma again or a direct computation, it is easy to see
+  that $\eqv{\sm{a:Y+Z}C(a)}{\sm{y:Y}E_Y(y)+\sm{z:Z}E_Z(z)}$, hence
+  ${E^{\mathrm{tot}}}'$ is equivalent to the higher inductive type
+  $E^{\mathrm{tot}}$ with the following generators:
+  \begin{itemize}
+  \item A function $\inl:\sm{y:Y}E_Y(y)\to E^{\mathrm{tot}}$
+  \item A function $\inr:\sm{z:Z}E_Z(z)\to E^{\mathrm{tot}}$
+  \item For each $(x,t):\sm{x:X}E_Y(j(x))$ a path $\glue(x,t):\inl(j(x),t) =
+    \inr(k(x),e_X(t))$
+  \end{itemize}
+
+  This proves that the total space of $E$ is the pushout of the total spaces of
+  $E_Y$ and $E_Z$ as required.
+\end{proof}
+
+\subsection{The Hopf construction}
+
+The Hopf fibration is a special case of a construction which works for any
+H-space.
+
+\begin{defn}
+  A \emph{H-space} consists of
+  \begin{itemize}
+  \item A type $A$
+  \item A base point $e:A$
+  \item A binary operation $\mu:A\times A\to A$
+  \item For every $a:A$, equalities $\mu(e,a)=a$ and $\mu(a,e)=a$
+  \end{itemize}
+\end{defn}
+
+\begin{lem}
+  Let $A$ be a connected H-space. Then for every $a:A$, the maps $\mu(a,-):A\to
+  A$ and $\mu(-,a):A\to A$ are equivalences.
+\end{lem}
+\begin{proof}
+  Let’s prove that for every $a:A$ the map $\mu(a,-)$ is an equivalence. The
+  other statement is symmetric.
+
+  The statement that $\mu(a,-)$ is an equivalence corresponds to a type family
+  $P:A\to\prop$ and proving it corresponds to finding a section of this type
+  family.
+
+  The type $\prop$ is a set (\autoref{thm:hleveln-of-hlevelSn}) hence we can
+  define a new type family $P':\trunc0A\to\prop$ by $P'(\tproj0a)\defeq
+  P(a)$. But $A$ is connected by assumption, hence $\trunc0A$ is
+  contractible. This implies that in order to find a section of $P'$, it is
+  enough to find a point in the fiber of $P'$ over $\tproj0e$. We have
+  $P'(\tproj0e)=P(e)$ which is inhabited because $\mu(e,-)$ is equal to the
+  identity map by definition of an H-space, hence is an equivalence.
+
+  We have proved that for every $x:\trunc0A$ the proposition $P'(x)$ is true,
+  hence in particular for every $a:A$ the proposition $P(a)$ is true because
+  $P(a)$ is $P'(\tproj0a)$.
+\end{proof}
+
+The \emph{Hopf construction} of a connected H-space $A$ will be a fibration over
+$\susp A$ with fiber $A$ and total space the join $A*A$.
+
+\begin{defn}
+  Let $A$ be a connected H-space. We define a fibration over $\susp A$ using
+  \autoref{lem:fibration-over-pushout}.
+
+  Given that $\susp A$ is the pushout $\unit\sqcup^A\unit$, we can define a
+  fibration over $\susp A$ by specifying
+  \begin{itemize}
+  \item Two fibrations over $\unit$ (i.e. two types $F_1$ and $F_2$)
+  \item A family of equivalences between $F_1$ and $F_2$ for every element of
+    $A$:
+    \[e:A\to(\eqv{F_1}{F_2})\]
+  \end{itemize}
+
+  We take $F_1\defeq A$, $F_2\defeq A$ and for $a:A$, $e(a)$ is the equivalence
+  $\mu(a,-)$.
+\end{defn}
+
+According to \autoref{lem:fibration-over-pushout}, the total space of the
+fibration we get is a pushout of the following span:
+
+\[\xymatrix{A & A \times A \ar[l]_-{\proj2} \ar[r]^-{\mu} & A}\]
+
+\emph{TODO: to continue}
+
 \section{Van Kampen's theorem}
 \label{sec:van-kampen}
 

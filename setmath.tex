@@ -3,124 +3,120 @@
 \chapter{Set Theory}
 \label{cha:set-math}
 
-Our conception of sets as types with simple homotopy structure, cf.\
-\autoref{sec:basics-sets}, is at odds with the Zermelo-Frankel sets which form a
+Our conception of sets as types with particularly simple homotopical character, cf.\
+\autoref{sec:basics-sets}, is quite different from Zermelo-Frankel sets, which form a
 cumulative hierarchy. For many purposes the homotopy-theoretic sets are just as good as
 the Zermelo-Fraenkel ones, but there are also important differences. We address these in
 the present chapter. 
 
-This chapter has three parts. First, closely following~\cite{RijkeSpitters}, we show that constructively $\set$ has pleasant categorical
-structure, namely it is a $\Pi W$-pretopos. We then concentrate on the distinction between sets and classes, for which Algebraic Set
-Theory is the natural framework. Finally, we show that the theory of ordinals and cardinals from classical set theory can
-naturally be developed by considering sets with isomorphisms as equalities. This equality is, of course, precisely the one we obtain from
-the univalence axiom.
+This chapter has three parts. First, following~\cite{RijkeSpitters}, we show that the category $\set$ of all $0$-types and maps between them has (most of) the usual properties of the category of sets; i.e.\ technically speaking, it is a ``$\Pi W$-pretopos".  We then  consider the possibility of constructing a cumulative hierarchy of sets, equipped with a binary membership relation. Algebraic set theory is a convenient framework for this construction. Finally, we show that the theory of ordinals and cardinals from classical set theory can be developed in a natural way by considering sets with isomorphisms as equalities. This equality is, of course, precisely the one we obtain from the univalence axiom.
 
-\section{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}W-pretopos}
+%\section{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}W-pretopos}
+\section{The category of sets}
 \label{sec:piw-pretopos}
 
-We will show that $\set$ is a $\Pi$W-pretopos. We start by proving that it is a regular category, namely that:
+%We will show that $\set$ is a $\Pi$W-pretopos. 
+We begin by proving that $\set$ is a \emph{regular} category, i.e.:
 %
 \begin{enumerate}
 \item $\set$ is finitely complete.
 \item The kernel pair $\pi_1,\pi_2: (\sm{x,y:A} f(x)= f(y)) \to A$ of any
       function $f : A \to B$ has a coequalizer.
-\item Pullbacks of coequalizers are again coequalizers.
+\item Pullbacks of regular epimorphisms are again regular epimorphisms.
 \end{enumerate}
 %
-The obvious candidate for the coequalizer of the kernel pair of a function is its image.
-To prove that this really is so we can use unique choice to find the factorization in the
-diagram
+Recall that an epi is called \emph{regular} if it is the coequalizer of \emph{some} pair of maps; so in (iii) the pullback of a coequalizer is required to again be a coequalizer, but not necessarily of the pulled-back pair. 
+
+The obvious candidate for the coequalizer of the kernel pair of a function is the \emph{image} of the function, to be defined below.
 %
 \begin{equation*}
 \begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} f(x)= f(y) & A & \mathsf{im}(f) \\ & & X \\};
+\matrix (m) [std] {\sm{x,y:A} f(x)= f(y) & A & \mathsf{im}(f) \\ & & B \\};
 \draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
 \draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- node[above] {$\tilde{f}$} (m-1-3);
-\draw[ar] (m-1-2) -- node[auto,swap] {$g$} (m-2-3);
+\draw[ar] (m-1-2) -- node[auto,swap] {$f$} (m-2-3);
 \draw[ar,densely dotted] (m-1-3) -- (m-2-3);
 \end{tikzpicture}
 \end{equation*}
-where $g$ coequalizes $\pi_1$ and $\pi_2$. The result 
-that the image of a function $f$ is the coequalizer of its kernel pair is a consequence of the principle of unique choice.
+
+We will show that the image of a function $f$ is indeed the coequalizer of its kernel pair, that the resulting map from the image into the codomain $B$ is a monic, and that the resulting (regular) epi-mono factorization is stable under pullback.
 
 \subsection{The image of a function}
 \label{sec:image}
 
-The truncations allow us to define a stable factorization
-system.\footnote{\url{http://uf-ias-2012.wikispaces.com/file/view/images.pdf/401765624/images.pdf}}
-In fact, this generalizes to reflective subuniverses; see~\autoref{subsec:reflective-subuniverses}.
-We will only consider the factorization system given by $(-1)$-truncation.
-This defines a stable orthogonal factorization system $(\mathcal{E},
-\mathcal{M})$ on $\set$: every map factors as an surjection followed by a 
-monomorphism and this factorization is stable under pullback.
+The truncations introduced in~\autoref{subsec:reflective-subuniverses} allow us to define the stable factorization
+system we seek.
+%\footnote{\url{http://uf-ias-2012.wikispaces.com/file/view/images.pdf/401765624/images.pdf}}
+ Specifically, we use the $(-1)$-truncation $\|X\|$ to define a stable orthogonal factorization system  on $\set$: every map factors as an ``surjection" followed by an ``injection", and this factorization is stable under pullback.
 We first define these notions:
+
+We can use the logical notation from \autoref{defn:logical-notation}; in particular, below we can also write $\fall{b:B} \exis{a:A} f(a)=b$ for $\prd{b:B} \|\hfiber{f}b\|$.
+
 \begin{defn}
-Let $f:A\to B$ be a function between $\set$s. It is \emph{surjective} if
-\begin{equation*}
-\mathsf{surj}(f)\defeq\prd{b:B} \|\hfiber{f}b\|.
-\end{equation*}
-A monomorphism is a functions with contractible homotopy fibers over images of points in $A$, i.e.\ we define
-\note{Move to \autoref{sec:mono-epi}?}
-\begin{equation*}
-\mathsf{inj}(f)\defeq\prd{a:A} \mathsf{isContr}(\hfiber{f}{f(a)}).
-\end{equation*}
+A function $f:A\to B$  between sets is \emph{surjective} if
+\begin{align*}
+\mathsf{surj}(f) &\defeq\prd{b:B} \|\hfiber{f}b\| \\
+&= \fall{b:B} \exis{a:A}f(a)=b
+\end{align*}
+
+%In general, the monomorphisms of types are functions with contractible homotopy fibers over images of points in $A$; thus we define
+%\note{Move to \autoref{sec:mono-epi}?}
+
+A function $f:A\to B$  between sets is \emph{injective} if
+\begin{align*}
+\mathsf{inj}(f) &\defeq\prd{a:A} \mathsf{isContr}(\hfiber{f}{f(a)})\\
+	&= \fall{a,a':A} f(a) = f(a') \Rightarrow a=a'
+\end{align*}
 \end{defn}
 
-We remark that $f:A\to B$ is a monomorphism if and only if the function
+\noindent The injective functions can be seen to be the monomorphisms of $\set$, which can also be characterized as those $f:A\to B$ such that the function
 \begin{equation*}
   \lam{a} \pairr{a,a,\refl{f(a)}}:A\to A\times_B A
 \end{equation*}
 is an equivalence.
 
-The injective functions are of course the monomorphisms of
-$\set$, which we can also define via a pullback diagram, but we will not do that here.
-
 \begin{defn}
-Let $f:A\to B$ be a function between $\set$s. Define the image 
-\begin{equation*}
-\im(f)\defeq\sm{b:B} \|\hfiber{f}b\|
-\end{equation*}
-We define the functions $\tilde{f}:A\to\im(f)$ and $i_f:\im(f)\to B$ by
+Let $f:A\to B$ be a function between sets. Define the \emph{image} of $f$ by: 
 \begin{align*}
-  \tilde{f} & \defeq \lam{a} \pairr{f(a),\pi(a,\refl{f(a)})}\\
+\im(f) &\defeq\sm{b:B} \|\hfiber{f}b\|\\
+	&= \sm{b:B} \|\sm{a:A}f(a)=b\|
+\end{align*}
+Moreover, define the functions $\tilde{f}:A\to\im(f)$ and $i_f:\im(f)\to B$ by
+\begin{align*}
+  \tilde{f} & \defeq \lam{a} \pairr{f(a),|\pairr{a,\refl{f(a)}}|}\\
 i_f & \defeq \pi_1.
 \end{align*}
 \end{defn}
 
 \begin{lem}
-Then $\tilde{f}$ is surjective and $i_f$ is mono.
+As just defined, $\tilde{f}$ is surjective and $i_f$ is injective.
 \end{lem}
 
-We use the insights from~\autoref{subsec:reflective-subuniverses} and look at coequalizers
-in $\set$. The coequalizer is defined using the truncated pushout. Let $D$ be the diagram $f,g:A\to B$.
-The general, non-truncated, pushout of $D$ does not have the quotient-like properties as it would
-have in the category $\set$. For instance, the coequalizer of
-$\unit\rightrightarrows\unit$ is the circle. Nevertheless,
-the $0$-truncation of the circle is again $\unit$, which is the
-expected coequalizer in $\set$. Thus we get
+Next, we use the insights from~\autoref{subsec:reflective-subuniverses} and consider coequalizers
+in $\set$. The coequalizer of a pair of maps in $\set$ is defined as the 0-truncation of a general coequalizer.  Given a pair of maps $f,g:A\to B$, the general, non-truncated, pushout does not have the quotient-like properties expected in the category $\set$.  For instance, the untruncated coequalizer of $\unit\rightrightarrows\unit$ is the circle. Nevertheless, the $0$-truncation of the circle is again $\unit$, which is the expected coequalizer in $\set$. Thus we set
 
 \begin{defn}
 Let $A$ and $B$ be sets and let $f,g:A\to B$.
-We denote the set-coequalizer of $f$ and $g$ by $c_{f,g}:B\to B/_{f,g}$. A
-\emph{regular epimorphism} is a function between sets which is a coequalizer.
+We define the \emph{set-coequalizer} of $f$ and $g$ to be the $0$-truncation of their general coequalizer, as defined in \autoref{sec:colimits},
+\[
+c_{f,g}:B\to B\sslash(f=g) \defeq \|B/(f=g)\|_0.
+\]
 \end{defn}
 
 Recall from \autoref{defn:homotopy} the notation $f \sim g$ for homotopy between functions.
 
 \begin{lem}
 Let $f,g:A\to B$ be functions between sets $A$ and $B$. The 
-{set-co}equalizer $c_{f,g}:B\to B/_{f,g}$ has the property that
-\begin{equation*}
-\prd{C:\set}{h:B\to C}{H:h\circ f\sim h\circ g}
-\mathsf{isContr}\big(\sm{k:B/_{f,g}\to C} k\circ c_{f,g}\sim h\big).
+{set-co}equalizer $c_{f,g}:B\to B\sslash(f=g)$ has the property that, for any set $C$, any $h:B\to C$ with $h\circ f\sim h\circ g$, the type\begin{equation*}
+\sm{k:B\sslash(f=g)\to C} k\circ c_{f,g}\sim h
 \end{equation*}
+is contractible.
 \end{lem}
+%
+\noindent As explained in~\autoref{subsec:reflective-subuniverses}, this is a general phenomenon, the 0-truncated colimits behave as expected.
 
-As explained in~\autoref{subsec:reflective-subuniverses}, this is a general phenomenon, the 0-truncated colimits behave as expected.
-
-To prove that $\set$ is a regular category, we will first connect epis and surjective functions. 
-We use the pinciple of unique choice; see~\autoref{cor:UC}. 
+We next connect regular epis and surjective functions; for this, we use the principle of unique choice; see~\autoref{cor:UC}. 
 
 \begin{defn}
 Let $f:A\to B$ be a function between sets. Define
@@ -328,7 +324,7 @@ is contractible because $\tilde{f}$ is an epimorphism.
 
 \begin{lem}\label{lem:pb_of_coeq_is_coeq}
 Pullbacks of surjective functions are surjective. Consequently,
-pullbacks of coequalizers are coequalizers.
+pullbacks of regular epis are regular epis.
 \end{lem}
 
 \begin{proof}
@@ -357,7 +353,7 @@ $\set$ has all limits, so it is finitely complete.
 \autoref{lem:images_are_coequalizers} gives
 that the kernel pair of each function has a coequalizer.
 \autoref{lem:pb_of_coeq_is_coeq} shows that
-coequalizers are stable under pullbacks.
+regular epis are stable under pullback.
 \end{proof}
 
 
@@ -794,7 +790,7 @@ $\pi(\mathsf{true})= \pi(\mathsf{false})$ is equivalent to $A$.
 This we also obtained in proposition~\ref{prop:trunc_of_prop_is_set}.
 \end{proof}
 
-\section{Algebraic Set Theory}
+\section{Algebraic set theory}
 \note{Steve Awodey}
 We should obtain a model of CST following Awodey, Forsell, Warren. 
 We may want to use the replacement axiom~\ref{lem:replacement}.
@@ -848,14 +844,14 @@ By the use of the object classifier, \autoref{thm:nobject_classifier}, we see th
 to the sets in context $X$. Now, sets in any context form a $\Pi$W-pretopos; see \autoref{subsec:piw}.
 \end{proof}
 
-\section{Excluded Middle and the Axiom of Choice}
+\section{Excluded middle and the axiom of choice}
 \label{sec:excl-middle-axiom}
 
 \textbf{TODO:} Discuss excluded middle and choice, state that the appropriate versions are
 consistent, so me may assume them. Prove that choice implies excluded middle?
 See~\ref{thm:1surj_to_surj_to_pem}
 
-\section{Sets and Classes}
+\section{Sets and classes}
 \label{sec:sets-classes}
 
 \textbf{TODO:} Discuss the role of universes as classes-of-classes-of-classes, or

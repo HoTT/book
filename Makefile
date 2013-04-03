@@ -10,3 +10,6 @@ main.pdf: *.tex cover.png
 clean:
 	(which latexmk && latexmk -c main.tex) || /bin/rm -f main.{out,log,pdf,fls,fdb_latexmk}
 
+
+TAGS: *.tex
+	etags $^ >TAGS

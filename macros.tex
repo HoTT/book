@@ -41,10 +41,13 @@
 % Each variable being abstracted over is a separate argument.  If
 % there is more than one such argument, they *must* be enclosed in
 % braces.  Arguments can be untyped, as in \lam{x}{y}, or typed with a
-% colon, as in \lam{x:A}{y:B}.
+% colon, as in \lam{x:A}{y:B}. In the latter case, the colons are
+% automatically noticed and (with current implementation) the space
+% around the colon is reduced.  You can even give more than one variable
+% the same type, as in \lam{x,y:A}.
 \def\lam#1{{\lambda}\@lamarg#1:\@endlamarg\@ifnextchar\bgroup{.\,\lam}{.\,}}
 \def\@lamarg#1:#2\@endlamarg{\if\relax\detokenize{#2}\relax #1\else\@lamvar{\@lameatcolon#2},#1\@endlamvar\fi}
-\def\@lamvar#1,#2\@endlamvar{(#2:#1)}
+\def\@lamvar#1,#2\@endlamvar{(#2\,{:}\,#1)}
 % \def\@lamvar#1,#2{{#2}^{#1}\@ifnextchar,{.\,{\lambda}\@lamvar{#1}}{\let\@endlamvar\relax}}
 \def\@lameatcolon#1:{#1}
 \let\lamt\lam
@@ -104,8 +107,9 @@
 \let\setof\Set    % from package 'braket', write \setof{ x:A | P(x) }.
 \newcommand{\pair}{\ensuremath{\mathsf{pair}}\xspace}
 \newcommand{\tup}[2]{( #1,#2)}
-\newcommand{\fst}{\ensuremath{\mathsf{fst}}\xspace}
-\newcommand{\snd}{\ensuremath{\mathsf{snd}}\xspace}
+\newcommand{\proj}[1]{\ensuremath{\mathsf{pr}_{#1}}\xspace}
+\newcommand{\fst}{\ensuremath{\proj1}\xspace}
+\newcommand{\snd}{\ensuremath{\proj2}\xspace}
 \newcommand{\ac}{\ensuremath{\mathsf{ac}}\xspace}
 \newcommand{\un}{\ensuremath{\mathsf{un}}\xspace}
 
@@ -134,7 +138,7 @@
 \tikzset{std/.style={matrix of math nodes, row sep=3em, column sep=4em, text height=1.5ex, text depth=0.25ex}}
 \tikzset{description/.style={fill=white,inner sep=2pt}}
 \tikzset{patharrow/.style={->,decorate,decoration={snake,amplitude=.2mm,segment length=2mm,post length=1mm},font=\scriptsize}}
-\newcommand{\type}{\ensuremath{\mathsf{Type}}}
+% \newcommand{\type}{\ensuremath{\mathsf{Type}}} % this command is overridden below, so it's commented out
 \newcommand{\im}{\ensuremath{\mathsf{im}}}
 \newcommand{\smal}{\mathcal{S}}
 
@@ -210,7 +214,6 @@
 \newcommand{\apdtwo}[2]{\ensuremath{{#1}\llparenthesis{#2}\rrparenthesis}\xspace}
 
 %%% Identity functions %%%
-\newcommand{\idf}{\ensuremath{\mathsf{id}\xspace}}
 \newcommand{\idfunc}[1][]{\ensuremath{\mathsf{id}_{#1}}\xspace}
 
 %%% Homotopies (written infix) %%%
@@ -266,9 +269,6 @@
 \newcommand{\anhprop}{a mere proposition\xspace}
 \newcommand{\hprops}{mere propositions\xspace}
 
-%%% Projections out of dependent sums %%%
-\newcommand{\proj}[1]{\ensuremath{\mathsf{pr}_{#1}}\xspace}
-
 %%% Homotopy fibers %%%
 %\newcommand{\hfiber}[2]{\ensuremath{\mathsf{hFiber}(#1,#2)}\xspace}
 \let\hfiber\hfib
@@ -311,8 +311,8 @@
 
 %%% The two-element type
 \newcommand{\bool}{\ensuremath{\mathbf{2}}\xspace}
-\newcommand{\btrue}{1_{\bool}}
-\newcommand{\bfalse}{0_{\bool}}
+\newcommand{\btrue}{{1_{\bool}}}
+\newcommand{\bfalse}{{0_{\bool}}}
 
 %%% Injections into binary sums and pushouts
 \newcommand{\inl}{\ensuremath{\mathsf{inl}}\xspace}

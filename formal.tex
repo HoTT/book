@@ -28,8 +28,6 @@
 \newcommand{\qq}{{\sf q}}
 \newcommand{\mySp}{{\sf Sp}}
 \newcommand{\conv}{\sim}
-\newcommand{\SUP}{{\sf sup}}
-\newcommand{\WW}{{\sf W}}       % phase out in favor of $\wtype{a:A} B(a)$
 \newcommand{\LIM}{{\sf lim}}
 \newcommand{\nn}{{\sf n}}
 \newcommand{\Fam}{{\sf Fam}}
@@ -131,7 +129,12 @@ introduce a primitive judgment of the form
   \Gamma \vdash \Okay
 \]
 to express that notion.  The intuitive idea will be that each $A_i$ is a valid
-type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.
+type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.  We can express that idea with 
+the rule
+
+\begin{itemize}
+\item if $\Gamma =  x_1:A_1, x_2:A_2,\dots,x_n:A_n$, and $\Gamma \vdash \Okay$, then, for any $i$, $\Gamma \vdash x_i : A_i$.
+\end{itemize}
 
 We get started by asserting that the empty context is okay:
 
@@ -247,7 +250,9 @@ $f(\bfalse)\defeq c$ and $f(\btrue)\defeq c'$.
 We introduce primitive constants $c_\Sigma$ and $c_{\mathsf{pair}}$.  An
 expression of the form $c_\Sigma(A,\lam{a} B)$ will be written as $\sm{a:A}B$,
 and an expression of the form $c_{\mathsf{pair}}(a,b)$ will be written as $\tup
-a b$.  Judgments concerning such expressions are introduced by the following
+a b$.  We write $A\times B$ instead of $\sm{x:A} B$ if $x$ is not free in $B$.
+
+Judgments concerning such expressions are introduced by the following
 rules.
 
 \begin{itemize}
@@ -255,8 +260,7 @@ rules.
 \item if, in addition, $a:A$ and $b:B(a)$, then $\tup a b:\Sigma(A,B)$
 \end{itemize}
 
-We write $A\times B$ instead of $\sm{x:A} B$ if
-$x$ is not free in $B$.  If we have $C : \Sigma(A,B) \rightarrow \UU_n$ and
+If we have $A$ and $B$ as above, $C : \Sigma(A,B) \rightarrow \UU_m$, and
 \[
   d:\prd{x:A}{y:B(x)} C(\tup x y)
 \]
@@ -265,63 +269,65 @@ we can introduce $f:\prd{p:\sm{a:A}B} C$ with the defining equation
   f(\tup x y)\defeq d(x,y).
 \]
 
-\subsection*{Binary Sum Types $A_1+A_2$}
-We introduce primitive constants $+,in_1,in_2$ with the rules
+\subsection*{Coproduct types}
+We introduce primitive constants $c_+$, $c_\inlsym$, and $c_\inrsym$.
+We will write $A+B$ instead of $c_+(A,B)$, $\inl(a)$ instead of
+$c_\inlsym(a)$,and  $\inr(a)$ instead of $c_\inrsym(a)$.
+
 \begin{itemize}
-\item if $A_1,A_2 : \UU$ then $+(A_1,A_2) : \UU$, and
-\item if $a:A_i$ then $in_i(a):A_i$, for $i=1,2$.
+\item if $A,B : \UU_n$ then $A + B : \UU_n$
+\item moreover, $\inl: A \rightarrow A+B$ and $\inr: B \rightarrow A+B$
 \end{itemize}
-We write $A_1+A_2$ instead of $+(A_1,A_2)$.
-If $C\Fam(A_1+A_2)$ and $d_i:\Pi(A_i,C\circ in_i)$ for $i=1,2$,
-then we can introduce a defined constant $f:\Pi(A_1+A_2,C)$ with the defining equations
-  \[ f(in_i(x))\defeq d_i(x)\mbox{ for } i=1,2.\]
+
+If we have $A$ and $B$ as above, $C : A+B \rightarrow \UU_m$, $c:\prd{a:A} C(\inl(a))$, and $c':\prd{b:B} C(\inr(b))$,
+then we can introduce a defined constant $f:\prd{x:A+B}C$ with the defining equations
+\begin{align*}
+  f(\inl(a)) & \defeq c(a) \\
+  f(\inr(b)) & \defeq c'(b)
+\end{align*}
 
 \subsection*{$W$-Types}
-For $W$-types we introduce primitive constants $\WW$ and $\SUP$ with the rules
+
+For $W$-types we introduce primitive constants $c_\wtypesym$ and $c_\suppsym$.
+An expression of the form $c_\wtypesym(A,\lam{a} B)$ will be written as
+$\wtype{a:A}B$, and an expression of the form $c_\suppsym(x,u)$ will be written
+as $\supp(x,u)$
+
 \begin{itemize}
-\item if $B\Fam(A)$ then $\WW(A,B) : \UU$, and
-\item if $a:A$ and $u:B(a)\rightarrow \WW(A,B)$ then $\SUP(a,u):\WW(A,B)$.
+\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\wtype{a:A}B : \UU_n$
+\item if moreover, $a:A$ and $u:B(a)\rightarrow \wtype{a:A}B$ then $\supp(a,u):\wtype{a:A}B$.
 \end{itemize}
  
- Here also we can define functions by total recursion. If we have
-$C\Fam(\WW(A,B))$ we can introduce $f:(\Pi z:\WW(A,B))C(z)$ whenever we have
+Here also we can define functions by total recursion.  If we have $A$ and $B$
+as above and $C : \wtype{a:A}B \rightarrow \UU_m$, then we can introduce
+$f:\prd{z:\wtype{a:A}B} C(z)$ whenever we have
 \[
-  d:(\Pi x:A)(\Pi u:B(x)\rightarrow \WW(A,B))((\Pi y:B)C(u(y)))\rightarrow C(\SUP(x,u))
+  d:\prd{x:A}{u:B(x) \rightarrow \wtype{a:A}B}((\prd{y:B}C(u(y))) \rightarrow C(\supp(x,u))
 \]
 with the defining equation
 \[
-  f(\SUP(x,u)) \defeq d(x,u,f\circ u)
+  f(\supp(x,u)) \defeq d(x,u,f\circ u)
 \]
-where $(f\circ u)(y) \defeq f(u(y))$.
 
-\subsection*{Identity Types $Id_A(a,a')$}
-We introduce primitive constants $Id$ and $\refl{}$ with the rules
+\subsection*{Identity types}
+
+We introduce primitive constants $c_\idsym$ and $c_\reflsym$.  We will write
+$\id[A] a b$ for $c_\idsym(A,a,b)$ and $\refl a$ for $c_\reflsym(A,a)$, when
+$a:A$ is understood.
+
 \begin{itemize}
-\item if $A : \UU$ and $a:A$ then $Id(A,a)\Fam(A)$, and
-\item if $a:A$ then $\refl{a}:Id(A,a)(a)$.
+\item if $A : \UU_n$, $a:A$, and $b:A$ then $\id[A] a b : \UU_n$
+\item if, moreover, $a:A$, then $\refl a :\id[A] a a $.
 \end{itemize}
-If $C : \UU(y:A,z:Id(A,a,y))$ and $d:C[a,\refl{a}]$ then we can introduce a defined constant 
-\[
-  f:(\Pi y:A)(\Pi z:Id(A,a))C
-\]
-with defining equation
-  \[ f(a,\refl{a})\defeq d.\]
-When we make explicit a variable declaration $x:A$ 
-and let $a$ be $x$ 
-so that we have 
-\[
-  C : \UU(x,y:A, z:Id(A,x,y))\mbox{ and  }d:(\Pi x:A)C[x,x,\refl{x}]
-\]
-then we have the defined constant
-\[
-  f':(\Pi x,y:A)(\Pi z:Id(A,x,y))C
-\]
-with defining equation
-\[
-  f'(x,x,\refl{x})\defeq d(x).
-\]
-This defined constant $f'$, with its defining equation, corresponds to the rules for identity types originally formulated by Per Martin-L\"{o}f.   The defined constant $f$, with its defining equation, corresponds to the rules given later by Christine Paulin-Mohring.  It is not entirely trivial to recapture $f$ from $f'$.
 
+If $\Gamma, y:A, z:\id[A] a y \vdash C : \UU_m$ and $d:C[a/y,\refl{a}/z]$ then we can introduce a defined constant 
+\[
+  f:\prd{y:A}{z:\id[A] a y} C
+\]
+with defining equation
+\[
+  f(a,\refl{a})\defeq d.
+\]
 
 \section{Syntax, more formally}
 
@@ -330,8 +336,8 @@ universes.  We'll add a few remarks about Tarski-style universes.)
 
 \section{Algorithmic and semantic issues}
 
-(Thierry and Peter will start writing this section after I get all the macros
-converted to book-standard macros.)
+\message{Thierry and Peter can now start re-writing this section.  The
+  following text is old.}
 
 \subsection*{Conversion and reduction}
 
@@ -355,10 +361,8 @@ If $t:A$ and $t \conv t'$ then $t':A$.
 
 \begin{thm}\label{SN}
  If $A : \UU$ then $A$ is strongly normalizable.
-If $t:A$ then $A$ and $t$ are strongly normalizable. 
+If $t:A$ then $A$ and $t$ are strongly normalizable. % note: ``strongly normalizable'' is undefined
 \end{thm}
-
-\message{Warning: TODO: Insert somewhere the definition of strongly normalizable.}
 
 We say that a term is {\em in normal form} if it cannot be reduced.  A closed
 normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$

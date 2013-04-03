@@ -332,19 +332,23 @@ as before, we write as $f(a,b) : C(a,b)$.
 \section{Product types}
 \label{sec:finite-product-types}
 
-Given types $A,B:\UU$ we introduce the type $A\times B:\UU$, which
-we call their \emph{cartesian product}. Its elements are
-pairs $\tup{a}{b} : A \times B$ where $a:A$ and $b:B$. We also
-introduce a nullary product type, called the \emph{unit type} $\unit
-: \UU$, which has only one element $\star : \unit$.
+Given types $A,B:\UU$ we introduce the type $A\times B:\UU$, which we call their \emph{cartesian product}.
+We also introduce a nullary product type, called the \emph{unit type} $\unit : \UU$.
+We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, where $a:A$ and $b:B$, and the only element of $\unit$ to be some particular object $\ttt : \unit$.
+However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, like functions.
+Just as we did for the function type, we explain the product type by prescribing what we can do with pairs, how to construct them, and what equalities they satisfy.
 
-How can we define functions out of a product type? Let us first
-consider the definition of a non-dependent function $f : A\times B \to
-C$. To define such a function it is enough to prescibe the result
-when $f$ is applied to a pair $\tup{a}{b}$.  This is achieved by
+The way to construct pairs is obvious: given $a:A$ and $b:B$, we may form $(a,b):A\times B$.
+Similarly, there is a unique way to construct elements of $\unit$, namely we have $\ttt:\unit$.
+However, we do not assert as a rule of type theory that ``every element of $A\times B$ is a pair'' --- it turns out that we can \emph{prove} that using the principles to be introduced below.
+
+Now, what can we \emph{do} with pairs, i.e.\ how can we define functions out of a product type?
+Let us first consider the definition of a non-dependent function $f : A\times B \to C$.
+Since we intend the only elements of $A\times B$ to be pairs, in order to define such a function, it should be enough to prescibe the result
+when $f$ is applied to a pair $\tup{a}{b}$.  We prescribe these results by
 providing a function $g : A \to B \to C$ and defining
-\[ f(\tup{a}{b}) \defeq g(a)(b) \]
-We avoid writing $g(a,b)$ here in order to emphasize that $g$ is not a
+\[ f(\tup{a}{b}) \defeq g(a)(b). \]
+We avoid writing $g(a,b)$ here, in order to emphasize that $g$ is not a
 function on a product. 
 
 In particular, we can derive the \emph{projection} functions
@@ -389,10 +393,11 @@ to generalize the recursor. Given $C: A \times B \to U$, we may
 define a function $f : \prd{x : A \times B} C(x)$ by providing a
 function $g : \prd{x:A}\prd{y:B} C(\tup{x}{y})$ and the defining equation
 \[ f(x,y) \defeq g(x)(y). \] 
-For example, in this way we can prove the principle of \emph{surjective pairing}, i.e.\ we can construct a function
+For example, in this way we can prove that every element of $A\times B$ is a pair; this is called the principle of \emph{surjective pairing}.
+Specifically, we can construct a function
 \[ \spr : \prd{x:A \times B} (\tup{\fst {(x)}}{\snd {(x)}} =_{A\times B} x). \]
-Here we are using the identity type which we are going to introduce below. All
-we need here is to know that there is a reflexivity element $\refl{x} : x =_A x$ for any $x:A$.
+Here we are using the identity type, which we are going to introduce below in \autoref{sec:identity-types}.
+However, all we need here is to know that there is a reflexivity element $\refl{x} : x =_A x$ for any $x:A$.
 Given this, we can define
 \[ \spr(\tup{a}{b}) \defeq \refl{\tup{a}{b}} \]
 This construction works, because in the case that $x \defeq \tup{a}{b}$ we can 

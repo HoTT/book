@@ -1,7 +1,7 @@
 \chapter{The Rules of Type Theory}
 \bgroup                         % restrict the scope of our macros to this file
 
-\newcommand{\Okay}{\mathop{\text{ \sc okay}}}
+\newcommand{\Okay}{\mathop{\textsf{okay}}}
 
 \newcommand{\production}{\vcentcolon\vcentcolon=}
 
@@ -50,7 +50,7 @@ operations
 
 We follow the usual convention about free and bound variables.  We write
 $B[a/x]$ for the substitution of a term $a$ for free occurrences of the
-variable $x$ in the expressions $B$, with possible renaming for avoiding
+variable $x$ in the term $B$, with possible renaming for avoiding
 capture of variables, as discussed in \autoref{sec:function-types}.
 Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that
 a variable, $x$, say, is bound within $B$ and can be renamed without changing
@@ -113,8 +113,9 @@ We use the notation
   \Gamma \vdash a:A
 \]
 to assert the judgment that the object $a$ has type $A$ in the context
-$\Gamma$.  Under the assumption that a context $\Gamma$ is present in the
-background, we may write simply 
+$\Gamma$.  Here $a$ and $A$ are terms in which only the variables declared in
+$\Gamma$ appear freely.  Under the assumption that a context $\Gamma$ is
+present in the background, we may write simply
 \[
   a:A
 \]
@@ -167,7 +168,7 @@ a typing judgment.
 
 We introduce a hierarchy of {\em universes} denoted by primitive constants
 $\UU_n$, for each $n=0,1,\ldots$.  They satisfy the following rules.  The first
-two say that the universes form a sequential hierarchy, and the third expresses
+two say that the universes form a sequential hierarchy of types, and the third expresses
 the idea that an object of a universe can serve as a type and stand to the
 right of a colon in judgments.
 
@@ -211,7 +212,7 @@ $\N$, $0$, and $\suc$ with the following rules.
 \end{itemize}
 
 Furthermore, we can define functions by primitive recursion.  If we have
-$C : \N \rightarrow \UU_k $ we can define $f:\prd{n:\N}C(n)$ whenever we have
+$C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\prd{n:\N}C(n)$ whenever we have
   \begin{align*}
     d & : C(0) \\
     e & : \prd{x:\N}(C(x)\rightarrow C(\suc (x)))
@@ -238,11 +239,11 @@ $\unit$, $\bool$ satisfying the following rules.
 \item $\ttt:\unit$, $\bfalse:\bool$, $\btrue:\bool$.
 \end{itemize}
 
-Given $C : \emptyt \rightarrow \UU_n$ we can introduce $f:\prd{x:\emptyt} C$, with no defining equations.
+Given $C : \emptyt \rightarrow \UU_n$ we can introduce a defined constant $f:\prd{x:\emptyt} C$, with no defining equations.
 
-Given $C : \unit \rightarrow \UU_n$ and $c : C(\ttt)$ we can introduce $f:\prd{x:\unit} C$, with defining equation $f(\ttt) \defeq c$.
+Given $C : \unit \rightarrow \UU_n$ and $c : C(\ttt)$ we can introduce a defined constant $f:\prd{x:\unit} C$, with defining equation $f(\ttt) \defeq c$.
 
-Given $C : \bool \rightarrow \UU_n$, $c : C(\bfalse)$, and $c' : C(\btrue)$, we can introduce $f:\prd{x:\bool} C$, with defining equations
+Given $C : \bool \rightarrow \UU_n$, $c : C(\bfalse)$, and $c' : C(\btrue)$, we can introduce a defined constant $f:\prd{x:\bool} C$, with defining equations
 $f(\bfalse)\defeq c$ and $f(\btrue)\defeq c'$.
 
 \subsection*{$\Sigma$-Types}
@@ -257,14 +258,14 @@ rules.
 
 \begin{itemize}
 \item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\sm{a:A}B : \UU_n$
-\item if, in addition, $a:A$ and $b:B(a)$, then $\tup a b:\Sigma(A,B)$
+\item if, in addition, $a:A$ and $b:B(a)$, then $\tup a b:\sm{a:A}B$
 \end{itemize}
 
-If we have $A$ and $B$ as above, $C : \Sigma(A,B) \rightarrow \UU_m$, and
+If we have $A$ and $B$ as above, $C : \sm{a:A}B \rightarrow \UU_m$, and
 \[
   d:\prd{x:A}{y:B(x)} C(\tup x y)
 \]
-we can introduce $f:\prd{p:\sm{a:A}B} C$ with the defining equation
+we can introduce a defined constant $f:\prd{p:\sm{a:A}B} C$ with the defining equation
 \[
   f(\tup x y)\defeq d(x,y).
 \]
@@ -272,7 +273,7 @@ we can introduce $f:\prd{p:\sm{a:A}B} C$ with the defining equation
 \subsection*{Coproduct types}
 We introduce primitive constants $c_+$, $c_\inlsym$, and $c_\inrsym$.
 We will write $A+B$ instead of $c_+(A,B)$, $\inl(a)$ instead of
-$c_\inlsym(a)$,and  $\inr(a)$ instead of $c_\inrsym(a)$.
+$c_\inlsym(a)$, and $\inr(a)$ instead of $c_\inrsym(a)$.
 
 \begin{itemize}
 \item if $A,B : \UU_n$ then $A + B : \UU_n$
@@ -299,7 +300,7 @@ as $\supp(x,u)$
 \end{itemize}
  
 Here also we can define functions by total recursion.  If we have $A$ and $B$
-as above and $C : \wtype{a:A}B \rightarrow \UU_m$, then we can introduce
+as above and $C : \wtype{a:A}B \rightarrow \UU_m$, then we can introduce a defined constant
 $f:\prd{z:\wtype{a:A}B} C(z)$ whenever we have
 \[
   d:\prd{x:A}{u:B(x) \rightarrow \wtype{a:A}B}((\prd{y:B}C(u(y))) \rightarrow C(\supp(x,u))
@@ -331,8 +332,283 @@ with defining equation
 
 \section{Syntax, more formally}
 
-(In this section, we'll import the rules of \cite{klv:ssetmodel}, converted to Russell-style
-universes.  We'll add a few remarks about Tarski-style universes.)
+\bgroup % restrict the following macros to this section
+
+%% Basic syntax of type theory:
+% judgements
+\newcommand{\oftype}{\mathord{:}}
+\newcommand{\types}{\vdash}
+\newcommand{\myType}{\textsf{type}} %  \newcommand{\type}{\textsf{type}}
+\newcommand{\cxt}{\textsf{cxt}}
+\newcommand{\emptycxt}{[\ ]}
+% rules:
+\newcommand{\form}{\textsc{form}}
+\newcommand{\intro}{\textsc{intro}}
+\newcommand{\appRule}{\textsc{app}}
+\newcommand{\elim}{\textsc{elim}}
+\newcommand{\comp}{\textsc{comp}}
+\newcommand{\Weak}{\mathsf{Wkg}}
+\newcommand{\Vble}{\mathsf{Vble}}
+\newcommand{\Exch}{\mathsf{Exch}}
+\newcommand{\Subst}{\mathsf{Subst}}
+% type constructors of the theory
+\newcommand{\synId}{\mathsf{Id}}
+\newcommand{\synPi}{\mathsf{\Pi}}
+\newcommand{\synSigma}{\mathsf{\Sigma}}
+\newcommand{\synW}{\mathsf{W}}
+\newcommand{\synOne}{\mathsf{1}}
+\newcommand{\synZero}{\mathsf{0}}
+\newcommand{\synPlus}{+}
+\newcommand{\synU}{\mathsf{U}}
+% term constructors of the theory
+\newcommand{\el}{\mathsf{El}}
+\newcommand{\synrefl}{\mathsf{refl}}
+\newcommand{\synlambda}{\mathsf{\lambda}}
+% defined above: \newcommand{\app}{\mathsf{app}}
+\newcommand{\myRefl}{\mathsf{refl}} % \newcommand{\refl}{\mathsf{refl}}
+\newcommand{\synsup}{\mathsf{sup}}
+\newcommand{\synz}{\mathsf{z}}
+\newcommand{\syno}{\mathsf{o}}
+\newcommand{\synw}{\mathsf{w}}
+% constructors on the internal universe
+\newcommand{\synpi}{\boldsymbol{\pi}}
+\newcommand{\synsigma}{\boldsymbol{\sigma}}
+\newcommand{\synid}{\mathsf{id}}
+
+%% Defined syntax of type theory:
+\let\syn\mathsf
+\newcommand{\synisHIso}{\mathsf{isHIso}}
+\newcommand{\synHIso}{\mathsf{HIso}}
+\newcommand{\synisEquiv}{\mathsf{isEquiv}}
+\newcommand{\synEquiv}{\mathsf{Equiv}}
+\newcommand{\synisAdjEquiv}{\mathsf{isAdjEquiv}}
+\newcommand{\synAdjEquiv}{\mathsf{AdjEquiv}}
+\newcommand{\synHEquivStrux}{\mathsf{HEquivStrux}}
+\newcommand{\synHEquiv}{\mathsf{HEquiv}}
+\newcommand{\synHFib}{\mathsf{hFib}}
+\newcommand{\synHomLHInv}{\mathsf{HomLInv}}
+\newcommand{\synHomRHInv}{\mathsf{HomRInv}}
+\newcommand{\synLHInv}{\mathsf{LInv}}
+\newcommand{\synRHInv}{\mathsf{RInv}}
+\newcommand{\synisUnivalent}{\mathsf{isUnivalent}}
+\newcommand{\synisContr}{\mathsf{isContr}}
+\newcommand{\synisWEq}{\mathsf{isWEq}}
+\newcommand{\synWEq}{\mathsf{WEq}}
+
+Our presentation of the structural rules is based largely on
+\cite{hofmann:syntax-and-semantics}, which also includes a full construction of
+the syntax.  Our selection of logical rules, and in particular our treatment of
+the universe, follows \cite{martin-lof:bibliopolis}.
+
+We take as basic the judgment forms
+\begin{mathpar}
+  \Gamma \types A\ \myType
+\and
+  \Gamma \types A = A'\ \myType
+\and
+  \Gamma \types a : A
+\and
+  \Gamma \types a = a' : A.
+\end{mathpar}
+We treat contexts as a derived judgment, $\types \Gamma\ \cxt$. 
+
+\subsection*{Structural Rules} \label{subsec:structural-rules}
+
+The structural rules of the type theory are (where $\mathcal{J}$ may be any the
+conclusion of any of the judgment forms):
+
+\begin{mathpar}
+  \inferrule*[right=$\Vble$]{\types \Gamma,\ x \oftype A,\ \Delta\ \cxt}{\Gamma,\ x \oftype A,\ \Delta \types x : A}
+\and
+  \inferrule*[right=$\Subst$]{\Gamma \types a : A \\ \Gamma,\ x \oftype A,\ \Delta \types \mathcal{J}}{\Gamma,\ \Delta[a/x] \types \mathcal{J}[a/x]}
+\and
+  \inferrule*[right=$\Weak$]{\Gamma \types A\ \myType \\ \Gamma,\ \Delta \types \mathcal{J}}{\Gamma,\ x \oftype A,\ \Delta \types \mathcal{J}}
+\end{mathpar}
+
+Definitional equality (also known as syntactic or judgmental equality):
+\begin{mathparpagebreakable}
+  \inferrule*{\Gamma \types A\ \myType}{\Gamma \types A = A\ \myType} 
+\and
+  \inferrule*{\Gamma \types A=B\ \myType}{\Gamma \types B = A\ \myType}
+\and
+  \inferrule*{\Gamma \types A=B\ \myType \\ \Gamma \types B=C \ \myType}{\Gamma \types A = C\ \myType}
+\and
+  \inferrule*{\Gamma \types a : A}{\Gamma \types a = a : A}
+\and
+  \inferrule*{\Gamma \types a=b : A}{\Gamma \types b=a : A}
+\and
+  \inferrule*{\Gamma \types a=b : A \\ \Gamma \types b=c : A}{\Gamma \types a=c : A}
+\and
+  \inferrule*{\Gamma \types a : A \\ \Gamma \types A = B \ \myType}{\Gamma \types a : B}
+\and
+  \inferrule*{\Gamma \types a = b : A \\ \Gamma \types A = B \ \myType}{\Gamma \types a = b : B}
+\end{mathparpagebreakable}
+
+Additionally, in the logical rules below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\synPi$-\intro\ rule, we assume the rule
+\[\inferrule*[right=$\synPi$-\intro-eq]{\Gamma \types A = A'\ \myType \\ \Gamma,\ x \oftype A \types B(x) = B'(x)\ \myType \\ \Gamma,\ x \oftype A \types b(x) = b'(x) : B(x)}{\Gamma \types \lambda x \oftype A.b(x) = \lambda x \oftype A'.b'(x) : \synPi_{x \oftype A} B(x)}\]
+
+\subsection*{Logical Constructors} \label{subsec:logical-rules}
+
+\paragraph*{$\synPi$-types} (Dependent products; dependent function types).
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\synPi$-\form]{\Gamma,\ x \oftype A \types B(x)\ \myType}{\Gamma \types \synPi_{x \oftype A} B(x)\ \myType}
+\and
+  \inferrule*[right=$\synPi$-\intro]{\Gamma,\ x \oftype A \types B(x)\ \myType \\ \Gamma,\ x \oftype A \types b(x) : B(x)}{\Gamma \types \lambda x \oftype A.b(x) : \synPi_{x \oftype A} B(x)}
+\and
+  \inferrule*[right=$\synPi$-\appRule]{\Gamma \types f \oftype \synPi_{x \oftype A} B(x) \\ \Gamma \types a : A}{\Gamma \types \textsf{app} (f, a) : B(a)}
+\and
+  \inferrule*[right=$\synPi$-\comp]{\Gamma,\ x \oftype A \types B(x)\ \myType \\ \Gamma,\ x \oftype A \types b(x) : B(x) \\ \Gamma \types a : A}{\Gamma \types \textsf{app}(\lambda x \oftype A .b(x), a)=b(a) : B(a)}
+\end{mathparpagebreakable}
+
+As a special case of this, when $B$ does not depend on $x$, we obtain the ordinary function type $[A, B] := \synPi_{x \oftype A} B$. \\
+
+\paragraph*{$\synSigma$-types}  (Dependent sums; disjoint sums.)
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\synSigma$-\form]{\Gamma \types A\ \myType \\ \Gamma,\ x \oftype A \types B(x)\ \myType}{\Gamma \types \synSigma_{x \oftype A} B(x)\ \myType}
+\and
+  \inferrule*[right=$\synSigma$-\intro]{\Gamma \types A\ \myType \\ \Gamma,\ x \oftype A \types B(x)\ \myType}{\Gamma,\ x \oftype A,\ y \oftype B(x) \types \textsf{pair} (x, y) : \synSigma_{x \oftype A} B(x)}
+\and
+  \inferrule*[right=$\synSigma$-\elim]{\Gamma,\ z \oftype \synSigma_{x \oftype A} B(x) \types C(z)\ \myType \\ \Gamma,\ x \oftype A,\ y \oftype B(x) \types d(x,y) : C(\textsf{pair}(x, y))}{\Gamma,\ z \oftype \synSigma_{x \oftype A} B(x) \types \textsf{split}_d (z) : C(z)}
+\and
+  \inferrule*[right=$\synSigma$-\comp]{\Gamma,\ z \oftype \synSigma_{x \oftype A} B(x) \types C(z)\ \myType \\ \Gamma,\ x \oftype A,\ y \oftype B(x) \types d(x,y) : C(\textsf{pair}(x, y))}{\Gamma,\ x \oftype A,\ y \oftype B(x) \types \textsf{split}_d (\textsf{pair} (x,y))=d(x,y) : C(\textsf{pair} (x, y))}
+\end{mathparpagebreakable}
+
+Again,  the special case where $B$ does not depend on $x$ is of particular interest: this gives the cartesian product $A \times B := \synSigma_{x \oftype A} B$. \\
+
+\paragraph*{$\synId$-types.}  (Identity types, equality types.)
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\synId$-\form]{\Gamma \types A\ \myType}{\Gamma,\ x,y\oftype A \types \synId_A(x,y)\ \myType}
+\and
+  \inferrule*[right=$\synId$-\intro]{\Gamma \types A\ \myType}{\Gamma,\ x\oftype A \types \myRefl_A(x):\synId_A(x,x)}
+\and
+  \inferrule*[right=$\synId$-\elim]{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types C(x,y,u)\ \myType \\ \Gamma,\ z\oftype A \types d(z):C(z,z,\myRefl_A(z))}{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types J_{z. d}(x,y,u) : C(x,y,u)}
+\and
+  \inferrule*[right=$\synId$-\comp]{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types C(x,y,u)\ \myType \\ \Gamma,\ z\oftype A \types d(z):C(z,z,r(z))}{\Gamma,\ x\oftype A \types J_{z.d}(x,x,\myRefl_A(x)) = d(x) : C(x,x,\myRefl_A(x))}
+\end{mathparpagebreakable}
+
+\paragraph*{$\synW$-types.}  (Types of well-founded trees; free term algebras.)
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\synW$-\form]{\Gamma,\ x \oftype A \types B(x)\ \myType}{\Gamma \types \synW_{x \oftype A} B(x)\ \myType}
+\and
+  \inferrule*[right=$\synW$-\intro]{\Gamma,\ x \oftype A \types B(x)\ \myType}{\Gamma, \ x \oftype A, \ y \oftype [B(x), \synW_{u \oftype A} B(u)] \types \synsup(x, y) : \synW_{u \oftype A} B(u)}
+\\
+  \mathclap{\inferrule*[right=$\synW$-\elim]
+    {\Gamma, \ w \oftype \synW_{x \oftype A} B(x) \types C(w) \ \myType \\
+     \Gamma,\ x \oftype A,\ y \oftype [B(x), \synW_{u \oftype A} B(u)],\ z \oftype \synPi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{1.55cm} \\
+     \hspace{6cm} \types d(x, y, z) : C(\synsup(x, y))}
+  {\Gamma,\ w \oftype \synW_{x \oftype A} B(x) \types \textsf{wrec}_{d} (w) : C(w)}}
+\\
+  \mathclap{\inferrule*[right=$\synW$-\comp]
+  {\Gamma, \ w \oftype \synW_{x \oftype A} B(x) \types C(w) \ \myType \\
+   \Gamma,\ x \oftype A,\ y \oftype [B(x), \synW_{u \oftype A} B(u)],\ z \oftype \synPi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{2cm} \\
+    \hspace{6.45cm} \types d(x, y, z) : C(\synsup(x, y))}
+  {\Gamma, \ x \oftype A, \ y \oftype [B(x), \synW_{u \oftype A} B(u)] \types \textsf{wrec}_{d} (\synsup(x, y)) \hspace{2.8cm} \\
+    \hspace{2.4cm} = d(x, y, \lambda u \oftype B(x). \mathsf{wrec}_d(\mathsf{app}(y, u))): C(\synsup(x, y))}}
+\end{mathparpagebreakable}
+
+\paragraph*{$\mathsf{0}$}  (Empty type.)
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=${\sf 0}$-\form]{\textit{}}{\types {\sf 0}\ \myType}
+\and
+  \text{(No introduction rules.)}
+\and
+  \inferrule*[right=${\sf 0}$-\elim]{\Gamma, \ x \oftype {\sf 0} \types C(x)\ \myType}{\Gamma, \ x \oftype {\sf 0} \ \types \textsf{case} (x) : C(x)}
+\and
+  \text{(No computation rules.)}
+\end{mathparpagebreakable}
+
+\paragraph*{$\mathsf{1}$}  (Unit type, singleton type.)
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=${\sf 1}$-\form]{\ }{\types {\sf 1} \ \myType}
+\and
+  \inferrule*[right=${\sf 1}$-\intro]{\ }{\types * : {\sf 1}}
+\and
+  \inferrule*[right=${\sf 1}$-\elim]{\Gamma,\ x \oftype {\sf 1} \types C(x)\ \myType \\ \Gamma \types d : C(*)}{\Gamma,\ x \oftype {\sf 1} \types \textsf{rec}_d (x) : C(x)}
+\and
+  \inferrule*[right=${\sf 1}$-\comp]{\Gamma,\ x \oftype {\sf 1} \types C(x)\ \myType \\ \Gamma \types d : C(*)}{\Gamma \types \textsf{rec}_d (*) = d : C(*)}
+\end{mathparpagebreakable}
+
+\paragraph*{$+$-types} (Binary disjoint sums.)
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$+$-\form]{\Gamma \types A\ \myType \\ \Gamma \types B\ \myType}{\Gamma \types A + B \ \myType}
+\and
+  \inferrule*[right=$+$-\intro\ 1.]{\Gamma \types A\ \myType \\ \Gamma \types B\ \myType}{\Gamma,\ x \oftype A \types \textsf{inl}(x) : A+ B}
+\and
+  \inferrule*[right=$+$-\intro\ 2.]{\Gamma \types A\ \myType \\ \Gamma \types B\ \myType}{\Gamma,\ y \oftype B \types \textsf{inr}(y) : A +B}
+\and
+  \inferrule*[right=$+$-\elim]{\Gamma,\ z \oftype A + B \types C(z)\ \myType \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ z \oftype A + B \types \textsf{case}_{d_0,d_1}(z) : C(z)}
+\and
+  \inferrule*[right=$+$-\comp\ 1.]{\Gamma,\ z \oftype A + B \types C(z)\ \myType \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ x \oftype A \types \textsf{case}_{d_0, d_1}(\textsf{inl}(x))=d_0(x) : C(\textsf{inl}(x))}
+\and
+  \inferrule*[right=$+$-\comp\ 2.]{\Gamma,\ z \oftype A + B \types C(z)\ \myType \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ y \oftype B \types \textsf{case}_{d_0, d_1}(\textsf{inr}(y))=d_1(y) : C(\textsf{inr}(y))}
+\end{mathparpagebreakable}
+
+\subsection*{Universes} \label{subsec:universe-rules}
+
+A universe within the theory may be closed under some or all of the logical constructors of the theory; we include below the rules corresponding to all of the constructors given above.
+
+\begin{mathparpagebreakable}
+  \inferrule{ }{\types \synU\ \myType}
+\and
+  \inferrule{ }{\Gamma,\ x \oftype \synU \types \el (x) \ \myType}
+\\
+  \inferrule{\Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{\Gamma \types \synpi (a, x. b(x)) : \synU}
+\and
+  \inferrule{\Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{\Gamma \types \el (\synpi (a, x. b(x)) = \synPi_{x : \el(a)} \el(b(x)) \ \myType}
+\\
+  \inferrule{\Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \synsigma (a, x. b(x)) : \synU}
+\and
+  \inferrule{ \Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \el (\synsigma (a, x. b(x)) = \synSigma_{x : \el(a)} \el(b(x)) \ \myType}
+\\
+  \inferrule{\Gamma \types a, b : \synU}{ \Gamma \types a + b : \synU}
+\and
+  \inferrule{ \Gamma \types a, b : \synU}{ \Gamma \types \el (a + b) = \el (a) + \el (b) \ \myType}
+\\
+  \inferrule{ \Gamma \types a : \synU \\ \Gamma \types b, c : \el (a)}{ \Gamma \types \synid_A (b,c) : \synU}
+\and
+  \inferrule{ \Gamma \types a : \synU \\  \Gamma \types b, c : \el (a)}{ \Gamma \types \el (\synid_a(b,c)) = \synId_{\el (a)}(b, c) \ \myType}
+\\
+  \inferrule{ }{\types \synz : \synU}
+\and
+  \inferrule{ }{\types \el (\synz) = \mathsf{0} \ \myType}
+\and
+  \inferrule{ }{\types \syno : \synU}
+\and
+  \inferrule{ }{\types \el (\syno) = \mathsf{1} \ \myType}
+\\
+  \inferrule{ \Gamma \types a : \synU \\  \Gamma ,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \synw (a, x. b(x)) : \synU}
+\and
+  \inferrule{ \Gamma \types a : \synU \\  \Gamma ,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \el (\synw (a, x. b(x)) = \synW_{x : \el(a)} \el(b(x)) \ \myType}
+\end{mathparpagebreakable}
+
+\subsection*{Further rules} \label{subsec:optional-rules}
+
+The rules above are somewhat weak in their treatment of the equality of functions.  To this end, some further rules are often adopted: the \emph{$\eta$-rule} for $\synPi$-types, and the \emph{functional extensionality} rule(s).  Our formulation of the latter is taken from \cite{garner:on-the-strength}; see also \cite{hofmann:thesis}.
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\synPi$-$\eta$]
+    {\Gamma \types f : \synPi_{x \oftype A} B(x)}
+    {\Gamma \types \eta(f) : f = \lambda x \oftype A. \syn{app}(f,x) : \synPi_{x \oftype A} B(x) }
+\and
+  \inferrule*[right=$\synPi$-ext]
+    {\Gamma \types f, g : \synPi_{x \oftype A} B(x) \\
+     \Gamma \types h : \synPi_{x \oftype A} \synId_{B(x)}(\syn{app}(f,x),\syn{app}(g,x)) }
+    {\Gamma \types \syn{ext}(f,g,h) : \synId_{\synPi_{x \oftype A} B(x)}(f,g) }
+\and
+  \inferrule*[right=$\synPi$-ext-comp-prop]
+    {\Gamma, x \oftype A \types b : B(x) }
+    {\Gamma \types \syn{ext\text{-}comp}(x.b): \synId_{\synPi_{x \oftype A} B(x)} \hspace{4.4cm}  \\
+     \hspace{2cm} (\syn{ext}(\lambda x \oftype A. b,\lambda x \oftype A. b,\lambda x \oftype A. \myRefl b), \myRefl (\lambda x \oftype A. b)) }
+\end{mathparpagebreakable}
+
+\egroup
 
 \section{Algorithmic and semantic issues}
 

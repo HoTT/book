@@ -200,29 +200,6 @@ which may also be written as
 \[ f \defeq x \mapsto y \mapsto c. \] 
 Currying a function of three or more arguments is a straightforward extension of what we have just described.
  
-% In the sequel we shall write $a(x)$ for a term with a variable $x$ and
-% $a(b)$ for the same term where each occurence of $x$ has been
-% replaced by $b$. Moreover, we shall assume that this substitution
-% operation avoids the capture of bound variables, if necessary by
-% consistently renaming bound variables ($\alpha$-conversion).
-% As an example consider $b(x) \defeq \prd{y:A}x = y$, we don't want
-% $B(y)$ to be equal to $\prd{y:A}y = y$, because the variable $y$ we are
-% substitute doesn't refer to the bound variable. Instead we rename the
-% bound variable to avoid capture $B(y) \jdeq \prd{y':A}y = y'$.
-
-% A \textbf{family of types} over an indexing type $A:\UU$ and a 
-% type $B(x) : \UU$ given $x:A$. This can be generalized to a sequence of indexing
-% types $A_i(x_0,\dots x_{i-1})$ each depending on the previous indexing
-% types and a family $B(x_0,\dots,x_n) : \UU$ depending on all of them. In the
-% propositions as types view families correspond to predicates:
-% assigning to each element of the indexing types a type corresponding
-% to the proposition that this particular instance of the predicate holds.
-
-% An example is the type $\Vect(A,n)$ of
-% vectors ($n$-tuples) of elements $a_i : A$ for $0 < i< n$ of type $A$:
-% $\seq{a_0,\dots,a_n} : \Vect(A,n)$ which is family indexed
-% over $A:\UU$ and $n : \Nat$. Another example is the type $x =_A y$ which is a
-% family indexed over $A:\UU$ and $x,y : A$.
 
 \section{Universes and families}
 \label{sec:universes}
@@ -236,7 +213,7 @@ However, as in set
 theory, this is unsound, i.e.\ we can deduce from it that every type,
 including the empty type representing the proposition False, is inhabited. Indeed, using a
 representation of sets as trees, we can directly encode Russell's
-paradox \cite{thierry:trees}.
+paradox \cite{coquand:paradox}.
 %  or alternatively, in order to avoid the use of
 % inductive types to define trees, we can follow Girard \cite{girard:paradox} and encode the Burali-Forti paradox,
 % which shows that the collection of all ordinals cannot be an ordinal.
@@ -303,7 +280,7 @@ An example of a dependent function is $\fmax : \prd{x:\nat} \Fin(n+1)$
 which returns the largest element in a nonempty finite type, $\fmax(n) \defeq
 n_{n+1}$. 
 Another source of dependent function types
-are function which are \emph{polymorphic} over a given universe.
+are functions which are \emph{polymorphic} over a given universe.
 This means a function which takes a type as one of its arguments, and then acts on elements of that type (or other types constructed from it).
 An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, which we define by $\idfunc[A] \defeq \lamu{x:A}x$.
 
@@ -316,19 +293,6 @@ arguments.  Likewise, given $f:\prd{x:A}{y : B(x)} C(x,y)$ and arguments $a:A$ a
 as before, we write as $f(a,b) : C(a,b)$.
 
 
-% When we view propositions as types the non-dependent function type
-% corresponds to implication, i.e. given types $P,Q$ a proof of $P \to
-% Q$ is a function $f$ assigning to each proof $p:P$ a proof $f(p) : Q$.
-
-% The dependent function type corresponds to universal
-% quantification: Given a type $A$ and a family $P(x)$ assuming $x:A$
-% which we view as a predicate over $A$ we can form $\prd{x:A}B(x)$
-% whose elements are proofs that $B(x)$ holds for all $x:A$ by assigning
-% to each $a:A$ a proof $f(a) : B(a)$.
-
-% We summarize that from the type-theoretic point of view the concepts
-% of an ordinary function, implication and universal quantification are
-% unified using the notion of a dependent function type or $\Pi$-type.
 
 \section{Product types}
 \label{sec:finite-product-types}
@@ -453,7 +417,7 @@ pair type is written as $\sm{x:A} B(x) : \UU$. Its elements are
 pairs $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
 If $B$ is constant then the dependent pair type is the
 ordinary cartesian product type:
-\[ (\sm{x:A} B(x)) \jdeq (A \times B).\]
+\[ (\sm{x:A} B) \jdeq (A \times B).\]
 All the constructions on $\Sigma$-types arise as straightforward generalisations of the ones for product types.
 
 To define a non-dependent function out of a $\Sigma$-type
@@ -502,7 +466,7 @@ with the defining equation
 And as before the recursor arises as the special case of induction
 when the family $C$ is constant.
 
-As an example we derive  the \emph{type-theoretic axiom of choice}
+As an example we derive what is called \emph{type-theoretic axiom of choice}
 which isn't really an axiom, because it is provable from the rules
 for $\Sigma$-types. We will discuss this in more detail later in \autoref{subsec:pat?}. 
 We assume types $A,B : \UU$ and a 
@@ -785,7 +749,7 @@ d & \defeq & \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x
 \end{eqnarray*}
 and hence using the Martin-L\"of rule obtain
 \[ f : \prd{x,y:A}{p:x =_A y} D(x,y,p) \]
-with $f(x,x,\refl(x)) \defeq d(x)$. Unfolding the definition of $D$ we can expand the type of $f$:
+with $f(x,x,\refl{x}) \defeq d(x)$. Unfolding the definition of $D$ we can expand the type of $f$:
 \[ f : \prd{x,y:A}{p:x =_A y}{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p) \]
 now given $x:A$ and $p:a =_A x$ we can derive the conclusion of the Paulin-Mohring rule:
 \[ f(a,x,p,C,c) : C(x,p) \]
@@ -886,58 +850,6 @@ For $\ass_s$ we exploit $\suc(m)+n \jdeq \suc(m+n)$ and hence
 Hence we can define
 \[\ass_s(n,h,j,k) \defeq \apfunc{\suc}(n+(j+k),(n+j)+k,h(j,k)) \]
 
-% Using $\ind{nat}$ we can construct an expression 
-% \begin{align*}
-%   \ind{nat}(&\lamu{i:\nat}\prd{j,k:nat} i + (j + k) = (i + j) + k ,\\
-%   & \lamu{j,k:\nat}\refl{j+k}, \\
-%   & \lamu{n:\nat}{h:\prd{j,k:\nat} i + (j + k) = (i + j) + n}{j:\nat}{k:\nat}\apfunc{\suc}(n+(j+k),(n+j)+k,h(j,k)) )\\
-% & : \prd{i,j,k:\nat} i + (j + k) = (i + j) + k
-% \end{align*}
-
-% The paradigm example of an inductive type is the type $\nat$ of unary natural numbers.  These objects of type $\nat$ are generated from the natural number $0$ by repeatedly applying the successor operation.  So we say that there are two {\bf introduction rules} for $\nat$. 
-%   \[ 0:\nat\]
-% and
-%   \[ \mbox{ from $n:\nat$ infer $\suc(n):\nat$}.\]
-% The inductive character of $\nat$ is captured by the, so called, elimination and computation rules for $\nat$.  We prefer to call them the rules for defining a function on $\nat$ by primitive recursion. 
-
-% If $C[x]$ is a family on $x:\nat$, $c_0:C[0]$ and $c_\suc:\prd{x:nat,y:C[x]}C[\suc(x)$ then we may introduce a function $f:\Pi_{x:\nat}C(x)$ by the following primitive recursion defining equations; one defining equation for each introduction rule.
-
-%   \[\left\{\begin{array}{rl}
-% f(0)\defeq& c_0, \mbox{ and}\\
-% f(\suc(x))\defeq& c_\suc(x,f(x))\mbox{ for } x:\nat
-%   \end{array}\right.\]
-% It is sometimes convenient to make explicit the dependence of $f$ on $c_0$ and $c_\suc$ by using the primitive recursive operator $\rec{\nat}$.  So we have
-%   \[ \rec{\nat}(x,c_0,c_\suc):\prd{x:\nat}C(x)\]
-% with the defining equations
-% \begin{eqnarray*}
-%   \rec{\nat}(x,c_0,c_\suc)(0) & \defeq & c_0 \\
-%   \rec{\nat}(x,c_0,c_\suc)(\suc(n)) & \defeq & c_s(n, \rec{\nat}(x,c_0,c_\suc)) \\
-% \end{eqnarray*}
-
-% As an example we define the function $(+)(m) : \nat \to \nat$ for any
-% $m : \nat$ using the constant family $\nat$ and the defining
-% equations:
-% \begin{eqnarray*}
-%   m + 0 & \defeq & m \\
-%   m + \suc(n) & \defeq & \suc(m + n)
-% \end{eqnarray*}
-% By abstracting $m$ using the rules for $\Pi$-types we can derive the
-% binary function $- + - : \nat \to (\nat \to \nat)$.
-
-% We use the same principle to prove properties by induction. While it
-% is trivial to see that $+$ is right neutral, because $m + 0 \jdeq m$
-% we need to prove that $0 + m =_\Nat m$ is inhabited. We do this by
-% constructing a function $f : \Pi_{n : \nat} 0 + n =_\Nat n$. 
-% The family is $0 + n =_\Nat n$ over $n : \Nat$. In the case
-% for $0$ we have that $0 + 0 \jdeq 0$ hence we can define
-% \[ f(0) \defeq \refl{0} \]
-% For $\suc(n)$ we have that $0 + \suc(n) \jdeq \suc(0 +
-% n)$ hence we define 
-% \[ f(\suc(n)) \defeq \mapfunc{\suc}(f(n)). \]
-% In this case we can show that the type is propositional, that is that
-% all elements of the type are equal. In this situation we may omit any
-% explicit reference to proof objects and the type-theoretic proof does
-% not look different to a conventional one in predicate logic. 
 
 \section{Propositions as types}
 \label{sec:pat}
@@ -987,15 +899,48 @@ propositions we are quantifying over, that is
 
 We have descibed here a proof-relevant translation or propositions, where the proofs of disjunctions and existential statements carry some information. Using the language of homotopy type theory which we are going to introduce in the next section there is an alternative way to interpret the word \emph{proposition} as a (-1)-type, i.e. a type which doesn't carry any information. In this case we would say \emph{there merely exists} or \emph{merely $A$ or $B$}.
 
+\section*{Exercises}
 
-% \textbf{TODO:} A discussion of how to speak type formers in English, e.g.\ ``for all $x:A$, something or other'' means ``$\prd{x:A}$ something or other'', and so on.
-% For now, we will use ``$A$ or $B$'' to mean $A+B$ and ``there exists $x:A$'' to mean $\sm{x:A}$, but perhaps we should mention that we will refine it further later on.
-% For instance, sometimes classical statements involving these connectives need to be interpreted differently (see \autoref{subsec:prop-subsets} and wherever we discuss $(-1)$-truncations).
-
-% We will say that a type $A$ is \textbf{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct a term belonging to $A$, usually unnamed).
-
-
-
+\begin{ex}
+Derive the non-dependent eliminator for products $\rec{A\times B} $ using only the projections and verify that the definitional equalities are valid. Do the same for $\Sigma$-types.
+\end{ex}
+\begin{ex}
+Derive the dependent eliminator for products $\ind{A\times B}$ using only the projections and $\spr$ and verify that the definitional equalities are valid. Generalize $\spr$ to $\Sigma$-types and do the same for $\Sigma$-types.
+\end{ex}
+\begin{ex}
+Assuming as given only the iterator for natural numbers
+\[\ite : \prd{C:\UU} C \to (C \to C) \to \nat \to C \]
+with the defining equations
+\begin{eqnarray*}
+\ite(C,c_0,c_s,0)  & \defeq & c_0 \\
+\ite(C,c_0,c_s,\suc(n)) & \defeq & c_s(\ite(C,C_0,c_s,n)  
+\end{eqnarray*}
+derive the recursor $\rec{\nat}$.
+\end{ex}
+\begin{ex}
+Derive $\ind{A+B}$ for  $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x)$ and show that the definitional equalities stating for native $\ind{A+B}$ hold.
+\end{ex}
+\begin{ex}
+Derive $\ind{A\times B}$ for  $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$ and show that the definitional equalities stating for native $\ind{A+B}$ hold propositionally (i.e. using equality types).
+\end{ex}
+\begin{ex}
+Give an alternative derivation of $\ind{=_A}^{PM}$ from $\ind{=_A}^{ML}$ which avoids the use of universes.
+\end{ex}
+\begin{ex}
+Define multiplication and exponentiation using $\rec{\Nat}$. Formally verify that $(\nat,+,0,\times,1)$ is a semiring using only $\ind{\Nat}$.  
+\end{ex}
+\begin{ex}
+  Show that the Ackermann function $\ack : \nat \to \nat \to \nat$ is definable using only $\rec{\nat}$ satisfying the following equations:
+  \begin{eqnarray*}
+    \ack(0,n) & \jdeq & \suc(n) \\
+    \ack(\suc(m),0) & \jdeq & 1 \\
+    \ack(\suc(m),\suc(n)) & \jdeq & \ack(m,\ack(\suc(m),n))
+  \end{eqnarray*}
+\end{ex}
+\begin{ex}
+Using the propositions as types interpretation formally derive the double negation of the principle of excluded middle, i.e. show 
+that \emph{not (not ($P$ or not $P$))}  is provable.
+\end{ex}
 % Local Variables:
 % TeX-master: "main"
 % End:

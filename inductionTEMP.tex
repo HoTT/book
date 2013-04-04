@@ -502,6 +502,195 @@ The $\nat$-algebra $(\nat, \zero, \s)$ is homotopy initial.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Analogous theorems are true for other sorts of inductive types.
+Indeed, the parameters $A:\UU$ and $B:A\to\UU$ determine a \emph{polynomial endofunctor}
+defined by:
+\[
+    P(X) \defeq (\Sigma x : A ) (B(x) \rightarrow X) \, .
+\]
+A \emph{$P$-algebra} is a pair consisting of a type $C$ and a function $s_C : PC \rightarrow C$, called 
+the \emph{structure map} of the algebra. The formation rule for $\w$-types gives us an object $W \defeq (\w x : A)
+B(x)$, and the introduction rule (in combination with the rules for $\Pi$-types
+and $\Sigma$-types) provides a structure map
+\[
+s_W : PW \rightarrow W \, .
+\]
+The elimination rule, on the other hand, states that in order for the projection $\pi_1 \colon C \rightarrow W$, where
+$C \defeq (\Sigma w {\, : \, } W) C(w)$, to have a section $s$, as in the diagram
+\[
+\xymatrix{
+& C  \ar[d]^{\pi_1} \\
+W \ar[ru]^{s} \ar[r]_{1_W} & W, 
+}
+\]
+it is sufficient for the type $C$ to have a $P$-algebra structure over $W$. Finally, the computation rule states that the section $s$ given by the elimination rule is also a $P$-algebra homomorphism. 
+
+The elimination rule implies what may be called the \emph{simple} $\w$-elimination rule:
+
+C : \type  \qquad
+ x : A, v : B(x) \rightarrow C \vdash c(x,v) : C
+ \justifies
+w : W \vdash \wrecs(w,c) :  C
+\end{prooftree}
+
+\begin{itemize}
+\item For any type $C$, to define a map $E : \wtype{x:A} B(x) \to C$ on the $\w$-type $\wtype{x:A} B(x)$, it suffices to specify its values for $\supp(a,f)$, assuming it has already been given for $f(b)$ with $b : B(a)$. 
+In other words, it suffices to give a specification 
+\begin{align*}
+e : & \; \prd{a:A}{f : B(a) \to \wtype{x:A} B(x)}{g : B(a) \to C} \to C
+\end{align*}
+\end{itemize}
+
+
+This can be recognized as a recursion principle for maps from $W$ into $P$-algebras, since
+the premisses of the rule describe exactly a type $C$ equipped with a structure map $s_C 
+: PC  \rightarrow C$. For this special case of the elimination rule, the corresponding computation rule again states that the function
+\[
+\lambda w. \wrecs(w,c) : W \rightarrow C \, ,
+\] 
+where $c(x,v) = s_C(\pair(x,v))$ for $x : A$ and $v : B(x) \rightarrow C$, is a $P$-algebra homomorphism.
+Moreover, this homomorphism can then be shown to be definitionally unique using the elimination
+rule, the principle of function extensionality and the reflection rule.  The converse implication also holds: one can derive the general $\W$-elimination rule from the simple elimination rule and the following $\eta$-rule
+%
+\begin{equation*}
+\begin{prooftree}
+\begin{array}{l}
+C : \type  \qquad w : W \vdash h(w) : C \\ 
+x : A, v : B(x) \rightarrow C \vdash c(x,v) : C\\
+x:A \, , u:  B(x) \rightarrow W  \vdash h\left(\wsup(x,u)) = c(x,\lambda y. hu(y)\right) : C
+  \end{array}
+ \justifies
+w : W \vdash  h(w) =  \wrecs(w,c) :  C
+\end{prooftree}
+\end{equation*}
+%
+stating the uniqueness of the $\wrecs$ term among algebra maps. 
+Overall, we therefore have that  in 
+$\Hext$ induction and recursion are interderivable: 
+\[
+\begin{array}{ccc}
+\text{\underline{\myemph{Induction}}} & \Leftrightarrow & \text{\underline{\myemph{Recursion}}}\\[1ex]
+\text{$\W$-elimination} & & \text{Simple $\W$-elimination}\\
+\text{$\W$-computation} &&  \text{Simple $\W$-computation + $\eta$-rule} 
+\end{array}
+\]
+
+Finally, observe that what we are calling recursion is equivalent to the statement that the
+type $W$, equipped with the structure map $s_W : PW \rightarrow W$ 
+is the initial $P$-algebra. Indeed, assume the simple elimination rule, the simple computation
+rule and the $\eta$-rule; then for any $P$-algebra $s_C : PC\rightarrow C$, there is a 
+function $f : W \rightarrow C$ by the simple elimination rule, which is a homomorphism by the computational 
+rule, and is the unique such homomorphism by the $\eta$-rule.  The converse implication from initiality to recursion is just as direct. Thus, in the extensional theory, to have an initial algebra for the endofunctor $P$ is the same thing
+as having a type~$W$ satisfying the introduction, elimination and computation rules above.  Section~\ref{section:intW} will be devoted to generalizing this equivalence to the setting of Homotopy Type Theory.
+
+%%%%%%%%%%%%%%%%
+\noindent To conclude our review, recall that in extensional type theory, many inductive types can be reduced to W-types.  We mention the following  examples, among many others (see \cite{MartinLofP:inttt}, \cite{DybjerP:repids}, \cite{GoguenH:inddtw}, \cite{MoerdijkI:weltc}, \cite{GambinoN:weltdp}, \cite{AbbottM:concsp}):
+\begin{enumerate}
+\item \emph{Natural numbers}. \label{extnatW}
+The usual rules for $\nat$ as an inductive type can be derived from its formalization as the following W-type. Consider the signature with two operations, one of which has arity $0$ and one of which has arity $1$; it is presented type-theoretically by a dependent type with corresponding polynomial functor (naturally isomorphic to)
+\[
+P(X) = \mathsf{1} + X \, ,
+\]
+%
+and the natural numbers $\nat$ together with the canonical element $0:\nat$ and the successor function $s : \nat\rightarrow\nat$ form an initial $P$-algebra
+\[
+(0, s) : \mathsf{1} + \nat \rightarrow \nat\, .
+\]
+%
+
+%%%%%%%%%%%%%%%%%%%
+
+The required definitions in the current setting are as follows. Let us assume that
+\[
+x:A \vdash B(x) : \type \, ,
+\]
+and define the associated polynomial functor as before: 
+\begin{equation}
+\label{eq:polyfunc}
+PX = (\Sigma x : A) (B(x) \rightarrow X) \, .
+\end{equation}
+(Actually, this is now functorial only up to propositional equality, but this change makes no difference in what follows.)
+By definition, a $P$-algebra is a type $C$ equipped a function
+$s_C :  PC \rightarrow C$. For $P$-algebras $(C,s_C)$ and $(D,s_D)$, a \emph{weak 
+homomorphism} between them $(f, s_f) : (C, s_C) \rightarrow (D, s_D)$
+consists of a function $f : C \rightarrow D$ and an identity proof
+\[
+s_f : \id{PC \rightarrow D}\big( f \circ s_C \, ,  s_{D} \circ Pf \big) \, ,
+\]
+where $Pf : PC\rightarrow PD$ is the result of the easily-definable action of $P$ on $f: C \rightarrow D$. Such an algebra homomorphism can be represented suggestively in the form:
+\[
+\xymatrix{
+ PC \ar[d]_{s_C} \ar[r]^{Pf}  \ar@{}[dr]|{s_f} &  PD \ar[d]^{s_D}\\
+C \ar[r]_{f}   & D }
+\] 
+Accordingly, the type of weak algebra maps is defined by
+\begin{multline*}
+\Palg
+\big[ (C,s_C), (D, s_D)  \big]
+ \defeq   \\
+(\Sigma f:  C \rightarrow D) \, \Id(f\circ s_C, s_D\circ Pf) \, .
+\end{multline*}
+
+
+\begin{definition} 
+A $P$-algebra $(C, s_C)$ is \emph{homotopy-initial} if for every $P$-algebra $(D, s_D)$, the type 
+$$\Palg \big[ (C, s_C), (D, s_D) \big]$$ of weak algebra maps is contractible.
+\end{definition} 
+
+
+\begin{remark} 
+The notion of h-initiality captures a universal property in which the usual conditions of existence and uniqueness  are replaced by conditions of existence and uniqueness up to a system of higher and higher identity proofs. To explain this, let us fix a $P$-algebra  $(C,s_C)$ and assume that it is homotopy-initial. Then, given any 
+$P$-algebra~$(D,s_D)$, there is a weak homomorphism $(f,s_f) : (C,s_C) \rightarrow (D,s_D)$, since
+the type of weak maps from $(C,s_C)$ to $(D,s_D)$, being contractible, is inhabited. Furthermore, for any weak map $(g,s_g) : (C,s_C) \rightarrow (D,s_D)$, the
+contractibility of the type of weak maps  implies that there is an identity proof 
+\[
+ p  : \Id\big( (f,s_f), (g, s_g) \big) \, , 
+\]
+witnessing the uniqueness up to propositional equality of the homomorphism $(f,s_f)$. But it
+is also possible to prove that the identity proof $p$ is unique up to propositional equality. Indeed, since 
+$(f,s_f)$ and $(g,s_g)$ are elements of a contractible type, the identity type $\Id( (f,s_f), (g, s_g) )$ 
+is also contractible, as observed in Remark~\ref{thm:idcontrcontr}. Thus, if we have another 
+identity proof $q : \Id( (f,s_f), (g, s_g) )$, there will be an identity term $\alpha : \Id(p,q)$, which is again
+essentially unique, and so on.  It should also be pointed out that, just as strictly initial algebras are unique
+up to isomorphism, h-initial algebras are unique up to weak equivalence. It then follows from
+the Univalence axiom that two h-initial algebras are propositionally equal, a fact that we mention only by the way. Finally, we note that there is also a homotopical version of Lambek's Lemma, asserting that the structure map of an h-initial algebra is itself a weak equivalence, making the algebra a \emph{homotopy fixed point} of the associated polynomial functor. The reader can work out the details from the usual proof and the definition of  h-initiality, or consult~\cite{AwodeyS:indtht}.
+\end{remark}
+
+\medskip
+
+The deduction rules that characterize homotopy-initial algebras are
+obtained from the formation, introduction, elimination and computation rules for W-types 
+stated in Section~\ref{section:extW} by simply replacing the $\W$-computation rule with the
+following rule, that we call the propositional $\W$-computation rule.
+
+\smallskip
+
+\begin{itemize} 
+\item Propositional $\W$-computation rule.
+\[
+\begin{prooftree}
+\begin{array}{l} 
+w : W \vdash C(w) : \type \\ 
+\hspace{-1ex}
+\begin{array}{c} 
+x : A, u : B(x) \rightarrow W, v : (\Pi y : B(x)) C(u(y)) \vdash \\ 
+c(x,u,v) : C(\wsup(x,u))  
+\end{array}
+\end{array}
+\justifies
+\begin{array}{l} 
+x : A, u : B(x) \rightarrow W \vdash 
+\wcomp(x,u,c) :  \\
+\qquad \Id
+\big(
+\wrec(\wsup(x,u), c), c(x,u,\lambda y.\wrec( u(y), c )
+\big)
+\end{array}
+\end{prooftree}
+\]
+\end{itemize}
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 For instance, here are the notions of $\w$-algebras, $\w$-homomorphisms, and h-initiality for W-types.
 
@@ -540,7 +729,7 @@ the $\w$-introduction rule from \autoref{sec:w-types}, we have a structure map $
 We want to show that the algebra $(W, s_W)$ is
 h-initial. So, let us consider another algebra $(C,s_C)$ and show that the type $T\defeq \whom_{A,B}((W, s_W),(C,s_C)) $ 
 of  $\w$-homomorphisms from $(W, s_W)$ to $(C, s_C)$ is contractible. To do
-so, observe that the $\w$-elimination rule and the $\w$-computation
+so, observe that the $\w$-elimination rule and the propositional $\w$-computation
 rule allow us to define a $\w$-homomorphism $(f, s_f) : (W, s_W) \rightarrow (C, s_C)$, 
 thus showing that $T$ is inhabited. It is furthermore necessary to show that for every $\w$-homomorphism $(g, s_g) : (W, s_W) \rightarrow (C, s_C)$, there is an identity proof 
 \begin{equation}
@@ -652,13 +841,13 @@ In the case of W-types, we can characterize a homotopy $W$-type $\wtype{x:A} B(x
                       & \; \sm{\supp : \prd {a} (B(a) \to W) \to W} \\
                       & \; \prd{E : W \to \type} \\
                       & \; \prd{e : \prd{a,f} (\prd{b : B(a)} E(f(b))) \to E(\supp(a,f))} \\
-                      & \; \sm{\rec{} : \prd{w : W} E(w)} \\
+                      & \; \sm{\rec : \prd{w : W} E(w)} \\
                       & \; \prd{a,f} \rec{}(\supp(a,f)) = e(a,\lamu{b:B(a)} \rec{}(f(b)))
 \end{align*}
 In \autoref{cha:hits} we will see some other reasons why propositional computation rules are worth considering.
 
 In this section, we will state some basic facts about homotopy-inductive types.
-We omit most of the proofs, which are somewhat technical.
+We omit the proofs, which are long and technical, and not important for the rest of the book.
 
 \begin{thm}
   For any $A : \type$ and $B : A \to \type$, the type $\w_d(A,B)$ is a mere proposition.
@@ -710,7 +899,7 @@ Putting all of this data together yields another characterization of $\wtype{x:A
                       & \; \sm{\supp : \prd {a} (B(a) \to W) \to W} \\
                       & \; \prd{C : \type} \\
                       & \; \prd{c : \prd{a} (B(a) \to C) \to C} \\
-                      & \; \sm{\rec{} : W \to C} \\
+                      & \; \sm{\rec : W \to C} \\
                       & \; \sm{\beta : \prd{a,f} \rec{}(\supp(a,f)) = c(a,\lamu{b: B(a)} \rec{}(f(b)))} \\
                       & \; \prd{g : W \to C} \\
                       & \; \prd{h : W \to C} \\
@@ -734,94 +923,16 @@ For any $A : \type$ and $B : A \to \type$, the type $\w_h (A,B)$ is a mere propo
 \end{thm}
 
 It turns out all three characterizations of W-types are in fact equivalent:
-\begin{lem}\label{lem:homotopy-induction-times-3}
+\begin{thm}\label{thm:homotopy-induction-times-3}
 For any $A : \type$ and $B : A \to \type$, we have
 \[ \w_d(A,B) \simeq \w_s(A,B) \simeq \w_h(A,B) \]
-\end{lem}
-
-Indeed, we have the following theorem, which is an improvement over \autoref{thm:w-hinit}:
-
-\begin{thm}
-The types satisfying the formation, introduction, elimination, and propositional computation rules for W-types are precisely the homotopy-initial $\w$-algebras.
 \end{thm}
 
-%%%%%
-\begin{proof}[Sketch of proof]
-%%%%%
-Inspecting the proof of \autoref{thm:w-hinit}, we see that only the \emph{propositional} computation rule was required to establish the h-initiality of $\wtype{x:A}B(x)$. 
-%
-%Suppose we have $A : \type$ and $B : A \to \type$,
-%and consider the associated polynomial functor $P(X)\defeq\sm{x:A}(B(x)\to X)$.
-%Let $W \defeq \wtype{x:A}B(x)$.  Then using
-%the $\w$-introduction rule from \autoref{sec:w-types}, we have a structure map $s_W\defeq\supp: PW \rightarrow W$. 
-%We want to show that the algebra $(W, s_W)$ is
-%h-initial. So, let us consider another algebra $(C,s_C)$ and show that the type $T\defeq \whom_{A,B}((W, s_W),(C,s_C)) $ 
-%of  $\w$-homomorphisms from $(W, s_W)$ to $(C, s_C)$ is contractible. To do
-%so, observe that the $\w$-elimination rule and the $\w$-computation
-%rule allow us to define a $\w$-homomorphism $(f, s_f) : (W, s_W) \rightarrow (C, s_C)$, 
-%thus showing that $T$ is inhabited. It is furthermore necessary to show that for every $\w$-homomorphism $(g, s_g) : (W, s_W) \rightarrow (C, s_C)$, there is an identity proof 
-%\begin{equation}
-%\label{equ:prequired}
-%p :  (f,s_f) = (g,s_g)  \, .
-%\end{equation}
-%This uses the fact that, in general, a type of the form $(f,s_f) = (g,s_g) $
-%is  equivalent to the type of what we call \emph{algebra $2$-cells}, whose canonical
-%elements are pairs of the form $(e, s_e)$, where $e : f=g$ and $s_e$ is a higher identity proof between the identity proofs represented by the following pasting diagrams:
-%\[
-%\xymatrix{
-%PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W} \ar@{}[r]_(.52){s_g}  & PD \ar[d]^{s_D}  \\
-%W \ar@/^1pc/[r]^g  \ar@/_1pc/[r]_f  \ar@{}[r]|{e} & D } \qquad
-%\xymatrix{
-%PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W}   \ar@/_1pc/[r]_{Pf} \ar@{}[r]|{Pe}
-%& PD \ar[d]^{s_D}  \\
-%W  \ar@/_1pc/[r]_f  \ar@{}[r]^{s_f} & D }
-%\]
-%In light of this fact, to prove that there exists a term as in~\eqref{equ:prequired}, it is 
-%sufficient to show that there is an algebra 2-cell 
-%\[
-%(e,s_e) : (f,s_f) = (g,s_g) \, .
-%\]
-%The identity proof $e : f=g$ is now constructed by function extensionality and
-%$\w$-elimination so as to guarantee the existence of the required identity
-%proof $s_e$. 
-%
-%\smallskip
+Thus, we have the following corollary, which is an improvement over \autoref{thm:w-hinit}:
 
-For the converse implication, let us assume that the polynomial functor associated
-to $A : \type$ and $B : A \to \UU$, has an h-initial algebra $(W,s_W)$. To derive the $\w$-formation rule, we 
-let  $(\w x {\, : \, } A) B(x) \defeq W$. The $\w$-introduction rule is equally simple to
-derive; namely, for $a : A$ and $t \colon B(a) \rightarrow W$,  we define $\supp(a,t) : W$ as the 
-result of applying the structure map $s_W \colon PW \rightarrow W$ to $(a,t) : PW$.
-For the $\w$-elimination rule, let us assume its premisses and in particular that $C' : W \to \type$.
-Using the other premisses, one shows that the type $C \defeq \sm{ w : W} C'(w)$
-can be equipped with a structure map $s_C : PC \rightarrow C$. By the h-initiality of $W$,
-we obtain a weak homomorphism $(f, s_f) : (W, s_W) \rightarrow (C, s_C)$. Furthermore,
-the first projection $\pi_1 : C \rightarrow W$ can be equipped with the structure of a weak 
-homomorphism, so that we obtain a diagram of the form
-\[
-\xymatrix{
-PW \ar[r]^{Pf} \ar[d]_{s_W}  & PC \ar[d]^{s_C}  \ar[r]^{P \pi_1}  & PW  \ar[d]^{s_W}  \\
-W \ar[r]_f  & C \ar[r]_{\pi_1}  & W \, .}
-\]
-But the identity function $1_W : W \rightarrow W$ has a canonical structure of a weak
-algebra homomorphism and so, by the contractibility of the type of weak homorphisms
-from $(W,s_W)$ to itself, there must be an identity proof between the composite
-of $(f,s_f)$ with $(\pi_1, s_{\pi_1})$ and $(1_W, s_{1_W})$. This implies, in particular,
-that there is an identity proof $p :  \pi_1 \circ f = 1_W$. 
-
-Since $(\pi_2 \circ f) w : C( (\pi_1 \circ f) w)$, we can define
-\[
-\rec{}(w,c) \defeq
-p_{\, * \,}( ( \pi_2 \circ  f)   w )   : C(w) 
-\]
-where the transport $p_{\, * \,}$ is with respect to the family
-\[
-\lamu{u}C\circ u : (W\to W)\to W\to \UU\, .
-\]
-The verification of the propositional $\w$-computation rule is a calculation,
-involving the naturality properties of operations of the form $p_{\, * \,}$.
-\end{proof}
-%%%%%
+\begin{cor}
+The types satisfying the formation, introduction, elimination, and propositional computation rules for W-types are precisely the homotopy-initial $\w$-algebras.
+\end{cor}
 
 Finally, as desired, it can be shown that homotopy-natural numbers can be encoded as homotopy-W-types:
 

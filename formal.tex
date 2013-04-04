@@ -240,11 +240,11 @@ $\unit$, $\bool$ satisfying the following rules.
 \item $\ttt:\unit$, $\bfalse:\bool$, $\btrue:\bool$.
 \end{itemize}
 
-Given $C : \emptyt \rightarrow \UU_n$ we can introduce a defined constant $f:\prd{x:\emptyt} C$, with no defining equations.
+Given $C : \emptyt \rightarrow \UU_n$ we can introduce a defined constant $f:\prd{x:\emptyt} C(x)$, with no defining equations.
 
-Given $C : \unit \rightarrow \UU_n$ and $c : C(\ttt)$ we can introduce a defined constant $f:\prd{x:\unit} C$, with defining equation $f(\ttt) \defeq c$.
+Given $C : \unit \rightarrow \UU_n$ and $c : C(\ttt)$ we can introduce a defined constant $f:\prd{x:\unit} C(x)$, with defining equation $f(\ttt) \defeq c$.
 
-Given $C : \bool \rightarrow \UU_n$, $c : C(\bfalse)$, and $c' : C(\btrue)$, we can introduce a defined constant $f:\prd{x:\bool} C$, with defining equations
+Given $C : \bool \rightarrow \UU_n$, $c : C(\bfalse)$, and $c' : C(\btrue)$, we can introduce a defined constant $f:\prd{x:\bool} C(x)$, with defining equations
 $f(\bfalse)\defeq c$ and $f(\btrue)\defeq c'$.
 
 \subsection*{$\Sigma$-Types}
@@ -258,15 +258,19 @@ Judgments concerning such expressions are introduced by the following
 rules.
 
 \begin{itemize}
-\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\sm{a:A}B : \UU_n$
-\item if, in addition, $a:A$ and $b:B(a)$, then $\tup a b:\sm{a:A}B$
+\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\sm{a:A}B(a) : \UU_n$
+\item if, in addition, $x:A$ and $y:B(x)$, then $\tup x y:\sm{a:A}B(a)$
 \end{itemize}
 
-If we have $A$ and $B$ as above, $C : \sm{a:A}B \rightarrow \UU_m$, and
+If we have $A$ and $B$ as above, $C : \sm{a:A}B(a) \rightarrow \UU_m$, and
 \[
   d:\prd{x:A}{y:B(x)} C(\tup x y)
 \]
-we can introduce a defined constant $f:\prd{p:\sm{a:A}B} C$ with the defining equation
+we can introduce a defined constant 
+\[
+  f:\prd{p:\sm{a:A}B(a)} C(p)
+\]
+with the defining equation
 \[
   f(\tup x y)\defeq d(x,y).
 \]
@@ -282,7 +286,7 @@ $c_\inlsym(a)$, and $\inr(a)$ instead of $c_\inrsym(a)$.
 \end{itemize}
 
 If we have $A$ and $B$ as above, $C : A+B \rightarrow \UU_m$, $c:\prd{a:A} C(\inl(a))$, and $c':\prd{b:B} C(\inr(b))$,
-then we can introduce a defined constant $f:\prd{x:A+B}C$ with the defining equations
+then we can introduce a defined constant $f:\prd{x:A+B}C(x)$ with the defining equations
 \begin{align*}
   f(\inl(a)) & \defeq c(a) \\
   f(\inr(b)) & \defeq c'(b)

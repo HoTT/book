@@ -1505,11 +1505,11 @@ R^\modal_A:\big(\prd{a:A}\modal(P(\mreturn^\modal_A(a)))\big)\to\prd{z:\modal(A)
 From the definition we see that a modality $\modal$ is an idempotent monad on $\type$.
 
 \begin{defn}
-  We say that $A$ is {\em modal} if the type $\ismodal A\defeq \mathsf{isEquiv}(\mreturn^\modal_A)$ is inhabited.
+  We say that $A$ is \emph{modal} if the type $\ismodal A\defeq \mathsf{isEquiv}(\mreturn^\modal_A)$ is inhabited.
 \end{defn}
 
 \begin{defn}
-  We define $\modaltype:=\sum(X:\type),\ismodal X$. 
+  We define $\modaltype:=\sm{X:\type}\ismodal X$. 
 \end{defn}
 
 \begin{thm}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
@@ -1677,7 +1677,7 @@ every $x:A$.
 A type $A$ is \modal-connected precisely when there is a term of type $\mathsf{isContr}\modal A$. Thus, a function $f:A\to B$ is
 $\modal$-connected if and only if $\hfib{f}b$ is \modal-connected for every $b:B$. 
 A dependent type $P:A\to\type$ is \modal-connected
-precisely when $\proj1:\sum(x:A),\ P(x)\to A$ is an \modal-connected function.
+precisely when $\proj1:\sm{x:A} P(x)\to A$ is an \modal-connected function.
 
 Every function is $(-2)$-connected and that a function is $(-1)$-connected precisely when it is surjective.
 
@@ -1767,8 +1767,8 @@ $\modal$-connected.
 \begin{proof}
 Let $c:C$. We have the equivalences
 \begin{align*}
-\modal\hfib{g\circ f}c& \simeq \modal \sum(w:\hfib{g}c),\ \hfib{f}{\proj1 w}\\
-& \simeq \modal\sum(w:\hfib{g}c),\ \modal\hfib{f}{\proj1 w}\\
+\modal\hfib{g\circ f}c& \simeq \modal \sm{w:\hfib{g}c}\hfib{f}{\proj1 w}\\
+& \simeq \modal\sm{w:\hfib{g}c}\modal\hfib{f}{\proj1 w}\\
 & \simeq \modal\hfib{g}c.
 \end{align*}
 It follows that $\modal\hfib{g}c$ is contractible if and only if $\modal\hfib{g\circ f}c$ is
@@ -1842,7 +1842,7 @@ defined by $\varphi(s):=s\circ f$ is an equivalence.
 \begin{cor}
 A function $f:A\to B$ is \modal-connected if and only if for every modal function $g:X\to B$, the function
 \begin{equation*}
-\varphi :\big(\sum(h:B\to X),\ g\circ h\sim \idfunc{B}\big)\to\big(\sum(k:A\to X),\ g\circ k\sim f\big)
+\varphi :\big(\sm{h:B\to X} g\circ h\sim \idfunc{B}\big)\to\big(\sm{k:A\to X} g\circ k\sim f\big)
 \end{equation*}
 defined by $\varphi(h,H):=\pairr{h\circ f,H\circ f}$ is an equivalence.
 \end{cor}
@@ -1876,7 +1876,7 @@ A useful variation to lemma \ref{lem:nconnected_postcomp} is:
 Let $f:A\to B$ be a function and $P:A\to\type$ and $Q:B\to\type$ be dependent types. Suppose that $g:\prd{a:A},\ P(a)\to Q(f(a))$
 is a fiberwise \modal-connected function, i.e.\ each $g(a)$ is assumed to be \modal-connected. Then the function
 \begin{equation*}
-\varphi\equiv\lambda\pairr{a,u}.\pairr{f(a),g(u)}:\big(\sum(a:A),\ P(a)\big)\to\big(\sum(b:B),\ Q(b)\big)
+\varphi\equiv\lambda\pairr{a,u}.\pairr{f(a),g(u)}:\big(\sm{a:A} P(a)\big)\to\big(\sm{b:B} Q(b)\big)
 \end{equation*}
 is \modal-connected if and only if $f$ is \modal-connected.
 \end{lem}
@@ -1884,9 +1884,9 @@ is \modal-connected if and only if $f$ is \modal-connected.
 \begin{proof}
 For $b:B$ and $v:Q(b)$ we have
 \begin{align*}
-\modal\hfib{\varphi}{\pairr{b,v}} & \simeq \modal\sum(a:A)(u:P(a))(p:f(a)= b),\ f(p)\cdot g(u)= v\\
-& \simeq \modal\sum(w:\hfib{f}b)(u:P(\proj1(w))),\ g(u)= f(p)^{-1}\cdot v\\
-& \simeq \modal\sum(w:\hfib{f}b),\ \modal\hfib{g(\proj1 w}{f(p)^{-1}\cdot v}\\
+\modal\hfib{\varphi}{\pairr{b,v}} & \simeq \modal\sm{a:A}(u:P(a))(p:f(a)= b),\ f(p)\cdot g(u)= v\\
+& \simeq \modal\sm{w:\hfib{f}b}(u:P(\proj1(w))),\ g(u)= f(p)^{-1}\cdot v\\
+& \simeq \modal\sm{w:\hfib{f}b}\modal\hfib{g(\proj1 w}{f(p)^{-1}\cdot v}\\
 & \simeq \modal\hfib{f}b
 \end{align*}
 where the transportations along $f(p)$ and $f(p)^{-1}$ are taken with respect to the dependent type $Q$. Therefore, both of them are
@@ -1912,7 +1912,7 @@ For any two types $A,B$ we have an equivalence $\modal (A\times B) \simeq
 \begin{defn}\label{def:modal_image}
 Let $f:A\to B$ be a function. The \emph{\modal-image} of $f$ is defined as
 \begin{equation*}
-\im_\modal(f):=\sum(b:B),\ \modal\hfib{f}b
+\im_\modal(f):=\sm{b:B} \modal\hfib{f}b
 \end{equation*}
 We also define $\mathsf{im}(f)$ for $\mathsf{im}_{-1}(f)$. 
 \end{defn}
@@ -1936,7 +1936,7 @@ of $X\simeq\mathsf{unit}$.
 
 Note that for any proposition $B$, there is an equivalence
 \begin{equation*}
-(\mathsf{im}(P)\to B)\simeq \big(\big(\sum(X:\type)(a:A),\ X\simeq P(a)\big)\to B\big) \simeq A\to B,
+(\mathsf{im}(P)\to B)\simeq \big(\big(\sm{X:\type}(a:A),\ X\simeq P(a)\big)\to B\big) \simeq A\to B,
 \end{equation*}
 so $\mathsf{im}(P)$ satisfies the same universal property as $\| A\|$. 
 Therefore they are equivalent.
@@ -1965,7 +1965,7 @@ Consequently, any function factors as an \modal-connected function followed by a
 \end{lem}
 
 \begin{proof}
-Note that $A\simeq\sum(b:B),\ \hfib{f}b$. The function $\tilde{f}$ is the function on total spaces induced by the fiberwise
+Note that $A\simeq\sm{b:B}\hfib{f}b$. The function $\tilde{f}$ is the function on total spaces induced by the fiberwise
 transformation
 \begin{equation*}
 \lambda b.\eta^{\hfib{f}b}:\prd{b:B} \hfib{f}b\to\modal\hfib{f}b.
@@ -2002,8 +2002,8 @@ $\pairr{g_2(a),H(a)^{-1}}$ for any $a:A$.
 \begin{proof}
 Let $b:B$. Then we have the following equivalences:
 \begin{align*}
-\hfib{h_1}b & \simeq \sum(w:\hfib{h_1}b,\ \modal \hfib{g_1}{\proj1 w}\\
-& \simeq \modal\sum(w:\hfib{h_1}b),\ \hfib{g_1}{\proj1 w}\\
+\hfib{h_1}b & \simeq \sm{w:\hfib{h_1}b} \modal \hfib{g_1}{\proj1 w}\\
+& \simeq \modal\sm{w:\hfib{h_1}b}\hfib{g_1}{\proj1 w}\\
 & \simeq \modal\hfib{h_1\circ g_1}b
 \end{align*}
 and likewise for $h_2$ and $g_2$. Here, the first equivalence holds because $g_1$ is assumed to be \modal-connected; the second equivalence
@@ -2035,7 +2035,7 @@ From propositions \ref{prop:to_image_is_connected} and \ref{prop:factor_equiv_fi
 \begin{thm}
 For each $f:A\to B$, the space $\mathsf{factorizations}_\modal(f)$ defined by
 \begin{equation*}
-\sum(X:\type)(g:A\to X)(h:X\to B),\ (h\circ g\sim f)\times\mathsf{conn}_\modal(g)\times\ismodal\ h.
+\sm{X:\type}(g:A\to X)(h:X\to B),\ (h\circ g\sim f)\times\mathsf{conn}_\modal(g)\times\ismodal\ h.
 \end{equation*}
 is contractible. By proposition \ref{prop:to_image_is_connected} we know that there is the term
 \begin{equation*}
@@ -2074,9 +2074,9 @@ where $\underline{e}$ is the function underlying the equivalence. We prove these
 \end{equation*}
 This induces an equivalence of total spaces, i.e.\ we have
 \begin{equation*}
-\sum{b:B} \hfib{h_1}b\simeq\sum(b:B),\ \hfib{h_2}b
+\sm{b:B} \hfib{h_1}b\simeq\sm{b:B}\hfib{h_2}b
 \end{equation*}
-Of course, we also have the familiar equivalences $X_1\simeq\sum(b:B),\ \hfib{h_1}b$ and $X_2\simeq\sum(b:B),\
+Of course, we also have the familiar equivalences $X_1\simeq\sm{b:B}\hfib{h_1}b$ and $X_2\simeq\sm{b:B}
 \hfib{h_2}b$. This gives us our equivalence $e(H):X_1\simeq X_2$. The reader may verify that the underlying function
 $\underline{e}(H)$ of $e(H)$ is defined by
 \begin{equation*}
@@ -2101,7 +2101,7 @@ $h_2(\zeta(a))=\idfunc{h_2(g_2(a))}$. Thus we have
 \begin{cor}
 A function $f:A\to B$ is \modal-connected if and only if there is a term of type
 \begin{equation*}
-\prd C\prd{g:\modalfunc(B\to C)} \mathsf{isContr}\big(\sum(h:\modalfunc(B\to C)),\ \underline{h}\circ
+\prd C\prd{g:\modalfunc(B\to C)} \mathsf{isContr}\big(\sm{h:\modalfunc(B\to C)}\underline{h}\circ
 f\sim\underline{g}\circ f\big).
 \end{equation*}
 \end{cor}
@@ -2114,41 +2114,41 @@ We will derive
 the principle of unique choice from the following more general discussion in corollary \ref{cor:auc}.
 
 \begin{defn}
-Suppose $P:A\to\type$ is a dependent type over a type $A$. We write $\{A\mid P\}\defeq\sum A\|P\|$ and define:
+Suppose $P:A\to\type$ is a dependent type over a type $A$. We write $\{A\mid P\}\defeq\sm{A}{\|P\|}$ and define:
 \begin{align*}
-\existsmodal(x:A),\ P(x) & \equiv \modal\sum A,P\\
+\existsmodal(x:A),\ P(x) & \equiv \modal\sm{A}P\\
 \existsmodalunique(P) & \equiv  (\existsmodal(x:A),\ P(x))\times\ismodal(\{A\mid P\}).
 \end{align*}
 \end{defn}
 
 \begin{lem}\label{lem:modal_Sigma}
- Suppose that $A$ is modal and for each $a:A$, $B a$ is modal. Then $\sum A B$ is modal.
+ Suppose that $A$ is modal and for each $a:A$, $B a$ is modal. Then $\sm{A}B$ is modal.
 \end{lem}
 \begin{proof}
-We first define a map $\modal \sum A B\to \sum A B$ and then show that it is inverse to $\eta$. Consider $\hat{\proj1}:\modal \sum A B
-\to \modal A$. Because $A$ is modal, this gives us an element $a:A$. Combining this with $\hat{\proj2^a}:\modal \sum A B \to \modal (B
-a)$ and the modality of $B a$, we obtain an element of $\sum A B$. It is easy to check that this is in fact an inverse.
+We first define a map $\modal \sm{A}B\to \sm{A}B$ and then show that it is inverse to $\eta$. Consider $\hat{\proj1}:\modal \sm{A}B
+\to \modal A$. Because $A$ is modal, this gives us an element $a:A$. Combining this with $\hat{\proj2^a}:\modal \sm{A}B \to \modal (B
+a)$ and the modality of $B a$, we obtain an element of $\sm{A}B$. It is easy to check that this is in fact an inverse.
 \end{proof}
 
 \begin{lem}\label{lem:hlevel_sum_destructed}
-Let $P:A\to\modaltype$. If $\ismodal(\{A\mid P\})$, then the total space $\sum(x:A),\ P(x)$ is modal. 
+Let $P:A\to\modaltype$. If $\ismodal(\{A\mid P\})$, then the total space $\sm{x:A}{P(x)}$ is modal. 
 \end{lem}
 \begin{proof}
 Define $\tilde{P}:\{A\mid P\}\to \type$ by $\tilde{P}(a;p)\defeq P(a)$.
-Then $\sum A P\simeq \sum \{A\mid P\} \tilde{P}$. The latter is a sum of modal types and hence itself modal by lemma~\ref{lem:modal_Sigma}.
+Then $\sm{A}P\simeq \sm{\{A\mid P\}}{\tilde{P}}$. The latter is a sum of modal types and hence itself modal by lemma~\ref{lem:modal_Sigma}.
 \end{proof}
 
 \begin{lem}[Iota]\label{lem:iota}
 For every dependent type $P:A\to\modaltype$, there is a function
 \begin{equation*}
-\exists!_\modal(P)\to\sum(x:A),\ P(x).
+\exists!_\modal(P)\to\sm{x:A}{P(x)}.
 \end{equation*}
 \end{lem}
 
 \begin{proof}
 Since $\ismodal(\{A\mid P\})$, by lemma \ref{lem:hlevel_sum_destructed}, 
-it follows that $\sum(x:A),\ P(x)$ is modal, so there is
-an equivalence $\existsmodal(x:A),\ P(x)\simeq\sum(x:A),\ P(x)$.
+it follows that $\sm{x:A}{P(x)}$ is modal, so there is
+an equivalence $\existsmodal(x:A),\ P(x)\simeq\sm{x:A}{P(x)}$.
 \end{proof}
 
 \begin{thm}[The principle of modal choice]
@@ -2160,7 +2160,7 @@ Let $P:X\to\type$ and $R:\prd{x:X}(P(x)\to\modaltype)$. Then there is a function
 
 \begin{proof}
 Suppose that $\prd{x:X} \existsmodalunique(R(x))$. By lemma \ref{lem:iota}, 
-we can find a term of type $\sum(u:P(x)),\ R(x,u)$
+we can find a term of type $\sm{u:P(x)}{R(x,u)}$
 for every $x:X$. The statement now follows from the usual principle of choice.
 \end{proof}
 
@@ -2176,7 +2176,7 @@ lemma. In order to prove this, we will use that there is an equivalence
 \mathsf{isprop}(P)\simeq \prd{x,y:A} P(x)\to P(y)\to\mathsf{isContr}(x= y)
 \end{equation*}
 This is not hard to verify, and a proof relies on the fact that $\pairr{x,u}=\pairr{x^\prime,u^\prime}$ is equivalent to the type
-$x= x^\prime$ for any two terms $\pairr{x,u},\pairr{x^\prime,u^\prime}:\sum(x:A),\ \|P(x)\|$.
+$x= x^\prime$ for any two terms $\pairr{x,u},\pairr{x^\prime,u^\prime}:\sm{x:A}{\|P(x)\|}$.
 
 % The following lemma will be used later on in the proof that images are strict coequalizers, see
 % proposition\ref{prop:images_are_coequalizers}.
@@ -2217,7 +2217,7 @@ commutativity of the diagram
 \end{equation*}
 Therefore, the assertion would follow if there is a function of type
 \begin{equation*}
-\mathsf{atMostOne}(P)\to\sum(H^\prime:\mathsf{atMostOne}(P))\prd{x:X}(u:P(x)),\ H^\prime(x,x,u,u)=\idfunc{x}.
+\mathsf{atMostOne}(P)\to\sm{H^\prime:\mathsf{atMostOne}(P)}{\prd{x:X}{u:P(x)}}H^\prime(x,x,u,u)=\idfunc{x}.
 \end{equation*}
 This is easy, since we can define the function $H^\prime:\prd{x,y:X} P(x)\to P(y)\to(x= y)$ by
 \begin{equation*}
@@ -2228,7 +2228,7 @@ H^\prime(x,y,u,v)\equiv H(x,y,u,v)\bullet H(x,x,u,u)^{-1}.
 \begin{defn}
 Suppose $P:A\to\type$ is a dependent type over $A$. We define
 \begin{equation*}
-\exists!(x:A),\ P(x)\equiv \|\sum(x:A),\ P(x)\|\times\mathsf{atMostOne}(P).
+\exists!(x:A),\ P(x)\equiv \|\sm{x:A}P(x)\|\times\mathsf{atMostOne}(P).
 \end{equation*}
 \end{defn}
 
@@ -2295,10 +2295,10 @@ is also a pullback. Consequently, images are stable under pullbacks.
 \begin{proof}
 Suppose first that the outer square is a pullback. Note that we have the equivalences
 \begin{align*}
-B\times_D\im_\modal(g) & \equiv\sum(b:B)(w:\im_\modal(g)),\ h(b)=\proj1 w\\
-& \simeq \sum(b:B)(d:D)(w:\modal\hfib{g}d),\ h(b)= d\\
-& \simeq \sum(b:B),\ \modal\hfib{g}{h(b)}.\\
-& \simeq \sum(b:B),\ \modal\hfib{f}b\\
+B\times_D\im_\modal(g) & \equiv\sm{b:B}(w:\im_\modal(g)),\ h(b)=\proj1 w\\
+& \simeq \sm{b:B}(d:D)(w:\modal\hfib{g}d),\ h(b)= d\\
+& \simeq \sm{b:B} \modal\hfib{g}{h(b)}.\\
+& \simeq \sm{b:B} \modal\hfib{f}b\\
 & \equiv \im_\modal(f).
 \end{align*}
 In the last equivalence we have used lemma \ref{lem:hfiber_wrt_pullback}.
@@ -2306,10 +2306,10 @@ In the last equivalence we have used lemma \ref{lem:hfiber_wrt_pullback}.
 Now suppose that the bottom square is a pullback, of which we denote the top arrow by $\psi$. By the pasting lemma for pullbacks, it
 suffices to show that the top square is a pullback. We have the equivalences
 \begin{align*}
-\im(f)\times_{\im(g)} C & \equiv \sum(w:\im(f))(c:C),\ \psi(w)=\tilde{g}_n(c)\\
-& \simeq \sum(b:B)(w:\im(g))(p:h(b)=\proj1 w)(c:C),\ w=\tilde{g}_n(c)\\
-& \simeq \sum(b:B)(c:C),\ h(b)= g(c)\\
-& \simeq \sum(b:B),\ \hfib{f}b\\
+\im(f)\times_{\im(g)} C & \equiv \sm{w:\im(f)}(c:C),\ \psi(w)=\tilde{g}_n(c)\\
+& \simeq \sm{b:B}(w:\im(g))(p:h(b)=\proj1 w)(c:C),\ w=\tilde{g}_n(c)\\
+& \simeq \sm{b:B}(c:C),\ h(b)= g(c)\\
+& \simeq \sm{b:B}\hfib{f}b\\
 & \simeq A.
 \end{align*}
 \end{proof}

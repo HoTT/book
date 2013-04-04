@@ -1275,7 +1275,7 @@ TODO: Example theorems: mean-value theorem.
 \newcommand{\LL}{\mathcal{L}}
 \newcommand{\RR}{\mathcal{R}}
 
-In this section we consider another example of a higher inductive-inductive type, which draws together many of our threads: Conway's field \NO of \emph{surreal numbers}.
+In this section we consider another example of a higher inductive-inductive type, which draws together many of our threads: Conway's field \NO of \emph{surreal numbers}~\cite{conway:onag}.
 The surreal numbers are the natural common generalization of the (Dedekind) real numbers (\autoref{sec:dedekind-reals}) and the ordinal numbers (\autoref{sec:ordinals}).
 Conway, working in classical mathematics with LEM and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
 This obviously looks like an inductive definition, but there are three issues with regarding it as such.
@@ -1336,15 +1336,13 @@ Of course, we can solve this problem in the same way we did for Cauchy reals, by
 
 \noindent
 We compare this with Conway's definitions:
-{\scriptsize
-  \begin{itemize}
-  \item[-] If $L,R$ are any two sets of numbers, and no member of $L$ is $\ge$ any member of $R$, then there is a number $\surr L R$.
-    All numbers are constructed in this way.
-  \item[-] $x\ge y$ iff (no $x^R\le y$ and $x\le$ no $y^L$).
-  \item[-] $x=y$ iff ($x \ge y$ and $y\ge x$).
-  \item[-] $x>y$ iff ($x\ge y$ and $y\not\ge x$).
-  \end{itemize}
-}\noindent
+\begin{itemize}\footnotesize
+\item[-] If $L,R$ are any two sets of numbers, and no member of $L$ is $\ge$ any member of $R$, then there is a number $\surr L R$.
+  All numbers are constructed in this way.
+\item[-] $x\ge y$ iff (no $x^R\le y$ and $x\le$ no $y^L$).
+\item[-] $x=y$ iff ($x \ge y$ and $y\ge x$).
+\item[-] $x>y$ iff ($x\ge y$ and $y\not\ge x$).
+\end{itemize}
 The inclusion of $x\ge y$ in the definition of $x>y$ is unnecessary if all objects are [surreal] numbers rather than ``games''.
 Thus, Conway's $<$ is just the negation of his $\le$, so that his condition for $\surr L R$ to be a surreal is the same as ours.
 Negating Conway's $\le$ and canceling double negations, we arrive at our definition of $<$, and we can then reformulate his $\le$ in terms of $<$ without negations.
@@ -1456,8 +1454,7 @@ Taking $B$ and $C$ to be constant at \unit, we have \emph{\NO-induction}, which 
 \item Given $P:\NO\to\prop$, if $P(x)$ holds whenever $x$ is a surreal number defined by a cut such that $P(x^L)$ and $P(x^R)$ hold for all $L$ and $R$, then $P(x)$ holds for all $x\NO$.
 \end{itemize}
 This should be compared with Conway's remark:
-\begin{quote}
-  \scriptsize
+\begin{quote}\footnotesize
   In general when we wish to establish a proposition $P(x)$ for all numbers $x$, we will prove it inductively by deducing $P(x)$ from the truth of all the propositions $P(x^L)$ and $P(x^R)$.
   We regard the phrase ``all numbers are constructed in this way'' as justifying the legitimacy of this procedure.
 \end{quote}
@@ -1746,9 +1743,56 @@ Now we verify that this definition preserves inequality:
 \begin{itemize}
 \item If $y\le z$ arises from $y^L<z$ and $y<z^R$ for all $L$ and $R$, then the inner inductive hypothesis gives $x+y^L<x+z$ and $x+y < x+z^R$, while the outer inductive hypotheses give $x^L+y < x^L+z<x+z$ and $x+y<x^R+ y < x^R+z$.
   Thus, $x+y \le x+z$.
-\item First $y<z$\dots
-\item Second $y<z$\dots
+\item If $y<z$ arises from an $L_0$ with $y\le z^{L_0}$, then inductively $x+y \le x+z^{L_0}$, hence $x+y<x+z$ since $x+z^{L_0}$ is a right option of $x+z$.
+\item Similarly, if $y<z$ arises from $y^{R_0}\le z$, then $x+y<x+z$ since $x+y^{R_0}\le x+z$.
 \end{itemize}
+This completes the inner induction.
+For the outer recursion, we have to verify that $+$ preserves inequality on the left as well.
+After an $\NO$-induction, this proceeds in exactly the same way.
+
+\medskip
+
+In the Appendix to Part Zero of~\cite{conway:onag}, Conway discusses how the surreal numbers may be formalized in ZFC set theory: by iterating along the ordinals and passing to sets of representatives of lowest rank for each equivalence class, or by representing numbers with ``sign-expansions''.
+He then remarks that
+\begin{quote}\footnotesize
+  The curiously complicated nature of these constructions tells us more about the nature of formalizations within ZF than about our system of numbers\dots
+\end{quote}
+and goes on to advocate for a general theory of ``permissible kinds of construction'' which should include
+\begin{enumerate}\footnotesize
+\item Objects may be created from earlier objects in any reasonably constructive fashion.\label{item:conway1}
+\item Equality among the created objects can be any desired equivalence relation.\label{item:conway2}
+\end{enumerate}
+\noindent
+Condition~\ref{item:conway1} can be naturally read as justifying general principles of \emph{inductive definition}, such as those presented in \autoref{sec:strictly-positive,sec:generalizations}.
+In particular, the condition of strict positivity for constructors can be regarded as a formalization of what it means to be ``reasonably constructive''.
+Condition~\ref{item:conway2} then suggests we should extend this to \emph{higher} inductive definitions of all sorts, in which we can impose path-constructors making objects equal in any reasonable way.
+For instance, in the next paragraph Conway says:
+\begin{quote}\footnotesize
+  \dots we could also, for instance, freely create a new object $(x,y)$ and call it the ordered pair of $x$ and $y$.
+  We could also create an ordered pair $[x,y]$ different from $(x,y)$ but co-existing with it\dots
+  If instead we wanted to make $(x,y)$ into an unordered pair, we could define equality by means of the equivalence relation $(x,y)=(z,t)$ if and only if $x=z,y=t$ \emph{or} $x=t,y=z$.
+\end{quote}
+The freedom to introduce new objects with new names, generated by certain forms of constructor, is precisely what we have in the theory of inductive definitions.
+Just as with our two copies of the natural numbers $\nat$ and $\nat'$ in \autoref{sec:appetizer-univalence}, if we wrote down an identical definition to the cartesian product type $A\times B$, we would obtain have a distinct product type $A\times' B$ whose canonical elements we could freely write as $[x,y]$.
+And we could make one of these a type of unordered pairs by adding a suitable path-constructor. % (and perhaps 0-truncating).
+
+To be sure, Conway's point was not to complain about ZF in particular, but to argue against all foundational theories at once:
+\begin{quote}\footnotesize
+  \dots this proposal is not of any particular theory as an alternative to ZF\dots
+  What is proposed is instead that we give ourselves the freedom to create arbitrary mathematical theories of these kinds, but prove a metatheorem which ensures once and for all that any such theory could be formalised in terms of any of the standard foundational theories.
+\end{quote}
+One might respond that, in fact, Univalent Foundations is not one of the ``standard foundational theories'' which Conway had in mind, but rather the \emph{metatheory} in which we may express our ability to create new theories, and about which we may prove Conway's metatheorem.
+For instance, the surreal numbers are one of the ``mathematical theories'' Conway has in mind, and we have seen that they can be constructed and justified inside UF.
+Similarly, Conway remarked earlier that
+\begin{quote}\footnotesize
+  \dots set theory would be such a theory, sets being constructed from earlier ones by processes corresponding to the usual axioms, and the equality relation being that of having the same members.
+\end{quote}
+This description closely matches the higher-inductive construction of the cumulative hierarchy of set theory in \autoref{subsec:cumulative-hierarchy}.
+Conway's metatheorem would then correspond to the fact we have referred to several times that we can construct a model of UF inside ZFC (which it is outside the scope of this book to discuss further).
+
+However, UF is so rich and powerful in its own right that it would be foolish to relegate it to only a metatheory in which to construct set-like theories.
+We have seen that even at the level of sets (0-types), the higher inductive types in UF yield such things as direct constructions of objects by their universal properties (\autoref{sec:free-algebras}), highly filtered ordinals without choice (\autoref{sec:ordinals}), and a constructive theory of Cauchy completion (\autoref{sec:cauchy-reals}).
+But most importantly, the potential to model homotopy theory and category theory directly in the foundational system (\autoref{cha:homotopy,cha:category-theory}) gives UF an advantage which no set-theoretic foundation can match.
 
 
 \section*{Notes}
@@ -1854,6 +1898,10 @@ Now we verify that this definition preserves inequality:
 \begin{ex} \label{ex:reals-apart-zero-divisors}
   Verify that the following ``no zero divisors'' property holds for the real numbers:
   $x y \apart 0 \Leftrightarrow x \apart 0 \land y \apart 0$.
+\end{ex}
+
+\begin{ex}
+  See how much of Conway's theory of surreal numbers you can develop using the inductive-inductive definition in \autoref{sec:surreals}.
 \end{ex}
 
 %%% Local Variables: 

@@ -1278,17 +1278,22 @@ TODO: Example theorems: mean-value theorem.
 In this section we consider another example of a higher inductive-inductive type, which draws together many of our threads: Conway's field \NO of \emph{surreal numbers}.
 The surreal numbers are the natural common generalization of the (Dedekind) real numbers (\autoref{sec:dedekind-reals}) and the ordinal numbers (\autoref{sec:ordinals}).
 Conway, working in classical mathematics with LEM and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
-This obviously looks like an inductive definition, but there are three issues.
+This obviously looks like an inductive definition, but there are three issues with regarding it as such.
 
 Firstly, the definition requires the relation of (strict) inequality between surreals, so that relation must be defined simultaneously with the type \NO of surreals.
-As with the relation $\sim$ for the Cauchy reals, this could \emph{a priori} be either inductive-inductive or inductive-recursive; we will choose to make it inductive-inductive for the same reasons we made that choice for $\sim$.
+(Conway avoids this issue by first defining \emph{games}, which are like surreals but omit the compatibility condition on $L$ and $R$.)
+As with the relation $\sim$ for the Cauchy reals, this simultaneous definition could \emph{a priori} be either inductive-inductive or inductive-recursive.
+We will choose to make it inductive-inductive, for the same reasons we made that choice for $\sim$.
+
 Moreover, we will define strict inequality $<$ and non-strict inequality $\le$ for surreals separately (and mutually inductively).
 Conway defines $<$ in terms of $\le$, in a way which is sensible classically but not constructively.
+Furthermore, a negative definition of $<$ would make it unacceptable as a hypothesis of the constructor of a higher inductive type (see \autoref{sec:strictly-positive}).
 
-Secondly, the naive notion of a ``set of surreal numbers'' as a predicate $\NO\to\prop$ is not positive (see \autoref{sec:strictly-positive}), hence cannot be used as input to an inductive constructor.
+Secondly, Conway says that $L$ and $R$ in $\surr L R$ should be ``sets of surreal numbers'', but the naive meaning of this as a predicate $\NO\to\prop$ is not positive, hence cannot be used as input to an inductive constructor.
 However, this would not be a good type-theoretic translation of what Conway means anyway, because in set theory the surreal numbers form a proper class, whereas the sets $L$ and $R$ are true (small) sets, not arbitrary subclasses of \NO.
 In type theory, this means that \NO will be defined relative to a universe \UU, but will itself belong to the next higher universe $\UU'$, like the sets \ord and \card of ordinals and cardinals, the cumulative hierarchy $V$, or even the Dedekind reals in the absence of propositional resizing.
-We will then require the ``sets'' $L$ and $R$ of surreals to be \UU-small, and so (as we did for $V$) it is natural to represent them by \emph{families} of surreals indexed by some \UU-small type.
+We will then require the ``sets'' $L$ and $R$ of surreals to be \UU-small, and so it is natural to represent them by \emph{families} of surreals indexed by some \UU-small type.
+(This is all exactly the same as what we did with the cumulative hierarchy in \S\ref{subsec:cumulative-hierarchy}.)
 That is, the constructor of surreals will have type
 \[ \prd{\LL,\RR:\UU} (\LL\to\NO) \to (\RR\to \NO) \to (\text{some condition}) \to \NO \]
 which is indeed strictly positive.
@@ -1303,16 +1308,17 @@ Of course, we can solve this problem in the same way we did for Cauchy reals, by
   The type \NO of \textbf{surreal numbers}, along with the relations $\mathord<:\NO\to\NO\to\type$ and $\mathord\le:\NO\to\NO\to\type$, are defined higher inductive-inductively as follows.
   The type \NO has the following constructors.
   \begin{itemize}
-  \item For any $\LL,\RR:\UU$ and functions $\LL\to \NO$ and $\RR\to \NO$, whose values we write as $x^L$ and $x^R$ for $L\in\LL$ and $R\in\RR$ respectively, if $\fall{L:\LL}{R:\RR} x^L<x^R$, then there is a surreal number.
+  \item For any $\LL,\RR:\UU$ and functions $\LL\to \NO$ and $\RR\to \NO$, whose values we write as $x^L$ and $x^R$ for $L\in\LL$ and $R\in\RR$ respectively, if $\fall{L:\LL}{R:\RR} x^L<x^R$, then there is a surreal number $x$.
   \item For any $x,y:\NO$ such that $x\le y$ and $y\le x$, we have $x=y$.
   \end{itemize}
-  We will refer to the inputs of the point-constructor as a \emph{cut}.
-  If $x$ is a the surreal number constructed from a cut, then the notation $x^L$ will implicitly assume $L:\LL$, and similarly $x^R$ will assume $R:\RR$.
+  We will refer to the inputs of the first constructor as a \emph{cut}.
+  If $x$ is the surreal number constructed from a cut, then the notation $x^L$ will implicitly assume $L:\LL$, and similarly $x^R$ will assume $R:\RR$.
   In this way we can usually avoid naming the indexing types $\LL$ and $\RR$, which is convenient when there are many different cuts under discussion.
-  One calls $x^L$ a \emph{left option} of $x$ and $x^R$ a \emph{right option}.
+  Following Conway, we call $x^L$ a \emph{left option} of $x$ and $x^R$ a \emph{right option}.
 
-  Note that unlike for Conway, if $x$ is an arbitrary surreal, we cannot speak of its left options or right options unless we additionally know that it is defined by the point-constructor from a \emph{specific} cut.
-  Thus in what follows we will say, for instance, ``given a cut defining a surreal number $x$'' as opposed to ``given a surreal number $x$''.
+  The path-constructor implies that different cuts can define the same surreal number.
+  Thus, it does not make sense to speak of the left or right options of an arbitrary surreal number $x$, unless we also know that $x$ is defined by a particular cut.
+  Thus in what follows we will say, for instance, ``given a cut defining a surreal number $x$'' in contrast to ``given a surreal number $x$''.
 
   The relation $\le$ has the following constructors.
   \begin{itemize}
@@ -1328,13 +1334,28 @@ Of course, we can solve this problem in the same way we did for Cauchy reals, by
   \end{itemize}
 \end{defn}
 
+\noindent
+We compare this with Conway's definitions:
+{\scriptsize
+  \begin{itemize}
+  \item[-] If $L,R$ are any two sets of numbers, and no member of $L$ is $\ge$ any member of $R$, then there is a number $\surr L R$.
+    All numbers are constructed in this way.
+  \item[-] $x\ge y$ iff (no $x^R\le y$ and $x\le$ no $y^L$).
+  \item[-] $x=y$ iff ($x \ge y$ and $y\ge x$).
+  \item[-] $x>y$ iff ($x\ge y$ and $y\not\ge x$).
+  \end{itemize}
+}\noindent
+The inclusion of $x\ge y$ in the definition of $x>y$ is unnecessary if all objects are [surreal] numbers rather than ``games''.
+Thus, Conway's $<$ is just the negation of his $\le$, so that his condition for $\surr L R$ to be a surreal is the same as ours.
+Negating Conway's $\le$ and canceling double negations, we arrive at our definition of $<$, and we can then reformulate his $\le$ in terms of $<$ without negations.
+
 We can immediately populate $\NO$ with many surreal numbers.
-Following Conway, we write
+Like Conway, we write
 \[\surr{x,y,z,\dots}{u,v,w,\dots}\]
 for the surreal number defined by a cut where $\LL\to\NO$ and $\RR\to\NO$ are families described by $x,y,z,\dots$ and $u,v,w,\dots$.
 Of course, if $\LL$ or $\RR$ are $\emptyt$, we leave the corresponding part of the notation empty.
 There is an unfortunate clash with the standard notation $\setof{x:A | P(x)}$ for subsets, but we will not use the latter in this section.
-\begin{enumerate}
+\begin{itemize}
 \item We define $\iota_{\nat}:\nat\to\NO$ recursively by
   \begin{align*}
     \iota_{\nat}(0) &\defeq \surr{}{}\\
@@ -1344,13 +1365,61 @@ There is an unfortunate clash with the standard notation $\setof{x:A | P(x)}$ fo
   Similarly, $\iota_\nat(\suc(n))$ is defined by $\unit\to\NO$ (picking out $\iota_\nat(n)$) and $\emptyt\to\NO$.
 \item Similarly, we define $\iota_{\Z}:\Z\to\NO$ using the sign-case recursion principle:
   \begin{alignat*}{2}
-    \iota_{\nat}(0) &\defeq \surr{}{}\\
-    \iota_\nat(n+1) &\defeq \surr{\iota_\nat(n)}{} &&\quad n\ge 0\\
-    \iota_\nat(n-1) &\defeq \surr{}{\iota_\nat(n)} &&\quad n\le 0
+    \iota_{\Z}(0) &\defeq \surr{}{}\\
+    \iota_\Z(n+1) &\defeq \surr{\iota_\Z(n)}{} &&\quad n\ge 0\\
+    \iota_\Z(n-1) &\defeq \surr{}{\iota_\Z(n)} &&\quad n\le 0
   \end{alignat*}
-\end{enumerate}
+\item By a \emph{dyadic rational} we mean a pair $(a,n)$ where $a:\Z$ and $n:\nat$, and such that if $n>0$ then $a$ is odd.
+  We will write it as $a/2^n$, and identify it with the corresponding rational number.
+  If $\Q_D$ denotes the set of dyadic rationals, we define $\iota_{\Q_D}:\Q_D\to\NO$ by induction on $n$:
+  \begin{align*}
+    \iota_{\Q_D}(a/2^0) &\defeq \iota_\Z(a)\\
+    \iota_{\Q_D}(a/2^n) &\defeq \surr{a/2^n - 1/2^n}{a/2^n + 1/2^n} \quad n>0
+  \end{align*}
+  Here we use the fact that if $n>0$ and $a$ is odd, then $a/2^n \pm 1/2^n$ is a dyadic rational with a larger denominator than $a/2^n$.
+\item We define $\iota_{\RD}:\RD\to\NO$, where $\RD$ is (any version of) the Dedekind reals from \S\ref{sec:dedekind-reals}, by
+  \begin{align*}
+    \iota_{\RD}(x) &\defeq
+    \surr{q\in\Q_D \text{ such that } q<x}{q\in\Q_D \text{ such that } x<q}
+  \end{align*}
+  Unlike in the previous cases, it is not obvious that this extends $\iota_{\Q_D}$ when we regard dyadic rationals as Dedekind reals.
+  This follows from the simplicity theorem, below.
+\item Recall the type \ord of \emph{ordinals} from \S\ref{sec:ordinals}, which is well-ordered by the relation $<$, where $A<B$ means that $A = \ordsl B b$ for some $b:B$.
+  We define $\iota_{\ord}:\ord\to\NO$ by well-founded recursion (\autoref{thm:wfrec}) on $\ord$:
+  \begin{align*}
+    \iota_{\ord}(A) &\defeq
+    \surr{\iota_\ord(\ordsl A a) \text{ for all } a:A}{}
+  \end{align*}
+  It will also follow from the simplicity theorem that $\iota_\ord$ restricted to finite ordinals agrees with $\iota_\nat$.
+\item A few more interesting examples taken from Conway:
+  \begin{align*}
+    \omega &\defeq \surr{0,1,2,3,\dots}{} \qquad\text{(also an ordinal)}\\
+    -\omega &\defeq \surr{}{\dots,-3,-2,-1,0}\\
+    1/\omega &\defeq \textstyle\surr{0}{1,\frac12,\frac14,\frac18,\dots}\\
+    \omega-1 &\defeq \surr{0,1,2,3,\dots}{\omega}\\
+    \omega/2 &\defeq \surr{0,1,2,3,\dots}{\dots,\omega-2,\omega-1,\omega}.
+  \end{align*}
+\end{itemize}
 
-In order to say anything useful about surreal numbers, we need their induction principle.
+In identifying surreal numbers presented by different cuts, the following simple observation is useful.
+
+\begin{thm}[Conway's Simplicity Theorem]\label{thm:NO-simplicity}
+  Suppose $x$ and $z$ are surreal numbers defined by cuts, and that the following hold.
+  \begin{itemize}
+  \item $x^L < z < x^R$ for all $L$ and $R$.
+  \item For every left option $z^L$ of $z$, there exists a left option $x^{L'}$ with $z^L\le x^{L'}$.
+  \item For every right option $z^R$ of $z$, there exists a right option $x^{R'}$ with $x^{R'}\le z^R$.
+  \end{itemize}
+  Then $x=z$.
+\end{thm}
+\begin{proof}
+  Applying the path-constructor of $\NO$, we must show $x\le z$ and $z\le x$.
+  The first entails showing $x^L<z$ for all $L$, which we assumed, and $x<z^R$ for all $R$.
+  But by assumption, for any $z^R$ there is an $x^{R'}$ with $x^{R'}\le z^R$ hence $x<z^R$ as desired.
+  Thus $x\le z$; the proof of $z\le x$ is symmetric.
+\end{proof}
+
+In order to say much more about surreal numbers, however, we need their induction principle.
 The mutual induction principle for $(\NO,\le,<)$ applies to three families of types:
 \begin{align*}
   A &: \NO\to\type\\
@@ -1374,7 +1443,11 @@ It requires the following hypotheses:
 \item Given cuts defining two surreal numbers $x$ and $y$, dependent cuts $a$ over $x$ and $b$ over $y$, and an ${R_0}$ such that $x^{R_0}\le y$ and $B(x^{R_0},y,a^{R_0},b,\blank)$, we have $C(x,y,a,b,\blank)$.
 \item $C$ is a family of mere propositions.
 \end{itemize}
-Under these hypotheses we deduce a function $f:\prd{x:\NO} A(x)$ such that $(x\le y) \to B(x,y,f(x),f(y),\blank)$ and $(x< y) \to C(x,y,f(x),f(y),\blank)$.
+Under these hypotheses we deduce a function $f:\prd{x:\NO} A(x)$ such that
+\begin{align*}
+  (x\le y) &\to B(x,y,f(x),f(y),\blank)\\
+  (x< y) &\to C(x,y,f(x),f(y),\blank).
+\end{align*}
 Its computation rule on the point-constructor can be written as $f(x) \jdeq f_{f[x]}$, where $x$ is a surreal number defined by a cut, and $f[x]$ denotes the dependent cut over $x$ defined by applying $f$ (and using the fact that $f$ takes $<$ to $C$).
 
 As with the Cauchy reals, we have special cases resulting from trivializing some of $A$, $B$, and $C$.
@@ -1382,14 +1455,20 @@ Taking $B$ and $C$ to be constant at \unit, we have \emph{\NO-induction}, which 
 \begin{itemize}
 \item Given $P:\NO\to\prop$, if $P(x)$ holds whenever $x$ is a surreal number defined by a cut such that $P(x^L)$ and $P(x^R)$ hold for all $L$ and $R$, then $P(x)$ holds for all $x\NO$.
 \end{itemize}
-With $\NO$-induction, we can prove:
+This should be compared with Conway's remark:
+\begin{quote}
+  \scriptsize
+  In general when we wish to establish a proposition $P(x)$ for all numbers $x$, we will prove it inductively by deducing $P(x)$ from the truth of all the propositions $P(x^L)$ and $P(x^R)$.
+  We regard the phrase ``all numbers are constructed in this way'' as justifying the legitimacy of this procedure.
+\end{quote}
+With $\NO$-induction, we can prove
 
-\begin{lem}\label{thm:NO-refl-opt}\ 
+\begin{thm}[Conway's Theorem 0]\label{thm:NO-refl-opt}\ 
   \begin{enumerate}
   \item For any $x:\NO$, we have $x\le x$.\label{item:NO-le-refl}
   \item For any $x:\NO$ defined by a cut, we have $x^L <x$ and $x<x^R$ for all $L$ and $R$.\label{item:NO-lt-opt}
   \end{enumerate}
-\end{lem}
+\end{thm}
 \begin{proof}
   Note first that if $x\le x$, then whenever $x$ occurs as a left option of some cut $y$, we have $x<y$ by the first constructor of $<$, and similarly whenever $x$ occurs as a right option of a cut $y$, we have $y<x$ by the second constructor of $<$.
   In particular,~\ref{item:NO-le-refl}$\Rightarrow$\ref{item:NO-lt-opt}.
@@ -1399,23 +1478,25 @@ With $\NO$-induction, we can prove:
   But by our observation above, these assumptions imply $x^L<x$ and $x<x^R$ for all $L$ and $R$, yielding $x\le x$ by the constructor of $\le$.
 \end{proof}
 
-\begin{lem}\label{thm:NO-set}
+\begin{cor}\label{thm:NO-set}
   \NO is a 0-type.
 %  (As with $V$, it might be confusing to say that it is a ``set''.)
-\end{lem}
+\end{cor}
 \begin{proof}
   The mere relation $R(x,y)\defeq (x\le y) \land (y\le x)$ implies identity by the path-constructor of $\NO$, and contains the diagonal by \autoref{thm:NO-refl-opt}\ref{item:NO-le-refl}.
   Thus, \autoref{thm:h-set-refrel-in-paths-sets} applies.
 \end{proof}
 
-Of course, we also have:
+By contrast, Conway's Theorem 1 (transitivity of $\le$) is somewhat harder to establish with our definition; see \autoref{thm:NO-unstrict-transitive}.
 
-\begin{lem}
-  Every surreal number is merely defined by a cut.
-\end{lem}
-\begin{proof}
-  Obvious by $\NO$-induction.
-\end{proof}
+% Of course, we also have:
+
+% \begin{lem}
+%   Every surreal number is merely defined by a cut.
+% \end{lem}
+% \begin{proof}
+%   Obvious by $\NO$-induction.
+% \end{proof}
 
 
 \newcommand{\ble}{\trianglelefteqslant}
@@ -1423,22 +1504,23 @@ Of course, we also have:
 \newcommand{\bble}{\sqsubseteq}
 \newcommand{\bblt}{\sqsubset}
 
-We will also care about the joint recursion principle, \emph{$(\NO,\le,<)$-recursion}.
-This applies to an output type $A$, equipped with two relations $\mathord\ble:A\to A\to\prop$ and $\mathord\blt:A\to A\to\prop$, and allows us to define $f:\NO\to A$ by doing the following.
-\begin{itemize}
-\item For any $x$ defined by a cut, assuming $f(x^L)$ and $f(x^R)$ to be defined such that $f(x^L)\blt f(x^R)$ for all $L$ and $R$, we must define $f(x)$.
-\item $\ble$ must be \emph{antisymmetric}: if $a\ble b$ and $b\ble a$, then $a=b$.
+We will also need the joint recursion principle, \emph{$(\NO,\le,<)$-recursion}, which it is convenient to state as follows.
+Suppose $A$ is a type equipped with relations $\mathord\ble:A\to A\to\prop$ and $\mathord\blt:A\to A\to\prop$.
+Then we can define $f:\NO\to A$ by doing the following.
+\begin{enumerate}
+\item For any $x$ defined by a cut, assuming $f(x^L)$ and $f(x^R)$ to be defined such that $f(x^L)\blt f(x^R)$ for all $L$ and $R$, we must define $f(x)$.  (We call this the \emph{primary clause} of the recursion.)\label{item:NO-rec-primary}
+\item Prove that $\ble$ is \emph{antisymmetric}: if $a\ble b$ and $b\ble a$, then $a=b$.
 \item For $x,y$ defined by cuts such that $x^L<y$ for all $L$ and $x<y^R$ for all $R$, and assuming inductively that $f(x^L)\blt f(y)$ for all $L$, $f(x)\blt f(y^R)$ for all $R$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\ble f(y)$.
 \item For $x,y$ defined by cuts and an $L_0$ such that $x\le y^{L_0}$, and assuming inductively that $f(x)\ble f(y^{L_0})$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\blt f(y)$.
-\item For $x,y$ defined by cuts and an $R_0$ such that $x^{R_0}\le y$, and assuming inductively that $f(x^{R_0})\ble f(y)$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\blt f(y)$.
-\end{itemize}
+\item For $x,y$ defined by cuts and an $R_0$ such that $x^{R_0}\le y$, and assuming inductively that $f(x^{R_0})\ble f(y)$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\blt f(y)$.\label{item:NO-rec-last}
+\end{enumerate}
 The last three clauses can be more concisely described by saying we must prove that $f$ (as defined in the first clause) takes $\le$ to $\ble$ and $<$ to $\blt$.
 We will refer to these properties by saying that \emph{$f$ preserves inequalities}.
 Moreover, in proving that $f$ preserves inequalities, we may assume the particular instance of $\le$ or $<$ to be obtained from one of its constructors, and we may also use inductive hypotheses that $f$ preserves all inequalities appearing in the input to that constructor.
 
-Under these hypotheses, we obtain $f:\NO\to A$, which computes on cuts as specified by the first clause, and which preserves all inequalities:
+If we succeed at~\ref{item:NO-rec-primary}--\ref{item:NO-rec-last} above, then we obtain $f:\NO\to A$, which computes on cuts as specified by~\ref{item:NO-rec-primary}, and which preserves all inequalities:
 \[ \fall{x,y:\NO}\Big((x\le y) \to (f(x)\ble f(y))\Big) \land\Big((x< y) \to (f(x)\blt f(y))\Big).\]
-Like $(\RC,\sim)$-recursion, this recursion principle is essential for defining functions on $\NO$, since we cannot first define a function on ``pre-surreals'' and only later prove that it respects the notion of equality.
+Like $(\RC,\sim)$-recursion for the Cauchy reals, this recursion principle is essential for defining functions on $\NO$, since we cannot first define a function on ``pre-surreals'' and only later prove that it respects the notion of equality.
 
 \begin{eg}
   Let us define the \emph{negation} function $\NO\to\NO$.
@@ -1459,6 +1541,7 @@ Like $(\RC,\sim)$-recursion, this recursion principle is essential for defining 
 \end{eg}
 
 To do much more than this, however, we will need to characterize the relations $\le$ and $<$ more explicitly, as we did for the Cauchy reals in \autoref{thm:RC-sim-characterization}.
+Also as there, we will have to simultaneously prove a couple of essential properties of these relations, in order for the induction to go through.
 
 \begin{thm}\label{defn:No-codes}
   There are relations $\mathord\preceq:\NO\to\NO\to\prop$ and $\mathord\prec:\NO\to\NO\to\prop$ such that if $x$ and $y$ are surreals defined by cuts, then
@@ -1504,8 +1587,8 @@ To do much more than this, however, we will need to characterize the relations $
 \newcommand{\tltb}{\square\prec}
 \newcommand{\tlbname}{\square}
 \begin{proof}
-  We define $\preceq$ and $\prec$ by double $(\NO,\le,<)$-recursion on $x,y$.
-  For the first recursion, the codomain is the subset $A$ of $(\NO\to\prop)\times (\NO\to\prop)$ consisting of pairs of predicates of which one implies the other and which satisfy ``transitivity on the right'', i.e.~\eqref{eq:NO-codes-unstrict} and the right column of~\eqref{eq:NO-codes-transitivity} with $(x\preceq -)$ and $(x\prec -)$ replaced by the two given predicates.
+  We define $\preceq$ and $\prec$ by double $(\NO,\le,<)$-induction on $x,y$.
+  The first induction is a simple recursion, whose codomain is the subset $A$ of $(\NO\to\prop)\times (\NO\to\prop)$ consisting of pairs of predicates of which one implies the other and which satisfy ``transitivity on the right'', i.e.~\eqref{eq:NO-codes-unstrict} and the right column of~\eqref{eq:NO-codes-transitivity} with $(x\preceq -)$ and $(x\prec -)$ replaced by the two given predicates.
   As in the proof of \autoref{defn:RC-approx}, we regard these predicates as half of binary relations, writing them as $y\mapsto (\hle y)$ and $y\mapsto (\hlt y)$, with $\hlname$ denoting the pair of relations.
   % The precise definition of $A$ is
   % \begin{align*}
@@ -1543,18 +1626,19 @@ To do much more than this, however, we will need to characterize the relations $
     \fall{L} (\tle y)\to (x^L\prec y) \label{eq:NO-prec-IHL}\\
     \fall{R} (x^R \preceq y) \to (\tlt y) \label{eq:NO-prec-IHR}.
   \end{gather}
-  We equip $A'$ with the two relations defined for $\tlname:A'(y)$ and $\tlbname:A'(z)$ by
+  Using notation analogous to $\ble$ and $\blt$ for recursion, we equip $A'$ with the two relations defined for $\tlname:A'(y)$ and $\tlbname:A'(z)$ by
   \begin{align*}
     (\tlname \bble \tlbname) &\defeq
     \Big((\tle y) \to (\tleb z)\Big) \land \Big((\tlt y) \to (\tltb z)\Big)\\
     (\tlname \bblt \tlbname) &\defeq
-    \Big((\tle y) \to (\tltb z)\Big) % \land \Big(\tlt \to \tltb\Big).
+    \Big((\tle y) \to (\tltb z)\Big). % \land \Big(\tlt \to \tltb\Big).
   \end{align*}
-  Again, $\bble$ is evidently antisymmetric.
+  (These are the type families $B$ and $C$ in the general induction principle.)
+  Again, $\bble$ is evidently antisymmetric in the appropriate sense.
   Moreover, a function $\prd{y:\NO} A'(y)$ which preserves inequalities is precisely a pair of predicates of which one implies the other, which satisfy transitivity on the right, and transitivity on the left with respect to the inequalities $x^L<x$ and $x<x^R$.
-  Thus, the inner recursion will provide exactly what we need to complete the primary clause of the outer recursion.
+  Thus, this inner induction will provide what we need to complete the primary clause of the outer recursion.
 
-  For the primary clause of the inner recursion, we assume also given $y$ defined by a cut, and properties $(x\prec y^L)$, $(x\prec y^R)$, $(x\preceq y^L)$, and $(x\preceq y^R)$ for all $L$ and $R$, with the strict ones implying the non-strict ones, transitivity on the left with respect to $x^L<x$ and $x<x^R$, and on the right with respect to $y^L<y^R$.
+  For the primary clause of the inner induction, we assume also given $y$ defined by a cut, and properties $(x\prec y^L)$, $(x\prec y^R)$, $(x\preceq y^L)$, and $(x\preceq y^R)$ for all $L$ and $R$, with the strict ones implying the non-strict ones, transitivity on the left with respect to $x^L<x$ and $x<x^R$, and on the right with respect to $y^L<y^R$.
   % \begin{equation}
   %   \fall{L,R}\Big((x \preceq y^L) \to (x \prec y^R)\Big) % \land \Big((x \prec y^L) \to (x\prec y^R)\Big).
   %   \label{eq:NO-prec-inner-IH}
@@ -1606,7 +1690,7 @@ To do much more than this, however, we will need to characterize the relations $
   %   If $x^{R_1}\preceq y$, then the outer inductive hypothesis implies $x^{R_1}\prec z$, hence $x^{R_1}\preceq z$, and thus $x\prec z$.
   %   And if $x\preceq y^{L_1}$, then the inner inductive hypothesis applied to $y^{L_1}<y^{R_0}$ (which comes from $y$ being defined as a cut) and $y^{R_0}\le z$ yields $x\prec z$.
   \end{itemize}
-  This completes the inner recursion.
+  This completes the inner induction.
   Thus, for any $x$ defined by a cut, we have $(x\prec -)$ and $(x\preceq -)$ defined by~\eqref{eq:NO-preceq-def} and~\eqref{eq:NO-prec-def}, and transitive on the right.
 
   To complete the outer recursion, we need to verify these definitions are transitive on the left.
@@ -1642,6 +1726,29 @@ To do much more than this, however, we will need to characterize the relations $
     (x< y) \to (y\le z) \to (x< z).
   \end{gather*}
 \end{cor}
+
+As with the Cauchy reals, the joint $(\NO,\le,<)$-recursion principle remains essential when defining all operations on $\NO$.
+For instance, we define $\mathord+:\NO\to\NO\to\NO$ by a double recursion.
+First we recurse into the subset of $\NO\to\NO$ consisting of functions $g$ such that $(x<y) \to (g(x)<g(x))$ and $(x\le y) \to (g(x)\le g(y))$ for all $x,y$.
+For such $g,h$ we define $(g\ble h)\defeq \fall{x:\NO} g(x)\le h(x)$ and $(g\blt h)\defeq \fall{x:\NO} g(x)< h(x)$.
+Clearly $\ble$ is antisymmetric.
+
+For the primary clause of the recursion, we suppose $x$ defined by a cut, and we define $(x+\blank)$ by an inner induction.
+As in the proof of \autoref{defn:No-codes}, we use an induction rather than a recursion to ensure preservation of the inequalities $x^L<x<x^R$.
+Thus, define $A':\NO\to\type$ by
+\[A'(y) \defeq \sm{z:\NO} \Big(\fall{L}(x^L+y<z)\Big) \land \Big(\fall{R}(z < x^R+y)\Big).\]
+We equip $A'$ with relations $\bble$ and $\bblt$ induced from those of $\NO$; of course the former is antisymmetric.
+Now for the primary clause of the inner induction, we suppose also $y$ defined by a cut, and give Conway's definition:
+\[ x+y \defeq \surr{x^L+y, x+y^L}{x^R+y,x+y^R}. \]
+In other words, the left options of $x+y$ are all numbers of the form $x^L+y$ for some left option $x^L$, or $x+y^L$ for some left option $y^L$.
+The presence of the options $x^L+y$ and $x^R+y$ in $x+y$ implies directly that $x+y \in A'(y)$.
+Now we verify that this definition preserves inequality:
+\begin{itemize}
+\item If $y\le z$ arises from $y^L<z$ and $y<z^R$ for all $L$ and $R$, then the inner inductive hypothesis gives $x+y^L<x+z$ and $x+y < x+z^R$, while the outer inductive hypotheses give $x^L+y < x^L+z<x+z$ and $x+y<x^R+ y < x^R+z$.
+  Thus, $x+y \le x+z$.
+\item First $y<z$\dots
+\item Second $y<z$\dots
+\end{itemize}
 
 
 \section*{Notes}

@@ -186,7 +186,7 @@ In the body of the book, an equality judgment $A \jdeq B : \UU_n$ between types
 $A$ and $B$ is usually abbreviated to $A \jdeq B$.  This is an instance of
 typical ambiguity, and the choice of $n$ doesn't affect the validity of the judgment.
 
-\subsection*{$\Pi$ types}
+\subsection*{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 
 We introduce a primitive constant $c_\Pi$.  An expression of the form
 $c_\Pi(A,\lam{a} B)$ will be written as $\prd{a:A}B$.  Judgments concerning
@@ -250,7 +250,7 @@ Given $C : \unit \rightarrow \UU_n$ and $c : C(\ttt)$ we can introduce a defined
 Given $C : \bool \rightarrow \UU_n$, $c : C(\bfalse)$, and $c' : C(\btrue)$, we can introduce a defined constant $f:\prd{x:\bool} C(x)$, with defining equations
 $f(\bfalse)\defeq c$ and $f(\btrue)\defeq c'$.
 
-\subsection*{$\Sigma$-Types}
+\subsection*{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 
 We introduce primitive constants $c_\Sigma$ and $c_{\mathsf{pair}}$.  An
 expression of the form $c_\Sigma(A,\lam{a} B)$ will be written as $\sm{a:A}B$,
@@ -502,13 +502,13 @@ Definitional equality (also known as syntactic or judgmental equality):
 Additionally, in the logical rules below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
 \[\inferrule*[right=$\Pi$-\intro-eq]{\Gamma \types A = A'\myType \\ \Gamma,\ x \oftype A \types B(x) = B'(x)\myType \\ \Gamma,\ x \oftype A \types b(x) = b'(x) : B(x)}{\Gamma \types \lambda x \oftype A.b(x) = \lambda x \oftype A'.b'(x) : \Pi_{x \oftype A} B(x)}\]
 
-\subsection*{Universes} % and families
+\subsection*{Universes and families}
 
 A universe within the theory may be closed under some or all of the logical constructors of the theory; we include below the rules corresponding to all of the constructors given above.
 
 $\UU$
 
-\subsection*{$\Pi$-types}
+\subsection*{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\form]{\Gamma,\ x \oftype A \types B(x)\myType}{\Gamma \types \Pi_{x \oftype A} B(x)\myType}
@@ -524,7 +524,7 @@ As a special case of this, when $B$ does not depend on $x$, we obtain the ordina
 
 \textbf{TODO:} product types?
 
-\subsection*{$\Sigma$-types}
+\subsection*{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Sigma$-\form]{\Gamma \types A\myType \\ \Gamma,\ x \oftype A \types B(x)\myType}{\Gamma \types \Sigma_{x \oftype A} B(x)\myType}
@@ -538,7 +538,7 @@ As a special case of this, when $B$ does not depend on $x$, we obtain the ordina
 
 Again,  the special case where $B$ does not depend on $x$ is of particular interest: this gives the cartesian product $A \times B := \Sigma_{x \oftype A} B$. \\
 
-\subsection*{$\synId$-types}
+\subsection*{Identity types}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\synId$-\form]{\Gamma \types A\myType}{\Gamma,\ x,y\oftype A \types \synId_A(x,y)\myType}
@@ -550,7 +550,7 @@ Again,  the special case where $B$ does not depend on $x$ is of particular inter
   \inferrule*[right=$\synId$-\comp]{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types C(x,y,u)\myType \\ \Gamma,\ z\oftype A \types d(z):C(z,z,r(z))}{\Gamma,\ x\oftype A \types J_{z.d}(x,x,\myRefl_A(x)) = d(x) : C(x,x,\myRefl_A(x))}
 \end{mathparpagebreakable}
 
-\subsection*{$\wtypesym$-types.}
+\subsection*{$\wtypesym$-types}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \types B(x)\myType}{\Gamma \types \wtypesym_{x \oftype A} B(x)\myType}
@@ -571,7 +571,7 @@ Again,  the special case where $B$ does not depend on $x$ is of particular inter
     \hspace{2.4cm} = d(x, y, \lambda u \oftype B(x). \mathsf{wrec}_d(\mathsf{app}(y, u))): C(\synsup(x, y))}}
 \end{mathparpagebreakable}
 
-\subsection*{$\mathsf{0}$}
+\subsection*{Type empty type $\mathsf{0}$}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=${\sf 0}$-\form]{\textit{}}{\types {\sf 0}\myType}
@@ -583,7 +583,7 @@ Again,  the special case where $B$ does not depend on $x$ is of particular inter
   \text{(No computation rules.)}
 \end{mathparpagebreakable}
 
-\subsection*{$\mathsf{1}$}
+\subsection*{The unit type $\mathsf{1}$}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=${\sf 1}$-\form]{\ }{\types {\sf 1} \myType}
@@ -597,7 +597,7 @@ Again,  the special case where $B$ does not depend on $x$ is of particular inter
 
 \textbf{TODO:} natural numbers
 
-\subsection*{$+$-types}
+\subsection*{Coproduct types}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$+$-\form]{\Gamma \types A\myType \\ \Gamma \types B\myType}{\Gamma \types A + B \myType}

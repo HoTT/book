@@ -579,60 +579,57 @@ functional programming:
 \[ \rec{\bool} : \prd{C:\UU'}  C \to C \to \bool \to C \]
 with the defining equations
 \begin{eqnarray*}
-  \rec{bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
-  \rec{bool}(C,c_0,c_1,\btrue) & \defeq & c_1
+  \rec{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
+  \rec{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1
 \end{eqnarray*}
 
-Given a family $C : \bool \to \UU$ to derive a dependent function 
-$f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$ and
-add the defining equations
+Given a family $C : \bool \to \UU$, to derive a dependent function 
+$f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which case we can give the defining equations
 \begin{eqnarray*}
   f(\bfalse) & \defeq & c_0 \\
-  f(\btrue) & \defeq & c_1
+  f(\btrue) & \defeq & c_1.
 \end{eqnarray*}
-Induction tells us that true and false are indeed the only
-elements of this type:
-\[ \ind{\bool} : \prd{C:\bool \to \UU'}  C(\bfalse) \to C(\btrue)
-\to \prd{x:\bool} C(x) \]
+We package this up into the induction principle
+\[ \ind{\bool} : \dprd{C:\bool \to \UU'}  C(\bfalse) \to C(\btrue)
+\to \tprd{x:\bool} C(x) \]
 with the defining equations
 \begin{eqnarray*}
-  \ind{bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
-  \ind{bool}(C,c_0,c_1,\btrue) & \defeq & c_1
+  \ind{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
+  \ind{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1
 \end{eqnarray*}
 
-Given $\Sigma$ and $\bool$ we could have defined
+We have remarked that $\Sigma$-types can be regarded as analogous to indexed disjoint unions, while coproducts are binary disjoint unions.
+It is natural to expect that a binary disjoint union could be constructed as an indexed one over the two-element type \bool, and indeed we could have defined
 \[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x) \]
-and
+with
 \begin{eqnarray*}
   \inl(a) & \defeq & \tup{\bfalse}{a} \\
-  \inr(a) & \defeq & \tup{\btrue}{a}
+  \inr(a) & \defeq & \tup{\btrue}{a}.
 \end{eqnarray*}
-We leave it as an exercise to derive induction. Does the derived
-induction constant satisfies the same defining equations?
+We leave it as an exercise to derive the induction principle of a coproduct type from this definition.
+(See also \autoref{sec:appetizer-univalence}.)
+Does the derived
+induction constant satisfy the same defining equations?
 %ex
-This also reflects the view that $\Sigma$-types are large sums 
-indexed by any set. If the indexing set is just a 2 element set we
-recover ordinary binary disjoint union.
 
-Indeed, we can apply the same idea to products and $\Pi$-types:
+We can apply the same idea to products and $\Pi$-types: we could have defined
 \[ A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x) \]
-Pairs can be constructed using induction for bool:
+Pairs could then be constructed using induction for \bool:
 \[ \tup{a}{b} \defeq \ind{\bool}(\rec{\bool}(\UU,A,B),a,b) \]
-While the projections are straightforward applications
+while the projections are straightforward applications
 \begin{eqnarray*}
   \fst(p) & \defeq & p(\btrue) \\
-  \snd(p) & \defeq & p(\bfalse) \\
+  \snd(p) & \defeq & p(\bfalse).
 \end{eqnarray*}
-the derivation of the induction for products is a bit more
-involved and requires function extensionality. We get an
-induction constant but not the same judgmental equalities.
-This is a recurrent issue with extensional encodings in type
-theory. 
+The derivation of the induction principle for binary products defined in this way is a bit more involved, and requires function extensionality, which we will introduce in \autoref{sec:compute-pi}.
+Moreover, we do not get the same judgmental equalities.
+This is a recurrent issue when encoding one type as another; we will return to it in \autoref{sec:htpy-inductive}. 
 
-Unlike in classical mathematics we
-do not identify propositions with $\bool$ (instead we identify
-propositions with types). Hence the type $A \to \bool$ 
-represents only the decidable subsets of $A$.
+We may occasionally refer to the elements $\btrue$ and $\bfalse$ of $\bool$ as ``true'' and ``false'' respectively.
+However, note that unlike in classical mathematics, we do not use elements of $\bool$ as truth values or as propositions.
+(Instead we identify propositions with types; see \autoref{sec:pat}.)
+In particular, the type $A \to \bool$ is not generally the power set of $A$; it represents only the ``decidable'' subsets of $A$.
+
 
 \section{Identity types}
 \label{sec:identity-types}
@@ -646,7 +643,7 @@ one reason that two objects are equal, corresponding to the fact that
 there can be more than one path between two points of a space.
 
 Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point of view that there is a path between $a$ and $b$. In particular, there is a canonical element
-\[\refl : \prd{a:A} a =_A a\] --- the proof of reflexivity.
+\[\refl{} : \prd{a:A} a =_A a\] --- the proof of reflexivity.
 
 There are two different but equivalent elimination principles for
 identity types:

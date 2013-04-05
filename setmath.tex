@@ -680,27 +680,64 @@ In topos theory a well-known sufficient condition for LEM is the axiom of choice
 \subsection{Axioms of choice and excluded middle for sets}
 \label{subsec:emacinsets}
 
-\textbf{TODO:} Discuss excluded middle and choice, state that the appropriate versions are
-consistent, so me may assume them. Prove that choice implies excluded middle
-See~\ref{thm:1surj_to_surj_to_pem}
+%\textbf{TODO:} Discuss excluded middle and choice, state that the appropriate versions are
+%consistent, so me may assume them. Prove that choice implies excluded middle
+%See~\ref{thm:1surj_to_surj_to_pem}
+%
+Recall from \autoref{sec:logic}  the following definitions of the variations on the axiom of choice and the law of excluded middle:
 
-Recall from \autoref{sec:axiom-choice}  the following definitions of the axiom of choice and the law of excluded middle:
+\begin{align*}
+ \mathsf{LEM}_\infty\;\defeq\;&\ 
+  \prd{A:\UU} (A + \neg A)\\
+  %
+  \mathsf{LEM}\;\defeq\;&\ 
+  \prd{A:\UU} \Big(\isprop(A) \to (A + \neg A)\Big)\\
+  %
+  \mathsf{AC}_\infty\;\defeq\;&\ 
+    \Big(\prd{x:X} \sm{a:A(x)} P(x,a)\Big) \\
+    & \to\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))\\
+   %
+   \mathsf{AC}\;\defeq\;&\ 
+    \prd{X:\set}  \prd{A:X\to\set} \prd{P:\prd{x:X}A(x)\to\prop} \\
+    & \Big(\prd{x:X} \Brck{\sm{a:A(x)} P(x,a)}\Big) \\
+    & \to\Brck{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
+\end{align*}
 
+To these, we may add the following for consideration:
+%
+\begin{align*}
+  \mathsf{LEM}_0\;\defeq\;&\ 
+  \prd{A:\set} (A + \neg A) 
+\end{align*}
+%
+This says that for all \emph{sets} $A$, we have $A + \neg A$, while AC says that for any family $A: X\to \set$ of \emph{sets} on a \emph{set} $X$, if a \emph{proposition}-valued relation $P(x,y)$ is total on $X$, then there is a choice function.  More simply, for non-dependent types AC takes the form:
+%
+\begin{align*}
+    & \prd{X:\set}  \prd{A:\set} \prd{P:X\to A\to\prop} \\
+    & \Big(\fall{x:X} \exis{a:A} P(x,a)\Big) \to \exis{g:X\to A} \fall{x:X} P(x,g(x))
+\end{align*}
+%
+Finally, taking $P(x,a)$ to be $f(a)=x$ for some function $f:A\to X$, we arrive at the formulation: for any surjection $f:A\to X$ of sets, there is a ``section" $g:X\to A$ with $f\circ g = 1_X$.  The converse implication from this statement to AC can be taken as an exercise. 
 
-In this subsection we derive that if all surjective functions between sets have
+The logical relations among these conditions are as follows:
+\[
+\mathsf{LEM}_\infty \Rightarrow  \mathsf{AC} \Rightarrow \mathsf{LEM}_0 \Rightarrow \mathsf{LEM}\Rightarrow \mathsf{AC}_\infty
+\]
+At the extremes, we have that $\mathsf{LEM}_\infty$ is inconsistent with the univalence axiom $\mathsf{UA}$, and $\mathsf{AC}_\infty$ is provable in pure type theory, without any further assumptions (not even function extensionality).
+In this subsection, we will first show that if every surjective function between sets has
 a section, then for all propositions $A$ we can decide whether $A$ or $\neg A$
-holds. 
+holds, i.e.\ the implication $\mathsf{AC} \Rightarrow \mathsf{LEM}$.  The implication $\mathsf{AC} \Rightarrow \mathsf{LEM}_0$ then also follows.
 
 Recall the notion of \emph{suspension} from \autoref{sec:suspension}.
 In the case where $A$ is a proposition, it turns out that the
-suspension $\susp(A)$ is equivalent to the quotient $\mathsf{bool}/R$,
+suspension $\susp(A)$ is equivalent to the quotient $\bool/R$,
 where $R$ is the equivalence relation we get by setting
-$R(\mathsf{true},\mathsf{false})\defeq A$. This shall become clear in the proofs
+$R(\mathsf{true},\mathsf{false})\defeq A$. This will become clear in the development
 below.
 
 \begin{lem}\label{prop:trunc_of_prop_is_set}
-The suspension of a proposition is a set and the path space 
-$0=1$ in $\susp(A)$ is equivalent to $A$, for any proposition $A$. 
+The suspension of any proposition $A$ is a set and the path space 
+$0=1$ in $\susp(A)$ is equivalent to $A$. 
 \end{lem}
 
 \begin{proof}
@@ -773,31 +810,31 @@ the proof by induction that $\sm{x:A} P(x,1)$ is contractible.
 \end{proof}
 
 \begin{defn}
-Suppose $A$ is a type. We define
+For any  type  $A$, we define
 \begin{equation*}
-\mathsf{isDecidable}(A)\equiv  A+\neg A
+\mathsf{isDecidable}(A)\equiv  A+\neg A.
 \end{equation*}
 \end{defn}
 
 \begin{thm}[Bishop/Diaconescu]\label{thm:1surj_to_surj_to_pem}
-Suppose that all surjections between sets split. Then for all $A:\prop$,
-$\mathsf{isDecidable}(A)$. 
+If all surjections between sets purely have a section, then for all $A:\prop$,
+$\mathsf{isDecidable}(A)$. Consequently, if all surjections between sets merely have a section, then for all $A:\prop,
+\brck{\mathsf{isDecidable}(A)}$.
 \end{thm}
 
 \begin{proof}
 Consider the function $\pi:\mathsf{bool}\to\susp(A)$ defined by 
 $\pi(\mathsf{true})\equiv 1$ and $\pi(\mathsf{false})\equiv 0$. 
-The first thing we will do is show that $\pi$ is surjective, 
-i.e.\ that there is a function of type
+First  we  show that $\pi$ is surjective, 
+by showing that there is a function of type
 \begin{equation*}
 \prd{x:\susp(A)} \|\hfiber\pi{x}\|.
 \end{equation*}
-Note that we have the terms 
+We have the terms 
 $\langle{\mathsf{false},\refl{0}}\rangle:\hfiber\pi0$ 
 and $\langle{\mathsf{true},\refl{1}}\rangle:\hfiber\pi1$. 
 Since $\|\hfiber\pi{x}\|$ is a proposition for each 
-$x:\susp(A)$, this gives us the proof by induction of 
-the surjectivity of $\pi$.
+$x:\susp(A)$, by induction this gives us the claimed surjectivity.
 
 By proposition~\ref{prop:trunc_of_prop_is_set} the suspension of 
 a proposition is always a set, so our assumption gives us a 
@@ -815,105 +852,115 @@ $\pi(\mathsf{true})= \pi(\mathsf{false})$ is equivalent to $A$.
 This we also obtained in proposition~\ref{prop:trunc_of_prop_is_set}.
 \end{proof}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Algebraic set theory}\label{sec:ast}
+\begin{cor}\label{cor:ACtoLEM0}
+Suppose that all surjections between sets merely have a section. Then for all sets $A$, we have $A + \neg A$. 
+\end{cor}
 
-We should obtain a model of CST following Awodey, Forsell, Warren. 
-We may want to use the replacement axiom~\ref{lem:replacement}.
-We should consider as classes only those large sets with small diagonal.
-
-The universe is naturally a groupoid, but it may be possible to distort it to be a set.
-
-It seems unlikely that the axiom of collection and the axiom of multiple choice are derivable in HoTT,
-simply because none of its axioms seem applicable.  In the constructive set theory CZF~\cite{aczel2001notes}, unlike in classical Zermelo
-set theory, the collection axiom is \emph{stronger} than the replacement axiom. 
-The replacement axiom \emph{is} derivable from the resizing rules; see section~\ref{sec:resizing}.
-In line with Voevodsky's proposal to add resizing rules to homotopy type theory, one could also consider its extension with the
-collection axiom.
-
-\subsection{Class of stable maps}
-\begin{defn}\label{defn:small_maps}
-A class $\smal:\prd{X,Y:\type} (X\to Y)\to\prop$ is \emph{stable} of if it satisfies:
-\begin{description}
-\item[pullback stability] If we have a pullback diagram
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {X & A \\ Y & B \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$f$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left]  {$g$} (m-2-1);
-\draw[ar] (m-2-1) -- (m-2-2);
-\end{tikzpicture}
-\end{equation*}
-then $\smal(f)\to\smal(g)$.
-\item[Descent] If the bottom arrow in the above diagram is surjective, then $\smal(g)\to\smal(f)$. 
-\item[Sum] If $\smal(f),\smal(g)$, then $\smal(f+g)$.
-\end{description}
-A class of stable class of maps is \emph{locally full}~\citep[3.2]{MoerdijkPalmgren2002} if for all $g:X\to Y$ and $f:Y\to Z$ such
-that $\smal(f)$: $\smal(g)$ iff $\smal(fg)$.
-
-A class of maps $\smal$ is called a \emph{class of small maps} if it is stable, locally full and for each $X$, 
-$\smal_X$ --- the small over maps over $X$ --- forms a $\Pi\mathsf{W}$-pretopos; see~\citep[3.3]{MoerdijkPalmgren2002}.
-\end{defn}
-
-\begin{lem}
-The class of set-fibered maps is a class of small maps.
-\end{lem}
 \begin{proof}
-The class of maps with set-fibers is stable. It even has dependent sums.
-
-We claim that it is locally full: If $g$ has set-fibers, then $fg$ has set-fibers, as sets are
-closed under $\Sigma$-types. Conversely, fix $y\in Y$, then $\hfiber g y$ is the pullback
-\[\sm {x:\hfiber{fg}{f(y)}} g(x)=y.\]
-
-By the use of the object classifier, \autoref{thm:nobject_classifier}, we see that the type $\smal_X$ is equivalent
-to the sets in context $X$. Now, sets in any context form a $\Pi\mathsf{W}$-pretopos; see \autoref{subsec:piw}.
+\[
+A + \neg A \epi \brck{A} + \brck{\neg A} \epi \brck{(\brck{A} + \brck{\neg A})} = \brck{A} \vee \brck{\neg A} = \brck{A} \vee \neg \brck A = 1
+\]
 \end{proof}
 
-%\section{Excluded middle and the axiom of choice}
-%\label{sec:excl-middle-axiom}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{Algebraic set theory}\label{sec:ast}
 %
-%\textbf{TODO:} Discuss excluded middle and choice, state that the appropriate versions are
-%consistent, so me may assume them. Prove that choice implies excluded middle?
-%See~\ref{thm:1surj_to_surj_to_pem}
+%We should obtain a model of CST following Awodey, Forsell, Warren. 
+%We may want to use the replacement axiom~\ref{lem:replacement}.
+%We should consider as classes only those large sets with small diagonal.
 %
+%The universe is naturally a groupoid, but it may be possible to distort it to be a set.
+%
+%It seems unlikely that the axiom of collection and the axiom of multiple choice are derivable in HoTT,
+%simply because none of its axioms seem applicable.  In the constructive set theory CZF~\cite{aczel2001notes}, unlike in classical Zermelo
+%set theory, the collection axiom is \emph{stronger} than the replacement axiom. 
+%The replacement axiom \emph{is} derivable from the resizing rules; see section~\ref{sec:resizing}.
+%In line with Voevodsky's proposal to add resizing rules to homotopy type theory, one could also consider its extension with the
+%collection axiom.
+%
+%\subsection{Class of stable maps}
+%\begin{defn}\label{defn:small_maps}
+%A class $\smal:\prd{X,Y:\type} (X\to Y)\to\prop$ is \emph{stable} of if it satisfies:
+%\begin{description}
+%\item[pullback stability] If we have a pullback diagram
+%\begin{equation*}
+%\begin{tikzpicture}
+%\matrix (m) [std] {X & A \\ Y & B \\};
+%\draw[ar] (m-1-1) -- (m-1-2);
+%\draw[ar] (m-1-2) -- node[right] {$f$} (m-2-2);
+%\draw[ar] (m-1-1) -- node[left]  {$g$} (m-2-1);
+%\draw[ar] (m-2-1) -- (m-2-2);
+%\end{tikzpicture}
+%\end{equation*}
+%then $\smal(f)\to\smal(g)$.
+%\item[Descent] If the bottom arrow in the above diagram is surjective, then $\smal(g)\to\smal(f)$. 
+%\item[Sum] If $\smal(f),\smal(g)$, then $\smal(f+g)$.
+%\end{description}
+%A class of stable class of maps is \emph{locally full}~\citep[3.2]{MoerdijkPalmgren2002} if for all $g:X\to Y$ and $f:Y\to Z$ such
+%that $\smal(f)$: $\smal(g)$ iff $\smal(fg)$.
+%
+%A class of maps $\smal$ is called a \emph{class of small maps} if it is stable, locally full and for each $X$, 
+%$\smal_X$ --- the small over maps over $X$ --- forms a $\Pi\mathsf{W}$-pretopos; see~\citep[3.3]{MoerdijkPalmgren2002}.
+%\end{defn}
+%
+%\begin{lem}
+%The class of set-fibered maps is a class of small maps.
+%\end{lem}
+%\begin{proof}
+%The class of maps with set-fibers is stable. It even has dependent sums.
+%
+%We claim that it is locally full: If $g$ has set-fibers, then $fg$ has set-fibers, as sets are
+%closed under $\Sigma$-types. Conversely, fix $y\in Y$, then $\hfiber g y$ is the pullback
+%\[\sm {x:\hfiber{fg}{f(y)}} g(x)=y.\]
+%
+%By the use of the object classifier, \autoref{thm:nobject_classifier}, we see that the type $\smal_X$ is equivalent
+%to the sets in context $X$. Now, sets in any context form a $\Pi\mathsf{W}$-pretopos; see \autoref{subsec:piw}.
+%\end{proof}
+%
+%%\section{Excluded middle and the axiom of choice}
+%%\label{sec:excl-middle-axiom}
+%%
+%%\textbf{TODO:} Discuss excluded middle and choice, state that the appropriate versions are
+%%consistent, so me may assume them. Prove that choice implies excluded middle?
+%%See~\ref{thm:1surj_to_surj_to_pem}
+%%
+%
+%\subsection{Sets and classes}
+%\label{subsec:sets-classes}
+%
+%\textbf{TODO:} Discuss the role of universes as classes-of-classes-of-classes, or
+%alternatively as inaccessible sets.
+%This could be part of AST(?)
+%
+%\subsection{Powersets}
+%\label{subsec:powersets}
+%
+%\textbf{TODO:} Point out that we get \textbf{powerclasses} when we consider $X \to \prop$, that the
+%powerset axiom is about powerclasses being sets, that this is equivalent to $\prop$ being
+%a set, so resizing comes into play.
+%
+%For a set $X$, we speak of predicates $Y:X\to \prop$ equivalently as \textbf{subsets} of $X$, and sometimes write $x\in Y$ to mean $Y(x)$.
+%We will also use the set-builder notation for such subsets:
+%\[ \setof{x:X | P } \defeq \lam{x} P \]
+%Univalence for \prop, plus function extensionality, implies that such subsets are \emph{extensional} in the usual sense of set theory:
+%\[ (Y_1 = Y_2) \leftrightarrow \Big(\prd{x:X} (x\in Y_1) \leftrightarrow (x\in Y_2)\Big) \]
+%Note that both sides of this equivalence are mere propositions.
+%
+%We define the \textbf{power set} of $X$ to be
+%\begin{align*}
+%  \mathcal{P} X &\defeq X\to \prop
+%\end{align*}
+%Likewise, we define the subset of merely inhabited subsets in $X$ to be
+%\begin{align*}
+%  \mathcal{P}_+ X &\defeq \setof{P:X\to \prop | \brck{(\exists x:X), P(x)}}
+%\end{align*}
+%Assuming excluded middle, we have $\mathcal{P}_+ X \cong \setof{P:X\to \prop | P \neq (\lam{x} \bot)}$ and also $\mathcal{P} X \cong \mathcal{P}_+ X + \unit$.
+%
+%For $Y:\mathcal{P}X$, we write $X\setminus Y \defeq \setof{x:X | x\notin Y}$.
+%Similarly, we have unions $Y_1 \cup Y_2$, intersections $Y_1 \cap Y_2$, and so on.
 
-\subsection{Sets and classes}
-\label{subsec:sets-classes}
-
-\textbf{TODO:} Discuss the role of universes as classes-of-classes-of-classes, or
-alternatively as inaccessible sets.
-This could be part of AST(?)
-
-\subsection{Powersets}
-\label{subsec:powersets}
-
-\textbf{TODO:} Point out that we get \textbf{powerclasses} when we consider $X \to \prop$, that the
-powerset axiom is about powerclasses being sets, that this is equivalent to $\prop$ being
-a set, so resizing comes into play.
-
-For a set $X$, we speak of predicates $Y:X\to \prop$ equivalently as \textbf{subsets} of $X$, and sometimes write $x\in Y$ to mean $Y(x)$.
-We will also use the set-builder notation for such subsets:
-\[ \setof{x:X | P } \defeq \lam{x} P \]
-Univalence for \prop, plus function extensionality, implies that such subsets are \emph{extensional} in the usual sense of set theory:
-\[ (Y_1 = Y_2) \leftrightarrow \Big(\prd{x:X} (x\in Y_1) \leftrightarrow (x\in Y_2)\Big) \]
-Note that both sides of this equivalence are mere propositions.
-
-We define the \textbf{power set} of $X$ to be
-\begin{align*}
-  \mathcal{P} X &\defeq X\to \prop
-\end{align*}
-Likewise, we define the subset of merely inhabited subsets in $X$ to be
-\begin{align*}
-  \mathcal{P}_+ X &\defeq \setof{P:X\to \prop | \brck{(\exists x:X), P(x)}}
-\end{align*}
-Assuming excluded middle, we have $\mathcal{P}_+ X \cong \setof{P:X\to \prop | P \neq (\lam{x} \bot)}$ and also $\mathcal{P} X \cong \mathcal{P}_+ X + \unit$.
-
-For $Y:\mathcal{P}X$, we write $X\setminus Y \defeq \setof{x:X | x\notin Y}$.
-Similarly, we have unions $Y_1 \cup Y_2$, intersections $Y_1 \cap Y_2$, and so on.
-
-\subsection{The cumulative hierarchy}
-\label{subsec:cumulative-hierarchy}
+\section{The cumulative hierarchy}
+\label{sec:cumulative-hierarchy}
 
 Construction of $V$ as a HIT, mimicking Peter Aczel's construction of a type-theoretic
 model of CZF.

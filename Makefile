@@ -8,6 +8,8 @@ main.pdf: *.tex cover.png
 	     pdflatex main.tex ;\
 	fi
 
+once:; pdflatex main.tex && bibtex main
+
 clean:
 	(which latexmk && latexmk -c main.tex) || /bin/rm -f main.{out,log,pdf,fls,fdb_latexmk}
 

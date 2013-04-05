@@ -1,7 +1,8 @@
 \chapter{The Rules of Type Theory}
 \bgroup                         % restrict the scope of our macros to this file
 
-\newcommand{\Okay}{\mathop{\textsf{okay}}}
+\newcommand{\ctx}{\ \textsf{ctx}}
+\newcommand{\emptyctx}{\ensuremath{\cdot}}
 
 \newcommand{\production}{\vcentcolon\vcentcolon=}
 
@@ -32,10 +33,17 @@
 \newcommand{\nn}{{\sf n}}
 \newcommand{\Fam}{{\sf Fam}}
 
+\textbf{TODO:} a better introduction, explaining the purpose of this appendix
+and the two presented approaches
+
+\textbf{TODO:} explain binding
+
 The goal of this appendix is to summarize the notation and inference rules of
 the type theory used in this book.
 
 \section{Syntax, informally}
+
+\textbf{TODO:} add definitional $\eta$, higher inductive types, and univalence
 
 \subsection*{The Raw Syntax}
 
@@ -52,12 +60,8 @@ We follow the usual convention about free and bound variables.  We write
 $B[a/x]$ for the substitution of a term $a$ for free occurrences of the
 variable $x$ in the term $B$, with possible renaming for avoiding
 capture of variables, as discussed in \autoref{sec:function-types}.
-Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that
-a variable, $x$, say, is bound within $B$ and can be renamed without changing
-the identity of $B$.  In that case, we'll let $B[a]$ denote the result of
-substituting $a$ for the (outermost) variable bound in $B$ and removing the
-abstraction that recorded its presence and its name.  We use $B[a_1,\dots,a_n]$
-as an abbreviation for the repeated substitution $B[a_1]\dots[a_n]$.
+We use $B[a_1,\dots,a_n]$ as an abbreviation for the repeated substitution
+$B[a_1]\dots[a_n]$.
 
 We use $t(t_1,\dots,t_n)$ as an abbreviation for the repeated application
 $t(t_1)(t_2)\dots (t_n)$.  We may also use {\em infix} notation, writing $t_1\;
@@ -102,7 +106,7 @@ presented above, and by those to be introduced below.
 In our type theory, we mainly derive {\em typing judgments} of the form $a:A$,
 which is read as asserting that $a$ is an object of type $A$.
 
-In general such judgments are formulated in an ambient a {\em context}, which
+In general such judgments are formulated in an ambient {\em context}, which
 is of the form
 \[
   \Gamma =  x_1:A_1, x_2:A_2,\dots,x_n:A_n
@@ -130,17 +134,17 @@ When $\Gamma$ is empty, we may write simply
 Such judgments will be justified only for contexts that are well-formed.  We
 introduce a primitive judgment of the form
 \[
-  \Gamma \vdash \Okay
+  \vdash \Gamma \ctx
 \]
 to express that notion.  The intuitive idea will be that each $A_i$ is a valid
 type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.  We can express that idea with 
 the rule
 \begin{itemize}
-\item if $\Gamma =  x_1:A_1, x_2:A_2,\dots,x_n:A_n$, and $\Gamma \vdash \Okay$, then, for any $i$, $\Gamma \vdash x_i : A_i$.
+\item if $\Gamma =  x_1:A_1, x_2:A_2,\dots,x_n:A_n$, and $\vdash \Gamma \ctx$, then, for any $i$, $\Gamma \vdash x_i : A_i$.
 \end{itemize}
 We get started by asserting that the empty context is okay:
 \begin{itemize}
-\item $\vdash \Okay$
+\item $\vdash \emptyctx \ctx$
 \end{itemize}
 There are also {\em equality judgments} $t \jdeq u : A$.  They are defined by
 the following rule.
@@ -171,8 +175,8 @@ right of a colon in judgments.
 
 \begin{itemize}
 \item $\UU_m : \UU_n$ for $m < n$
-\item if $A:\UU_m$ and $m \le n$, then $A:\UU_m$.
-\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\Gamma, x:A \vdash \Okay$
+\item if $A:\UU_m$ and $m \le n$, then $A:\UU_n$.
+\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\Gamma, x:A \vdash \ctx$
 \end{itemize}
 
 In the body of the book, an equality judgment $A \jdeq B : \UU_n$ between types
@@ -228,7 +232,7 @@ As usual $C,d,e$ may have been obtained in an implicit context $\Gamma$ in which
 
 \subsection*{The finite types}
 
-We introduce primitive constants $\tt$, $\bfalse$, $\btrue$, $\emptyt$,
+We introduce primitive constants $\ttt$, $\bfalse$, $\btrue$, $\emptyt$,
 $\unit$, $\bool$ satisfying the following rules.
 
 \begin{itemize}
@@ -331,6 +335,70 @@ with defining equation
   f(a,\refl{a})\defeq d.
 \]
 
+\subsection{Algorithmic and semantic issues}
+
+\message{Thierry and Peter can now start re-writing this section.  The
+  following text is old.}
+
+\subsection*{Conversion and reduction}
+
+Together with $\beta$-conversion
+\[
+  (\lam{x} t)(u) \defeq t[u/x]
+\]
+and thinking of $\defeq$ as a rewriting rule (unfolding definitions),
+this forms a rewriting system which has the confluence (or Church-Rosser) property: we can
+define $t \conv u$ to mean that $t$ and $u$ can be reduced to the same term by using
+$\beta$-reduction and recursion.
+
+
+\subsection*{Some Syntactical Properties of the Type Theory}
+ This system has the following syntactical properties.
+
+\begin{thm}\label{red}
+If $A : \UU$ and $A \conv A'$ then $A' : \UU$.
+If $t:A$ and $t \conv t'$ then $t':A$.
+\end{thm}
+
+\begin{thm}\label{SN}
+ If $A : \UU$ then $A$ is strongly normalizable.
+If $t:A$ then $A$ and $t$ are strongly normalizable. % note: ``strongly normalizable'' is undefined
+\end{thm}
+
+We say that a term is {\em in normal form} if it cannot be reduced.  A closed
+normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$
+for some primitive constant $c$ (where $\vec{v}$ may be omitted if empty, for
+instance, as with $\N$).  More generally we have the following explicit
+description of terms in normal form.
+
+\begin{lem}\label{normal}
+The terms in normal form can be described by the following syntax
+\begin{align*}
+ v & \production  k \mid \lam{x} v \mid c(\vec{v}) \mid f(\vec{v}) \\
+ k &\production x \mid k(v) \mid f(\vec{v})(k)
+\end{align*}
+where $f(\vec{v})$ represents a partial application of the defined function $f$.
+In particular, a type in normal form is of the form $k$ or $c(\vec{v})$.
+\end{lem}
+
+\begin{thm}
+If $A$ is in normal form then the 
+judgment $A : \UU$ is decidable. If $A : \UU$ and $t$ is in normal form then the judgment
+$t:A$ is decidable.
+\end{thm}
+
+
+ A corollary is the {\em consistency} property: there is no proof of $\emptyt$ in the empty
+context. Indeed if we have $t:\emptyt$ then by Theorems \ref{red} and \ref{SN} the term $t$ will reduce
+to a term in normal form $t'$ that satisfies $t':\emptyt$, but this is not possible by a 
+purely combinatorial argument using Lemma \ref{normal}. Similarly, we have the following
+{\em canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
+normal form $\suc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
+in normal form, the typing relation is {\em decidable}, and identifying type-checking with
+{\em proof-checking}, we can indeed ``recognize a proof of an assertion when we see one''.
+
+\egroup
+
 \section{Syntax, more formally}
 
 \bgroup % restrict the following macros to this section
@@ -340,8 +408,8 @@ with defining equation
 \newcommand{\oftype}{\mathord{:}}
 \newcommand{\types}{\vdash}
 \newcommand{\myType}{\textsf{ type}} %  \newcommand{\type}{\textsf{type}}
-\newcommand{\cxt}{\textsf{cxt}}
-\newcommand{\emptycxt}{[\ ]}
+\newcommand{\ctx}{\textsf{ctx}}
+\newcommand{\emptyctx}{[\ ]}
 % rules:
 \newcommand{\form}{\textsc{form}}
 \newcommand{\intro}{\textsc{intro}}
@@ -396,6 +464,26 @@ with defining equation
 \newcommand{\synisWEq}{\mathsf{isWEq}}
 \newcommand{\synWEq}{\mathsf{WEq}}
 
+\textbf{TODO:} 
+\begin{enumerate}
+\item explain $\to$ vs $\vdash$ for type families (in chapter 1)
+\item better connect this to chapter 1
+\item use $B$ instead of $B(x)$; explain where binding occurs
+\item explain binding (here or intro?)
+\item explain precedence of $\vdash$ and $,$ etc (here or intro?)
+\item unify with book's macros; especially, use $\jdeq$ and universe symbol
+\item two ways of handling univalence
+\item emphasize f/i/e/c pattern, and congruence
+\item admissibility of structural rules; don't grow context down
+\item explain the diff wrt MLTT (new axioms, choice of presentation)
+\end{enumerate}
+
+%Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that
+%a variable, $x$, say, is bound within $B$ and can be renamed without changing
+%the identity of $B$.  In that case, we'll let $B[a]$ denote the result of
+%substituting $a$ for the (outermost) variable bound in $B$ and removing the
+%abstraction that recorded its presence and its name.  
+
 Our presentation of the structural rules is based largely on
 \cite{hofmann:syntax-and-semantics}, which also includes a full construction of
 the syntax.  Our selection of logical rules, and in particular our treatment of
@@ -403,15 +491,18 @@ the universe, follows \cite{martin-lof:bibliopolis}.
 
 We take as basic the judgment forms
 \begin{mathpar}
-  \Gamma \types A\myType
-\and
-  \Gamma \types A = A'\myType
+  \types \Gamma\ \ctx
 \and
   \Gamma \types a : A
 \and
   \Gamma \types a = a' : A.
 \end{mathpar}
-We treat contexts as a derived judgment, $\types \Gamma\ \cxt$. 
+
+\subsection*{Universes} \label{subsec:universe-rules}
+
+A universe within the theory may be closed under some or all of the logical constructors of the theory; we include below the rules corresponding to all of the constructors given above.
+
+\textbf{TODO:} a rule
 
 \subsection*{Structural Rules} \label{subsec:structural-rules}
 
@@ -419,7 +510,7 @@ The structural rules of the type theory are (where $\mathcal{J}$ may be any the
 conclusion of any of the judgment forms):
 
 \begin{mathpar}
-  \inferrule*[right=$\Vble$]{\types \Gamma,\ x \oftype A,\ \Delta\ \cxt}{\Gamma,\ x \oftype A,\ \Delta \types x : A}
+  \inferrule*[right=$\Vble$]{\types \Gamma,\ x \oftype A,\ \Delta\ \ctx}{\Gamma,\ x \oftype A,\ \Delta \types x : A}
 \and
   \inferrule*[right=$\Subst$]{\Gamma \types a : A \\ \Gamma,\ x \oftype A,\ \Delta \types \mathcal{J}}{\Gamma,\ \Delta[a/x] \types \mathcal{J}[a/x]}
 \and
@@ -428,12 +519,6 @@ conclusion of any of the judgment forms):
 
 Definitional equality (also known as syntactic or judgmental equality):
 \begin{mathparpagebreakable}
-  \inferrule*{\Gamma \types A\myType}{\Gamma \types A = A\myType} 
-\and
-  \inferrule*{\Gamma \types A=B\myType}{\Gamma \types B = A\myType}
-\and
-  \inferrule*{\Gamma \types A=B\myType \\ \Gamma \types B=C \myType}{\Gamma \types A = C\myType}
-\and
   \inferrule*{\Gamma \types a : A}{\Gamma \types a = a : A}
 \and
   \inferrule*{\Gamma \types a=b : A}{\Gamma \types b=a : A}
@@ -462,7 +547,7 @@ Additionally, in the logical rules below, we assume rules stating that each cons
   \inferrule*[right=$\synPi$-\comp]{\Gamma,\ x \oftype A \types B(x)\myType \\ \Gamma,\ x \oftype A \types b(x) : B(x) \\ \Gamma \types a : A}{\Gamma \types \textsf{app}(\lambda x \oftype A .b(x), a)=b(a) : B(a)}
 \end{mathparpagebreakable}
 
-As a special case of this, when $B$ does not depend on $x$, we obtain the ordinary function type $[A, B] := \synPi_{x \oftype A} B$. \\
+As a special case of this, when $B$ does not depend on $x$, we obtain the ordinary function type $A\to B := \synPi_{x \oftype A} B$. \\
 
 \paragraph*{$\synSigma$-types}  (Dependent sums; disjoint sums.)
 
@@ -551,44 +636,6 @@ Again,  the special case where $B$ does not depend on $x$ is of particular inter
   \inferrule*[right=$+$-\comp\ 2.]{\Gamma,\ z \oftype A + B \types C(z)\myType \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ y \oftype B \types \textsf{case}_{d_0, d_1}(\textsf{inr}(y))=d_1(y) : C(\textsf{inr}(y))}
 \end{mathparpagebreakable}
 
-\subsection*{Universes} \label{subsec:universe-rules}
-
-A universe within the theory may be closed under some or all of the logical constructors of the theory; we include below the rules corresponding to all of the constructors given above.
-
-\begin{mathparpagebreakable}
-  \inferrule{ }{\types \synU\myType}
-\and
-  \inferrule{ }{\Gamma,\ x \oftype \synU \types \el (x) \myType}
-\\
-  \inferrule{\Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{\Gamma \types \synpi (a, x. b(x)) : \synU}
-\and
-  \inferrule{\Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{\Gamma \types \el (\synpi (a, x. b(x)) = \synPi_{x : \el(a)} \el(b(x)) \myType}
-\\
-  \inferrule{\Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \synsigma (a, x. b(x)) : \synU}
-\and
-  \inferrule{ \Gamma \types a : \synU \\ \Gamma,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \el (\synsigma (a, x. b(x)) = \synSigma_{x : \el(a)} \el(b(x)) \myType}
-\\
-  \inferrule{\Gamma \types a, b : \synU}{ \Gamma \types a + b : \synU}
-\and
-  \inferrule{ \Gamma \types a, b : \synU}{ \Gamma \types \el (a + b) = \el (a) + \el (b) \myType}
-\\
-  \inferrule{ \Gamma \types a : \synU \\ \Gamma \types b, c : \el (a)}{ \Gamma \types \synid_A (b,c) : \synU}
-\and
-  \inferrule{ \Gamma \types a : \synU \\  \Gamma \types b, c : \el (a)}{ \Gamma \types \el (\synid_a(b,c)) = \synId_{\el (a)}(b, c) \myType}
-\\
-  \inferrule{ }{\types \synz : \synU}
-\and
-  \inferrule{ }{\types \el (\synz) = \mathsf{0} \myType}
-\and
-  \inferrule{ }{\types \syno : \synU}
-\and
-  \inferrule{ }{\types \el (\syno) = \mathsf{1} \myType}
-\\
-  \inferrule{ \Gamma \types a : \synU \\  \Gamma ,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \synw (a, x. b(x)) : \synU}
-\and
-  \inferrule{ \Gamma \types a : \synU \\  \Gamma ,\ x \oftype \el(a) \types b(x) : \synU}{ \Gamma \types \el (\synw (a, x. b(x)) = \synW_{x : \el(a)} \el(b(x)) \myType}
-\end{mathparpagebreakable}
-
 \subsection*{Further rules} \label{subsec:optional-rules}
 
 The rules above are somewhat weak in their treatment of the equality of functions.  To this end, some further rules are often adopted: the \emph{$\eta$-rule} for $\synPi$-types, and the \emph{functional extensionality} rule(s).  Our formulation of the latter is taken from \cite{garner:depprod}; see also \cite{hofmann:thesis}.
@@ -610,68 +657,6 @@ The rules above are somewhat weak in their treatment of the equality of function
 \end{mathparpagebreakable}
 
 \egroup
-
-\section{Algorithmic and semantic issues}
-
-\message{Thierry and Peter can now start re-writing this section.  The
-  following text is old.}
-
-\subsection*{Conversion and reduction}
-
-Together with $\beta$-conversion
-\[
-  (\lam{x} t)(u) \defeq t[u/x]
-\]
-and thinking of $\defeq$ as a rewriting rule (unfolding definitions),
-this forms a rewriting system which has the confluence (or Church-Rosser) property: we can
-define $t \conv u$ to mean that $t$ and $u$ can be reduced to the same term by using
-$\beta$-reduction and recursion.
-
-
-\subsection*{Some Syntactical Properties of the Type Theory}
- This system has the following syntactical properties.
-
-\begin{thm}\label{red}
-If $A : \UU$ and $A \conv A'$ then $A' : \UU$.
-If $t:A$ and $t \conv t'$ then $t':A$.
-\end{thm}
-
-\begin{thm}\label{SN}
- If $A : \UU$ then $A$ is strongly normalizable.
-If $t:A$ then $A$ and $t$ are strongly normalizable. % note: ``strongly normalizable'' is undefined
-\end{thm}
-
-We say that a term is {\em in normal form} if it cannot be reduced.  A closed
-normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$
-for some primitive constant $c$ (where $\vec{v}$ may be omitted if empty, for
-instance, as with $\N$).  More generally we have the following explicit
-description of terms in normal form.
-
-\begin{lem}\label{normal}
-The terms in normal form can be described by the following syntax
-\begin{align*}
- v & \production  k \mid \lam{x} v \mid c(\vec{v}) \mid f(\vec{v}) \\
- k &\production x \mid k(v) \mid f(\vec{v})(k)
-\end{align*}
-where $f(\vec{v})$ represents a partial application of the defined function $f$.
-In particular, a type in normal form is of the form $k$ or $c(\vec{v})$.
-\end{lem}
-
-\begin{thm}
-If $A$ is in normal form then the 
-judgment $A : \UU$ is decidable. If $A : \UU$ and $t$ is in normal form then the judgment
-$t:A$ is decidable.
-\end{thm}
-
-
- A corollary is the {\em consistency} property: there is no proof of $\emptyt$ in the empty
-context. Indeed if we have $t:\emptyt$ then by Theorems \ref{red} and \ref{SN} the term $t$ will reduce
-to a term in normal form $t'$ that satisfies $t':\emptyt$, but this is not possible by a 
-purely combinatorial argument using Lemma \ref{normal}. Similarly, we have the following
-{\em canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
-normal form $\suc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
-in normal form, the typing relation is {\em decidable}, and identifying type-checking with
-{\em proof-checking}, we can indeed ``recognize a proof of an assertion when we see one''.
 
 \section*{Notes}\label{subsec:general-remarks}
 
@@ -699,8 +684,6 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
   Streicher \cite[Theorem 4.13]{Streicher-1991}, explains how to give the
   semantics in contextual category of terms in normal form using a simple syntax
   similar to the one we have presented.
-
-\egroup
 
 %%% Local Variables: 
 %%% mode: latex

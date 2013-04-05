@@ -405,98 +405,95 @@ or equivalently by using induction:
 \section{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:sigma-types}
 
-As before for function types in type theory we are often using a
-more general version of the product type which allow the type of
-the second component to vary dependent on the choice of the first
-component of a pair. This is called the $\Sigma$-type, because it
+Just as we generalized function types (\autoref{sec:function-types}) to dependent function types (\autoref{sec:pi-types}), it is often useful to generalize the product types from \autoref{sec:finite-product-types} to allow the type of
+the second component of a pair to vary depending on the choice of the first
+component. This is called a $\Sigma$-type, because in set theory it
 corresponds to an infinite sum (in the sense of coproducts or
 disjoint union) over a given type.
 
-Given a type $A:\UU$ and a family $B : A \to \UU$ the dependent
-pair type is written as $\sm{x:A} B(x) : \UU$. Its elements are
-pairs $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
-If $B$ is constant then the dependent pair type is the
+Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
+pair type is written as $\sm{x:A} B(x) : \UU$.
+Alternative notations are 
+\[ \tsm{x:A} B(x) \hspace{2cm} \dsm{x:A}B(x) \hspace{2cm} \lsm{x:A} B(x). \]
+The way to construct elements of this type is by pairing: we have
+$\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
+If $B$ is constant, then the dependent pair type is the
 ordinary cartesian product type:
 \[ (\sm{x:A} B) \jdeq (A \times B).\]
-All the constructions on $\Sigma$-types arise as straightforward generalisations of the ones for product types.
+All the constructions on $\Sigma$-types arise as straightforward generalisations of the ones for product types, with dependent functions often replacing non-dependent ones.
 
-To define a non-dependent function out of a $\Sigma$-type
-$f : (\sm{x:A} B(x)) \to C$ we provide a function 
-$g : \prd{x:A} B(x) \to C$ and we can define $f$ via the defining
+For instance, the recursion principle says that to define a non-dependent function out of a $\Sigma$-type
+$f : (\sm{x:A} B(x)) \to C$, we provide a function 
+$g : \prd{x:A} B(x) \to C$, and then we can define $f$ via the defining
 equation
 \[ f(\tup{a}{b}) \defeq g(a)(b) \]
-We can derive the projections for $\Sigma$-types:
+For instance, we can derive the first projection from a $\Sigma$-type:
 \begin{eqnarray*}
-  \fst & : & \sm{x : A}B(x) \to A \\
-  \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p))
+  \fst & : & (\sm{x : A}B(x)) \to A.
+  % \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p)).
 \end{eqnarray*}
-which have the interesting twist that the first projection appears
-in the type of the second. Hence we have to define it first!
-We apply the principle we have just introduced and define
+by the defining equation
 \begin{eqnarray*}
-  \fst(\tup{a}{b}) & \defeq & a \\
-  \snd(\tup{a}{b}) & \defeq & b
+  \fst(\tup{a}{b}) & \defeq & a.
+  % \snd(\tup{a}{b}) & \defeq & b
 \end{eqnarray*}
-To convince ourselves that the equation defining the second
-projection is correct we note that $B (\fst(\tup{a}{b})) \jdeq
-B(a)$ using the defining equation for the first projection and
-indeed $b : B(a)$. 
-
-We package this construction into the recursor for $\Sigma$:
-\[ \rec{\sm{x:A}B(x)} : \prd{C:\UU'}(\prd{x:A} B(x) \to C) \to
-(\sm{x:A}B(x)) \to C \]
-with the defining equation
-\[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
-
-To construct a dependent function out of a $\Sigma$-type we 
-need a family $C : (\sm{x:A} B(x)) \to \UU'$ and a function
-\[ g : \prd{x:A} B(x) \to C(\tup{a}{b}) \]
-then we can derive a function 
+However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
+\[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
+Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
+This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU'$, we need a function
+\[ g : \prd{x:A} B(x) \to C(\tup{a}{b}). \]
+We can then derive a function 
 \[ f : \prd{p : \sm{x:A}B(x)} C(p) \]
 with  defining equation
 \[ f(\tup{a}{b}) \defeq g(a)(b).\]
-This scheme can be packaged into induction for $\Sigma$-types
+Applying this with $C(p)\defeq B(\fst(p))$, we can define $\snd : \prd{p:\sm{x : A}B(x)}B(\fst(p))$ with the obvious equation
+\[ \snd(\tup{a}{b})  \defeq  b. \]
+To convince ourselves that this is correct, we note that $B (\fst(\tup{a}{b})) \jdeq B(a)$, using the defining equation for $\fst$, and
+indeed $b : B(a)$.
+
+We can package the recursion and induction principles into the recursor for $\Sigma$:
+\[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU'}\Big(\tprd{x:A} B(x) \to C\Big) \to
+\big(\tsm{x:A}B(x)\big) \to C \]
+with the defining equation
+\[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
+and the corresponding induction operator:
 \begin{align*}
-  \ind{\Sigma{x:A}B(x)} : & \prd{C:(\sm{x:A} B(x)) \to \UU'}\\
-   & (\prd{x:A} B(x) \to C(\tup{a}{b})) \\
-   & \to \prd{p : \sm{x:A}B(x)}
+  \ind{\Sigma{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU'}
+    \Big(\tprd{x:A} B(x) \to C(\tup{a}{b})\Big)
+    \to \dprd{p : \sm{x:A}B(x)} C(p)
 \end{align*}
 with the defining equation 
-\[ \ind{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
-And as before the recursor arises as the special case of induction
+\[ \ind{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b). \]
+As before, the recursor is the special case of induction
 when the family $C$ is constant.
 
-As an example we derive what is called \emph{type-theoretic axiom of choice}
-which isn't really an axiom, because it is provable from the rules
-for $\Sigma$-types. We will discuss this in more detail later in \autoref{subsec:pat?}. 
-We assume types $A,B : \UU$ and a 
-family $R : A \to B \to \UU$ to derive
-\[ \ac : (\prd{x:A} \sm{y :B} R(x,y)) \to (\sm{f:A\to B}
-\prd{x:A} R(x,f(x))) \]
-Reading $\Pi$ as forall and $\Sigma$ as there exists, the type
-expresses: \emph{if for all $x:A$ there is a $y:B$ such that
-  $R(x,y)$ then there is a function $f : A \to B$ such that for
-  all $x:A$ we have that $R(x,f(x))$.} Using the projections we have
-just introduced we define $\ac$ as
-\[ \ac(g) \defeq \tup{\lamu{x:A} \fst(g(x))}{\lamu{x:A} \snd(g(x))} \]
-We convince ourselves that indeed given $g:\prd{x:A} \sm{y :B}
-R(x,y)$:
+As a further example, consider the following principle, where $A$ and $B$ are types and $R:A\to B\to \UU$.
+\[ \ac : \Big(\tprd{x:A} \tsm{y :B} R(x,y)\Big) \to
+\Big(\tsm{f:A\to B} \tprd{x:A} R(x,f(x))\Big)
+\]
+We may regard $R$ as a ``proof-relevant relation'' between $A$ and $B$, with $R(a,b)$ the type of witnesses for relatedness of $a:A$ and $b:B$.
+Then $\ac$ says intuitively that if we have a dependent function $g$ assigning to every $a:A$ a dependent pair $(b,r)$ where $b:B$ and $r:R(a,b)$, then we have a function $f:A\to B$ and a dependent function assigning to every $a:A$ a witness that $R(a,f(a))$.
+Our intuition tells us that we can just split up the values of $g$ into their components.
+Indeed, using the projections we have just defined, we can define:
+\[ \ac(g) \defeq \Big(\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))\Big). \]
+To verify that this is well-typed, note that $g:\prd{x:A} \sm{y :B} R(x,y)$, we have
 \begin{eqnarray*}
 \lamu{x:A} \fst(g(x)) & : &  A \to  B \\
-\lamu{x:A} \snd(g(x)) & : &  \prd{x:A} R(a,\fst(g(x))) 
+\lamu{x:A} \snd(g(x)) & : &  \tprd{x:A} R(a,\fst(g(x))).
 \end{eqnarray*}
-and observing that 
-\[ \prd{x:A} R(x,\fst(f(x))) \jdeq (\lamu{f:A\to B} \prd{x:A}
-R(x,f(x)))(\lamu{x:A} \fst(g(x))) \]
-we can conclude that
-\[ \tup{\lamu{x:A} \fst(g(x))}{\lamu{x:A} \snd(g(x))} : (\sm{f:A\to B}
-\prd{x:A} R(x,f(x))) .\]
-This construction shows that this is very different to the axiom
-of choice in set theory: the premise was already given by a
-function whose result are pairs, all we have done is the take it apart into two
-functions: one representing the choice and the other its correctness.
-% ex use ind
-% derive dependent ac
+Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the functior $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the codomain of \ac:
+\[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
+\Big(\lamu{f:A\to B} \tprd{x:A} R(x,f(x))\Big)\big(\lamu{x:A} \fst(g(x))\big). \]
+Thus, we have
+\[ \Big(\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))\Big) : \tsm{f:A\to B} \tprd{x:A} R(x,f(x))\]
+as required.
+
+If we read $\Pi$ as ``for all'' and $\Sigma$ as ``there exists'', then the type of the function $\ac$ expresses:
+\emph{if for all $x:A$ there is a $y:B$ such that $R(x,y)$, then there is a function $f : A \to B$ such that for all $x:A$ we have $R(x,f(x))$}.
+Since this sounds like a version of the axiom of choice, the function \ac has traditionally been called the \emph{type-theoretic axiom of choice}.
+However, there is clearly no choice actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness.
+In \autoref{sec:axiom-choice} we will give a correct formulation of ``the axiom of choice''.
+
 
 \section{Coproduct types}
 \label{sec:coproduct-types}

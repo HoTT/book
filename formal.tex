@@ -1,18 +1,13 @@
-\chapter{Formal Rules of Type Theory}
-{
-%\documentclass[12pt,a4paper]{amsart}
-%\documentclass[10pt,a4paper]{article}
-%% \ifx\pdfpageheight\undefined\PassOptionsToPackage{dvips}{graphicx}\else%
-%% \PassOptionsToPackage{pdftex}{graphicx}
-%% \PassOptionsToPackage{pdftex}{color}
-%% \fi
+\chapter{The Rules of Type Theory}
+\label{cha:rules}
+\bgroup % restrict the scope of our macros to this section
+
+\newcommand{\ctx}{\ \textsf{ctx}}
+\newcommand{\emptyctx}{\ensuremath{\cdot}}
 
 \newcommand{\production}{\vcentcolon\vcentcolon=}
 
 \newcommand{\mkbox}[1]{\ensuremath{#1}}
-
-\newcommand{\Prod}[2]{\displaystyle\prod _{#1}~#2}
-\newcommand{\Sum}[2]{\displaystyle\sum _{#1}~#2}
 
 \newcommand{\app}{\mathsf{app}}
 
@@ -23,476 +18,749 @@
 \newcommand{\rats}{\mathbb{Q}}
 \newcommand{\ints}{\mathbb{Z}}
 
-%% \usepackage{epsf}
-%% \usepackage{epsfig}
-%% % \usepackage{isolatin1}
-%% \usepackage{a4wide}
-%% \usepackage{verbatim}
-%% \usepackage{proof}
-%% \usepackage{latexsym}
-%% \usepackage{amssymb}
-%% % \usepackage{stmaryrd}
-
-%\usepackage{mytheorems}
-%\newtheorem{proposition}[theorem]{Proposition}
-
-%\documentstyle{article}
-
-
-%\setlength{\oddsidemargin}{0in} % so, left margin is 1in
-%\setlength{\textwidth}{6.27in} % so, right margin is 1in
-%\setlength{\topmargin}{0in} % so, top margin is 1in
-%\setlength{\headheight}{0in}
-%\setlength{\headsep}{0in}
-%\setlength{\textheight}{9.19in} % so, foot margin is 1.5in
-%\setlength{\footskip}{.8in}
-
-% Definition of \placetitle
-% Want to do an alternative which takes arguments
-% for the names, authors etc.
-
 \newcommand{\lbr}{\lbrack\!\lbrack}
 \newcommand{\rbr}{\rbrack\!\rbrack}
 \newcommand{\sem}[2] {\lbr #1 \rbr_{#2}}  % interpretation of the terms
 \newcommand{\APP}[2] {{\sf app}(#1,#2)}  % interpretation of the terms
 \newcommand{\nats}{\mathbb{N}}
 \newcommand{\Con}{{\sf Con}}
-\newcommand{\myType}{{\sf Type}}
 \newcommand{\Elem}{{\sf Elem}}
 \newcommand{\myId}{1}
 \newcommand{\mypp}{{\sf p}}
 \newcommand{\qq}{{\sf q}}
 \newcommand{\mySp}{{\sf Sp}}
-
-\newcommand{\conv}{~{\sf conv}~}
-\newcommand{\SUP}{{\sf sup}}
-\newcommand{\PAIR}{{\sf pair}}
-\newcommand{\mysuc}{{\sf s}}
-\newcommand{\myUU}{{\sf U}}
-\newcommand{\WW}{{\sf W}}
-\newcommand{\NN}{{\sf N}}
-\newcommand{\Ord}{{\sf Ord}}
+\newcommand{\conv}{\sim}
 \newcommand{\LIM}{{\sf lim}}
 \newcommand{\nn}{{\sf n}}
-\newcommand{\myzero}{{\sf 0}}
-
 \newcommand{\Fam}{{\sf Fam}}
-\newcommand{\pacomment}[1]{}
-\newcommand{\myrefl}[1]{{\sf refl_{#1}}}
 
-TODO: ensure that macros used in this appendix are replaced by the standard
-ones in the file {\tt macros.tex}. -- Dan G
+A major advantage of type theory is that it admits a formalization, which
+simultaneously incorporates the rules of mathematics with the rules of logic,
+and thus providing a completely self-contained system for formulating theorems
+and their proofs, enabling their computer verification.  In this appendix we
+offer two presentations of the formal system and its syntax.  The first
+presentation (in \autoref{syntax-informally}) is written informally and
+emphasizes an underlying untyped type theory as basic support for the syntax
+and for aspects of computation in the system.  The second (in
+\autoref{syntax-more-formally}) is more formal, hence more complete, and is
+closer to standard practice in the literature of type theory.
 
-In this appendix we give a presentation of a version of intensional
-Dependent Type Theory. 
+Both presentations deal with {\em terms} or {\em expressions}, built
+inductively from smaller expressions, with accompanying syntax, according to
+precise rules.
 
-The role of this appendix is to give a concise, simple, but informal
-presentation of a formal type theory, which can be 
-used as a standard of mathematical rigour for informal work in
-Martin-L\"{o}f's intensional dependent type theory.  If work in
-Homotopy Type Theory can, in principle, be represented in this formal
-type theory with extra axioms and rules, such as the Univalence Axiom and
-rules for Higher Dimensional Inductive Definitions,
-then the claim is that the mathematics has met this standard of
-rigour. (TODO: How could presenting a formal type theory be enough for
-rigour in the presence of axioms and HIT?  Don't we also need a semantic 
-model in traditional mathematics that sends False to Empty? The statement about
-consistency made later should be clarified, in that it only works in the absence
-of such axioms. -- Dan G)
+In both presentations, an assertion that a term $a$ is of type $A$ is written
+in the form $a:A$ and is called a {\em judgment}.  Theorems are proved by
+correctly deriving such judgments, as the book explains.  The {\em inference
+  rules} of the system, to be presented below, completely specify what the
+allowable steps are in such a derivation.
 
-\section*{The Raw Syntax}
- The objects and types of our type theory may be written as terms using the following syntax, which is an extension
-of $\lambda$-calculus with {\em variables} $x, x',\dots$, {\em primitive} constants $c,c',\dots$, {\em defined} constants $f,f',\dots$, and term
-forming operations
-$$
-t,u,A,B\production x~|~\lam{x} t~|~t(u)~|~c~|~f
-$$
+Such judgments are formulated in an ambient {\em context}, which
+is of the form
+\[
+  \Gamma =  x_1:A_1, x_2:A_2,\dots,x_n:A_n
+\]
+Here each pair $x_i:A_i$ in the list $\Gamma$ consists of a variable $x_i$ and
+an expression $A_i$ containing only the variables $x_1,\dots,x_{i-1}$ freely,
+signifying that each variable $x_i$ is assumed to have type $A_i$ in the
+context $\Gamma$.
 
- We follow the usual convention about free and bound variables. In particular,
-we write $B[a/x]$ or simply $B[a]$ if the variable $x$ is clear from the context, for the 
-substitution of $a$ for $x$ in $B$, with possible renaming for avoiding clash of variables.
-More generally, if $J$ is a judgment, we may write $J[a/x]$ or simply $J[a]$ for the 
-judgment obtained by substitution of $a$ for $x$ in $J$.
+We use the notation
+\[
+  \Gamma \vdash a:A
+\]
+to denote the {\em sentence} that asserts the judgment that the object $a$ has
+type $A$ in the context $\Gamma$.  Here $a$ and $A$ are terms in which only the
+variables declared in $\Gamma$ appear freely.  Under the assumption that a
+context $\Gamma$ is understood to be present in the background, we may write
+simply
+\[
+  a:A
+\]
+When $\Gamma$ is empty, we may write simply
+\[
+  \vdash a:A
+\]
+or
+\[
+  \emptyctx \vdash a:A
+\]
+where $\emptyctx$ denotes the empty context.
 
-\medskip
+Such judgments will be justified only for contexts that are well formed.  We
+introduce a primitive judgment of the form
+\[
+  \vdash \Gamma \ctx
+\]
+to express that notion.  The intuitive idea will be that each $A_i$ is a valid
+type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.
 
- We may write $t(t_1,\dots,t_n)$ or $t(t_1)(t_2)\dots (t_n)$ for $(((t(t_1))(t_2))\dots (t_n))$.  We may also use infix notation, writing $t_1\; u\; t_2$ for $u(t_1,t_2)$ when $u$ is a primitive or defined constant.
+The following inference rule, common to both presentations, expresses the idea
+that the variables in a context have been declared to have types.
+\begin{itemize}
+\item if $\Gamma = x_1:A_1, x_2:A_2,\dots,x_n:A_n$, and $\vdash \Gamma \ctx$,
+  then $\Gamma \vdash x_i : A_i$ for any $i$.
+\end{itemize}
 
-\medskip
+Another inference rule asserts that the empty context is well formed.
+\begin{itemize}
+\item $\vdash \emptyctx \ctx$
+\end{itemize}
 
- Each defined constant will have zero, one or more {\em defining equations}.  There will be two kinds of defined constant.  An {\em explicit} defined constant $f$ will have a single defining equation
+A third type of judgment handles equality: the notation $t \jdeq u : A$
+signifies that $t$ and $u$, of type $A$, are equal by definition.  Rules will
+be presented for handling such judgments, and a corresponding algorithm for
+establishing equality will be part of the first presentation.
+
+We write $B[a/x]$ for the substitution of a term $a$ for free occurrences of
+the variable $x$ in the term $B$, with possible renaming for avoiding capture
+of variables, as discussed in \autoref{sec:function-types}.  We use
+$$B[a_1/x_1,\dots,a_n/x_n]$$ as an abbreviation for the repeated substitution
+$$B[a_1/x_1]\dots[a_n/x_n].$$
+
+To {\em bind} a variable $x$ to an expression $B$ means to incorporate both of
+them into a larger expression or {\em abstraction}, whose purpose is to
+annnotate $B$ with information about which variable is available next for
+substitution.  Various notations are used for binding, such as $x \mapsto B$,
+$\lam x B$, and $x.B$, according to the context.  We may write $C[a]$ for the
+substitution of a term $a$ for the variable in the abstracted expression, i.e.,
+we may define $(x.B)[a]$ to be $B[a/x]$.  As discussed in
+\autoref{sec:function-types}, changing the name of a bound variable everywhere
+within an expression is considered not to change the expression.  
+
+One may also regard each variable $x_i$ of a sentence
+\[
+  x_1:A_1, x_2:A_2,\dots,x_n:A_n \vdash a : A
+\]
+to be bound within the sentence, with its {\em scope} incorporating the
+expressions $A_{i+1}$, \dots, $A_n$, $a$, and $A$.
+
+\section{The inference rules, informally}\label{syntax-informally}
+
+\subsection{The Raw Syntax}
+
+The objects and types of our type theory may be written as terms using
+the following syntax, which is an extension of $\lambda$-calculus with {\em
+  variables} $x, x',\dots$, {\em primitive} constants $c,c',\dots$, {\em
+  defined} constants $f,f',\dots$, and term forming operations
+\[
+  t \production x \mid \lam{x} t \mid t(t') \mid c \mid f
+\]
+
+The notation used here means that a term $t$ is either a variable $x$, or it
+has the form $\lam{x} t$ where $x$ is a variable and $t$ is a term, or it has
+the form $t(t')$ where $t$ and $t'$ are terms, or it is a primitive constant
+$c$, or it is a defined constant $f$.  The syntactic markers '$\lambda$', '(',
+')', and '.' are punctuation for guiding the human eye.
+
+We use $t(t_1,\dots,t_n)$ as an abbreviation for the repeated application
+$t(t_1)(t_2)\dots (t_n)$.  We may also use {\em infix} notation, writing $t_1\;
+\star\; t_2$ for $\star(t_1,t_2)$ when $\star$ is a primitive or defined
+constant.
+
+Each defined constant will have zero, one or more {\em defining equations}.
+There will be two kinds of defined constant.  An {\em explicit} defined
+constant $f$ will have a single defining equation
   \[ f(x_1,\dots,x_n)\defeq t,\]
-where $t$ does not involve $f$.  An example of explicit definition will be displayed later.  We introduce the explicit defined constant 
-$\circ$, for composition of functions, with defining equation
-  \[ \circ (x,y)(z) \defeq x(y(z))\]
-and use infix notation $x\circ y$ for $\circ(x,y)$.
+where $t$ does not involve $f$.  
 
-
+As an example, we introduce the explicit defined constant $\circ$, for
+composition of functions, with defining equation
+  \[ \circ (x,y)(z) \defeq x(y(z)),\]
+and we use infix notation $x\circ y$ for $\circ(x,y)$.
 
 The second kind of defined constant will be used in connection with a form of type having some primitive constants that are used to introduce elements into types of that form.  With each such primitive constant $c$ there will be a defining equation of the form
-$$
-f(x_1,\dots,x_n,c(y_1,\dots,y_m)) \defeq t,
-$$
-where now $f$ may occur in $t$, but now only in such a way that, in the context where $f$ is introduced it will be a totally defined typed function.
-The paradigm examples of such defined functions are the functions defined by primitive recursion on the natural numbers.  We may call this kind of definition of a function a {\em total recursive definition}.  In computer science and logic this kind of definition of a function on a recursive data type has been called a {\em definition by structural recursion}
+\[
+  f(x_1,\dots,x_n,c(y_1,\dots,y_m)) \defeq t,
+\]
+where now $f$ may occur in $t$, but now only in such a way that, in the context
+where $f$ is introduced it will be a totally defined typed function.  The
+paradigm examples of such defined functions are the functions defined by
+primitive recursion on the natural numbers.  We may call this kind of
+definition of a function a {\em total recursive definition}.  In computer
+science and logic this kind of definition of a function on a recursive data
+type has been called a {\em definition by structural recursion}.
+
+We introduce the notion of {\em convertibility} $t \conv t'$ between terms $t$
+and $t'$ as the equivalence relation generated by all instances of the
+elementary reduction
+\[
+  (\lam{x} t)(u) \conv t[u/x].
+\]
+and by all instances of defining equations, such as the one for $x \circ y$
+presented above, and by those to be introduced below.
+
+The equality judgments $t \jdeq u : A$ are derived by the following single rule.
+\begin{itemize}
+\item if $t:A$, $u:A$, and $t \conv u$, then $t \jdeq u : A$
+\end{itemize}
+Equality is an equivalence relation.
+
+%% \begin{itemize}
+%% \item if $t:A$, then $t \jdeq t : A$
+%% \item if $t \jdeq u : A$, then $u \jdeq t : A$
+%% \item if $t \jdeq u : A$ and $u \jdeq v : A$, then $t \jdeq v : A$
+%% \end{itemize}
+
+The following conversion rule allows us to replace a type by one equal to it in
+a typing judgment.
+\begin{itemize}
+\item if $a:A$ and $A \jdeq B$ then $a:B$
+\end{itemize}
+
+\subsection{Type Universes}
+
+We introduce a hierarchy of {\em universes} denoted by primitive constants
+$\UU_n$, for each $n=0,1,\ldots$.  They satisfy the following rules.  The first
+two say that the universes form a sequential hierarchy of types, and the third expresses
+the idea that an object of a universe can serve as a type and stand to the
+right of a colon in judgments.
+
+\begin{itemize}
+\item $\UU_m : \UU_n$ for $m < n$
+\item if $A:\UU_m$ and $m \le n$, then $A:\UU_n$.
+\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\vdash \Gamma, x:A \ctx$
+\end{itemize}
+
+In the body of the book, an equality judgment $A \jdeq B : \UU_n$ between types
+$A$ and $B$ is usually abbreviated to $A \jdeq B$.  This is an instance of
+typical ambiguity, and the choice of $n$ doesn't affect the validity of the judgment.
+
+\subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
+
+We introduce a primitive constant $c_\Pi$.  An expression of the form
+$c_\Pi(A,\lam{a} B)$ will be written as $\tprd{a:A}B$.  Judgments concerning
+such expressions and expressions of the form $\lam{x} b$ are introduced by the following rules.
+
+\begin{itemize}
+\item if $\Gamma \vdash A:\UU_n$ and $\Gamma,a:A \vdash B:\UU_n$, then $\Gamma \vdash \tprd{a:A}B : \UU_n$
+\item if $\Gamma, a:A \vdash b:B$ then $\Gamma \vdash (\lam{a} b) : (\tprd{a:A} B)$
+\item if $g:\tprd{a:A} B$ and $t:A$ then $g(t):B[t/a]$
+\end{itemize}
+
+If $a$ does not occur freely in $B$, we abbreviate $\tprd{a:A} B$ as $A
+\rightarrow B$ and derive the following rule.
+
+\begin{itemize}
+\item if $g:A \rightarrow B$ and $t:A$ then $g(t):B$
+\end{itemize}
+
+\subsection{Natural numbers}
+
+The type of natural numbers is obtained by introducing primitive constants
+$\N$, $0$, and $\suc$ with the following rules.
+\begin{itemize}
+  \item $\N : \UU_0$,
+  \item $0:\N$,
+  \item $\suc:\N\rightarrow \N$.
+\end{itemize}
+
+Furthermore, we can define functions by primitive recursion.  If we have
+$C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\tprd{n:\N}C(n)$ whenever we have
+  \begin{align*}
+    d & : C(0) \\
+    e & : \tprd{x:\N}(C(x)\rightarrow C(\suc (x)))
+  \end{align*}
+with the defining equations
+  \begin{align*}
+    f(0) & \defeq d \\
+    f(\suc (x)) & \defeq e(x,f(x))
+  \end{align*}
+ 
+As usual $C,d,e$ may have been obtained in an implicit context $\Gamma$ in which variables $x_1,\ldots,x_n$ are declared.  Then there will be the extra implicit parameters $x_1,\ldots,x_n$, so that the fully explicit primitive recursion schema is
+  \begin{align*}
+    f(x_1,\dots,x_n,0) & \defeq d(x_1,\dots,x_n) \\
+    f(x_1,\dots,x_n,\suc (x)) & \defeq e(x_1,\dots,x_n,x,f(x_1,\dots,x_n,x))
+  \end{align*}
+
+\subsection{The finite types}
+
+We introduce primitive constants $\ttt$, $\bfalse$, $\btrue$, $\emptyt$,
+$\unit$, $\bool$ satisfying the following rules.
+
+\begin{itemize}
+\item $\emptyt : \UU_0$, $\unit : \UU_0$, $\bool : \UU_0$,
+\item $\ttt:\unit$, $\bfalse:\bool$, $\btrue:\bool$.
+\end{itemize}
+
+Given $C : \emptyt \rightarrow \UU_n$ we can introduce a defined constant $f:\tprd{x:\emptyt} C(x)$, with no defining equations.
+
+Given $C : \unit \rightarrow \UU_n$ and $c : C(\ttt)$ we can introduce a defined constant $f:\tprd{x:\unit} C(x)$, with defining equation $f(\ttt) \defeq c$.
+
+Given $C : \bool \rightarrow \UU_n$, $c : C(\bfalse)$, and $c' : C(\btrue)$, we can introduce a defined constant $f:\tprd{x:\bool} C(x)$, with defining equations
+$f(\bfalse)\defeq c$ and $f(\btrue)\defeq c'$.
+
+\subsection{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
+
+We introduce primitive constants $c_\Sigma$ and $c_{\mathsf{pair}}$.  An
+expression of the form $c_\Sigma(A,\lam{a} B)$ will be written as $\sm{a:A}B$,
+and an expression of the form $c_{\mathsf{pair}}(a,b)$ will be written as $\tup
+a b$.  We write $A\times B$ instead of $\sm{x:A} B$ if $x$ is not free in $B$.
+
+Judgments concerning such expressions are introduced by the following
+rules.
+
+\begin{itemize}
+\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\sm{a:A}B(a) : \UU_n$
+\item if, in addition, $x:A$ and $y:B(x)$, then $\tup x y:\sm{a:A}B(a)$
+\end{itemize}
+
+If we have $A$ and $B$ as above, $C : \sm{a:A}B(a) \rightarrow \UU_m$, and
+\[
+  d:\tprd{x:A}{y:B(x)} C(\tup x y)
+\]
+we can introduce a defined constant 
+\[
+  f:\tprd{p:\sm{a:A}B(a)} C(p)
+\]
+with the defining equation
+\[
+  f(\tup x y)\defeq d(x,y).
+\]
+
+\subsection{Coproduct types}
+We introduce primitive constants $c_+$, $c_\inlsym$, and $c_\inrsym$.
+We will write $A+B$ instead of $c_+(A,B)$, $\inl(a)$ instead of
+$c_\inlsym(a)$, and $\inr(a)$ instead of $c_\inrsym(a)$.
+
+\begin{itemize}
+\item if $A,B : \UU_n$ then $A + B : \UU_n$
+\item moreover, $\inl: A \rightarrow A+B$ and $\inr: B \rightarrow A+B$
+\end{itemize}
+
+If we have $A$ and $B$ as above, $C : A+B \rightarrow \UU_m$, $c:\tprd{a:A} C(\inl(a))$, and $c':\tprd{b:B} C(\inr(b))$,
+then we can introduce a defined constant $f:\tprd{x:A+B}C(x)$ with the defining equations
+\begin{align*}
+  f(\inl(a)) & \defeq c(a) \\
+  f(\inr(b)) & \defeq c'(b)
+\end{align*}
+
+\subsection{$W$-Types}
+
+For $W$-types we introduce primitive constants $c_\wtypesym$ and $c_\suppsym$.
+An expression of the form $c_\wtypesym(A,\lam{a} B)$ will be written as
+$\wtype{a:A}B$, and an expression of the form $c_\suppsym(x,u)$ will be written
+as $\supp(x,u)$
+
+\begin{itemize}
+\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\wtype{a:A}B : \UU_n$
+\item if moreover, $a:A$ and $u:B(a)\rightarrow \wtype{a:A}B$ then $\supp(a,u):\wtype{a:A}B$.
+\end{itemize}
+ 
+Here also we can define functions by total recursion.  If we have $A$ and $B$
+as above and $C : \wtype{a:A}B \rightarrow \UU_m$, then we can introduce a defined constant
+$f:\tprd{z:\wtype{a:A}B} C(z)$ whenever we have
+\[
+  d:\tprd{x:A}{u:B(x) \rightarrow \wtype{a:A}B}((\tprd{y:B}C(u(y))) \rightarrow C(\supp(x,u))
+\]
+with the defining equation
+\[
+  f(\supp(x,u)) \defeq d(x,u,f\circ u)
+\]
+
+\subsection{Identity types}
+
+We introduce primitive constants $c_\idsym$ and $c_\reflsym$.  We will write
+$\id[A] a b$ for $c_\idsym(A,a,b)$ and $\refl a$ for $c_\reflsym(A,a)$, when
+$a:A$ is understood.
+
+\begin{itemize}
+\item if $A : \UU_n$, $a:A$, and $b:A$ then $\id[A] a b : \UU_n$
+\item if, moreover, $a:A$, then $\refl a :\id[A] a a $.
+\end{itemize}
+
+If $\Gamma, y:A, z:\id[A] a y \vdash C : \UU_m$ and $d:C[a/y,\refl{a}/z]$ then we can introduce a defined constant 
+\[
+  f:\tprd{y:A}{z:\id[A] a y} C
+\]
+with defining equation
+\[
+  f(a,\refl{a})\defeq d.
+\]
+
+\subsection{Algorithmic and semantic issues}
+
+\message{Thierry and Peter can now start re-writing this section.  The
+  following text is old.}
+
+\subsubsection*{Conversion and reduction}
 
 Together with $\beta$-conversion
-$$
-(\lam{x} t)(u) \defeq t[u/x]
-$$
+\[
+  (\lam{x} t)(u) \defeq t[u/x]
+\]
 and thinking of $\defeq$ as a rewriting rule (unfolding definitions),
 this forms a rewriting system which has the confluence (or Church-Rosser) property: we can
 define $t \conv u$ to mean that $t$ and $u$ can be reduced to the same term by using
 $\beta$-reduction and recursion.
 
-\section*{The forms of judgment}
 
- In type theory, we mainly derive assertions or judgments of the form $A~\myType$ (which means ``$A$ is a correct type'') or $a:A$ (which means ``$a$ is a correct term of type $A$'').  It will also be useful to have judgments of the form $B~\Fam(A)$,
-which means ``$B$ is a correct family of types, $B(x)$ for $x:A$''.
-The judgment $A=B~\myType$ is defined to mean $A~\myType,~B~\myType$ and $A\conv B$
-while the judgment $t=u:A$ is defined to mean $t:A,~u:A$ and $t\conv u$.
-In general
-these assertions are done inside a {\em context} (or ``space of parameters''), which is of
-the form
-$$
-\Gamma ~=~  x_1:A_1,~x_2:A_2,\dots,~x_n:A_n
-$$
-and we write, for example, $A~\myType~(\Gamma)$ and $a:A~(\Gamma)$. 
-
- We write simply $A~\myType$ and $a:A$ if the context is empty, or if the context
-can be omitted without ambiguity.
-
- If $x_1:A_1,~x_2:A_2,\dots,~x_n:A_n$ is a context, this means that we have
-derived $A_1~\myType$ and then $A_2~\myType~(x_1:A_1)$, and $A_3~\myType~(x_1:A_1,x_2:A_2)$
-$\dots$
-
-\medskip
-%\pagebreak
-
-\section*{The Rules of a Basic Type Theory}
-Here we give rules for some standard basic forms of type; the forms 
-
-  $$\Pi(A,B),\NN,\NN_0,\NN_1,\NN_2,\Sigma(A,B),A_1+A_2,\Ord,\WW(A,B)
-    \mbox{ and }Id(A,a,a').$$
-%
-Among the primitive constants, we have $\Pi$ and we write $(\Pi x:A)B$ instead
-of $\Pi(A,\lam{x} B)$. We write $A\rightarrow B$ instead of $(\Pi x:A)B$ if
-$x$ is not free in $B$.
-
-\medskip
-
-\subsection{The General and $\Pi$ Rules}
- The basic general rules of type theory are 
-\begin{itemize}
-\item if $B~\myType~(x:A)$ then $\lam{x} B~\Fam(A)$
-\item if $B~\Fam(A)$ then 
-\begin{itemize}
-\item if $a:A$ then $B(a)~\myType$,
-\item $\Pi(A,B)~\myType$,
-\item if $b:B(x)~(x:A)$ then $\lam{x} b:\Pi(A,B)$, and
-\item if $c:\Pi(A,B)$ and $a:A$ then $c(a):B(a)$
-\end{itemize}
-\item if $a:A$ and $A= B$ then $a:B$
-\end{itemize}
-
-\medskip
-
- When writing rules we follow the convention that we don't write explicitly the whole context.  For instance, the more explicit rule for abstraction should be: if $b:B(x)~(\Gamma,x:A)$ then $\lam{x} b:\Pi(A,B)~(\Gamma)$.
-
-\medskip
-
-We now present the basic forms of primitive type.  
-
-\subsection*{The Type of Natural Numbers}
-We start with
-the type of natural numbers, which  is obtained by adding primitive constants
-$\NN,~\myzero,~\mysuc$ with the following rules.
-\begin{itemize}
-\item $\NN~\myType$,
-\item $\myzero:\NN$,
-\item $\mysuc:\NN\rightarrow \NN$.
-\end{itemize}
-
- Furthermore, we can define functions by primitive recursion.  If we have
-$C~\Fam(\NN)$ we can introduce $f:\Pi(\NN,C)$ whenever we have
-$$
-d:C(\myzero)~~~~~~~e:(\Pi x:\NN)(C(x)\rightarrow C(\mysuc (x)))
-$$
-with the defining equations
-$$
-f(\myzero) \defeq d~~~~~~~~~~~~f(\mysuc (x)) \defeq e(x,f(x))
-$$
- 
-As usual $C,d,e$ may have been obtained in an implicit context $\Gamma$ in which variables $x_1,\ldots,x_n$ are declared.  Then there will be the extra implicit parameters $x_1,\ldots,x_n$, so that the fully explicit primitive recursion schema is
-$$
-f(x_1,\dots,x_n)(\myzero) \defeq d[x_1,\dots,x_n]~~~~~~~~f(x_1,\dots,x_n)(\mysuc (x)) \defeq e[x_1,\dots,x_n,x,f(x_1,\dots,x_n)(x)]
-$$
-
-\medskip
-\subsection*{The Finite Types $\NN_0,\NN_1,\NN_2$}
-
-We introduce primitive constants $0,1,\NN_0,\NN_1,\NN_2$ are introduced as primitive constants with the rules
-
-\begin{itemize}
-\item $\NN_0~\myType$, $\NN_1~\myType$, $\NN_2~\myType$,
-\item $0:\NN_1$, $0:\NN_2$, $1:\NN_2$.
-\end{itemize}
- For $k=0,1,2$, if we have $C~\Fam(\NN_k)$ we can introduce $f:\Pi(\NN_k,C)$.  
-\begin{itemize}
-\item When $k=0$ $f$ has no defining equation.  
-\item When $k=1$, if $c_0:C(0)$ then $f$ has the defining equation
-  \[ f(0)\defeq c_0.\]
-\item When $k=2$, if $c_0:C(0)$ and $c_1:C(1)$ then $f$ has the defining equations
-  \[ f(0)\defeq c_0\mbox{ and } f(1)\defeq c_1.\]
-\end{itemize}
-\pacomment{%%%%%%%%%%%%%%%%%
-\begin{itemize}
- \item The {\em empty type} $\NN_0$ is introduced as a primitive constant with the rule
-\begin{itemize}
-\item $\NN_0~\myType$
-\end{itemize}
-
- If we have $C~\Fam(\NN_0)$ we can introduce $f:\Pi(\NN_0,C)$.  Note that in this case there is no defining equation.
-In the special case where $C$ is $\lam{x} C_0$ where $C_0$ does not contain $x$ free, this represents the usual law of absurd elimination $\NN_0\rightarrow C_0$.
-
-\medskip
-
-\item The {\em one element type} $\NN_1$ is introduced, together with $0$, as primitive constants with the rules
-\begin{itemize}
-\item $\NN_1~\myType$,
-\item $0:\NN_1$.
-\end{itemize}
-If we have $C~\Fam(\NN_1)$ and $c_0:C(0)$ we can introduce the defined function 
-$f:(\Pi(\NN_1,C)$ with defining equation
-  \[ f(0)\defeqc_0.\]
-\item The {\em two element type} $\NN_2$ is introduced, together with $0,1$, as primitive constants with the rules
-\begin{itemize}
-\item $\NN_2~\myType$,
-\item $0:\NN_2$ and $1:\NN_2$
-\end{itemize}
-If we have $C~\Fam(\NN_2)$, $c_0:C(\nn^2_0)$ and $c_1:C(\nn^2_1)$ we can introduce the defined function 
-$f:\Pi(\NN_2,C)$ with defining equations
-  \[ f(0)\defeqc_0\mbox{ and }f(1)\defeq c_1.\]
-Note that $\NN_2$ is the type of boolean values, here $0$ and $1$.
-\end{itemize}
-}%%%end pacomment%%%%%%%%%%%%%%%%
-
-\subsection*{$\Sigma$-Types}
-For $\Sigma$-types we introduce primitive constants $\Sigma$ and $\PAIR$ with the rules
-\begin{itemize}
-\item if $B~\Fam(A)$ then $\Sigma(A,B)~\myType$, and
-\item if $a:A$ and $b:B(a)$ then $\PAIR(a,b):\Sigma(A,B)$.
-\end{itemize}
-We write $(\Sigma x:A)B$ instead
-of $\Sigma(A,\lam{x} B)$ and we write $A\times B$ instead of $(\Sigma x:A)B$ if
-$x$ is not free in $B$.  If we have $C~\Fam(\Sigma(A,B))$ and
-$
-d:(\Pi x:A)(\Pi y:B(x))C(\PAIR(x,y))
-$
-we can introduce $f:\Pi(\Sigma(A,B),C)$ with the defining equation
-$$
-f(\PAIR(x,y))\defeq d(x,y).
-$$
-
-\medskip
-
-\subsection*{Binary Sum Types $A_1+A_2$}
-We introduce primitive constants $+,in_1,in_2$ with the rules
-\begin{itemize}
-\item if $A_1,A_2~\myType$ then $+(A_1,A_2)~\myType$, and
-\item if $a:A_i$ then $in_i(a):A_i$, for $i=1,2$.
-\end{itemize}
-We write $A_1+A_2$ instead of $+(A_1,A_2)$.
-If $C~\Fam(A_1+A_2)$ and $d_i:\Pi(A_i,C\circ in_i)$ for $i=1,2$,
-then we can introduce a defined constant $f:\Pi(A_1+A_2,C)$ with the defining equations
-  \[ f(in_i(x))~\defeq ~d_i(x)\mbox{ for } i=1,2.\]
-
-\subsection*{Types of ordinals}
-We introduce primitive constants $\Ord,~\LIM$ with the rules
-\begin{itemize}
-\item $\Ord~\myType$
-\item $\myzero:\Ord$
-\item $\mysuc:\Ord\rightarrow\Ord$
-\item $\LIM:(\NN\rightarrow\Ord)\rightarrow\Ord$
-\end{itemize}
-
-TODO: Is that a correct definition of $\Ord$?  I'm under the impression that $\LIM ( n \mapsto [2n] )$
-and $\LIM ( n \mapsto [n] )$ should be the same, where $[n]$ is $s^n(0)$. -- Dan G
-
-If $C~\Fam(\Ord)$ and $d:C(\myzero)$ and $e:(\Pi x:\Ord)(C(x)\rightarrow C(\mysuc(x)))$ and
-$$g:(\Pi u:\NN\rightarrow\Ord)((\Pi n:\NN)C(u(n)))\rightarrow C(\LIM(u))$$
-then we can introduce a defined constant $f:\Pi(\Ord,C)$ with the defining equations
-$$
-f(0) \defeq d~~~~~f(\mysuc(n)) \defeq e(n,f(n))~~~~~f(\LIM(u)) \defeq g(u,f\circ u)
-$$
-where $(f\circ u)(n) = f(u(n))$.
-
-\subsection*{$\WW$-Types}
-For $\WW$-types we introduce primitive constants $\WW$ and $\SUP$ with the rules
-\begin{itemize}
-\item if $B~\Fam(A)$ then $\WW(A,B)\myType$, and
-\item if $a:A$ and $u:B(a)\rightarrow \WW(A,B)$ then $\SUP(a,u):\WW(A,B)$.
-\end{itemize}
- 
- Here also we can define functions by total recursion. If we have
-$C~\Fam(\WW(A,B))$ we can introduce $f:(\Pi z:\WW(A,B))C(z)$ whenever we have
-$$
-d:(\Pi x:A)(\Pi u:B(x)\rightarrow \WW(A,B))((\Pi y:B)C(u(y)))\rightarrow C(\SUP(x,u))
-$$
-with the defining equation
-$$
-f(\SUP(x,u)) \defeq d(x,u,f\circ u)
-$$
-where $(f\circ u)(y) \defeq f(u(y))$.
-
-\subsection*{Identity Types $Id_A(a,a')$}
-We introduce primitive constants $Id$ and $\myrefl{}$ with the rules
-\begin{itemize}
-\item if $A~\myType$ and $a:A$ then $Id(A,a)~\Fam(A)$, and
-\item if $a:A$ then $\myrefl{a}:Id(A,a)(a)$.
-\end{itemize}
-If $C~\myType~(y:A,z:Id(A,a,y))$ and $d:C[a,\myrefl{a}]$ then we can introduce a defined constant 
-  $$f:(\Pi y:A)(\Pi z:Id(A,a))C$$ 
-with defining equation
-  \[ f(a,\myrefl{a})\defeq d.\]
-When we make explicit a variable declaration $x:A$ 
-and let $a$ be $x$ 
-so that we have 
-  $$C~\myType~(x,y:A, z:Id(A,x,y))\mbox{ and  }d:(\Pi x:A)C[x,x,\myrefl{x}]$$ 
-then we have the defined constant
-  $$f':(\Pi x,y:A)(\Pi z:Id(A,x,y))C$$ 
-with defining equation
-  \[ f'(x,x,\myrefl{x})\defeq d(x).\]
-This defined constant $f'$, with its defining equation, corresponds to the rules for identity types originally formulated by Per Martin-L\"{o}f.   The defined constant $f$, with its defining equation, corresponds to the rules given later by Christine Paulin-Mohring.  It is not entirely trivial to recapture $f$ from $f'$.
-
-
-\section*{Type Universes}
-
- A type theory can be extended by introducing a type universe $\myUU$ with rules that ``reflect'' the forms of type previously considered, here the forms of type of the basic type theory.  The general rules for $\myUU$ are
-
-\begin{itemize}
-\item $\myUU~\myType$, and
-\item $A~\myType$ if $A:\myUU$.
-\end{itemize}
-
-The rules reflecting the forms of type of the basic type theory are
-
-\begin{itemize}
-\item $\NN,\NN_0\NN_1,\NN_2:\myUU$,
-\item if $A_1,A_2:\myUU$ then $A_1+A_2:\myUU$,
-\item if $A:\myUU$ and $B:A\rightarrow\myUU$ then     $\Pi(A,B),\Sigma(A,B),\WW(A,B):\myUU$, and 
-\item if $A:\myUU$ and $a,a':A$ then $Id(A,a,a'):\myUU$.
-\end{itemize}
-
-Having added the type universe $\myUU$ we may introduce another type universe
-$\myUU^+$ that has all the previous rules that $\myUU$ has, but in addition reflects the above two general rules of $\myUU$; i.e., it has the rules
-
-\medskip
-
-\begin{itemize}
-\item $\myUU:\myUU^+$, and
-\item $A:\myUU^+$ if $A:\myUU$.
-\end{itemize}
-
-\medskip
-
-Iterating we get an infinite hierarchy of universes $\myUU_0,\myUU_1,\ldots$, where
-$\myUU_0=\myUU$ and $\myUU_{n+1}=\myUU_n^+$ for $n=0,1,\ldots$.  They share the reflection rules
-stated above for $\myUU$:
-
-\begin{itemize}
-\item if $A_1,A_2:\myUU_n$ then $A_1+A_2:\myUU_n$,
-\item if $A:\myUU_n$ and $B:A\rightarrow\myUU_n$ then     $\Pi(A,B),\Sigma(A,B),\WW(A,B):\myUU_n$, and 
-\item if $A:\myUU_n$ and $a,a':A$ then $Id(A,a,a'):\myUU_n$.
-\end{itemize}
-
-\pacomment{%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{itemize}
-\item $\myUU_n~\myType$
-\item $A~\myType$ if $A:\myUU_n$
-\item $A:\myUU_{n+1}$ if $A:\myUU_n$
-\item $\myUU_n:\myUU_{n+1}$
-\end{itemize}
- }%%%%%%%%%%%%%END pacomment%%%%%%%%%%%%%%%%%%%%%
-
-\medskip
-\subsection*{Some Syntactical Properties of the Type Theory}
+\subsubsection*{Some Syntactical Properties of the Type Theory}
  This system has the following syntactical properties.
 
 \begin{thm}\label{red}
-If $A~\myType$ and $A \conv A'$ then $A'~\myType$.
+If $A : \UU$ and $A \conv A'$ then $A' : \UU$.
 If $t:A$ and $t \conv t'$ then $t':A$.
 \end{thm}
 
 \begin{thm}\label{SN}
- If $A~\myType$ then $A$ is strongly normalizable.
-If $t:A$ then $A$ and $t$ are strongly normalizable. 
+ If $A : \UU$ then $A$ is strongly normalizable.
+If $t:A$ then $A$ and $t$ are strongly normalizable. % note: ``strongly normalizable'' is undefined
 \end{thm}
 
-TODO: Insert somewhere the definition of {\em strongly normalizable}. -- Dan G
-
- We say that a term is {\em in normal form} if it cannot be reduced.
-A closed normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$ for some
-primitive constant $c$ (where $\vec{v}$ may be omitted if empty, for instance, as with $\NN$). 
-More generally we have the following explicit description of terms in normal form.
+We say that a term is {\em in normal form} if it cannot be reduced.  A closed
+normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$
+for some primitive constant $c$ (where $\vec{v}$ may be omitted if empty, for
+instance, as with $\N$).  More generally we have the following explicit
+description of terms in normal form.
 
 \begin{lem}\label{normal}
 The terms in normal form can be described by the following syntax
-$$
-v\production  k~|~\lam{x} v~|~c(\vec{v})~|~f(\vec{v})
-$$
-$$
-k\production x~|~k(v)~|~f(\vec{v})(k)
-$$
+\begin{align*}
+ v & \production  k \mid \lam{x} v \mid c(\vec{v}) \mid f(\vec{v}) \\
+ k &\production x \mid k(v) \mid f(\vec{v})(k)
+\end{align*}
 where $f(\vec{v})$ represents a partial application of the defined function $f$.
 In particular, a type in normal form is of the form $k$ or $c(\vec{v})$.
 \end{lem}
 
 \begin{thm}
 If $A$ is in normal form then the 
-judgment $A~\myType$ is decidable. If $A~\myType$ and $t$ is in normal form then the judgment
+judgment $A : \UU$ is decidable. If $A : \UU$ and $t$ is in normal form then the judgment
 $t:A$ is decidable.
 \end{thm}
 
 
- A corollary is the {\em consistency} property: there is no proof of $\NN_0$ in the empty
-context. Indeed if we have $t:\NN_0$ then by Theorems \ref{red} and \ref{SN} the term $t$ will reduce
-to a term in normal form $t'$ that satisfies $t':\NN_0$, but this is not possible by a 
+ A corollary is the {\em consistency} property: there is no proof of $\emptyt$ in the empty
+context. Indeed if we have $t:\emptyt$ then by Theorems \ref{red} and \ref{SN} the term $t$ will reduce
+to a term in normal form $t'$ that satisfies $t':\emptyt$, but this is not possible by a 
 purely combinatorial argument using Lemma \ref{normal}. Similarly, we have the following
 {\em canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
-normal form $\mysuc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
+normal form $\suc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
 in normal form, the typing relation is {\em decidable}, and identifying type-checking with
 {\em proof-checking}, we can indeed ``recognize a proof of an assertion when we see one''.
 
-\subsection*{General Remarks}
+\egroup
 
-%This presentation is strongly inspired by two  Martin-L\"of 1972 and 1973.
+\section{The inference rules, more formally}\label{syntax-more-formally}
 
- The system of rules with introduction (primitive constants) and elimination and computation rules
-(defined constant) is inspired by Gentzen natural deduction. The possibility of strengthening
-the elimination rule for existential quantification was indicated by Howard 1969. The strengthening of
-the axioms for disjunction appears in Martin-L\"of 1972, and for absurdity elimination and Identity type
-in Martin-L\"of 1973. The $W$-types were introduced in Martin-L\"of 1979. They generalize a notion
-of trees introduced by Tait 1968.%(himself inspired from unpublished work of Spector).
+\bgroup % restrict the following macros to this section
 
-TODO: fix the citations in the neighboring paragraphs. -- Dan G.
+% FIXME slowly deprecating these:
+\newcommand{\oftype}{\mathord{:}}
+\newcommand{\types}{\vdash}
+\newcommand{\myType}{\textsf{ type}} %  \newcommand{\type}{\textsf{type}}
 
- The generalized form of primitive recursion for natural numbers and ordinals appear in Hilbert 1925.
-This motivated G\"odel's system $T$, 1958, which was analyzed by Tait 1966, who used, following
-G\"odel 1958, the terminology
-``definitional equality'' for conversion: two terms are {\em definitionally equal} if they reduce
-to a common term by means of a sequence of applications of the reduction rules. This terminology was
-also used by de Bruijn 1973 in his presentation of Automath.
+\newcommand{\synId}{\mathsf{Id}} %FIXME
+\newcommand{\synOne}{\mathsf{1}}
+\newcommand{\synZero}{\mathsf{0}}
+\newcommand{\synPlus}{+}
 
- Streicher 1991, Theorem 4.13, explains how to give the semantics in contextual category of terms in normal
-form using a simple syntax similar to the one we have presented.
+\newcommand{\synrefl}{\mathsf{refl}}
+\newcommand{\synlambda}{\mathsf{\lambda}}
+\newcommand{\myRefl}{\mathsf{refl}} % \newcommand{\refl}{\mathsf{refl}}
+\newcommand{\synsup}{\mathsf{sup}}
+\newcommand{\synz}{\mathsf{z}}
+\newcommand{\syno}{\mathsf{o}}
+\newcommand{\synw}{\mathsf{w}}
 
-}
-%\end{document}  
+%% Basic syntax of type theory:
+% judgements
+\renewcommand{\G}{\Gamma}
+\newcommand{\ctx}{\ensuremath{\mathsf{ctx}}}
+\newcommand{\emptyctx}{\cdot}
+\newcommand{\wfctx}[1]{\vdash #1\ \ctx}
+\newcommand{\oftp}[3]{#1 \vdash #2 : #3}
+\newcommand{\jdeqtp}[4]{#1 \vdash #2 \jdeq #3 : #4}
+\newcommand{\tmtp}[2]{#1 \mathord{:} #2}
+% rules
+\newcommand{\form}{\textsc{form}}
+\newcommand{\intro}{\textsc{intro}}
+\newcommand{\elim}{\textsc{elim}}
+\newcommand{\comp}{\textsc{comp}}
+\newcommand{\Weak}{\mathsf{Wkg}}
+\newcommand{\Vble}{\mathsf{Vble}}
+\newcommand{\Exch}{\mathsf{Exch}}
+\newcommand{\Subst}{\mathsf{Subst}}
 
+\let\syn\mathsf
 
+\textbf{TODO:} 
+\begin{enumerate}
+\item explain $\to$ vs $\vdash$ for type families (in chapter 1)
+\item better connect this to chapter 1
+\item use $B$ instead of $B(x)$; explain where binding occurs
+\item explain binding (here or intro?)
+\item explain substitution
+\item unify with book's macros; especially, use $\jdeq$ and universe symbol
+\item two ways of handling univalence
+\item emphasize f/i/e/c pattern, and congruence
+\item admissibility of structural rules; don't grow context down
+\item explain the diff wrt MLTT (new axioms, choice of presentation)
+\end{enumerate}
+
+%Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that
+%a variable, $x$, say, is bound within $B$ and can be renamed without changing
+%the identity of $B$.  In that case, we'll let $B[a]$ denote the result of
+%substituting $a$ for the (outermost) variable bound in $B$ and removing the
+%abstraction that recorded its presence and its name.  
+
+Our presentation of the structural rules is based largely on
+\cite{hofmann:syntax-and-semantics}, which also includes a full construction of
+the syntax.  
+%Our selection of logical rules, and in particular our treatment of
+%the universe, follows \cite{martin-lof:bibliopolis}.
+
+We take as basic the judgment forms
+\begin{mathpar}
+\wfctx\G
+\and
+\oftp\G{a}{A}
+\and
+\jdeqtp\G{a}{a'}{A}
+\end{mathpar}
+
+\subsection{Contexts}
+
+\begin{mathpar}
+  \inferrule*[right=\ctx-\textsc{emp}]
+  {\ }
+  {\wfctx\emptyctx}
+\and
+  \inferrule*[right=\ctx-\textsc{ext}]
+  {\wfctx\G \\ \oftp\G{A}{\UU_i}}
+  {\wfctx{(\G,\tmtp xA)}}
+\end{mathpar}
+
+\subsection{Structural Rules}
+
+The structural rules of the type theory are (where $\mathcal{J}$ may be any the
+conclusion of any of the judgment forms):
+
+\begin{mathpar}
+  \inferrule*[right=$\Vble$]
+  {\wfctx{(\G,\tmtp xA,\Delta)}}
+  {\oftp{\G,\tmtp xA,\Delta}{x}{A}}
+\and
+  \inferrule*[right=$\Subst$]
+  {\oftp\G{a}{A} \\ \Gamma,\ x \oftype A,\ \Delta \types \mathcal{J}}
+  {\Gamma,\ \Delta[a/x] \types \mathcal{J}[a/x]}
+\and
+  \inferrule*[right=$\Weak$]
+  {\oftp\G A\UU_i \\ \Gamma,\ \Delta \types \mathcal{J}}
+  {\Gamma,\ x \oftype A,\ \Delta \types \mathcal{J}}
+\end{mathpar}
+
+Definitional equality (also known as syntactic or judgmental equality):
+\begin{mathparpagebreakable}
+  \inferrule*{\oftp\G{a}{A}}{\jdeqtp\G{a}{a}{A}}
+\and
+  \inferrule*{\jdeqtp\G{a}{b}{A}}{\jdeqtp\G{b}{a}{A}}
+\and
+  \inferrule*{\jdeqtp\G{a}{b}{A} \\ \jdeqtp\G{b}{c}{A}}{\jdeqtp\G{a}{c}{A}}
+\and
+  \inferrule*{\oftp\G{a}{A} \\ \jdeqtp\G{A}{B}{\UU_i}}{\oftp\G{a}{B}}
+\and
+  \inferrule*{\jdeqtp\G{a}{b}{A} \\ \jdeqtp\G{A}{B}{\UU_i}}{\jdeqtp\G{a}{b}{B}}
+\end{mathparpagebreakable}
+
+Additionally, in the logical rules below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
+\[
+  \inferrule*[right=$\Pi$-\intro-eq]
+  {\jdeqtp\G{A}{A'}{\UU_i} \\
+   \jdeqtp{\G,\tmtp xA}{B}{B'}{\UU_i} \\
+   \jdeqtp{\G,\tmtp xA}{b}{b'}{B}}
+  {\jdeqtp\G{\lam{x:A} b}{\lam{x:A'} b'}{\tprd{x:A} B}}
+\]
+
+\subsection{Universes and families}
+
+In the rules below, $i$ is a natural number.
+
+\begin{mathpar}
+\inferrule*[right=\UU-\textsc{intro}]
+  {\ }
+  {\oftp\G{\UU_i}{\UU_{i+1}}}
+\and
+\inferrule*[right=\UU-\textsc{cumul}]
+  {\oftp\G{A}{\UU_i}}
+  {\oftp\G{A}{\UU_{i+1}}}
+\end{mathpar}
+
+\subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\Pi$-\form]
+  {\oftp{\G,\tmtp xA}{B}{\UU_i}}
+  {\oftp\G{\tprd{x:A}B}{\UU_i}}
+\and
+  \inferrule*[right=$\Pi$-\intro]
+  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\ \oftp{\G,\tmtp xA}{b}{B}}
+  {\oftp\G{\lam{x:A} b}{\tprd{x:A} B}}
+\and
+  \inferrule*[right=$\Pi$-\elim]
+  {\oftp\G{f}{\tprd{x:A} B} \\ \oftp\G{a}{A}}
+  {\oftp\G{f(a)}{B[a/x]}}
+\and
+  \inferrule*[right=$\Pi$-\comp]
+  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\ \oftp{\G,\tmtp xA}{b}{B} \\ \oftp\G{a}{A}}
+  {\jdeqtp\G{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
+\end{mathparpagebreakable}
+
+As a special case of this, when $B$ does not depend on $x$, we obtain the ordinary function type $A\to B := \Pi_{x \oftype A} B$. \\
+
+\textbf{TODO:} product types?
+
+\subsection{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\Sigma$-\form]
+  {\oftp\G{A}{\UU_i} \\ \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
+  {\oftp\G{\tsm{x:A} B}{\UU_i}}
+\and
+  \inferrule*[right=$\Sigma$-\intro]
+  {\oftp\G A\UU_i \\ \Gamma,\ x \oftype A \types B(x)\UU_i}
+  {\Gamma,\ x \oftype A,\ y \oftype B(x) \types \textsf{pair} (x, y) : \Sigma_{x \oftype A} B(x)}
+\and
+  \inferrule*[right=$\Sigma$-\elim]
+  {\Gamma,\ z \oftype \Sigma_{x \oftype A} B(x) \types C(z)\UU_i \\ \Gamma,\ x \oftype A,\ y \oftype B(x) \types d(x,y) : C(\textsf{pair}(x, y))}
+  {\Gamma,\ z \oftype \Sigma_{x \oftype A} B(x) \types \textsf{split}_d (z) : C(z)}
+\and
+  \inferrule*[right=$\Sigma$-\comp]
+  {\Gamma,\ z \oftype \Sigma_{x \oftype A} B(x) \types C(z)\UU_i \\ \Gamma,\ x \oftype A,\ y \oftype B(x) \types d(x,y) : C(\textsf{pair}(x, y))}
+  {\Gamma,\ x \oftype A,\ y \oftype B(x) \types \textsf{split}_d (\textsf{pair} (x,y))=d(x,y) : C(\textsf{pair} (x, y))}
+\end{mathparpagebreakable}
+
+Again,  the special case where $B$ does not depend on $x$ is of particular interest: this gives the cartesian product $A \times B := \Sigma_{x \oftype A} B$. \\
+
+\subsection{Identity types}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\synId$-\form]{\oftp\G A\UU_i}{\Gamma,\ x,y\oftype A \types \synId_A(x,y)\UU_i}
+\and
+  \inferrule*[right=$\synId$-\intro]{\oftp\G A\UU_i}{\Gamma,\ x\oftype A \types \myRefl_A(x):\synId_A(x,x)}
+\and
+  \inferrule*[right=$\synId$-\elim]{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types C(x,y,u)\UU_i \\ \Gamma,\ z\oftype A \types d(z):C(z,z,\myRefl_A(z))}{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types J_{z. d}(x,y,u) : C(x,y,u)}
+\and
+  \inferrule*[right=$\synId$-\comp]{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types C(x,y,u)\UU_i \\ \Gamma,\ z\oftype A \types d(z):C(z,z,r(z))}{\Gamma,\ x\oftype A \types J_{z.d}(x,x,\myRefl_A(x)) = d(x) : C(x,x,\myRefl_A(x))}
+\end{mathparpagebreakable}
+
+\subsection{$\wtypesym$-types}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \types B(x)\UU_i}{\oftp\G \wtypesym_{x \oftype A} B(x)\UU_i}
+\and
+  \inferrule*[right=$\wtypesym$-\intro]{\Gamma,\ x \oftype A \types B(x)\UU_i}{\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)] \types \synsup(x, y) : \wtypesym_{u \oftype A} B(u)}
+\\
+  \mathclap{\inferrule*[right=$\wtypesym$-\elim]
+    {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \types C(w) \UU_i \\
+     \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{1.55cm} \\
+     \hspace{6cm} \types d(x, y, z) : C(\synsup(x, y))}
+  {\Gamma,\ w \oftype \wtypesym_{x \oftype A} B(x) \types \textsf{wrec}_{d} (w) : C(w)}}
+\\
+  \mathclap{\inferrule*[right=$\wtypesym$-\comp]
+  {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \types C(w) \UU_i \\
+   \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{2cm} \\
+    \hspace{6.45cm} \types d(x, y, z) : C(\synsup(x, y))}
+  {\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)] \types \textsf{wrec}_{d} (\synsup(x, y)) \hspace{2.8cm} \\
+    \hspace{2.4cm} = d(x, y, \lambda u \oftype B(x). \mathsf{wrec}_d(\mathsf{app}(y, u))): C(\synsup(x, y))}}
+\end{mathparpagebreakable}
+
+\subsection{Type empty type $\mathsf{0}$}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=${\sf 0}$-\form]{\textit{}}{\types {\sf 0}\UU_i}
+\and
+  \text{(No introduction rules.)}
+\and
+  \inferrule*[right=${\sf 0}$-\elim]{\Gamma, \ x \oftype {\sf 0} \types C(x)\UU_i}{\Gamma, \ x \oftype {\sf 0} \ \types \textsf{case} (x) : C(x)}
+\and
+  \text{(No computation rules.)}
+\end{mathparpagebreakable}
+
+\subsection{The unit type $\mathsf{1}$}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=${\sf 1}$-\form]{\ }{\types {\sf 1} \UU_i}
+\and
+  \inferrule*[right=${\sf 1}$-\intro]{\ }{\types * : {\sf 1}}
+\and
+  \inferrule*[right=${\sf 1}$-\elim]{\Gamma,\ x \oftype {\sf 1} \types C(x)\UU_i \\ \oftp\G d : C(*)}{\Gamma,\ x \oftype {\sf 1} \types \textsf{rec}_d (x) : C(x)}
+\and
+  \inferrule*[right=${\sf 1}$-\comp]{\Gamma,\ x \oftype {\sf 1} \types C(x)\UU_i \\ \oftp\G d : C(*)}{\oftp\G \textsf{rec}_d (*) = d : C(*)}
+\end{mathparpagebreakable}
+
+\textbf{TODO:} natural numbers
+
+\subsection{Coproduct types}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$+$-\form]{\oftp\G A\UU_i \\ \oftp\G B\UU_i}{\oftp\G A + B \UU_i}
+\and
+  \inferrule*[right=$+$-\intro\ 1.]{\oftp\G A\UU_i \\ \oftp\G B\UU_i}{\Gamma,\ x \oftype A \types \textsf{inl}(x) : A+ B}
+\and
+  \inferrule*[right=$+$-\intro\ 2.]{\oftp\G A\UU_i \\ \oftp\G B\UU_i}{\Gamma,\ y \oftype B \types \textsf{inr}(y) : A +B}
+\and
+  \inferrule*[right=$+$-\elim]{\Gamma,\ z \oftype A + B \types C(z)\UU_i \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ z \oftype A + B \types \textsf{case}_{d_0,d_1}(z) : C(z)}
+\and
+  \inferrule*[right=$+$-\comp\ 1.]{\Gamma,\ z \oftype A + B \types C(z)\UU_i \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ x \oftype A \types \textsf{case}_{d_0, d_1}(\textsf{inl}(x))=d_0(x) : C(\textsf{inl}(x))}
+\and
+  \inferrule*[right=$+$-\comp\ 2.]{\Gamma,\ z \oftype A + B \types C(z)\UU_i \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ y \oftype B \types \textsf{case}_{d_0, d_1}(\textsf{inr}(y))=d_1(y) : C(\textsf{inr}(y))}
+\end{mathparpagebreakable}
+
+\subsection{Further rules} \label{subsec:optional-rules}
+
+In this section we present the \emph{$\eta$-rule} for $\Pi$-types, and the
+\emph{functional extensionality} rule(s).  Our formulation of the latter is
+taken from \cite{garner:depprod}; see also \cite{hofmann:thesis}.
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\Pi$-$\eta$]
+    {\oftp\G f : \Pi_{x \oftype A} B(x)}
+    {\oftp\G \eta(f) : f = \lambda x \oftype A. \syn{app}(f,x) : \Pi_{x \oftype A} B(x) }
+\and
+  \inferrule*[right=$\Pi$-ext]
+    {\oftp\G f, g : \Pi_{x \oftype A} B(x) \\
+     \oftp\G h : \Pi_{x \oftype A} \synId_{B(x)}(\syn{app}(f,x),\syn{app}(g,x)) }
+    {\oftp\G \syn{ext}(f,g,h) : \synId_{\Pi_{x \oftype A} B(x)}(f,g) }
+\and
+  \inferrule*[right=$\Pi$-ext-comp-prop]
+    {\Gamma, x \oftype A \types b : B(x) }
+    {\oftp\G \syn{ext\text{-}comp}(x.b): \synId_{\Pi_{x \oftype A} B(x)} \hspace{4.4cm}  \\
+     \hspace{2cm} (\syn{ext}(\lambda x \oftype A. b,\lambda x \oftype A. b,\lambda x \oftype A. \myRefl b), \myRefl (\lambda x \oftype A. b)) }
+\end{mathparpagebreakable}
+
+\egroup
+
+\section{Notes}\label{subsec:general-remarks}
+
+  %This presentation is strongly inspired by two  Martin-L\"of 1972 and 1973.
+
+  The system of rules with introduction (primitive constants) and elimination
+  and computation rules (defined constant) is inspired by Gentzen natural
+  deduction. The possibility of strengthening the elimination rule for
+  existential quantification was indicated in \cite{Howard-1969}. The
+  strengthening of the axioms for disjunction appears in \cite{Martin-Lof-1972},
+  and for absurdity elimination and identity type in \cite{Martin-Lof-1973}. The
+  $W$-types were introduced in \cite{Martin-Lof-1979}. They generalize a notion
+  of trees introduced by \cite{Tait-1968}.
+  %inspired from unpublished work of Spector.
+
+  The generalized form of primitive recursion for natural numbers and ordinals
+  appear in \cite{Hilbert-1925}.  This motivated G\"odel's system $T$,
+  \cite{Goedel-T-1958}, which was analyzed by \cite{Tait-1966}, who used,
+  following \cite{Goedel-1958}, the terminology ``definitional equality'' for
+  conversion: two terms are {\em definitionally equal} if they reduce to a
+  common term by means of a sequence of applications of the reduction
+  rules. This terminology was also used by de Bruijn \cite{deBruijn-1973} in his
+  presentation of {\em Automath}.
+
+  Streicher \cite[Theorem 4.13]{Streicher-1991}, explains how to give the
+  semantics in contextual category of terms in normal form using a simple syntax
+  similar to the one we have presented.
 
 %%% Local Variables: 
 %%% mode: latex
 %%% TeX-master: "main"
 %%% End: 
+

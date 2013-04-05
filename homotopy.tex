@@ -43,8 +43,9 @@ y$---think of the interval as "time" and $p$ as giving the point on the
 path at each moment in time.  Under this definition, $p \ct \opp p$
 (which walks from $x$ to $y$, and then back along the same route, as
 time goes from $0$ to $1$) is not literally the same as the identity
-path (which stays still at x at all times).  So loops don't actually
-form a group!
+path (which stays still at x at all times).  This means our intuitive
+explanation of the fundamental group as the group of loops in a space is
+a little imprecise, because loops don't actually form a group!
 
 The way to fix this is to consider the notion of \emph{homotopy between
 paths}. Because $p \ct \opp p$ walks out and back along the same route, you know
@@ -85,12 +86,23 @@ One of the basic questions that algebraic topologists consider is
 giving a group isomorphism between $\pi_k(X,x_0)$ and some more direct
 description of a group (e.g., by a multiplication table or
 presentation).  Somewhat surprisingly, this is a very difficult
-question, even for spaces as simple as the spheres.  Here is a chart\footnote{copied
+question, even for spaces as simple as the spheres.
+\cref{fig:homotopy-groups-of-spheres} presents a chart\footnote{copied
 from \url{http://en.wikipedia.org/wiki/Homotopy_groups_of_spheres\#Table}, January, 2013}
 that lists the low-dimensional homotopy groups of the low-dimensional
 spheres.
 
+\begin{figure}
+
 \par\includegraphics[width=5.5in]{spheres.png}\par
+
+The $k^{th}$ homotop group ($\pi_k$) of the $n$-dimensional sphere
+($S^n$) is isomorphic to the group listed in each entry.  \textbf{Z} is
+the additive group on the integers; \textbf{Z$_m$} is integers modulo $m$.
+
+\caption{Low-Dimensional Homotopy Groups of Spheres}
+\label{fig:homotopy-groups-of-spheres}
+\end{figure}
 
 There are some patterns, but there is no general formula, and many
 homotopy groups of spheres are currently unknown.  Homotopy groups are
@@ -111,8 +123,8 @@ to the point, but it is homotopy equivalent to it.  The vast majority of
 the constructions one considers (homotopy groups, homology and
 cohomology groups, etc.) are homotopy invariant, in the sense that they
 respect homotopy equivalence.  For example, two homotopy equivalent
-spaces have the same fundamental groups, essentially because the
-fundamental group was defined to be paths modulo homotopy.  Thus, these
+spaces have the same fundamental groups, because the
+fundamental group is defined to be paths modulo homotopy.  Thus, these
 invariants are really properties of the homotopy equivalence classes of
 spaces, which are called \emph{homotopy types}.  Homotopy equivalence is a coarser
 relation on spaces that homeomorphism, so it can bear 
@@ -167,7 +179,7 @@ that you start with.
 
 \subsection{Homotopy theory in type theory}
 
-Type theory is a formal calculus of $\infty$-groupoids. Because you can
+As described in \autoref{cha:basics}, type theory is a formal calculus of $\infty$-groupoids. Because you can
 do homotopy theory through the abstraction of $\infty$-groupoids, you
 can do homotopy theory in type theory.  One might call this
 \emph{synthetic homotopy theory}, by analogy with \emph{synthetic
@@ -264,16 +276,19 @@ If $n\ge 2$, then the group $\pi_n(A)$ is abelian, by the Eckmann--Hilton argume
 
 
 \subsubsection{Univalence}  The univalence axiom plays an essential role in
-  calculating homotopy groups (this is a formal claim: without
-  univalence, type theory is compatible with an interpretation where all
-  paths, including, for example, the loop on the circle, are reflexivity).  You
-  can see this in the calculation of the the fundamental group of the
-  circle below: the map from $\id[\Sn ^1] \base \base$ to $\Z$
-  is defined by mapping a loop on the circle to an automorphism of the set
-  $\Z$, so that, for example, $\lloop \ct \opp \lloop$ is sent
-  to $successor \ct predecessor$, and then applying the automorphism to
-  0. Univalence produces non-trivial paths in the universe, and this is
-  used to extract information from paths in higher inductive types.
+  calculating homotopy groups (without univalence, type theory is
+  compatible with an interpretation where all paths, including, for
+  example, the loop on the circle, are reflexivity).  You can see this
+  in the calculation of the the fundamental group of the circle below:
+  the map from $\id[\Sn ^1] \base \base$ to $\Z$ is defined by mapping a
+  loop on the circle to an automorphism of the set $\Z$, so that, for
+  example, $\lloop \ct \opp \lloop$ is sent to $\mathsf{successor} \ct
+  \mathsf{predecessor}$ (where $\mathsf{successor}$ and
+  $\mathsf{predecessor}$ are automorphisms of $\Z$ viewed, by
+  univalence, as paths in the universe), and then applying the
+  automorphism to 0. Univalence produces non-trivial paths in the
+  universe, and this is used to extract information from paths in higher
+  inductive types.
 
 \subsubsection{Homotopy-theoretic and type-theoretic methods}  In the
 proofs we've done so far, we've found that there are various ways of
@@ -325,17 +340,12 @@ Recall from \autoref{sec:suspension} that $\susp X$ denotes the suspension of $X
   In particular, $\id{\trunc{2n}{X}}{\trunc{2n}{\Omega(\susp X)}}$.
 \end{thm}
 
-Recall from \autoref{sec:colimits} that $X \sqcup^C Y$ is the pushout of $X$ and $Y$ along $C$.
+Recall from \autoref{sec:colimits} that $X \sqcup^C Y$ denotes the (homotopy) pushout of $X$ and $Y$ along $C$.
 
 \begin{thm}[Blakers-Massey Theorem]\label{Blakers-Massey}
-  Assume two pointed spaces $(X,x_0)$ and $(Y,y_0)$, where $C : X \times Y
-  \to \type$.  
-  If $\sm{x:X} C(x,y_0)$ is $i$-connected and $\sm{y:Y} C(x_0,y)$ is
-  $j$-connected, then for all $x:X$ and $y:Y$, the pushout constructor $\glue : C(x,y)
-  \rightarrow X \sqcup^C Y$ is $i+j$-connected.  In
-  particular, 
-  $\trunc {i+j} {C(x,y)} = \trunc {i+j} {\id [X \sqcup^C Y] {(\inl(x))} {(\inr(y))}}$
-  for all $x,y$.
+  Suppose we are given maps $f : C  \rightarrow X$, and $g : C \rightarrow Y$. Taking first the pushout $X \sqcup^C Y $ of $f$ and $g$ and then the pullback of its inclusions $\inl : X \rightarrow X \sqcup^C Y \leftarrow Y : \inr$, we have an induced map $C \to X \times_{(X \sqcup^C Y)} Y$.
+
+  If $f$ is $i$-connected and $g$ is $j$-connected, then this induced map is $(i+j)$-connected. In other words, for any points $x:X$, $y:Y$, the corresponding fiber $C_{x,y}$ of $(f,g) : C \to X \times Y $ gives an approximation to the path space $\id[X \sqcup^C Y]{\inl(x)}{\inr(y)}$ in the pushout.
 \end{thm}
 
 \begin{thm}[Eilenberg--Mac Lane Spaces]\label{Eilenberg-Mac-Lane-Spaces}
@@ -345,13 +355,13 @@ for $k\neq n$.
 \end{thm}
 
 \begin{thm}[van Kampen Theorem]\label{van-Kampen}
-For any maps $f:A\to B$ and $g:A\to C$ with $A$ connected, the fundamental group of the homotopy pushout of $f$ and $g$ is the amalgamated free product (pushout of groups) of $\pi_1(B)$ and $\pi_1(C)$ over $\pi_1(A)$:
-\[ \pi_1(B\sqcup_A C) = \pi_1(B) *_{\pi_1(A)} \pi_1(C).\]
+For any maps $f:A\to B$ and $g:A\to C$ with $A$ connected, the fundamental group of the pushout of $f$ and $g$ is the amalgamated free product (pushout of groups) of $\pi_1(B)$ and $\pi_1(C)$ over $\pi_1(A)$:
+\[ \pi_1(B\sqcup^A C) = \pi_1(B) *_{\pi_1(A)} \pi_1(C).\]
 There is also a generalization to non-connected $A$.
 \end{thm}
 
 \begin{thm}[Covering spaces]\label{thm:covering-spaces}
-  For a connected space $A$, there is an isomorphism between covering spaces over $A$ and sets with an action of $\pi_1(A)$.
+  For a connected space $A$, there is an equivalence between covering spaces over $A$ and sets with an action of $\pi_1(A)$.
 \end{thm}
 
 \begin{thm}[Whitehead's Principle for $n$-types]\label{Whitehead-for-truncated-types}
@@ -382,6 +392,7 @@ For the spheres, we have used two different definitions of
 the $n$-sphere $\Sn ^n$: the first as the suspension of $\Sn ^ {n-1}$ (\autoref{sec:suspension}),
 and the second as a higher inductive type with one base point and one
 loop in $\Omega^n$ (\autoref{sec:circle}); we list the status for both definitions.
+The equivalence of the two can be deduced from the remarks at the end of \autoref{sec:suspension}.
 
 \begin{table}
   \centering
@@ -702,31 +713,29 @@ Thus, it suffices to show, for all $n : \Z$, that
 \[
 \id {\encode'(\lloop^n)} {n}
 \]
-The proof is by induction, with cases for $0$,$1$,$-1$,$n+1$, and
-$n-1$.  
-\note{Gap between this and the induction principle for Z stated in the quotients section}
+The proof is by induction, using \cref{thm:looptothe}.  
 
 \begin{itemize}
 
 \item In the case for $0$, the result is true by definition.
 
-\item In the case for $1$, ${\encode'(\lloop^1)}$ reduces to 
-$\transfib{\code}{\lloop}{0}$, which by
-\autoref{lem:transport-s1-code} is $0 + 1 = 1$.  
+%% \item In the case for $1$, ${\encode'(\lloop^1)}$ reduces to 
+%% $\transfib{\code}{\lloop}{0}$, which by
+%% \autoref{lem:transport-s1-code} is $0 + 1 = 1$.  
 
 \item In the case for $n+1$, 
 \[
 \begin{array}{lll}
   & {\encode'(\lloop^{n+1})}  \\
-= & {\encode'(\lloop^{n} \ct \lloop)} & \\
-= & \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} & \\
-= & \transfib{\code}{\lloop}{(\transfib{\code}{(\lloop^n)}{0})} & \text{by functoriality}\\
-= & {(\transfib{\code}{(\lloop^n)}{0})} + 1 & \text{by \autoref{lem:transport-s1-code}}\\
+= & {\encode'(\lloop^{n} \ct \lloop)} & \text{by definition of $\lloop^{-}$} \\
+= & \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} & \text{by definition of $\encode$}\\
+= & \transfib{\code}{\lloop}{(\transfib{\code}{\lloop^n}{0})} & \text{by functoriality}\\
+= & {(\transfib{\code}{\lloop^n}{0})} + 1 & \text{by \autoref{lem:transport-s1-code}}\\
 = & n + 1 & \text{by the IH} \\
 \end{array}
 \]
 
-\item The cases for negatives are analogous.  \qedhere
+\item The case for negatives is analogous.  \qedhere
 \end{itemize}
 \end{proof}
 
@@ -1242,9 +1251,9 @@ fibration we get is a pushout of the following span:
 \section{Van Kampen's theorem}
 \label{sec:van-kampen}
 
-Van Kampen's theorem calculates the fundamental group $\pi_1$ of a pushout of spaces.
-It is traditionally stated for a topological space $X$ which is the union of two open subspaces $U$ and $V$, but in homotopy-theoretic terms this is just a convenient way of ensuring that $X$ is the homotopy pushout of $U$ and $V$ over their intersection.
-Thus, we will prove a version of van Kampen's theorem for arbitrary homotopy pushouts.
+Van Kampen's theorem calculates the fundamental group $\pi_1$ of a (homotopy) pushout of spaces.
+It is traditionally stated for a topological space $X$ which is the union of two open subspaces $U$ and $V$, but in homotopy-theoretic terms this is just a convenient way of ensuring that $X$ is the pushout of $U$ and $V$ over their intersection.
+Thus, we will prove a version of van Kampen's theorem for arbitrary pushouts.
 
 In this section we will describe a proof of van Kampen's theorem which uses the same type-theoretic encode/decode machinery that we used for $\pi_1(\Sn^1)$ in \autoref{sec:pi1-s1-intro}.
 There is also a more homotopy-theoretic approach; see \autoref{ex:rezk-vankampen}.
@@ -1896,7 +1905,11 @@ the \encode, use assumption (iv).
 
 \section*{Notes}
 
-Shulamn gave the first proof of $\pi_1(\Sn ^1)$ in HoTT, the
+The following people were responsible for creating the first proofs in HoTT of
+the theorems described above, or for formalizing them with a computer proof
+assistant.
+
+Shulman gave the first proof of $\pi_1(\Sn ^1)$ in HoTT, the
 homotopy-theoretic proof described above.  Licata later discovered the
 type-theoretic proof of $\pi_1(\Sn ^1)$ and the encode/decode
 methodology.
@@ -1925,7 +1938,8 @@ Licata proved Whitehead's theorem for $n$-types.
 
 Brunerie proved $\pi_4(\Sn ^3)$.  
 
-Hou developed the theory of covering spaces.  
+Kuen-Bang Hou formulated the proof in HoTT of the characterization of covering
+spaces by sets with an action of the fundamental group and formalized it.
 
 \section*{Exercises}
 

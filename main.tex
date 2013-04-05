@@ -31,9 +31,21 @@
 \usepackage[all,2cell]{xy}
 \UseAllTwocells
 \usepackage{natbib}
-\usepackage{braket}
+\usepackage{braket} % used for \setof{ ... } macro
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathmorphing}
+
+\usepackage{etoolbox}           % get \apptocmd for bibliography
+% tell bibliography to get itself into the table of contents
+\apptocmd{\thebibliography}{
+  \markboth{}{\textsc{Bibliography}}
+  \renewcommand{\markboth}[2]{}
+  \addcontentsline{toc}{part}{\bibname}}{}{}
+
+\usepackage{mathpartir}         % for formal.tex appendix, section 2
+
+\usepackage[numbered]{bookmark} % add chapter/section numbers to the toc in the pdf metadata
+
 \input{macros}
 
 %%%% Header and footers
@@ -41,9 +53,6 @@
 \setlength{\headheight}{15pt}
 \renewcommand{\chaptermark}[1]{\markboth{\textsc{Chapter \thechapter. #1}}{}}
 \renewcommand{\sectionmark}[1]{\markright{\textsc{\thesection\ #1}}}
-
-% TOC depth
-\setcounter{tocdepth}{1}
 
 \lhead[\fancyplain{}{{\thepage}}]%
       {\fancyplain{}{\nouppercase{\rightmark}}}
@@ -56,43 +65,19 @@
 % To avoid compiling stuff other than what you're working on right
 % now, uncomment the following command and give your file as its
 % argument.
-% \includeonly{}
+%\includeonly{}
 
 \begin{document}
 
 \title{The HoTT Book}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Custom title page
-\definecolor{orange}{rgb}{1.0,0.45,0}
-\newgeometry{margin=1cm}%
-\thispagestyle{empty}%
-\ThisCenterWallPaper{1.0}{cover}
-\vspace*{0.05\textheight}
-{\centering
-{\color{orange}\fontsize{70}{100}\fontseries{b}\selectfont The HoTT Book}
-\vfill
-{\color{orange}\fontsize{45}{60}\fontshape{it}\selectfont Univalent Foundations}\par
-}
-\vspace*{0.02\textheight}
-
-\clearpage
-
-%%% Cover page copyright
-\thispagestyle{empty}%
-\hbox{}
-\vfill
-{\centering
-  We thank Jordan Smith of \href{http://rippah2.deviantart.com/}{rippah2.deviantart.com}\\
-  for contributing the cover page photo \emph{``Flames''}.\par}
-\vspace*{0.05\textheight}
-\clearpage
-
-\restoregeometry
+\include{front} %%% Front matter
 
 \include{preface}
 
+\setcounter{tocdepth}{1}        % chapters and sections for the toc
 \tableofcontents
+\setcounter{tocdepth}{2}        % chapters, sections, and subsections for the metadata of the pdf
 
 \include{introduction}
 
@@ -127,6 +112,8 @@
 \part{Appendix}
 
 \appendix
+\renewcommand{\chaptermark}[1]{\markboth{\textsc{Appendix \thechapter. #1}}{}}
+\renewcommand{\sectionmark}[1]{\markright{\textsc{\thesection\ #1}}}
 
 \include{uatofe}
 
@@ -134,16 +121,11 @@
 
 \include{formal}
 
-%%% BIBLIOGRAPHY
-\cleardoublepage
-
-{
-\renewcommand{\markboth}[2]{}
 \bibliographystyle{abbrvnat}
-\addcontentsline{toc}{part}{Bibliography}
-\markboth{}{Bibliography}
 \bibliography{references}
-}
+
+\include{back}
+
 
 
 \end{document}

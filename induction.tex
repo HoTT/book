@@ -273,53 +273,53 @@ This is, of course, very similar to the familiar fact in category theory that if
 In \autoref{sec:initial-alg} we will see that inductive types actually do have a universal property, so that this is a manifestation of that general principle.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Coproducts and dependent sums}
-\label{sec:coprod-depsum}
-
-A \emph{coproduct} of two types $A$ and $B$ behaves much like a disjunction: we can choose to supply either an element of $A$ or an element of $B$.
-Schematically, we declare this as follows:
-\[ \disj{A}{B} : \type \defeq \myInd \left\{
-\begin{array}{ll}
-\inl : & A \to (\disj{A}{B}) \\
-\inr : & B \to (\disj{A}{B})
-\end{array}
-\right. \]
-
-In this definition, $A$ and $B$ act as \emph{parameters}, i.e., they denote arbitrary types. In other words, the type constructor $+$ is really a function taking the types $A$ and $B$ as an argument and returning a new inductive type $\disj{A}{B}$. Although omitted from the above schema for clarity, the constructors $\inl$ and $\inr$ likewise take the types $A$ and $B$ as the first 2 arguments, followed by an element of $A$ (for \inl) or of $B$ (for \inr).
-
-Elimination for a coproduct amounts to case analysis:
-\begin{itemize}
-\item When proving a statement $E : (\disj{A}{B}) \to \type$ about \emph{all} terms of the coproduct $\disj{A}{B}$, it suffices to prove it for $\inl(a)$ and $\inr(b)$, i.e., give proofs $e_l : \prd{a:A} E(\inl(a))$ and $e_r : \prd{b:B} E(\inr(b))$.
-\end{itemize}
-The associated computation rules for the function $\rec{\disj{A}{B}}(E;e_l;e_r) : \prd{x:\disj{A}{B}} E(x)$ are as expected:
-\begin{itemize}
-\item For each $a : A$, we have $\rec{\disj{A}{B}}(E;e_l;e_r;\inl(a)) \jdeq e_l(a)$.
-\item For each $b : B$, we have $\rec{\disj{A}{B}}(E;e_l;e_r;\inr(b)) \jdeq e_r(b)$.
-\end{itemize}
-
-A \emph{product} of two types $A$ and $B$ (denoted by $A \times B$) is the type of pairs $(a,b)$, where $a : A$ and $b : B$. A \emph{dependent sum} is a generalization of this concept, where we allow the type $B$ to depend on $A$. A simple example is the type of pairs $(n,(c_1,\ldots,c_n))$, where the first component is a natural number $n : \nat$ and the second component is a vector $(c_1,\ldots,c_n) : \mathbf{Vec}_C(n)$ of length $n$ over another type $C : \type$.
-Given $A : \type$ and $B : A \to \type$, the dependent sum of $A$ and $B$ is given schematically as
-\[ \sm{a:A} B(a) : \type \defeq \myInd \left\{
-\begin{array}{ll}
-\mathbf{pair} : & \prd{a:A}{b:B(a)} \\
-& \sm{a:A} B(a)
-\end{array}
-\right. \]
-Thus, the parameterized inductive type $\sm{a:A} B(a)$ has a single constructor $\mathbf{pair}$. Its first two arguments (not shown) are the parameters $A$ and $B$; the remaining two arguments are the respective components $a : A$ and $b : B(a)$. We will often denote $\mathbf{pair}(a,b)$ simply by $(a,b)$.
-
-The elimination and computation rules are very simple:
-
-\begin{itemize}
-\item When proving a statement $E : \big(\sm{a:A} B(a)\big) \to \type$ about \emph{all} terms of the dependent sum $\sm{a:A} B(a)$, it suffices to prove it for a pair $(a,b)$, i.e., give a proof $e : \prd{a:A}{b:B(a)} E((a,b))$.
-\end{itemize}
-
-\begin{itemize}
-\item For any $a : A$ and $b : B(a)$, we have $\rec{\sm{a:A} B(a)}(E;e;(a,b)) \jdeq e(a,b)$.
-\end{itemize}
-Using the elimination operator, it is very easy to construct the well-known projection functions $\pi_1$ and $\pi_2$, extracting the first resp. the second component of a pair.
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\section{Coproducts and dependent sums}
+%\label{sec:coprod-depsum}
+%
+%A \emph{coproduct} of two types $A$ and $B$ behaves much like a disjunction: we can choose to supply either an element of $A$ or an element of $B$.
+%Schematically, we declare this as follows:
+%\[ \disj{A}{B} : \type \defeq \myInd \left\{
+%\begin{array}{ll}
+%\inl : & A \to (\disj{A}{B}) \\
+%\inr : & B \to (\disj{A}{B})
+%\end{array}
+%\right. \]
+%
+%In this definition, $A$ and $B$ act as \emph{parameters}, i.e., they denote arbitrary types. In other words, the type constructor $+$ is really a function taking the types $A$ and $B$ as an argument and returning a new inductive type $\disj{A}{B}$. Although omitted from the above schema for clarity, the constructors $\inl$ and $\inr$ likewise take the types $A$ and $B$ as the first 2 arguments, followed by an element of $A$ (for \inl) or of $B$ (for \inr).
+%
+%Elimination for a coproduct amounts to case analysis:
+%\begin{itemize}
+%\item When proving a statement $E : (\disj{A}{B}) \to \type$ about \emph{all} terms of the coproduct $\disj{A}{B}$, it suffices to prove it for $\inl(a)$ and $\inr(b)$, i.e., give proofs $e_l : \prd{a:A} E(\inl(a))$ and $e_r : \prd{b:B} E(\inr(b))$.
+%\end{itemize}
+%The associated computation rules for the function $\rec{\disj{A}{B}}(E;e_l;e_r) : \prd{x:\disj{A}{B}} E(x)$ are as expected:
+%\begin{itemize}
+%\item For each $a : A$, we have $\rec{\disj{A}{B}}(E;e_l;e_r;\inl(a)) \jdeq e_l(a)$.
+%\item For each $b : B$, we have $\rec{\disj{A}{B}}(E;e_l;e_r;\inr(b)) \jdeq e_r(b)$.
+%\end{itemize}
+%
+%A \emph{product} of two types $A$ and $B$ (denoted by $A \times B$) is the type of pairs $(a,b)$, where $a : A$ and $b : B$. A \emph{dependent sum} is a generalization of this concept, where we allow the type $B$ to depend on $A$. A simple example is the type of pairs $(n,(c_1,\ldots,c_n))$, where the first component is a natural number $n : \nat$ and the second component is a vector $(c_1,\ldots,c_n) : \mathbf{Vec}_C(n)$ of length $n$ over another type $C : \type$.
+%Given $A : \type$ and $B : A \to \type$, the dependent sum of $A$ and $B$ is given schematically as
+%\[ \sm{a:A} B(a) : \type \defeq \myInd \left\{
+%\begin{array}{ll}
+%\mathbf{pair} : & \prd{a:A}{b:B(a)} \\
+%& \sm{a:A} B(a)
+%\end{array}
+%\right. \]
+%Thus, the parameterized inductive type $\sm{a:A} B(a)$ has a single constructor $\mathbf{pair}$. Its first two arguments (not shown) are the parameters $A$ and $B$; the remaining two arguments are the respective components $a : A$ and $b : B(a)$. We will often denote $\mathbf{pair}(a,b)$ simply by $(a,b)$.
+%
+%The elimination and computation rules are very simple:
+%
+%\begin{itemize}
+%\item When proving a statement $E : \big(\sm{a:A} B(a)\big) \to \type$ about \emph{all} terms of the dependent sum $\sm{a:A} B(a)$, it suffices to prove it for a pair $(a,b)$, i.e., give a proof $e : \prd{a:A}{b:B(a)} E((a,b))$.
+%\end{itemize}
+%
+%\begin{itemize}
+%\item For any $a : A$ and $b : B(a)$, we have $\rec{\sm{a:A} B(a)}(E;e;(a,b)) \jdeq e(a,b)$.
+%\end{itemize}
+%Using the elimination operator, it is very easy to construct the well-known projection functions $\pi_1$ and $\pi_2$, extracting the first resp. the second component of a pair.
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{W-types}
@@ -428,15 +428,32 @@ Then $g$ and $h$ are equal.
 \end{thm}
 
 
-
 \section{Inductive types are initial algebras}
 \label{sec:initial-alg}
 
 As suggested earlier, inductive types also have a category-theoretic universal property.
 They are \emph{homotopy-initial algebras}: initial objects (up to coherent homotopy) in a category of ``algebras'' determined by the specified constructors.
+Indeed, assume that we have $A : \type$ and $B : A \to \type$, and consider the associated \emph{polynomial functor}: 
+\begin{equation}
+\label{eq:polyfunc}
+P(X) = \sm{x : A} (B(x) \rightarrow X) \, .
+\end{equation}
+Actually, this assignment is functorial only up to homotopy, but this makes no difference in what follows.
+By definition, a \emph{$P$-algebra} is then a type $C$ equipped a function
+$s_C :  PC \rightarrow C$. For $P$-algebras $(C,s_C)$ and $(D,s_D)$, a \emph{homomorphism} between them $(f, s_f) : (C, s_C) \rightarrow (D, s_D)$ consists of a function $f : C \rightarrow D$ and a homotopy between maps $PC \rightarrow D$
+\[
+s_f :  f \circ s_C \, = s_{D} \circ Pf  \, ,
+\]
+where $Pf : PC\rightarrow PD$ is the result of the easily-definable action of $P$ on $f: C \rightarrow D$. Such an algebra homomorphism can be represented suggestively in the form:
+\[
+\xymatrix{
+ PC \ar[d]_{s_C} \ar[r]^{Pf}  \ar@{}[dr]|{s_f} &  PD \ar[d]^{s_D}\\
+C \ar[r]_{f}   & D }
+\] 
+A $P$-algebra $(C, s_C)$ is then said to be \emph{homotopy-initial} if for every $P$-algebra $(D, s_D)$, the type of all algebra maps is contractible.  The formal definitions are given below.
 
-For example, consider the natural numbers.
-The appropriate sort of ``algebra'' is a type equipped with the same structure that the constructors of $\nat$ give to it.
+For a related example, consider the natural numbers.
+The appropriate sort of ``algebra'' here is a type equipped with the same structure that the constructors of $\nat$ give to it.
 
 \begin{defn}
 A \textbf{$\nat$-algebra} is a type $C$ with two terms $c_0 : C$, $c_s : C \to C$. Thus,
@@ -447,9 +464,13 @@ A \textbf{$\nat$-algebra} is a type $C$ with two terms $c_0 : C$, $c_s : C \to C
 
 \begin{defn}
 Fix any $\nat$-algebras $(C,c_0,c_s)$ and $(D,d_0,d_s)$. A \textbf{$\nat$-homomorphism} between them is a function $h : C \to D$ such that $h(c_0) = d_0$ and $h(c_s(c)) = d_s(h(c))$ for any $c : C$. Thus,
-\begin{align*}
-\nhom((C,c_0,c_s),(D,d_0,d_s)) \defeq \sm {h : C \to D} (\id{h(c_0)}{d_0}) \times \prd{c:C} \id{h(c_s(c))}{d_s(h(c))}
-\end{align*}
+%\begin{align*}
+%\nhom((C,c_0,c_s),(D,d_0,d_s)) \defeq \sm {h : C \to D} (\id{h(c_0)}{d_0}) \times \prd{c:C} \id{h(c_s(c))}{d_s(h(c))}
+%\end{align*}
+\begin{multline*}
+\nhom((C,c_0,c_s),(D,d_0,d_s)) \defeq\\
+ \sm {h : C \to D} (\id{h(c_0)}{d_0}) \times \prd{c:C} \id{h(c_s(c))}{d_s(h(c))}
+\end{multline*}
 \end{defn}
 
 We thus have a category of $\nat$-algebras and $\nat$-homomorphisms, and the claim is that $\nat$ is the initial object of this category.
@@ -491,11 +512,14 @@ The $\nat$-algebra $(\nat, \zero, \s)$ is homotopy initial.
     f(0) &\defeq c_0\\
     f(\suc(n)) &\defeq c_s(f(n)).
   \end{align*}
-  These two equalities make $f$ a $\nat$-homomorphism, which we can take as the center of contraction for $\nhom(\nat,C)$.
+  These two equalities make $f$ an $\nat$-homomorphism, which we can take as the center of contraction for $\nhom(\nat,C)$.
   The uniqueness theorem (\autoref{thm:nat-uniq}) then implies that any other $\nat$-homomorphism is equal to $f$.
 \end{proof}
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 Analogous theorems are true for other sorts of inductive types.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 For instance, here are the notions of $\w$-algebras, $\w$-homomorphisms, and h-initiality for W-types.
 
 \begin{defn}
@@ -507,9 +531,9 @@ A \emph{$\w$-algebra} for a type $A : \type$ and type family $B : A \to \type$ i
 
 \begin{defn}
   Fix $A : \type, B : A \to \type$ and any $\w$-algebras $(C,c),(D,d) : \walg \; A \; B$. A \emph{$\w$-homomorphism} between them is a function $h : C \to D$ such that $h(c(a,f)) = d(a,\lamu{b:B(a)} h(f(b)))$ for any $a : A$ and $f : B(a) \to C$. Thus,
-\begin{align*}
-  \whom_{A,B}((C, c),(D,d)) \defeq \sm {h : C \to D} \prd{a:A}{f:B(a)\to C} \id{h(c(a,f))}{\lamu{b:B(a)} h(f(b))}
-\end{align*}
+\begin{multline*}
+  \whom_{A,B}((C, c),(D,d)) \defeq\\ \sm {h : C \to D} \prd{a:A}{f:B(a)\to C} \id{h(c(a,f))}{\lamu{b:B(a)} h(f(b))}
+\end{multline*}
 \end{defn}
 
 \begin{defn}
@@ -520,8 +544,48 @@ A $\w$-algebra $I$ is called \emph{h-initial} if for any other $\w$-algebra $C$,
 \end{defn}
 
 \begin{thm}\label{thm:w-hinit}
-For any type $A : \type$ and type family $B : A \to \type$, the $\w$-algebra $(\wtype{x:A}{B(x)}, \supp)$ is h-initial.
+For any type $A : \type$ and type family $B : A \to \type$, the $\w$-algebra $(\wtype{x:A}B(x), \supp)$ is h-initial.
 \end{thm}
+
+%%%%%
+\begin{proof}[Sketch of proof]
+%%%%%
+Suppose we have $A : \type$ and $B : A \to \type$,
+and consider the associated polynomial functor $P(X)\defeq\sm{x:A}(B(x)\to X)$.
+Let $W \defeq \wtype{x:A}B(x)$.  Then using
+the $\w$-introduction rule from \autoref{sec:w-types}, we have a structure map $s_W\defeq\supp: PW \rightarrow W$. 
+We want to show that the algebra $(W, s_W)$ is
+h-initial. So, let us consider another algebra $(C,s_C)$ and show that the type $T\defeq \whom_{A,B}((W, s_W),(C,s_C)) $ 
+of  $\w$-homomorphisms from $(W, s_W)$ to $(C, s_C)$ is contractible. To do
+so, observe that the $\w$-elimination rule and the $\w$-computation
+rule allow us to define a $\w$-homomorphism $(f, s_f) : (W, s_W) \rightarrow (C, s_C)$, 
+thus showing that $T$ is inhabited. It is furthermore necessary to show that for every $\w$-homomorphism $(g, s_g) : (W, s_W) \rightarrow (C, s_C)$, there is an identity proof 
+\begin{equation}
+\label{equ:prequired}
+p :  (f,s_f) = (g,s_g)  \, .
+\end{equation}
+This uses the fact that, in general, a type of the form $(f,s_f) = (g,s_g) $
+is  equivalent to the type of what we call \emph{algebra $2$-cells}, whose canonical
+elements are pairs of the form $(e, s_e)$, where $e : f=g$ and $s_e$ is a higher identity proof between the identity proofs represented by the following pasting diagrams:
+\[
+\xymatrix{
+PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W} \ar@{}[r]_(.52){s_g}  & PD \ar[d]^{s_D}  \\
+W \ar@/^1pc/[r]^g  \ar@/_1pc/[r]_f  \ar@{}[r]|{e} & D } \qquad
+\xymatrix{
+PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W}   \ar@/_1pc/[r]_{Pf} \ar@{}[r]|{Pe}
+& PD \ar[d]^{s_D}  \\
+W  \ar@/_1pc/[r]_f  \ar@{}[r]^{s_f} & D }
+\]
+In light of this fact, to prove that there exists a term as in~\eqref{equ:prequired}, it is 
+sufficient to show that there is an algebra 2-cell 
+\[
+(e,s_e) : (f,s_f) = (g,s_g) \, .
+\]
+The identity proof $e : f=g$ is now constructed by function extensionality and
+$\w$-elimination so as to guarantee the existence of the required identity
+proof $s_e$. 
+\end{proof}
+%%%%%
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -560,13 +624,13 @@ In the case of W-types, we can characterize a homotopy $W$-type $\wtype{x:A} B(x
                       & \; \sm{\supp : \prd {a} (B(a) \to W) \to W} \\
                       & \; \prd{E : W \to \type} \\
                       & \; \prd{e : \prd{a,f} (\prd{b : B(a)} E(f(b))) \to E(\supp(a,f))} \\
-                      & \; \sm{\rec : \prd{w : W} E(w)} \\
+                      & \; \sm{\rec{} : \prd{w : W} E(w)} \\
                       & \; \prd{a,f} \rec{}(\supp(a,f)) = e(a,\lamu{b:B(a)} \rec{}(f(b)))
 \end{align*}
 In \autoref{cha:hits} we will see some other reasons why propositional computation rules are worth considering.
 
 In this section, we will state some basic facts about homotopy-inductive types.
-We omit the proofs, which are long and technical, and not important for the rest of the book.
+We omit most of the proofs, which are somewhat technical.
 
 \begin{thm}
   For any $A : \type$ and $B : A \to \type$, the type $\w_d(A,B)$ is a mere proposition.
@@ -618,7 +682,7 @@ Putting all of this data together yields another characterization of $\wtype{x:A
                       & \; \sm{\supp : \prd {a} (B(a) \to W) \to W} \\
                       & \; \prd{C : \type} \\
                       & \; \prd{c : \prd{a} (B(a) \to C) \to C} \\
-                      & \; \sm{\rec : W \to C} \\
+                      & \; \sm{\rec{} : W \to C} \\
                       & \; \sm{\beta : \prd{a,f} \rec{}(\supp(a,f)) = c(a,\lamu{b: B(a)} \rec{}(f(b)))} \\
                       & \; \prd{g : W \to C} \\
                       & \; \prd{h : W \to C} \\
@@ -642,16 +706,56 @@ For any $A : \type$ and $B : A \to \type$, the type $\w_h (A,B)$ is a mere propo
 \end{thm}
 
 It turns out all three characterizations of W-types are in fact equivalent:
-\begin{thm}\label{thm:homotopy-induction-times-3}
+\begin{lem}\label{lem:homotopy-induction-times-3}
 For any $A : \type$ and $B : A \to \type$, we have
 \[ \w_d(A,B) \simeq \w_s(A,B) \simeq \w_h(A,B) \]
+\end{lem}
+
+Indeed, we have the following theorem, which is an improvement over \autoref{thm:w-hinit}:
+
+\begin{thm}
+The types satisfying the formation, introduction, elimination, and propositional computation rules for W-types are precisely the homotopy-initial $\w$-algebras.
 \end{thm}
 
-Thus, we have the following corollary, which is an improvement over \autoref{thm:w-hinit}:
+%%%%%
+\begin{proof}[Sketch of proof]
+%%%%%
+Inspecting the proof of \autoref{thm:w-hinit}, we see that only the \emph{propositional} computation rule was required to establish the h-initiality of $\wtype{x:A}B(x)$. 
+For the converse implication, let us assume that the polynomial functor associated
+to $A : \type$ and $B : A \to \UU$, has an h-initial algebra $(W,s_W)$. To derive the $\w$-formation rule, we 
+let  $(\w x {\, : \, } A) B(x) \defeq W$. The $\w$-introduction rule is equally simple to
+derive; namely, for $a : A$ and $t \colon B(a) \rightarrow W$,  we define $\supp(a,t) : W$ as the 
+result of applying the structure map $s_W \colon PW \rightarrow W$ to $(a,t) : PW$.
+For the $\w$-elimination rule, let us assume its premisses and in particular that $C' : W \to \type$.
+Using the other premisses, one shows that the type $C \defeq \sm{ w : W} C'(w)$
+can be equipped with a structure map $s_C : PC \rightarrow C$. By the h-initiality of $W$,
+we obtain a weak homomorphism $(f, s_f) : (W, s_W) \rightarrow (C, s_C)$. Furthermore,
+the first projection $\pi_1 : C \rightarrow W$ can be equipped with the structure of a weak 
+homomorphism, so that we obtain a diagram of the form
+\[
+\xymatrix{
+PW \ar[r]^{Pf} \ar[d]_{s_W}  & PC \ar[d]^{s_C}  \ar[r]^{P \pi_1}  & PW  \ar[d]^{s_W}  \\
+W \ar[r]_f  & C \ar[r]_{\pi_1}  & W \, .}
+\]
+But the identity function $1_W : W \rightarrow W$ has a canonical structure of a weak
+algebra homomorphism and so, by the contractibility of the type of weak homorphisms
+from $(W,s_W)$ to itself, there must be an identity proof between the composite
+of $(f,s_f)$ with $(\pi_1, s_{\pi_1})$ and $(1_W, s_{1_W})$. This implies, in particular,
+that there is an identity proof $p :  \pi_1 \circ f = 1_W$. 
 
-\begin{cor}
-The types satisfying the formation, introduction, elimination, and propositional computation rules for W-types are precisely the homotopy-initial $\w$-algebras.
-\end{cor}
+Since $(\pi_2 \circ f) w : C( (\pi_1 \circ f) w)$, we can define
+\[
+\rec{}(w,c) \defeq
+p_{\, * \,}( ( \pi_2 \circ  f)   w )   : C(w) 
+\]
+where the transport $p_{\, * \,}$ is with respect to the family
+\[
+\lamu{u}C\circ u : (W\to W)\to W\to \UU\, .
+\]
+The verification of the propositional $\w$-computation rule is a calculation,
+involving the naturality properties of operations of the form $p_{\, * \,}$.
+\end{proof}
+%%%%%
 
 Finally, as desired, it can be shown that homotopy-natural numbers can be encoded as homotopy-W-types:
 
@@ -1034,7 +1138,7 @@ The univalence axiom for a universe \UU says exactly that the type family
 together with $\idfunc[-] : \prd{A:\UU} (\eqv AA)$ satisfies \autoref{thm:ML-identity-systems}\ref{item:MLis4}.
 Therefore, it is equivalent to the corresponding version of~\ref{item:MLis1}, which we can state as follows.
 
-\begin{cor}[Equivalence induction]
+\begin{cor}[Equivalence induction]\label{thm:equiv-induction}
   Given any type family $D:\prd{A,B:\UU} (\eqv AB) \to \type$ and function $d:\prd{A:\UU} D(A,A,\idfunc[A])$, there exists $f:\prd{A,B:\UU}{e:\eqv AB} D(A,B,e)$ such that $f(A,A,\idfunc[A]) = d(A)$ for all $A:\UU$.
 \end{cor}
 
@@ -1047,7 +1151,7 @@ Similarly, function extensionality says that for any $B:A\to\type$, the type fam
 together with $\lamu{f:\prd{a:A} B(a)}{a:A} \refl{f(a)}$ satisfies \autoref{thm:ML-identity-systems}\ref{item:MLis4}.
 Thus, it is also equivalent to the corresponding version of~\ref{item:MLis1}.
 
-\begin{cor}[Homotopy induction]
+\begin{cor}[Homotopy induction]\label{thm:htpy-induction}
   Given any $D:\prd{f,g:\prd{a:A} B(a)} (f\htpy g) \to \type$ and $d:\prd{f:\prd{a:A} B(a)} D(f,f,\lam{x}\refl{f(x)})$, there exists $k:\prd{f,g:\prd{a:A} B(a)}{h:f\htpy g} D(f,g,h)$ such that $k(f,f,\lam{x}\refl{f(x)}) = d(f)$ for all $f$.
 \end{cor}
 
@@ -1067,7 +1171,7 @@ Show that for any dependent type $E : \two \to \type$, the space of dependent fu
 \end{ex}
 
 \begin{ex}
-  (Continuing \autoref{ex:bool}) Formulate a corresponding statement for natural numbers and show that it fails to hold. Why?
+  (Continuing \autoref{ex:bool}) Formulate the most obvious corresponding statement for natural numbers, and show that it fails to hold.
 \end{ex}
 
 \begin{ex}

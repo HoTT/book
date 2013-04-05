@@ -1128,25 +1128,26 @@ Our proof also provides the following additional information.
 With the triangle inequality in hand, we can show that ``limits'' of Cauchy approximations actually behave like limits.
 
 \begin{lem}\label{thm:RC-sim-lim}
-  For any $u:\RC$, Cauchy approximation $y$, and $\epsilon,\delta,\theta:\Qp$, if $u\sim_\epsilon y_\delta$ then $u\sim_{\epsilon+\delta+\theta} \rclim(y)$.
+  For any $u:\RC$, Cauchy approximation $y$, and $\epsilon,\delta:\Qp$, if $u\sim_\epsilon y_\delta$ then $u\sim_{\epsilon+\delta} \rclim(y)$.
 \end{lem}
 \begin{proof}
   We use $\RC$-induction on $u$.
   If $u$ is $\rcrat(q)$, then this is exactly the second constructor of $\sim$.
-  Now suppose $u$ is $\rclim(x)$, and that each $x_\eta$ has the property that for any $y,\epsilon,\delta,\theta$, if $x_\eta\sim_\epsilon y_\delta$ then $x_\eta \sim_{\epsilon+\delta+\theta} \rclim(y)$.
-  In particular, taking $y\defeq x$ and $\delta\defeq\eta$ in this assumption, we conclude that $x_\eta \sim_{\eta+\theta} \rclim(x)$ for any $\eta,\theta:\Qp$, and in particular $x_\eta \sim_{2\eta} \rclim(x)$.
+  Now suppose $u$ is $\rclim(x)$, and that each $x_\eta$ has the property that for any $y,\epsilon,\delta$, if $x_\eta\sim_\epsilon y_\delta$ then $x_\eta \sim_{\epsilon+\delta} \rclim(y)$.
+  In particular, taking $y\defeq x$ and $\delta\defeq\eta$ in this assumption, we conclude that $x_\eta \sim_{\eta+\theta} \rclim(x)$ for any $\eta,\theta:\Qp$.
 
-  Now let $y,\epsilon,\delta,\theta$ be arbitrary and assume $\rclim(x) \sim_\epsilon y_\delta$.
-  Then by the triangle inequality, for any $\eta$ we have $x_\eta \sim_{\epsilon+2\eta} y_\delta$.
-  Hence the fourth constructor of $\sim$ yields $\rclim(x) \sim_{\epsilon+3\eta+\delta} \rclim(y)$.
-  Thus it suffices to take $\eta \defeq \theta/3$.
+  Now let $y,\epsilon,\delta$ be arbitrary and assume $\rclim(x) \sim_\epsilon y_\delta$.
+  By roundedness, there is a $\theta$ such that $\rclim(x) \sim_{\epsilon-\theta} y_\delta$.
+  Then by the above observation, for any $\eta$ we have $x_\eta \sim_{\eta+\theta/2} \rclim(x)$, and hence $x_\eta \sim_{\epsilon+\eta-\theta/2} y_\delta$ by the triangle inequality.
+  Hence, the fourth constructor of $\sim$ yields $\rclim(x) \sim_{\epsilon+2\eta+\delta-\theta/2} \rclim(y)$.
+  Thus, if we choose $\eta \defeq \theta/4$, the result follows.
 \end{proof}
 
 \begin{lem}\label{thm:RC-sim-lim-term}
   For any Cauchy approximation $y$ and any $\delta,\eta:\Qp$ we have $y_\delta \sim_{\delta+\eta} \rclim(y)$.
 \end{lem}
 \begin{proof}
-  Take $u\defeq y_\delta$ and $\epsilon\defeq\theta\defeq \eta/2$ in the previous lemma.
+  Take $u\defeq y_\delta$ and $\epsilon\defeq \eta$ in the previous lemma.
 \end{proof}
 
 \begin{rmk}
@@ -1157,33 +1158,27 @@ With the triangle inequality in hand, we can show that ``limits'' of Cauchy appr
 
 As an application, \autoref{thm:RC-sim-lim-term} enables us to show that the extensions of Lipschitz functions from \autoref{RC-extend-Q-Lipschitz} are unique.
 
-\begin{lem} \label{RC-Lipschitz-eq}
-  Suppose $f,g : \RC \to \RC$ are Lipschitz functions, as in \autoref{defn:lipschitz}.
-  If $f(\rcrat(q)) = g(\rcrat(q))$ for all $q : \Qp$, then $f = g$.
+\begin{lem}\label{RC-Lipschitz-eq}
+  Let $f,g:\RC\to\RC$ be continuous, in the sense that
+  \[ \fall{u:\RC}{\epsilon:\Qp}\exis{\delta:\Qp}\fall{v:\RC} (u\sim_\delta v) \to (f(u) \sim_\epsilon f(v)) \]
+  and analogously for $g$.
+  If $f(\rcrat(q))=g(\rcrat(q))$ for all $q:\Q$, then $f=g$.
 \end{lem}
-
 \begin{proof}
-  We show that $f(u) = g(u)$ for all $u : \RC$ by $\RC$-induction on $u$. When $u$ is
-  $\rcrat(q)$ this holds by assumption. When $u$ is $\rclim(x)$ we prove $f(\rclim(x)) =
-  g(\rclim(x))$ using~\eqref{eq:RC-path}. For any $\epsilon : \Qp$, using \autoref{thm:RC-sim-lim-term} we have
-  %
-  \begin{equation*}
-    \rclim(x) \sim_{\epsilon/(2 L)}
-    x_{\epsilon/(4 L)} =
-    x_{\epsilon/(4 L)} \sim_{\epsilon/(2 L)}
-    \rclim(x).
-  \end{equation*}
-  %
-  Now, by the Lipschitz condition and the induction hypothesis
-  %
-  \begin{equation*}
-    f(\rclim(x)) \sim_{\epsilon/2}
-    f(x_{\epsilon/(4L)}) =
-    g(x_{\epsilon/(4L)}) \sim_{\epsilon/2}
-    g(\rclim(x)),
-  \end{equation*}
-  %
-  therefore $f(\rclim(x)) \sim_\epsilon g(\rclim(x))$ by the triangle inequality, as required.
+  We prove $f(u)=g(u)$ for all $u$ by $\RC$-induction.
+  The rational case is just the hypothesis.
+  Thus, suppose $f(x_\delta)=g(x_\delta)$ for all $\delta$.
+  We will show that $f(\rclim(x))\sim_\epsilon g(\rclim(x))$ for all $\epsilon$, so that the path-constructor of $\RC$ applies.
+
+  Since $f$ and $g$ are continuous, there exist $\theta,\eta$ such that for all $v$, we have
+  \begin{align*}
+    (\rclim(x)\sim_\theta v) &\to (f(\rclim(x)) \sim_{\epsilon/2} f(v))\\
+    (\rclim(x)\sim_\eta v) &\to (g(\rclim(x)) \sim_{\epsilon/2} g(v)).
+  \end{align*}
+  Choosing $\delta < \min(\theta,\eta)$, by \autoref{thm:RC-sim-lim-term} we have both $\rclim(x)\sim_\theta y_\delta$ and $\rclim(x)\sim_\eta y_\delta$.
+  Hence
+  \[ f(\rclim(x)) \sim_{\epsilon/2} f(y_\delta) = g(y_\delta) \sim_{\epsilon/2} g(\rclim(x))\]
+  and thus $f(\rclim(x))\sim_\epsilon g(\rclim(x))$ by the triangle inequality.
 \end{proof}
 
 \subsection{The Algebraic Structure of Cauchy Reals}
@@ -1285,7 +1280,7 @@ maps is again non-expanding, we may conclude that addition satisfies the usual p
 such as commutativity and associativity. Therefore, $(\RC, 0, {+}, {-})$ is a commutative
 group.
 
-We may apply \autoref{RC-binary-nonexpanding-extension} to the functions $\min : \Q \times
+We may also apply \autoref{RC-binary-nonexpanding-extension} to the functions $\min : \Q \times
 \Q \to \Q$ and $\max : \Q \times \Q \to \Q$, which turns $\RC$ into a lattice. The partial
 order $\leq$ on $\RC$ is defined in terms of $\max$ as
 %
@@ -1314,15 +1309,81 @@ Furthermore, the additive structure interacts with the order in the expected way
   (u < v) \Leftrightarrow (-v < -u).
 \end{equation*}
 %
+\textbf{(TODO: FIX text around here, leftovers from merge.)}
+That is, a witness for $u < v$ is a pair or rational numbers $q < r$ such that $x \leq
+\rcrat(q)$ and $\rcrat(r) \leq v$.
+Note that since $\Q$ is a dense linear order, this implies that $\Q$ is order-dense in $\RC$, i.e.\ if $u<v$ then there exists $q:\Q$ with $u<\rcrat(q)<v$.
+The strict order is irreflexive and transitive, but we
+have to be careful about linearity. We shall address this in \autoref{sec:RC-order}, for
+now we focus on expressing $u \sim_\epsilon v$ with standard concepts.
+
+Note that the
+absolute value $|{-}|$ is a Lipschitz function on $\Q$ with constant $1$, which therefore extends to $\RC$
+and has the expected properties.
+
+\begin{lem}\label{thm:RC-le-grow}
+  If $q:\Q$ and $u:\RC$ satisfy $u\le \rcrat(q)$, then for any $v:\RC$ and $\epsilon:\Qp$, if $u\sim_\epsilon v$ then $v\le \rcrat(q+\epsilon)$.
+\end{lem}
+\begin{proof}
+  Note that the function $\max(\rcrat(q),-):\RC\to\RC$ is Lipschitz with constant $1$.
+  First consider the case when $u=\rcrat(r)$ is rational.
+  For this we use induction on $v$.
+  If $v$ is rational, then the statement is obvious.
+  If $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $\rcrat(r)\sim_\epsilon y_\delta$ then $y_\delta \le \rcrat(q+\epsilon)$, i.e.\ $\max(\rcrat(q+\epsilon),y_\delta)=\rcrat(q+\epsilon)$.
+
+  Now assuming $\epsilon$ and $\rcrat(r)\sim_\epsilon \rclim(y)$, we have $\theta$ such that $\rcrat(r)\sim_{\epsilon-\theta} \rclim(y)$, hence $\rcrat(r)\sim_\epsilon y_\delta$ whenever $\delta<\theta$.
+  Thus, the inductive hypothesis gives $\max(\rcrat(q+\epsilon),y_\delta)=\rcrat(q+\epsilon)$ for such $\delta$.
+  But by definition,
+  \[\max(\rcrat(q+\epsilon),\rclim(y)) \jdeq \rclim(\lam{\delta} \max(\rcrat(q+\epsilon),y_\delta)).\]
+  Since the limit of an eventually constant Cauchy approximation is that constant, we have $\max(\rcrat(q+\epsilon),\rclim(y)) = \rcrat(q+\epsilon)$, hence $\rclim(y)\le \rcrat(q+\epsilon)$.
+  
+  Now consider a general $u:\RC$.
+  Since $u\le \rcrat(q)$ means $\max(\rcrat(q),u)=\rcrat(q)$, the assumption $u\sim_\epsilon v$ and the Lipschitz property of $\max(\rcrat(q),-)$ imply $\max(\rcrat(q),v) \sim_\epsilon \rcrat(q)$.
+  Thus, since $\rcrat(q)\le \rcrat(q)$, the first case implies $\max(\rcrat(q),v) \le \rcrat(q+\epsilon)$, and hence $v\le \rcrat(q+\epsilon)$ by transitivity of $\le$.
+\end{proof}
+
+\begin{lem}\label{thm:RC-lt-open}
+  Suppose $q:\Q$ and $u:\RC$ satisfy $u<\rcrat(q)$.  Then:
+  \begin{enumerate}
+  \item For any $v:\RC$ and $\epsilon:\Qp$, if $u\sim_\epsilon v$ then $v< \rcrat(q+\epsilon)$.\label{item:RCltopen1}
+  \item There exists $\epsilon:\Qp$ such that for any $v:\RC$, if $u\sim_\epsilon v$ we have $v<\rcrat(q)$.\label{item:RCltopen2}
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  By definition, $u<\rcrat(q)$ means there is $r:\Q$ with $r<q$ and $u\le \rcrat(r)$.
+  Then by \autoref{thm:RC-le-grow}, for any $\epsilon$, if $u\sim_\epsilon v$ then $v\le \rcrat(r+\epsilon)$.
+  Conclusion~\ref{item:RCltopen1} follows immediately since $r+\epsilon<q+\epsilon$, while for~\ref{item:RCltopen2} we can take any $\epsilon <q-r$.
+\end{proof}
+
 We are now able to show that the auxiliary relation $\sim$ is what we think it is.
 
 \begin{thm} \label{RC-sim-eqv-le}
   $\eqv{(u \sim_\epsilon v)}{(|u - v| < \rcrat(\epsilon))}$
   for all $u, v : \RC$ and $\epsilon : \Qp$.
 \end{thm}
-
 \begin{proof}
-  TODO.
+  The Lipschitz properties of subtraction and absolute value imply that if $u\sim_\epsilon v$, then $|u-v| \sim_\epsilon |u-u| = 0$.
+  Thus, for the left-to-right direction, it will suffice to show that if $u\sim_\epsilon 0$, then $|u|<\rcrat(\epsilon)$.
+  We proceed by $\RC$-induction on $u$.
+
+  If $u$ is rational, the statement follows immediately since absolute value and order extend the standard ones on $\Qp$.
+  If $u$ is $\rclim(x)$, then by roundedness we have $\theta:\Qp$ with $\rclim(x)\sim_{\epsilon-\theta} 0$.
+  By the triangle inequality, therefore, we have $x_{\theta/3} \sim_{\epsilon-2\theta/3} 0$, so the inductive hypothesis yields $|x_{\theta/3}|<\rcrat(\epsilon-2\theta/3)$.
+  But $x_{\theta/3} \sim_{2\theta/3} \rclim(x)$, hence $|x_{\theta/3}| \sim_{2\theta/3} |\rclim(x)|$ by the Lipschitz property, so \autoref{thm:RC-lt-open}\ref{item:RCltopen1} implies $|\rclim(x)|<\rcrat(\epsilon)$.
+
+  In the other direction, we use $\RC$-induction on $u$ and $v$.
+  If both are rational, this is the first constructor of $\sim$.
+
+  If $u$ is $\rcrat(q)$ and $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $|\rcrat(q)-y_\delta|<\rcrat(\epsilon)$ then $\rcrat(q) \sim_{\epsilon} y_\delta$.
+  Fix an $\epsilon$ such that $|\rcrat(q) - \rclim(y)|<\rcrat(\epsilon)$.
+  Since $\Q$ is order-dense in $\RC$, there exists $\theta<\epsilon$ with $|\rcrat(q) - \rclim(y)|<\rcrat(\theta)$.
+  Now for any $\delta,\eta$ we have $\rclim(y)\sim_{2\delta} y_\delta$, hence by the Lipschitz property
+  \[ |\rcrat(q) - \rclim(y)| \sim_{\delta+\eta} |\rcrat(q) - y_\delta|. \]
+  Thus, by \autoref{thm:RC-lt-open}\ref{item:RCltopen1}, we have $|\rcrat(q) - y_\delta| < \rcrat(\theta+2\delta)$.
+  So by the inductive hypothesis, $\rcrat(q) \sim_{\theta+2\delta} y_\delta$, and thus $\rcrat(q)\sim_{\theta+4\delta} \rclim(y)$ by the triangle inequality.
+  Thus, it suffices to choose $\delta \defeq (\epsilon-\theta)/4$.
+
+  The remaining two cases are entirely analogous.
 \end{proof}
 
 An immediate consequence of \autoref{RC-sim-eqv-le} is the archimedean axiom.

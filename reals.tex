@@ -1199,12 +1199,13 @@ commutative group.
 \subsection{Order}
 \label{sec:order}
 
-Next, $\min$ and $\max$ are Lipschitz as well, so they can be extended to give $\RC$ the
+Next, $\min$ and $\max$ are Lipschitz on $\Q$ as well, with constant $1$.
+Thus, they can be extended to give $\RC$ the
 structure of a lattice, which interacts as expected with the commutative group structure.
 The mere binary relation $\leq$, defined for $u, v : \RC$ by
 %
 \begin{equation*}
-  (u \leq v) \defeq \max(u,v) = v
+  (u \leq v) \defeq (\max(u,v) = v)
 \end{equation*}
 %
 is a partial order on $\RC$, for which $\min$ and $\max$ are the infimum and supremum. The
@@ -1216,11 +1217,49 @@ strict order $<$ is defined constructively as
 \end{equation*}
 %
 That is, a witness for $u < v$ is a pair or rational numbers $q < r$ such that $x \leq
-\rcrat(q)$ and $\rcrat(r) \leq v$. The strict order is irreflexive and transitive, but we
+\rcrat(q)$ and $\rcrat(r) \leq v$.
+Note that since $\Q$ is a dense linear order, this implies that $\Q$ is order-dense in $\RC$, i.e.\ if $u<v$ then there exists $q:\Q$ with $u<\rcrat(q)<v$.
+The strict order is irreflexive and transitive, but we
 have to be careful about linearity. We shall address this in \autoref{sec:RC-order}, for
-now we focus on expressing $u \sim_\epsilon v$ with standard concepts. Note that the
-absolute value $|{-}|$ is a Lipschitz function on $\Q$, which therefore extends to $\RC$
+now we focus on expressing $u \sim_\epsilon v$ with standard concepts.
+
+Note that the
+absolute value $|{-}|$ is a Lipschitz function on $\Q$ with constant $1$, which therefore extends to $\RC$
 and has the expected properties.
+
+\begin{lem}\label{thm:RC-le-grow}
+  If $q:\Q$ and $u:\RC$ satisfy $u\le \rcrat(q)$, then for any $v:\RC$ and $\epsilon:\Qp$, if $u\sim_\epsilon v$ then $v\le \rcrat(q+\epsilon)$.
+\end{lem}
+\begin{proof}
+  Note that the function $\max(\rcrat(q),-):\RC\to\RC$ is Lipschitz with constant $1$.
+  First consider the case when $u=\rcrat(r)$ is rational.
+  For this we use induction on $v$.
+  If $v$ is rational, then the statement is obvious.
+  If $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $\rcrat(r)\sim_\epsilon y_\delta$ then $y_\delta \le \rcrat(q+\epsilon)$, i.e.\ $\max(\rcrat(q+\epsilon),y_\delta)=\rcrat(q+\epsilon)$.
+
+  Now assuming $\epsilon$ and $\rcrat(r)\sim_\epsilon \rclim(y)$, we have $\theta$ such that $\rcrat(r)\sim_{\epsilon-\theta} \rclim(y)$, hence $\rcrat(r)\sim_\epsilon y_\delta$ whenever $\delta<\theta$.
+  Thus, the inductive hypothesis gives $\max(\rcrat(q+\epsilon),y_\delta)=\rcrat(q+\epsilon)$ for such $\delta$.
+  But by definition,
+  \[\max(\rcrat(q+\epsilon),\rclim(y)) \jdeq \rclim(\lam{\delta} \max(\rcrat(q+\epsilon),y_\delta)).\]
+  Since the limit of an eventually constant Cauchy approximation is that constant, we have $\max(\rcrat(q+\epsilon),\rclim(y)) = \rcrat(q+\epsilon)$, hence $\rclim(y)\le \rcrat(q+\epsilon)$.
+  
+  Now consider a general $u:\RC$.
+  Since $u\le \rcrat(q)$ means $\max(\rcrat(q),u)=\rcrat(q)$, the assumption $u\sim_\epsilon v$ and the Lipschitz property of $\max(\rcrat(q),-)$ imply $\max(\rcrat(q),v) \sim_\epsilon \rcrat(q)$.
+  Thus, since $\rcrat(q)\le \rcrat(q)$, the first case implies $\max(\rcrat(q),v) \le \rcrat(q+\epsilon)$, and hence $v\le \rcrat(q+\epsilon)$ by transitivity of $\le$.
+\end{proof}
+
+\begin{lem}\label{thm:RC-lt-open}
+  Suppose $q:\Q$ and $u:\RC$ satisfy $u<\rcrat(q)$.  Then:
+  \begin{enumerate}
+  \item For any $v:\RC$ and $\epsilon:\Qp$, if $u\sim_\epsilon v$ then $v< \rcrat(q+\epsilon)$.\label{item:RCltopen1}
+  \item There exists $\epsilon:\Qp$ such that for any $v:\RC$, if $u\sim_\epsilon v$ we have $v<\rcrat(q)$.\label{item:RCltopen2}
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  By definition, $u<\rcrat(q)$ means there is $r:\Q$ with $r<q$ and $u\le \rcrat(r)$.
+  Then by \autoref{thm:RC-le-grow}, for any $\epsilon$, if $u\sim_\epsilon v$ then $v\le \rcrat(r+\epsilon)$.
+  Conclusion~\ref{item:RCltopen1} follows immediately since $r+\epsilon<q+\epsilon$, while for~\ref{item:RCltopen2} we can take any $\epsilon <q-r$.
+\end{proof}
 
 We are now able to show that the auxiliary relation $\sim$ is what we think it is.
 
@@ -1228,9 +1267,27 @@ We are now able to show that the auxiliary relation $\sim$ is what we think it i
   $\eqv{(u \sim_\epsilon v)}{(|u - v| < \rcrat(\epsilon))}$
   for all $u, v : \RC$ and $\epsilon : \Qp$.
 \end{thm}
-
 \begin{proof}
-  TODO.
+  The Lipschitz properties of subtraction and absolute value imply that if $u\sim_\epsilon v$, then $|u-v| \sim_\epsilon |u-u| = 0$.
+  Thus, for the left-to-right direction, it will suffice to show that if $u\sim_\epsilon 0$, then $|u|<\rcrat(\epsilon)$.
+  We proceed by $\RC$-induction on $u$.
+
+  If $u$ is rational, the statement follows immediately since absolute value and order extend the standard ones on $\Qp$.
+  If $u$ is $\rclim(x)$, then by roundedness we have $\theta:\Qp$ with $\rclim(x)\sim_{\epsilon-\theta} 0$.
+  By the triangle inequality, therefore, we have $x_{\theta/3} \sim_{\epsilon-2\theta/3} 0$, so the inductive hypothesis yields $|x_{\theta/3}|<\rcrat(\epsilon-2\theta/3)$.
+  But $x_{\theta/3} \sim_{2\theta/3} \rclim(x)$, hence $|x_{\theta/3}| \sim_{2\theta/3} |\rclim(x)|$ by the Lipschitz property, so \autoref{thm:RC-lt-open}\ref{item:RCltopen1} implies $|\rclim(x)|<\rcrat(\epsilon)$.
+
+  In the other direction, we use $\RC$-induction on $u$ and $v$.
+  If both are rational, this is the first constructor of $\sim$.
+
+  If $u$ is $\rcrat(q)$ and $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $|\rcrat(q)-y_\delta|<\rcrat(\epsilon)$ then $\rcrat(q) \sim_{\epsilon} y_\delta$.
+  Fix an $\epsilon$ such that $|\rcrat(q) - \rclim(y)|<\rcrat(\epsilon)$.
+  Since $\Q$ is order-dense in $\RC$, there exists $\theta<\epsilon$ with $|\rcrat(q) - \rclim(y)|<\rcrat(\theta)$.
+  Now for any $\delta,\eta$ we have $\rclim(y)\sim_{2\delta} y_\delta$, hence by the Lipschitz property
+  \[ |\rcrat(q) - \rclim(y)| \sim_{\delta+\eta} |\rcrat(q) - y_\delta|. \]
+  Thus, by \autoref{thm:RC-lt-open}\ref{item:RCltopen1}, we have $|\rcrat(q) - y_\delta| < \rcrat(\theta+2\delta)$.
+  So by the inductive hypothesis, $\rcrat(q) \sim_{\theta+2\delta} y_\delta$, and thus $\rcrat(q)\sim_{\theta+4\delta} \rclim(y)$ by the triangle inequality.
+  Thus, it suffices to choose $\delta \defeq (\epsilon-\theta)/4$.
 \end{proof}
 
 TODO: Prove or state relevant properties of $<$.

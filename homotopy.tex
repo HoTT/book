@@ -1048,6 +1048,9 @@ $\Sn$ is $n\mathord{-}1$-connected by \autoref{cor:sn-connected}.  Therefore
 \autoref{lem:pik-nconnected} gives the result.  
 \end{proof}
 
+\section{Fiber sequences and the long exact sequence of homotopy groups}
+
+
 \section{The Hopf fibration}
 \label{sec:hopf}
 
@@ -1275,12 +1278,148 @@ We just proved:
 
 \subsection{The Hopf fibration}
 
-We will first construct a structure of H-space on the circle $\Sn1$, hence by
-\autoref{lem:hopf-construction} we will get a fibration over $\Sn2$ with fiber
-$\Sn1$ and total space $\Sn1*\Sn1$. We will then prove that this join is
-equivalent to $\Sn3$.
+We will first construct a structure of H-space on the circle $\Sn^1$, hence by
+\autoref{lem:hopf-construction} we will get a fibration over $\Sn^2$ with fiber
+$\Sn^1$ and total space $\Sn^1*\Sn^1$. We will then prove that this join is
+equivalent to $\Sn^3$.
 
-\emph{TODO: to continue}
+\begin{lem}\label{lem:hspace-S1}
+  There is an H-space structure on the circle $\Sn^1$.
+\end{lem}
+\begin{proof}
+  For the base point of the H-space structure we choose $\base$.
+
+  Now we need to define the multiplication operation
+  $\mu:\Sn^1\times\Sn^1\to\Sn^1$.
+  We will first define $\widetilde\mu:\Sn^1\to(\Sn^1\to\Sn^1)$ and then $\mu$
+  will be defined by
+  \[\mu(x,y)\defeq(\widetilde\mu(x))(y)\]
+
+  We define $\widetilde\mu$ by simple elimination for $\Sn^1$:
+  \begin{align*}
+    \widetilde\mu(\base) &\defeq\idfunc[\Sn^1]\\
+    \ap{\widetilde\mu}{\lloop} &\defid\funext(h)
+  \end{align*}
+  where $h$ is of type $\prd{x:\Sn^1}x=x$ and is defined by dependent
+  elimination in the following way:
+  \begin{align*}
+    h(\base) &\defeq\lloop\\
+    \ap{h}{\lloop} &\defid\alpha
+  \end{align*}
+  where (thanks to \autoref{thm:dpath-path}) in order to define $\alpha$ it is
+  enough to inhabit the type $\lloop\ct\lloop=\lloop\ct\lloop$ which can be done
+  by reflexivity.
+
+  Now we just have to prove that $\mu(x,\base)=\mu(\base,x)=x$ for every
+  $x:\Sn^1$.
+
+  By definition, if $x:\Sn^1$ we have
+  $\mu(\base,x)=(\widetilde\mu(\base))(x)=\idfunc[\Sn^1](x)=x$. For the equality
+  $\mu(x,\base)=x$ we do it by induction on $x:\Sn^1$:
+  \begin{itemize}
+  \item If $x$ is $\base$ then $\mu(\base,\base)=\base$ by definition, so we
+    have $\refl\base:\mu(\base,\base)=\base$
+  \item When $x$ varies along $\lloop$ we need to prove that
+    \[\refl\base\ct\apfunc{\lam{x}x}{\lloop}=
+    \apfunc{\lam{x}\mu(x,\base)}{\lloop}\ct\refl\base\]
+    The left-hand side is equal to $\lloop$ and for the right-hand side we have:
+    \begin{align*}
+      \apfunc{\lam{x}\mu(x,\base)}{\lloop}\ct\refl\base &=
+      \apfunc{\lam{x}(\widetilde\mu(x))(\base)}{\lloop}\\
+      &=\happly(\apfunc{\lam{x}(\widetilde\mu(x))}{\lloop},\base)\\
+      &=\happly(\funext(h),\base)\\
+      &=h(\base)\\
+      &=\lloop
+    \end{align*}
+  \end{itemize}
+\end{proof}
+
+Recall from \autoref{sec:colimits} that if $A$ and $B$ are two spaces, the
+\emph{join} $A*B$ of $A$ and $B$ is the pushout of the diagram
+\[A \xleftarrow{\proj1}A\times B \xrightarrow{\proj2} B\]
+
+\begin{lem}
+  The operation of join is associative: if $A$, $B$ and $C$ are three spaces
+  then we have an equivalence $\eqv{(A*B)*C}{A*(B*C)}$.
+\end{lem}
+\begin{proof}
+  More precisely, the map $f:(A*B)*C\to A*(B*C)$ is defined by the following
+  equations:
+  \begin{align*}
+    (f\circ\inl)(\inl(a))) &\defeq \inl(a) \\
+    (f\circ\inl)(\inr(b))) &\defeq \inr(\inl(b)) \\
+    \apfunc{f\circ\inl}(\glue(a,b)) &\defid \glue(a,\inl(b)) \\
+    f(\inr(c)) &\defeq \inr(\inr(c))\\
+    \apfunc{f}(\glue(\inl(a),c)) &\defid\glue(a,\inr(c))\\
+    \apfunc{f}(\glue(\inr(b),c)) &\defid\apfunc{\inr}(\glue(b,c))\\
+    \apdfunc{\lam{x}\apfunc{f}(\glue(x,c))}(\glue(a,b)) &\defid
+    \apdfunc{\lam{x}\glue(a,x)}(\glue(b,c)) \\
+  \end{align*}
+
+  For the last equation, note that the right-hand side is of type
+  \[\transfib{\lam{x}\inl(a)=\inr(x)}{\glue(b,c)}{\glue(a,\inl(b))}=
+  \glue(a,\inr(c))\]
+  whereas it is supposed to be of type
+  \[\transfib{\lam{x}f(\inl(x))=
+    f(\inr(c))}{\glue(a,b)}{\apfunc{f}(\glue(\inl(a),c))}=
+  \apfunc{f}(\glue(\inr(b),c))\]
+
+  But both types are equivalent to the following type:
+  \[\glue(a,\inr(c))=\glue(a,\inl(b))\ct\apfunc\inr(\glue(b,c))\]
+
+  Similarly we can define a map $g:A*(B*C)\to(A*B)*C$, and checking that $f$ and
+  $g$ are inverse to each other is a long and tedious but essentially
+  straightforward computation.
+\end{proof}
+
+A more conceptual proof sketch is as follows:
+
+\begin{proof}
+  Let’s consider the following diagram where the maps are the obvious
+  projections:
+  \[\xymatrix{
+    A & A\times C \ar[l] \ar[r] & A\times C\\
+    A\times B \ar[u] \ar[d] & A\times B\times C \ar[l]\ar[u]\ar[r]\ar[d] &
+    A\times C \ar[u] \ar[d] \\
+    B & B\times C \ar[l] \ar[r] & C}\]
+
+  Taking the colimit of the columns gives the following
+  diagram, whose colimit is $(A*B)*C$:
+  \[\xymatrix{A*B & (A*B)\times C \ar[l]\ar[r] & C}\]
+
+  On the other hand, taking the colimit of the lines gives a diagram whose
+  colimit is $A*(B*C)$.
+
+  Hence using Fubini’s theorem for colimits (that we haven’t proved) we have an
+  equivalence $\eqv{(A*B)*C}{A*(B*C)}$. The proof of Fubini’s theorem for
+  colimits still requires the long and tedious computation, though.
+\end{proof}
+
+\begin{lem}
+  Let $A$ be a space, then there is an equivalence $\eqv{\susp A}{\bool*A}$.
+\end{lem}
+\begin{proof}
+  Left as an exercise to the reader.
+\end{proof}
+
+We can now construct the Hopf fibration:
+
+\begin{thm}
+  There is a fibration over $\Sn^2$ of fiber $\Sn^1$ and total space $\Sn^3$.
+\end{thm}
+\begin{proof}
+  We proved that $\Sn^1$ has a structure of H-space (cf \autoref{lem:hspace-S1})
+  hence by \autoref{lem:hopf-construction} there is a fibration over $\Sn^2$ of
+  fiber $\Sn^1$ and total space $\Sn^1*\Sn^1$. But by the two previous results
+  and \autoref{lem:suspbool} we have:
+  \begin{align*}
+    \Sn^1*\Sn^1 &= (\susp\bool)*\Sn^1\\
+    &=(\bool*\bool)*\Sn^1\\
+    &=\bool*(\bool*\Sn^1)\\
+    &=\susp(\susp\Sn^1)\\
+    &=\Sn^3
+  \end{align*}
+\end{proof}
 
 \section{Van Kampen's theorem}
 \label{sec:van-kampen}

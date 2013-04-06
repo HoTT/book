@@ -446,24 +446,6 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 
 \bgroup % restrict the following macros to this section
 
-% FIXME slowly deprecating these:
-\newcommand{\oftype}{\mathord{:}}
-\newcommand{\types}{\vdash}
-\newcommand{\myType}{\textsf{ type}} %  \newcommand{\type}{\textsf{type}}
-
-\newcommand{\synId}{\mathsf{Id}} %FIXME
-\newcommand{\synOne}{\mathsf{1}}
-\newcommand{\synZero}{\mathsf{0}}
-\newcommand{\synPlus}{+}
-
-\newcommand{\synrefl}{\mathsf{refl}}
-\newcommand{\synlambda}{\mathsf{\lambda}}
-\newcommand{\myRefl}{\mathsf{refl}} % \newcommand{\refl}{\mathsf{refl}}
-\newcommand{\synsup}{\mathsf{sup}}
-\newcommand{\synz}{\mathsf{z}}
-\newcommand{\syno}{\mathsf{o}}
-\newcommand{\synw}{\mathsf{w}}
-
 %% Basic syntax of type theory:
 % judgements
 \renewcommand{\G}{\Gamma}
@@ -472,6 +454,7 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 \newcommand{\wfctx}[1]{\vdash #1\ \ctx}
 \newcommand{\oftp}[3]{#1 \vdash #2 : #3}
 \newcommand{\jdeqtp}[4]{#1 \vdash #2 \jdeq #3 : #4}
+\newcommand{\judg}[2]{#1 \vdash #2}
 \newcommand{\tmtp}[2]{#1 \mathord{:} #2}
 % rules
 \newcommand{\form}{\textsc{form}}
@@ -488,15 +471,15 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 \textbf{TODO:} 
 \begin{enumerate}
 \item explain $\to$ vs $\vdash$ for type families (in chapter 1)
-\item better connect this to chapter 1
+\item better connect this to chapter 1, and make metavariables agree
 \item use $B$ instead of $B(x)$; explain where binding occurs
-\item explain binding (here or intro?)
-\item explain substitution
 \item unify with book's macros; especially, use $\jdeq$ and universe symbol
 \item two ways of handling univalence
 \item emphasize f/i/e/c pattern, and congruence
 \item admissibility of structural rules; don't grow context down
 \item explain the diff wrt MLTT (new axioms, choice of presentation)
+\item explain arguments with binders in elimination rules
+\item note that unlike chapter 1, all type formers are independent
 \end{enumerate}
 
 %Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that
@@ -543,12 +526,12 @@ conclusion of any of the judgment forms):
   {\oftp{\G,\tmtp xA,\Delta}{x}{A}}
 \and
   \inferrule*[right=$\Subst$]
-  {\oftp\G{a}{A} \\ \Gamma,\ x \oftype A,\ \Delta \types \mathcal{J}}
-  {\Gamma,\ \Delta[a/x] \types \mathcal{J}[a/x]}
+  {\oftp\G{a}{A} \\ \judg{\G,\tmtp xA,\Delta}{\mathcal{J}}}
+  {\judg{\G,\Delta[a/x]}{\mathcal{J}[a/x]}}
 \and
   \inferrule*[right=$\Weak$]
-  {\oftp\G A\UU_i \\ \Gamma,\ \Delta \types \mathcal{J}}
-  {\Gamma,\ x \oftype A,\ \Delta \types \mathcal{J}}
+  {\oftp\G{A}{\UU_i} \\ \judg{\G,\Delta}{\mathcal{J}}}
+  {\judg{\G,\tmtp xA,\Delta}{\mathcal{J}}}
 \end{mathpar}
 
 Definitional equality (also known as syntactic or judgmental equality):
@@ -607,87 +590,124 @@ In the rules below, $i$ is a natural number.
   {\jdeqtp\G{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
 \end{mathparpagebreakable}
 
-As a special case of this, when $B$ does not depend on $x$, we obtain the ordinary function type $A\to B := \Pi_{x \oftype A} B$. \\
-
-\textbf{TODO:} product types?
+As a special case of this, when $B$ does not depend on $x$, we obtain the
+ordinary function type $A\to B := \tprd{x:A} B$. \\
 
 \subsection{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Sigma$-\form]
-  {\oftp\G{A}{\UU_i} \\ \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
+  {\oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
   {\oftp\G{\tsm{x:A} B}{\UU_i}}
 \and
   \inferrule*[right=$\Sigma$-\intro]
-  {\oftp\G A\UU_i \\ \Gamma,\ x \oftype A \types B(x)\UU_i}
-  {\Gamma,\ x \oftype A,\ y \oftype B(x) \types \textsf{pair} (x, y) : \Sigma_{x \oftype A} B(x)}
+  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\
+   \oftp\G{a}{A} \\ \oftp\G{b}{B[a/x]}}
+  {\oftp\G{\tup ab}{\tsm{x:A} B}}
 \and
   \inferrule*[right=$\Sigma$-\elim]
-  {\Gamma,\ z \oftype \Sigma_{x \oftype A} B(x) \types C(z)\UU_i \\ \Gamma,\ x \oftype A,\ y \oftype B(x) \types d(x,y) : C(\textsf{pair}(x, y))}
-  {\Gamma,\ z \oftype \Sigma_{x \oftype A} B(x) \types \textsf{split}_d (z) : C(z)}
+  {\oftp{\G,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
+   \oftp{\G,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]} \\
+   \oftp\G{p}{\tsm{x:A} B}}
+  {\oftp\G{\ind{\tsm{x:A} B}(y.C,a.b.g,p)}{C[\fst(p)/x,\snd(p)/y]}}
 \and
   \inferrule*[right=$\Sigma$-\comp]
-  {\Gamma,\ z \oftype \Sigma_{x \oftype A} B(x) \types C(z)\UU_i \\ \Gamma,\ x \oftype A,\ y \oftype B(x) \types d(x,y) : C(\textsf{pair}(x, y))}
-  {\Gamma,\ x \oftype A,\ y \oftype B(x) \types \textsf{split}_d (\textsf{pair} (x,y))=d(x,y) : C(\textsf{pair} (x, y))}
+  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\
+   \oftp\G{a'}{A} \\ \oftp\G{b'}{B[a'/x]} \\
+   \oftp{\G,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
+   \oftp{\G,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]}}
+  {\oftp\G{\ind{\tsm{x:A} B}(y.C,a.b.g,\tup{a'}{b'})}{C[a'/a,b'/b]}}
 \end{mathparpagebreakable}
 
-Again,  the special case where $B$ does not depend on $x$ is of particular interest: this gives the cartesian product $A \times B := \Sigma_{x \oftype A} B$. \\
+Again, the special case where $B$ does not depend on $x$ is of particular
+interest: this gives the cartesian product $A \times B := \tsm{x:A} B$. \\
 
 \subsection{Identity types}
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\synId$-\form]{\oftp\G A\UU_i}{\Gamma,\ x,y\oftype A \types \synId_A(x,y)\UU_i}
+  \inferrule*[right=$\idsym$-\form]
+  {\oftp\G{A}{\UU_i} \\ \oftp\G{a}{A} \\ \oftp\G{b}{A}}
+  {\oftp\G{\id[A]{a}{b}}{\UU_i}}
 \and
-  \inferrule*[right=$\synId$-\intro]{\oftp\G A\UU_i}{\Gamma,\ x\oftype A \types \myRefl_A(x):\synId_A(x,x)}
+  \inferrule*[right=$\idsym$-\intro]
+  {\oftp\G{A}{\UU_i} \\ \oftp\G{a}{A}}
+  {\oftp\G{\refl a}{\id[A]aa}}
 \and
-  \inferrule*[right=$\synId$-\elim]{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types C(x,y,u)\UU_i \\ \Gamma,\ z\oftype A \types d(z):C(z,z,\myRefl_A(z))}{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types J_{z. d}(x,y,u) : C(x,y,u)}
+  \inferrule*[right=$\idsym$-\elim]
+  {\oftp{\G,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
+   \oftp{\G,\tmtp zA}{c}{C[z/x,z/y,\refl z/p]} \\
+   \oftp\G{a}{A} \\ \oftp\G{b}{A} \\ \oftp\G{p'}{\id[A]ab}}
+  {\oftp\G{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p)}{C[a/x,b/y,p'/p]}}
 \and
-  \inferrule*[right=$\synId$-\comp]{\Gamma,\ x,y\oftype A,\ u\oftype \synId_A(x,y) \types C(x,y,u)\UU_i \\ \Gamma,\ z\oftype A \types d(z):C(z,z,r(z))}{\Gamma,\ x\oftype A \types J_{z.d}(x,x,\myRefl_A(x)) = d(x) : C(x,x,\myRefl_A(x))}
+  \inferrule*[right=$\idsym$-\comp]
+  {\oftp{\G,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
+   \oftp{\G,\tmtp zA}{c}{C[z/x,z/y,\refl z/p]} \\
+   \oftp\G{a}{A}}
+  {\jdeqtp\G{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a/x,a/y,\refl a/p]}}
 \end{mathparpagebreakable}
 
-\subsection{$\wtypesym$-types}
+%\subsection{$\wtypesym$-types}
+%\textbf{TODO}
+%
+%\begin{mathparpagebreakable}
+%  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \vdash B(x)\UU_i}{\oftp\G \wtypesym_{x \oftype A} B(x)\UU_i}
+%\and
+%  \inferrule*[right=$\wtypesym$-\intro]{\Gamma,\ x \oftype A \vdash
+%  B(x)\UU_i}{\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A}
+%  B(u)] \vdash \synsup(x, y) : \wtypesym_{u \oftype A} B(u)}
+%\\
+%  \mathclap{\inferrule*[right=$\wtypesym$-\elim]
+%    {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \vdash C(w) \UU_i \\
+%     \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{1.55cm} \\
+%     \hspace{6cm} \vdash d(x, y, z) : C(\synsup(x, y))}
+%  {\Gamma,\ w \oftype \wtypesym_{x \oftype A} B(x) \vdash \textsf{wrec}_{d} (w) : C(w)}}
+%\\
+%  \mathclap{\inferrule*[right=$\wtypesym$-\comp]
+%  {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \vdash C(w) \UU_i \\
+%   \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{2cm} \\
+%    \hspace{6.45cm} \vdash d(x, y, z) : C(\synsup(x, y))}
+%  {\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)]
+%  \vdash \textsf{wrec}_{d} (\synsup(x, y)) \hspace{2.8cm} \\
+%    \hspace{2.4cm} = d(x, y, \lambda u \oftype B(x). \mathsf{wrec}_d(\mathsf{app}(y, u))): C(\synsup(x, y))}}
+%\end{mathparpagebreakable}
+
+\subsection{The empty type $\emptyt$}
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \types B(x)\UU_i}{\oftp\G \wtypesym_{x \oftype A} B(x)\UU_i}
+  \inferrule*[right=$\emptyt$-\form]
+  {\ }
+  {\oftp\G\emptyt{\UU_i}}
 \and
-  \inferrule*[right=$\wtypesym$-\intro]{\Gamma,\ x \oftype A \types B(x)\UU_i}{\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)] \types \synsup(x, y) : \wtypesym_{u \oftype A} B(u)}
-\\
-  \mathclap{\inferrule*[right=$\wtypesym$-\elim]
-    {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \types C(w) \UU_i \\
-     \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{1.55cm} \\
-     \hspace{6cm} \types d(x, y, z) : C(\synsup(x, y))}
-  {\Gamma,\ w \oftype \wtypesym_{x \oftype A} B(x) \types \textsf{wrec}_{d} (w) : C(w)}}
-\\
-  \mathclap{\inferrule*[right=$\wtypesym$-\comp]
-  {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \types C(w) \UU_i \\
-   \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{2cm} \\
-    \hspace{6.45cm} \types d(x, y, z) : C(\synsup(x, y))}
-  {\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)] \types \textsf{wrec}_{d} (\synsup(x, y)) \hspace{2.8cm} \\
-    \hspace{2.4cm} = d(x, y, \lambda u \oftype B(x). \mathsf{wrec}_d(\mathsf{app}(y, u))): C(\synsup(x, y))}}
+  \text{(No $\emptyt$-\intro.)}
+\and
+  \inferrule*[right=$\emptyt$-\elim]
+  {\oftp{\G,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\G{z}{\emptyt}}
+  {\oftp\G{\ind{\emptyt}(x.C,z)}{C[z/x]}}
+\and
+  \text{(No $\emptyt$-\comp.)}
 \end{mathparpagebreakable}
 
-\subsection{Type empty type $\mathsf{0}$}
+\subsection{The unit type $\unit$}
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=${\sf 0}$-\form]{\textit{}}{\types {\sf 0}\UU_i}
+  \inferrule*[right=$\unit$-\form]
+  {\ }
+  {\oftp\G\unit{\UU_i}}
 \and
-  \text{(No introduction rules.)}
+  \inferrule*[right=$\unit$-\intro]
+  {\ }
+  {\oftp\G{\ttt}{\unit}}
 \and
-  \inferrule*[right=${\sf 0}$-\elim]{\Gamma, \ x \oftype {\sf 0} \types C(x)\UU_i}{\Gamma, \ x \oftype {\sf 0} \ \types \textsf{case} (x) : C(x)}
+  \inferrule*[right=$\unit$-\elim]
+  {\oftp{\G,\tmtp x\unit}{C}{\UU_i} \\
+   \oftp{\G,\tmtp x\unit}{c}{C} \\
+   \oftp\G{y}{\unit}}
+  {\oftp\G{\ind{\unit}(x.C,x.c,y)}{C[y/x]}}
 \and
-  \text{(No computation rules.)}
-\end{mathparpagebreakable}
-
-\subsection{The unit type $\mathsf{1}$}
-
-\begin{mathparpagebreakable}
-  \inferrule*[right=${\sf 1}$-\form]{\ }{\types {\sf 1} \UU_i}
-\and
-  \inferrule*[right=${\sf 1}$-\intro]{\ }{\types * : {\sf 1}}
-\and
-  \inferrule*[right=${\sf 1}$-\elim]{\Gamma,\ x \oftype {\sf 1} \types C(x)\UU_i \\ \oftp\G d : C(*)}{\Gamma,\ x \oftype {\sf 1} \types \textsf{rec}_d (x) : C(x)}
-\and
-  \inferrule*[right=${\sf 1}$-\comp]{\Gamma,\ x \oftype {\sf 1} \types C(x)\UU_i \\ \oftp\G d : C(*)}{\oftp\G \textsf{rec}_d (*) = d : C(*)}
+  \inferrule*[right=$\unit$-\comp]
+  {\oftp{\G,\tmtp x\unit}{C}{\UU_i} \\
+   \oftp{\G,\tmtp x\unit}{c}{C}}
+  {\jdeqtp\G{\ind{\unit}(x.C,x.c,\ttt)}{c[\ttt/x]}{C[\ttt/x]}}
 \end{mathparpagebreakable}
 
 \textbf{TODO:} natural numbers
@@ -695,40 +715,53 @@ Again,  the special case where $B$ does not depend on $x$ is of particular inter
 \subsection{Coproduct types}
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$+$-\form]{\oftp\G A\UU_i \\ \oftp\G B\UU_i}{\oftp\G A + B \UU_i}
+  \inferrule*[right=$+$-\form]
+  {\oftp\G{A}{\UU_i} \\ \oftp\G{B}{\UU_i}}
+  {\oftp\G{A+B}{\UU_i}}
 \and
-  \inferrule*[right=$+$-\intro\ 1.]{\oftp\G A\UU_i \\ \oftp\G B\UU_i}{\Gamma,\ x \oftype A \types \textsf{inl}(x) : A+ B}
+  \inferrule*[right=$+$-\intro${}_1$]
+  {\oftp\G{A}{\UU_i} \\ \oftp\G{B}{\UU_i} \\ \oftp\G{a}{A}}
+  {\oftp\G{\inl(a)}{A+B}}
 \and
-  \inferrule*[right=$+$-\intro\ 2.]{\oftp\G A\UU_i \\ \oftp\G B\UU_i}{\Gamma,\ y \oftype B \types \textsf{inr}(y) : A +B}
+  \inferrule*[right=$+$-\intro${}_2$]
+  {\oftp\G{A}{\UU_i} \\ \oftp\G{B}{\UU_i} \\ \oftp\G{b}{B}}
+  {\oftp\G{\inr(b)}{A+B}}
 \and
-  \inferrule*[right=$+$-\elim]{\Gamma,\ z \oftype A + B \types C(z)\UU_i \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ z \oftype A + B \types \textsf{case}_{d_0,d_1}(z) : C(z)}
+  \inferrule*[right=$+$-\elim]
+  {\oftp{\G,\tmtp x{(A+B)}}{C}{\UU_i} \\
+   \oftp{\G,\tmtp aA}{c}{C[\inl(a)/x]} \\
+   \oftp{\G,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp\G{z}{A+B}}
+  {\oftp\G{\ind{A+B}(x.C,a.c,b.d,z)}{C[z/x]}}
 \and
-  \inferrule*[right=$+$-\comp\ 1.]{\Gamma,\ z \oftype A + B \types C(z)\UU_i \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ x \oftype A \types \textsf{case}_{d_0, d_1}(\textsf{inl}(x))=d_0(x) : C(\textsf{inl}(x))}
+  \inferrule*[right=$+$-\comp${}_1$]
+  {\oftp{\G,\tmtp x{(A+B)}}{C}{\UU_i} \\
+   \oftp{\G,\tmtp aA}{c}{C[\inl(a)/x]} \\
+   \oftp{\G,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp\G{a'}{A}}
+  {\jdeqtp\G{\ind{A+B}(x.C,a.c,b.d,\inl(a'))}{c[a'/a]}{C[\inl(a')/x]}}
 \and
-  \inferrule*[right=$+$-\comp\ 2.]{\Gamma,\ z \oftype A + B \types C(z)\UU_i \\ \Gamma,\ x \oftype A \types d_0(x) : C(\textsf{inl} (x)) \\ \Gamma,\ y \oftype B \types d_1(y) : C(\textsf{inr} (y))}{\Gamma,\ y \oftype B \types \textsf{case}_{d_0, d_1}(\textsf{inr}(y))=d_1(y) : C(\textsf{inr}(y))}
+  \inferrule*[right=$+$-\comp${}_2$]
+  {\oftp{\G,\tmtp x{(A+B)}}{C}{\UU_i} \\
+   \oftp{\G,\tmtp aA}{c}{C[\inl(a)/x]} \\
+   \oftp{\G,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp\G{b'}{B}}
+  {\jdeqtp\G{\ind{A+B}(x.C,a.c,b.d,\inr(b'))}{d[b'/b]}{C[\inr(b')/x]}}
 \end{mathparpagebreakable}
 
 \subsection{Further rules} \label{subsec:optional-rules}
 
-In this section we present the \emph{$\eta$-rule} for $\Pi$-types, and the
-\emph{functional extensionality} rule(s).  Our formulation of the latter is
-taken from \cite{garner:depprod}; see also \cite{hofmann:thesis}.
+In this section we present the \emph{$\eta$-rule} for $\Pi$-types
+%and the \emph{functional extensionality} rule(s). Our formulation of the latter
+%is taken from \cite{garner:depprod}; see also \cite{hofmann:thesis}.
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-$\eta$]
-    {\oftp\G f : \Pi_{x \oftype A} B(x)}
-    {\oftp\G \eta(f) : f = \lambda x \oftype A. \syn{app}(f,x) : \Pi_{x \oftype A} B(x) }
-\and
-  \inferrule*[right=$\Pi$-ext]
-    {\oftp\G f, g : \Pi_{x \oftype A} B(x) \\
-     \oftp\G h : \Pi_{x \oftype A} \synId_{B(x)}(\syn{app}(f,x),\syn{app}(g,x)) }
-    {\oftp\G \syn{ext}(f,g,h) : \synId_{\Pi_{x \oftype A} B(x)}(f,g) }
-\and
-  \inferrule*[right=$\Pi$-ext-comp-prop]
-    {\Gamma, x \oftype A \types b : B(x) }
-    {\oftp\G \syn{ext\text{-}comp}(x.b): \synId_{\Pi_{x \oftype A} B(x)} \hspace{4.4cm}  \\
-     \hspace{2cm} (\syn{ext}(\lambda x \oftype A. b,\lambda x \oftype A. b,\lambda x \oftype A. \myRefl b), \myRefl (\lambda x \oftype A. b)) }
+  {\oftp\G{f}{\tprd{x:A} B}}
+  {\jdeqtp\G{f}{(\lam{x:A}f(x))}{\tprd{x:A} B}}
 \end{mathparpagebreakable}
+
+\textbf{TODO:} function extensionality rules
 
 \egroup
 

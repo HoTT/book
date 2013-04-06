@@ -703,30 +703,38 @@ Recall from \autoref{sec:logic}  the following definitions of the variations on 
     & \to\Brck{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
 \end{align*}
 
-To these, we may add the following for consideration:
-%
-\begin{align*}
-  \mathsf{LEM}_0\;\defeq\;&\ 
-  \prd{A:\set} (A + \neg A) 
-\end{align*}
-%
-This says that for all \emph{sets} $A$, we have $A + \neg A$, while AC says that for any family $A: X\to \set$ of \emph{sets} on a \emph{set} $X$, if a \emph{proposition}-valued relation $P(x,y)$ is total on $X$, then there is a choice function.  More simply, for non-dependent types AC takes the form:
-%
-\begin{align*}
-    & \prd{X:\set}  \prd{A:\set} \prd{P:X\to A\to\prop} \\
-    & \Big(\fall{x:X} \exis{a:A} P(x,a)\Big) \to \exis{g:X\to A} \fall{x:X} P(x,g(x))
-\end{align*}
-%
-Finally, taking $P(x,a)$ to be $f(a)=x$ for some function $f:A\to X$, we arrive at the formulation: for any surjection $f:A\to X$ of sets, there is a ``section" $g:X\to A$ with $f\circ g = 1_X$.  The converse implication from this statement to AC can be taken as an exercise. 
+The subscript $\infty$ denotes the absence of any assumptions that the types involved are $n$-types for any $n$, and also the absence of any truncation operations.
+The unsubscripted versions, which match most closely the versions assumed in classical set theory, involve a judicious choice of places to apply truncation assumptions and operations.
+Of course, there are many other possible variations, involving truncation assumptions and operations into $n$-types for any $n$, which might be placed in some places but not others.
 
-The logical relations among these conditions are as follows:
+Even if we restrict ourselves to sets (rather than $n$-types for $n>0$), there are other possible variations.
+For instance, consider the following generalizations of $\mathsf{LEM}$:
+%
+\begin{align*}
+  \mathsf{LEM}_{0,0}\;\defeq\;&\ \prd{A:\set} (A + \neg A) \\
+  \mathsf{LEM}_{0,-1}\;\defeq\;&\ \prd{A:\set} \brck{A + \neg A}.
+\end{align*}
+%
+More generally, we might consider $\mathsf{LEM}_{n,m}\defeq \prd{A:\ntype{n}} \trunc m{A+\neg A}$, with $\mathsf{LEM}$ being $\mathsf{LEM}_{-1,\infty}$.
+(If $A$ is a mere proposition, then so is $A+\neg A$; thus $\mathsf{LEM}$ is also the same as $\mathsf{LEM}_{-1,-1}$.)
+Similarly, in $\mathsf{AC}$ we might include various homotopy level assumptions on $X$, $A$, and $P$, and/or truncations into various levels.
+The implications between these principles have yet to be fully explored, but in this section we will prove the following implications that are most relevant for the study of sets.
 \[
-\mathsf{LEM}_\infty \Rightarrow  \mathsf{AC} \Rightarrow \mathsf{LEM}_0 \Rightarrow \mathsf{LEM}\Rightarrow \mathsf{AC}_\infty
+\mathsf{LEM}_\infty \Rightarrow \mathsf{LEM}_{0,0} \Rightarrow  \mathsf{AC} \Rightarrow \mathsf{LEM}_{0,-1} \Rightarrow \mathsf{LEM}\Rightarrow \mathsf{AC}_\infty
 \]
-At the extremes, we have that $\mathsf{LEM}_\infty$ is inconsistent with the univalence axiom $\mathsf{UA}$, and $\mathsf{AC}_\infty$ is provable in pure type theory, without any further assumptions (not even function extensionality).
-In this subsection, we will first show that if every surjective function between sets has
+At one extreme, in \autoref{subsec:pat?}, we showed that $\mathsf{LEM}_\infty$ is inconsistent with univalence, and an inspection of the proof shows that it applies just as well to $\mathsf{LEM}_{0,0}$.
+At the other extreme, we have seen that $\mathsf{AC}_\infty$ is provable in pure type theory, without any further assumptions (not even function extensionality).
+In this section we will show the implication $\mathsf{AC} \Rightarrow \mathsf{LEM}_{0,-1}$.
+
+First recall that in \autoref{thm:ac-epis-split} we showed that $\mathsf{AC}$ is equivalent to
+\[ \big(\prd{x:X} \brck{Y(x)}\big) \to \bbrck{\prd{x:X} Y(x)} \]
+for any $X:\set$ and $Y:X\to\set$.
+It is easy to see that this is equivalent to asking that any surjection between sets merely has a section, i.e.\ if $X,Y:\set$ and $f:Y\to X$ then
+\[ \big(\fall{x:X}\exis{y:Y} (f(x)=y)\big) \Rightarrow \exis{g:X\to Y}\fall{x:X} f(g(x))=x. \]
+
+In this subsection, we will first show that if every surjective function between sets merely has
 a section, then for all propositions $A$ we can decide whether $A$ or $\neg A$
-holds, i.e.\ the implication $\mathsf{AC} \Rightarrow \mathsf{LEM}$.  The implication $\mathsf{AC} \Rightarrow \mathsf{LEM}_0$ then also follows.
+holds, i.e.\ the implication $\mathsf{AC} \Rightarrow \mathsf{LEM}$.  The implication $\mathsf{AC} \Rightarrow \mathsf{LEM}_{0,-1}$ then also follows.
 
 Recall the notion of \emph{suspension} from \autoref{sec:suspension}.
 In the case where $A$ is a proposition, it turns out that the
@@ -779,13 +787,14 @@ which finishes the construction of $\tau$.
 \begin{defn}
 For any  type  $A$, we define
 \begin{equation*}
-\mathsf{isDecidable}(A)\equiv  A+\neg A
+\mathsf{isDecidable}(A)\defeq  (A+\neg A).
 \end{equation*}
 \end{defn}
 
 \begin{thm}[Bishop/Diaconescu]\label{thm:1surj_to_surj_to_pem}
-Suppose that all surjections between sets split. Then for all $A:\prop$,
-$\mathsf{isDecidable}(A)$. 
+If all surjections between sets purely have a section, then for all $A:\prop$,
+$\mathsf{isDecidable}(A)$. Consequently, if all surjections between sets merely have a section, then for all $A:\prop,
+\brck{\mathsf{isDecidable}(A)}$.
 \end{thm}
 
 \begin{proof}
@@ -819,13 +828,16 @@ This we also obtained in proposition~\ref{prop:trunc_of_prop_is_set}.
 \end{proof}
 
 \begin{cor}\label{cor:ACtoLEM0}
-Suppose that all surjections between sets split. Then for all sets $A$, we have $A + \neg A$. 
+Suppose that all surjections between sets merely have a section. Then for all sets $A$, we have $\brck{A + \neg A}$.
 \end{cor}
 
 \begin{proof}
+  We have a surjection
 \[
-A + \neg A \epi \brck{A} + \brck{\neg A} \epi \brck{(\brck{A} + \brck{\neg A})} = \brck{A} \vee \brck{\neg A} = \brck{A} \vee \neg \brck A = 1
+A + \neg A \epi \brck{A} + \brck{\neg A} \epi \brck{(\brck{A} + \brck{\neg A})} = \brck{A} \vee \brck{\neg A} = \brck{A} \vee \neg \brck A = \unit
 \]
+which therefore merely has a section.
+But a section of this is exactly an inhabitant of $A+\neg A$, so we have $\brck{A+\neg A}$.
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

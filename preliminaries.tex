@@ -6,7 +6,7 @@
 
 Homotopy type theory is (among other things) a foundational language for mathematics, i.e., an alternative to Zermelo-Fraenkel set theory.
 However, it behaves differently from set theory in several important ways, and that can take some getting used to.
-Explaining these differences carefully requires us to be a more formal here than we will be in the rest of the book.
+Explaining these differences carefully requires us to be more formal here than we will be in the rest of the book.
 As stated in the introduction, our goal is to write type theory \emph{informally}; but for a mathematician accustomed to set theory, more precision at the beginning can help avoid some common misconceptions and mistakes.
 
 We note that a set-theoretic foundation has two ``layers'': the deductive system of first-order logic, and, formulated inside this system, the axioms of a particular theory, such as ZFC.
@@ -80,7 +80,7 @@ Thus, the above definition of the function $f$ would be written as $f(x)\defeq x
 Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.%
 \footnote{In formalized type theory, commas and turnstiles can bind even more loosely.
   For instance, $x:A,y:B\vdash c:C$ is parsed as $((x:A),(y:B))\vdash (c:C)$.
-  However, in this book we will not use any notation of this sort.}\nopagebreak~
+  However, in this book we refrain from such notation until \autoref{cha:rules}.}\nopagebreak~
 Thus, for instance, ``$p:x=y$'' should be parsed as ``$p:(x=y)$'', which makes sense since ``$x=y$'' is a type, and not as ``$(p:x)=y$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
 Similarly, ``$A\jdeq x=y$'' can only be parsed as ``$A\jdeq(x=y)$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
 This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, if we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (which is standard practice in type theory; see \autoref{sec:pi-types}).
@@ -97,7 +97,7 @@ Thus, in the second example above we may instead say that assuming $x =_A y$, we
 However, since we are doing proof-relevant mathematics, we will frequently refer back to proofs as objects.
 In the example, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see \autoref{cha:basics}.
 
-In the rest of this chapter, we attempt to give an informal presentation of Type Theory, sufficient for the purposes of this book; we will give a more formal account in an Appendix.
+In the rest of this chapter, we attempt to give an informal presentation of Type Theory, sufficient for the purposes of this book; we will give a more formal account in \autoref{cha:rules}.
 Aside from some fairly obvious rules (such as the fact that judgmentally equal things can always be substituted for each other), the rules of type theory can be grouped into \emph{type formers}.
 Each type former consists of a way to construct types (possibly making use of previously constructed types), together with rules for the construction and behavior of elements of that type.
 In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
@@ -405,121 +405,118 @@ or equivalently by using induction:
 \section{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:sigma-types}
 
-As before for function types in type theory we are often using a
-more general version of the product type which allow the type of
-the second component to vary dependent on the choice of the first
-component of a pair. This is called the $\Sigma$-type, because it
+Just as we generalized function types (\autoref{sec:function-types}) to dependent function types (\autoref{sec:pi-types}), it is often useful to generalize the product types from \autoref{sec:finite-product-types} to allow the type of
+the second component of a pair to vary depending on the choice of the first
+component. This is called a $\Sigma$-type, because in set theory it
 corresponds to an infinite sum (in the sense of coproducts or
 disjoint union) over a given type.
 
-Given a type $A:\UU$ and a family $B : A \to \UU$ the dependent
-pair type is written as $\sm{x:A} B(x) : \UU$. Its elements are
-pairs $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
-If $B$ is constant then the dependent pair type is the
+Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
+pair type is written as $\sm{x:A} B(x) : \UU$.
+Alternative notations are 
+\[ \tsm{x:A} B(x) \hspace{2cm} \dsm{x:A}B(x) \hspace{2cm} \lsm{x:A} B(x). \]
+The way to construct elements of this type is by pairing: we have
+$\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
+If $B$ is constant, then the dependent pair type is the
 ordinary cartesian product type:
 \[ (\sm{x:A} B) \jdeq (A \times B).\]
-All the constructions on $\Sigma$-types arise as straightforward generalisations of the ones for product types.
+All the constructions on $\Sigma$-types arise as straightforward generalisations of the ones for product types, with dependent functions often replacing non-dependent ones.
 
-To define a non-dependent function out of a $\Sigma$-type
-$f : (\sm{x:A} B(x)) \to C$ we provide a function 
-$g : \prd{x:A} B(x) \to C$ and we can define $f$ via the defining
+For instance, the recursion principle says that to define a non-dependent function out of a $\Sigma$-type
+$f : (\sm{x:A} B(x)) \to C$, we provide a function 
+$g : \prd{x:A} B(x) \to C$, and then we can define $f$ via the defining
 equation
 \[ f(\tup{a}{b}) \defeq g(a)(b) \]
-We can derive the projections for $\Sigma$-types:
+For instance, we can derive the first projection from a $\Sigma$-type:
 \begin{eqnarray*}
-  \fst & : & \sm{x : A}B(x) \to A \\
-  \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p))
+  \fst & : & (\sm{x : A}B(x)) \to A.
+  % \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p)).
 \end{eqnarray*}
-which have the interesting twist that the first projection appears
-in the type of the second. Hence we have to define it first!
-We apply the principle we have just introduced and define
+by the defining equation
 \begin{eqnarray*}
-  \fst(\tup{a}{b}) & \defeq & a \\
-  \snd(\tup{a}{b}) & \defeq & b
+  \fst(\tup{a}{b}) & \defeq & a.
+  % \snd(\tup{a}{b}) & \defeq & b
 \end{eqnarray*}
-To convince ourselves that the equation defining the second
-projection is correct we note that $B (\fst(\tup{a}{b})) \jdeq
-B(a)$ using the defining equation for the first projection and
-indeed $b : B(a)$. 
-
-We package this construction into the recursor for $\Sigma$:
-\[ \rec{\sm{x:A}B(x)} : \prd{C:\UU'}(\prd{x:A} B(x) \to C) \to
-(\sm{x:A}B(x)) \to C \]
-with the defining equation
-\[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
-
-To construct a dependent function out of a $\Sigma$-type we 
-need a family $C : (\sm{x:A} B(x)) \to \UU'$ and a function
-\[ g : \prd{x:A} B(x) \to C(\tup{a}{b}) \]
-then we can derive a function 
+However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
+\[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
+Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
+This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU'$, we need a function
+\[ g : \prd{x:A} B(x) \to C(\tup{a}{b}). \]
+We can then derive a function 
 \[ f : \prd{p : \sm{x:A}B(x)} C(p) \]
 with  defining equation
 \[ f(\tup{a}{b}) \defeq g(a)(b).\]
-This scheme can be packaged into induction for $\Sigma$-types
+Applying this with $C(p)\defeq B(\fst(p))$, we can define $\snd : \prd{p:\sm{x : A}B(x)}B(\fst(p))$ with the obvious equation
+\[ \snd(\tup{a}{b})  \defeq  b. \]
+To convince ourselves that this is correct, we note that $B (\fst(\tup{a}{b})) \jdeq B(a)$, using the defining equation for $\fst$, and
+indeed $b : B(a)$.
+
+We can package the recursion and induction principles into the recursor for $\Sigma$:
+\[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU'}\Big(\tprd{x:A} B(x) \to C\Big) \to
+\big(\tsm{x:A}B(x)\big) \to C \]
+with the defining equation
+\[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
+and the corresponding induction operator:
 \begin{align*}
-  \ind{\Sigma{x:A}B(x)} : & \prd{C:(\sm{x:A} B(x)) \to \UU'}\\
-   & (\prd{x:A} B(x) \to C(\tup{a}{b})) \\
-   & \to \prd{p : \sm{x:A}B(x)}
+  \ind{\Sigma{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU'}
+    \Big(\tprd{x:A} B(x) \to C(\tup{a}{b})\Big)
+    \to \dprd{p : \sm{x:A}B(x)} C(p)
 \end{align*}
 with the defining equation 
-\[ \ind{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
-And as before the recursor arises as the special case of induction
+\[ \ind{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b). \]
+As before, the recursor is the special case of induction
 when the family $C$ is constant.
 
-As an example we derive what is called \emph{type-theoretic axiom of choice}
-which isn't really an axiom, because it is provable from the rules
-for $\Sigma$-types. We will discuss this in more detail later in \autoref{subsec:pat?}. 
-We assume types $A,B : \UU$ and a 
-family $R : A \to B \to \UU$ to derive
-\[ \ac : (\prd{x:A} \sm{y :B} R(x,y)) \to (\sm{f:A\to B}
-\prd{x:A} R(x,f(x))) \]
-Reading $\Pi$ as forall and $\Sigma$ as there exists, the type
-expresses: \emph{if for all $x:A$ there is a $y:B$ such that
-  $R(x,y)$ then there is a function $f : A \to B$ such that for
-  all $x:A$ we have that $R(x,f(x))$.} Using the projections we have
-just introduced we define $\ac$ as
-\[ \ac(g) \defeq \tup{\lamu{x:A} \fst(g(x))}{\lamu{x:A} \snd(g(x))} \]
-We convince ourselves that indeed given $g:\prd{x:A} \sm{y :B}
-R(x,y)$:
+As a further example, consider the following principle, where $A$ and $B$ are types and $R:A\to B\to \UU$.
+\[ \ac : \Big(\tprd{x:A} \tsm{y :B} R(x,y)\Big) \to
+\Big(\tsm{f:A\to B} \tprd{x:A} R(x,f(x))\Big)
+\]
+We may regard $R$ as a ``proof-relevant relation'' between $A$ and $B$, with $R(a,b)$ the type of witnesses for relatedness of $a:A$ and $b:B$.
+Then $\ac$ says intuitively that if we have a dependent function $g$ assigning to every $a:A$ a dependent pair $(b,r)$ where $b:B$ and $r:R(a,b)$, then we have a function $f:A\to B$ and a dependent function assigning to every $a:A$ a witness that $R(a,f(a))$.
+Our intuition tells us that we can just split up the values of $g$ into their components.
+Indeed, using the projections we have just defined, we can define:
+\[ \ac(g) \defeq \Big(\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))\Big). \]
+To verify that this is well-typed, note that $g:\prd{x:A} \sm{y :B} R(x,y)$, we have
 \begin{eqnarray*}
 \lamu{x:A} \fst(g(x)) & : &  A \to  B \\
-\lamu{x:A} \snd(g(x)) & : &  \prd{x:A} R(a,\fst(g(x))) 
+\lamu{x:A} \snd(g(x)) & : &  \tprd{x:A} R(a,\fst(g(x))).
 \end{eqnarray*}
-and observing that 
-\[ \prd{x:A} R(x,\fst(f(x))) \jdeq (\lamu{f:A\to B} \prd{x:A}
-R(x,f(x)))(\lamu{x:A} \fst(g(x))) \]
-we can conclude that
-\[ \tup{\lamu{x:A} \fst(g(x))}{\lamu{x:A} \snd(g(x))} : (\sm{f:A\to B}
-\prd{x:A} R(x,f(x))) .\]
-This construction shows that this is very different to the axiom
-of choice in set theory: the premise was already given by a
-function whose result are pairs, all we have done is the take it apart into two
-functions: one representing the choice and the other its correctness.
-% ex use ind
-% derive dependent ac
+Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the functior $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the codomain of \ac:
+\[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
+\Big(\lamu{f:A\to B} \tprd{x:A} R(x,f(x))\Big)\big(\lamu{x:A} \fst(g(x))\big). \]
+Thus, we have
+\[ \Big(\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))\Big) : \tsm{f:A\to B} \tprd{x:A} R(x,f(x))\]
+as required.
+
+If we read $\Pi$ as ``for all'' and $\Sigma$ as ``there exists'', then the type of the function $\ac$ expresses:
+\emph{if for all $x:A$ there is a $y:B$ such that $R(x,y)$, then there is a function $f : A \to B$ such that for all $x:A$ we have $R(x,f(x))$}.
+Since this sounds like a version of the axiom of choice, the function \ac has traditionally been called the \emph{type-theoretic axiom of choice}.
+However, there is clearly no choice actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness.
+In \autoref{sec:axiom-choice} we will give a correct formulation of ``the axiom of choice''.
+
 
 \section{Coproduct types}
 \label{sec:coproduct-types}
 
-The coproduct of two types $A+B:\UU$ given $A,B:\UU$  corresponds to the \emph{disjoint
-  union} in set theory. Here it is a fundamental construction
-since the union of types doesn't exist. We also introduce a
+Given $A,B:\UU$, we introduce their \emph{coproduct} type $A+B:\UU$.
+This corresponds to the \emph{disjoint union} in set theory, and we may also use that name for it.
+In type theory, as was the case with functions and products, the coproduct must be a fundamental construction, since there is no previously given notion of ``union of types''.
+We also introduce a
 nullary version: the empty type $\emptyt:\UU$.
 
-The elements of $A+B$ are $\inl(a) : A+B$ for $a:A$ and
-$\inr(b):A+B$ for $b:B$. There are no elements in the empty type. 
+There are two ways to construct elements of $A+B$, either as $\inl(a) : A+B$ for $a:A$, or as
+$\inr(b):A+B$ for $b:B$. There are no ways to construct elements of the empty type. 
 
-To construct a non-dependent function $f : A+B \to C$ we need 
+To construct a non-dependent function $f : A+B \to C$, we need 
 functions $g_0 : A \to C$ and $g_1 : B \to C$. Then $f$ is defined
 via the defining equations
 \begin{eqnarray*}
   f(\inl(a)) & \defeq & g_0(a) \\
-  f(\inl(b)) & \defeq & g_1(b) 
+  f(\inl(b)) & \defeq & g_1(b).
 \end{eqnarray*}
-This is the function $f$ is defined by cases. As before we can
+That is, the function $f$ is defined by cases. As before, we can
 derive the recursor:
-\[ \rec{A+B} : \prd{C:A+B \to \UU'}(A \to C) \to (B\to C) \to A+B
-\to C\]
+\[ \rec{A+B} : \dprd{C:A+B \to \UU'}(A \to C) \to (B\to C) \to A+B \to C\]
 with the defining equations
 \begin{eqnarray*}
 \rec{A+B}(C,g_0,g_1,\inl(a)) & \defeq & g_0(a) \\
@@ -527,35 +524,35 @@ with the defining equations
 \end{eqnarray*}
 
 We can always construct a function $f : \emptyt \to C$ without
-having to give any defining equations, because $f$ will never be
-used on any canonical elements. Thus the recursor for $f$ is
-$\rec{\emptyt} : \prd{C:\UU'} \emptyt \to C$
-which constructs the canonical function over the empty set or
-logically corresponds to the principle \emph{ex falso quod libet}. 
+having to give any defining equations, because there are no canonical elements of \emptyt on which to define $f$.
+Thus, the recursor for $\emptyt$ is
+\[\rec{\emptyt} : \tprd{C:\UU'} \emptyt \to C,\]
+which constructs the canonical function from the empty type to any other type.
+Logically, it corresponds to the principle \emph{ex falso quod libet}. 
 
-To construct a dependent function assume as given a family 
-$C: (A + B) \to \UU'$. To define a function $f:\prd{x:A+B}C(x)$ we
+To construct a dependent function $f:\prd{x:A+B}C(x)$ out of a coproduct, we assume as given the family 
+$C: (A + B) \to \UU'$, and 
 require 
 \begin{eqnarray*}
   g_0 & : & \prd{a:A} C(\inl(a)) \\
-  g_1 & : & \prd{b:B} C(\inr(b))
+  g_1 & : & \prd{b:B} C(\inr(b)).
 \end{eqnarray*}
-to derive $f$ with the defining equations:
+This yields $f$ with the defining equations:
 \begin{eqnarray*}
   f(\inl(a)) & \defeq & g_0(a) \\
-  f(\inl(b)) & \defeq & g_1(b) 
+  f(\inl(b)) & \defeq & g_1(b) .
 \end{eqnarray*}
-We package this scheme into induction for coproducts:
+We package this scheme into the induction principle for coproducts:
 \begin{align*}
- \ind{A+B} : & \prd{C: (A + B) \to \UU'}   \\
-& \prd{a:A} C(\inl(a)) \to \prd{b:B} C(\inr(b))\\
-& \to \prd{x:A+B}C(x) 
+  \ind{A+B} :  \dprd{C: (A + B) \to \UU'}
+  \Big(\tprd{a:A} C(\inl(a))\Big) \to \Big(\tprd{b:B} C(\inr(b))\Big)
+  \to \tprd{x:A+B}C(x) 
 \end{align*}
-As before the recursor arises in the case that the family $C$ is
+As before, the recursor arises in the case that the family $C$ is
 constant. 
 
-Induction for the empty type
-\[ \ind{\emptyt} : \prd{C:\emptyt \to \UU}\prd{z:\emptyt} C(z) \]
+The induction principle for the empty type
+\[ \ind{\emptyt} : \tprd{C:\emptyt \to \UU}{z:\emptyt} C(z) \]
 gives us a way to define a trivial dependent function out of the
 empty type. % In the presence of $\eta$-equality it is derivable
 % from the recursor.
@@ -582,60 +579,57 @@ functional programming:
 \[ \rec{\bool} : \prd{C:\UU'}  C \to C \to \bool \to C \]
 with the defining equations
 \begin{eqnarray*}
-  \rec{bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
-  \rec{bool}(C,c_0,c_1,\btrue) & \defeq & c_1
+  \rec{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
+  \rec{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1
 \end{eqnarray*}
 
-Given a family $C : \bool \to \UU$ to derive a dependent function 
-$f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$ and
-add the defining equations
+Given a family $C : \bool \to \UU$, to derive a dependent function 
+$f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which case we can give the defining equations
 \begin{eqnarray*}
   f(\bfalse) & \defeq & c_0 \\
-  f(\btrue) & \defeq & c_1
+  f(\btrue) & \defeq & c_1.
 \end{eqnarray*}
-Induction tells us that true and false are indeed the only
-elements of this type:
-\[ \ind{\bool} : \prd{C:\bool \to \UU'}  C(\bfalse) \to C(\btrue)
-\to \prd{x:\bool} C(x) \]
+We package this up into the induction principle
+\[ \ind{\bool} : \dprd{C:\bool \to \UU'}  C(\bfalse) \to C(\btrue)
+\to \tprd{x:\bool} C(x) \]
 with the defining equations
 \begin{eqnarray*}
-  \ind{bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
-  \ind{bool}(C,c_0,c_1,\btrue) & \defeq & c_1
+  \ind{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
+  \ind{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1
 \end{eqnarray*}
 
-Given $\Sigma$ and $\bool$ we could have defined
+We have remarked that $\Sigma$-types can be regarded as analogous to indexed disjoint unions, while coproducts are binary disjoint unions.
+It is natural to expect that a binary disjoint union could be constructed as an indexed one over the two-element type \bool, and indeed we could have defined
 \[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x) \]
-and
+with
 \begin{eqnarray*}
   \inl(a) & \defeq & \tup{\bfalse}{a} \\
-  \inr(a) & \defeq & \tup{\btrue}{a}
+  \inr(a) & \defeq & \tup{\btrue}{a}.
 \end{eqnarray*}
-We leave it as an exercise to derive induction. Does the derived
-induction constant satisfies the same defining equations?
+We leave it as an exercise to derive the induction principle of a coproduct type from this definition.
+(See also \autoref{sec:appetizer-univalence}.)
+Does the derived
+induction constant satisfy the same defining equations?
 %ex
-This also reflects the view that $\Sigma$-types are large sums 
-indexed by any set. If the indexing set is just a 2 element set we
-recover ordinary binary disjoint union.
 
-Indeed, we can apply the same idea to products and $\Pi$-types:
+We can apply the same idea to products and $\Pi$-types: we could have defined
 \[ A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x) \]
-Pairs can be constructed using induction for bool:
+Pairs could then be constructed using induction for \bool:
 \[ \tup{a}{b} \defeq \ind{\bool}(\rec{\bool}(\UU,A,B),a,b) \]
-While the projections are straightforward applications
+while the projections are straightforward applications
 \begin{eqnarray*}
   \fst(p) & \defeq & p(\btrue) \\
-  \snd(p) & \defeq & p(\bfalse) \\
+  \snd(p) & \defeq & p(\bfalse).
 \end{eqnarray*}
-the derivation of the induction for products is a bit more
-involved and requires function extensionality. We get an
-induction constant but not the same judgmental equalities.
-This is a recurrent issue with extensional encodings in type
-theory. 
+The derivation of the induction principle for binary products defined in this way is a bit more involved, and requires function extensionality, which we will introduce in \autoref{sec:compute-pi}.
+Moreover, we do not get the same judgmental equalities.
+This is a recurrent issue when encoding one type as another; we will return to it in \autoref{sec:htpy-inductive}. 
 
-Unlike in classical mathematics we
-do not identify propositions with $\bool$ (instead we identify
-propositions with types). Hence the type $A \to \bool$ 
-represents only the decidable subsets of $A$.
+We may occasionally refer to the elements $\btrue$ and $\bfalse$ of $\bool$ as ``true'' and ``false'' respectively.
+However, note that unlike in classical mathematics, we do not use elements of $\bool$ as truth values or as propositions.
+(Instead we identify propositions with types; see \autoref{sec:pat}.)
+In particular, the type $A \to \bool$ is not generally the power set of $A$; it represents only the ``decidable'' subsets of $A$.
+
 
 \section{Identity types}
 \label{sec:identity-types}
@@ -649,7 +643,7 @@ one reason that two objects are equal, corresponding to the fact that
 there can be more than one path between two points of a space.
 
 Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point of view that there is a path between $a$ and $b$. In particular, there is a canonical element
-\[\refl : \prd{a:A} a =_A a\] --- the proof of reflexivity.
+\[\refl{} : \prd{a:A} a =_A a\] --- the proof of reflexivity.
 
 There are two different but equivalent elimination principles for
 identity types:
@@ -897,7 +891,7 @@ proposition  lives in a different, higher universe, then the
 propositions we are quantifying over, that is
 \[ \prd{P : A \to \UU_i} P(a) \to P(b) : \UU_{i+1} \]
 
-We have descibed here a proof-relevant translation or propositions, where the proofs of disjunctions and existential statements carry some information. Using the language of homotopy type theory which we are going to introduce in the next section there is an alternative way to interpret the word \emph{proposition} as a (-1)-type, i.e. a type which doesn't carry any information. In this case we would say \emph{there merely exists} or \emph{merely $A$ or $B$}.
+We have descibed here a proof-relevant translation of propositions, where the proofs of disjunctions and existential statements carry some information. Using the language of homotopy type theory which we are going to introduce in the next section there is an alternative way to interpret the word \emph{proposition} as a (-1)-type, i.e. a type which doesn't carry any information. In this case we would say \emph{there merely exists} or \emph{merely $A$ or $B$}.
 
 \section*{Exercises}
 

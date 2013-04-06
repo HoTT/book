@@ -428,15 +428,32 @@ Then $g$ and $h$ are equal.
 \end{thm}
 
 
-
 \section{Inductive types are initial algebras}
 \label{sec:initial-alg}
 
 As suggested earlier, inductive types also have a category-theoretic universal property.
 They are \emph{homotopy-initial algebras}: initial objects (up to coherent homotopy) in a category of ``algebras'' determined by the specified constructors.
+Indeed, assume that we have $A : \type$ and $B : A \to \type$, and consider the associated \emph{polynomial functor}: 
+\begin{equation}
+\label{eq:polyfunc}
+P(X) = \sm{x : A} (B(x) \rightarrow X) \, .
+\end{equation}
+Actually, this assignment is functorial only up to homotopy, but this makes no difference in what follows.
+By definition, a \emph{$P$-algebra} is then a type $C$ equipped a function
+$s_C :  PC \rightarrow C$. For $P$-algebras $(C,s_C)$ and $(D,s_D)$, a \emph{homomorphism} between them $(f, s_f) : (C, s_C) \rightarrow (D, s_D)$ consists of a function $f : C \rightarrow D$ and a homotopy between maps $PC \rightarrow D$
+\[
+s_f :  f \circ s_C \, = s_{D} \circ Pf  \, ,
+\]
+where $Pf : PC\rightarrow PD$ is the result of the easily-definable action of $P$ on $f: C \rightarrow D$. Such an algebra homomorphism can be represented suggestively in the form:
+\[
+\xymatrix{
+ PC \ar[d]_{s_C} \ar[r]^{Pf}  \ar@{}[dr]|{s_f} &  PD \ar[d]^{s_D}\\
+C \ar[r]_{f}   & D }
+\] 
+A $P$-algebra $(C, s_C)$ is then said to be \emph{homotopy-initial} if for every $P$-algebra $(D, s_D)$, the type of all algebra maps is contractible.  The formal definitions are given below.
 
-For example, consider the natural numbers.
-The appropriate sort of ``algebra'' is a type equipped with the same structure that the constructors of $\nat$ give to it.
+For a related example, consider the natural numbers.
+The appropriate sort of ``algebra'' here is a type equipped with the same structure that the constructors of $\nat$ give to it.
 
 \begin{defn}
 A \textbf{$\nat$-algebra} is a type $C$ with two terms $c_0 : C$, $c_s : C \to C$. Thus,
@@ -567,51 +584,6 @@ sufficient to show that there is an algebra 2-cell
 The identity proof $e : f=g$ is now constructed by function extensionality and
 $\w$-elimination so as to guarantee the existence of the required identity
 proof $s_e$. 
-%
-%\smallskip
-%
-%For the converse implication, let us assume that the polynomial functor associated
-%to the judgement $x : A \vdash B(x) : \type$ 
-%%\[
-%%x : A \vdash B(x) : \type
-%%\] 
-%has an h-initial algebra $(W,s_W)$. To derive the $\W$-formation rule, we 
-%let  $(\W x {\, : \, } A) B(x) \defeq W$. The $\W$-introduction rule is equally simple to
-%derive; namely, for $a : A$ and $t \colon B(a) \rightarrow W$,  we define $\wsup(a,t) : W$ as the 
-%result of applying the structure map $s_W \colon PW \rightarrow W$ to $\pair(a,t) : PW$.
-%For the $\W$-elimination rule, let us assume its premisses and in particular that $w : W \vdash C(w) : \type$.
-%%\[
-%%w : W \vdash C(w) : \type \, .
-%%\]
-%Using the other premisses, one shows that the type $C \defeq (\Sigma w : W) C(w)$
-%can be equipped with a structure map $s_C : PC \rightarrow C$. By the h-initiality of $W$,
-%we obtain a weak homomorphism $(f, s_f) : (W, s_W) \rightarrow (C, s_C)$. Furthermore,
-%the first projection $\pi_1 : C \rightarrow W$ can be equipped with the structure of a weak 
-%homomorphism, so that we obtain a diagram of the form
-%\[
-%\xymatrix{
-%PW \ar[r]^{Pf} \ar[d]_{s_W}  & PC \ar[d]^{s_C}  \ar[r]^{P \pi_1}  & PW  \ar[d]^{s_W}  \\
-%W \ar[r]_f  & C \ar[r]_{\pi_1}  & W \, .}
-%\]
-%But the identity function $1_W : W \rightarrow W$ has a canonical structure of a weak
-%algebra homomorphism and so, by the contractibility of the type of weak homorphisms
-%from $(W,s_W)$ to itself, there must be an identity proof between the composite
-%of $(f,s_f)$ with $(\pi_1, s_{\pi_1})$ and $(1_W, s_{1_W})$. This implies, in particular,
-%that there is an identity proof $p : \Id( \pi_1 \circ f, 1_W)$. 
-%%\[
-%%p : \Id( \pi_1 \circ f, 1_W) \, .
-%%\]
-%Since $(\pi_2 \circ f) w : C( (\pi_1 \circ f) w)$, we can define
-%\[
-%\wrec(w,c) \defeq
-%p_{\, ! \,}( ( \pi_2 \circ  f)   w )   : C(w) 
-%\]
-%where the transport $p_{\, ! \,}$ is defined via $\Id$-elimination over the dependent type
-%\[
-%u : W \rightarrow W \vdash C ( u (w)) : \type \, .
-%\]
-%The verification of the propositional $\W$-computation rule is a rather long calculation,
-%involving several lemmas concerning the naturality properties of operations of the form $p_{\, ! \,}$.
 \end{proof}
 %%%%%
 
@@ -749,44 +721,6 @@ The types satisfying the formation, introduction, elimination, and propositional
 \begin{proof}[Sketch of proof]
 %%%%%
 Inspecting the proof of \autoref{thm:w-hinit}, we see that only the \emph{propositional} computation rule was required to establish the h-initiality of $\wtype{x:A}B(x)$. 
-%
-%Suppose we have $A : \type$ and $B : A \to \type$,
-%and consider the associated polynomial functor $P(X)\defeq\sm{x:A}(B(x)\to X)$.
-%Let $W \defeq \wtype{x:A}B(x)$.  Then using
-%the $\w$-introduction rule from \autoref{sec:w-types}, we have a structure map $s_W\defeq\supp: PW \rightarrow W$. 
-%We want to show that the algebra $(W, s_W)$ is
-%h-initial. So, let us consider another algebra $(C,s_C)$ and show that the type $T\defeq \whom_{A,B}((W, s_W),(C,s_C)) $ 
-%of  $\w$-homomorphisms from $(W, s_W)$ to $(C, s_C)$ is contractible. To do
-%so, observe that the $\w$-elimination rule and the $\w$-computation
-%rule allow us to define a $\w$-homomorphism $(f, s_f) : (W, s_W) \rightarrow (C, s_C)$, 
-%thus showing that $T$ is inhabited. It is furthermore necessary to show that for every $\w$-homomorphism $(g, s_g) : (W, s_W) \rightarrow (C, s_C)$, there is an identity proof 
-%\begin{equation}
-%\label{equ:prequired}
-%p :  (f,s_f) = (g,s_g)  \, .
-%\end{equation}
-%This uses the fact that, in general, a type of the form $(f,s_f) = (g,s_g) $
-%is  equivalent to the type of what we call \emph{algebra $2$-cells}, whose canonical
-%elements are pairs of the form $(e, s_e)$, where $e : f=g$ and $s_e$ is a higher identity proof between the identity proofs represented by the following pasting diagrams:
-%\[
-%\xymatrix{
-%PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W} \ar@{}[r]_(.52){s_g}  & PD \ar[d]^{s_D}  \\
-%W \ar@/^1pc/[r]^g  \ar@/_1pc/[r]_f  \ar@{}[r]|{e} & D } \qquad
-%\xymatrix{
-%PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W}   \ar@/_1pc/[r]_{Pf} \ar@{}[r]|{Pe}
-%& PD \ar[d]^{s_D}  \\
-%W  \ar@/_1pc/[r]_f  \ar@{}[r]^{s_f} & D }
-%\]
-%In light of this fact, to prove that there exists a term as in~\eqref{equ:prequired}, it is 
-%sufficient to show that there is an algebra 2-cell 
-%\[
-%(e,s_e) : (f,s_f) = (g,s_g) \, .
-%\]
-%The identity proof $e : f=g$ is now constructed by function extensionality and
-%$\w$-elimination so as to guarantee the existence of the required identity
-%proof $s_e$. 
-%
-%\smallskip
-
 For the converse implication, let us assume that the polynomial functor associated
 to $A : \type$ and $B : A \to \UU$, has an h-initial algebra $(W,s_W)$. To derive the $\w$-formation rule, we 
 let  $(\w x {\, : \, } A) B(x) \defeq W$. The $\w$-introduction rule is equally simple to
@@ -1143,7 +1077,7 @@ This suggests the following definitions and theorem.
   \end{enumerate}
 \end{thm}
 
-Note that the equivalences~\ref{item:identity-systems1}$\Leftrightarrow$\ref{item:identity-systems2}$\Leftrightarrow$\ref{item:identity-systems3} are a version of \autoref{thm:homotopy-induction-times-3} for identity types, regarded as inductive families in the Paulin-Mohring style.
+Note that the equivalences~\ref{item:identity-systems1}$\Leftrightarrow$\ref{item:identity-systems2}$\Leftrightarrow$\ref{item:identity-systems3} are a version of \autoref{lem:homotopy-induction-times-3} for identity types, regarded as inductive families in the Paulin-Mohring style.
 Of course,~\ref{item:identity-systems2}--\ref{item:identity-systems4} are mere propositions, so that logical equivalence implies actual equivalence.
 (Condition~\ref{item:identity-systems1} is also a mere proposition, but we will not prove this.)
 
@@ -1237,7 +1171,7 @@ Show that for any dependent type $E : \two \to \type$, the space of dependent fu
 \end{ex}
 
 \begin{ex}
-  (Continuing \autoref{ex:bool}) Formulate a corresponding statement for natural numbers and show that it fails to hold. Why?
+  (Continuing \autoref{ex:bool}) Formulate the most obvious corresponding statement for natural numbers, and show that it fails to hold.
 \end{ex}
 
 \begin{ex}

@@ -680,10 +680,6 @@ In topos theory a well-known sufficient condition for LEM is the axiom of choice
 \subsection{Axioms of choice and excluded middle for sets}
 \label{subsec:emacinsets}
 
-%\textbf{TODO:} Discuss excluded middle and choice, state that the appropriate versions are
-%consistent, so me may assume them. Prove that choice implies excluded middle
-%See~\ref{thm:1surj_to_surj_to_pem}
-%
 Recall from \autoref{sec:logic}  the following definitions of the variations on the axiom of choice and the law of excluded middle:
 
 \begin{align*}
@@ -745,7 +741,7 @@ below.
 
 \begin{lem}\label{prop:trunc_of_prop_is_set}
 The suspension of any proposition $A$ is a set and the path space 
-$0=1$ in $\susp(A)$ is equivalent to $A$. 
+$\north=\south$ in $\susp(A)$ is equivalent to $A$. 
 \end{lem}
 
 \begin{proof}
@@ -757,64 +753,31 @@ $\mathsf{Id}_{\susp(A)}$.
 
 We make the following definitions:
 \begin{align*}
-P(0,0) & \equiv \unit & P(1,0) & \equiv A\\
-P(0,1) & \equiv A & P(1,1) & \equiv \unit.
+P(\north,\north) & \defeq \unit & P(\south,\north) & \defeq A\\
+P(\north,\south) & \defeq A & P(\south,\south) & \defeq \unit.
 \end{align*}
 To show that this gives a dependent type we need to verify that there 
-is an equivalence $P(0,0)\simeq P(0,1)$ and an eqivalence 
-$P(1,0)\simeq P(1,1)$ for every $a:A$. Since $A$ is assumed to 
+is an equivalence $P(\north,\north)\simeq P(\north,\south)$ and an eqivalence 
+$P(\south,\north)\simeq P(\south,\south)$ for every $a:A$. Since $A$ is assumed to 
 be a proposition, this is indeed the case.
 
-To finish the proof we need to show that $P(x,y)\simeq x=y$ 
-for every $x,y:\susp(A)$. We can find such a fiberwise equivalence 
-by finding a transformation
-\begin{equation*}
-\tau(y):\prd{x:\susp(A)} P(x,y)\to x=y
-\end{equation*}
-which induces an equivalence 
-\begin{equation*}
-\big(\sm{x:A} P(x,y)\big)\simeq\big(\sm{x:\susp(A)} x=y\big)
-\end{equation*}
-of total spaces, for every $y:\susp(A)$. The latter type 
-is contractible, so it suffices to find the mentioned transformation 
-and proof that the total space on the left is contractible. We may do 
-the first of these tasks by applying the induction principle for 
-$\susp(A)$. We make the definitions
+Note that $P$ is a reflexive relation. Therefore we may 
+apply \autoref{thm:h-set-refrel-in-paths-sets}, so it suffices to
+show that $\tau:\prd{x,y:\susp(A)}P(x,y)\to(x=y)$.
+We make the definitions
 \begin{align*}
-  \tau(0,0) & \defeq \lam{t} \refl{0} & \tau(1,0) &\defeq \lam{a} \alpha(a)^{-1}\\
-  \tau(0,1) & \defeq \alpha & \tau(1,1) &\defeq \lam{t} \refl{1}.
+  \tau(\north,\north) & \defeq \lam{t} \refl{\north} & \tau(\south,\north) &\defeq \lam{a} \opp{\merid(a)}\\
+  \tau(\north,\south) & \defeq \merid & \tau(\south,\south) &\defeq \lam{t} \refl{\south}.
 \end{align*}
-To find a path $\alpha(a)\cdot\tau(0,0)=\tau(0,1)$ for $a:A$, 
+To find a path $\trans{\merid(a)}{\tau(\north,\north)}=\tau(\north,\south)$ for $a:A$, 
 note that because $A$ is a proposition there are paths
 \begin{equation*}
-(\alpha(a)\cdot\tau(0,0))(x)=\tau(0,0,x)\bullet\alpha(a)^{-1}
-=\alpha(a)^{-1}= \alpha(x)^{-1}. 
+(\trans{\merid(a)}{\tau(\north,\north)})(x)=\tau(\north,\north,x)\ct\opp{\merid(a)}
+=\opp{\merid(a)}= \opp{\merid(x)}. 
 \end{equation*}
 Thus we get the requested path from function extensionality. Likewise, 
-we obtain a path $\tau(0)=\tau(1)$ for every $a:A$, 
+we obtain a path $\tau(\north)=\tau(\south)$ for every $a:A$, 
 which finishes the construction of $\tau$.
-
-The last thing to do to finish the proof is to show that 
-$\sm{x:A} P(x,y)$ is contractible for every $y:\susp(A)$. 
-Since $\mathsf{isContr}(X)$ is a mere proposition for every type $X$, 
-we only need to show that $\sm{x:A} P(x,0)$ and 
-$\sm{x:\susp(A)} P(x,1)$ are contractible. 
-They are clearly equivalent, so we only verify the contractibility 
-of the latter. The obvious candidate for the center of contraction 
-is $\pairr{1,\mathsf{tt}}$, thus we need to show that there is a 
-function $c$ of type
-\begin{equation*}
-\prd{x:\susp(A)}{u:P(x,1)} \langle{x,u}\rangle=\langle{1,\mathsf{tt}}\rangle.
-\end{equation*}
-We do this again by induction on $x$. To define $c(0)$, note that 
-for any $a:A$, we have the path $\alpha(a):0= 1$. Since 
-$\unit$ is contractible we will automatically get a path 
-$\alpha(a)\cdot u=\mathsf{tt}$. The definition of $c(1)$ is obvious. 
-Then we get, for $a:A$, a path 
-$(\alpha(a)\cdot c(0))(\mathsf{tt})= c(1,\mathsf{tt})$ 
-because $\susp(A)$ is contractible when $A$ is contractible. 
-This gives us a path $\alpha(a)\cdot c(0)= c(1)$ and finishes 
-the proof by induction that $\sm{x:A} P(x,1)$ is contractible.
 \end{proof}
 
 \begin{defn}
@@ -832,15 +795,15 @@ $\mathsf{isDecidable}(A)$. Consequently, if all surjections between sets merely 
 
 \begin{proof}
 Consider the function $\pi:\mathsf{bool}\to\susp(A)$ defined by 
-$\pi(\mathsf{true})\equiv 1$ and $\pi(\mathsf{false})\equiv 0$. 
+$\pi(\mathsf{true})\equiv \south$ and $\pi(\mathsf{false})\equiv \north$. 
 First  we  show that $\pi$ is surjective, 
 by showing that there is a function of type
 \begin{equation*}
 \prd{x:\susp(A)} \|\hfiber\pi{x}\|.
 \end{equation*}
 We have the terms 
-$\langle{\mathsf{false},\refl{0}}\rangle:\hfiber\pi0$ 
-and $\langle{\mathsf{true},\refl{1}}\rangle:\hfiber\pi1$. 
+$\langle{\mathsf{false},\refl{\north}}\rangle:\hfib\pi\north$ 
+and $\langle{\mathsf{true},\refl{\south}}\rangle:\hfib\pi\south$. 
 Since $\|\hfiber\pi{x}\|$ is a proposition for each 
 $x:\susp(A)$, by induction this gives us the claimed surjectivity.
 

@@ -14,7 +14,6 @@
 \newcommand{\sw}{\ensuremath{\mathbf{s^w}}\xspace}
 \newcommand{\alt}{\;|\;\;}
 \newcommand{\disj}[2]{#1 + #2}
-\newcommand{\dbl}{\ensuremath{\mathsf{double}}}
 \newcommand{\nalg}{\mathsf{\nat Alg}}
 \newcommand{\nhom}{\mathsf{\nat Hom}}
 \newcommand{\ishinitw}{\ensuremath{\mathsf{isHinit_W}}}
@@ -117,27 +116,7 @@ The dependent function $\rec\nat(E;e_z;e_s)$ can thus be understood as being def
 When $x$ is zero, the function simply returns $e_z$.
 When $x$ is the successor of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and substituting the specific predecessor $n$ and the recursive call value $\rec\nat(E;e_z;e_s;n)$.
 
-As an example, we look at how to define a function on natural numbers which doubles its argument.
-We wish to apply the induction principle with the constant type family $E \defeq \lamu{x:\nat} \nat$, since the intended type of $\dbl$ is $\nat \to \nat$.
-We first need to supply the value of $\dbl(\z)$, which is easy: we put $e_z \defeq \z$.
-Next, to compute the value of $\dbl(\s(n))$ for a natural number $n$, we first compute the value of $\dbl(n)$ and then perform the successor operation twice.
-This is captured by the recurrence $e_s(n,y) \defeq \s(\s(y))$; the variable $y$ stands for the result of the recursive call $\dbl(n)$.
-Thus, we define
-\[ \dbl \defeq \rec\nat(\big(\lamu{x:\nat} \nat\big); \; \z; \;  \big(\lamu{n:\nat}{y:\nat} \s(\s(y))\big)) \]
-This indeed has the correct computational behavior: for example, we have 
-\begin{align*}
-\dbl(\s(\s(\z))) & \jdeq e_s(\s(\z), \dbl(\s(\z))) \\
-                 & \jdeq \s(\s(\dbl(\s(\z)))) \\
-                 & \jdeq \s(\s(e_s(\z,\dbl(\z)))) \\
-                 & \jdeq \s(\s(\s(\s(\dbl(\z))))) \\
-                 & \jdeq \s(\s(\s(\s(e_z)))) \\
-                 & \jdeq \s(\s(\s(\s(\z)))).
-\end{align*}
-
-There are many similar cases when one wants to use the induction principle with a constant family.
-This is referred to as the \emph{recursion principle}, or as \emph{simple elimination}.
-Instead of proving a separate statement $P(n)$ for each natural number $n$, as in the dependent case, we are recursively constructing a function into a single type $C$.
-In this case, we omit the $\lambda$-binder for simplicity and write $\rec\nat(C; \ldots)$ instead of $\rec\nat(\lamu{n:\nat} C; \ldots)$.
+%%%%
 
 The induction principle is quite strong, and allows us to prove a variety of interesting theorems. For example, by specifying the terms $e_z$ and $e_s$, we uniquely determine how the recursor behaves on canonical terms, and thus on all natural numbers. If we now have another function which obeys the same recurrence, then our intuition suggests these two functions should be equal. It turns out this is indeed the case and we have the following \emph{uniqueness principle}:
 
@@ -884,20 +863,37 @@ The \emph{induction principle} for a general inductive type $W$ is only a little
 Of course, we start with a type family $P:W\to\type$, which we require to be equipped with constructor data ``lying over'' the constructor data of $W$.
 That means the ``recursive call'' arguments such as $A\to P$ above must be replaced by dependent functions with types such as $\prd{a:A} P(\alpha(a))$.
 In the full example of~\eqref{eq:example-constructor}, the corresponding hypothesis for the induction principle would require
-\begin{multline*}
+\begin{multline}\label{eq:example-indhyp}
 d : \dprd{\alpha:A\to W}\left(\dprd{a:A} P(\alpha(a))\right) \to
 \dprd{\beta:B\to C\to W} \left(\dprd{b:B}{c:C} P(\beta(b,c))\right) \to\\
 \dprd{\delta:D}
 \dprd{\omega:W} P(\omega) \to
 P(c(\alpha,\beta,\delta,\omega)).
-\end{multline*}
+\end{multline}
 The corresponding computation rule looks identical to~\eqref{eq:example-comp}.
+Of course, the recursion principle is the special case of the induction principle where $P$ is a constant family.
+As we have mentioned before, the induction principle is also called the \emph{eliminator}, and the recursion principle the \emph{non-dependent eliminator}.
 
-We will not attempt to give a formal presentation of the grammar of a valid inductive definition and its resulting induction and recursion principles.
+As discussed in \autoref{sec:pattern-matching}, we also allow ourselves to invoke the induction and recursion principles implicitly, writing a definitional equation for each expression that would be the hypotheses of the induction principle.
+This is called giving a definition by (dependent) \emph{pattern matching}.
+In our running example, this means we could define $f:\prd{w:W} P(w) $ by
+\[ f(c(\alpha,\beta,\delta,\omega)) \defeq \cdots \]
+where $\alpha:A\to W$ and $\beta:B\to C\to W$ and $\delta:D$ and $\omega:W$ are variables that are bound in the right-hand side.
+Moreover, the right-hand side may involve recursive calls to $f$ of the form $f(\alpha(a))$, $f(\beta(b,c))$, and $f(\omega)$.
+When this definition is repackaged in terms of the induction principle, we replace such recursive calls by $\bar\alpha(a)$, $\bar\beta(b,c)$, and $\bar\omega$, respectively, for new variables
+\begin{align*}
+  \bar\alpha &: \prd{a:A} P(\alpha(a))\\
+  \bar\beta &: \prd{b:B}{c:C} P(\beta(b,c))\\
+  \bar\omega &: P(\omega).
+\end{align*}
+Then we could write
+\[ f \defeq \ind{W}(P,\, \lam{\alpha}{\bar\alpha}{\beta}{\bar\beta}{\delta}{\omega}{\bar\omega} \cdots ) \]
+where the second argument to $\ind{W}$ has the type of~\eqref{eq:example-indhyp}.
+
+We will not attempt to give a formal presentation of the grammar of a valid inductive definition and its resulting induction and recursion principles and pattern matching rules.
 This is possible to do (indeed, it is necessary to do if implementing a computer proof assistant), but provides no additional insight.
 With practice, one learns to automatically deduce the induction and recursion principles for any inductive definition, and to use them without having to think twice.
 
-%% TODO: Double induction/recursion
 
 
 \section{Generalizations of inductive types}

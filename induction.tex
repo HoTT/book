@@ -412,26 +412,7 @@ Then $g$ and $h$ are equal.
 
 As suggested earlier, inductive types also have a category-theoretic universal property.
 They are \emph{homotopy-initial algebras}: initial objects (up to coherent homotopy) in a category of ``algebras'' determined by the specified constructors.
-Indeed, assume that we have $A : \type$ and $B : A \to \type$, and consider the associated \emph{polynomial functor}: 
-\begin{equation}
-\label{eq:polyfunc}
-P(X) = \sm{x : A} (B(x) \rightarrow X) \, .
-\end{equation}
-Actually, this assignment is functorial only up to homotopy, but this makes no difference in what follows.
-By definition, a \emph{$P$-algebra} is then a type $C$ equipped a function
-$s_C :  PC \rightarrow C$. For $P$-algebras $(C,s_C)$ and $(D,s_D)$, a \emph{homomorphism} between them $(f, s_f) : (C, s_C) \rightarrow (D, s_D)$ consists of a function $f : C \rightarrow D$ and a homotopy between maps $PC \rightarrow D$
-\[
-s_f :  f \circ s_C \, = s_{D} \circ Pf  \, ,
-\]
-where $Pf : PC\rightarrow PD$ is the result of the easily-definable action of $P$ on $f: C \rightarrow D$. Such an algebra homomorphism can be represented suggestively in the form:
-\[
-\xymatrix{
- PC \ar[d]_{s_C} \ar[r]^{Pf}  \ar@{}[dr]|{s_f} &  PD \ar[d]^{s_D}\\
-C \ar[r]_{f}   & D }
-\] 
-A $P$-algebra $(C, s_C)$ is then said to be \emph{homotopy-initial} if for every $P$-algebra $(D, s_D)$, the type of all algebra maps is contractible.  The formal definitions are given below.
-
-For a related example, consider the natural numbers.
+As a simple example, consider the natural numbers.
 The appropriate sort of ``algebra'' here is a type equipped with the same structure that the constructors of $\nat$ give to it.
 
 \begin{defn}
@@ -446,10 +427,10 @@ Fix any $\nat$-algebras $(C,c_0,c_s)$ and $(D,d_0,d_s)$. A \textbf{$\nat$-homomo
 %\begin{align*}
 %\nhom((C,c_0,c_s),(D,d_0,d_s)) \defeq \sm {h : C \to D} (\id{h(c_0)}{d_0}) \times \prd{c:C} \id{h(c_s(c))}{d_s(h(c))}
 %\end{align*}
-\begin{multline*}
-\nhom((C,c_0,c_s),(D,d_0,d_s)) \defeq\\
- \sm {h : C \to D} (\id{h(c_0)}{d_0}) \times \prd{c:C} \id{h(c_s(c))}{d_s(h(c))}
-\end{multline*}
+\begin{equation*}
+\nhom((C,c_0,c_s),(D,d_0,d_s)) \defeq
+ \dsm {h : C \to D} (\id{h(c_0)}{d_0}) \times \tprd{c:C} (\id{h(c_s(c))}{d_s(h(c))})
+\end{equation*}
 \end{defn}
 
 We thus have a category of $\nat$-algebras and $\nat$-homomorphisms, and the claim is that $\nat$ is the initial object of this category.
@@ -495,32 +476,48 @@ The $\nat$-algebra $(\nat, \zero, \s)$ is homotopy initial.
   The uniqueness theorem (\autoref{thm:nat-uniq}) then implies that any other $\nat$-homomorphism is equal to $f$.
 \end{proof}
 
+To place this in a more general context, it is useful to consider the notion of \emph{algebra for an endofunctor}.
+Note that to make a type $C$ into a $\nat$-algebra is the same as to give a function $c:C+\unit\to C$, and a function $f:C\to D$ is a \nat-homomorphism just when $f \circ c \sim d \circ (f+\unit)$.
+In categorical language, this means the \nat-algebras are the algebras for the endofunctor $F(X)\defeq X+1$ of the category of types.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-Analogous theorems are true for other sorts of inductive types.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-For instance, here are the notions of $\w$-algebras, $\w$-homomorphisms, and h-initiality for W-types.
-
-\begin{defn}
-A \emph{$\w$-algebra} for a type $A : \type$ and type family $B : A \to \type$ is a type $C$ with a function $c : \prd{a:A} (B(a) \to C) \to C$. Thus,
+For a more generic case, consider the $W$-type associated to $A : \type$ and $B : A \to \type$.
+In this case we have an associated \emph{polynomial functor}: 
+\begin{equation}
+\label{eq:polyfunc}
+P(X) = \sm{x : A} (B(x) \rightarrow X) \, .
+\end{equation}
+Actually, this assignment is functorial only up to homotopy, but this makes no difference in what follows.
+By definition, a \emph{$P$-algebra} is then a type $C$ equipped a function $s_C :  PC \rightarrow C$.
+By the universal property of $\Sigma$-types, this is equivalent to giving a function $\prd{a:A} (B(a) \to C) \to C$.
+We will also call such objects \emph{$\w$-algebras} for $A$ and $B$, and we write
 \begin{align*}
-\walg(A,B) \defeq \sm {C : \type} \prd{a:A} (B(a) \to C) \to C
+\walg(A,B) \defeq \sm {C : \type} \prd{a:A} (B(a) \to C) \to C.
 \end{align*}
-\end{defn}
 
-\begin{defn}
-  Fix $A : \type, B : A \to \type$ and any $\w$-algebras $(C,c),(D,d) : \walg \; A \; B$. A \emph{$\w$-homomorphism} between them is a function $h : C \to D$ such that $h(c(a,f)) = d(a,\lamu{b:B(a)} h(f(b)))$ for any $a : A$ and $f : B(a) \to C$. Thus,
-\begin{multline*}
-  \whom_{A,B}((C, c),(D,d)) \defeq\\ \sm {h : C \to D} \prd{a:A}{f:B(a)\to C} \id{h(c(a,f))}{\lamu{b:B(a)} h(f(b))}
-\end{multline*}
-\end{defn}
+Similarly, for $P$-algebras $(C,s_C)$ and $(D,s_D)$, a \emph{homomorphism} or \emph{algebra map} between them $(f, s_f) : (C, s_C) \rightarrow (D, s_D)$ consists of a function $f : C \rightarrow D$ and a homotopy between maps $PC \rightarrow D$
+\[
+s_f :  f \circ s_C \, = s_{D} \circ Pf  \, ,
+\]
+where $Pf : PC\rightarrow PD$ is the result of the easily-definable action of $P$ on $f: C \rightarrow D$. Such an algebra homomorphism can be represented suggestively in the form:
+\[
+\xymatrix{
+ PC \ar[d]_{s_C} \ar[r]^{Pf}  \ar@{}[dr]|{s_f} &  PD \ar[d]^{s_D}\\
+C \ar[r]_{f}   & D }
+\]
+In terms of elements, $f$ is a $P$-homomorphism (or \emph{$\w$-homomorphism}) if
+\[f(s_C(a,h)) = s_D(a,\lam{b} f(h(b))).\]
+We have the type of $\w$-homomorphisms:
+\begin{equation*}
+  \whom_{A,B}((C, c),(D,d)) \defeq \dsm {h : C \to D} \dprd{a:A}{f:B(a)\to C} \id{h(c(a,f))}{\lamu{b:B(a)} h(f(b))}
+\end{equation*}
 
-\begin{defn}
-A $\w$-algebra $I$ is called \emph{h-initial} if for any other $\w$-algebra $C$, the type of $\w$-homomorphisms from $I$ to $C$ is contractible. Thus,
+Finally, a $P$-algebra $(C, s_C)$ is said to be \emph{homotopy-initial} if for every $P$-algebra $(D, s_D)$, the type of all algebra maps is contractible.
+That is,
 \begin{align*}
-\ishinitw_{A, B}(I) \defeq \prd{C : \walg(A,B)} \iscontr(\whom_{A,B}(I,C))
+\ishinitw_{A, B}(I) \defeq \prd{C : \walg(A,B)} \iscontr(\whom_{A,B}(I,C)).
 \end{align*}
-\end{defn}
+
+Now the analogous theorem to \autoref{thm:nat-hinitial} is:
 
 \begin{thm}\label{thm:w-hinit}
 For any type $A : \type$ and type family $B : A \to \type$, the $\w$-algebra $(\wtype{x:A}B(x), \supp)$ is h-initial.

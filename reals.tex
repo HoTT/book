@@ -1337,38 +1337,35 @@ order $\leq$ on $\RC$ is defined in terms of $\max$ as
   (u \leq v) \defeq (\max(u, v) = v).
 \end{equation*}
 %
-From this we get the strict order $<$ by
-%
-\begin{equation*}
-  (u < v) \defeq \exis{\epsilon : \Qp} u + \epsilon \leq v.
-\end{equation*}
-%
-These behave in the same way as in the case of Dedekind reals: $\leq$ is a partial order,
-$<$ is irreflexive and transitive, and intuitionistically linear,
-%
-\begin{equation*}
-  u < v \Rightarrow (u < w) \lor (w < v).
-\end{equation*}
-%
-Furthermore, the additive structure interacts with the order in the expected way, for example
-%
-\begin{equation*}
-  (u < v) \Leftrightarrow (u + w < v + w)
-  \qquad\text{and}\qquad
-  (u < v) \Leftrightarrow (-v < -u).
-\end{equation*}
-%
-\textbf{(TODO: FIX text around here, leftovers from merge.)}
-That is, a witness for $u < v$ is a pair or rational numbers $q < r$ such that $x \leq
-\rcrat(q)$ and $\rcrat(r) \leq v$.
-Note that since $\Q$ is a dense linear order, this implies that $\Q$ is order-dense in $\RC$, i.e.\ if $u<v$ then there exists $q:\Q$ with $u<\rcrat(q)<v$.
-The strict order is irreflexive and transitive, but we
-have to be careful about linearity. We shall address this in \autoref{sec:RC-order}, for
-now we focus on expressing $u \sim_\epsilon v$ with standard concepts.
+The relation $\leq$ is a partial order because it is such on $\Q$, and the axioms of
+partial order are expressible as equations in terms of $\min$ and $\max$, so they transfer
+to $\RC$.
 
-Note that the
-absolute value $|{-}|$ is a Lipschitz function on $\Q$ with constant $1$, which therefore extends to $\RC$
-and has the expected properties.
+Another function which extends to $\RC$ by the same method is the absolute value $|{-}|$.
+Again, it has the expected properties because they transfer from $\Q$ to $\RC$.
+
+From $\leq$ we get the strict order $<$ by
+%
+\begin{equation*}
+  (u < v) \defeq \exis{q r : \Qp} (u \leq q) \land (q < r) \land (r \leq v).
+\end{equation*}
+%
+That is, a witness for $u < v$ is a pair or rational numbers $q < r$ such that $x \leq
+\rcrat(q)$ and $\rcrat(r) \leq v$. It is not hard to check that $<$ is irreflexive and
+transitive, and has other properties that are expected for an ordered field.
+The archimedean axiom follows directly from the definition of~$<$.
+
+\begin{thm}[Archimedean axiom for $\RC$] \label{RC-archimedean}
+  %
+  For every $u, v : \RC$ such that $u < v$ there merely exists $q : \Q$ such that $u < q < v$.
+\end{thm}
+
+\begin{proof}
+  From $u < v$ we merely get $r, s : \Q$ such that $u < r < s < v$, and we may take $q
+  \defeq (r + s) / 2$.
+\end{proof}
+
+We now have enough structure on $\RC$ to express $u \sim_\epsilon v$ with standard concepts.
 
 \begin{lem}\label{thm:RC-le-grow}
   If $q:\Q$ and $u:\RC$ satisfy $u\le \rcrat(q)$, then for any $v:\RC$ and $\epsilon:\Qp$, if $u\sim_\epsilon v$ then $v\le \rcrat(q+\epsilon)$.
@@ -1435,34 +1432,6 @@ We are now able to show that the auxiliary relation $\sim$ is what we think it i
   The remaining two cases are entirely analogous.
 \end{proof}
 
-An immediate consequence of \autoref{RC-sim-eqv-le} is the archimedean axiom.
-
-\begin{thm}[Archimedean axiom for $\RC$] \label{RC-archimedean}
-  %
-  For every $u : \RD$ and $\epsilon : \Qp$ there merely exist $q, r : \Q$ such that $q < u
-  < r$ and $r - q < \epsilon$.
-\end{thm}
-
-\begin{proof}
-  We proceed by induction on $u$. If $u$ is $\rcrat(q)$ the statement holds because $\Q$
-  is dense in itself. When $u$ is $\rclim(x)$ we proced as follows. Given any $\epsilon :
-  \Qp$, by induction hypothesis we can find $q', r' : \Q$ such that $q' < x_{\epsilon/3} <
-  r'$ and $r' - q' < \epsilon/3$. We may take $q \defeq q' - \epsilon/3$ and $r \defeq r'
-  + \epsilon/3$ because then $r - q < \epsilon/3 + 2 \epsilon/2 = \epsilon$ and
-  %
-  \begin{equation*}
-    q \jdeq q' - \epsilon/3 <
-    x_{\epsilon/3} - \epsilon/3 <
-    \rclim(x) <
-    x_{\epsilon/3} + \epsilon/3 <
-    r' + \epsilon/3 \jdeq r.
-  \end{equation*}
-  %
-  We used \autoref{RC-sim-eqv-le} to conclude $x_{\epsilon/3} - \epsilon/3 < \rclim(x) <
-  x_{\epsilon/3} + \epsilon/3$ from $\rclim(x) \sim_{\epsilon/3} x_{\epsilon/3}$, which
-  holds by \autoref{thm:RC-sim-lim-term}.
-\end{proof}
-
 Next, we would like to equip $\RC$ with multiplicative structure. For each $q : \Q$ the
 map $r \mapsto q \cdot r$ is Lipschitz with constant\footnote{We defined Lipschitz
   constants as \emph{positive} rational numbers.} $|q| + 1$, and so we can extend it to
@@ -1475,14 +1444,14 @@ In general, we can define multiplication of real numbers as
 \end{equation*}
 %
 so we just need $u \mapsto u^2$ as a map $\RC \to \RC$. Unfortunately, squaring is not
-Lipschitz. But it is Lipschitz on every bounded domain, which allows us to patch it
+Lipschitz. But it is Lipschitz on every closed interval, which allows us to patch it
 together using the following lemma.
 
 \begin{lem}[Patching Lemma] \label{lem:patching}
   %
   Suppose $B : A \to \type$ is a family and $e : \prd{x : A} B(x) \to C$ a family of maps
   into a type $C$ such that every $e(x)$ is injective and they jointly cover $C$, i.e.,
-  the map $(\sm{x}{A} B(x)) \to C$, defined by $(x,y) \mapsto e(x)(y)$, is surjective.
+  the map $(\sm{x : A} B(x)) \to C$, defined by $(x,y) \mapsto e(x)(y)$, is surjective.
 
   Furthermore, suppose $f : \prd{x : A} B(x) \to D$ is a family of maps which are
   compatible with respect to~$e$, which means that, for all $x, x' : A$ and $y : B(x)$ and
@@ -1506,7 +1475,30 @@ together using the following lemma.
   \end{equation*}
 \end{proof}
 
-\textbf{TODO:} Finish explaining how to get $x \mapsto x^2$.
+To continue the construction of squaring, define the open and closed intervals
+%
+\begin{equation*}
+  [u,v] \defeq \setof{ x : \RC | u \leq x \leq v }
+  \qquad\text{and}\qquad
+  (u,v) \defeq \setof{ x : \RC | u < x < v }.
+\end{equation*}
+%
+These definitions also make sense for intervals of rational numbers, and we shall use the
+same notation for those.
+
+\begin{thm} \label{RC-squaring} There exists a unique function ${-}^2 : \RC \to \RC$ which
+  extends squaring $q \mapsto q^2$ of rational numbers and satisfies
+  %
+  \begin{equation*}
+    \fall{n : \N}
+    \fall{u, v : [-n, n]}
+    |u^2 - v^2| \leq 2 \cdot n \cdot |u - v|.
+  \end{equation*}
+\end{thm}
+
+\begin{proof}
+  \textbf{TODO: Using Patching lemma}
+\end{proof}
 
 \textbf{TODO:} Inverses, short discussion, no complications.
 
@@ -2186,7 +2178,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
   make sense for the interval domain?
 \end{ex}
 
-\begin{ex}
+\begin{ex} \label{ex:RD-lt-vs-le}
   Show that, for all $x, y : \RD$,
   %
   \begin{equation*}
@@ -2218,6 +2210,17 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
     \end{equation*}
   % 
   \end{enumerate}
+\end{ex}
+
+\begin{ex} \label{ex:traditional-archimedean}
+  Show that in an ordered field $F$ density of $\Q$ and the traditional archimedean axiom
+  are equivalent:
+  %
+  \begin{equation*}
+    (\fall{x, y : F} x < y \Rightarrow \exis{q : \Q} x < q < y)
+    \Leftrightarrow
+    (\forall{x : F} \exis{k : \Z} x < z).
+  \end{equation*}  
 \end{ex}
 
 \begin{ex} \label{ex:reals-apart-neq-MP}

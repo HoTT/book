@@ -911,7 +911,7 @@ In particular, note that by the first constructor of $\sim$, if $f:\Q\to\Q$ is L
 \end{lem}
 
 \begin{proof}
-  % Uniqueness follows directly from \autoref{RC-Lipschitz-eq}.
+  % Uniqueness follows directly from \autoref{RC-continuous-eq}.
   We define $\bar{f}$ by $(\RC,\sim)$-recursion, with codomain $A\defeq \RC$.
   We define the relation $\mathord{\bsim}: \RC \to \RC \to \Qp \to \prop$ to be
   \begin{align*}
@@ -1207,7 +1207,7 @@ With the triangle inequality in hand, we can show that ``limits'' of Cauchy appr
 
 As an application, \autoref{thm:RC-sim-lim-term} enables us to show that the extensions of Lipschitz functions from \autoref{RC-extend-Q-Lipschitz} are unique.
 
-\begin{lem}\label{RC-Lipschitz-eq}
+\begin{lem}\label{RC-continuous-eq}
   Let $f,g:\RC\to\RC$ be continuous, in the sense that
   \[ \fall{u:\RC}{\epsilon:\Qp}\exis{\delta:\Qp}\fall{v:\RC} (u\sim_\delta v) \to (f(u) \sim_\epsilon f(v)) \]
   and analogously for $g$.
@@ -1443,8 +1443,8 @@ In general, we can define multiplication of real numbers as
   {\textstyle \frac{1}{2}} \cdot ((u + v)^2 - u^2 - v^2),
 \end{equation*}
 %
-so we just need $u \mapsto u^2$ as a map $\RC \to \RC$. Unfortunately, squaring is not
-Lipschitz. But it is Lipschitz on every closed interval, which allows us to patch it
+so we just need squaring $u \mapsto u^2$ as a map $\RC \to \RC$. Squaring is not a
+Lipschitz map, but it is Lipschitz on every bounded domain, which allows us to patch it
 together using the following lemma.
 
 \begin{lem}[Patching Lemma] \label{lem:patching}
@@ -1482,12 +1482,11 @@ To continue the construction of squaring, define the open and closed intervals
   \qquad\text{and}\qquad
   (u,v) \defeq \setof{ x : \RC | u < x < v }.
 \end{equation*}
-%
-These definitions also make sense for intervals of rational numbers, and we shall use the
-same notation for those.
 
-\begin{thm} \label{RC-squaring} There exists a unique function ${-}^2 : \RC \to \RC$ which
-  extends squaring $q \mapsto q^2$ of rational numbers and satisfies
+\begin{thm} \label{RC-squaring}
+  %
+  There exists a unique function ${-}^2 : \RC \to \RC$ which extends squaring $q \mapsto
+  q^2$ of rational numbers and satisfies
   %
   \begin{equation*}
     \fall{n : \N}
@@ -1497,15 +1496,34 @@ same notation for those.
 \end{thm}
 
 \begin{proof}
-  \textbf{TODO: Using Patching lemma}
+  We first observe that for every $u : \RC$ there merely exists $n : \N$ such that $-n
+  \leq u \leq n$, see \autoref{ex:traditional-archimedean}, so the family of inclusions
+  $[-n, n] \to \RC$ covers $\RC$ in the sense of \autoref{lem:patching}. Next, for each $n
+  : \N$ squaring $s(q) \defeq q^2$ is a Lipschitz map $s : \setof{ q : \Q | -n \leq q \leq
+    n } \to \Q$ with constant $2 n$, so we can use \autoref{RC-extend-Q-Lipschitz} to
+  extend it to squaring $\bar{s}_n : [-n, n] \to \RC$ with Lipschitz constant $4 n$ (see
+  \autoref{RC-Lipschitz-on-interval} for details). We may thus apply
+  \autoref{lem:patching}, provided that all the squaring maps $s_n$ agree on common
+  domains, which they do: if $m < n$ for some $m, n : \N$ then $s_n$ restricted to $[-m,
+  m]$ must agree with $s_m$ because both are Lipschitz, and therefore continuous in the
+  sense of~\autoref{RC-Lipschitz-eq}.
 \end{proof}
 
-\textbf{TODO:} Inverses, short discussion, no complications.
+At this point we have the ring structure of the reals and the archimedean order. To
+establish $\RC$ as an archimedean ordered field, we still need inverses.
 
-We summarize the result of this section.
+\begin{thm}
+  A Cauchy real is invertible if, and only if, it is apart from zero.
+\end{thm}
+
+\begin{proof}
+  \textbf{TODO}
+\end{proof}
+
+We summarize the algebraic structure of $\RC$ with a theorem.
 
 \begin{thm} \label{RC-archimedean-ordered-field}
-  The Cauchy reals form an ordered archimedean field.
+  The Cauchy reals form an archimidean ordered field.
 \end{thm}
 
 \subsection{Cauchy Reals are Cauchy Complete}
@@ -2221,6 +2239,14 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
     \Leftrightarrow
     (\forall{x : F} \exis{k : \Z} x < z).
   \end{equation*}  
+\end{ex}
+
+\begin{ex} \label{RC-Lipschitz-on-interval} Suppose $a, b : \Q$ and $f : \setof{ q : \Q |
+    a \leq q \leq b }$ is Lipschitz with constant~$L$. Show that there exists a unique
+  extension $\bar{f} : [a,b] \to \RC$ of $f$ which is constant with Lipschitz
+  constant~$L$. Hint: rather than redoing \autref{RC-extend-Q-Lipschitz} for closed
+  intervals, observe that there is a retraction $r : \RC \to [-n,n]$ and apply
+  \autoref{RC-extend-Q-Lipschitz} to $f \circ r$.
 \end{ex}
 
 \begin{ex} \label{ex:reals-apart-neq-MP}

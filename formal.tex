@@ -2,7 +2,7 @@
 \label{cha:rules}
 \bgroup % restrict the scope of our macros to this section
 
-\newcommand{\ctx}{\ \textsf{ctx}}
+\newcommand{\ctx}{\ \mathsf{ctx}}
 \newcommand{\emptyctx}{\ensuremath{\cdot}}
 
 \newcommand{\production}{\vcentcolon\vcentcolon=}
@@ -34,50 +34,50 @@
 \newcommand{\nn}{{\sf n}}
 \newcommand{\Fam}{{\sf Fam}}
 
-A major advantage of type theory is that it admits a formalization, which
+A major advantage of type theory is that it 
 simultaneously incorporates the rules of mathematics with the rules of logic,
-and thus providing a completely self-contained system for formulating theorems
-and their proofs, enabling their computer verification.  In this appendix we
+thus providing a completely self-contained system for formulating theorems
+and their proofs, and enabling their computer verification.  In this appendix we
 offer two presentations of the formal system and its syntax.  The first
 presentation (in \autoref{syntax-informally}) is written informally and
 emphasizes an underlying untyped type theory as basic support for the syntax
 and for aspects of computation in the system.  The second (in
-\autoref{syntax-more-formally}) is more formal, hence more complete, and is
-closer to standard practice in the literature of type theory.
+\autoref{syntax-more-formally}) is more formal and hence more self-contained,
+and is closer to standard practice in the literature of type theory.
 
-Both presentations deal with {\em terms} or {\em expressions}, built
-inductively from smaller expressions, with accompanying syntax, according to
-precise rules.
+In \autoref{cha:typetheory}, we presented the two basic {\em judgments} of type
+theory. The first, $a:A$, asserts that a term $a$ has type $A$.  The second,
+$a\jdeq b:A$, states that the two terms $a$ and $b$ are {\em judgmentally equal}
+at type $A$. These judgments are inductively defined by a set of {\em inference
+rules}, to be presented below; a judgment holds exactly when it can be concluded
+by a closed derivation composed of these inference rules.
 
-In both presentations, an assertion that a term $a$ is of type $A$ is written
-in the form $a:A$ and is called a {\em judgment}.  Theorems are proved by
-correctly deriving such judgments, as the book explains.  The {\em inference
-  rules} of the system, to be presented below, completely specify what the
-allowable steps are in such a derivation.
+To give a proof $a$ of a proposition $A$ is to derive $a:A$; in the book, we
+usually give informal arguments which describe the construction of $a$, but
+formally, one must give a precise term $a$ and a full derivation that $a:A$. It
+is possible to algorithmically determine the type, if any, of a term. It is also
+possible to algorithmically establish equality between terms; an algorithm is
+included in \autoref{syntax-informally}.
 
-Such judgments are formulated in an ambient {\em context}, which
-is of the form
+However, the main difference between the book's type theory and formal type
+theory is that formally, judgments are formulated in an ambient {\em
+context}, or list of assumptions, of the form
 \[
   \Gamma =  x_1:A_1, x_2:A_2,\dots,x_n:A_n
 \]
-Here each pair $x_i:A_i$ in the list $\Gamma$ consists of a variable $x_i$ and
-an expression $A_i$ containing only the variables $x_1,\dots,x_{i-1}$ freely,
-signifying that each variable $x_i$ is assumed to have type $A_i$ in the
-context $\Gamma$.
+Here each pair $x_i:A_i$ in the list $\Gamma$ consists of a variable $x_i$ and a
+type $A_i$ containing only the variables $x_1,\dots,x_{i-1}$ freely, signifying
+that each variable $x_i$ is assumed to have type $A_i$ in the context $\Gamma$. 
+(We discuss the importance of the context in more depth in
+\autoref{syntax-more-formally}.)
 
-We use the notation
+Thus, the typing judgment
 \[
   \Gamma \vdash a:A
 \]
-to denote the {\em sentence} that asserts the judgment that the object $a$ has
-type $A$ in the context $\Gamma$.  Here $a$ and $A$ are terms in which only the
-variables declared in $\Gamma$ appear freely.  Under the assumption that a
-context $\Gamma$ is understood to be present in the background, we may write
-simply
-\[
-  a:A
-\]
-When $\Gamma$ is empty, we may write simply
+denotes that $a$ has type $A$ in the context $\Gamma$; in other words, the
+variables declared in $\Gamma$ may appear freely in $a$ and $A$. When $\Gamma$
+is empty, we may write simply
 \[
   \vdash a:A
 \]
@@ -85,32 +85,19 @@ or
 \[
   \emptyctx \vdash a:A
 \]
-where $\emptyctx$ denotes the empty context.
+where $\emptyctx$ denotes the empty context. The same applies for the equality
+judgment
+\[
+  \Gamma \vdash a\jdeq b:A
+\]
 
-Such judgments will be justified only for contexts that are well formed.  We
-introduce a primitive judgment of the form
+Such judgments are justified only for contexts that are well formed.  We
+introduce a third primitive judgment
 \[
   \vdash \Gamma \ctx
 \]
-to express that notion.  The intuitive idea will be that each $A_i$ is a valid
+to express that notion.  Intuitively, this requires that each $A_i$ is a valid
 type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.
-
-The following inference rule, common to both presentations, expresses the idea
-that the variables in a context have been declared to have types.
-\begin{itemize}
-\item if $\Gamma = x_1:A_1, x_2:A_2,\dots,x_n:A_n$, and $\vdash \Gamma \ctx$,
-  then $\Gamma \vdash x_i : A_i$ for any $i$.
-\end{itemize}
-
-Another inference rule asserts that the empty context is well formed.
-\begin{itemize}
-\item $\vdash \emptyctx \ctx$
-\end{itemize}
-
-A third type of judgment handles equality: the notation $t \jdeq u : A$
-signifies that $t$ and $u$, of type $A$, are equal by definition.  Rules will
-be presented for handling such judgments, and a corresponding algorithm for
-establishing equality will be part of the first presentation.
 
 We write $B[a/x]$ for the substitution of a term $a$ for free occurrences of
 the variable $x$ in the term $B$, with possible renaming for avoiding capture
@@ -122,7 +109,7 @@ To {\em bind} a variable $x$ to an expression $B$ means to incorporate both of
 them into a larger expression or {\em abstraction}, whose purpose is to
 annnotate $B$ with information about which variable is available next for
 substitution.  Various notations are used for binding, such as $x \mapsto B$,
-$\lam x B$, and $x.B$, according to the context.  We may write $C[a]$ for the
+$\lam x B$, and $x.B$, depending on the situation.  We may write $C[a]$ for the
 substitution of a term $a$ for the variable in the abstracted expression, i.e.,
 we may define $(x.B)[a]$ to be $B[a/x]$.  As discussed in
 \autoref{sec:function-types}, changing the name of a bound variable everywhere
@@ -471,15 +458,13 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 \textbf{TODO:} 
 \begin{enumerate}
 \item explain $\to$ vs $\vdash$ for type families (in chapter 1)
-\item better connect this to chapter 1, and make metavariables agree
-\item use $B$ instead of $B(x)$; explain where binding occurs
-\item unify with book's macros; especially, use $\jdeq$ and universe symbol
+\item explain where binding occurs
 \item two ways of handling univalence
 \item emphasize f/i/e/c pattern, and congruence
 \item admissibility of structural rules; don't grow context down
 \item explain the diff wrt MLTT (new axioms, choice of presentation)
 \item explain arguments with binders in elimination rules
-\item note that unlike chapter 1, all type formers are independent
+\item contexts: note that unlike chapter 1, all type formers are independent
 \end{enumerate}
 
 %Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that

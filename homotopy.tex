@@ -1099,14 +1099,14 @@ Given that the double loop space of the circle is contractible, we actually get
 the slightly more precise result that the Hopf fibration induces an equivalence
 $\eqv{\Omega^2(\Sn^3)}{\Omega^2(\Sn^2)}$. In classical homotopy theory this
 would be a consequence of Whitehead’s theorem, but Whitehead’s theorem is not
-necessarily valid in homotopy type theory (we will never use the more precise
-version though).
+necessarily valid in homotopy type theory. We will not use the more precise
+version here though.
 
 We first start with a lemma explaining how to construct fibrations over
 pushouts.
 
 \begin{lem}\label{lem:fibration-over-pushout}
-  Let $\Ddiag=Y\stackrel j\longleftarrow X\stackrel k\to Z$ be a span and assume
+  Let $\Ddiag=Y\xleftarrow{j}X\xrightarrow{k}Z$ be a span and assume
   that we have
   \begin{itemize}
   \item Two fibrations $E_Y:Y\to\type$ and $E_Z:Z\to\type$
@@ -1126,11 +1126,11 @@ pushouts.
   Moreover the total space of this fibration fits in the following pushout
   square:
 
-  \[\xymatrix{
-    \sm{x:X}E_Y(j(x)) \ar[r]_\sim^{e_X} \ar[d]_j & \sm{x:X}E_Z(k(x)) \ar[r]^k
+  \[\xymatrix{ \sm{x:X}E_Y(j(x)) \ar[r]_\sim^{\idfunc\times e_X}
+    \ar[d]_{j\times\idfunc} &
+    \sm{x:X}E_Z(k(x)) \ar[r]^{k\times\idfunc}
     & \sm{z:Z}E_Z(z) \ar[d]^\inr \\
-    \sm{y:Y}E_Y(y) \ar[rr]_\inl & & \sm{t:Y\sqcup^XZ}E(t)
-  }\]
+    \sm{y:Y}E_Y(y) \ar[rr]_\inl & & \sm{t:Y\sqcup^XZ}E(t) }\]
 \end{lem}
 
 \begin{proof}
@@ -1224,9 +1224,6 @@ H-space.
   $P(a)$ is $P'(\tproj0a)$.
 \end{proof}
 
-The \emph{Hopf construction} of a connected H-space $A$ will be a fibration over
-$\susp A$ with fiber $A$ and total space the join $A*A$.
-
 \begin{defn}
   Let $A$ be a connected H-space. We define a fibration over $\susp A$ using
   \autoref{lem:fibration-over-pushout}.
@@ -1240,8 +1237,8 @@ $\susp A$ with fiber $A$ and total space the join $A*A$.
     \[e:A\to(\eqv{F_1}{F_2})\]
   \end{itemize}
 
-  We take $A$ for $F_1$ and $F_2$, and for $a:A$, $e(a)$ is the equivalence
-  $\mu(a,-)$.
+  We take $A$ for $F_1$ and $F_2$, and for $a:A$ we take the equivalence
+  $\mu(a,-)$ for $e(a)$.
 \end{defn}
 
 According to \autoref{lem:fibration-over-pushout}, we have the following
@@ -1261,13 +1258,13 @@ Moreover we have the following diagram, where the map $f$ is defined by
   \ar[r]^-{\mu} & A \ar^\idfunc[d] \\
   A & A\times A \ar_-{\proj2}[l] \ar^-{\proj1}[r] & A}\]
 
-The diagram commutes and the three vertical maps are equivalences: the inverse
-of $f$ is the function $g$ defined by
+The diagram commutes and the three vertical maps are equivalences, the inverse
+of $f$ being the function $g$ defined by
 \[g(u,v)\defeq((\mu(-,v))^{-1}u,v)\]
 
 This shows that the two lines are equivalent (hence equal) spans, so the total
 space of the fibration we constructed is equivalent to the pushout of the bottom
-line which is (by definition) the join of $A$ with itself.
+line which is by definition the join of $A$ with itself.
 
 We just proved:
 
@@ -1275,6 +1272,8 @@ We just proved:
   Given a connected H-space $A$, there is a fibration over $\susp A$ with fiber
   $A$ and total space $A*A$.
 \end{lem}
+
+This fibration is called the \emph{Hopf construction} of $A$.
 
 \subsection{The Hopf fibration}
 
@@ -1300,15 +1299,15 @@ equivalent to $\Sn^3$.
     \widetilde\mu(\base) &\defeq\idfunc[\Sn^1]\\
     \ap{\widetilde\mu}{\lloop} &\defid\funext(h)
   \end{align*}
-  where $h$ is of type $\prd{x:\Sn^1}x=x$ and is defined by dependent
+  where $h$ is of type $\prd{x:\Sn^1}(x=x)$ and is defined by dependent
   elimination in the following way:
   \begin{align*}
     h(\base) &\defeq\lloop\\
     \ap{h}{\lloop} &\defid\alpha
   \end{align*}
-  where (thanks to \autoref{thm:dpath-path}) in order to define $\alpha$ it is
+  Thanks to \autoref{thm:dpath-path}, in order to define $\alpha$ it is
   enough to inhabit the type $\lloop\ct\lloop=\lloop\ct\lloop$ which can be done
-  by reflexivity.
+  by the reflexivity path.
 
   Now we just have to prove that $\mu(x,\base)=\mu(\base,x)=x$ for every
   $x:\Sn^1$.
@@ -1343,8 +1342,11 @@ Recall from \autoref{sec:colimits} that if $A$ and $B$ are two spaces, the
   then we have an equivalence $\eqv{(A*B)*C}{A*(B*C)}$.
 \end{lem}
 \begin{proof}
-  More precisely, the map $f:(A*B)*C\to A*(B*C)$ is defined by the following
-  equations:
+  We define a map $f:(A*B)*C\to A*(B*C)$ by induction. We first need to define
+  $f\circ\inl:A*B\to A*(B*C)$ which will be done by induction, then
+  $f\circ\inr:C\to A*(B*C)$, and then $\apfunc{f}\circ\glue:\prd{t:(A*B)\times
+    C}f(\inl(\fst(t)))=f(\inr(\snd(t)))$ which will be done by induction on the
+  first component of $t$)
   \begin{align*}
     (f\circ\inl)(\inl(a))) &\defeq \inl(a) \\
     (f\circ\inl)(\inr(b))) &\defeq \inr(\inl(b)) \\
@@ -1399,7 +1401,8 @@ A more conceptual proof sketch is as follows:
   Let $A$ be a space, then there is an equivalence $\eqv{\susp A}{\bool*A}$.
 \end{lem}
 \begin{proof}
-  Left as an exercise to the reader.
+  It is easy to define the two maps back and forth and to prove that they are
+  inverse to each other. The details are left as an exercise to the reader.
 \end{proof}
 
 We can now construct the Hopf fibration:
@@ -1411,7 +1414,7 @@ We can now construct the Hopf fibration:
   We proved that $\Sn^1$ has a structure of H-space (cf \autoref{lem:hspace-S1})
   hence by \autoref{lem:hopf-construction} there is a fibration over $\Sn^2$ of
   fiber $\Sn^1$ and total space $\Sn^1*\Sn^1$. But by the two previous results
-  and \autoref{lem:suspbool} we have:
+  and \autoref{thm:suspbool} we have:
   \begin{align*}
     \Sn^1*\Sn^1 &= (\susp\bool)*\Sn^1\\
     &=(\bool*\bool)*\Sn^1\\

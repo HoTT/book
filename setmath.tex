@@ -936,8 +936,7 @@ But a section of this is exactly an inhabitant of $A+\neg A$, so we have $\brck{
 \section{The cumulative hierarchy}
 \label{sec:cumulative-hierarchy}
 
-Construction of $V$ as a HIT, mimicking Peter Aczel's construction of a type-theoretic
-model of CZF.
+We can define a cumulative hierarchy of sets in a given universe $\UU$ as a higher inductive type, in such a way that the result is again a set (in a larger universe $\UU'$), equipped with a binary ``membership" relation $x\in y$ which satisfies the usual laws of set theory.
 
 \begin{defn}
   The \emph{cumulative hierachy $V$} relative to a type universe $\UU$ is the
@@ -956,22 +955,21 @@ model of CZF.
   \end{enumerate}
 \end{defn}
 
-In set-theoretic language, the element $\vset(A,f)$ could be understood as $\{ f(a) \mid a
+In set-theoretic language, the element $\vset(A,f)$ can be understood as the set that is the image of $A$ under $f$, i.e.\ $\{ f(a) \mid a
 \in A \}$, but of course we cannot write this in type theory. The hierarchy $V$ is
-bootstrapped with the empty map $o : \emptyt \to V$, which corresponds to the empty set.
-Then the singleton $\unit \to V$, defined as $\ttt \mapsto \vset(\emptyt, o)$ enters $V$, and so
+bootstrapped from the empty map $! : \emptyt \to V$, which gives the empty set as $\varnothing = \vset(\emptyt,!)$.
+Then the singleton $\{\varnothing\}$ enters $V$ through $\unit \to V$, defined as $\ttt \mapsto \varnothing$, and so
 on. The type $V$ lives in the same universe as the base universe $\UU$.
 
-The induction principle for $V$ says that given $P:V\to \set$, to construct $h:\prd{x:V} P(x)$, it suffices to give the following.
+The induction principle for $V$ says that given $P:V\to \set$, in order to construct $h:\prd{x:V} P(x)$, it suffices to give the following.
 \begin{enumerate}
 \item For any $f:A\to V$, construct $h(\vset(A,f))$, assuming as given $h(f(a))$ for all $a:A$.
 \item Verify that if $f : A \to V$ and $g : B \to V$ satisfy~\eqref{eq:V-path}, then $h(\vset(A,f)) = h(\vset(B,g))$, assuming inductively that $h(f(a)) = h(g(b))$ whenever $f(a)=g(b)$.
 \end{enumerate}
 The second clause may seem tautologous, but is not.
-The point is that in the first clause, ``$h(f(a))$'' is essentially a formal symbol which we cannot peek inside of, which $h(\vset(A,f))$ must be defined in terms of.
-Thus, in the second clause, we assume equality of these formal symbols when appropriate, and verify that the elements resulting from the construction of the first clause are also equal.
+The point is that in the first clause, ``$h(f(a))$'' is essentially a formal symbol which we cannot peek inside of, which $h(\vset(A,f))$ must be defined in terms of. Thus, in the second clause, we assume equality of these formal symbols when appropriate, and verify that the elements resulting from the construction of the first clause are also equal.
 
-The elementhood relation $\in$ is defined on $V$ by
+Observe that every $v:V$ is of the form $v=\vset(A,f)$ for some $A:\UU$ and $f:A\to\UU$, and so we can define the \emph{membership relation} $x\in y$ on $V$ by setting:
 %
 \begin{equation*}
   (x \in \vset(A,f)) \defeq \exis{a : A} x = f(a).
@@ -982,20 +980,22 @@ constructed through~\eqref{eq:V-path}. If $x \in \vset(A,f)$ then there is $a : 
 that $x = f(a)$, but by~\eqref{eq:V-path} there is $b : B$ such that $f(a) = g(b)$, hence
 $x = g(b)$ and $x \in \vset(B,f)$. The converse is symmetric.
 
-Each $v \in V$ determines its \emph{type of elements} $\setof{ x : V | x \in y }$.
+% Each $v \in V$ determines its \emph{type of elements} $\setof{ x : V | x \in v }$.
 
-The subset relation $\subseteq$ is defined on $V$ by
+The subset relation $x\subseteq y$ is defined on $V$ as usual by
 %
 \begin{equation*}
-  (x \subseteq y) \defeq \fall{z : V} z \in x \Leftrightarrow z \in y.
+  (x \subseteq y) \defeq \fall{z : V} z \in x \Rightarrow z \in y.
 \end{equation*}
 
-A \emph{class} is a mere predicate on~$V$. We say that \emph{$C : V \to \prop$ is a
-  $V$-set} if there merely exists $x \in V$ such that
+A \emph{class} may be taken to be a mere predicate on~$V$. We can say that a class $C : V \to \prop$ is a
+  \emph{$V$-set} if there merely exists $v\in V$ such that
 %
 \begin{equation*}
-  \fall{y : V} C(y) \Leftrightarrow y \in x.
+  \fall{x : V} C(x) \Leftrightarrow x \in v.
 \end{equation*}
+
+%Writing $\setof{ x : V | x \in v }$ for the \emph{$0$-type of elements} of any $v \in V$, and invoking univalence for mere propositions, we therefore have that a class $C : V \to \prop$ is a $V$-set just in case $$\exis{v \in V} C = \setof{ x : V | x \in v },$$ as expected.
 
 \begin{thm}
   The following hold for $(V, {\in})$:
@@ -1006,11 +1006,9 @@ A \emph{class} is a mere predicate on~$V$. We say that \emph{$C : V \to \prop$ i
     \begin{equation*}
       \fall{x, y : V} x \subseteq y \land y \subseteq x \Leftrightarrow x = y.
     \end{equation*}
-  \item \emph{replacement:} given any $r : V \to V$ and $x : V$, the class $C(y) \defeq
-    \exis{z : V} z \in x \land y = r(z)$ is a $V$-set. If $C(y)$ then there merely exists
-    $z : V$ and $a : A$ such that $z = f(a)$ and $y = r(z)$, therefore $y \in w$.
-    Conversely, if $y \in w$ then there merely exists $a : A$ such that $y = r(f(a))$, so
-    if we take $z \defeq f(a)$ we see that $C(y)$ holds.
+  \item \emph{replacement:} given any $r : V \to V$ and $x : V$, the class 
+  $$C(y) \defeq \exis{z : V} z \in x \land y = r(z)$$ 
+  is a $V$-set. 
   \end{enumerate}
 \end{thm}
 
@@ -1026,14 +1024,22 @@ A \emph{class} is a mere predicate on~$V$. We say that \emph{$C : V \to \prop$ i
 
   \item Replacement: the statement ``$C$ is a $V$-set'' is a mere proposition, so we may
     proceed by induction as follows. Supposing $x$ is $\vset(A, f)$, we claim that $w
-    \defeq \vset(A, r \circ f)$ is the set we are looking for.
-
+    \defeq \vset(A, r \circ f)$ is the set we are looking for.  If $C(y)$ then there merely exists
+    $z : V$ and $a : A$ such that $z = f(a)$ and $y = r(z)$, therefore $y \in w$.
+    Conversely, if $y \in w$ then there merely exists $a : A$ such that $y = r(f(a))$, so
+    if we take $z \defeq f(a)$ we see that $C(y)$ holds.
   \end{enumerate}
 \end{proof}
 
-\textbf{TODO:} What sort of set theory did we get?
+The rule of separation requires some preliminary considerations.  Recall that $V$ lives in the same universe $\UU'$ as the base universe $\UU$ from which it is built. Thus, a priori, the same is true for the identity types $v=_V w$ for any $v,w:V$.  A class $C: V\to \prop$ will be called \emph{separable} if all of its values lie in $\UU$.  
 
+\begin{lem}\label{lem:sep}
+If  $C: V \to \prop$ is a separable class, then for any $a:V$ the class $x\in a \wedge C(x)$ is a $V$-set.
+\end{lem}
 
+\begin{proof}
+Given $a=\vset(A,f)$, let $A' = \exis{x:A}C(fx)$, and take $f' = f\circ i$, where $i : A' \to A$ is the obvious inclusion.  Then we claim that for $a' = \vset(A',f')$ we have $x\in a\wedge C(x) \Leftrightarrow x\in a'$.
+\end{proof}
 \input{ordcard}
 
 % Local Variables:

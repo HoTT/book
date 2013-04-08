@@ -808,144 +808,6 @@ Only then do we introduce an appropriate sort of ``pattern matching'' which can 
   Thus, we will always regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.}
 
 
-\section{Identity types}
-\label{sec:identity-types}
-
-While the previous constructions can be seen as generalisations of
-standard set theoretic constructions, the identity type seems to be
-a particular feature of type theory. Moreover, homotopy type theory is
-based on a reinterpretation of identity types embracing a
-proof-relevant understanding of identity types: there can be more than
-one reason that two objects are equal, corresponding to the fact that
-there can be more than one path between two points of a space.
-
-Given a type $A:\UU$ and two elements $a,b:A$ we can form the type $a=_A b:\UU$ in the same universe. The idea is that $a=_A b:\UU$ is the type of proofs that $a$ and $b$ are equal, or from the homotopy point of view that there is a path between $a$ and $b$. In particular, there is a canonical element
-\[\refl{} : \prd{a:A} a =_A a\] --- the proof of reflexivity.
-
-There are two different but equivalent elimination principles for
-identity types:
-\begin{description}
-\item[Martin-L\"{o}f Rule:] 
-Given a family 
-\[ C : \prd{x,y:A}\prd{p:x =_A y} \UU \]
-and a function
-\[ c :  \prd{x:A} C(x,x,\refl{x})\]
-we can construct a function
-\[ f : \prd{x,y:A}{p:x =_A y} C(x,y,p) \]
-with the defining equality 
-\[ f(x,x,\refl{x}) \defeq c(x) \]
-
-The Martin-L\"of rule corresponds to the following induction principle:
-\begin{align*}
- \ind{=_A}^{ML} : & \prd{C : \prd{x,y:A}\prd{p:x =_A y} \UU}  \\
-     & \prd{x:A} C(x,x,\refl{x})  \\
-     & \to  \prd{x,y:A}{p:x =_A y} C(x,y,p)
-\end{align*}
-with the equality
-\[ \ind{=_A}^{ML}(C,c,x,x,\refl{x}) \defeq c(x) \]
-This induction constant is also called $J$.
-
-\item[Paulin-Mohring Rule:] 
-
-Fix an element $a:A$, given a family
-\[ C : \prd{x:A}{p : a =_A x} \UU \]
-and an element
-\[ c : C(a,\refl{a}) \]
-we obtain a function
-\[ f : \prd{x:A}{p:a = x} C(x,p) \]
-with the defining equality
-\[ f(a,\refl{a}) \defeq c \]
-
-Correspondingly, there is an induction constant
-\begin{align*}
-\ind{=_A}^{PM} : & \prd{a:A}{C : \prd{x:A}{p : a =_A x} \UU} \\
-& C(a,\refl{a}) \\
-& \to \prd{x:A}{p : a =_A x} C(x,p) 
-\end{align*}
-with the equality
-\[ \ind{=_A}^{PM}(a,C,c,a,\refl{a}) \defeq c \]
-%\[ g(x)(x,\refl{x}) \defeq d(x) \]
-\end{description}
-These principles arise from different views on the identity type,
-while the Martin-L\"of rule is based on the view that the identity
-type is the least reflexive relation, the Paulin-Mohring rule defines 
-equality with respect to a given element $a:A$ as the least predicate
-over $A$ which holds for $a$.
-
-It is easy to see that the Martin-L\"of rule follows from the
-Paulin-Mohring rule: We assume 
-the premises of the Martin-L\"of rule
-\begin{eqnarray*}
-C & : & \prd{x,y:A}\prd{p:x =_A y} \UU  \\
-c & :  & \prd{x:A} C(x,x,\refl{x})
-\end{eqnarray*}
-now given an element $x:A$ we can instantiate both obtaining
-\begin{eqnarray*}
-C' & : & \prd{y:A}\prd{p:x =_A y} \UU  \\
-C' & \defeq & C(x) \\
-c' & : & C'(x,\refl{x}) \\
-c' & \defeq & c(x)
-\end{eqnarray*}
-Clearly, $C'$ and $c'$ match the premises of the Paulin-Mohring rule and hence we can construct 
-\begin{eqnarray*}
-g : \prd{y:A}{p : x = y} C'(y,p)
-\end{eqnarray*}
-with the defining equality
-\[ g(x,\refl{x}) \defeq c' \]
-Now we observe that $g$'s codomain is equal to $C(x,y,p)$ and discharging our assumption
-$x:A$ we can derive a function 
-\[ f : \prd{x,y:A}{p : x =_A y} C(x,y,p) \]
-with the required definitional equality.
-
-In terms of induction constants we can derive $\ind{=_A}^{ML}$ from $\ind{=_A}^{PM}$ using
-\[ \ind{=_A}^{ML}(C,c,x,y,p) \defeq \ind{=_A}^{PM}(x,C(x),c(x),y,p) \]
-
-The other direction is a bit more tricky: To derive the Paulin-Mohring rule from the Martin-L\"of rule 
-we assume $a : A$ and the premises of the Paulin-Mohring rule:
-\begin{eqnarray*}
-C & : & \prd{x:A}{p : a =_A x} \UU \\  
-c & : & C(a,\refl{a})
-\end{eqnarray*}
-It is not clear how we can use a particular instance of the Martin-L\"of rule to derive the conclusion of 
-the Paulin-Mohring rule. However, we can generalize this and construct an instance of the Martin-L\"of rule which shows 
-all possible instantiations of the Paulin-Mohring rule:
-\begin{eqnarray*}
-D & : & \prd{x,y:A}\prd{p:x =_A y} \UU' \\
-D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p)
-\end{eqnarray*}
-we can construct the function
-\begin{eqnarray*}
-d & : & \prd{x : A} D(x,x,\refl{x}) \\
-d & \defeq & \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x
-\end{eqnarray*}
-and hence using the Martin-L\"of rule obtain
-\[ f : \prd{x,y:A}{p:x =_A y} D(x,y,p) \]
-with $f(x,x,\refl{x}) \defeq d(x)$. Unfolding the definition of $D$ we can expand the type of $f$:
-\[ f : \prd{x,y:A}{p:x =_A y}{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p) \]
-now given $x:A$ and $p:a =_A x$ we can derive the conclusion of the Paulin-Mohring rule:
-\[ f(a,x,p,C,c) : C(x,p) \]
-We notice that we can also derive the correct definitional equality.
-
-In terms of induction constants the construction becomes:
-\begin{align*}
-\ind{=_A}^{PM}(a,C,c,x,p) \defeq \\
-\ind{=_A}^{ML}( & \lamu{x,y:A}{p:x =_A y} \prd{C : \prd{z:A}{p : x =_A z} \UU} \\
-&\qquad C(x,\refl{x}) \to C(y,p),\\
-& \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x,\\
-& a,x,p,C,c) 
-\end{align*}
-
-The construction given above uses universes: that is if we want to
-model $\ind{=_A}^{PM}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$ we need
-to use $\ind{=_A}^{ML}$ with $D:\prd{x,y:A}\prd{p:x =_A y} \UU_{i+1}$
-since $D$ quantifies over all $C$ of the given type. While this is
-compatible with our definition of universes, one may wonder wether we
-can derive $\ind{=_A}^{PM}$ without using universes. This is indeed
-possible: we can show that $\ind{=_A}^{ML}$ entails \autoref{lem:transport} and  \autoref{thm:contr-paths} and that these two principles allow us to derive $ind{=_A}^{PM}$ without using universes. We leave the details of this construction as an exercise.
-
-We can use the eliminator for equality to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter where these principles are explained and derived in the context of homotopy type theory. 
-
-
 \section{Propositions as types}
 \label{sec:pat}
 
@@ -1081,7 +943,175 @@ For instance, if we have an inhabitant of $A+B$, regarded as a witness of ``$A$ 
 Similarly, if we have an inhabitant of $\sm{x:A} P(x)$, regarded as a witness of ``there exists $x:A$ such that $P(x)$'', then we know what the element $x$ is (it is the first component of the dependent pair).
 In the next chapter (specifically, \autoref{sec:logic}) we will introduce a modification to this logic that is sometimes appropriate, in which this additional information is discarded.
 
+\section{Identity types}
+\label{sec:identity-types}
+
+While the previous constructions can be seen as generalisations of
+standard set theoretic constructions, the identity type seems to be
+a particular feature of type theory.
+According to the propositions-as-types conception, the \emph{proposition} of equality between two elements $a,b:A$ (of the same type) must correspond to some \emph{type}.
+Since this proposition depends on what $a$ and $b$ are, these \emph{equality types} or \emph{identity types} must be type families dependent on two copies of $A$.
+
+We may write the family as $\idtypevar{A}:A\to A\to\type$, with $\idtype[A]ab$ the type representing the proposition of equality between $a$ and $b$.
+However, once we are familiar with propositions-as-types, is convenient to also use the standard equality symbol for this.
+Thus, ``$a=b$'' will also be a notation for the \emph{type} $\idtype[A]ab$ corresponding to the proposition that $a$ equals $b$.
+For clarity, we may also write ``$a=_A b$'' to specify the type $A$.
+
+Just as we remarked in \S\ref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include nontrivial information, nothing prevents the type $a=b$ from also including nontrivial information.
+This is the cornerstone of the homotopical interpretation, where we regard witnesses of $a=b$ as \emph{paths} or \emph{equivalences} between $a$ and $b$ in the space $A$.
+Since there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.
+We will return to this in \S\ref{cha:basics}; for now we focus on the basic rules for the identity type.
+
+Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $a=_A b:\UU$ in the same universe.
+The basic way to construct an element of $a=b$ is to know that $a$ and $b$ are the same.
+Thus, we have a dependent function
+\[\refl{} : \prd{a:A} (a =_A a)\]
+called the witness of \emph{reflexivity}, which says that every element of $A$ is equal to itself (in a specified way).
+
+In particular, this means that if $a\jdeq b$, i.e.\ $a$ and $b$ are \emph{judgmentally} equal, then we also have an element $\refl{a} : a=_A b$.
+This is well-typed because $a\jdeq b$ means that also the type $a=_A b$ is judgmentally equal to $a=_A a$, which is the type of $\refl{a}$.
+
+The induction principle for the identity types is one of the subtlest parts of type theory, and crucial to the homotopy interpretation.
+In essence, it encapsulates the principle of substitution, ``equals may be substituted for equals''.
+There are two different, but equivalent, ways to formulate it.
+The first is:
+
+\begin{description}
+\item[Martin-L\"{o}f Rule:] 
+Given a family 
+\[ C : \prd{x,y:A}\prd{p:x =_A y} \UU \]
+and a function
+\[ c :  \prd{x:A} C(x,x,\refl{x})\]
+we can construct a function
+\[ f : \prd{x,y:A}{p:x =_A y} C(x,y,p) \]
+with the defining equality 
+\[ f(x,x,\refl{x}) \defeq c(x) \]
+\end{description}
+
+To understand this principle, consider first the simpler case when $C$ does not depend on $p$.
+Thus we have $C:A\to A\to \UU$, which we may regard as a predicate depending on two elements of $A$.
+We are interesting in knowing when the proposition $C(x,y)$ holds for some $x,y:A$.
+
+In this case, the hypothesis of the Martin-L\"of rule says that we know $C(x,x)$ holds for all $x:A$, i.e.\ that if we substitute the same element for both variables occurring in $C$, we get a true proposition.
+The conclusion then tells us we can conclude that $C(x,y)$ holds whenever $x=y$.
+That is, if $x=y$, then we can \emph{substitute} the value $y$ for some occurrences of $x$ in the true proposition $C(x,x)$ to obtain another true proposition, $C(x,y)$.
+
+The general form of the rule allows $C$ to depend on the witness $p:x=y$ as well.
+If we view types as like sets, it is unclear what this buys us, but in \autoref{cha:basics} we will see that it is essential to the homotopy interpretation.
+
+If we package the Martin-L\"of rule as an induction constant, it becomes:
+\begin{align*}
+ \ind{=_A}^{ML} :  \dprd{C : \prd{x,y:A}\prd{p:x =_A y} \UU} 
+     \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y} C(x,y,p)
+\end{align*}
+with the equality
+\[ \ind{=_A}^{ML}(C,c,x,x,\refl{x}) \defeq c(x) \]
+This induction constant is also called $J$.
+
+However, the Martin-L\"of rule does not quite capture everything we might expect of substitution.
+It requires the proposition $C$ to make sense for \emph{all} pairs $x,y$ of elements of $A$, which is sometimes an inconvenient restriction.
+This motivates the following different induction principle we might give for identity types.
+
+\begin{description}
+\item[Paulin-Mohring Rule:] 
+Fix an element $a:A$, and suppose given a family
+\[ C : \prd{x:A}{p : a =_A x} \UU \]
+and an element
+\[ c : C(a,\refl{a}). \]
+Then we obtain a function
+\[ f : \prd{x:A}{p:a = x} C(x,p) \]
+with the defining equality
+\[ f(a,\refl{a}) \defeq c \]
+\end{description}
+
+Packaged as an induction constant, the Paulin-Mohring rule becomes:
+\begin{align*}
+\ind{=_A}^{PM} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
+ C(a,\refl{a}) \to \dprd{x:A}{p : a =_A x} C(x,p) 
+\end{align*}
+with the equality
+\[ \ind{=_A}^{PM}(a,C,c,a,\refl{a}) \defeq c \]
+%\[ g(x)(x,\refl{x}) \defeq d(x) \]
+
+These principles arise from different views on the identity type.
+While the Martin-L\"of rule is based on the view that the identity
+type is the least reflexive relation, the Paulin-Mohring rule defines 
+equality with respect to a given element $a:A$ as the least predicate
+over $A$ which holds for $a$.
+
+Fortunately, the two induction principles are equivalent.
+It is easy to see that the Martin-L\"of rule follows from the Paulin-Mohring rule.
+Let us assume the premises of the Martin-L\"of rule
+\begin{eqnarray*}
+C & : & \prd{x,y:A}\prd{p:x =_A y} \UU  \\
+c & :  & \prd{x:A} C(x,x,\refl{x}).
+\end{eqnarray*}
+Now, given an element $x:A$, we can instantiate both, obtaining
+\begin{eqnarray*}
+C' & : & \prd{y:A}\prd{p:x =_A y} \UU  \\
+C' & \defeq & C(x) \\
+c' & : & C'(x,\refl{x}) \\
+c' & \defeq & c(x)
+\end{eqnarray*}
+Clearly, $C'$ and $c'$ match the premises of the Paulin-Mohring rule and hence we can construct 
+\begin{eqnarray*}
+g : \prd{y:A}{p : x = y} C'(y,p)
+\end{eqnarray*}
+with the defining equality
+\[ g(x,\refl{x}) \defeq c' \]
+Now we observe that $g$'s codomain is equal to $C(x,y,p)$.
+Thus, discharging our assumption $x:A$, we can derive a function 
+\[ f : \prd{x,y:A}{p : x =_A y} C(x,y,p) \]
+with the required definitional equality.
+In terms of induction constants, this means we can write $\ind{=_A}^{ML}$ in terms of $\ind{=_A}^{PM}$ as
+\[ \ind{=_A}^{ML}(C,c,x,y,p) \defeq \ind{=_A}^{PM}(x,C(x),c(x),y,p) \]
+
+The other direction is a bit more tricky: it is not clear how we can use a particular instance of the Martin-L\"of rule to derive a particular instance of
+the Paulin-Mohring rule. What we can do instead is construct one instance of the Martin-L\"of rule which shows 
+all possible instantiations of the Paulin-Mohring rule at once.
+Define
+\begin{eqnarray*}
+D & : & \prd{x,y:A}\prd{p:x =_A y} \UU' \\
+D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p).
+\end{eqnarray*}
+Then we can construct the function
+\begin{eqnarray*}
+d & : & \prd{x : A} D(x,x,\refl{x}) \\
+d & \defeq & \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x
+\end{eqnarray*}
+and hence using the Martin-L\"of rule obtain
+\[ f : \prd{x,y:A}{p:x =_A y} D(x,y,p) \]
+with $f(x,x,\refl{x}) \defeq d(x)$. Unfolding the definition of $D$, we can expand the type of $f$:
+\[ f : \prd{x,y:A}{p:x =_A y}{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p). \]
+Now given $x:A$ and $p:a =_A x$, we can derive the conclusion of the Paulin-Mohring rule:
+\[ f(a,x,p,C,c) : C(x,p) \]
+Notice that we also obtain the correct definitional equality.
+In terms of induction constants, this construction becomes:
+\begin{align*}
+\ind{=_A}^{PM}(a,C,c,x,p) \defeq \\
+\ind{=_A}^{ML}( & \lamu{x,y:A}{p:x =_A y} \prd{C : \prd{z:A}{p : x =_A z} \UU} \\
+&\qquad C(x,\refl{x}) \to C(y,p),\\
+& \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x,\\
+& a,x,p,C,c) 
+\end{align*}
+
+Note that the construction given above uses universes. That is, if we want to
+model $\ind{=_A}^{PM}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
+to use $\ind{=_A}^{ML}$ with $D:\prd{x,y:A}\prd{p:x =_A y} \UU_{i+1}$,
+since $D$ quantifies over all $C$ of the given type. While this is
+compatible with our definition of universes, it is also possible to
+derive $\ind{=_A}^{PM}$ without using universes: we can show that $\ind{=_A}^{ML}$ entails \autoref{lem:transport} and  \autoref{thm:contr-paths}, and that these two principles imply $\ind{=_A}^{PM}$ directly.
+We leave the details to the reader as \autoref{ex:pm-to-ml}.
+
+We can use the eliminator for equality to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
+
+
 \section*{Exercises}
+
+\begin{ex}
+  Given functions $f:A\to B$ and $g:B\to C$, define their \emph{composite} $g\circ f:A\to C$.
+  Show that we have $h \circ (g\circ f) \jdeq (h\circ g)\circ f$.
+\end{ex}
 
 \begin{ex}
 Derive the non-dependent eliminator for products $\rec{A\times B} $ using only the projections and verify that the definitional equalities are valid. Do the same for $\Sigma$-types.
@@ -1092,7 +1122,7 @@ Derive the dependent eliminator for products $\ind{A\times B}$ using only the pr
 \end{ex}
 
 \begin{ex}
-Assuming as given only the iterator for natural numbers
+Assuming as given only the \emph{iterator} for natural numbers
 \[\ite : \prd{C:\UU} C \to (C \to C) \to \nat \to C \]
 with the defining equations
 \begin{eqnarray*}
@@ -1103,14 +1133,14 @@ derive the recursor $\rec{\nat}$.
 \end{ex}
 
 \begin{ex}\label{ex:sum-via-bool}
-Derive $\ind{A+B}$ for  $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x)$ and show that the definitional equalities stating for native $\ind{A+B}$ hold.
+Show that if we define $\ind{A+B}$ as $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x)$, then the definitional equalities stated for $\ind{A+B}$ in \S\ref{sec:coproduct-types} hold.
 \end{ex}
 
 \begin{ex}\label{ex:prod-via-bool}
-Derive $\ind{A\times B}$ for  $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$ and show that the definitional equalities stating for native $\ind{A+B}$ hold propositionally (i.e. using equality types).
+Show that if we define $\ind{A\times B}$ as $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, then the definitional equalities state for $\ind{A\times B}$ in \S\ref{sec:finite-product-types} hold propositionally (i.e.\ using equality types).
 \end{ex}
 
-\begin{ex}
+\begin{ex}\label{ex:pm-to-ml}
 Give an alternative derivation of $\ind{=_A}^{PM}$ from $\ind{=_A}^{ML}$ which avoids the use of universes.
 \end{ex}
 
@@ -1128,8 +1158,12 @@ Define multiplication and exponentiation using $\rec{\Nat}$. Formally verify tha
 \end{ex}
 
 \begin{ex}
-Using the propositions as types interpretation formally derive the double negation of the principle of excluded middle, i.e. show 
-that \emph{not (not ($P$ or not $P$))}  is provable.
+Using the propositions as types interpretation, formally derive the double negation of the principle of excluded middle, i.e.\ prove \emph{not (not ($P$ or not $P$))}.
+\end{ex}
+
+\begin{ex}\label{ex:without-K}
+  Why do the induction principles for identity types not allow us to construct a function $f: \prd{x:A}{p:x=x} (p = \refl{x})$ with the defining equation
+  \[ f(x,\refl{x}) \defeq \refl{\refl{x}} \quad ?\]
 \end{ex}
 
 % Local Variables:

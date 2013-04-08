@@ -1350,7 +1350,7 @@ From $\leq$ we get the strict order $<$ by
   (u < v) \defeq \exis{q, r : \Qp} (u \leq q) \land (q < r) \land (r \leq v).
 \end{equation*}
 %
-That is, a witness for $u < v$ is a pair of rational numbers $q < r$ such that $x \leq
+That is, $u < v$ holds when there merely exists a pair of rational numbers $q < r$ such that $x \leq
 \rcrat(q)$ and $\rcrat(r) \leq v$. It is not hard to check that $<$ is irreflexive and
 transitive, and has other properties that are expected for an ordered field.
 The archimedean axiom follows directly from the definition of~$<$.
@@ -1445,37 +1445,7 @@ In general, we can define multiplication of real numbers as
 %
 so we just need squaring $u \mapsto u^2$ as a map $\RC \to \RC$. Squaring is not a
 Lipschitz map, but it is Lipschitz on every bounded domain, which allows us to patch it
-together using the following lemma.
-
-\begin{lem}[Patching Lemma] \label{lem:patching}
-  %
-  Suppose $B : A \to \type$ is a family and $e : \prd{x : A} B(x) \to C$ a family of maps
-  into a type $C$ such that every $e(x)$ is injective and they jointly cover $C$, i.e.,
-  the map $(\sm{x : A} B(x)) \to C$, defined by $(x,y) \mapsto e(x)(y)$, is surjective.
-
-  Furthermore, suppose $f : \prd{x : A} B(x) \to D$ is a family of maps which are
-  compatible with respect to~$e$, which means that, for all $x, x' : A$ and $y : B(x)$ and
-  $y' : B(x')$,
-  %
-  \begin{equation*}
-    e(x)(y) = e(x')(y') \to f(x)(y) = f(x')(y').
-  \end{equation*}
-  %
-  Then there exists a unique $\bar{f} : C \to D$ such that $\bar{f}(e(x)(y)) = f(x)(y)$
-  for all $x : A$ and $y : B(x)$.
-\end{lem}
-
-\begin{proof}
-  Apply unique choice, \autoref{cor:UC}, to the relation $R : C \to D \to \prop$ defined
-  by
-  %
-  \begin{equation*}
-    R(c, d) \defeq
-    \exis{x : A}{y : B(x)} c = e(x)(y) \land d = f(x)(y).
-  \end{equation*}
-\end{proof}
-
-To continue the construction of squaring, define the open and closed intervals
+together. Define the open and closed intervals
 %
 \begin{equation*}
   [u,v] \defeq \setof{ x : \RC | u \leq x \leq v }
@@ -1497,16 +1467,36 @@ To continue the construction of squaring, define the open and closed intervals
 
 \begin{proof}
   We first observe that for every $u : \RC$ there merely exists $n : \N$ such that $-n
-  \leq u \leq n$, see \autoref{ex:traditional-archimedean}, so the family of inclusions
-  $[-n, n] \to \RC$ covers $\RC$ in the sense of \autoref{lem:patching}. Next, for each $n
-  : \N$ squaring $s(q) \defeq q^2$ is a Lipschitz map $s : \setof{ q : \Q | -n \leq q \leq
-    n } \to \Q$ with constant $2 n$, so we can use \autoref{RC-extend-Q-Lipschitz} to
-  extend it to squaring $\bar{s}_n : [-n, n] \to \RC$ with Lipschitz constant $4 n$, see
-  \autoref{RC-Lipschitz-on-interval} for details. We may thus apply
-  \autoref{lem:patching}, provided that all the squaring maps $s_n$ agree on common
-  domains, which they do: if $m < n$ for some $m, n : \N$ then $s_n$ restricted to $[-m,
-  m]$ must agree with $s_m$ because both are Lipschitz, and therefore continuous in the
-  sense of~\autoref{RC-continuous-eq}.
+  \leq u \leq n$, see \autoref{ex:traditional-archimedean}, so the map
+  %
+  \begin{equation*}
+    e : \left(\sm{n : \N} [-n, n]\right) \to \RC
+    \qquad\text{defined by}\qquad
+    e(n, \pairr{x, \blank}) \defeq x
+  \end{equation*}
+  % 
+  is surjective. Next, for each $n : \N$, the squaring map
+  %
+  \begin{equation*}
+    s_n : \setof{ q : \Q | -n \leq q \leq n } \to \Q
+    \qquad\text{defined by}\qquad
+    s_n(q, \blank) \defeq q^2
+  \end{equation*}
+  %
+  is Lipschitz with constant $2 n$, so we can use \autoref{RC-extend-Q-Lipschitz} to
+  extend it to a map $\bar{s}_n : [-n, n] \to \RC$ with Lipschitz constant $2 n$, see
+  \autoref{RC-Lipschitz-on-interval} for details. The maps $\bar{s}_n$ are compatible: if
+  $m < n$ for some $m, n : \N$ then $s_n$ restricted to $[-m, m]$ must agree with $s_m$
+  because both are Lipschitz, and therefore continuous in the sense
+  of~\autoref{RC-continuous-eq}. Therefore, by \autoref{lem:images_are_coequalizers} the map
+  %
+  \begin{equation*}
+    \left(\sm{n : \N} [-n, n]\right) \to \RC,
+    \qquad\text{given by}\qquad
+    (n, \pairr{x, \blank}) \mapsto s_n(x)
+  \end{equation*}
+  %
+  factors uniquely through $\RC$ to give us the desired function.
 \end{proof}
 
 At this point we have the ring structure of the reals and the archimedean order. To
@@ -1517,7 +1507,31 @@ establish $\RC$ as an archimedean ordered field, we still need inverses.
 \end{thm}
 
 \begin{proof}
-  \textbf{TODO}
+  First, suppose $u : \RC$ has an inverse $v : \RC$ By the archimedean axiom there is $q :
+  \Q$ such that $|v| < q$. Then $1 = |u v| < |u| \cdot v < |u| \cdot q$ and hence $|u| >
+  1/q$, which is to say that $u \apart 0$.
+
+  For the converse we construct the inverse map
+  %
+  \begin{equation*}
+    ({-})^{-1} : \setof{ u : \RC | u \apart 0 } \to \RC
+  \end{equation*}
+  % 
+  by patching together functions, similarly to the construction of squaring in
+  \autoref{RC-squaring}. We only outline the main steps. For every $q : \Q$ let
+  %
+  \begin{equation*}
+    [q, \infty) \defeq \setof{u : \RC | q \leq u}
+    \qquad\text{and}\qquad
+    (-\infty, q] \defeq \setof{u : \RC | u \leq -q}.
+  \end{equation*}
+  %
+  Then, as $q$ ranges over $\Qp$, the types $(-\infty, q]$ and $[q, \infty)$ jointly cover
+  $\setof{u : \RC | u \apart 0}$. On each such $[q, \infty)$ and $[-\infty, q)$ the
+  inverse function is obtained by an application of Lemma~\autoref{RC-extend-Q-Lipschitz}
+  with Lipschitz constant $1/q^2$. Finally, \autoref{lem:images_are_coequalizers}
+  guarantees that the inverse function factors uniquely through $\setof{ u : \RC | u
+    \apart 0 }$.
 \end{proof}
 
 We summarize the algebraic structure of $\RC$ with a theorem.

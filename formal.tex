@@ -435,7 +435,7 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 
 %% Basic syntax of type theory:
 % judgements
-\renewcommand{\G}{\Gamma}
+\newcommand{\Gm}{\Gamma}      % \G is used already in some tex systems and not in others, so we don't try to redefine it
 \newcommand{\ctx}{\ensuremath{\mathsf{ctx}}}
 \newcommand{\emptyctx}{\cdot}
 \newcommand{\wfctx}[1]{\vdash #1\ \ctx}
@@ -477,11 +477,11 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 
 Type theory has three basic judgments:
 \begin{mathpar}
-\wfctx\G
+\wfctx\Gm
 \and
-\oftp\G{a}{A}
+\oftp\Gm{a}{A}
 \and
-\jdeqtp\G{a}{a'}{A}
+\jdeqtp\Gm{a}{a'}{A}
 \end{mathpar}
 
 We define these judgments inductively using inference rules. In the notation of
@@ -498,8 +498,8 @@ rules with no hypotheses, such as $\Vble$ and $\UU$-\intro.)
 \subsection{Contexts}
 
 A context is a list of assumptions of the form $x_i:A_i$. The empty list is a
-valid context; given a valid context $\G$, and a valid type $A$ in that context,
-$\G$ can be extended with an assumption of type $A$.
+valid context; given a valid context $\Gm$, and a valid type $A$ in that context,
+$\Gm$ can be extended with an assumption of type $A$.
 
 \begin{mathpar}
   \inferrule*[right=\ctx-\textsc{emp}]
@@ -507,12 +507,12 @@ $\G$ can be extended with an assumption of type $A$.
   {\wfctx\emptyctx}
 \and
   \inferrule*[right=\ctx-\textsc{ext}]
-  {\wfctx\G \\ \oftp\G{A}{\UU_i}}
-  {\wfctx{(\G,\tmtp xA)}}
+  {\wfctx\Gm \\ \oftp\Gm{A}{\UU_i}}
+  {\wfctx{(\Gm,\tmtp xA)}}
 \end{mathpar}
 
-Every judgment $\judg\G{\mathcal{J}}$ (where $\mathcal{J}$ is either $a:A$ or
-$a\jdeq b:A$) implicitly assumes $\wfctx\G$; we usually omit this assumption
+Every judgment $\judg\Gm{\mathcal{J}}$ (where $\mathcal{J}$ is either $a:A$ or
+$a\jdeq b:A$) implicitly assumes $\wfctx\Gm$; we usually omit this assumption
 from the inference rules.
 
 \subsection{Structural Rules}
@@ -522,7 +522,7 @@ Each assumption in the context can be concluded.
 \begin{mathpar}
   \inferrule*[right=$\Vble$]
   {\ }
-  {\oftp{\G,\tmtp xA,\Delta}{x}{A}}
+  {\oftp{\Gm,\tmtp xA,\Delta}{x}{A}}
 \end{mathpar}
 
 The following important principles, called \emph{substitution} and
@@ -532,35 +532,35 @@ provable, their conclusion is also provable.
 
 \begin{mathpar}
   \inferrule*[right=$\Subst$]
-  {\oftp\G{a}{A} \\ \judg{\G,\tmtp xA,\Delta}{\mathcal{J}}}
-  {\judg{\G,\Delta[a/x]}{\mathcal{J}[a/x]}}
+  {\oftp\Gm{a}{A} \\ \judg{\Gm,\tmtp xA,\Delta}{\mathcal{J}}}
+  {\judg{\Gm,\Delta[a/x]}{\mathcal{J}[a/x]}}
 \and
   \inferrule*[right=$\Weak$]
-  {\oftp\G{A}{\UU_i} \\ \judg{\G,\Delta}{\mathcal{J}}}
-  {\judg{\G,\tmtp xA,\Delta}{\mathcal{J}}}
+  {\oftp\Gm{A}{\UU_i} \\ \judg{\Gm,\Delta}{\mathcal{J}}}
+  {\judg{\Gm,\tmtp xA,\Delta}{\mathcal{J}}}
 \end{mathpar}
 
 In addition to the judgmental equality rules given for each type former, we also
 assume that judgmental equality is an equivalence relation respected by typing.
 \begin{mathparpagebreakable}
-  \inferrule*{\oftp\G{a}{A}}{\jdeqtp\G{a}{a}{A}}
+  \inferrule*{\oftp\Gm{a}{A}}{\jdeqtp\Gm{a}{a}{A}}
 \and
-  \inferrule*{\jdeqtp\G{a}{b}{A}}{\jdeqtp\G{b}{a}{A}}
+  \inferrule*{\jdeqtp\Gm{a}{b}{A}}{\jdeqtp\Gm{b}{a}{A}}
 \and
-  \inferrule*{\jdeqtp\G{a}{b}{A} \\ \jdeqtp\G{b}{c}{A}}{\jdeqtp\G{a}{c}{A}}
+  \inferrule*{\jdeqtp\Gm{a}{b}{A} \\ \jdeqtp\Gm{b}{c}{A}}{\jdeqtp\Gm{a}{c}{A}}
 \and
-  \inferrule*{\oftp\G{a}{A} \\ \jdeqtp\G{A}{B}{\UU_i}}{\oftp\G{a}{B}}
+  \inferrule*{\oftp\Gm{a}{A} \\ \jdeqtp\Gm{A}{B}{\UU_i}}{\oftp\Gm{a}{B}}
 \and
-  \inferrule*{\jdeqtp\G{a}{b}{A} \\ \jdeqtp\G{A}{B}{\UU_i}}{\jdeqtp\G{a}{b}{B}}
+  \inferrule*{\jdeqtp\Gm{a}{b}{A} \\ \jdeqtp\Gm{A}{B}{\UU_i}}{\jdeqtp\Gm{a}{b}{B}}
 \end{mathparpagebreakable}
 
 Additionally, in the logical rules below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
 \[
   \inferrule*[right=$\Pi$-\intro-eq]
-  {\jdeqtp\G{A}{A'}{\UU_i} \\
-   \jdeqtp{\G,\tmtp xA}{B}{B'}{\UU_i} \\
-   \jdeqtp{\G,\tmtp xA}{b}{b'}{B}}
-  {\jdeqtp\G{\lam{x:A} b}{\lam{x:A'} b'}{\tprd{x:A} B}}
+  {\jdeqtp\Gm{A}{A'}{\UU_i} \\
+   \jdeqtp{\Gm,\tmtp xA}{B}{B'}{\UU_i} \\
+   \jdeqtp{\Gm,\tmtp xA}{b}{b'}{B}}
+  {\jdeqtp\Gm{\lam{x:A} b}{\lam{x:A'} b'}{\tprd{x:A} B}}
 \]
 However, we omit these rules for brevity.
 
@@ -573,15 +573,15 @@ $\UU_{i+1}$.
 \begin{mathpar}
 \inferrule*[right=\UU-\textsc{intro}]
   {\ }
-  {\oftp\G{\UU_i}{\UU_{i+1}}}
+  {\oftp\Gm{\UU_i}{\UU_{i+1}}}
 \and
 \inferrule*[right=\UU-\textsc{cumul}]
-  {\oftp\G{A}{\UU_i}}
-  {\oftp\G{A}{\UU_{i+1}}}
+  {\oftp\Gm{A}{\UU_i}}
+  {\oftp\Gm{A}{\UU_{i+1}}}
 \end{mathpar}
 
-The rules of type theory maintain the invariant that if $\oftp\G{a}{A}$ or
-$\jdeqtp\G{a}{b}{A}$, then $\oftp\G{A}{\UU_i}$ for some $i$.
+The rules of type theory maintain the invariant that if $\oftp\Gm{a}{A}$ or
+$\jdeqtp\Gm{a}{b}{A}$, then $\oftp\Gm{A}{\UU_i}$ for some $i$.
 
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 
@@ -607,20 +607,20 @@ introductory form.
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\form]
-  {\oftp{\G,\tmtp xA}{B}{\UU_i}}
-  {\oftp\G{\tprd{x:A}B}{\UU_i}}
+  {\oftp{\Gm,\tmtp xA}{B}{\UU_i}}
+  {\oftp\Gm{\tprd{x:A}B}{\UU_i}}
 \and
   \inferrule*[right=$\Pi$-\intro]
-  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\ \oftp{\G,\tmtp xA}{b}{B}}
-  {\oftp\G{\lam{x:A} b}{\tprd{x:A} B}}
+  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\ \oftp{\Gm,\tmtp xA}{b}{B}}
+  {\oftp\Gm{\lam{x:A} b}{\tprd{x:A} B}}
 \and
   \inferrule*[right=$\Pi$-\elim]
-  {\oftp\G{f}{\tprd{x:A} B} \\ \oftp\G{a}{A}}
-  {\oftp\G{f(a)}{B[a/x]}}
+  {\oftp\Gm{f}{\tprd{x:A} B} \\ \oftp\Gm{a}{A}}
+  {\oftp\Gm{f(a)}{B[a/x]}}
 \and
   \inferrule*[right=$\Pi$-\comp]
-  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\ \oftp{\G,\tmtp xA}{b}{B} \\ \oftp\G{a}{A}}
-  {\jdeqtp\G{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
+  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\ \oftp{\Gm,\tmtp xA}{b}{B} \\ \oftp\Gm{a}{A}}
+  {\jdeqtp\Gm{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
 \end{mathparpagebreakable}
 
 $\lam{x:A} b$ binds free occurrences of $x$ in $b$, as does $\tprd{x:A} B$ for
@@ -639,29 +639,29 @@ other type formers.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Sigma$-\form]
   {\oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
-  {\oftp\G{\tsm{x:A} B}{\UU_i}}
+  {\oftp\Gm{\tsm{x:A} B}{\UU_i}}
 \and
   \inferrule*[right=$\Sigma$-\intro]
-  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\
-   \oftp\G{a}{A} \\ \oftp\G{b}{B[a/x]}}
-  {\oftp\G{\tup ab}{\tsm{x:A} B}}
+  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\
+   \oftp\Gm{a}{A} \\ \oftp\Gm{b}{B[a/x]}}
+  {\oftp\Gm{\tup ab}{\tsm{x:A} B}}
 \and
   \inferrule*[right=$\Sigma$-\elim]
-  {\oftp{\G,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
-   \oftp{\G,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]} \\
-   \oftp\G{p}{\tsm{x:A} B}}
-  {\oftp\G{\ind{\tsm{x:A} B}(y.C,a.b.g,p)}{C[\fst(p)/x,\snd(p)/y]}}
+  {\oftp{\Gm,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]} \\
+   \oftp\Gm{p}{\tsm{x:A} B}}
+  {\oftp\Gm{\ind{\tsm{x:A} B}(y.C,a.b.g,p)}{C[\fst(p)/x,\snd(p)/y]}}
 \and
   \inferrule*[right=$\Sigma$-\comp]
-  {\oftp{\G,\tmtp xA}{B}{\UU_i} \\
-   \oftp\G{a'}{A} \\ \oftp\G{b'}{B[a'/x]} \\
-   \oftp{\G,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
-   \oftp{\G,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]}}
-  {\oftp\G{\ind{\tsm{x:A} B}(y.C,a.b.g,\tup{a'}{b'})}{C[a'/a,b'/b]}}
+  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\
+   \oftp\Gm{a'}{A} \\ \oftp\Gm{b'}{B[a'/x]} \\
+   \oftp{\Gm,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]}}
+  {\oftp\Gm{\ind{\tsm{x:A} B}(y.C,a.b.g,\tup{a'}{b'})}{C[a'/a,b'/b]}}
 \end{mathparpagebreakable}
 
 $\tsm{x:A} B$ binds free occurrences of $x$ in $B$. Furthermore, because
-$\ind{\tsm{x:A} B}$ has some arguments with free variables beyond those in $\G$,
+$\ind{\tsm{x:A} B}$ has some arguments with free variables beyond those in $\Gm$,
 we bind (following the variable names above) $y$ in $C$, and $a$ and $b$ in $g$.
 These are written $y.C$ and $a.b.g$, to indicate the names of the bound
 variables. In particular, we are treating $\ind{\tsm{x:A} B}$ as a primitive,
@@ -679,24 +679,24 @@ This presentation corresponds to the Martin-L\"{o}f rule in
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\idsym$-\form]
-  {\oftp\G{A}{\UU_i} \\ \oftp\G{a}{A} \\ \oftp\G{b}{A}}
-  {\oftp\G{\id[A]{a}{b}}{\UU_i}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{a}{A} \\ \oftp\Gm{b}{A}}
+  {\oftp\Gm{\id[A]{a}{b}}{\UU_i}}
 \and
   \inferrule*[right=$\idsym$-\intro]
-  {\oftp\G{A}{\UU_i} \\ \oftp\G{a}{A}}
-  {\oftp\G{\refl a}{\id[A]aa}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{a}{A}}
+  {\oftp\Gm{\refl a}{\id[A]aa}}
 \and
   \inferrule*[right=$\idsym$-\elim]
-  {\oftp{\G,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
-   \oftp{\G,\tmtp zA}{c}{C[z/x,z/y,\refl z/p]} \\
-   \oftp\G{a}{A} \\ \oftp\G{b}{A} \\ \oftp\G{p'}{\id[A]ab}}
-  {\oftp\G{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p)}{C[a/x,b/y,p'/p]}}
+  {\oftp{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp zA}{c}{C[z/x,z/y,\refl z/p]} \\
+   \oftp\Gm{a}{A} \\ \oftp\Gm{b}{A} \\ \oftp\Gm{p'}{\id[A]ab}}
+  {\oftp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p)}{C[a/x,b/y,p'/p]}}
 \and
   \inferrule*[right=$\idsym$-\comp]
-  {\oftp{\G,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
-   \oftp{\G,\tmtp zA}{c}{C[z/x,z/y,\refl z/p]} \\
-   \oftp\G{a}{A}}
-  {\jdeqtp\G{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a/x,a/y,\refl a/p]}}
+  {\oftp{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp zA}{c}{C[z/x,z/y,\refl z/p]} \\
+   \oftp\Gm{a}{A}}
+  {\jdeqtp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a/x,a/y,\refl a/p]}}
 \end{mathparpagebreakable}
 
 In $\ind{\idsym_A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
@@ -705,7 +705,7 @@ $c$.
 %\subsection{$\wtypesym$-types}
 %
 %\begin{mathparpagebreakable}
-%  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \vdash B(x)\UU_i}{\oftp\G \wtypesym_{x \oftype A} B(x)\UU_i}
+%  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \vdash B(x)\UU_i}{\oftp\Gm \wtypesym_{x \oftype A} B(x)\UU_i}
 %\and
 %  \inferrule*[right=$\wtypesym$-\intro]{\Gamma,\ x \oftype A \vdash
 %  B(x)\UU_i}{\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A}
@@ -731,13 +731,13 @@ $c$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\emptyt$-\form]
   {\ }
-  {\oftp\G\emptyt{\UU_i}}
+  {\oftp\Gm\emptyt{\UU_i}}
 \and
   \text{(No $\emptyt$-\intro.)}
 \and
   \inferrule*[right=$\emptyt$-\elim]
-  {\oftp{\G,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\G{z}{\emptyt}}
-  {\oftp\G{\ind{\emptyt}(x.C,z)}{C[z/x]}}
+  {\oftp{\Gm,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\Gm{z}{\emptyt}}
+  {\oftp\Gm{\ind{\emptyt}(x.C,z)}{C[z/x]}}
 \and
   \text{(No $\emptyt$-\comp.)}
 \end{mathparpagebreakable}
@@ -749,22 +749,22 @@ In $\ind{\emptyt}$, $x$ is bound in $C$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\unit$-\form]
   {\ }
-  {\oftp\G\unit{\UU_i}}
+  {\oftp\Gm\unit{\UU_i}}
 \and
   \inferrule*[right=$\unit$-\intro]
   {\ }
-  {\oftp\G{\ttt}{\unit}}
+  {\oftp\Gm{\ttt}{\unit}}
 \and
   \inferrule*[right=$\unit$-\elim]
-  {\oftp{\G,\tmtp x\unit}{C}{\UU_i} \\
-   \oftp{\G,\tmtp y\unit}{c}{C[y/x]} \\
-   \oftp\G{z}{\unit}}
-  {\oftp\G{\ind{\unit}(x.C,y.c,z)}{C[y/x]}}
+  {\oftp{\Gm,\tmtp x\unit}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp y\unit}{c}{C[y/x]} \\
+   \oftp\Gm{z}{\unit}}
+  {\oftp\Gm{\ind{\unit}(x.C,y.c,z)}{C[y/x]}}
 \and
   \inferrule*[right=$\unit$-\comp]
-  {\oftp{\G,\tmtp x\unit}{C}{\UU_i} \\
-   \oftp{\G,\tmtp y\unit}{c}{C[y/x]}}
-  {\jdeqtp\G{\ind{\unit}(x.C,y.c,\ttt)}{c[\ttt/y]}{C[\ttt/x]}}
+  {\oftp{\Gm,\tmtp x\unit}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp y\unit}{c}{C[y/x]}}
+  {\jdeqtp\Gm{\ind{\unit}(x.C,y.c,\ttt)}{c[\ttt/y]}{C[\ttt/x]}}
 \end{mathparpagebreakable}
 
 In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
@@ -777,37 +777,37 @@ In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$+$-\form]
-  {\oftp\G{A}{\UU_i} \\ \oftp\G{B}{\UU_i}}
-  {\oftp\G{A+B}{\UU_i}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i}}
+  {\oftp\Gm{A+B}{\UU_i}}
 \and
   \inferrule*[right=$+$-\intro${}_1$]
-  {\oftp\G{A}{\UU_i} \\ \oftp\G{B}{\UU_i} \\ \oftp\G{a}{A}}
-  {\oftp\G{\inl(a)}{A+B}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i} \\ \oftp\Gm{a}{A}}
+  {\oftp\Gm{\inl(a)}{A+B}}
 \and
   \inferrule*[right=$+$-\intro${}_2$]
-  {\oftp\G{A}{\UU_i} \\ \oftp\G{B}{\UU_i} \\ \oftp\G{b}{B}}
-  {\oftp\G{\inr(b)}{A+B}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i} \\ \oftp\Gm{b}{B}}
+  {\oftp\Gm{\inr(b)}{A+B}}
 \and
   \inferrule*[right=$+$-\elim]
-  {\oftp{\G,\tmtp x{(A+B)}}{C}{\UU_i} \\
-   \oftp{\G,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\G,\tmtp bB}{d}{C[\inr(b)/x]} \\
-   \oftp\G{z}{A+B}}
-  {\oftp\G{\ind{A+B}(x.C,a.c,b.d,z)}{C[z/x]}}
+  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
+   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp\Gm{z}{A+B}}
+  {\oftp\Gm{\ind{A+B}(x.C,a.c,b.d,z)}{C[z/x]}}
 \and
   \inferrule*[right=$+$-\comp${}_1$]
-  {\oftp{\G,\tmtp x{(A+B)}}{C}{\UU_i} \\
-   \oftp{\G,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\G,\tmtp bB}{d}{C[\inr(b)/x]} \\
-   \oftp\G{a'}{A}}
-  {\jdeqtp\G{\ind{A+B}(x.C,a.c,b.d,\inl(a'))}{c[a'/a]}{C[\inl(a')/x]}}
+  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
+   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp\Gm{a'}{A}}
+  {\jdeqtp\Gm{\ind{A+B}(x.C,a.c,b.d,\inl(a'))}{c[a'/a]}{C[\inl(a')/x]}}
 \and
   \inferrule*[right=$+$-\comp${}_2$]
-  {\oftp{\G,\tmtp x{(A+B)}}{C}{\UU_i} \\
-   \oftp{\G,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\G,\tmtp bB}{d}{C[\inr(b)/x]} \\
-   \oftp\G{b'}{B}}
-  {\jdeqtp\G{\ind{A+B}(x.C,a.c,b.d,\inr(b'))}{d[b'/b]}{C[\inr(b')/x]}}
+  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
+   \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
+   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp\Gm{b'}{B}}
+  {\jdeqtp\Gm{\ind{A+B}(x.C,a.c,b.d,\inr(b'))}{d[b'/b]}{C[\inr(b')/x]}}
 \end{mathparpagebreakable}
 
 In $\ind{A+B}$, $x$ is bound in $C$, $a$ is bound in $c$, and $b$ is bound in
@@ -821,8 +821,8 @@ In this section we present the \emph{$\eta$-rule} for $\Pi$-types
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-$\eta$]
-  {\oftp\G{f}{\tprd{x:A} B}}
-  {\jdeqtp\G{f}{(\lam{x:A}f(x))}{\tprd{x:A} B}}
+  {\oftp\Gm{f}{\tprd{x:A} B}}
+  {\jdeqtp\Gm{f}{(\lam{x:A}f(x))}{\tprd{x:A} B}}
 \end{mathparpagebreakable}
 
 \textbf{TODO:} function extensionality rules

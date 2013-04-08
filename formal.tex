@@ -457,14 +457,9 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 
 \textbf{TODO:} 
 \begin{enumerate}
-\item explain $\to$ vs $\vdash$ for type families (in chapter 1)
-\item explain where binding occurs
 \item two ways of handling univalence
-\item emphasize f/i/e/c pattern, and congruence
-\item admissibility of structural rules; don't grow context down
 \item explain the diff wrt MLTT (new axioms, choice of presentation)
-\item explain arguments with binders in elimination rules
-\item contexts: note that unlike chapter 1, all type formers are independent
+\item explain pattern matching vs eliminators
 \end{enumerate}
 
 %Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that
@@ -473,13 +468,13 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 %substituting $a$ for the (outermost) variable bound in $B$ and removing the
 %abstraction that recorded its presence and its name.  
 
-Our presentation of the structural rules is based largely on
-\cite{hofmann:syntax-and-semantics}, which also includes a full construction of
-the syntax.  
+%Our presentation of the structural rules is based largely on
+%\cite{hofmann:syntax-and-semantics}, which also includes a full construction of
+%the syntax.  
 %Our selection of logical rules, and in particular our treatment of
 %the universe, follows \cite{martin-lof:bibliopolis}.
 
-We take as basic the judgment forms
+Type theory has three basic judgments:
 \begin{mathpar}
 \wfctx\G
 \and
@@ -488,7 +483,18 @@ We take as basic the judgment forms
 \jdeqtp\G{a}{a'}{A}
 \end{mathpar}
 
+We define these judgments inductively using inference rules---to conclude the
+judgment below the horizontal line, it is necessary to prove the judgments above
+the line. A valid derivation of a judgment is a tree constructed from these
+inference rules, where 
+%TODO
+%TODO we give some examples of inductive types
+
 \subsection{Contexts}
+
+A context is a list of assumptions of the form $x_i:A_i$. The empty list is a
+valid context; given a valid context $\G$, and a valid type $A$ in that context,
+$\G$ can be extended with an assumption of type $A$.
 
 \begin{mathpar}
   \inferrule*[right=\ctx-\textsc{emp}]
@@ -500,16 +506,26 @@ We take as basic the judgment forms
   {\wfctx{(\G,\tmtp xA)}}
 \end{mathpar}
 
+Every judgment $\judg\G{\mathcal{J}}$ (where $\mathcal{J}$ is either $a:A$ or
+$a\jdeq b:A$) implicitly assumes $\wfctx\G$; we usually omit this assumption
+from the inference rules.
+
 \subsection{Structural Rules}
 
-The structural rules of the type theory are (where $\mathcal{J}$ may be any the
-conclusion of any of the judgment forms):
+Each assumption in the context can be concluded.
 
 \begin{mathpar}
   \inferrule*[right=$\Vble$]
-  {\wfctx{(\G,\tmtp xA,\Delta)}}
+  {\ }
   {\oftp{\G,\tmtp xA,\Delta}{x}{A}}
-\and
+\end{mathpar}
+
+The following important principles, called \emph{substitution} and
+\emph{weakening}, need not be assumed. It is possible to show, by induction on
+the structure of each judgment's derivation, that whenever their hypotheses are
+provable, their conclusion is also provable.
+
+\begin{mathpar}
   \inferrule*[right=$\Subst$]
   {\oftp\G{a}{A} \\ \judg{\G,\tmtp xA,\Delta}{\mathcal{J}}}
   {\judg{\G,\Delta[a/x]}{\mathcal{J}[a/x]}}
@@ -519,7 +535,8 @@ conclusion of any of the judgment forms):
   {\judg{\G,\tmtp xA,\Delta}{\mathcal{J}}}
 \end{mathpar}
 
-Definitional equality (also known as syntactic or judgmental equality):
+In addition to the judgmental equality rules given for each type former, we also
+assume that judgmental equality is an equivalence relation respected by typing.
 \begin{mathparpagebreakable}
   \inferrule*{\oftp\G{a}{A}}{\jdeqtp\G{a}{a}{A}}
 \and
@@ -540,10 +557,13 @@ Additionally, in the logical rules below, we assume rules stating that each cons
    \jdeqtp{\G,\tmtp xA}{b}{b'}{B}}
   {\jdeqtp\G{\lam{x:A} b}{\lam{x:A'} b'}{\tprd{x:A} B}}
 \]
+However, we omit these rules for brevity.
 
-\subsection{Universes and families}
+\subsection{Type universes}
 
-In the rules below, $i$ is a natural number.
+We have an infinite hierarchy of type universes $\UU_i$ for each natural number
+$i$; each universe is contained in the next, and any type in $\UU_i$ is also in
+$\UU_{i+1}$.
 
 \begin{mathpar}
 \inferrule*[right=\UU-\textsc{intro}]
@@ -555,7 +575,30 @@ In the rules below, $i$ is a natural number.
   {\oftp\G{A}{\UU_{i+1}}}
 \end{mathpar}
 
+The rules of type theory maintain the invariant that if $\oftp\G{a}{A}$ or
+$\jdeqtp\G{a}{b}{A}$, then $\oftp\G{A}{\UU_i}$ for some $i$.
+
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
+
+In \autoref{cha:typetheory}, we introduced non-dependent functions $A\to B$ in
+order to define a family of types as a function $\lam{x:A} B:A\to\UU_i$, which
+gives rise to a dependent function $\tprd{x:A} B$. Contexts allow us to speak
+directly about the types of terms with free variables, so we can instead express
+a family of types simply as a type $B$ with a free variable $x:A$, i.e.,
+$\oftp{\tmtp xA}{B}{\UU_i}$. As a consequence, we don't need non-dependent
+functions to define dependent functions. In fact, the rules for each type former
+will not refer to any other type former.
+
+Each type former from here on has a uniform set of rules:
+\begin{itemize}
+\item a \emph{formation} rule, stating when the type former can be applied;
+\item some \emph{introduction} rules, stating how to inhabit the type;
+\item an \emph{elimination} rule, or induction principle, stating how to use an
+element of the type;
+\item some \emph{computation} rules, corresponding to the introduction rules,
+giving a judgmental equality for when the elimination rule is applied to an
+introductory form.
+\end{itemize}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\form]
@@ -575,10 +618,18 @@ In the rules below, $i$ is a natural number.
   {\jdeqtp\G{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
 \end{mathparpagebreakable}
 
-As a special case of this, when $B$ does not depend on $x$, we obtain the
-ordinary function type $A\to B := \tprd{x:A} B$. \\
+$\lam{x:A} b$ binds free occurrences of $x$ in $b$, as does $\tprd{x:A} B$ for
+$B$.
+
+When $B$ does not contain free occurrences of $x$, we obtain the ordinary
+function type $A\to B := \tprd{x:A} B$.
 
 \subsection{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
+
+In \autoref{cha:typetheory}, we needed $\to$ and $\prdsym$ types in order to
+define the introduction and elimination rules for $\smsym$; as in the previous
+section, we can instead use the context to express dependency without involving
+other type formers.
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Sigma$-\form]
@@ -604,8 +655,17 @@ ordinary function type $A\to B := \tprd{x:A} B$. \\
   {\oftp\G{\ind{\tsm{x:A} B}(y.C,a.b.g,\tup{a'}{b'})}{C[a'/a,b'/b]}}
 \end{mathparpagebreakable}
 
-Again, the special case where $B$ does not depend on $x$ is of particular
-interest: this gives the cartesian product $A \times B := \tsm{x:A} B$. \\
+$\tsm{x:A} B$ binds free occurrences of $x$ in $B$. Furthermore, because
+$\ind{\tsm{x:A} B}$ has some arguments with free variables beyond those in $\G$,
+we bind (following the variable names above) $y$ in $C$, and $a$ and $b$ in $g$.
+These are written $y.C$ and $a.b.g$, to indicate the names of the bound
+variables. In particular, we are treating $\ind{\tsm{x:A} B}$ as a primitive,
+two of whose arguments contain binders; this is superficially similar to, but
+different from, $\ind{\tsm{x:A} B}$ being a function which takes functions as
+arguments.
+
+When $B$ does not contain free occurrences of $x$, we obtain the cartesian
+product $A \times B := \tsm{x:A} B$.
 
 \subsection{Identity types}
 
@@ -631,8 +691,10 @@ interest: this gives the cartesian product $A \times B := \tsm{x:A} B$. \\
   {\jdeqtp\G{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a/x,a/y,\refl a/p]}}
 \end{mathparpagebreakable}
 
+In $\ind{\idsym_A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
+$c$.
+
 %\subsection{$\wtypesym$-types}
-%\textbf{TODO}
 %
 %\begin{mathparpagebreakable}
 %  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \vdash B(x)\UU_i}{\oftp\G \wtypesym_{x \oftype A} B(x)\UU_i}
@@ -672,6 +734,8 @@ interest: this gives the cartesian product $A \times B := \tsm{x:A} B$. \\
   \text{(No $\emptyt$-\comp.)}
 \end{mathparpagebreakable}
 
+In $\ind{\emptyt}$, $x$ is bound in $C$.
+
 \subsection{The unit type $\unit$}
 
 \begin{mathparpagebreakable}
@@ -685,17 +749,21 @@ interest: this gives the cartesian product $A \times B := \tsm{x:A} B$. \\
 \and
   \inferrule*[right=$\unit$-\elim]
   {\oftp{\G,\tmtp x\unit}{C}{\UU_i} \\
-   \oftp{\G,\tmtp x\unit}{c}{C} \\
-   \oftp\G{y}{\unit}}
-  {\oftp\G{\ind{\unit}(x.C,x.c,y)}{C[y/x]}}
+   \oftp{\G,\tmtp y\unit}{c}{C[y/x]} \\
+   \oftp\G{z}{\unit}}
+  {\oftp\G{\ind{\unit}(x.C,y.c,z)}{C[y/x]}}
 \and
   \inferrule*[right=$\unit$-\comp]
   {\oftp{\G,\tmtp x\unit}{C}{\UU_i} \\
-   \oftp{\G,\tmtp x\unit}{c}{C}}
-  {\jdeqtp\G{\ind{\unit}(x.C,x.c,\ttt)}{c[\ttt/x]}{C[\ttt/x]}}
+   \oftp{\G,\tmtp y\unit}{c}{C[y/x]}}
+  {\jdeqtp\G{\ind{\unit}(x.C,y.c,\ttt)}{c[\ttt/y]}{C[\ttt/x]}}
 \end{mathparpagebreakable}
 
-\textbf{TODO:} natural numbers
+In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
+
+\subsection{Natural numbers}
+
+\textbf{TODO}
 
 \subsection{Coproduct types}
 
@@ -733,6 +801,9 @@ interest: this gives the cartesian product $A \times B := \tsm{x:A} B$. \\
    \oftp\G{b'}{B}}
   {\jdeqtp\G{\ind{A+B}(x.C,a.c,b.d,\inr(b'))}{d[b'/b]}{C[\inr(b')/x]}}
 \end{mathparpagebreakable}
+
+In $\ind{A+B}$, $x$ is bound in $C$, $a$ is bound in $c$, and $b$ is bound in
+$d$.
 
 \subsection{Further rules} \label{subsec:optional-rules}
 

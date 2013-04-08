@@ -811,15 +811,18 @@ Only then do we introduce an appropriate sort of ``pattern matching'' which can 
 \section{Propositions as types}
 \label{sec:pat}
 
-To state that a proposition is true in type theory corresponds to exhibiting an element of the type corresponding to that proposition.
-We regard the elements of this type as \emph{evidence} or \emph{witnesses} that the proposition is true.
+As mentioned in the introduction, to state that a proposition is true in type theory corresponds to exhibiting an element of a type corresponding to that proposition.
+We regard the elements of this type as \emph{evidence} or \emph{witnesses} that the proposition is true.%
+\footnote{They are also sometimes called \emph{proofs}, but this word can have misleading connotations, so we generally avoid it.}
 In general, however, we will not construct witnesses explicitly; instead we present the proofs in ordinary mathematical prose, in such a way that \emph{in principle} they could be translated into an element of a type.
 This is no different from reasoning in classical set theory, where we don't expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory.
 
-One important difference is that the ``natural'' logic of type theory does not include certain classical principles such as the law of excluded middle or proof by contradiction, i.e., proving $A$ by deriving a contradiction from $\lnot A$.
-We will see in \S\ref{sec:logic}, however, that we can add these principles as additional axioms.
+However, the type-theoretic perspective on proofs is nevertheless different in important ways.
+The basic principle of the logic of type theory is that a proposition is not merely true or false, but rather as classifying all possible witnesses of its truth (``proofs'').
+Under this conception, proofs are not just the means by which mathematics is communicated, but rather are mathematical objects in their own right, on a par with familiar objects such as numbers, mappings, groups, and so on.
+Thus, since types classify the available mathematical objects and govern how they interact, propositions are nothing other than types --- namely, types that classify proofs.
 
-In basic propositional logic, we translate propositions into types following the following rules:
+The observation which makes this identification feasible is that we have the following natural correspondence between \emph{logical} operations on propositions and \emph{type-theoretic} operations on their corresponding types of witnesses.
 \begin{center}
 \begin{tabular}{c|l}
   \textbf{English} & \textbf{Translation into Type Theory}\\\hline
@@ -832,11 +835,12 @@ In basic propositional logic, we translate propositions into types following the
   Not $A$ &  $A \to \emptyt$
 \end{tabular}
 \end{center}
-In each case, the translation is valid because the rules for constructing and using elements of the type on the right correspond to the rules for reasoning about the proposition on the left.
+
+The point of the corrspondence is that in each case, the rules for constructing and using elements of the type on the right correspond to the rules for reasoning about the proposition on the left.
 For instance, the basic way to prove a statement of the form ``$A$ and $B$'' is to prove $A$ and also prove $B$, while the basic way to construct an element of $A\times B$ is as a pair $(a,b)$, where $a$ is an element (or witness) of $A$ and $b$ is an element (or witness) of $B$.
 Similarly, the basic way to prove an implication ``if $A$ then $B$'' is to assume $A$ and prove $B$, while the basic way to construct an element of $A\to B$ is to give an expression which denotes an element (witness) of $B$ which may involve an unspecified variable element (witness) of type $A$.
 
-This correspondence between logical rules and type-theoretic rules allows us to translate any (constructively valid) proof written in English into the construction of an element of the corresponding type.
+This gives us a way to translate propositions, and proofs, of them, written in English into types, and elements of them, in type theory.
 For example, suppose we want to prove the tautology
 \begin{equation}\label{eq:tautology1}
   \text{\emph{``If not $A$ and not $B$, then not ($A$ or $B$)''}.}
@@ -849,7 +853,7 @@ An ordinary English proof of this fact might go as follows.
   Similarly, if $B$ holds, then since not $B$, we also have a contradiction.
   Thus we have a contradiction in either case, so not ($A$ or $B$).
 \end{quote}
-Now, the type corresponding to our tautology~\eqref{eq:tautology1} is
+Now, the type corresponding to our tautology~\eqref{eq:tautology1}, according to the rules given above, is
 \begin{equation}\label{eq:tautology2}
   (A\to \emptyt) \times (B\to\emptyt) \to (A+B\to\emptyt)
 \end{equation}
@@ -877,20 +881,38 @@ Finally, the conclusion of a contradiction from $a:A$ and $x:A\to\emptyt$ is sim
   f((x,y))(\inl(a)) &\defeq x(a)\\
   f((x,y))(\inr(b)) &\defeq y(b).
 \end{align*}
-In particular, observe that the pattern ``assume $A$ and derive a contradiction'' is perfectly valid in constructive logic as a way (in fact, \emph{the} way) to prove ``not $A$''.
-The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.
 
 As an exercise, you should verify 
-the tautology \emph{``If not ($A$ or $B$), then  (not $A$) and (not $B$)}'' by exhibiting an element of 
+the converse tautology \emph{``If not ($A$ or $B$), then  (not $A$) and (not $B$)}'' by exhibiting an element of 
 \[ ((A + B) \to \emptyt) \to (A \to \emptyt) \times (B \to \emptyt), \]
 for any types $A$ and $B$, using the rules we have just introduced.
 
 However, not all classical tautologies hold under this interpretation.
 For example, the rule 
-\emph{If not ($A$ and $B$) then (not $A$) or (not $B$)} is not constructively valid: we cannot, in general, construct an element of the corresponding type
+\emph{``If not ($A$ and $B$), then (not $A$) or (not $B$)''} is not valid: we cannot, in general, construct an element of the corresponding type
 \[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt).\]
-The intuitive reason is that the premise provides no information that would help us decide whether we should prove the disjunction using $\inl$ or $\inr$.
+This reflects the fact that the ``natural'' logic of type theory is \emph{constructive}, as discussed in the introduction.
+Formally, this means it does not include certain classical principles, such as the law of excluded middle (LEM) or proof by contradiction (proving $A$ by deriving a contradiction from $\lnot A$%
+\footnote{Note that the pattern ``assume $A$ and derive a contradiction'' is perfectly valid in constructive logic as a way (in fact, \emph{the} way) to prove ``not $A$''; indeed, we used it in our example above.
+  The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.}),
+and others which depend on them.
 
+Philosophically, constructive logic is so-called because it confines itself to constructions that can be carried out \emph{effectively}, which is to say those with a computational meaning.
+Without being too precise, this means there is some sort of algorithm specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true).
+This requires omission of LEM, since there is no \emph{effective} procedure for deciding whether a proposition is true or false.
+
+The constructivity of type-theoretic logic means it has an intrinsic computational meaning, which is of interest to computer scientists.
+It also means that type theory provides \emph{axiomatic freedom}.
+For example, while by default there is no construction witnessing LEM, the logic is still compatible with the existence of one (see \autoref{sec:logic}).
+Thus, because type theory does not \emph{deny} LEM, we may consistently add it as an assumption, and work conventionally without restriction.
+In this respect, type theory enriches, rather than constrains, conventional mathematical practice.
+
+We encourage the reader who is unfamiliar with constructive logic to work through some more examples as a means of getting familiar with it.
+See \autoref{ex:tautologies,ex:not-not-lem} for some suggestions.
+
+\medskip
+
+So far we have discussed only propositional logic.
 Now we consider \emph{predicate} logic, where in addition to logical connectives like ``and'' and ``or'' we have quantifiers ``there exists'' and ``for all''.
 In this case, types play a dual role: they serve as propositions and also as types in the conventional sense, i.e., domains we quantify over.
 % Indeed, we are going to exploit this duality meaning that we can also quantify over the type of proofs of a proposition.
@@ -1157,8 +1179,17 @@ Define multiplication and exponentiation using $\rec{\Nat}$. Formally verify tha
   \end{eqnarray*}
 \end{ex}
 
-\begin{ex}
-Using the propositions as types interpretation, formally derive the double negation of the principle of excluded middle, i.e.\ prove \emph{not (not ($P$ or not $P$))}.
+\begin{ex}\label{ex:tautologies}
+  Using the propositions as types interpretation, formally derive the following tautologies.
+  \begin{enumerate}
+  \item If $A$, then (if $B$ then $A$).
+  \item If $A$, then not (not $A$).
+  \item If (not $A$ or not $B$), then not ($A$ and $B$).
+  \end{enumerate}
+\end{ex}
+
+\begin{ex}\label{ex:not-not-lem}
+  Using propositions-as-types, derive the double negation of the principle of excluded middle, i.e.\ prove \emph{not (not ($P$ or not $P$))}.
 \end{ex}
 
 \begin{ex}\label{ex:without-K}

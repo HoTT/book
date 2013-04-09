@@ -656,7 +656,110 @@ $\hfib{f(x)}{v}$ is contractible.
 Thus, $\hfib{\total{f}}{w}$ is contractible for all $w:\sm{x:A}Q(x)$ if and only if $\hfib{f(x)}{v}$ is contractible for all $x:A$ and $v:Q(x)$.
 \end{proof}
 
+\section{Univalence implies Function Extensionality}
+\label{sec:univalence}
 
+In the last section of this chapter we include a proof that the Univalence Axiom implies Function
+Extensionality. Thus, in this chapter we work \emph{without} either the Univalence Axiom
+or Function Extensionality. The proof consists of two steps. First we show
+in \autoref{uatowfe} that the Univalence
+axiom implies a weak form of function extensionality, defined in \autoref{weakfunext} below. The
+principle of weak function extensionality in turn implies the usual function extensionality,
+and it does so without the univalence axiom (\autoref{wfetofe}).
+
+In this section, we assume that $\type$ is a universe, of which we will explicitly indicate 
+where we assume that it is univalent.
+
+\begin{defn}\label{weakfunext}
+The \emph{weak function extensionality principle} asserts that there is a function
+\begin{equation*}
+\left(\tprd{x:A}\iscontr(P(x))\right)
+  \to\iscontr\left(\tprd{x:A}P(x)\right)
+\end{equation*}
+for any family $P:A\to\type$ of types over any type $A$.
+\end{defn}
+
+\begin{lem} \label{UA-eqv-hom-eqv}
+Assuming $\type$ is univalent, for any $A,B,X:\type$ and any $e:\eqv{A}{B}$, there is an equivalence
+\begin{equation*}
+\eqv{(X\to A)}{(X\to B)}
+\end{equation*}
+of which the underlying map is given by postcomposition with the underlying function of $e$.
+\end{lem}
+
+\begin{proof}
+Immediate by induction on $\eqv{}{}$ (see \autoref{thm:equiv-induction}).
+\end{proof}
+
+\begin{cor}\label{contrfamtotalpostcompequiv}
+Let $P:A\to\type$ be a family of contractible types, i.e.\ $\prd{x:A}\iscontr(P(x))$.
+Then the projection $\proj{1}:(\sm{x:A}P(x))\to A$ is an equivalence. Assuming $\type$ is univalent, it follows immediately that precomposition with $\proj{1}$ gives an equivalence
+\begin{equation*}
+\alpha : \eqv{\left(A\to\tsm{x:A}P(x)\right)}{(A\to A)}.
+\end{equation*}
+\end{cor}
+
+\begin{proof}
+  In \autoref{ex:projoftotaloffamcontrisequiv} it is asked to show 
+  that for $\proj{1}:\sm{x:A}P(X)\to A$ and $x:A$ we have an equivalence
+  \begin{equation*}
+    \eqv{\hfiber{\proj{1}}{x}}{P(x)}.
+  \end{equation*}
+  Therefore $\proj{1}$ is an equivalence whenever each $P(x)$ is contractible. The assertion is now a consequence of  \autoref{UA-eqv-hom-eqv}.
+\end{proof}
+
+In particular, the homotopy fiber of the above equivalence at $\idfunc[A]$ is contractible. Therefore, we can show that univalence implies weak function extensionality by showing that the dependent function type $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$.
+
+\begin{thm}\label{uatowfe}
+In a univalent universe $\type$, suppose that $P:A\to\type$ is a family of contractible types
+and let $\alpha$ be the function of \autoref{contrfamtotalpostcompequiv}. 
+Then $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$. As a consequence, $\prd{x:A}P(x)$ is contractible. In other words, the univalence axiom implies the weak function extensionality principle.
+\end{thm}
+
+\begin{proof}
+Define the functions
+\begin{align*}
+  \varphi &: \tprd{x:A}P(x)\to\hfiber{\alpha}{\idfunc[A]}\\
+  \varphi(f) &\defeq (\lam{x} (x,f(x)),\refl{\idfunc[A]})
+\intertext{and}
+  \psi &: \hfiber{\alpha}{\idfunc[A]}\to \tprd{x:A}P(x) \\
+  \psi(g,p) &\defeq \lam{x} \trans p{\proj{2} (g(x))}
+\end{align*}
+Then $\psi(\varphi(f))=\lam{x} f(x)$, which is $f$ by the $\eta$-rule for dependent products.
+\end{proof}
+
+We now show that weak function extensionality implies the usual function extensionality.
+Recall from~\eqref{eq:happly} the function $\happly (f,g) : (f = g)\to(f\htpy g)$ which
+converts equality of functions to homotopy. In the proof that follows, the univalence
+axiom is not used.
+
+\begin{thm}\label{wfetofe}
+Weak function extensionality implies the function extensionality \autoref{axiom:funext}.
+\end{thm}
+
+\begin{proof}
+We want to show that
+\begin{equation*}
+\prd{A:\type}{P:A\to\type}{f,g:\prd{x:A}P(x)}\isequiv(\happly (f,g)).
+\end{equation*}
+Since a fiberwise map induces an equivalence on total spaces if and only if it is fiberwise an equivalence by \autoref{thm:total-fiber-equiv}, it suffices to show that the function of type
+\begin{equation*}
+\left(\sm{g:\prd{x:A}P(x)}(f= g)\right) \to \sm{g:\prd{x:A}P(x)}(f\htpy g)
+\end{equation*}
+induced by $\lam{g:\prd{x:A}P(x)} \happly (f,g)$ is an equivalence.
+Since the type on the left is contractible by \autoref{thm:contr-paths}, it suffices to show that the type on the right:
+\begin{equation}\label{eq:uatofesp}
+\sm{g:\prd{x:A}P(x)}\prd{x:A}f(x)= g(x)
+\end{equation}
+is contractible.
+Now \autoref{thm:ttac} says that this is equivalent to
+\begin{equation}\label{eq:uatofeps}
+\prd{x:A}\sm{u:P(x)}f(x)= u.
+\end{equation}
+The proof of \autoref{thm:ttac} uses function extensionality, but only for one of the composites.
+Thus, without assuming function extensionality, we can conclude that~\eqref{eq:uatofesp} is a retract of~\eqref{eq:uatofeps}.
+And~\eqref{eq:uatofeps} is a product of contractible types, which is contractible by the weak function extensionality principle; hence~\eqref{eq:uatofesp} is also contractible.
+\end{proof}
 
 %%% This should go in the appendix on univalence implies funext, if anywhere.
 
@@ -735,7 +838,7 @@ Using bi-invertibility as a definition of equivalences was suggested by Andr\'e 
   Reformulate the proof of \autoref{lem:qinv-autohtpy} without using univalence.
 \end{ex}
 
-\begin{ex}
+\begin{ex}\label{ex:projoftotaloffamcontrisequiv}
   Let $P$ be a family of types over $A$ and consider the function
   $\proj{1}:\sm{x:A}P(x)\to A$. Show that there is an equivalence
   \begin{equation*}

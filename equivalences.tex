@@ -512,13 +512,103 @@ However, this characterization can still be useful; see \autoref{sec:whitehead}.
 We will generalize it in \autoref{cha:hlevels}.
 
 
-\section{Fiberwise equivalences}
+% \section{Fiberwise equivalences}
+\section{Closure properties of equivalences}
+\label{sec:equiv-closures}
 \label{sec:fiberwise-equivalences}
 
-In homotopy theory, a type family $P:A\to\type$ corresponds to a \emph{fibration} over $A$, and we may sometimes use that name equivalently.
-Similarly, its \emph{total space} is the $\Sigma$-type $\sm{x:A} P(x)$, and the fibration itself is the projection $\proj1:\sm{x:A} P(x) \to A$.
+We end this chapter by observing some important closure properties of equivalences.
+We have already seen in \autoref{thm:equiv-eqrel} that equivalences are closed under composition.
+Furthermore, we have:
 
-Another piece of homotopical terminology is that given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A} (P(x)\to Q(x))$ as a \emph{fiberwise map} or a \emph{fiberwise transformation}.
+\begin{thm}[The 2-out-of-3 property]\label{thm:two-out-of-three}
+  Suppose $f:A\to B$ and $g:B\to C$.
+  If any two of $f$, $g$, and $g\circ f$ are equivalences, so is the third.
+\end{thm}
+\begin{proof}[Sketch of proof]
+  If $g\circ f$ and $g$ are equivalences, then $\opp{(g\circ f)} \circ g$ is a quasi-inverse to $f$.
+  Similarly, if $g\circ f$ and $f$ are equivalences, then $f\circ \opp{(g\circ f)}$ is a quasi-inverse to $g$.
+\end{proof}
+
+This is a standard closure condition on equivalences from homotopy theory.
+Also well-known is that they are closed under retracts, in the following sense.
+
+\begin{defn}\label{defn:retract}
+A function $g:A\to B$ is said to be a \define{retract} of a function $f:X\to Y$ if there is a diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & X & A \\ B & Y & B \\};
+\draw[ar] (m-1-1) -- node[above] {$s$} (m-1-2);
+\draw[ar] (m-1-2) -- node[above] {$r$} (m-1-3);
+\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
+\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left] {$g$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$s^\prime$} (m-2-2);
+\draw[ar] (m-2-2) -- node[below] {$r^\prime$} (m-2-3);
+\end{tikzpicture}
+\end{equation*}
+for which there are
+\begin{enumerate}
+\item a homotopy $R:r\circ s \htpy \idfunc[A]$.
+\item a homotopy $R^\prime:r^\prime\circ s^\prime \htpy\idfunc[B]$.
+\item a homotopy $L:f\circ s\htpy s'\circ g$.
+\item a homotopy $K:g\circ r\htpy r'\circ f$.
+\item for every $a:A$, a path $H(a)$ witnessing the commutativity of the square
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {g(r(s(a))) & r^\prime(f(s(a))) \\ g(a) & r^\prime(s^\prime(g(a))) \\};
+\draw[patharrow] (m-1-1) -- node[left] {$g(R(a)))$} (m-2-1);
+\draw[patharrow] (m-1-1) -- node[above] {$K(s(a))$} (m-1-2);
+\draw[patharrow] (m-2-2) -- node[below] {$R^\prime(g(a))$} (m-2-1);
+\draw[patharrow] (m-1-2) -- node[right] {$r^\prime(L(a))$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+\end{enumerate}
+\end{defn}
+
+
+\begin{lem}\label{lem:func_retract_to_fiber_retract}
+If a function $g:A\to B$ is a retract of a function $f:X\to Y$, then $\hfib{g}b$ is a retract of $\hfib{f}{s^\prime(b)}$
+for every $b:B$, where $s':B\to Y$ is as in \autoref{defn:retract}.
+\end{lem}
+
+\begin{proof}
+Suppose that $g:A\to B$ is a retract of $f:X\to Y$. Then for any $b:B$ we have the functions
+\begin{align*}
+\varphi_b &:\hfiber{g}b\to\hfib{f}{s^\prime(b)}\\
+\varphi_b(a,p) & \defeq \pairr{s(a),s^\prime(p)\ct L(a)}\\
+\psi_b &:\hfib{f}{s^\prime(b)}\to\hfib{g}b\\
+\psi_b(x,q) &\defeq \pairr{r(x),R^\prime(b)\ct r^\prime(q)\ct K(x)}
+\end{align*}
+Then we have $\psi_b(\varphi_b({a,p}))\equiv\pairr{r(s(a)),R^\prime(b)\ct r^\prime(s^\prime(p)\ct L(a))\ct K(s(a))}$.
+We claim $\psi_b$ is a retraction with section $\varphi_b$ for all $b:B$, which is to say that for all $(a,p):\hfib g b$ we have $\psi_b(\varphi_b({a,p}))= \pairr{a,p}$.
+In other words, we want to show
+\begin{equation*}
+\prd{b:B}{a:A}{p:f(a)=b} \psi_b(\varphi_b({a,p}))= \pairr{a,p}.
+\end{equation*}
+By reordering the first two $\Pi$s and applying a version of \autoref{thm:omit-contr}, this is equivalent to
+\begin{equation*}
+\prd{a:A}\psi_{f(a)}(\varphi_{f(a)}({a,\refl{g(a)}}))=\pairr{a,\refl{g(a)}}
+\end{equation*}
+By assumption, we have $R(a):r(s(a))= a$. So it is left to show that there is a path
+\begin{equation*}
+\trans{R(a)}{R^\prime(g(a))\ct r^\prime(L(a))\ct K(s(a))} = \refl{g(a)}.
+\end{equation*}
+But this transportation computes as $R^\prime(g(a))\ct r^\prime(L(a))\ct K(s(a))\ct g(R(a))$, so the required path is given by $H(a)$.
+\end{proof}
+
+\begin{thm}\label{thm:retract-equiv}
+  If $g$ is a retract of an equivalence $f$, then $g$ is also an equivalence.
+\end{thm}
+\begin{proof}
+  By \autoref{lem:func_retract_to_fiber_retract}, every fiber of $g$ is a retract of a fiber of $f$.
+  Thus, by \autoref{thm:retract-contr}, if the latter are all contractible, so are the former.
+\end{proof}
+
+Finally, we show that fiberwise equivalences can be characterized in terms of equivalences of total spaces.
+To explain the terminology, recall that in homotopy theory, a type family $P:A\to\type$ corresponds to a \emph{fibration} over $A$, and we may sometimes use that name equivalently.
+Similarly, its \emph{total space} is the $\Sigma$-type $\sm{x:A} P(x)$, and the fibration itself is the projection $\proj1:\sm{x:A} P(x) \to A$.
+Given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A} (P(x)\to Q(x))$ as a \emph{fiberwise map} or a \emph{fiberwise transformation}.
 Such a map induces a function on total spaces:
 
 \begin{defn}
@@ -653,10 +743,6 @@ Using bi-invertibility as a definition of equivalences was suggested by Andr\'e 
   \end{equation*}
   for each $x:A$.
   Conclude that $\proj1$ is an equivalence if and only if each type $P(x)$ is contractible.
-\end{ex}
-
-\begin{ex}
-  Prove that equivalences satisfy the \emph{2-out-of-3 property}: given $f:A\to B$ and $g:B\to C$, if any two of $f$, $g$, and $g\circ f$ are equivalences, so is the third.
 \end{ex}
 
 \begin{ex}

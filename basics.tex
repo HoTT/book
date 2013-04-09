@@ -1304,21 +1304,23 @@ Among its important consequences is the following.
   Immediate from the two assumptions and the previous lemma.
 \end{proof}
 
-This fact also encapsulates a very useful technique of reasoning.
+The corollary also encapsulates a very useful technique of reasoning.
 Namely, suppose we know that $\brck A$, and we want to use this to construct an element of some other type $B$.
-We would like to use an element of $A$ in our construction of an element of $B$, but this is not allowable if $B$ is not a mere proposition, since we cannot apply the induction principle for the propositional truncation $\brck A$; the most we could hope to do is to show $\brck B$.
-
-A similar problem arises in set-theoretic mathematics, although it manifests slightly differently, because a proof in set theory is not intrinsically a \emph{construction} of something, the way a proof in type theory is.
-However, if we are trying to show that some function $f:C\to B$ exists, and from an element $c$ of $C$ we are able to prove $\brck {A(c)}$ (that is, in set-theoretic language, that $A(c)$ is nonempty), then we cannot in general use a particular element of $A(c)$ in defining $f(c)$.
-
-Often this problem can be avoided in set theory by assuming the axiom of choice, allowing us to simply pick an element of $A(c)$ for each $c$.
-In homotopy type theory, however, quite apart from any desire to avoid choice, the available forms of choice are simply less applicable to this problem, since they require that the domain of choice, at least, be a \emph{set}.
-Thus, if $C$ is not a set (such as perhaps a universe $\UU$), there is no consistent form of AC that will allow us to simply pick an element of $A(c)$ for each $c$ to use in defining $f(c)$.
-
-Instead, what we can do is to extend $B$ with additional data which characterizes the object we wish to construct \emph{uniquely}.
+We would like to use an element of $A$ in our construction of an element of $B$, but this is allowed only if $B$ is a mere proposition, so that we can apply the induction principle for the propositional truncation $\brck A$; the most we could hope to do in general is to show $\brck B$.
+%
+Instead, we can extend $B$ with additional data which characterizes \emph{uniquely} the object we wish to construct.
 Specifically, we define a predicate $Q:B\to\type$ such that $\sm{x:B} Q(x)$ is a mere proposition.
-Then if from an element of $A$ we can construct an element $b:B$ such that $Q(b)$, then from $\brck A$ we can construct $\brck{\sm{x:B} Q(x)}$, and hence also $\sm{x:B} Q(x)$, and hence also an element of $B$.
-Here is an example.
+Then from an element of $A$ we construct an element $b:B$ such that $Q(b)$, hence from $\brck A$ we can construct $\brck{\sm{x:B} Q(x)}$, and because $\brck{\sm{x:B} Q(x)}$ is equivalent to $\sm{x:B} Q(x)$ an element of $B$ may be projected from it.
+We provide an example below.
+
+A similar issue arises in set-theoretic mathematics, although it manifests slightly
+differently. If we are trying to define a function $f: A \to B$, and depending on an
+element $a : A$ we are able to prove mere existence of some $b : B$, we are not done yet
+because we need to actually pinpoint an element of~$B$, not just prove its existence.
+One option is of course to refine the argument to unique existence of $b : B$, like we did in type theory. But in set theory the problem can often be avoided more simply by an application of the axiom of choice, which picks the required elements for us.
+In homotopy type theory, however, quite apart from any desire to avoid choice, the available forms of choice are simply less applicable, since they require that the domain of choice be a \emph{set}.
+Thus, if $A$ is not a set (such as perhaps a universe $\UU$), there is no consistent form of choice that will allow us to simply pick an element of $B$ for each $a : A$ to use in defining $f(a)$.
+
 
 \begin{thm}
   Suppose $P:\nat\to\type$ is such that each $P(n)$ is a mere proposition, and that $\prd{n:\nat} (P(n) + \neg P(n))$ (such a predicate is called \emph{decidable}).
@@ -1328,14 +1330,12 @@ Here is an example.
 \begin{proof}[Sketch of proof]
   The hypotheses imply that
   \[ \Big(\sm{n:\nat}P(n)\Big) \;\to\; \sm{n:\nat}\Big(P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)\Big). \]
-  In other words, if we have an $n$ such that $P(n)$, we can find the least such $n$: we algorithmically test every $m<n$, using decidability to do a case analysis, until we find some $m$ such that $P(m)$.
-  However, the right-hand side can be shown to be a mere proposition: there can be at most one least $n$ with $P(n)$.
+  In words, given $n$ such that $P(n)$, we can find the least such $n$: we test every $m<n$ in turn, using decidability to do a case analysis, until we find the first one that satisfies $P(m)$.
+  However, the right-hand side of the above implication is a mere proposition: if both $n$ and $n'$ are least numbers satisfying~$P$ then they must be equal.
   Therefore, we also have
   \[ \Brck{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Big(P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)\Big) \]
   from which the claim follows.
 \end{proof}
-
-We will see more examples of this in later chapters.
 
 \subsection{When are propositions truncated?}
 \label{subsec:when-trunc}
@@ -1417,6 +1417,7 @@ Another equivalent definition of contractibility, which is also sometimes conven
 
 \begin{defn}\label{defn:contractible}
   A type $A$ is \textbf{contractible}, or a \textbf{singleton}, if there is $a:A$, called the \textbf{center of contraction}, such that $a=x$ for all $x:A$.
+  We denote the specified path $a=x$ by $\contr_x$.
 \end{defn}
 
 In other words, the type $\iscontr(A)$ is defined to be
@@ -1481,9 +1482,25 @@ For instance, we have:
 (In fact, the statement of \autoref{thm:contr-forall} is equivalent to the function extensionality axiom.
 See Appendix~[?].)
 
+Of course, if $A$ is equivalent to $B$ and $A$ is contractible, then so is $B$.
+More generally, it suffices for $B$ to be a \emph{retract} of $A$.
+By definition, a \define{retraction} is a function $r : A \to B$ such that there exists a function $s : B \to A$, called its \define{section}, and a homotopy $\epsilon:\prd{y:Y} (r(s(y))=y)$; then we say that $B$ is a \define{retract} of $A$.
+
+\begin{lem}\label{thm:retract-contr}
+  If $B$ is a retract of $A$, and $A$ is contractible, then so is $B$.
+\end{lem}
+\begin{proof}
+  Let $a_0 : A$ be the center of contraction.
+  We claim that $b_0 \defeq p(a_0) : B$ is a center of contraction for $B$.
+  Let $b : B$; we need a path $b = b_0$.
+  But we have $\epsilon_b : p(s(b)) = b$ and $\contr_{s(b)} : s(b) = a_0$, so by composition
+  \[ \opp{\epsilon_b} \ct \ap{p}{\contr_{s(b)}} : b = p(a_0) \jdeq b_0 . \qedhere\]
+\end{proof}
+
 Contractible types may not seem very interesting, since they are all equivalent to \unit.
 One reason the notion is useful is that sometimes a collection of individually nontrivial data will collectively form a contractible type.
-An important example is the space of paths with one free endpoint; this fact essentially encapsulates the Paulin-Mohring induction principle for paths.
+An important example is the space of paths with one free endpoint.
+As we will see in \autoref{sec:identity-systems}, this fact essentially encapsulates the Paulin-Mohring induction principle for paths.
 
 \begin{lem}\label{thm:contr-paths}
   For any $A$ and any $a:A$, the type $\sm{x:A} (a=x)$ is contractible.

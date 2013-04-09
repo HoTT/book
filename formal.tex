@@ -456,25 +456,33 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 
 \let\syn\mathsf
 
-\textbf{TODO:} 
-\begin{enumerate}
-\item two ways of handling univalence
-\item explain the diff wrt MLTT (new axioms, choice of presentation)
-\item explain pattern matching vs eliminators
-\item give an example derivation
-\end{enumerate}
+A remark for experts---the following comprises a fairly standard presentation of
+intensional Martin-L\"{o}f type theory, with some additional features needed in
+homotopy type theory. Compared to a reference presentation of
+\cite{hofmann:syntax-and-semantics}, the type theory of this book has a few
+non-critical differences:
+\begin{itemize}
+\item universes \`{a} la Russell, in the sense of
+\cite{martin-lof:bibliopolis};
+\item judgmental $\eta$ and function extensionality for $\Pi$ types;
+\end{itemize}
+and a few features essential for homotopy type theory:
+\begin{itemize}
+\item the univalence axiom;
+\item higher inductive types.
+\end{itemize}
 
-%Alternatively, we may regard $B$ as an {\em abstraction}, which signifies that
-%a variable, $x$, say, is bound within $B$ and can be renamed without changing
-%the identity of $B$.  In that case, we'll let $B[a]$ denote the result of
-%substituting $a$ for the (outermost) variable bound in $B$ and removing the
-%abstraction that recorded its presence and its name.  
+As a matter of convenience, the book primarily defines functions by induction
+using definition by \emph{pattern matching}. It is possible to formalize the
+notion of pattern matching, as done in \autoref{syntax-informally}. However, the
+standard type-theoretic presentation is to introduce a single \emph{dependent
+eliminator} for each type former, from which functions out of that type must be
+defined.\footnote{This approach is easier to formalize both syntactically and
+semantically, as it amounts to the universal property of the type former.}
+The two approaches are equivalent; see \autoref{sec:pattern-matching} for a
+longer discussion.
 
-%Our presentation of the structural rules is based largely on
-%\cite{hofmann:syntax-and-semantics}, which also includes a full construction of
-%the syntax.  
-%Our selection of logical rules, and in particular our treatment of
-%the universe, follows \cite{martin-lof:bibliopolis}.
+\subsection{Judgments}
 
 Type theory has three basic judgments:
 \begin{mathpar}
@@ -493,8 +501,18 @@ conclusion is the judgment in question, and none of whose component rules has
 unresolved hypotheses. (In other words, all the leaves of the tree must be
 rules with no hypotheses, such as $\Vble$ and $\UU$-\intro.)
 
-%TODO
-%TODO we give some examples of inductive types
+For example, the following is a derivation of $\oftp{\emptyctx}{\lam{x:\unit}
+x}{\unit\to\unit}$.
+\begin{mathpar}
+\inferrule*[right=$\Pi$-\intro]
+  {\inferrule*[right=$\unit$-\form]
+    {\ }
+    {\oftp{\tmtp x\unit}{\unit}{\UU_1}} \\
+   \inferrule*[right=$\Vble$]
+    {\ }
+    {\oftp{\tmtp x\unit}{x}{\unit}}}
+  {\oftp{\emptyctx}{\lam{x:\unit} x}{\unit\to\unit}}
+\end{mathpar}
 
 \subsection{Contexts}
 
@@ -639,7 +657,7 @@ other type formers.
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Sigma$-\form]
-  {\oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
+  {\oftp{\Gm,\tmtp xA}{B}{\UU_i}}
   {\oftp\Gm{\tsm{x:A} B}{\UU_i}}
 \and
   \inferrule*[right=$\Sigma$-\intro]
@@ -703,30 +721,6 @@ This presentation corresponds to the Martin-L\"{o}f rule in
 In $\ind{\idsym_A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
 $c$.
 
-%\subsection{$\wtypesym$-types}
-%
-%\begin{mathparpagebreakable}
-%  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \vdash B(x)\UU_i}{\oftp\Gm \wtypesym_{x \oftype A} B(x)\UU_i}
-%\and
-%  \inferrule*[right=$\wtypesym$-\intro]{\Gamma,\ x \oftype A \vdash
-%  B(x)\UU_i}{\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A}
-%  B(u)] \vdash \synsup(x, y) : \wtypesym_{u \oftype A} B(u)}
-%\\
-%  \mathclap{\inferrule*[right=$\wtypesym$-\elim]
-%    {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \vdash C(w) \UU_i \\
-%     \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{1.55cm} \\
-%     \hspace{6cm} \vdash d(x, y, z) : C(\synsup(x, y))}
-%  {\Gamma,\ w \oftype \wtypesym_{x \oftype A} B(x) \vdash \textsf{wrec}_{d} (w) : C(w)}}
-%\\
-%  \mathclap{\inferrule*[right=$\wtypesym$-\comp]
-%  {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \vdash C(w) \UU_i \\
-%   \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{2cm} \\
-%    \hspace{6.45cm} \vdash d(x, y, z) : C(\synsup(x, y))}
-%  {\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)]
-%  \vdash \textsf{wrec}_{d} (\synsup(x, y)) \hspace{2.8cm} \\
-%    \hspace{2.4cm} = d(x, y, \lambda u \oftype B(x). \mathsf{wrec}_d(\mathsf{app}(y, u))): C(\synsup(x, y))}}
-%\end{mathparpagebreakable}
-
 \subsection{The empty type $\emptyt$}
 
 \begin{mathparpagebreakable}
@@ -770,10 +764,6 @@ In $\ind{\emptyt}$, $x$ is bound in $C$.
 
 In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
 
-\subsection{Natural numbers}
-
-\textbf{TODO}
-
 \subsection{Coproduct types}
 
 \begin{mathparpagebreakable}
@@ -814,19 +804,127 @@ In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
 In $\ind{A+B}$, $x$ is bound in $C$, $a$ is bound in $c$, and $b$ is bound in
 $d$.
 
-\subsection{Further rules} \label{subsec:optional-rules}
+\subsection{The natural number type}
 
-In this section we present the \emph{$\eta$-rule} for $\Pi$-types
-%and the \emph{functional extensionality} rule(s). Our formulation of the latter
-%is taken from \cite{garner:depprod}; see also \cite{hofmann:thesis}.
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\N$-\form]
+  {\ }
+  {\oftp\Gm{\N}{\UU_i}}
+\and
+  \inferrule*[right=$\N$-\intro${}_1$]
+  {\ }
+  {\oftp\Gm{0}{\N}}
+\and
+  \inferrule*[right=$\N$-\intro${}_2$]
+  {\oftp\Gm{n}{\N}}
+  {\oftp\Gm{\suc(n)}{\N}}
+\and
+  \inferrule*[right=$\N$-\elim]
+  {\oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
+   \oftp\Gm{c_0}{C[0/x]} \\
+   \oftp{\Gm,\tmtp y\N,\tmtp{z}{C[y/x]}}{c_s}{C[\suc(y)/x]} \\
+   \oftp\Gm{n}{\N}}
+  {\oftp\Gm{\ind{\N}(x.C,c_0,y.z.c_s,n)}{C[n/x]}}
+\and
+  \inferrule*[right=$\N$-\comp${}_1$]
+  {\oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
+   \oftp\Gm{c_0}{C[0/x]} \\
+   \oftp{\Gm,\tmtp y\N,\tmtp{z}{C[y/x]}}{c_s}{C[\suc(y)/x]}}
+  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,y.z.c_s,0)}{c_0}{C[0/x]}}
+\and
+{\small
+  \inferrule*[right=$\N$-\comp${}_2$]
+  {\oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
+   \oftp\Gm{c_0}{C[0/x]} \\
+   \oftp{\Gm,\tmtp y\N,\tmtp{z}{C[y/x]}}{c_s}{C[\suc(y)/x]} \\
+   \oftp\Gm{n}{\N}}
+  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,y.z.c_s,\suc(n))}
+   {c_s[n,\ind{\N}(x.C,c_0,y.z.c_s,n)/y,z]}{C[\suc(n)/x]}}}
+\end{mathparpagebreakable}
+
+In $\ind{\N}$, $x$ is bound in $C$, and $y$ and $z$ are bound in $c_s$.
+
+\subsection{The circle type}
+
+Here we give an example of a higher inductive type. Note that these rules do not
+precisely follow the pattern of the ordinary inductive types above: the rules
+refer to the notions of transport and functoriality of maps
+(\autoref{sec:functors}), and the second computation rule is a propositional,
+not judgmental, equality. These differences are discussed in
+\autoref{sec:dependent-paths}.
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\Sn^1$-\form]
+  {\ }
+  {\oftp\Gm{\Sn^1}{\UU_i}}
+\and
+  \inferrule*[right=$\Sn^1$-\intro${}_1$]
+  {\ }
+  {\oftp\Gm{\base}{\Sn^1}}
+\and
+  \inferrule*[right=$\Sn^1$-\intro${}_2$]
+  {\ }
+  {\oftp\Gm{\lloop}{\id[\Sn^1]{\base}{\base}}}
+\and
+  \inferrule*[right=$\Sn^1$-\elim]
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
+   \oftp{\Gm}{b}{C[\base/x]} \\
+   \oftp{\Gm}{\ell}{\id[\Sn^1]{\transfib{C}{\lloop}{b}}{b}} \\
+   \oftp\Gm{p}{\Sn^1}}
+  {\oftp\Gm{\ind{\Sn^1}(x.C,b,\ell,p)}{C[p/x]}}
+\and
+  \inferrule*[right=$\Sn^1$-\comp${}_1$]
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
+   \oftp{\Gm}{b}{C[\base/x]} \\
+   \oftp{\Gm}{\ell}{\id[\Sn^1]{\transfib{C}{\lloop}{b}}{b}}}
+  {\jdeqtp\Gm{\ind{\Sn^1}(x.C,b,\ell,\base)}{b}{C[\base/x]}}
+\and
+  \inferrule*[right=$\Sn^1$-\comp${}_2$]
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
+   \oftp{\Gm}{b}{C[\base/x]} \\
+   \oftp{\Gm}{\ell}{\id[\Sn^1]{\transfib{C}{\lloop}{b}}{b}}}
+  {\oftp\Gm{\Sn^1\text{-}\mathsf{loopcomp}}
+    {\apd{(\lam{y:\Sn^1} \ind{\Sn^1}(x.C,b,\ell,y))}{\lloop} = \ell}}
+\end{mathparpagebreakable}
+
+In $\ind{\Sn^1}$, $x$ is bound in $C$.
+
+\subsection{Further rules}
+
+We assume stronger rules about $\Pi$ types than fit cleanly into the pattern
+above. In the extensionality rule below, $\isequiv$ is any of the equivalent
+notions defined in \autoref{cha:equivalences}, and $\happly$ is the function
+defined in \autoref{sec:compute-pi}.
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-$\eta$]
   {\oftp\Gm{f}{\tprd{x:A} B}}
   {\jdeqtp\Gm{f}{(\lam{x:A}f(x))}{\tprd{x:A} B}}
+\and
+  \inferrule*[right=$\Pi$-\textsc{ext}]
+  {\oftp\Gm{f}{\tprd{x:A} B} \\
+   \oftp\Gm{g}{\tprd{x:A} B}}
+  {\oftp\Gm{\happly\text{-}\isequiv}{\isequiv(\happly_{f,g})}}
 \end{mathparpagebreakable}
 
-\textbf{TODO:} function extensionality rules
+There are two basic ways of treating the univalence axiom, or any other axiom
+which does not introduce new syntax or new judgmental equalities---we could
+either add a primitive constant to the theory which inhabits the axiom, or we
+could simply prove all theorems in a context hypothesizing a variable which
+inhabits the axiom. While these are essentially equivalent, we choose the former
+approach because we consider the univalence axiom a core part of homotopy type
+theory. 
+
+In the axiom below, $\idtoeqv$ is the function defined in
+\autoref{sec:compute-universe}, and $\isequiv$ is again any suitable notion
+from \autoref{cha:equivalences}.
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\UU$-\textsc{univ}]
+  {\oftp\Gm{A}{\UU_i} \\
+   \oftp\Gm{B}{\UU_i}}
+  {\oftp\Gm{\idtoeqv\text{-}\isequiv}{\isequiv(\idtoeqv_{A,B})}}
+\end{mathparpagebreakable}
 
 \egroup
 

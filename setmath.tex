@@ -936,7 +936,7 @@ But a section of this is exactly an inhabitant of $A+\neg A$, so we have $\brck{
 \section{The cumulative hierarchy}
 \label{sec:cumulative-hierarchy}
 
-We can define a cumulative hierarchy of sets in a given universe $\UU$ as a higher inductive type, in such a way that the result is again a set (in a larger universe $\UU'$), equipped with a binary ``membership" relation $x\in y$ which satisfies the usual laws of set theory.
+We can define a cumulative hierarchy of all sets in a given universe $\UU$ as a higher inductive type, in such a way that the result is again a set (in a larger universe $\UU'$), equipped with a binary ``membership" relation $x\in y$ which satisfies the usual laws of set theory.
 
 \begin{defn}
   The \emph{cumulative hierachy $V$} relative to a type universe $\UU$ is the
@@ -969,7 +969,7 @@ The induction principle for $V$ says that given $P:V\to \set$, in order to const
 The second clause may seem tautologous, but is not.
 The point is that in the first clause, ``$h(f(a))$'' is essentially a formal symbol which we cannot peek inside of, which $h(\vset(A,f))$ must be defined in terms of. Thus, in the second clause, we assume equality of these formal symbols when appropriate, and verify that the elements resulting from the construction of the first clause are also equal.
 
-Observe that every $v:V$ is of the form $v=\vset(A,f)$ for some $A:\UU$ and $f:A\to\UU$, and so we can define the \emph{membership relation} $x\in y$ on $V$ by setting:
+Observe that, by induction, every $v:V$ is of the form $v=\vset(A,f)$ for some $A:\UU$ and $f:A\to V$, and so we can define the \emph{membership relation} $x\in v$ on $V$ by setting:
 %
 \begin{equation*}
   (x \in \vset(A,f)) \defeq \exis{a : A} x = f(a).
@@ -995,6 +995,11 @@ A \emph{class} may be taken to be a mere predicate on~$V$. We can say that a cla
   \fall{x : V} C(x) \Leftrightarrow x \in v.
 \end{equation*}
 
+We may also use the conventional notation for classes:
+\[
+\setof{ x | C(x) } \defeq \lam{x}C(x)
+\]
+
 %Writing $\setof{ x : V | x \in v }$ for the \emph{$0$-type of elements} of any $v \in V$, and invoking univalence for mere propositions, we therefore have that a class $C : V \to \prop$ is a $V$-set just in case $$\exis{v \in V} C = \setof{ x : V | x \in v },$$ as expected.
 
 \begin{thm}
@@ -1009,21 +1014,22 @@ A \emph{class} may be taken to be a mere predicate on~$V$. We can say that a cla
     %
      \item \emph{empty set:} for all $x:V$, we have $\neg (x\in \varnothing)$.
     %
-    \item \emph{pairing:} for all $u, v:V$, the class $x = u \vee x = v$ is a $V$-set.
+    \item \emph{pairing:} for all $u, v:V$, the class $\setof{ x | x = u \vee x = v}$ is a $V$-set.
       %
     \item \emph{infinity:} there is a $v:V$ with $\varnothing\in v$ and $x\in v$ implies $x\cup \{x\}\in v$.
     %
-  \item \emph{union:} for all $v:V$, the class $\exis{u} x \in u \in v$ is a $V$-set.
+  \item \emph{union:} for all $v:V$, the class $\setof{ x | \exis{u:V} x \in u \in v}$ is a $V$-set.
     %
-    \item \emph{function set:} for all $u, v:V$, the class $x : u\to v$ is a $V$-set.
+    \item \emph{function set:} for all $u, v:V$, the class $\setof{ x | x : u\to v}$ is a $V$-set.
     %
    \item \emph{$\in$-induction:} if $C : V \to \prop$ is a class such that $C(a)$ holds whenever $C(x)$ for all $x\in a$, then $C(v)$ for all $v:V$.
    %
-     \item \emph{replacement:} given any $r : V \to V$ and $a : V$, the class 
-  $$C(x) \defeq \exis{y : V} y \in a \land x = r(y)$$ 
-  is a $V$-set. 
+     \item \emph{replacement:} given any $r : V \to V$ and $a : V$, the following class  is a $V$-set. 
+  $$\setof{ x | \exis{y : V} y \in a \land x = r(y)}$$ 
+
   %
-   \item \emph{separation:} given any \emph{small} $C : V \to \prop$ and $a : V$, the class $x \in a \land C(x)$ is a $V$-set. 
+   \item \emph{separation:} given any ``$\UU$-small" $C : V \to \prop$ and $a : V$, the following class is a $V$-set.
+   $$\setof{ x | x \in a \land C(x)}$$
   \end{enumerate}
 \end{thm}
 
@@ -1036,6 +1042,18 @@ A \emph{class} may be taken to be a mere predicate on~$V$. We can say that a cla
     for every $a : A$, therefore for every $a : A$ there merely exists $b : B$ such that
     $f(a) = g(b)$. The assumption $\vset(B, g) \subseteq \vset(A, f)$ gives the other half
     of~\eqref{eq:V-path}, therefore $\vset(A,f) = \vset(B,g)$.
+    
+  \item Empty set: suppose $x\in \varnothing = \vset(\emptyt,!)$.  Then $\exis{a:0}x=\, !a$, which is absurd.
+  
+  \item Pairing: given $u = \vset(A,f)$ and $v=\vset(B,g)$, let $w=\vset(A+B,[f,g])$.
+
+  \item Infinity: take $w = \vset(\nat,I)$, where $I: \nat \to V$ is given by the recursion $I(0) = \varnothing$ and $I(n+1) = I(n)\cup \{I(n)\}$.
+ 
+  \item Union: 
+  
+  \item Function set:
+   
+  \item $\in$-induction: let $C : V \to \prop$ be a class such that $C(a)$ holds whenever $C(x)$ for all $x\in a$, and take any $v=\vset(B,g)$.  To show that $C(v)$ by induction, assume that $C(gb)$ for all $b:B$.  For every $x\in v$ there merely exists some $b:B$ with $x = gb$, and so $C(x)$.  Thus $C(v)$.
 
   \item Replacement: the statement ``$C$ is a $V$-set'' is a mere proposition, so we may
     proceed by induction as follows. Supposing $x$ is $\vset(A, f)$, we claim that $w
@@ -1043,39 +1061,36 @@ A \emph{class} may be taken to be a mere predicate on~$V$. We can say that a cla
     $z : V$ and $a : A$ such that $z = f(a)$ and $y = r(z)$, therefore $y \in w$.
     Conversely, if $y \in w$ then there merely exists $a : A$ such that $y = r(f(a))$, so
     if we take $z \defeq f(a)$ we see that $C(y)$ holds.
-  \end{enumerate}
+
+\item Separation requires a definition.  Recall that $V$ lives in the same universe $\UU'$ as the base universe $\UU$ from which it is built. 
+%Thus, a priori, the same is true for the identity types $v=_V w$ for any $v,w:V$.  
+A class $C: V\to \prop$ will be called \define{$\UU$-small} if all of its values $C(x)$ lie in $\UU$. Let us say that a class $C$ is \define{separable} if for any $a:V$ the class $\setof{x | x\in a \wedge C(x)}$ is a $V$-set.
+
+We now claim that if the class $C: V \to \prop$ is $\UU$-small, then it is separable.
+Indeed, given $a=\vset(A,f)$, let $A' = \exis{x:A}C(fx)$, and take $f' = f\circ i$, where $i : A' \to A$ is the obvious inclusion.  Then we can take $a' = \vset(A',f')$ and we have $x\in a\wedge C(x) \Leftrightarrow x\in a'$ as claimed.  We needed the assumption that $C$ lands in $\UU$ in order for $A' = \exis{x:A}C(fx)$ to be in $\UU$.
+\end{enumerate}
 \end{proof}
 
-The rule of separation requires some preliminaries.  Recall that $V$ lives in the same universe $\UU'$ as the base universe $\UU$ from which it is built. Thus, a priori, the same is true for the identity types $v=_V w$ for any $v,w:V$.  A class $C: V\to \prop$ will be called \emph{separable} if for any $a:V$ the class $x\in a \wedge C(x)$ is a $V$-set.  Let us say that a class $C$ is ($\UU$-)\emph{small} if all of its values $C(x)$ lie in $\UU$.
-
-\begin{lem}\label{lem:sep}
-If the class $C: V \to \prop$ is small, then it is separable:  $x\in a \wedge C(x)$ is a $V$-set for any $a:V$.
-\end{lem}
-
-\begin{proof}
-Given $a=\vset(A,f)$, let $A' = \exis{x:A}C(fx)$, and take $f' = f\circ i$, where $i : A' \to A$ is the obvious inclusion.  Then we can take $a' = \vset(A',f')$ and we have $x\in a\wedge C(x) \Leftrightarrow x\in a'$.  We need the assumption that $C$ lands in $\UU$ in order for $A' = \exis{x:A}C(fx)$ to be in $\UU$.
-\end{proof}
-
-It is also convenient to have a strictly syntactic criterion of separability, so that one can read off from the form of a class that it produces a $V$-set.  One such familiar condition is being ``$\Delta_0$", which means that it is built up from equality $x=_V y$ and membership $x\in y$, using only propositional logical operations $\neg, \land, \lor, \Rightarrow$ and ((-1)-truncated) quantifiers over sets, i.e.\ of the form $\exists(x\in a)$ and $\forall(y\in b)$.  
+It is also convenient to have a strictly syntactic criterion of separability, so that one can read off from the expression for a class that it produces a $V$-set.  One such familiar condition is being ``$\Delta_0$", which means that it is built up from equality $x=_V y$ and membership $x\in y$, using only propositional logical operations $\neg, \land, \lor, \Rightarrow$ and ((-1)-truncated) quantifiers over sets, i.e.\ of the form $\exists(x\in a)$ and $\forall(y\in b)$.  
 
 \begin{lem}\label{lem:Delta0sep}
 If the class $C: V \to \prop$ is $\Delta_0$ in the above sense, then it is separable.
 \end{lem}
 
 \begin{proof}
-We need to do something to make $x=_V y$ small.
+We need to make $x=_V y$ and $x\in y$ be $\UU$-small ...
 \end{proof}
 
-We have shown that in type theory with a universe $\UU$, the cumulative hierarchy $V$ is a model of a ``constructive set theory" with many of the standard axioms, but without the usual \emph{strong collection} or \emph{subset collection} axioms of the set theory CZF.  We do not expect these to hold, since they are related to the interaction between the type-theoretic axiom of choice and the (setoid-like) definition of equality in the usual interpretation of CZF into type theory.  Indeed, our model $(V,\in)$ based on a cumulative hierarchy $V$ is a higher inductive type inside the system, rather than an external construction, and so it is not surprising that it differs from prior interpretations.
+We have shown that in type theory with a universe $\UU$, the cumulative hierarchy $V$ is a model of a ``constructive set theory" with many of the standard axioms, but without the usual \emph{strong collection} or \emph{subset collection} axioms of the set theory CZF.  We do not expect these to hold, since they are related to the interaction between the type-theoretic axiom of choice $\mathsf{AC}_\infty$ and the (setoid-like) definition of equality in the usual interpretation of CZF into type theory.  Indeed, our model $(V,\in)$ based on a cumulative hierarchy $V$ is a higher inductive type inside the system, rather than an external construction, and so it is not surprising that it differs from prior interpretations.
 
 Finally, consider the result of adding the axiom of choice for sets to our type theory, in the form  $\mathsf{AC}$ from \autoref{subsec:emacinsets} above.  This has the consequence that $\mathsf{LEM}$ then also holds, by \autoref{thm:1surj_to_surj_to_pem}, and so $\set$ is a topos with subobject classifier $\bool$, by \autoref{thm:settopos}.  In this case, we have $\prop = \bool:\UU$, and so \emph{all classes are separable}.
 
 \begin{lem}\label{lem:fullsep}
-In type theory with $\mathsf{AC}$ (for $\set$), the law of \emph{(full) separation} holds: given \emph{any} class $C : V \to \prop$ and $a : V$, the class $x \in a \land C(x)$ is a $V$-set. .
+In type theory with $\mathsf{AC}$, the law of \emph{(full) separation} holds: given \emph{any} class $C : V \to \prop$ and $a : V$, the class $\setof{x | x \in a \land C(x)}$ is a $V$-set. .
 \end{lem}
 
 \begin{thm}\label{thm:zfc}
-In type theory with $\mathsf{AC}$ (for $\set$) and a universe $\UU$, the cumulative hierarchy $V$ is a model of Zermelo-Frankel set theory with choice, ZFC.
+In type theory with $\mathsf{AC}$ and a universe $\UU$, the cumulative hierarchy $V$ is a model of Zermelo-Frankel set theory with choice, ZFC.
 \end{thm}
 
 \begin{proof}

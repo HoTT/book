@@ -1619,19 +1619,23 @@ differences and similarities between classical and constructive analysis we shal
 discuss just one topic---compactness of the closed interval $[0,1]$ and several theorems
 surrounding the concept.
 
-It is a common phenomenon in constructive mathematics that several notions which are
-classically equivalent need not be so constructively. Compactness is no exception to this
-rule. The three most frequently used notions of compactness of the closed interval are:
+Compactness is no exception to the common phenomenon in constructive mathematics that
+classically equivalent notions bifurcate. The three most frequently used notions of
+compactness are:
 %
 \begin{enumerate}
-\item $[0,1]$ is Cauchy complete and totally bounded,
-\item $[0,1]$ has the Bolzano-Wierstraß property ``every sequence has a convergent subsequence''.
-\item $[0,1]$ has the Heine-Borel finite property ``every open cover has a finite subcover'',
+\item Cauchy complete and totally bounded,
+\item the Bolzano-Weirstraß property ``every sequence has a convergent subsequence''.
+\item the Heine-Borel finite property ``every open cover has a finite subcover'',
 \end{enumerate}
 %
-The first one holds constructively.
+Let us see how they fare in homotopy type theory.
 
-\begin{thm}
+\begin{defn} \label{defn:ctb-metric-space}
+  \textbf{TODO}
+\end{defn}
+
+\begin{thm} \label{analysis-interval-ctb}
   The closed interval is Cauchy complete and totally bounded.
 \end{thm}
 
@@ -1639,12 +1643,51 @@ The first one holds constructively.
   \textbf{TODO}.
 \end{proof}
 
-The Bolzano-Wierstraß property 
+The \textbf{Limited Principle of Omniscience (LPO)} states for every $\alpha : \N
+\to \bool$,
+% 
+\begin{equation} \label{eq:lpo}
+  (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
+\end{equation}
+%
+It is an instance of excluded middle which cannot be proved without additional axioms.
+Often we can show that a statement in analysis is essentially classical because it implies
+LPO, for example as follows.
+  
+\begin{thm} \label{analysis-bw-lpo}
+  %
+  The Bolzano-Weirstraß property implies the Limited Principle of Omniscience.
+\end{thm}
 
+\begin{proof}
+  Define the sequence $x : \N \to [0,1]$ by
+  %
+  \begin{equation*}
+    x_n \defeq
+    \begin{cases}
+      0 & \text{if $\alpha(k) = \bfalse$ for all $k < n$,}\\
+      1 & \text{if $\alpha(k) = \btrue$ for some $k < n$}.
+    \end{cases}
+  \end{equation*}
+  %
+  If the Bolzano-Weirstraß property holds, there exists a strictly increasing $f : \N \to
+  \N$ such that $n \mapsto x_{f(n)}$ is a Cauchy sequence. For a sufficiently large $n :
+  \N$ the $n$-th term $x_{f(n)}$ is within $1/3$ of its limit. Either $x_{f(n)} < 2/3$ or
+  $x_{f(n)} > 1/3$. If $x_{f(n)} < 2/3$ then~$x_n$ converges to $0$ and so $\prd{n : \N}
+  \alpha(n) = \balse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
+  \alpha(n) = \btrue$.
+\end{proof}
 
-\textbf{TODO: supremum of a uniformly continuos map on $[0,1]$.}
+With completeness and total boundedness in hand we can prove some standard theorems in
+analysis.
 
-\textbf{TODO: mean value theorem}
+\begin{thm} \label{analysis-supremum}
+  
+\end{thm}
+
+\begin{thm} \label{analysis-mean-value}
+  
+\end{thm}
 
 
 \section{The Surreal Numbers}
@@ -2274,13 +2317,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
     Assuming excluded middle, construct a non-constant map $\RD \to \Z$.
   \item 
     Suppose $f : \RD \to \Z$ is a map such that $f(0) = 0$ and $f(x) \neq 0$ for all $x >
-    0$. Derive from this the following limited form of excluded middle, known as the
-    \emph{Limited Principle of Omniscience (LPO)}: for every $\alpha : \N \to \bool$,
-  % 
-    \begin{equation*}
-      (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
-    \end{equation*}
-  % 
+    0$. Derive from this the Limited Principle of Omniscience~\eqref{eq:lpo}.
   \end{enumerate}
 \end{ex}
 

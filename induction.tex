@@ -84,8 +84,8 @@ For instance, the induction principle for \bool is:
 
 Furthermore, the resulting proof $\ind\two(E,e_t,e_f): \prd{b : \two}E(b)$ behaves as expected when applied to the constructors $\true$ and $\false$; this principle is expressed by the \emph{computation rules}:
 \begin{itemize}
-\item We have $\rec\two(E,e_t,e_f,\true) \jdeq e_t$.
-\item We have $\rec\two(E,e_t,e_f,\false) \jdeq e_f$.
+\item We have $\ind\two(E,e_t,e_f,\true) \jdeq e_t$.
+\item We have $\ind\two(E,e_t,e_f,\false) \jdeq e_f$.
 \end{itemize}
 
 Thus, the induction principle for the type $\two$ of Booleans allow us to reason by \emph{case analysis}.
@@ -107,18 +107,22 @@ This gives us the following induction principle:
 \item When proving a statement $E : \nat \to \type$ about \emph{all} natural numbers, it suffices to prove it for $\z$ and for $\s(n)$, assuming it holds
 for $n$. This entails giving the proofs $e_z : E(\z)$ and $e_s : \prd{n : \nat}{y : E(n)} E(\s(n))$.
 \end{itemize}
-The variable $y$ represents our inductive hypothesis. Like for Booleans, we also have the associated computation rules for the function $\rec\nat(E,e_z,e_s) : \prd{x:\nat} E(x)$:
+The variable $y$ represents our inductive hypothesis.  As for Booleans, we also have the associated computation rules for the function $\ind\nat(E,e_z,e_s) : \prd{x:\nat} E(x)$:
 \begin{itemize}
-\item We have $\rec\nat(E,e_z,e_s,\z) \jdeq e_z$.
-\item For any $n : \nat$, we have $\rec\nat(E,e_z,e_s,\s(n)) \jdeq e_s(n,\rec\nat(E,e_z,e_s,n))$.
+\item We have $\ind\nat(E,e_z,e_s,\z) \jdeq e_z$.
+\item For any $n : \nat$, we have $\ind\nat(E,e_z,e_s,\s(n)) \jdeq e_s(n,\rec\nat(E,e_z,e_s,n))$.
 \end{itemize}
-The dependent function $\rec\nat(E,e_z,e_s)$ can thus be understood as being defined recursively on the argument $x : \nat$, via the recurrences $e_z$ and $e_s$.
+The dependent function $\ind\nat(E,e_z,e_s)$ can thus be understood as being defined recursively on the argument $x : \nat$, via the recurrences $e_z$ and $e_s$.
 When $x$ is zero, the function simply returns $e_z$.
 When $x$ is the successor of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and substituting the specific predecessor $n$ and the recursive call value $\rec\nat(E,e_z,e_s,n)$.
 
-%%%%
+The induction principles for all the examples mentioned above share this family resemblance.
+In \autoref{sec:strictly-positive} we will discuss a general notion of ``inductive definition'' and how to derive an appropriate \emph{induction principle} for it, but first we investigate various commonalities between inductive definitions.
 
-The induction principle is quite strong, and allows us to prove a variety of interesting theorems. For example, by specifying the terms $e_z$ and $e_s$, we uniquely determine how the recursor behaves on canonical terms, and thus on all natural numbers. If we now have another function which obeys the same recurrence, then our intuition suggests these two functions should be equal. It turns out this is indeed the case and we have the following \emph{uniqueness principle}:
+For instance, we have remarked in every case in \autoref{cha:typetheory} that from the induction principle we can derive a \emph{recursion principle} in which the codomain is a simple type (rather than a family).
+Both induction and recursion principles may seem odd, since they yield only the \emph{existence} of a function without seeming to characterize it uniquely.
+However, in fact the induction principle is strong enough also to prove its own \emph{uniqueness principle}.
+For example:
 
 \begin{thm}\label{thm:nat-uniq}
 Let $f,g : \prd{x:\nat} E(x)$ be two functions which satisfy the recurrences $e_z : E(\z)$ and $e_s : \prd{n : \nat}{y : E(n)} E(\s(n))$ up to propositional equality, i.e., such that
@@ -135,16 +139,20 @@ Then $f$ and $g$ are equal.
 \end{thm}
 
 \begin{proof}
-We use dependent elimination with the type $E(x) \defeq \id{f(x)}{g(x)}$. For the base case, we have \[f(\z) = e_z = g(\z)\]
+We use induction on the type family $D(x) \defeq \id{f(x)}{g(x)}$. For the base case, we have \[f(\z) = e_z = g(\z)\]
 For the inductive case, assume $n : \nat$ such that $f(n) = g(n)$. Then
 \[ f(\s(n)) = e_s(n, f(n)) = e_s(n, g(n)) = g(\s(n)) \]
 The first and last equality follow from the assumptions on $f$ and $g$. The middle equality follows from the inductive hypothesis and the fact that application preserves equality. This gives us pointwise equality between $f$ and $g$; invoking function extensionality finishes the proof.
 \end{proof}
-We note that the function $f$ is only required to satisfy the recurrences \emph{up to propositional equality}, i.e.\ a path.
-Moreover, the theorem itself only asserts a propositional equality between functions---indeed, it is possible to construct functions which satisfy the same recurrence but are not definitionally equal (see \autoref{ex:same-recurrence-not-defeq}).
-It is also possible to have a function which satisfies more than one set of recurrences (see \autoref{ex:one-function-two-recurrences}).
 
-Similar uniqueness theorems can generally be formulated and shown for other inductive types as well. In the next section, we show how to use the uniqueness property together with univalence to prove that natural numbers are completely characterized by their introduction, elimination, and computation rules.
+Note that the uniqueness principle applies even to functions that only satisfy the recurrences \emph{up to propositional equality}, i.e.\ a path.
+Of course, the particular function obtained from the induction principle satisfies these recurrences judgmentally; we will return to this point in \autoref{sec:htpy-inductive}.
+On the other hand, the theorem itself only asserts a propositional equality between functions (see also \autoref{ex:same-recurrence-not-defeq}).
+%It is also possible to have a function which satisfies more than one set of recurrences (see \autoref{ex:one-function-two-recurrences}).
+From a homotopical viewpoint it is natural to ask whether this path is \emph{coherent}, i.e.\ whether the equality $f=g$ is unique up to higher paths; in \autoref{sec:initial-alg} we will see that this is in fact the case.
+
+Of course, similar uniqueness theorems for functions can generally be formulated and shown for other inductive types as well.
+In the next section, we show how this uniqueness property, together with univalence, implies that an inductive type such as the natural numbers is completely characterized by its introduction, elimination, and computation rules.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -845,7 +853,14 @@ All of these function types can also be dependent functions ($\Pi$-types).%
 \footnote{In the language of \autoref{sec:initial-alg}, the condition of strict positivity ensures that the relevant endofunctor is polynomial.
 It is well-known in category theory that not \emph{all} endofunctors can have initial algebras; restricting to polynomial functors ensures consistency.}
 
-Now once we have such an inductive definition, what can we do with it?
+Note we require that an inductive definition is given by a \emph{finite} list of constructors.
+This is simply because we have to write it down on the page.
+If we want an inductive type which behaves as if it has an infinite number of constructors, we can simply parametrize one constructor by some infinite type.
+For instance, a constructor such as $\nat \to W \to W$ can be thought of as equivalent to countably many constructors of the form $W\to W$.
+(Of course, the infinity is now \emph{internal} to the type theory, but this is as it should be for any foundational system.)
+Similarly, if we want a constructor that takes ``infinitely many arguments'', we can allow it to take a family of arguments parametrized by some infinite type, such as $(\nat\to W) \to W$ which takes an infinite sequence of elements of $W$.
+
+Now, once we have such an inductive definition, what can we do with it?
 Firstly, there is a \emph{recursion principle} stating that in order to define a function $f:W\to P$, it suffices to consider the case when the input $w:W$ arises from one of the constructors, allowing ourselves to recursively call $f$ on the inputs to that constructor.
 For the example constructor~\eqref{eq:example-constructor}, we would require $P$ to be equipped with a function of type
 \begin{equation}\label{eq:example-rechyp}

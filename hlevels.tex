@@ -1684,26 +1684,39 @@ In fact, these two properties are equivalent to each other.
   For a reflective subuniverse \P, the following are logically equivalent.
   \begin{enumerate}
   \item If $A:\P$ and $B:A\to \P$, then $\sm{x:A} B(x)$ is in \P.\label{item:mchr1}
-  \item for every $A:\type$, type family $B:\reflect(A)\to\P$, and function $g:\prd{a:A} B(\project(a))$, there exists $f:\prd{z:\reflect(A)} B(z)$ such that $f(\project(a)) = g(a)$ for all $a:A$.\label{item:mchr2}
+  \item for every $A:\type$, type family $B:\reflect A\to\P$, and function $g:\prd{a:A} B(\project(a))$, there exists $f:\prd{z:\reflect A} B(z)$ such that $f(\project(a)) = g(a)$ for all $a:A$.\label{item:mchr2}
   \end{enumerate}
 \end{thm}
 \begin{proof}
   Suppose~\ref{item:mchr1}.
-  Then in the situation of~\ref{item:mchr2}, the type $\sm{z:\reflect(A)} B(z)$ lies in $\P$, and we have $g':A\to \sm{z:\reflect(A)} B(z)$ defined by $g'(a)\defeq (\project(a),g(a))$.
-  Thus, we have $\ext(g'):\reflect(A) \to \sm{z:\reflect(A)} B(z)$ such that $\ext(g')(\project(a)) = (\project(a),g(a))$.
+  Then in the situation of~\ref{item:mchr2}, the type $\sm{z:\reflect A} B(z)$ lies in $\P$, and we have $g':A\to \sm{z:\reflect A} B(z)$ defined by $g'(a)\defeq (\project(a),g(a))$.
+  Thus, we have $\ext(g'):\reflect A \to \sm{z:\reflect A} B(z)$ such that $\ext(g')(\project(a)) = (\project(a),g(a))$.
 
-  Now consider the functions $\proj2 \circ \ext(g') : \reflect(A) \to \reflect(A)$ and $\idfunc[\reflect(A)]$.
+  Now consider the functions $\proj2 \circ \ext(g') : \reflect A \to \reflect A$ and $\idfunc[\reflect A]$.
   By assumption, these become equal when precomposed with $\project$.
   Thus, by the universal property of $\reflect$, they are equal already, i.e.\ we have $p_z:\proj2(\ext(g')(z)) = z$ for all $z$.
-  Now we can define $f(z) \defeq \trans{p_z}(\proj2(\ext(g')(z)))$, and the second component of $\ext(g')(\project(a)) = (\project(a),g(a))$ yields $f(\project(a)) = g(a)$.
+  Now we can define $f(z) \defeq \trans{p_z}{\proj2(\ext(g')(z))}$, and the second component of $\ext(g')(\project(a)) = (\project(a),g(a))$ yields $f(\project(a)) = g(a)$.
 
   Conversely, suppose~\ref{item:mchr2}, and that $A:\P$ and $B:A\to\P$.
-  (TODO\dots)
+  Let $h$ be the composite
+  \[ \reflect(\sm{x:A} B(x)) \xrightarrow{\reflect(\proj1)} \reflect A \xrightarrow{\opp{(\project_A)}} A. \]
+  Then for $z:\sm{x:A} B(x)$ we have
+  \begin{align*}
+    h(\project(z)) &= \opp\project(\reflect(\proj1)(\project(z)))\\
+    &= \opp\project(\project(\proj1(z)))\\
+    &= \proj1(z).
+  \end{align*}
+  Denote this path by $p_z$.
+  Now if we define $C:\reflect(\sm{x:A} B(x)) \to \type$ by $C(w) \defeq B(h(w))$, we have
+  \[ g \defeq \lam{z} \trans{p_z}{\proj2(z)} \;:\; \prd{z:\sm{x:A} B(x)} C(\project(z)). \]
+  Thus, the assumption yields $f:\prd{w:\reflect(\sm{x:A}B(x))} C(w)$ such that $f(\project(z)) = g(z)$.
+  Together, $h$ and $f$ give a function $k:\reflect(\sm{x:A}B(x)) \to \sm{x:A}B(x)$ defined by $k(w) \defeq (h(w),f(w))$, while $p_z$ and the equality $f(\project(z)) = g(z)$ show that $k$ is a retraction of $\project_{\sm{x:A}B(x)}$.
+  Therefore, $\sm{x:A}B(x)$ is in \P.
 \end{proof}
 
 Condition~\ref{item:mchr2} is a more familiar type-theoretic condition, which has the flavor of an induction principle.
-This is strengthened if we rephrase it in the following way.
-Note that any reflective subuniverse can be characterized by the operation $\reflect:\type\to\type$ and the functions $\project_A:A\to \reflect(A)$, since we have $P(A) = \isequiv(\project_A)$.
+This flavor is strengthened if we rephrase it in the following way.
+Note that any reflective subuniverse can be characterized by the operation $\reflect:\type\to\type$ and the functions $\project_A:A\to \reflect A$, since we have $P(A) = \isequiv(\project_A)$.
 
 \begin{defn}\label{defn:modality}
 A \define{modality} is an operation $\modal:\type\to\type$ for which there are

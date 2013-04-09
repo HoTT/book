@@ -1542,7 +1542,6 @@ We summarize the algebraic structure of $\RC$ with a theorem.
 
 \subsection{Cauchy Reals are Cauchy Complete}
 \label{sec:cauchy-reals-cauchy-complete}
-\label{sec:comp-cauchy-dedek}
 
 We constructed $\RC$ by closing $\Q$ under limits of Cauchy approximations, so it better
 be the case that $\RC$ is Cauchy complete. Thanks to \autoref{RC-sim-eqv-le} there is no
@@ -1588,7 +1587,9 @@ An archimedean ordered field in which every Cauchy approximation has a limit is 
   an emedding of ordered fields which fixes the rationals.
 \end{proof}
 
-\medskip
+
+\section{Comparison of Cauchy and Dedekind Reals}
+\label{sec:comp-cauchy-dedek}
 
 Let us also say something about the relationship between the Cauchy and Dedekind reals. By
 \autoref{RC-archimedean-ordered-field}, $\RC$ is an archimedean ordered field. It is also
@@ -1601,10 +1602,71 @@ Therefore, by \autoref{RD-final-field} there is an embedding of ordered fields
 \end{equation*}
 %
 which fixes the rational numbers. In general we do not expect $\RC$ and $\RD$ to coincide
-without further assumptions. One such assumption is Countable Choice; see
-\autoref{ex:countable-ac-reals-coincide}.
-Another is LEM; see \autoref{ex:lem-reals-coincide}.
+without further assumptions. 
 
+\begin{lem} \label{lem:untruncated-linearity-reals-coincide}
+  %
+  If for every $x : \RD$ there merely exists
+  %
+  \begin{equation}
+    \label{eq:untruncated-linearity}
+    c : \prd{x : \RD} \prd{q, r : \Q} (p < r) \to (p < x) + (x < r)
+  \end{equation}
+  %
+  then the Cauchy and Dedekind reals coincide.
+\end{lem}
+
+\begin{proof}
+  Note that the type in~\eqref{eq:untruncated-linearity} is an untruncated variant
+  of~\eqref{eq:RD-linear-order}, which states that~$<$ is an intuitionistic linear order.
+  We already know that $\RC$ embeds into $\RD$, so it suffices to show that every Dedekind
+  real merely is the limit of a Cauchy sequence of rational numbers.
+
+  Consider any $x : \RD$. By asumption there merely exists $c$ as in the statement of the
+  lemma, and by boundedness of cuts there merely exist $a, b : \Q$ such that $a < x < b$.
+  We construct a sequence $f : \N \to \setof{ \pairr{r, q} \in \Q \times \Q | p < q }$ by
+  recursion:
+  %
+  \begin{enumerate}
+  \item Set $f(0) \defeq \pairr{a, b}$.
+  \item Suppose $f(n)$ is already defined as $\pairr{q_n, r_n}$ such that $q_n < r_n$.
+    Define $s \defeq (2 q_n + r_n)/3$ and $t \defeq (q_n + 2 r_n)/3$. Then $c(x,s,t)$
+    decides between $s < x$ and $x < t$. If it decides $s < x$ then we set $f(n+1) \defeq
+    \pairr{s, r_n}$, otherwise $f(n+1) \defeq \pairr{q_n, t}$.
+  \end{enumerate}
+  %
+  Let us write $\pairr{q_n, r_n}$ for the $n$-th term of the sequence~$f$. Then it is easy
+  to see that $q_n < x < r_n$ and $|q_n - r_n| \leq (2/3)^n \cdot |q_0 - r_0|$ for all $n
+  : \N$. Therefore $q_0, q_1, \ldots$ and $r_0, r_1, \ldots$ are both Cauchy sequences
+  converging to the Dedekind cut~$x$. We have shown that for every $x : \RD$ there merely
+  exists a Cauchy sequence converging to $x$.
+\end{proof}
+
+The lemma implies that either Countable Choice or excluded middle suffice for coincidence
+of $\RC$ and $\RD$.
+
+\begin{cor} \label{when-reals-coincide}
+  If excluded middle or Countable Choice holds then $\RC$ and $\RD$ are equivalent.
+\end{cor}
+
+\begin{proof}
+  If excluded middle holds then $A \lor B$ and $A + B$ are equivalent,
+  therefore~\eqref{eq:RD-linear-order} immediately gives~\eqref{eq:untruncated-linearity}
+  so that we can apply \autoref{lem:untruncated-linearity-reals-coincide}.
+
+  Suppose Countable Choice holds. The set $S = \setof{ \pairr{q, r} \in \Q \times \Q | q <
+    r }$ is equivalent to $\N$, so we may apply Countable Choice to the statement that $x$
+  is located,
+  %
+  \begin{equation*}
+    \fall{\pairr{q, r} : S} (q < x) \lor (x < r).
+  \end{equation*}
+  %
+  (Note that $(q < x) \lor (x < r)$ is expressible as an existential statement $\exis{b :
+    \bool} (b = \bfalse \to q < x) \land (b = \btrue \to x < r)$. The (curried form) of
+  the choice function is then precisely~\eqref{eq:untruncated-linearity} so that
+  \autoref{lem:untruncated-linearity-reals-coincide} is applicable again.
+\end{proof}
 
 \section{Intuitionstic and Classical Analysis}
 \label{sec:intuitionistic-and-classical-analysis}
@@ -1614,7 +1676,7 @@ classical logic. Thus, by assuming the law of excluded middle~\eqref{eq:lem} and
 of choice~\eqref{eq:ac} we obtain classical analysis. Nevertheless, anyone interested in
 computation, for example a numerical analyst, ought to be curious about developing
 analysis without taking such drastic steps. That analysis in a constructive setting is
-even possible was demonstrated~\cite{Bishop1967}. As a sample of the
+even possible was demonstrated by~\cite{Bishop1967}. As a sample of the
 differences and similarities between classical and constructive analysis we shall briefly
 discuss just one topic---compactness of the closed interval $[0,1]$ and several theorems
 surrounding the concept.
@@ -1811,7 +1873,7 @@ Bolzano-Weirstraß property to extract a convergent subsequence. Since we have n
 these two properties, we cannot recover the first and the third steps. Nevertheless, the
 second step is often good enough for applications.
 
-Let us turn attention ot the Bolzano-Weirstraß property.
+Let us turn attention to the Bolzano-Weirstraß property.
 The \define{Limited Principle of Omniscience (LPO)} states that for every $\alpha : \N \to
 \bool$,
 % 
@@ -1842,7 +1904,7 @@ LPO. The Bolzano-Weirstraß property is such an example.
   \end{equation*}
   %
   If the Bolzano-Weirstraß property holds, there exists a strictly increasing $f : \N \to
-  \N$ such that $n \mapsto x_{f(n)}$ is a Cauchy sequence. For a sufficiently large $n :
+  \N$ such that $x \circ f$ is a Cauchy sequence. For a sufficiently large $n :
   \N$ the $n$-th term $x_{f(n)}$ is within $1/6$ of its limit. Either $x_{f(n)} < 2/3$ or
   $x_{f(n)} > 1/3$. If $x_{f(n)} < 2/3$ then~$x_n$ converges to $0$ and so $\prd{n : \N}
   \alpha(n) = \bfalse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
@@ -1851,9 +1913,8 @@ LPO. The Bolzano-Weirstraß property is such an example.
 
 While the failure of Bolzano-Weirstraß property is not surpising from a computational
 point of view (you should try and fail devising an algorithm which extracts a convergent
-subsequence from any sequence $\N \to [0,1])$, keeping in mind at all times that in finite
-number of steps only real numbers can be computed only to a finite precision), it is not
-so easy to give up the Heine-Borel property.
+subsequence from any sequence $\N \to [0,1])$), it is not so easy to give up the
+Heine-Borel property.
 
 \subsection{The Heine-Borel Property}
 
@@ -2406,6 +2467,13 @@ The fact that $\RC$ is the least Cauchy complete archimedean ordered field, as w
 in \autoref{RC-initial-Cauchy-complete}, indicates that our Cauchy reals coincide with
 those of~\cite{EscardoSimpson:01}.
 
+It is constructive folklore that coincidence of Cauchy and Dedekind reals requires
+\define{Dependent Choice}, which states that, for any set $A$, a total relation $R : A
+\times A \to \prop$, and $a : A$ there exists $f : \N \to A$ such that $f(0) = a$ and
+$R(f(n), f(n+1))$ for all $n : \N$. Our \autoref{when-reals-coincide} is a slight
+improvement because Countable Choice is weaker than Dependent Choice. In any case, none of
+these observations are new.
+
 The intricate relationship between various notions of compactness in a constructive
 setting is discussed in \cite{bridges2002compactness}.
 
@@ -2532,24 +2600,6 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 \begin{ex} \label{ex:reals-apart-zero-divisors}
   Verify that the following ``no zero divisors'' property holds for the real numbers:
   $x y \apart 0 \Leftrightarrow x \apart 0 \land y \apart 0$.
-\end{ex}
-
-\begin{ex} \label{ex:countable-ac-reals-coincide}
-  In \autoref{sec:comp-cauchy-dedek} we constructed an embedding $e : \RC \to \RD$. Show
-  that Countable Choice (the instance of \autoref{eq:ac} where $X=\N$) implies that~$e$ is
-  an equivalence. For this it suffices to construct for each $y : \RD$ a Cauchy
-  approximation $x : \Qp \to \Q$ such that $y = e(\rclim(x))$. Hint: start by applying
-  Countable Choice to the statement
-  %
-  \begin{equation*}
-    \fall{q, r : \Q} (q < r) \Rightarrow L_y(q) \lor U_y(r).
-  \end{equation*}
-  %
-  You should first figure out how to apply Countable Choice to the above statement.
-\end{ex}
-
-\begin{ex}\label{ex:lem-reals-coincide}
-  Prove that the embedding $\RC\to\RD$ is also an equivalence if we assume the law of excluded middle (but no axioms of choice).
 \end{ex}
 
 \begin{ex}

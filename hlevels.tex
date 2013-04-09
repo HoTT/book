@@ -10,6 +10,7 @@
 % \newcommand{\nminusone}{\ensuremath{(n\mbox{\rm{-}}1)}}
 \newcommand{\nplusone}{\ensuremath{(n+1)}}
 \newcommand{\nminusone}{\ensuremath{(n-1)}}
+\newcommand{\fact}{\textsf{fact}}
 
 
 \chapter{\texorpdfstring{$n$}{n}-types and modalities}
@@ -1005,7 +1006,7 @@ As usual, the induction principle allows us to prove essential uniqueness.
 % \beta(f) & : \prd{u:P(b)}f(u)=\alpha(f)\\
 % \gamma(f) & : \prd{w:\mathcal{L}_P(X)}(H:f\sim\lambda u.w),\ w=\alpha(f)\\
 % \delta(f) & : \prd{w:\mathcal{L}_P(X)}(H:f\sim\lambda u.w)(u:P(b)),\ \gamma(f,H)
-% \bullet H(u)=\beta(f,u)
+% \ct H(u)=\beta(f,u)
 % \end{align*}
 % for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$. The induction principle for
 % $\mathcal{L}_P(X)$ is that for every dependent type $\Lambda:\mathcal{L}_P(X)
@@ -1033,7 +1034,7 @@ As usual, the induction principle allows us to prove essential uniqueness.
 % \end{equation*}
 % (note that in this diagram, we have not taken the canonical path
 % \begin{equation*}
-% \gamma(f,H_0)\cdot (H_0(u)\cdot F(f(u)))=(\gamma(f,H_0)\bullet H_0(u))\cdot F(f(u)),
+% \gamma(f,H_0)\cdot (H_0(u)\cdot F(f(u)))=(\gamma(f,H_0)\ct H_0(u))\cdot F(f(u)),
 % \end{equation*}
 % but it should obviously be there), then there is a section $s:\prd{w:\mathcal{L}P}(X))$
 % with the property that there is a term
@@ -1041,18 +1042,18 @@ As usual, the induction principle allows us to prove essential uniqueness.
 % \kappa & : \prd{x:X}s(i(x))= I(x)
 % \intertext{and for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$ there are terms}
 % \mu(f) & : s(\alpha(f))= \epsilon(s\circ f)\\
-% \nu(f) & : \prd{u:P(b)}\mu(f)\bullet s(\beta(f,u))=\zeta(s\circ f,\beta(f))\\
-% \xi(f) & : \prd{w:\mathcal{L}_P}(X)(H:f\sim\lambda u.w),\ \mu(f)\bullet s(\gamma(f,H))=\mreturn(s\circ f,s\circ H)
+% \nu(f) & : \prd{u:P(b)}\mu(f)\ct s(\beta(f,u))=\zeta(s\circ f,\beta(f))\\
+% \xi(f) & : \prd{w:\mathcal{L}_P}(X)(H:f\sim\lambda u.w),\ \mu(f)\ct s(\gamma(f,H))=\mreturn(s\circ f,s\circ H)
 % \end{align*}
 % and a term $o(f,H,u)$ witnessing the commutativity of the diagram
 % \begin{equation}
 % \begin{tikzpicture}
-% \matrix (m) [std] {\mu(f)\bullet s(\beta(f,u))\bullet (\delta(f,h,u)\cdot s(f(u)))\bullet (\gamma(f,H)\cdot s(H(u)))^{-1} & & \mu(f)\circ
-% s(\gamma(f,H)) \\ \zeta(s\circ f,s\circ\beta(f))\bullet (\delta(f,h,u)\cdot s(f(u)))\bullet (\gamma(f,H)\cdot s(H(u)))^{-1} & &
+% \matrix (m) [std] {\mu(f)\ct s(\beta(f,u))\ct (\delta(f,h,u)\cdot s(f(u)))\ct (\gamma(f,H)\cdot s(H(u)))^{-1} & & \mu(f)\circ
+% s(\gamma(f,H)) \\ \zeta(s\circ f,s\circ\beta(f))\ct (\delta(f,h,u)\cdot s(f(u)))\ct (\gamma(f,H)\cdot s(H(u)))^{-1} & &
 % \mreturn(f,H)\\};
 % \draw[patharrow] (m-2-1) -- node[below] {$\theta(s\circ f,s\circ H,u)$} (m-2-3);
 % \draw[patharrow] (m-1-3) -- node[right] {$\xi(f)$} (m-2-3);
-% \draw[patharrow] (m-1-1) -- node[right]  {$\nu(f)^{-1}\rightwhisker ((\delta(f,H,u)\cdot s(f(u)))\bullet(\gamma(f,H)\cdot s(H(u)))$}(m-2-1);
+% \draw[patharrow] (m-1-1) -- node[right]  {$\nu(f)^{-1}\rightwhisker ((\delta(f,H,u)\cdot s(f(u)))\ct(\gamma(f,H)\cdot s(H(u)))$}(m-2-1);
 % \draw[patharrow] (m-1-1) -- node[above,yshift=1ex] {$s(\gamma(f,H))^{-1}\leftwhisker s(\delta(f,H,u))\rightwhisker s(\beta(f,u))$}(m-1-3);
 % \end{tikzpicture}
 % \end{equation}
@@ -1778,18 +1779,51 @@ Under the propositions-as-types principle, of course, a modality corresponds to 
 More precisely, we should perhaps call these \emph{idempotent, monadic} modalities, but they will be the only kind we consider.
 
 
-\subsection{Connectivity}
+\subsection{Modal and connected functions}
 \label{subsec:connectivity}
+
+The most familiar nontrivial modality is undoubtedly the propositional truncation, for which the modal types are the mere propositions, with $\modal A \defeq \brck A$.
+This modality is closely related to the notions of \emph{monomorphism} and \emph{surjection} from \autoref{sec:mono-surj}.
+In fact, any modality comes with analogous classes of maps.
+For the rest of this section, fix a modality $\modal$.
+
+\begin{defn}
+  A function $f:A\to B$ is \define{$\modal$-modal} if the fiber $\hfib f b$ is $\modal$-modal for all $b:B$.
+\end{defn}
+
+\begin{lem}\label{thm:modal-mono}
+  When $\modal$ is the propositional truncation, $f$ is $\modal$-modal if and only if it is a monomorphism in the sense of \autoref{sec:mono-surj}.
+\end{lem}
+\begin{proof}
+  TODO: is this in \autoref{sec:piw-pretopos}?
+\end{proof}
 
 \begin{defn}
 A function $f:A\to B$ is said to be \define{$\modal$-connected} if for all $b:B$, the type $\modal(\hfiber f b)$ is contractible:
 \begin{equation*}
-\mathsf{conn}_\modal(f):=\prd{b:B}\iscontr(\modal\hfiber{f}b). 
+  \mathsf{conn}_\modal(f)\defeq \prd{b:B}\iscontr(\modal\hfiber{f}b). 
 \end{equation*}
-A type $A$ is said to be \define{\modal-connected} if the unique function
-$A\to\unit$ is \modal-connected. Likewise, a type family
-$P:A\to\type$ is said to be \define{\modal-connected} if $P(x)$ is \modal-connected for
-every $x:A$. 
+\end{defn}
+
+\begin{lem}
+  When $\modal$ is the propositional truncation, $f$ is $\modal$-connected if and only if it is surjective in the sense of \autoref{sec:mono-surj}.
+\end{lem}
+\begin{proof}
+  We defined $f$ to be surjective if $\brck{\hfiber f b}$ is inhabited for all $b$.
+  But since it is a mere proposition, inhabitation is equivalent to contractibility.
+\end{proof}
+
+\begin{eg}
+  If $\modal$ is the $n$-truncation, we speak of \define{$n$-connected} types and functions.
+  Thus every function is $(-2)$-connected, while a function is $(-1)$-connected precisely when it is surjective.
+\end{eg}
+
+Of course, modal functions are a ``relativized'' version of modal types: a type $A$ is modal if and only if the map $A\to \unit$ is modal.
+Similarly, connected functions are a relativization of a notion for types.
+
+\begin{defn}
+  A type $A$ is said to be \define{\modal-connected} if the unique function $A\to\unit$ is \modal-connected.
+  Likewise, a type family $P:A\to\type$ is said to be \define{\modal-connected} if $P(x)$ is \modal-connected for every $x:A$. 
 \end{defn}
 
 A type $A$ is \modal-connected precisely when $\modal A$ is contractible. Thus, a function $f:A\to B$ is
@@ -1797,9 +1831,16 @@ $\modal$-connected if and only if $\hfib{f}b$ is \modal-connected for every $b:B
 And a type family $P:A\to\type$ is \modal-connected precisely when $\proj1:\sm{x:A} P(x)\to A$ is a \modal-connected function.
 
 \begin{eg}
-  If $\modal$ is the $n$-truncation, we speak of \define{$n$-connected} types and functions.
-  Every function is $(-2)$-connected, while a function is $(-1)$-connected precisely when it is surjective.
+  In particular, a type $A$ is $0$-connected if $\trunc0A$ is contractible.
+  Intuitively, this says that $A$ has exactly one connected component, which is the usual definintion of connectedness from homotopy theory.
+  More generally, $A$ is $n$-connected if $\trunc nA$ is contractible, which also agrees with the classical homotopy-theoretic notion.
+
+  Unfortunately, our notion of $n$-connectedness for \emph{functions} is off by one from a common indexing in classical homotopy theory: whereas we say a function $f$ is $n$-connected if all its fibers are $n$-connected, some classical homotopy theorists would call such a function $(n+1)$-connected.
+  (This is due to a historical focus on \emph{cofibers} rather than fibers.)
+  In the general context of a single modality $\modal$ (rather than an \nat-indexed family of modalities such as the $n$-truncations), we have no choice but to define connectivity as above, and so it is natural to use a matching indexing for $n$-connectivity.
 \end{eg}
+
+We now observe a few closure properties of connected maps.
 
 \begin{lem}
 Suppose that $g$ is a retract of a $\modal$-connected function $f$.  Then $g$ is
@@ -1918,33 +1959,38 @@ is \modal-connected if and only if $f$ is \modal-connected.
 \begin{proof}
 For $b:B$ and $v:Q(b)$ we have
 \begin{align*}
-\modal\hfib{\varphi}{\pairr{b,v}} & \simeq \modal\sm{a:A}{u:P(a)}{p:f(a)= b} f(p)\cdot g(u)= v\\
-& \simeq \modal\sm{w:\hfib{f}b}{u:P(\proj1(w))} g(u)= f(p)^{-1}\cdot v\\
-& \simeq \modal\sm{w:\hfib{f}b} \modal\hfib{g(\proj1 w}{f(p)^{-1}\cdot v}\\
+\modal\hfib{\varphi}{\pairr{b,v}} & \simeq \modal\sm{a:A}{u:P(a)}{p:f(a)= b} \trans{f(p)}{g(u)}= v\\
+& \simeq \modal\sm{w:\hfib{f}b}{u:P(\proj1(w))} g(u)= \trans{\opp{f(p)}}{v}\\
+& \simeq \modal\sm{w:\hfib{f}b} \modal\hfib{g(\proj1 w)}{\trans{\opp{f(p)}}{v}}\\
 & \simeq \modal\hfib{f}b
 \end{align*}
 where the transportations along $f(p)$ and $f(p)^{-1}$ are taken with respect to the dependent type $Q$.
 Therefore, if either is contractible, so is the other.
 \end{proof}
 
+In the other direction, we have
+
+\begin{lem}\label{prop:nconn_fiber_to_total}
+Let $P,Q:A\to\type$ be dependent types and consider a fiberwise transformation
+\begin{equation*}
+f:\prd{a:A} P(a)\to Q(a)
+\end{equation*}
+from $P$ to $Q$. Then the induced map $\total f: \sm{a:A}P(a) \to \sm{a:A} Q(a)$ is \modal-connected if and only if each $f(a)$ is \modal-connected. 
+\end{lem}
+
+\begin{proof}
+By \autoref{fibwise-fiber-total-fiber-equiv}, we have
+$\hfib{\total f}{\pairr{x,v}}\simeq\hfib{f(x)}v$
+for each $x:A$ and $v:Q(x)$. Hence $\modal\hfib{\total f}{\pairr{x,v}}$ is contractible if and only if
+$\modal\hfib{f(x)}v$ is contractible.
+\end{proof}
+
 
 \subsection{Orthogonal factorization through the \modal-image}\label{sec:image_factorization}
 
-\begin{defn}
-  A function $f:A\to B$ is \define{modal} if the fiber $\hfib f b$ is modal for all $b:B$.
-\end{defn}
-
 We now show that for any modality, the $\modal$-connected functions and the \modal-modal functions form an orthogonal factorization system.
-When specialized to the $n$-truncation, this yields a factorization system system consisting of $n$-connected functions and $n$-truncated ones.
-
-% Every modality $\modal$ defines 
-% a stable factorization system $(\mathcal{E}_\modal,\mathcal{M}_\modal)$ with:
-% \begin{equation*}
-% \mathcal{E}_\modal(f)\equiv \prd{b:B}
-% \iscontr(\modal\hfiber{f}b).
-% \end{equation*}
-% and \Mcirc\ the class of functions all of which fibers are
-% modal, \emph{modal functions} for short.
+When specialized to the $n$-truncation, this yields a factorization system consisting of $n$-connected functions and $n$-truncated ones.
+For $n=-1$, of course, this factorization system consists of surjections and monomorphisms, and when further restricted to sets, it yields the usual factorization into surjections and injections.
 
 % The following two corollaries are reformulations of \autoref{prop:nconnected_tested_by_lv_n_dependent types}:
 
@@ -1970,13 +2016,15 @@ Let $f:A\to B$ be a function. The \define{\modal-image} of $f$ is defined as
 \begin{equation*}
 \im_\modal(f):=\sm{b:B} \modal\hfib{f}b
 \end{equation*}
-We also define $\im(f)$ for $\im_{-1}(f)$. 
+When $\modal$ is the $n$-truncation, we write $\im_n (f)$, and when $n=-1$ we write simply $\im(f)$.
 \end{defn}
 
+\note{Where do }
 
 \begin{lem}
 Let $P:A\to\type$ be defined by $P(x):=\unit$. Then
 $\brck{A}\simeq\im(P)$.
+\note{What is this lemma for, and why is it placed here?}
 \end{lem}
 
 \begin{proof}
@@ -1998,23 +2046,6 @@ so $\im(P)$ satisfies the same universal property as $\brck{A}$.
 Therefore they are equivalent.
 \end{proof}
 
-\begin{lem}\label{prop:nconn_fiber_to_total}
-Let $P,Q:A\to\type$ be dependent types and consider a fiberwise transformation
-\begin{equation*}
-f:\prd{a:A} P(a)\to Q(a)
-\end{equation*}
-from $P$ to $Q$. Then $\Sigma_A f$ is \modal-connected if and only if each $f(a)$ is \modal-connected. 
-\end{lem}
-
-\begin{proof}
-Recall that we have the equivalence
-\begin{equation*}
-\hfib{\Sigma_A f}{\pairr{x,v}}\simeq\hfib{f(x)}v
-\end{equation*}
-for each $x:A$ and $v:Q(x)$. Hence $\modal\hfib{\Sigma_A f}{\pairr{x,v}}$ is contractible if and only if
-$\modal\hfib{f(x)}v$ is contractible.
-\end{proof}
-
 \begin{lem}\label{prop:to_image_is_connected}
 For any function $f:A\to B$, the canonical function $\tilde{f}:A\to\im_\modal(f)$ is \modal-connected. 
 Consequently, any function factors as an \modal-connected function followed by a modal function.
@@ -2026,8 +2057,8 @@ transformation
 \begin{equation*}
 \lambda b.\eta^{\hfib{f}b}:\prd{b:B} \hfib{f}b\to\modal\hfib{f}b.
 \end{equation*}
-Since each $\eta$ is \modal-connected by corollary \ref{cor:totrunc_is_connected}, the statement follows from
-proposition \ref{prop:nconn_fiber_to_total}.
+Since each $\eta$ is \modal-connected by \autoref{cor:totrunc_is_connected}, the statement follows from
+\autoref{prop:nconn_fiber_to_total}.
 \end{proof}
 
 In the following proposition we set up some machinery to prove the unique factorization theorem.
@@ -2051,8 +2082,8 @@ Then there is an equivalence
 \begin{equation*}
 E(H,b):\hfib{h_1}b\simeq\hfib{h_2}b
 \end{equation*}
-for any $b:B$ such that the underlying map $\underline{E}(H,h_1(g_1(a)))$ of $E(H,h_1(g_1(a))$ maps $\pairr{g_1(a),\idfunc{h_1(g_1(a))}}$ to
-$\pairr{g_2(a),H(a)^{-1}}$ for any $a:A$.
+for any $b:B$, such that for any $a:A$ we have
+\[E(H,h_1(g_1(a)))(\pairr{g_1(a),\refl{h_1(g_1(a))}}) = \pairr{g_2(a),H(a)^{-1}}.\]
 \end{thm}
 
 \begin{proof}
@@ -2088,26 +2119,26 @@ The equivalences $E(H,b)$ are such that $E(H^{-1},b)= E(H,b)^{-1}$.
 Combining \autoref{prop:to_image_is_connected,prop:factor_equiv_fiber}, we have the following unique factorization result:
 
 \begin{thm}
-For each $f:A\to B$, the space $\mathsf{factorizations}_\modal(f)$ defined by
+For each $f:A\to B$, the space $\fact_\modal(f)$ defined by
 \begin{equation*}
 \sm{X:\type}(g:A\to X)(h:X\to B),\ (h\circ g\sim f)\times\mathsf{conn}_\modal(g)\times\ismodal\ h.
 \end{equation*}
 is contractible. By \autoref{prop:to_image_is_connected} we know that there is the term
 \begin{equation*}
-\pairr{\im(f),\tilde{f},\proj1,\theta,\varphi,\psi}:\mathsf{factorizations}_\modal(f)
+\pairr{\im(f),\tilde{f},\proj1,\theta,\varphi,\psi}:\fact_\modal(f)
 \end{equation*}
 where $\theta:\proj1\circ\tilde{f}\sim f$ is the canonical homotopy, where $\varphi$ is the proof of
 \autoref{prop:to_image_is_connected}, and where $\psi$ is the obvious proof that $\proj1:\im(f)\to B$ has modal fibers.
 \end{thm}
 
 In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker operations. Recall that if we have paths
-$p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whisker operation provides a path $q\bullet p=
-q\bullet p^\prime$, wich is denoted by $q\leftwhisker s$. Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim
+$p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whisker operation provides a path $q\ct p=
+q\ct p^\prime$, wich is denoted by $q\leftwhisker s$. Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim
 f^\prime$ is a homotopy, then there is a homotopy $g\leftwhisker H:g\circ f\sim g\circ f^\prime$.
 
 \begin{proof}
-By \autoref{prop:to_image_is_connected} we know that there is a term of $\mathsf{factorizations}_\modal(f)$, hence it is enough to
-show that $\mathsf{factorizations}_\modal(f)$ is a proposition. Suppose we have two \modal-factorizations
+By \autoref{prop:to_image_is_connected} we know that there is a term of $\fact_\modal(f)$, hence it is enough to
+show that $\fact_\modal(f)$ is a proposition. Suppose we have two \modal-factorizations
 \begin{equation*}
 \pairr{X_1,g_1,h_1,H_1,\varphi_1,\psi_1}\qquad\text{and}\qquad\pairr{X_2,g_2,h_2,H_2,\varphi_2,\psi_2}
 \end{equation*}
@@ -2146,27 +2177,44 @@ giving us a homotopy $\eta:h_2\circ \underline{e}\sim h_1$.
 \item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a))=H(a)^{-1}$ and by {\it ii.} we have
 $h_2(\zeta(a))=\idfunc{h_2(g_2(a))}$. Thus we have
 \begin{align*}
-(H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\bullet h_2(\zeta(a))^{-1}\bullet \eta(g_1(a))\\
-& = H_1(a)\bullet H(a)^{-1}\\
-& = H_2(a).
+(H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\ct h_2(\zeta(a))^{-1}\ct \eta(g_1(a))\\
+& = H_1(a)\ct H(a)^{-1}\\
+& = H_2(a).\qedhere
 \end{align*}
 \end{enumerate}
 \end{proof}
 
-\begin{cor}
-A function $f:A\to B$ is \modal-connected if and only if there is a term of type
-\begin{equation*}
-\prd C\prd{g:\modalfunc(B\to C)} \iscontr\big(\sm{h:\modalfunc(B\to C)}\underline{h}\circ
-f\sim\underline{g}\circ f\big).
-\end{equation*}
-\end{cor}
+% I can't make sense of this, and it doesn't seem necessary
+%
+% \begin{cor}
+% A function $f:A\to B$ is \modal-connected if and only if
+% \begin{equation*}
+% \prd C\prd{g:\modalfunc(B\to C)} \iscontr\big(\sm{h:\modalfunc(B\to C)}\underline{h}\circ
+% f\sim\underline{g}\circ f\big).
+% \end{equation*}
+% \end{cor}
+
+By standard arguments, this yields the following orthogonality principle.
+
+\begin{thm}
+  Let $e:A\to B$ be $\modal$-connected and $m:C\to D$ be $\modal$-modal.
+  Then the map
+  \[ \varphi: (B\to C) \;\to\; \sm{h:A\to C}{k:B\to D} (m\circ h \htpy k \circ e) \]
+  is an equivalence.
+\end{thm}
+\begin{proof}[Sketch of proof]
+  For any $(h,k,H)$ in the codomain, let $h = h_2 \circ h_1$ and $k = k_2 \circ k_1$, where $h_1$ and $k_1$ are $\modal$-connected and $h_2$ and $k_2$ are $\modal$-modal.
+  Then $f = (m\circ h_2) \circ h_1$ and $f = k_2 \circ (k_1\circ e)$ are both $\modal$-factorizations of $m \circ h = k\circ e$.
+  Thus, there is a unique equivalence between them.
+  It is straightforward (if a bit tedious) to extract from this that $\hfib\varphi{(h,k,H)}$ is contractible.
+\end{proof}
 
 \subsection{The principle of modal choice}\label{sec:ac_truncated}
 
 In this section generalize the principle of unique choice to a lemma we call the principle of modal
 choice, or simply $\mathsf{AC}_{\modal}$. We also introduce various degrees of surjectivity and see how they interact with modal choice.
 We will derive
-the principle of unique choice from the following more general discussion in corollary \ref{cor:auc}.
+the principle of unique choice from the following more general discussion in \autoref{cor:auc}.
 
 \begin{defn}
 Suppose $P:A\to\type$ is a dependent type over a type $A$. We write $\{A\mid P\}\defeq\sm{A}{\brck{P}}$ and define:
@@ -2255,8 +2303,8 @@ $H(x,y,u,v)$ to obtain a path between them. The following general statement is u
 \begin{lem}
 Suppose that $H:\prd{x,y:A} P(x)\to P(y)\to (x= y)$. Then for any $p:x= x^\prime$ and $q:y= y^\prime$ there are paths
 \begin{align*}
-(p\cdot H(x))(y,u^\prime,v) & = H(x,y,p^{-1}\cdot u^\prime,v)\bullet p^{-1} & & [u^\prime:P(x^\prime),\ v:P(y)]\\
-(q\cdot H(x,y))(u,v^\prime) & = q\bullet H(x,y,u,p^{-1}\cdot v^\prime) & & [u : P(x),\ v^\prime :P(y^\prime)].
+(p\cdot H(x))(y,u^\prime,v) & = H(x,y,p^{-1}\cdot u^\prime,v)\ct p^{-1} & & [u^\prime:P(x^\prime),\ v:P(y)]\\
+(q\cdot H(x,y))(u,v^\prime) & = q\ct H(x,y,u,p^{-1}\cdot v^\prime) & & [u : P(x),\ v^\prime :P(y^\prime)].
 \end{align*} 
 \end{lem}
 The proof of this statement is by path induction. We see from the above that the path $H(p,H(x,y,u,v))$ induces a witness of the
@@ -2276,7 +2324,7 @@ Therefore, the assertion would follow if there is a function of type
 \end{equation*}
 This is easy, since we can define the function $H^\prime:\prd{x,y:X} P(x)\to P(y)\to(x= y)$ by
 \begin{equation*}
-H^\prime(x,y,u,v)\equiv H(x,y,u,v)\bullet H(x,x,u,u)^{-1}.
+H^\prime(x,y,u,v)\equiv H(x,y,u,v)\ct H(x,x,u,u)^{-1}.\qedhere
 \end{equation*}
 \end{proof}
 
@@ -2313,6 +2361,7 @@ is a pullback square and let $b:B$. Then $\hfib{f}b\simeq\hfib{g}{h(b)}$.
 \end{lem}
 
 \begin{proof}
+\note{Do we have pasting of pullbacks anywhere?}
 This follows from pasting of pullbacks, since the type $X$ in the diagram
 \begin{equation*}
 \begin{tikzpicture}

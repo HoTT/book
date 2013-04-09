@@ -117,7 +117,7 @@ $\Omega$:
   mere propositions so that $\Omega \jdeq \bool$. This not only eradicates questions about
   levels of $\prop$, but also turns everything we do into the standard classical
   construction of real numbers. We discuss this point further in
-  \autoref{sec:intuitionistic-vs-classical-analysis}.
+  \autoref{sec:intuitionistic-and-classical-analysis}.
 
 \item On the other end of the spectrum one might ask for a minimal requirement that makes
   the constructions work. The condition that a mere predicate be a Dedekind cut is
@@ -285,7 +285,7 @@ are \textbf{apart} from each other, written $x \apart y$, when $(x < y) \lor (y 
 \end{equation*}
 %
 If $x \apart y$ then $\lnot (x = y)$, but the converse implies a little bit of excluded
-middle known, see \autoref{ex:reals-apart-neq-MP}.
+middle, see \autoref{ex:reals-apart-neq-MP}.
 
 \begin{thm} \label{RD-inverse-apart-0}
   A real is invertible if, and only if, it is apart from $0$.
@@ -1350,7 +1350,7 @@ From $\leq$ we get the strict order $<$ by
   (u < v) \defeq \exis{q, r : \Qp} (u \leq q) \land (q < r) \land (r \leq v).
 \end{equation*}
 %
-That is, a witness for $u < v$ is a pair of rational numbers $q < r$ such that $x \leq
+That is, $u < v$ holds when there merely exists a pair of rational numbers $q < r$ such that $x \leq
 \rcrat(q)$ and $\rcrat(r) \leq v$. It is not hard to check that $<$ is irreflexive and
 transitive, and has other properties that are expected for an ordered field.
 The archimedean axiom follows directly from the definition of~$<$.
@@ -1445,37 +1445,7 @@ In general, we can define multiplication of real numbers as
 %
 so we just need squaring $u \mapsto u^2$ as a map $\RC \to \RC$. Squaring is not a
 Lipschitz map, but it is Lipschitz on every bounded domain, which allows us to patch it
-together using the following lemma.
-
-\begin{lem}[Patching Lemma] \label{lem:patching}
-  %
-  Suppose $B : A \to \type$ is a family and $e : \prd{x : A} B(x) \to C$ a family of maps
-  into a type $C$ such that every $e(x)$ is injective and they jointly cover $C$, i.e.,
-  the map $(\sm{x : A} B(x)) \to C$, defined by $(x,y) \mapsto e(x)(y)$, is surjective.
-
-  Furthermore, suppose $f : \prd{x : A} B(x) \to D$ is a family of maps which are
-  compatible with respect to~$e$, which means that, for all $x, x' : A$ and $y : B(x)$ and
-  $y' : B(x')$,
-  %
-  \begin{equation*}
-    e(x)(y) = e(x')(y') \to f(x)(y) = f(x')(y').
-  \end{equation*}
-  %
-  Then there exists a unique $\bar{f} : C \to D$ such that $\bar{f}(e(x)(y)) = f(x)(y)$
-  for all $x : A$ and $y : B(x)$.
-\end{lem}
-
-\begin{proof}
-  Apply unique choice, \autoref{cor:UC}, to the relation $R : C \to D \to \prop$ defined
-  by
-  %
-  \begin{equation*}
-    R(c, d) \defeq
-    \exis{x : A}{y : B(x)} c = e(x)(y) \land d = f(x)(y).
-  \end{equation*}
-\end{proof}
-
-To continue the construction of squaring, define the open and closed intervals
+together. Define the open and closed intervals
 %
 \begin{equation*}
   [u,v] \defeq \setof{ x : \RC | u \leq x \leq v }
@@ -1497,16 +1467,36 @@ To continue the construction of squaring, define the open and closed intervals
 
 \begin{proof}
   We first observe that for every $u : \RC$ there merely exists $n : \N$ such that $-n
-  \leq u \leq n$, see \autoref{ex:traditional-archimedean}, so the family of inclusions
-  $[-n, n] \to \RC$ covers $\RC$ in the sense of \autoref{lem:patching}. Next, for each $n
-  : \N$ squaring $s(q) \defeq q^2$ is a Lipschitz map $s : \setof{ q : \Q | -n \leq q \leq
-    n } \to \Q$ with constant $2 n$, so we can use \autoref{RC-extend-Q-Lipschitz} to
-  extend it to squaring $\bar{s}_n : [-n, n] \to \RC$ with Lipschitz constant $4 n$, see
-  \autoref{RC-Lipschitz-on-interval} for details. We may thus apply
-  \autoref{lem:patching}, provided that all the squaring maps $s_n$ agree on common
-  domains, which they do: if $m < n$ for some $m, n : \N$ then $s_n$ restricted to $[-m,
-  m]$ must agree with $s_m$ because both are Lipschitz, and therefore continuous in the
-  sense of~\autoref{RC-continuous-eq}.
+  \leq u \leq n$, see \autoref{ex:traditional-archimedean}, so the map
+  %
+  \begin{equation*}
+    e : \left(\sm{n : \N} [-n, n]\right) \to \RC
+    \qquad\text{defined by}\qquad
+    e(n, \pairr{x, \blank}) \defeq x
+  \end{equation*}
+  % 
+  is surjective. Next, for each $n : \N$, the squaring map
+  %
+  \begin{equation*}
+    s_n : \setof{ q : \Q | -n \leq q \leq n } \to \Q
+    \qquad\text{defined by}\qquad
+    s_n(q, \blank) \defeq q^2
+  \end{equation*}
+  %
+  is Lipschitz with constant $2 n$, so we can use \autoref{RC-extend-Q-Lipschitz} to
+  extend it to a map $\bar{s}_n : [-n, n] \to \RC$ with Lipschitz constant $2 n$, see
+  \autoref{RC-Lipschitz-on-interval} for details. The maps $\bar{s}_n$ are compatible: if
+  $m < n$ for some $m, n : \N$ then $s_n$ restricted to $[-m, m]$ must agree with $s_m$
+  because both are Lipschitz, and therefore continuous in the sense
+  of~\autoref{RC-continuous-eq}. Therefore, by \autoref{lem:images_are_coequalizers} the map
+  %
+  \begin{equation*}
+    \left(\sm{n : \N} [-n, n]\right) \to \RC,
+    \qquad\text{given by}\qquad
+    (n, \pairr{x, \blank}) \mapsto s_n(x)
+  \end{equation*}
+  %
+  factors uniquely through $\RC$ to give us the desired function.
 \end{proof}
 
 At this point we have the ring structure of the reals and the archimedean order. To
@@ -1517,13 +1507,37 @@ establish $\RC$ as an archimedean ordered field, we still need inverses.
 \end{thm}
 
 \begin{proof}
-  \textbf{TODO}
+  First, suppose $u : \RC$ has an inverse $v : \RC$ By the archimedean axiom there is $q :
+  \Q$ such that $|v| < q$. Then $1 = |u v| < |u| \cdot v < |u| \cdot q$ and hence $|u| >
+  1/q$, which is to say that $u \apart 0$.
+
+  For the converse we construct the inverse map
+  %
+  \begin{equation*}
+    ({-})^{-1} : \setof{ u : \RC | u \apart 0 } \to \RC
+  \end{equation*}
+  % 
+  by patching together functions, similarly to the construction of squaring in
+  \autoref{RC-squaring}. We only outline the main steps. For every $q : \Q$ let
+  %
+  \begin{equation*}
+    [q, \infty) \defeq \setof{u : \RC | q \leq u}
+    \qquad\text{and}\qquad
+    (-\infty, q] \defeq \setof{u : \RC | u \leq -q}.
+  \end{equation*}
+  %
+  Then, as $q$ ranges over $\Qp$, the types $(-\infty, q]$ and $[q, \infty)$ jointly cover
+  $\setof{u : \RC | u \apart 0}$. On each such $[q, \infty)$ and $[-\infty, q)$ the
+  inverse function is obtained by an application of \autoref{RC-extend-Q-Lipschitz}
+  with Lipschitz constant $1/q^2$. Finally, \autoref{lem:images_are_coequalizers}
+  guarantees that the inverse function factors uniquely through $\setof{ u : \RC | u
+    \apart 0 }$.
 \end{proof}
 
 We summarize the algebraic structure of $\RC$ with a theorem.
 
 \begin{thm} \label{RC-archimedean-ordered-field}
-  The Cauchy reals form an archimidean ordered field.
+  The Cauchy reals form an archimedean ordered field.
 \end{thm}
 
 \subsection{Cauchy Reals are Cauchy Complete}
@@ -1592,40 +1606,263 @@ without further assumptions. One such assumption is Countable Choice; see
 Another is LEM; see \autoref{ex:lem-reals-coincide}.
 
 
-\subsection{Intuitionstic vs.\ Classical Analysis}
-\label{sec:intuitionistic-vs-classical-analysis}
+\section{Intuitionstic and Classical Analysis}
+\label{sec:intuitionistic-and-classical-analysis}
 
 We already pointed out that our constructions of reals are entirely compatible with
 classical logic. Thus, by assuming the law of excluded middle~\eqref{eq:lem} and the axiom
 of choice~\eqref{eq:ac} we obtain classical analysis. Nevertheless, anyone interested in
 computation, for example a numerical analyst, ought to be curious about developing
 analysis without taking such drastic steps. That analysis in a constructive setting is
-even possible was demonstrated by Erret Bishop~\cite{bishop1985constructive}. As a sample
-of the differences and similarities we shall briefly discuss just one topic---compactness
-of the closed interval $[0,1]$.
+even possible was demonstrated~\cite{Bishop1967}. As a sample of the
+differences and similarities between classical and constructive analysis we shall briefly
+discuss just one topic---compactness of the closed interval $[0,1]$ and several theorems
+surrounding the concept.
 
-There are several equivalent formulations of compactness of $[0,1$]:
+\subsection{Compactness of the closed interval}
+\label{sec:compactness-closed-interval}
+
+Compactness is no exception to the common phenomenon in constructive mathematics that
+classically equivalent notions bifurcate. The three most frequently used notions of
+compactness are:
 %
 \begin{enumerate}
-\item $[0,1]$ is Cauchy complete and totally bounded,
-\item $[0,1]$ has the Heine-Borel finite property ``every open cover has a finite subcover'',
-\item $[0,1]$ has the Bolzano-Wierstraß property ``every sequence has a convergent subsequence''.
+\item Cauchy complete and totally bounded,
+\item the Bolzano-Weirstraß property ``every sequence has a convergent subsequence''.
+\item the Heine-Borel finite property ``every open cover has a finite subcover'',
 \end{enumerate}
 %
-While classically these are equivalent, constructively only the first one can be
-established without further assumptions.
+Let us see how they fare in homotopy type theory. We can use either the Dedekind or the
+Cauchy reals, so we shall denote the reals just as~$\R$. We first recall several basic
+definitions.
 
-\begin{thm}
-  The closed interval is Cauchy complete and totally bounded.
+\begin{defn} \label{defn:metric-space}
+  A \define{metric space $(M, d)$} is a set $M$ with a map $d : M \times M \to \R$
+  satisfying, for all $x, y, z : M$,
+  %
+  \begin{align*}
+    d(x,y) &\geq 0, &
+    d(x,y) &= d(y,x), \\
+    d(x,y) &= 0 \Leftrightarrow x = y, &
+    d(x,z) &\leq d(x,y) + d(y,z).
+  \end{align*}
+  %
+\end{defn}
+
+\begin{defn} \label{defn:complete-metric-space}
+  A \define{Cauchy approximation} in $M$ is a sequence $x : \Qp \to M$ satisfying
+  %
+  \begin{equation*}
+    \fall{\delta, \epsilon} d(x_\delta, x_\epsilon) < \delta + \epsilon.
+  \end{equation*}
+  %
+  The \define{limit} of a Cauchy approximation $x : \Qp to M$ is a point $\ell : M$
+  satisfying
+  %
+  \begin{equation*}
+    \fall{\epsilon, \theta : \Qp} d(x_\epsilon, \ell) < \epsilon + \theta.
+  \end{equation*}
+  %
+  A \define{complete metric space} is one in which every Cauchy sequence has a limit.
+\end{defn}
+
+\begin{defn} \label{defn:totall-bounded-metric-space}
+  For a positive rational $\epsilon$, an \define{$\epsilon$-net} in a metric space $(M,
+  d)$ is an element of
+  %
+  \begin{equation*}
+    \sm{n : \N}{x_1, \ldots, x_n : M}
+    \fall{y : M} \exis{k \leq n} d(x_k, y) < \epsilon.
+  \end{equation*}
+  %
+  In words, this is a finite sequence of points $x_1, \ldots, x_n$ such that every point
+  in $M$ merely is within $\epsilon$ of some~$x_k$.
+
+  A metric space $(M, d)$ is \define{totally bounded} when it has $\epsilon$-nets of all
+  sizes:
+  %
+  \begin{equation*}
+    \prd{\epsilon : \Qp} 
+    \sm{n : \N}{x_1, \ldots, x_n : M}
+    \fall{y : M} \exis{k \leq n} d(x_k, y) < \epsilon.
+  \end{equation*}
+\end{defn}
+
+Note that in in the definition of total boundedness we require pure existence of an
+$\epsilon$-net, not mere existence. This way we obtain a function which assigns to each
+$\epsilon : \Qp$ a specific $\epsilon$-net. Such a function might be called a ``modulus of
+total boundedness''. In general, when porting classical metric notions to homotopy type
+theory, we should use propositional truncation sparingly, typically so that we avoid
+asking for a non-constant map from $\R$ to $\Q$ or $\N$. For instance, here is the
+``correct'' definition of uniform continuity.
+
+\begin{defn} \label{defn:uniformly-continuous}
+  A map $f : M \to \R$ on a metric space is \define{uniformly continuous} when
+  %
+  \begin{equation*}
+    \prd{\epsilon : \Qp}
+    \sm{\delta : \Qp}
+    \fall{x y : M}
+    d(x,y) < \delta \Rightarrow |f(x) - f(y)| < \epsilon.
+  \end{equation*}
+  %
+  In particular, a uniformly continuous map has a modulus of uniform continuity,
+  which is a function that assings to each $\epsilon$ a corresponding $\delta$.
+\end{defn}
+
+Let us show that $[0,1]$ is compact in the first sense.
+
+\begin{thm} \label{analysis-interval-ctb}
+  The closed interval $[0,1]$ is complete and totally bounded.
 \end{thm}
 
 \begin{proof}
-  \textbf{TODO}.
+  Given $\epsilon : \Qp$, there is $n : \N$ such that $2/k < \epsilon$, so we may take the
+  $\epsilon$-net $x_i = i/k$ for $i = 0, \ldots, k-1$. This is an $\epsilon$-net because,
+  for every $y : [0,1]$ there merely exists $i$ such that $0 \leq i < k$ and $(i -
+  1)/k < y < (i+1)/k$, and so $|y - x_i| < 2/k < \epsilon$.
+
+  For completeness of $[0,1]$, consider a Cauchy approximation $x : \Qp \to
+  [0,1]$ and let $\ell$ be its limit in $\R$. Since $\max$ and $\min$ are Lipschitz maps,
+  the retraction $r : \R \to [0,1]$ defined by $r(x) \defeq \max(0, \min(1, x))$ commutes
+  with limits of Cauchy approximations, therefore
+  %
+  \begin{equation*}
+    r(\ell) =
+    r (\lim x) =
+    \lim (r \circ x) =
+    r (\lim x) =
+    \ell,
+  \end{equation*}
+  %
+  which means that $0 \leq \ell \leq 1$, as required.
 \end{proof}
 
-\textbf{TODO: supremum of a uniformly continuos map on $[0,1]$.}
+We now come to the first difference between classical and constructive analysis.
 
-\textbf{TODO: mean value theorem}
+\begin{thm} \label{ctb-uniformly-continuous-sup}
+  %
+  A uniformly continuous map $f : M \to \R$ on a complete totally bounded metric space
+  $(M, d)$ has a supremum $m : \R$. For every $\epsilon : \Qp$ there exists $u : M$ such
+  that $|m - f(u)| < \epsilon$.
+\end{thm}
+
+\begin{proof}
+  Let $h : \Qp \to \Qp$ be the modulus of uniform continuity of~$f$.
+  We define a sequence $x : \Qp \to \R$ as follows: for any $\epsilon : \Q$ total
+  boundedness of $M$ gives a $h(\epsilon)$-net $y_0, \ldots, y_n$. Define
+  %
+  \begin{equation*}
+    x_\epsilon \defeq \max (f(y_0), \ldots, f(y_n)).
+  \end{equation*}
+  %
+  We claim that $x$ is a Cauchy approximation. Consider any $\epsilon, \eta : \Q$, so that
+  %
+  \begin{equation*}
+    x_\epsilon \jdeq \max (f(y_0), \ldots, f(y_n))
+    \quad\text{and}\quad
+    x_\eta \jdeq \max (f(z_0), \ldots, f(z_m))
+  \end{equation*}
+  %
+  for some $h(\epsilon)$-net $y_0, \ldots, y_n$ and $h(\eta)$-net $z_0, \ldots, z_m$.
+  Every $z_i$ is merely $h(\epsilon)$-close to some $y_j$, therefore $|f(z_i) - f(y_j)| <
+  \epsilon$, from which we may conclude that
+  %
+  \begin{equation*}
+    f(z_i) < \epsilon + f(y_j) \leq \epsilon + x_\epsilon,
+  \end{equation*}
+  %
+  therfore $x_\eta < \epsilon + x_\epsilon$. Symmetrically we obtain $x_\eta < \eta +
+  x_\eta$, therefore $|x_\eta - x_\epsilon| < \eta + \epsilon$.
+
+  We claim that $m \defeq \lim x$ is the supremum of~$f$. To prove that $f(x) \leq m$ for
+  all $x : M$ it suffices to show $\lnot (m < f(x))$. So suppose to the contrary that $m <
+  f(x)$. There is $\epsilon : \Qp$ such that $m + \epsilon < f(x)$. But now merely for
+  some $y_i$ participating in the definition of $x_\epsilon$ we get $|f(x) - f(y_i) <
+  \epsilon$, therefore $m < f(x) - \epsilon < f(y_i) \leq m$, a contradition.
+
+  We finish the proof by showing that $m$ satifies the second part of the theorem, because
+  it is then automatically a least upper bound. Given any $\epsilon : \Qp$, on one hand
+  $|m - fx_{\epsilon/2}| < 3 \epsilon/4$, and on the other $|f(x_{\epsilon/2}) - f(y_i)| <
+  epsilon/4$ merely for some $y_i$ participating in the definition of $x_{\epsilon/2}$,
+  therefore by taking $u \defeq y_i$ we obtain $|m - f(u)| < \epsilon$ by triangle
+  inequality.
+
+  Note: we never used completeness of~$M$.
+\end{proof}
+
+With respect to the classical theorem we would expect the weaker assumption that~$f$ is
+continuous, rather than uniformly continuous, and the stronger conclusion that $f$
+actually attains its supremum, rather than just approaches it. The classical proof
+proceeds as follows:
+%
+\begin{enumerate}
+\item $f$ is uniformly continuous because it is a continuous map on a complete totally
+  bounded space,
+\item by \autoref{ctb-uniformly-continuous-sup} there is a supremum $m$ and a sequence $x
+  : \N \to M$ such that $f(x_k)$ is within $2^{-k}$ of~$m$,
+\item select a convergent subsequence of $x$ and prove that its limit attains $m$.
+\end{enumerate}
+%
+But this proof clearly shows that the classical theorem is really a composition of three
+theorems. The first one uses the Heine-Borel property to turn continuous maps into
+uniformly continuous maps, the second one we just proved, and the third one relies on the
+Bolzano-Weirstraß property to extract a convergent subsequence. Since we have neither of
+these two properties, we cannot recover the first and the third steps. Nevertheless, the
+second step is often good enough for applications.
+
+Let us turn attention ot the Bolzano-Weirstraß property.
+The \define{Limited Principle of Omniscience (LPO)} states that for every $\alpha : \N \to
+\bool$,
+% 
+\begin{equation} \label{eq:lpo}
+  (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
+\end{equation}
+%
+It is an instance of excluded middle which cannot be proved without additional axioms.
+Computationally speaking, we would not expect LPO to hold because it asks us to decide
+whether infinitely many values of a function are $\bfalse$.
+Often we can show that a statement in analysis is essentially classical because it implies
+LPO. The Bolzano-Weirstraß property is such an example.
+  
+\begin{thm} \label{analysis-bw-lpo}
+  %
+  The Bolzano-Weirstraß property of $[0,1]$ implies the Limited Principle of Omniscience.
+\end{thm}
+
+\begin{proof}
+  Define the sequence $x : \N \to [0,1]$ by
+  %
+  \begin{equation*}
+    x_n \defeq
+    \begin{cases}
+      0 & \text{if $\alpha(k) = \bfalse$ for all $k < n$,}\\
+      1 & \text{if $\alpha(k) = \btrue$ for some $k < n$}.
+    \end{cases}
+  \end{equation*}
+  %
+  If the Bolzano-Weirstraß property holds, there exists a strictly increasing $f : \N \to
+  \N$ such that $n \mapsto x_{f(n)}$ is a Cauchy sequence. For a sufficiently large $n :
+  \N$ the $n$-th term $x_{f(n)}$ is within $1/6$ of its limit. Either $x_{f(n)} < 2/3$ or
+  $x_{f(n)} > 1/3$. If $x_{f(n)} < 2/3$ then~$x_n$ converges to $0$ and so $\prd{n : \N}
+  \alpha(n) = \bfalse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
+  \alpha(n) = \btrue$.
+\end{proof}
+
+While the failure of Bolzano-Weirstraß property is not surpising from a computational
+point of view (you should try and fail devising an algorithm which extracts a convergent
+subsequence from any sequence $\N \to [0,1])$, keeping in mind at all times that in finite
+number of steps only real numbers can be computed only to a finite precision), it is not
+so easy to give up the Heine-Borel property.
+
+\subsection{The Heine-Borel Property}
+
+\textbf{TODO I think I can write something interesting here.}
+
+\subsection{The Mean Value Theorem}
+\label{sec:mean-value-theorem}
+
+\textbf{TODO This might disappear due to time constraints, we will see.}
 
 
 \section{The Surreal Numbers}
@@ -2151,7 +2388,7 @@ This description closely matches the higher-inductive construction of the cumula
 Conway's metatheorem would then correspond to the fact we have referred to several times that we can construct a model of Univalent Foundations inside ZFC (which is outside the scope of this book).
 
 However, Univalent Foundations is so rich and powerful in its own right that it would be foolish to relegate it to only a metatheory in which to construct set-like theories.
-We have seen that even at the level of sets (0-types), the higher inductive types in Univalent Foundations yield such things as direct constructions of objects by their universal properties (\autoref{sec:free-algebras}), highly filtered ordinals without choice (\autoref{sec:ordinals}), and a constructive theory of Cauchy completion (\autoref{sec:cauchy-reals}).
+We have seen that even at the level of sets (0-types), the higher inductive types in Univalent Foundations yield direct constructions of objects by their universal properties (\autoref{sec:free-algebras}), such as a constructive theory of Cauchy completion (\autoref{sec:cauchy-reals}).
 But most importantly, the potential to model homotopy theory and category theory directly in the foundational system (\autoref{cha:homotopy,cha:category-theory}) gives Univalent Foundations an advantage which no set-theoretic foundation can match.
 
 
@@ -2255,13 +2492,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
     Assuming excluded middle, construct a non-constant map $\RD \to \Z$.
   \item 
     Suppose $f : \RD \to \Z$ is a map such that $f(0) = 0$ and $f(x) \neq 0$ for all $x >
-    0$. Derive from this the following limited form of excluded middle, known as the
-    \emph{Limited Principle of Omniscience (LPO)}: for every $\alpha : \N \to \bool$,
-  % 
-    \begin{equation*}
-      (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
-    \end{equation*}
-  % 
+    0$. Derive from this the Limited Principle of Omniscience~\eqref{eq:lpo}.
   \end{enumerate}
 \end{ex}
 

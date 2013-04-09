@@ -670,7 +670,7 @@ It may also be assumed that $\mathsf{r}_{n}(a) = a$; hence, that $\mathsf{r}_n$ 
 This is a version of the ``axiom of impredicativity for mere propositions" mentioned in \autoref{subsec:prop-subsets}.  A related axiom resizes, not just mere propositions $a:\UU$, but each type $\prop_n$ itself, down to the lowest universe -- observe that this can be justified from the previous version just by considering the next higher universe $\UU_1$, in which $\prop_0$ already \emph{is} small.
 If we assume some such a resizing rule allowing us to replace the large type $\prop$ with a small type $\Omega:U$ containing all mere propositions, we thereby obtain the usual notion of a subobject classifier.
  
- \begin{thm} Assuming a resizing rule for mere propositions, together with a type $\Omega:\UU$ of all mere propositions, the category $\set$ is then an elementary  topos.
+ \begin{thm}\label{thm:settopos} Assuming a resizing rule for mere propositions, together with a type $\Omega:\UU$ of all mere propositions, the category $\set$ is then an elementary  topos.
  \end{thm}
 
 Another condition sufficient for making $\set$ into a topos is the law of excluded middle, in the ``mere-propositional" form that we have called LEM; for then we have $\prop = \bool$, which \emph{is} small, and which then also classifies all mere propositions.
@@ -1006,9 +1006,24 @@ A \emph{class} may be taken to be a mere predicate on~$V$. We can say that a cla
     \begin{equation*}
       \fall{x, y : V} x \subseteq y \land y \subseteq x \Leftrightarrow x = y.
     \end{equation*}
-  \item \emph{replacement:} given any $r : V \to V$ and $x : V$, the class 
-  $$C(y) \defeq \exis{z : V} z \in x \land y = r(z)$$ 
+    %
+     \item \emph{empty set:} for all $x:V$, we have $\neg (x\in \varnothing)$.
+    %
+    \item \emph{pairing:} for all $u, v:V$, the class $x = u \vee x = v$ is a $V$-set.
+      %
+    \item \emph{infinity:} there is a $v:V$ with $\varnothing\in v$ and $x\in v$ implies $x\cup \{x\}\in v$.
+    %
+  \item \emph{union:} for all $v:V$, the class $\exis{u} x \in u \in v$ is a $V$-set.
+    %
+    \item \emph{function set:} for all $u, v:V$, the class $x : u\to v$ is a $V$-set.
+    %
+   \item \emph{$\in$-induction:} if $C : V \to \prop$ is a class such that $C(a)$ holds whenever $C(x)$ for all $x\in a$, then $C(v)$ for all $v:V$.
+   %
+     \item \emph{replacement:} given any $r : V \to V$ and $a : V$, the class 
+  $$C(x) \defeq \exis{y : V} y \in a \land x = r(y)$$ 
   is a $V$-set. 
+  %
+   \item \emph{separation:} given any \emph{small} $C : V \to \prop$ and $a : V$, the class $x \in a \land C(x)$ is a $V$-set. 
   \end{enumerate}
 \end{thm}
 
@@ -1031,15 +1046,42 @@ A \emph{class} may be taken to be a mere predicate on~$V$. We can say that a cla
   \end{enumerate}
 \end{proof}
 
-The rule of separation requires some preliminary considerations.  Recall that $V$ lives in the same universe $\UU'$ as the base universe $\UU$ from which it is built. Thus, a priori, the same is true for the identity types $v=_V w$ for any $v,w:V$.  A class $C: V\to \prop$ will be called \emph{separable} if all of its values lie in $\UU$.  
+The rule of separation requires some preliminaries.  Recall that $V$ lives in the same universe $\UU'$ as the base universe $\UU$ from which it is built. Thus, a priori, the same is true for the identity types $v=_V w$ for any $v,w:V$.  A class $C: V\to \prop$ will be called \emph{separable} if for any $a:V$ the class $x\in a \wedge C(x)$ is a $V$-set.  Let us say that a class $C$ is ($\UU$-)\emph{small} if all of its values $C(x)$ lie in $\UU$.
 
 \begin{lem}\label{lem:sep}
-If  $C: V \to \prop$ is a separable class, then for any $a:V$ the class $x\in a \wedge C(x)$ is a $V$-set.
+If the class $C: V \to \prop$ is small, then it is separable:  $x\in a \wedge C(x)$ is a $V$-set for any $a:V$.
 \end{lem}
 
 \begin{proof}
-Given $a=\vset(A,f)$, let $A' = \exis{x:A}C(fx)$, and take $f' = f\circ i$, where $i : A' \to A$ is the obvious inclusion.  Then we claim that for $a' = \vset(A',f')$ we have $x\in a\wedge C(x) \Leftrightarrow x\in a'$.
+Given $a=\vset(A,f)$, let $A' = \exis{x:A}C(fx)$, and take $f' = f\circ i$, where $i : A' \to A$ is the obvious inclusion.  Then we can take $a' = \vset(A',f')$ and we have $x\in a\wedge C(x) \Leftrightarrow x\in a'$.  We need the assumption that $C$ lands in $\UU$ in order for $A' = \exis{x:A}C(fx)$ to be in $\UU$.
 \end{proof}
+
+It is also convenient to have a strictly syntactic criterion of separability, so that one can read off from the form of a class that it produces a $V$-set.  One such familiar condition is being ``$\Delta_0$", which means that it is built up from equality $x=_V y$ and membership $x\in y$, using only propositional logical operations $\neg, \land, \lor, \Rightarrow$ and ((-1)-truncated) quantifiers over sets, i.e.\ of the form $\exists(x\in a)$ and $\forall(y\in b)$.  
+
+\begin{lem}\label{lem:Delta0sep}
+If the class $C: V \to \prop$ is $\Delta_0$ in the above sense, then it is separable.
+\end{lem}
+
+\begin{proof}
+We need to do something to make $x=_V y$ small.
+\end{proof}
+
+We have shown that in type theory with a universe $\UU$, the cumulative hierarchy $V$ is a model of a ``constructive set theory" with many of the standard axioms, but without the usual \emph{strong collection} or \emph{subset collection} axioms of the set theory CZF.  We do not expect these to hold, since they are related to the interaction between the type-theoretic axiom of choice and the (setoid-like) definition of equality in the usual interpretation of CZF into type theory.  Indeed, our model $(V,\in)$ based on a cumulative hierarchy $V$ is a higher inductive type inside the system, rather than an external construction, and so it is not surprising that it differs from prior interpretations.
+
+Finally, consider the result of adding the axiom of choice for sets to our type theory, in the form  $\mathsf{AC}$ from \autoref{subsec:emacinsets} above.  This has the consequence that $\mathsf{LEM}$ then also holds, by \autoref{thm:1surj_to_surj_to_pem}, and so $\set$ is a topos with subobject classifier $\bool$, by \autoref{thm:settopos}.  In this case, we have $\prop = \bool:\UU$, and so \emph{all classes are separable}.
+
+\begin{lem}\label{lem:fullsep}
+In type theory with $\mathsf{AC}$ (for $\set$), the law of \emph{(full) separation} holds: given \emph{any} class $C : V \to \prop$ and $a : V$, the class $x \in a \land C(x)$ is a $V$-set. .
+\end{lem}
+
+\begin{thm}\label{thm:zfc}
+In type theory with $\mathsf{AC}$ (for $\set$) and a universe $\UU$, the cumulative hierarchy $V$ is a model of Zermelo-Frankel set theory with choice, ZFC.
+\end{thm}
+
+\begin{proof}
+We just need to construct power sets, but since we have $\mathsf{LEM}$ these are simply $\mathcal{P}(a) = \bool^{a}$.
+\end{proof}
+
 \input{ordcard}
 
 % Local Variables:

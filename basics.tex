@@ -687,7 +687,7 @@ For instance, path induction is the right-to-left direction of an equivalence as
   \eqvspaced{\Big(\prd{x:A}{p:a=x} B(x,p)\Big)}{B(a,\refl a)}
 \end{equation}
 for any $a:A$ and type family $B:\prd{x:A} (a=x) \to\type$.
-However, inductive types with recursion, like the natural numbers, have more complicated universal properties; see \autoref{cha:induction}.
+However, inductive types with recursion, such as the natural numbers, have more complicated universal properties; see \autoref{cha:induction}.
 
 
 \section{Sets and \texorpdfstring{$n$}{n}-types}
@@ -815,7 +815,7 @@ Such types may be regarded as \emph{propositions in a narrow sense}, and their s
 
 Type theory, formal or informal, is a collection of rules for manipulating types and their elements.
 But when writing mathematics informally in natural language, we generally use familiar words, particularly logical connectives such as ``and'' and ``or'', and logical quantifiers such as ``for all'' and ``there exists''.
-In contrast to set theory, type theory offers us more than one choice for how to regard these English phrases as operations on types.
+In contrast to set theory, type theory offers us more than one way to regard these English phrases as operations on types.
 This potential ambiguity needs to be resolved, by setting out local or global conventions, by introducing new annotations to informal mathematics, or both.
 This requires some getting used to, but is offset by the fact that because type theory permits this finer analysis of logic, we can represent mathematics more faithfully, with fewer ``abuses of language'' than in set-theoretic foundations.
 In this section we will explain the issues involved, and justify the choices we have made.
@@ -1304,18 +1304,23 @@ Among its important consequences is the following.
   Immediate from the two assumptions and the previous lemma.
 \end{proof}
 
-This fact also encapsulates a very useful technique of reasoning.
+The corollary also encapsulates a very useful technique of reasoning.
 Namely, suppose we know that $\brck A$, and we want to use this to construct an element of some other type $B$.
-We would like to use an element of $A$ in our construction of an element of $B$, but this is not allowable if $B$ is not a mere proposition, since we cannot apply the induction principle for the propositional truncation $\brck A$; the most we could hope to do is to show $\brck B$.
-
-Essentially this same problem arises in set-theoretic mathematics when all we can do is to show that some thing exists, but we want to actually have a particular such thing.
-Classically, however, we are not bothered by this because we have the axiom of choice, allowing us to simply choose such a thing.
-However, in homotopy type theory, the available forms of AC do not solve this problem, due to the presence of non-sets and the naturality imposed by the univalence axiom.
-
-Instead, what we can do is to extend $B$ with additional data which characterizes the object we wish to construct \emph{uniquely}.
+We would like to use an element of $A$ in our construction of an element of $B$, but this is allowed only if $B$ is a mere proposition, so that we can apply the induction principle for the propositional truncation $\brck A$; the most we could hope to do in general is to show $\brck B$.
+%
+Instead, we can extend $B$ with additional data which characterizes \emph{uniquely} the object we wish to construct.
 Specifically, we define a predicate $Q:B\to\type$ such that $\sm{x:B} Q(x)$ is a mere proposition.
-Then if from an element of $A$ we can construct an element $b:B$ such that $Q(b)$, then from $\brck A$ we can construct $\brck{\sm{x:B} Q(x)}$, and hence also $\sm{x:B} Q(x)$, and hence also an element of $B$.
-Here is an example.
+Then from an element of $A$ we construct an element $b:B$ such that $Q(b)$, hence from $\brck A$ we can construct $\brck{\sm{x:B} Q(x)}$, and because $\brck{\sm{x:B} Q(x)}$ is equivalent to $\sm{x:B} Q(x)$ an element of $B$ may be projected from it.
+We provide an example below.
+
+A similar issue arises in set-theoretic mathematics, although it manifests slightly
+differently. If we are trying to define a function $f: A \to B$, and depending on an
+element $a : A$ we are able to prove mere existence of some $b : B$, we are not done yet
+because we need to actually pinpoint an element of~$B$, not just prove its existence.
+One option is of course to refine the argument to unique existence of $b : B$, like we did in type theory. But in set theory the problem can often be avoided more simply by an application of the axiom of choice, which picks the required elements for us.
+In homotopy type theory, however, quite apart from any desire to avoid choice, the available forms of choice are simply less applicable, since they require that the domain of choice be a \emph{set}.
+Thus, if $A$ is not a set (such as perhaps a universe $\UU$), there is no consistent form of choice that will allow us to simply pick an element of $B$ for each $a : A$ to use in defining $f(a)$.
+
 
 \begin{thm}
   Suppose $P:\nat\to\type$ is such that each $P(n)$ is a mere proposition, and that $\prd{n:\nat} (P(n) + \neg P(n))$ (such a predicate is called \emph{decidable}).
@@ -1325,14 +1330,12 @@ Here is an example.
 \begin{proof}[Sketch of proof]
   The hypotheses imply that
   \[ \Big(\sm{n:\nat}P(n)\Big) \;\to\; \sm{n:\nat}\Big(P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)\Big). \]
-  In other words, if we have an $n$ such that $P(n)$, we can find the least such $n$: we algorithmically test every $m<n$, using decidability to do a case analysis, until we find some $m$ such that $P(m)$.
-  However, the right-hand side can be shown to be a mere proposition: there can be at most one least $n$ with $P(n)$.
+  In words, given $n$ such that $P(n)$, we can find the least such $n$: we test every $m<n$ in turn, using decidability to do a case analysis, until we find the first one that satisfies $P(m)$.
+  However, the right-hand side of the above implication is a mere proposition: if both $n$ and $n'$ are least numbers satisfying~$P$ then they must be equal.
   Therefore, we also have
   \[ \Brck{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Big(P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)\Big) \]
   from which the claim follows.
 \end{proof}
-
-We will see more examples of this in later chapters.
 
 \subsection{When are propositions truncated?}
 \label{subsec:when-trunc}

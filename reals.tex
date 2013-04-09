@@ -1528,7 +1528,7 @@ establish $\RC$ as an archimedean ordered field, we still need inverses.
   %
   Then, as $q$ ranges over $\Qp$, the types $(-\infty, q]$ and $[q, \infty)$ jointly cover
   $\setof{u : \RC | u \apart 0}$. On each such $[q, \infty)$ and $[-\infty, q)$ the
-  inverse function is obtained by an application of Lemma~\autoref{RC-extend-Q-Lipschitz}
+  inverse function is obtained by an application of \autoref{RC-extend-Q-Lipschitz}
   with Lipschitz constant $1/q^2$. Finally, \autoref{lem:images_are_coequalizers}
   guarantees that the inverse function factors uniquely through $\setof{ u : \RC | u
     \apart 0 }$.
@@ -1537,7 +1537,7 @@ establish $\RC$ as an archimedean ordered field, we still need inverses.
 We summarize the algebraic structure of $\RC$ with a theorem.
 
 \begin{thm} \label{RC-archimedean-ordered-field}
-  The Cauchy reals form an archimidean ordered field.
+  The Cauchy reals form an archimedean ordered field.
 \end{thm}
 
 \subsection{Cauchy Reals are Cauchy Complete}
@@ -1619,6 +1619,9 @@ differences and similarities between classical and constructive analysis we shal
 discuss just one topic---compactness of the closed interval $[0,1]$ and several theorems
 surrounding the concept.
 
+\subsubsection{Compactness of the closed interval}
+\label{sec:compactness-closed-interval}
+
 Compactness is no exception to the common phenomenon in constructive mathematics that
 classically equivalent notions bifurcate. The three most frequently used notions of
 compactness are:
@@ -1629,34 +1632,202 @@ compactness are:
 \item the Heine-Borel finite property ``every open cover has a finite subcover'',
 \end{enumerate}
 %
-Let us see how they fare in homotopy type theory.
+Let us see how they fare in homotopy type theory. We can use either the Dedekind or the
+Cauchy reals, so we shall denote the reals just as~$\R$. We first recall several basic
+definitions.
 
-\begin{defn} \label{defn:ctb-metric-space}
-  \textbf{TODO}
+\begin{defn} \label{defn:metric-space}
+  A \define{metric space $(M, d)$} is a set $M$ with a map $d : M \times M \to \R$
+  satisfying, for all $x, y, z : M$,
+  %
+  \begin{align*}
+    d(x,y) &\geq 0, &
+    d(x,y) &= d(y,x), \\
+    d(x,y) &= 0 \Leftrightarrow x = y, &
+    d(x,z) &\leq d(x,y) + d(y,z).
+  \end{align*}
+  %
 \end{defn}
 
+\begin{defn} \label{defn:complete-metric-space}
+  A \define{Cauchy approximation} in $M$ is a sequence $x : \Qp \to M$ satisfying
+  %
+  \begin{equation*}
+    \fall{\delta, \epsilon} d(x_\delta, x_\epsilon) < \delta + \epsilon.
+  \end{equation*}
+  %
+  The \define{limit} of a Cauchy approximation $x : \Qp to M$ is a point $\ell : M$
+  satisfying
+  %
+  \begin{equation*}
+    \fall{\epsilon, \theta : \Qp} d(x_\epsilon, \ell) < \epsilon + \theta.
+  \end{equation*}
+  %
+  A \define{complete metric space} is one in which every Cauchy sequence has a limit.
+\end{defn}
+
+\begin{defn} \label{defn:totall-bounded-metric-space}
+  For a positive rational $\epsilon$, an \define{$\epsilon$-net} in a metric space $(M,
+  d)$ is an element of
+  %
+  \begin{equation*}
+    \sm{n : \N}{x_1, \ldots, x_n : M}
+    \fall{y : M} \exis{k \leq n} d(x_k, y) < \epsilon.
+  \end{equation*}
+  %
+  In words, this is a finite sequence of points $x_1, \ldots, x_n$ such that every point
+  in $M$ merely is within $\epsilon$ of some~$x_k$.
+
+  A metric space $(M, d)$ is \define{totally bounded} when it has $\epsilon$-nets of all
+  sizes:
+  %
+  \begin{equation*}
+    \prd{\epsilon : \Qp} 
+    \sm{n : \N}{x_1, \ldots, x_n : M}
+    \fall{y : M} \exis{k \leq n} d(x_k, y) < \epsilon.
+  \end{equation*}
+\end{defn}
+
+Note that in in the definition of total boundedness we require pure existence of an
+$\epsilon$-net, not mere existence. This way we obtain a function which assigns to each
+$\epsilon : \Qp$ a specific $\epsilon$-net. Such a function might be called a ``modulus of
+total boundedness''. In general, when porting classical metric notions to homotopy type
+theory, we should use propositional truncation sparingly, typically so that we avoid
+asking for a non-constant map from $\R$ to $\Q$ or $\N$. For instance, here is the
+``correct'' definition of uniform continuity.
+
+\begin{defn} \label{defn:uniformly-continuous}
+  A map $f : M \to \R$ on a metric space is \define{uniformly continuous} when
+  %
+  \begin{equation*}
+    \prd{\epsilon : \Qp}
+    \sm{\delta : \Qp}
+    \fall{x y : M}
+    d(x,y) < \delta \Rightarrow |f(x) - f(y)| < \epsilon.
+  \end{equation*}
+  %
+  In particular, a uniformly continuous map has a modulus of uniform continuity,
+  which is a function that assings to each $\epsilon$ a corresponding $\delta$.
+\end{defn}
+
+Let us show that $[0,1]$ is compact in the first sense.
+
 \begin{thm} \label{analysis-interval-ctb}
-  The closed interval is Cauchy complete and totally bounded.
+  The closed interval $[0,1]$ is complete and totally bounded.
 \end{thm}
 
 \begin{proof}
-  \textbf{TODO}.
+  Given $\epsilon : \Qp$, there is $n : \N$ such that $2/k < \epsilon$, so we may take the
+  $\epsilon$-net $x_i = i/k$ for $i = 0, \ldots, k-1$. This is an $\epsilon$-net because,
+  for every $y : [0,1]$ there merely exists $i$ such that $0 \leq i < k$ and $(i -
+  1)/k < y < (i+1)/k$, and so $|y - x_i| < 2/k < \epsilon$.
+
+  For completeness of $[0,1]$, consider a Cauchy approximation $x : \Qp \to
+  [0,1]$ and let $\ell$ be its limit in $\R$. Since $\max$ and $\min$ are Lipschitz maps,
+  the retraction $r : \R \to [0,1]$ defined by $r(x) \defeq \max(0, \min(1, x))$ commutes
+  with limits of Cauchy approximations, therefore
+  %
+  \begin{equation*}
+    r(\ell) =
+    r (\lim x) =
+    \lim (r \circ x) =
+    r (\lim x) =
+    \ell,
+  \end{equation*}
+  %
+  which means that $0 \leq \ell \leq 1$, as required.
 \end{proof}
 
-The \textbf{Limited Principle of Omniscience (LPO)} states for every $\alpha : \N
-\to \bool$,
+We now come to the first difference between classical and constructive analysis.
+
+\begin{thm} \label{ctb-uniformly-continuous-sup}
+  %
+  A uniformly continuous map $f : M \to \R$ on a complete totally bounded metric space
+  $(M, d)$ has a supremum $m : \R$. For every $\epsilon : \Qp$ there exists $u : M$ such
+  that $|m - f(u)| < \epsilon$.
+\end{thm}
+
+\begin{proof}
+  Let $h : \Qp \to \Qp$ be the modulus of uniform continuity of~$f$.
+  We define a sequence $x : \Qp \to \R$ as follows: for any $\epsilon : \Q$ total
+  boundedness of $M$ gives a $h(\epsilon)$-net $y_0, \ldots, y_n$. Define
+  %
+  \begin{equation*}
+    x_\epsilon \defeq \max (f(y_0), \ldots, f(y_n)).
+  \end{equation*}
+  %
+  We claim that $x$ is a Cauchy approximation. Consider any $\epsilon, \eta : \Q$, so that
+  %
+  \begin{equation*}
+    x_\epsilon \jdeq \max (f(y_0), \ldots, f(y_n))
+    \quad\text{and}\quad
+    x_\eta \jdeq \max (f(z_0), \ldots, f(z_m))
+  \end{equation*}
+  %
+  for some $h(\epsilon)$-net $y_0, \ldots, y_n$ and $h(\eta)$-net $z_0, \ldots, z_m$.
+  Every $z_i$ is merely $h(\epsilon)$-close to some $y_j$, therefore $|f(z_i) - f(y_j)| <
+  \epsilon$, from which we may conclude that
+  %
+  \begin{equation*}
+    f(z_i) < \epsilon + f(y_j) \leq \epsilon + x_\epsilon,
+  \end{equation*}
+  %
+  therfore $x_\eta < \epsilon + x_\epsilon$. Symmetrically we obtain $x_\eta < \eta +
+  x_\eta$, therefore $|x_\eta - x_\epsilon| < \eta + \epsilon$.
+
+  We claim that $m \defeq \lim x$ is the supremum of~$f$. To prove that $f(x) \leq m$ for
+  all $x : M$ it suffices to show $\lnot (m < f(x))$. So suppose to the contrary that $m <
+  f(x)$. There is $\epsilon : \Qp$ such that $m + \epsilon < f(x)$. But now merely for
+  some $y_i$ participating in the definition of $x_\epsilon$ we get $|f(x) - f(y_i) <
+  \epsilon$, therefore $m < f(x) - \epsilon < f(y_i) \leq m$, a contradition.
+
+  We finish the proof by showing that $m$ satifies the second part of the theorem, because
+  it is then automatically a least upper bound. Given any $\epsilon : \Qp$, on one hand
+  $|m - fx_{\epsilon/2}| < 3 \epsilon/4$, and on the other $|f(x_{\epsilon/2}) - f(y_i)| <
+  epsilon/4$ merely for some $y_i$ participating in the definition of $x_{\epsilon/2}$,
+  therefore by taking $u \defeq y_i$ we obtain $|m - f(u)| < \epsilon$ by triangle
+  inequality.
+
+  Note: we never used completeness of~$M$.
+\end{proof}
+
+With respect to the classical theorem we would expect the weaker assumption that~$f$ is
+continuous, rather than uniformly continuous, and the stronger conclusion that $f$
+actually attains its supremum, rather than just approaches it. The classical proof
+proceeds as follows:
+%
+\begin{enumerate}
+\item $f$ is uniformly continuous because it is a continuous map on a complete totally
+  bounded space,
+\item by \autoref{ctb-uniformly-continuous-sup} there is a supremum $m$ and a sequence $x
+  : \N \to M$ such that $f(x_k)$ is within $2^{-k}$ of~$m$,
+\item select a convergent subsequence of $x$ and prove that its limit attains $m$.
+\end{enumerate}
+%
+But this proof clearly shows that the classical theorem is really a composition of three
+theorems. The first one uses the Heine-Borel property to turn continuous maps into
+uniformly continuous maps, the second one we just proved, and the third one relies on the
+Bolzano-Weirstraß property to extract a convergent subsequence. Since we have neither of
+these two properties, we cannot recover the first and the third steps. Nevertheless, the
+second step is often good enough for applications.
+
+Let us turn attention ot the Bolzano-Weirstraß property.
+The \define{Limited Principle of Omniscience (LPO)} states that for every $\alpha : \N \to
+\bool$,
 % 
 \begin{equation} \label{eq:lpo}
   (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
 \end{equation}
 %
 It is an instance of excluded middle which cannot be proved without additional axioms.
+Computationally speaking, we would not expect LPO to hold because it asks us to decide
+whether infinitely many values of a function are $\bfalse$.
 Often we can show that a statement in analysis is essentially classical because it implies
-LPO, for example as follows.
+LPO. The Bolzano-Weirstraß property is such an example.
   
 \begin{thm} \label{analysis-bw-lpo}
   %
-  The Bolzano-Weirstraß property implies the Limited Principle of Omniscience.
+  The Bolzano-Weirstraß property of $[0,1]$ implies the Limited Principle of Omniscience.
 \end{thm}
 
 \begin{proof}
@@ -1672,22 +1843,27 @@ LPO, for example as follows.
   %
   If the Bolzano-Weirstraß property holds, there exists a strictly increasing $f : \N \to
   \N$ such that $n \mapsto x_{f(n)}$ is a Cauchy sequence. For a sufficiently large $n :
-  \N$ the $n$-th term $x_{f(n)}$ is within $1/3$ of its limit. Either $x_{f(n)} < 2/3$ or
+  \N$ the $n$-th term $x_{f(n)}$ is within $1/6$ of its limit. Either $x_{f(n)} < 2/3$ or
   $x_{f(n)} > 1/3$. If $x_{f(n)} < 2/3$ then~$x_n$ converges to $0$ and so $\prd{n : \N}
-  \alpha(n) = \balse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
+  \alpha(n) = \bfalse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
   \alpha(n) = \btrue$.
 \end{proof}
 
-With completeness and total boundedness in hand we can prove some standard theorems in
-analysis.
+While the failure of Bolzano-Weirstraß property is not surpising from a computational
+point of view (you should try and fail devising an algorithm which extracts a convergent
+subsequence from any sequence $\N \to [0,1])$, keeping in mind at all times that in finite
+number of steps only real numbers can be computed only to a finite precision), it is not
+so easy to give up the Heine-Borel property.
 
-\begin{thm} \label{analysis-supremum}
-  
-\end{thm}
+\textbf{TODO: Heine-Borel}
+
+\subsubsection{The Mean Value Theorem}
+\label{sec:mean-value-theorem}
 
 \begin{thm} \label{analysis-mean-value}
-  
+  la la la
 \end{thm}
+
 
 
 \section{The Surreal Numbers}

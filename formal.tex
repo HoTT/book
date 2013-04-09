@@ -702,30 +702,6 @@ This presentation corresponds to the Martin-L\"{o}f rule in
 In $\ind{\idsym_A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
 $c$.
 
-%\subsection{$\wtypesym$-types}
-%
-%\begin{mathparpagebreakable}
-%  \inferrule*[right=$\wtypesym$-\form]{\Gamma,\ x \oftype A \vdash B(x)\UU_i}{\oftp\Gm \wtypesym_{x \oftype A} B(x)\UU_i}
-%\and
-%  \inferrule*[right=$\wtypesym$-\intro]{\Gamma,\ x \oftype A \vdash
-%  B(x)\UU_i}{\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A}
-%  B(u)] \vdash \synsup(x, y) : \wtypesym_{u \oftype A} B(u)}
-%\\
-%  \mathclap{\inferrule*[right=$\wtypesym$-\elim]
-%    {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \vdash C(w) \UU_i \\
-%     \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{1.55cm} \\
-%     \hspace{6cm} \vdash d(x, y, z) : C(\synsup(x, y))}
-%  {\Gamma,\ w \oftype \wtypesym_{x \oftype A} B(x) \vdash \textsf{wrec}_{d} (w) : C(w)}}
-%\\
-%  \mathclap{\inferrule*[right=$\wtypesym$-\comp]
-%  {\Gamma, \ w \oftype \wtypesym_{x \oftype A} B(x) \vdash C(w) \UU_i \\
-%   \Gamma,\ x \oftype A,\ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)],\ z \oftype \Pi_{u \oftype B(x)} C(\mathsf{app}(y, u)) \hspace{2cm} \\
-%    \hspace{6.45cm} \vdash d(x, y, z) : C(\synsup(x, y))}
-%  {\Gamma, \ x \oftype A, \ y \oftype [B(x), \wtypesym_{u \oftype A} B(u)]
-%  \vdash \textsf{wrec}_{d} (\synsup(x, y)) \hspace{2.8cm} \\
-%    \hspace{2.4cm} = d(x, y, \lambda u \oftype B(x). \mathsf{wrec}_d(\mathsf{app}(y, u))): C(\synsup(x, y))}}
-%\end{mathparpagebreakable}
-
 \subsection{The empty type $\emptyt$}
 
 \begin{mathparpagebreakable}
@@ -769,10 +745,6 @@ In $\ind{\emptyt}$, $x$ is bound in $C$.
 
 In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
 
-\subsection{Natural numbers}
-
-\textbf{TODO}
-
 \subsection{Coproduct types}
 
 \begin{mathparpagebreakable}
@@ -812,6 +784,91 @@ In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
 
 In $\ind{A+B}$, $x$ is bound in $C$, $a$ is bound in $c$, and $b$ is bound in
 $d$.
+
+\subsection{The natural number type}
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\N$-\form]
+  {\ }
+  {\oftp\Gm{\N}{\UU_i}}
+\and
+  \inferrule*[right=$\N$-\intro${}_1$]
+  {\ }
+  {\oftp\Gm{0}{\N}}
+\and
+  \inferrule*[right=$\N$-\intro${}_2$]
+  {\oftp\Gm{n}{\N}}
+  {\oftp\Gm{\suc(n)}{\N}}
+\and
+  \inferrule*[right=$\N$-\elim]
+  {\oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
+   \oftp\Gm{c_0}{C[0/x]} \\
+   \oftp{\Gm,\tmtp y\N,\tmtp{z}{C[y/x]}}{c_s}{C[\suc(y)/x]} \\
+   \oftp\Gm{n}{\N}}
+  {\oftp\Gm{\ind{\N}(x.C,c_0,y.z.c_s,n)}{C[n/x]}}
+\and
+  \inferrule*[right=$\N$-\comp${}_1$]
+  {\oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
+   \oftp\Gm{c_0}{C[0/x]} \\
+   \oftp{\Gm,\tmtp y\N,\tmtp{z}{C[y/x]}}{c_s}{C[\suc(y)/x]}}
+  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,y.z.c_s,0)}{c_0}{C[0/x]}}
+\and
+{\small
+  \inferrule*[right=$\N$-\comp${}_2$]
+  {\oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
+   \oftp\Gm{c_0}{C[0/x]} \\
+   \oftp{\Gm,\tmtp y\N,\tmtp{z}{C[y/x]}}{c_s}{C[\suc(y)/x]} \\
+   \oftp\Gm{n}{\N}}
+  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,y.z.c_s,\suc(n))}
+   {c_s[n,\ind{\N}(x.C,c_0,y.z.c_s,n)/y,z]}{C[\suc(n)/x]}}}
+\end{mathparpagebreakable}
+
+In $\ind{\N}$, $x$ is bound in $C$, and $y$ and $z$ are bound in $c_s$.
+
+\subsection{The circle type}
+
+Here we give an example of a higher inductive type. Note that these rules do not
+precisely follow the pattern of the ordinary inductive types above: the rules
+refer to the notions of transport and functoriality of maps
+(\autoref{sec:functors}), and the second computation rule is a propositional,
+not judgmental, equality. These differences are discussed in
+\autoref{sec:dependent-paths}.
+
+\begin{mathparpagebreakable}
+  \inferrule*[right=$\Sn^1$-\form]
+  {\ }
+  {\oftp\Gm{\Sn^1}{\UU_i}}
+\and
+  \inferrule*[right=$\Sn^1$-\intro${}_1$]
+  {\ }
+  {\oftp\Gm{\base}{\Sn^1}}
+\and
+  \inferrule*[right=$\Sn^1$-\intro${}_2$]
+  {\ }
+  {\oftp\Gm{\lloop}{\id[\Sn^1]{\base}{\base}}}
+\and
+  \inferrule*[right=$\Sn^1$-\elim]
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
+   \oftp{\Gm}{b}{C[\base/x]} \\
+   \oftp{\Gm}{\ell}{\id[\Sn^1]{\transfib{C}{\lloop}{b}}{b}} \\
+   \oftp\Gm{p}{\Sn^1}}
+  {\oftp\Gm{\ind{\Sn^1}(x.C,b,\ell,p)}{C[p/x]}}
+\and
+  \inferrule*[right=$\Sn^1$-\comp${}_1$]
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
+   \oftp{\Gm}{b}{C[\base/x]} \\
+   \oftp{\Gm}{\ell}{\id[\Sn^1]{\transfib{C}{\lloop}{b}}{b}}}
+  {\jdeqtp\Gm{\ind{\Sn^1}(x.C,b,\ell,\base)}{b}{C[\base/x]}}
+\and
+  \inferrule*[right=$\Sn^1$-\comp${}_2$]
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
+   \oftp{\Gm}{b}{C[\base/x]} \\
+   \oftp{\Gm}{\ell}{\id[\Sn^1]{\transfib{C}{\lloop}{b}}{b}}}
+  {\oftp\Gm{\Sn^1\text{-}\mathsf{loopcomp}}
+    {\apd{(\lam{y:\Sn^1} \ind{\Sn^1}(x.C,b,\ell,y))}{\lloop} = \ell}}
+\end{mathparpagebreakable}
+
+In $\ind{\Sn^1}$, $x$ is bound in $C$.
 
 \subsection{Further rules} \label{subsec:optional-rules}
 

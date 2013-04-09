@@ -5,19 +5,11 @@
 \def\pb{\save[]+<3.5mm,-3.5mm>*{\copy\pbbox} \restore}
 
 \newcommand{\comp}[2]{\ensuremath{{#2} \circ {#1}}}
-\newcommand{\contr}{\ensuremath{\mathsf{contr}}}
 \newcommand{\istype}[1]{\mathsf{is}\mbox{-}{#1}\mbox{-}\mathsf{type}}
 % \newcommand{\nplusone}{\ensuremath{(n\mbox{\rm{+}}1)}}
 % \newcommand{\nminusone}{\ensuremath{(n\mbox{\rm{-}}1)}}
 \newcommand{\nplusone}{\ensuremath{(n+1)}}
 \newcommand{\nminusone}{\ensuremath{(n-1)}}
-
-% Subuniverse
-\renewcommand{\P}{\ensuremath{\mathsf{P}}\xspace}
-% Reflector, projection and extension in an arbitrary reflective subuniverse
-\newcommand{\reflect}{\mathsf{r}}
-\newcommand{\project}{\mathsf{p}}
-\newcommand{\ext}{\mathsf{ext}}
 
 
 \chapter{\texorpdfstring{$n$}{n}-types and modalities}
@@ -62,16 +54,9 @@ We start by showing $n$-types are closed under certain operations and constructo
  Then $Y$ is also an $n$-type.
 \end{thm}
 
-By definition, a \textbf{retraction} is a function $p : X \to Y$ such that there exists a function $s : Y \to X$, called its \textbf{section} and a homotopy $\epsilon:\prd{y:Y} (p(s(y))=y)$.
-
 \begin{proof}
  We proceed by induction on $n$.
-
- For $n=-2$, assume $X$ is contractible; let $x_0 : X$ be the center of contraction.
- We claim that $y_0 \defeq p(x_0) : Y$ is a center of contraction for $Y$.
- Let $y : Y$; we need a path $y = y_0$.
- But we have $\epsilon_y : p(s(y)) = y$ and $\contr_{s(y)} : s(y) = x_0$, so by composition
- \[ \opp{\epsilon_y} \ct \ap{p}{\contr_{s(y)}} : y = p(x_0) \jdeq y_0 .\]
+ The base case $n=-2$ is \autoref{thm:retract-contr}.
 
  For the inductive step, assume that any retract of an $n$-type is an $n$-type, and that $X$ is an $\nplusone$-type.
  Let $y, y' : Y$; we must show that $\id{y}{y'}$ is an $n$-type.
@@ -208,7 +193,7 @@ Note that just as for \prop and \set, because $\istype{n}(X)$ is a mere proposit
 \begin{thm}\label{thm:hleveln-of-hlevelSn}
  For any $n \geq -2$, the type $\ntype{n}$ is an $\nplusone$-type.
 \end{thm}
-\begin{proof}[Proof of \autoref{thm:hleveln-of-hlevelSn}]
+\begin{proof}%[Proof of \autoref{thm:hleveln-of-hlevelSn}]
   Let $(X, p), (X', p') : \ntype{n}$; we need to show that $\id{(X, p)}{(X', p')}$ is an $n$-type.
   By the above observation, this type is equivalent to $\eqv{X}{X'}$.
   Next, we observe that the projection
@@ -317,10 +302,10 @@ For any type $A$ we have $(A+\neg A)\to(\neg\neg A\to A)$.
 
 \begin{proof}
 Suppose $x:A+\neg A$. We have two cases to consider.
-If $x\defeq\inl{a}$ for some $a:A$, then we have the constant function $\neg\neg A
-\to A$ which maps everything to $a$. If $x\defeq\inr{f}$ for some $f:\neg A$,
+If $x$ is $\inl(a)$ for some $a:A$, then we have the constant function $\neg\neg A
+\to A$ which maps everything to $a$. If $x$ is $\inr(f)$ for some $f:\neg A$,
 we have the term $g(f):\emptyt$ for any $g:\neg\neg A$. Hence we may use
-ex falso quodlibet to get a term of $A$ for any $g:\neg\neg A$.
+\textit{ex falso quodlibet} to obtain an element of $A$ for any $g:\neg\neg A$.
 \end{proof}
 
 \begin{thm}[Hedberg]\label{thm:hedberg}
@@ -337,7 +322,7 @@ There is, of course, a strong connection between this theorem and \autoref{thm:n
 The form of LEM denied by \autoref{thm:not-lem} clearly implies that every type has decidable equality, and hence is a set; which we know is
 not the case.
 
-Recall that in \autoref{thm:nat-set} we observe that $\nat$ is a set, using our characterization of its equality types in
+Recall that in \autoref{thm:nat-set} we observed that $\nat$ is a set, using our characterization of its equality types in
 \autoref{sec:compute-nat}.
 A more traditional proof of this theorem uses only~\eqref{eq:zero-not-succ} and~\eqref{eq:suc-injective}, rather than the full
 characterization of \autoref{thm:path-nat}, with \autoref{thm:hedberg} to fill in the blanks.
@@ -358,8 +343,8 @@ characterization of \autoref{thm:path-nat}, with \autoref{thm:hedberg} to fill i
   And in the second case,~\eqref{eq:suc-injective} yields $\neg(\suc(m)=\suc(n))$.
 \end{proof}
 
-Although Hedberg's theorem appears rather special to sets ($0$-types), Axiom K generalizes naturally to $n$-types.
-Note that the ordinary Axiom K states that for all $x:X$, the loop space $\Omega(X,x)$ (see \cref{def:loopspace}) is contractible.
+Although Hedberg's theorem appears rather special to sets ($0$-types), ``Axiom K'' generalizes naturally to $n$-types.
+Note that the ordinary Axiom K (as a property of a type $X$) states that for all $x:X$, the loop space $\Omega(X,x)$ (see \cref{def:loopspace}) is contractible.
 Since $\Omega(X,x)$ is always inhabited (by $\refl{x}$), this is equivalent to its being a mere proposition (a $(-1)$-type).
 Since $0 = (-1)+1$, this suggests the following generalization.
 
@@ -389,68 +374,85 @@ $n$-type.
 $n$-type.
 \end{proof}
 
-The following theorem will see how we may detect the homotopy level of a type using spheres.
-The basic idea is that if $A$ is an $n$-type, then all the maps from $\Sn^{n+1}$ to $A$ are null-homotopic.
+By induction and some slightly clever whiskering, we can obtain a generalization of the K property to $n>0$.
 
-\begin{defn}
-  A function $f:X\to A$ is said to be \emph{null-homotopic} if there is an $a:A$ such that $f=(\lam{x} a)$.
-  In other words, we define
-  \begin{equation*}
-    \mathsf{hNull}(f)\defeq\sm{a:A} (f=(\lam{x} a)) .
-  \end{equation*}
-\end{defn}
-
-\begin{lem}\label{lem:hnull_to_map_hnull}
-If a function $f:X\to A$ is null-homotopic, then so is
-\[\apfunc f : (x= y)\to (f(x)= f(y)).\]
-\end{lem}
-
-\begin{proof}
-Suppose $H:\sm{a:A} (f=\lam{x} a)$.  A proof by path induction on $p:x= y$ reveals that there is a homotopy
-\begin{equation*}
-\apfunc{f} = \lam{p} (\pi_2 H(y))^{-1}\ct (\pi_2 H(x)).\qedhere
-\end{equation*}
-\end{proof}
-
-Recall from \autoref{sec:suspension} that we can define the $n$-sphere $\Sn^n$ inductively as the suspension of the $(n-1)$-sphere, starting
-with $\Sn^{-1}\defeq \emptyt$.
-
-\begin{thm}\label{thm:sphere_n_hnull_to_hlevel_sn}
-For every $n:\N$, a type $A$ is an $n$-type if all the functions from $\Sn^{n+1}$ to $A$ are null-homotopic.
-\end{thm}
-
-\begin{proof}
-The exact statement which we will prove is
-\begin{equation*}
-\prd{n:\N}{A:\type} \big(\prd{f:\Sn^n\to A} \mathsf{hNull}(f)\big)\to\istype{\nminusone}(A).
-\end{equation*}
-The proof is by induction on $n$.  In the case $n\jdeq 0$ we have that
-\begin{equation*}
-\big(\prd{f:\Sn^{0}\to A} \mathsf{hNull}(f)\big)\simeq\prd{x,y:A} (x= y),
-\end{equation*}
-so we see immediately that a type $A$ is a proposition whenever every function $f:\Sn^0\to A$ is null-homotopic.
-
-Now suppose that we have a function of type
-\begin{equation*}
-\prd{A:\type}{f:\Sn^n\to A}{t:\Sn^n} (f(t)= f(\north^n)\big)\to\istype{\nminusone}(A).
-\end{equation*}
-and let $A$ be a type and let 
-\begin{equation*}
-H:\prd{f:\Sn^{n+1}\to A}{t:\Sn^{n+1}} (f(t)= f(\north^{n+1})).
-\end{equation*}
-We wish to show that $A$ is an $n$-type, which we will do by showing that $x= y$ is an $\nminusone$-type for each $x,y:A$.
-Suppose that $x,y:A$; then by the induction hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
-We have that $\Sn^n\to(x= y)$ is equivalent to
-\[\sm{f:S^{n+1}\to A} (f(\north^{n+1})= x)\times(f(\south^{n+1})= y).\]
-Suppose that $f:\Sn^n\to A$ is a function and suppose that $\tilde{f}$ corresponds to $f$ via the indicated equivalence. Then $\tilde{f}$ is
-null-homotopic, and hence $\lam{t} \tilde{f}(\merid^n(t))$ is null-homotopic (by \autoref{lem:hnull_to_map_hnull}).
-It follows that $f$ is null-homotopic.
-\end{proof}
-
-We conclude that:
 \begin{thm}\label{thm:ntype-nloop}
-  For any $n\ge -1$, a type $X$ is an $n$-type if and only if $\Omega^{n+1}(X,x)$ is contractible for all $x:X$.
+  For every $n\ge 0$, a type $A$ is an $n$-type if and only if $\Omega^{n+1}(A,a)$ is contractible for all $a:A$.
 \end{thm}
+\begin{proof}
+  The case $n=0$ is \autoref{thm:h-set-uip-K}.
+  By induction, suppose the statement holds for $n:\N$.
+  By \autoref{thm:hlevel-loops}, $A$ is an $(n+1)$-type iff $\Omega(A,a)$ is an $n$-type for all $a:A$.
+  By the inductive hypothesis, the latter is equivalent to saying that $\Omega^{n+1}(\Omega(A,a),p)$ is contractible for all $p:\Omega(A,a)$.
+
+  Since $\Omega^{n+2}(A,a) \defeq \Omega^{n+1}(\Omega(A,a),\refl{a})$, and $\Omega^{n+1} = \Omega^n \circ \Omega$, it will suffice to show that $\Omega(\Omega(A,a),p)$ is equal to $\Omega(\Omega(A,a),\refl{a})$, in the type $\pointed\type$ of pointed types.
+  For this, it suffices to give an equivalence
+  \[ g : \Omega(\Omega(A,a),p) \simeq \Omega(\Omega(A,a),\refl{a}) \]
+  which carries the basepoint $\refl{p}$ to the basepoint $\refl{\refl{a}}$.
+  For $q:p=p$, define $g(q):\refl{a} = \refl{a}$ to be the following composite:
+  \[ \refl{a} = p\ct \opp p \overset{q}{=} p\ct\opp p = \refl{a}, \]
+  where the path labeled ``$q$'' is actually $\apfunc{\lam{r} r\ct\opp p} (q)$.
+  Then $g$ is an equivalence because it is a composite of equivalences
+  \[ (p=p) \xrightarrow{\apfunc{\lam{r} r\ct\opp p}} (p\ct \opp p = p\ct \opp p) \xrightarrow{i\ct - \ct \opp i} (\refl{a} = \refl{a}). \]
+  using \autoref{eg:concatequiv,thm:paths-respects-equiv}, where $i:\refl{a} = p\ct \opp p$ is the canonical equality.
+  And it is evident that $g(\refl{p}) = \refl{\refl{a}}$.
+\end{proof}
+
+% \begin{defn}
+%   A function $f:X\to A$ is said to be \emph{null-homotopic} if there is an $a:A$ such that $f=(\lam{x} a)$.
+%   In other words, we define
+%   \begin{equation*}
+%     \mathsf{hNull}(f)\defeq\sm{a:A} (f=(\lam{x} a)) .
+%   \end{equation*}
+% \end{defn}
+
+% \begin{lem}\label{lem:hnull_to_map_hnull}
+% If a function $f:X\to A$ is null-homotopic, then so is
+% \[\apfunc f : (x= y)\to (f(x)= f(y)).\]
+% \end{lem}
+
+% \begin{proof}
+% Suppose $H:\sm{a:A} (f=\lam{x} a)$.  A proof by path induction on $p:x= y$ reveals that there is a homotopy
+% \begin{equation*}
+% \apfunc{f} = \lam{p} (\pi_2 H(y))^{-1}\ct (\pi_2 H(x)).\qedhere
+% \end{equation*}
+% \end{proof}
+
+% Recall from \autoref{sec:suspension} that we can define the $n$-sphere $\Sn^n$ inductively as the suspension of the $(n-1)$-sphere, starting
+% with $\Sn^{-1}\defeq \emptyt$.
+
+% \begin{thm}\label{thm:sphere_n_hnull_to_hlevel_sn}
+% For every $n:\N$, a type $A$ is an $n$-type if all the functions from $\Sn^{n+1}$ to $A$ are null-homotopic.
+% \end{thm}
+
+% \begin{proof}
+% The exact statement which we will prove is
+% \begin{equation*}
+% \prd{n:\N}{A:\type} \big(\prd{f:\Sn^n\to A} \mathsf{hNull}(f)\big)\to\istype{\nminusone}(A).
+% \end{equation*}
+% The proof is by induction on $n$.  In the case $n\jdeq 0$ we have that
+% \begin{equation*}
+% \big(\prd{f:\Sn^{0}\to A} \mathsf{hNull}(f)\big)\simeq\prd{x,y:A} (x= y),
+% \end{equation*}
+% so we see immediately that a type $A$ is a proposition whenever every function $f:\Sn^0\to A$ is null-homotopic.
+
+% Now suppose that we have a function of type
+% \begin{equation*}
+% \prd{A:\type}{f:\Sn^n\to A}{t:\Sn^n} (f(t)= f(\north^n)\big)\to\istype{\nminusone}(A).
+% \end{equation*}
+% and let $A$ be a type and let 
+% \begin{equation*}
+% H:\prd{f:\Sn^{n+1}\to A}{t:\Sn^{n+1}} (f(t)= f(\north^{n+1})).
+% \end{equation*}
+% We wish to show that $A$ is an $n$-type, which we will do by showing that $x= y$ is an $\nminusone$-type for each $x,y:A$.
+% Suppose that $x,y:A$; then by the induction hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
+% We have that $\Sn^n\to(x= y)$ is equivalent to
+% \[\sm{f:S^{n+1}\to A} (f(\north^{n+1})= x)\times(f(\south^{n+1})= y).\]
+% Suppose that $f:\Sn^n\to A$ is a function and suppose that $\tilde{f}$ corresponds to $f$ via the indicated equivalence. Then $\tilde{f}$ is
+% null-homotopic, and hence $\lam{t} \tilde{f}(\merid^n(t))$ is null-homotopic (by \autoref{lem:hnull_to_map_hnull}).
+% It follows that $f$ is null-homotopic.
+% \end{proof}
+
 
 \section{Truncations}
 \label{sec:truncations}
@@ -468,9 +470,9 @@ However, contractibility of $\Map_*(\Sn^{n+1},(A,a))$ is something that we can e
 
 We might first of all try to define $\trunc nA$ to be generated by a function $\tproj n- : A \to \trunc n A$, together with for each
 $r:\Sn^{n+1} \to \trunc n A$ and each $x:\Sn^{n+1}$, a path $s_r(x):r(x) = r(\base)$.
-
+%
 But this does not quite work, for the same reason that \autoref{rmk:spokes-no-hub} fails.
-Instead, we use the full ``hub and spoke'' construction.
+Instead, we use the full ``hub and spoke'' construction as in \autoref{sec:hubs-spokes}.
 
 Thus, we take $\trunc nA$ to be the higher inductive type generated by:
 \begin{itemize}
@@ -479,6 +481,7 @@ Thus, we take $\trunc nA$ to be the higher inductive type generated by:
 \item for each $r:\Sn^{n+1} \to \trunc n A$ and each $x:\Sn^{n+1}$, a \emph{spoke} path $s_r(x):r(x) = h(r)$.
 \end{itemize}
 
+\noindent
 The existence of these constructors is now enough to show:
 
 \begin{lem}
@@ -510,6 +513,8 @@ We extract this from the constructors in the usual way; it says that given $P:\t
 \item For each $r:\Sn^{n+1} \to \trunc n A$ and $r':\prd{x:\Sn^{n+1}}, P(r(x))$, and each $x:\Sn^{n+1}$, a dependent path
 $\dpath{P}{s_r(x)}{r'(x)}{h'(r,r')}$.
 \end{itemize}
+there exists a section $f:\prd{x:\trunc n A} P(x)$ with $f(\tproj n a) \jdeq g(a)$ for all $a:A$.
+To make this more useful, we reformulate it as follows.
 
 \begin{thm}\label{thm:truncn-ind}
   For any type family $P:\trunc n A \to \type$ such that each $P(x)$ is an $n$-type, and any function $g : \prd{a:A} P(\tproj n a)$, there
@@ -526,10 +531,12 @@ h(r))$.
 \end{proof}
 
 In particular, if $E$ is some $n$-type, we can consider the constant family of types equal to $E$ for every point of $A$.
-Thus, every map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by $\extend{f}(\tproj na)\defeq f(a)$.
-The induction principle also implies a nondependent $\eta$-rule, which says that if $E$ is an $n$-type and $g,g':\trunc nA\to{}E$ are such
+Thus, every map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by $\extend{f}(\tproj na)\defeq f(a)$; this is the \emph{recursion principle} for $\trunc n A$.
+
+The induction principle also implies a uniqueness principle for functions of this form.
+Namely, if $E$ is an $n$-type and $g,g':\trunc nA\to{}E$ are such
 that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$; hence $g=g'$.
-This implies the following universal property.
+This yields the following universal property.
 
 \begin{lem}[Universal property of truncations]\label{thm:trunc-reflective}
   Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
@@ -679,7 +686,9 @@ On the other hand, if $P(A)\defeq \unit$, then every type lies in \P, i.e.\ $\P=
   \[\function{(\reflect(A)\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}.\]
 \end{defn}
 
-In particular, this implies that for every $B:\P$ and $g:A\to{}B$ there is a unique map $\ext(g):\reflect(A)\to{}B$ making the following
+The notation $\reflect$ for this operation may seem slightly odd, but it will make more sense after \autoref{sec:modalities}.
+
+In particular, reflectivity implies that for every $B:\P$ and $g:A\to{}B$ there is a unique map $\ext(g):\reflect(A)\to{}B$ making the following
 diagram commute (up to homotopy, of course).
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
 \xymatrix{A \ar^{\project_A}[r] \ar_g[rd] \druppertwocell{=} & \reflect(A)
@@ -691,7 +700,7 @@ $\iota:\P\to\type$ with $\project_A$ as the unit, because the last $B$ in the
 universal property can be replaced by $\iota(B)$ given that $B$ is in $\P$.
 
 One example is truncations, as defined in \autoref{sec:truncations}.
-\begin{lem}[Truncations are reflective]
+\begin{lem}%[Truncations are reflective]
   $\typele{n}$ is a reflective subuniverse of $\type$, with $\reflect$
   given by $\trunc{n}{-}$.
 \end{lem}
@@ -1684,70 +1693,6 @@ precisely when $\proj1:\sm{x:A} P(x)\to A$ is an \modal-connected function.
 
 Every function is $(-2)$-connected and that a function is $(-1)$-connected precisely when it is surjective.
 
-\begin{defn}\label{defn:retract}
-A function $g:A\to B$ is said to be a retract of a function $f:X\to Y$ if there is a diagram
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & X & A \\ B & Y & B \\};
-\draw[ar] (m-1-1) -- node[above] {$s$} (m-1-2);
-\draw[ar] (m-1-2) -- node[above] {$r$} (m-1-3);
-\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
-\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left] {$g$} (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$s^\prime$} (m-2-2);
-\draw[ar] (m-2-2) -- node[below] {$r^\prime$} (m-2-3);
-\end{tikzpicture}
-\end{equation*}
-for which there are
-\begin{enumerate}
-\item a homotopy $R:r\circ s=\idfunc{A}$.
-\item a homotopy $R^\prime:r^\prime\circ s^\prime=\idfunc{B}$.
-\item a homotopy $L:f\circ s\sim s^=\circ g$.
-\item a homotopy $K:g\circ r\sim r^=\circ f$.
-\item paths $H(a)$ witnessing the commutativity of the square
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {g(r(s(a))) & r^\prime(f(s(a))) \\ g(a) & r^\prime(s^\prime(g(a))) \\};
-\draw[patharrow] (m-1-1) -- node[left] {$g(R(a)))$} (m-2-1);
-\draw[patharrow] (m-1-1) -- node[above] {$K(s(a))$} (m-1-2);
-\draw[patharrow] (m-2-2) -- node[below] {$R^\prime(g(a))$} (m-2-1);
-\draw[patharrow] (m-1-2) -- node[right] {$r^\prime(L(a))$} (m-2-2);
-\end{tikzpicture}
-\end{equation*}
-for every $a:A$. 
-\end{enumerate}
-\end{defn}
-
-
-\begin{lem}\label{lem:func_retract_to_fiber_retract}
-If a function $g:A\to B$ is a retract of a function $f:X\to Y$, then $\hfib{g}b$ is a retract of $\hfib{f}{s^\prime(b)}$
-for every $b:B$, where $s':B\to Y$ is as in definition \ref{defn:retract}. 
-\end{lem}
-
-\begin{proof}
-Suppose that $g:A\to B$ is a retract of $f:X\to Y$. Then we have the functions
-\begin{align*}
-\varphi & :=\lambda\pairr{a,p}.\pairr{s(a),s^\prime(p)\bullet L(a)} & & :\hfiber{g}b\to\hfib{f}{s^\prime(b)}\\
-\psi & := \lambda\pairr{x,q}.\pairr{r(x),R^\prime(b)\bullet r^\prime(q)\bullet K(x)} & &
-:\hfib{f}{s^\prime(b)}\to\hfib{g}b
-\end{align*}
-Then we have $\psi(\varphi(\pairr{a,p}))\equiv\pairr{r(s(a)),R^\prime(b)\bullet r^\prime(s^\prime(p)\bullet L(a))\bullet K(s(a))}$. Our goal
-is to show that
-\begin{equation*}
-\prd{b:B}(\pairr{a,p}:\hfib{g}b),\ \psi(\varphi(\pairr{a,p}))= \pairr{a,p},
-\end{equation*}
-which is of course equivalent to the type
-\begin{equation*}
-\prd{a:A}\psi(\varphi(\pairr{a,\idfunc{g(a)}})=\pairr{a,\idfunc{g(a)}}
-\end{equation*}
-By assumption, we have the path $R(a):r(s(a))= a$. So it is left to show that there is a path
-\begin{equation*}
-R(a)\cdot (R^\prime(g(a))\bullet r^\prime(L(a))\bullet K(s(a)))= \idfunc{g(a)}.
-\end{equation*}
-This transportation computes as $R^\prime(g(a))\bullet r^\prime(L(a))\bullet K(s(a))\bullet g(R(a))$, so the required path is given by
-$H(a)$. This finishes the proof that $\hfib{g}b$ is a retract of $\hfib{f}{s^\prime(b)}$ for every $b:B$.
-\end{proof}
-
 
 \begin{lem}
 Suppose that $g$ is a retract of a $\modal$-connected function $f$, then $g$ is
@@ -2173,7 +2118,7 @@ the type $\ismodal(\{A\mid P\})$ may be replaced by the type
 \begin{equation*}
 \mathsf{atMostOne}(P) \equiv  \prd{x,y:A} P(x)\to P(y)\to(x= y)
 \end{equation*}
-However, a term of $\ismodal_{-1}(P)$ can be deduced from a term of $\mathsf{atMostOne}(P)$. This is the content of the following
+However, a term of $\ism{-1}(P)$ can be deduced from a term of $\mathsf{atMostOne}(P)$. This is the content of the following
 lemma. In order to prove this, we will use that there is an equivalence
 \begin{equation*}
 \mathsf{isprop}(P)\simeq \prd{x,y:A} P(x)\to P(y)\to\iscontr(x= y)
@@ -2187,7 +2132,7 @@ $x= x^\prime$ for any two terms $\pairr{x,u},\pairr{x^\prime,u^\prime}:\sm{x:A}{
 \begin{lem}\label{lem:atmostone_to_atlevel}
 For any $P:A\to\type$, there is a function of type
 \begin{equation*}
-\mathsf{atMostOne}(P)\to\ismodal_{-1}(P).
+\mathsf{atMostOne}(P)\to\ism{-1}(P).
 \end{equation*}
 \end{lem}
 

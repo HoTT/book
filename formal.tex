@@ -98,8 +98,10 @@ introduce a third primitive judgment
 \[
   \vdash \Gamma \ctx
 \]
-to express that notion.  Intuitively, this requires that each $A_i$ is a valid
+to express the notion that each $A_i$ is a valid
 type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.
+Each valid type arises as a an object of a universe, but the universe of origin
+is not recorded in the context.
 
 We write $B[a/x]$ for the substitution of a term $a$ for free occurrences of
 the variable $x$ in the term $B$, with possible renaming for avoiding capture
@@ -501,7 +503,7 @@ necessary to prove the judgments above the line. A valid derivation of a
 judgment is a tree constructed from these inference rules, whose final
 conclusion is the judgment in question, and none of whose component rules has
 unresolved hypotheses. (In other words, all the leaves of the tree must be
-rules with no hypotheses, such as $\Vble$ and $\UU$-\intro.)
+instances of the only rule with no hypotheses, namely $\ctx-\textsc{emp}$.)
 
 
 For example, the following is part of a derivation of $\oftp{\emptyctx}{\lam{x:\unit}
@@ -628,12 +630,14 @@ introductory form.
 \end{itemize}
 
 \begin{mathparpagebreakable}
+  \def\premise{\oftp{\Gm}{A}{\UU_i} \and \oftp{\Gm,\tmtp xA}{B}{\UU_i}}
+  \def\npremise{\wfctx {\Gm, \tmtp x A, \tmtp y B}}
   \inferrule*[right=$\Pi$-\form]
-  {\oftp{\Gm,\tmtp xA}{B}{\UU_i}}
-  {\oftp\Gm{\tprd{x:A}B}{\UU_i}}
+    \premise
+    {\oftp\Gm{\tprd{x:A}B}{\UU_i}}
 \and
   \inferrule*[right=$\Pi$-\intro]
-  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\ \oftp{\Gm,\tmtp xA}{b}{B}}
+  {\oftp{\Gm,\tmtp xA}{b}{B}}
   {\oftp\Gm{\lam{x:A} b}{\tprd{x:A} B}}
 \and
   \inferrule*[right=$\Pi$-\elim]
@@ -641,7 +645,7 @@ introductory form.
   {\oftp\Gm{f(a)}{B[a/x]}}
 \and
   \inferrule*[right=$\Pi$-\comp]
-  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\ \oftp{\Gm,\tmtp xA}{b}{B} \\ \oftp\Gm{a}{A}}
+  {\oftp{\Gm,\tmtp xA}{b}{B} \\ \oftp\Gm{a}{A}}
   {\jdeqtp\Gm{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
 \end{mathparpagebreakable}
 
@@ -659,33 +663,37 @@ section, we can instead use the context to express dependency without involving
 other type formers.
 
 \begin{mathparpagebreakable}
+  \def\premise{\oftp{\Gm}{A}{\UU_i} \and \oftp{\Gm,\tmtp xA}{B}{\UU_i}}
+  \def\npremise{\wfctx {\Gm, \tmtp x A, \tmtp y B}}
   \inferrule*[right=$\Sigma$-\form]
-  {\oftp{\Gm,\tmtp xA}{B}{\UU_i}}
-  {\oftp\Gm{\tsm{x:A} B}{\UU_i}}
-\and
+    \premise
+    {\oftp\Gm{\tsm{x:A} B}{\UU_i}}
+  \and
   \inferrule*[right=$\Sigma$-\intro]
-  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\
-   \oftp\Gm{a}{A} \\ \oftp\Gm{b}{B[a/x]}}
-  {\oftp\Gm{\tup ab}{\tsm{x:A} B}}
-\and
+    {\npremise \\\\
+     \oftp\Gm{a}{A} \\ \oftp\Gm{b}{B[a/x]}}
+    {\oftp\Gm{\tup ab}{\tsm{x:A} B}}
+  \and
   \inferrule*[right=$\Sigma$-\elim]
-  {\oftp{\Gm,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
-   \oftp{\Gm,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]} \\
-   \oftp\Gm{p}{\tsm{x:A} B}}
-  {\oftp\Gm{\ind{\tsm{x:A} B}(y.C,a.b.g,p)}{C[\fst(p),\snd(p)/x,y]}}
-\and
+    {\wfctx {\Gm, \tmtp z {\tsm{x:A} B}, \tmtp w C} \\
+     \oftp{\Gm,\tmtp x A,\tmtp y B}{g}{C[\tup x y/z]} \\\\
+     \oftp\Gm{p}{\tsm{x:A} B}}
+    {\oftp\Gm{\ind{\tsm{x:A} B}(z.C,x.y.g,p)}{C[p/z]}}
+  \and
   \inferrule*[right=$\Sigma$-\comp]
-  {\oftp{\Gm,\tmtp xA}{B}{\UU_i} \\
-   \oftp\Gm{a'}{A} \\ \oftp\Gm{b'}{B[a'/x]} \\
-   \oftp{\Gm,\tmtp y{\tsm{x:A} B}}{C}{\UU_i} \\
-   \oftp{\Gm,\tmtp aA,\tmtp b{B[a/x]}}{g}{C[\tup ab/y]}}
-  {\jdeqtp\Gm{\ind{\tsm{x:A} B}(y.C,a.b.g,\tup{a'}{b'})}{g[a',b'/a,b]}{C[a',b'/a,b]}}
+    { \wfctx {\Gm, \tmtp z {\tsm{x:A} B}, \tmtp w C}
+      \\
+      \oftp{\Gm, \tmtp x A, \tmtp y B}{g}{C[\tup x y/z]}
+      \\\\
+      \oftp\Gm{a'}{A} \\ \oftp\Gm{b'}{B[a'/x]} 
+    }
+    {\jdeqtp\Gm{\ind{\tsm{x:A} B}(y.C,x.y.g,\tup{a'}{b'})}{g[a',b'/x,y]}{C[\tup {a'} {b'}/z]}}
 \end{mathparpagebreakable}
 
 The expression $\tsm{x:A} B$ binds free occurrences of $x$ in $B$. Furthermore, because
 $\ind{\tsm{x:A} B}$ has some arguments with free variables beyond those in $\Gm$,
 we bind (following the variable names above) $y$ in $C$, and $a$ and $b$ in $g$.
-These bindings are written as $y.C$ and $a.b.g$, to indicate the names of the bound
+These bindings are written as $y.C$ and $x.y.g$, to indicate the names of the bound
 variables, as discussed in \autoref{formal-intro}. In particular, we treat $\ind{\tsm{x:A} B}$ as a primitive,
 two of whose arguments contain binders; this is superficially similar to, but
 different from, $\ind{\tsm{x:A} B}$ being a function that takes functions as
@@ -705,17 +713,17 @@ This presentation corresponds to the Martin-L\"{o}f rule in
   {\oftp\Gm{\id[A]{a}{b}}{\UU_i}}
 \and
   \inferrule*[right=$\idsym$-\intro]
-  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{a}{A}}
+  {\oftp\Gm{a}{A}}
   {\oftp\Gm{\refl a}{\id[A]aa}}
 \and
   \inferrule*[right=$\idsym$-\elim]
-  {\oftp{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
+  {\wfctx{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}, \tmtp w C} \\
    \oftp{\Gm,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gm{a}{A} \\ \oftp\Gm{b}{A} \\ \oftp\Gm{p'}{\id[A]ab}}
   {\oftp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p)}{C[a,b,p'/x,y,p]}}
 \and
   \inferrule*[right=$\idsym$-\comp]
-  {\oftp{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
+  {\wfctx{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}, \tmtp w C} \\
    \oftp{\Gm,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gm{a}{A}}
   {\jdeqtp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a,a,\refl a/x,y,p]}}
@@ -732,8 +740,8 @@ $c$.
   {\oftp\Gm\emptyt{\UU_0}}
 \and
   \inferrule*[right=$\emptyt$-\elim]
-  {\oftp{\Gm,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\Gm{z}{\emptyt}}
-  {\oftp\Gm{\ind{\emptyt}(x.C,z)}{C[z/x]}}
+  {\wfctx{\Gm,\tmtp x\emptyt,\tmtp w C} \\ \oftp\Gm{a}{\emptyt}}
+  {\oftp\Gm{\ind{\emptyt}(x.C,a)}{C[a/x]}}
 \end{mathparpagebreakable}
 
 In $\ind{\emptyt}$, $x$ is bound in $C$.  The empty type comes with no introduction rule and no computation rule.
@@ -750,13 +758,13 @@ In $\ind{\emptyt}$, $x$ is bound in $C$.  The empty type comes with no introduct
   {\oftp\Gm{\ttt}{\unit}}
 \and
   \inferrule*[right=$\unit$-\elim]
-  {\oftp{\Gm,\tmtp x\unit}{C}{\UU_i} \\
+  {\wfctx{\Gm,\tmtp x\unit, \tmtp w C} \\
    \oftp{\Gm,\tmtp y\unit}{c}{C[y/x]} \\
-   \oftp\Gm{z}{\unit}}
-  {\oftp\Gm{\ind{\unit}(x.C,y.c,z)}{C[y/x]}}
+   \oftp\Gm{a}{\unit}}
+  {\oftp\Gm{\ind{\unit}(x.C,y.c,a)}{C[a/x]}}
 \and
   \inferrule*[right=$\unit$-\comp]
-  {\oftp{\Gm,\tmtp x\unit}{C}{\UU_i} \\
+  {\wfctx{\Gm,\tmtp x\unit,\tmtp w C} \\
    \oftp{\Gm,\tmtp y\unit}{c}{C[y/x]}}
   {\jdeqtp\Gm{\ind{\unit}(x.C,y.c,\ttt)}{c[\ttt/y]}{C[\ttt/x]}}
 \end{mathparpagebreakable}
@@ -769,33 +777,33 @@ In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
   \inferrule*[right=$+$-\form]
   {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i}}
   {\oftp\Gm{A+B}{\UU_i}}
-\and
+\\\\
   \inferrule*[right=$+$-\intro${}_1$]
-  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i} \\ \oftp\Gm{a}{A}}
+  {\wfctx {\Gm, \tmtp w A} \\ \wfctx {\Gm,\tmtp w B} \\\\ \oftp\Gm{a}{A}}
   {\oftp\Gm{\inl(a)}{A+B}}
 \and
   \inferrule*[right=$+$-\intro${}_2$]
-  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i} \\ \oftp\Gm{b}{B}}
+  {\wfctx {\Gm, \tmtp w A} \\ \wfctx {\Gm,\tmtp w B} \\\\ \oftp\Gm{b}{B}}
   {\oftp\Gm{\inr(b)}{A+B}}
-\and
+\\\\
   \inferrule*[right=$+$-\elim]
-  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
+  {\wfctx{\Gm,\tmtp x{(A+B)},\tmtp w C} \\
    \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\
-   \oftp\Gm{z}{A+B}}
-  {\oftp\Gm{\ind{A+B}(x.C,a.c,b.d,z)}{C[z/x]}}
+   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
+   \oftp\Gm{e}{A+B}}
+  {\oftp\Gm{\ind{A+B}(x.C,a.c,b.d,e)}{C[e/x]}}
 \and
   \inferrule*[right=$+$-\comp${}_1$]
-  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
+  {\wfctx{\Gm,\tmtp x{(A+B)},\tmtp w C} \\
    \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
    \oftp\Gm{a'}{A}}
   {\jdeqtp\Gm{\ind{A+B}(x.C,a.c,b.d,\inl(a'))}{c[a'/a]}{C[\inl(a')/x]}}
 \and
   \inferrule*[right=$+$-\comp${}_2$]
-  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
+  {\wfctx{\Gm,\tmtp x{(A+B)},\tmtp w C} \\
    \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\
+   \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
    \oftp\Gm{b'}{B}}
   {\jdeqtp\Gm{\ind{A+B}(x.C,a.c,b.d,\inr(b'))}{d[b'/b]}{C[\inr(b')/x]}}
 \end{mathparpagebreakable}
@@ -823,7 +831,7 @@ $d$.
   {\oftp\Gm{\suc(n)}{\N}}
 \and
   \inferrule*[right=$\N$-\elim]
-  {\premise \\ \oftp\Gm{n}{\N}}
+  {\premise \\\\ \oftp\Gm{n}{\N}}
   {\oftp\Gm{\ind{\N}(x.C,c_0,x.y.c_s,n)}{C[n/x]}}
 \and
   \inferrule*[right=$\N$-\comp${}_1$]
@@ -832,7 +840,7 @@ $d$.
 \and
 {\small
   \inferrule*[right=$\N$-\comp${}_2$]
-  {\premise \\ \oftp\Gm{n}{\N}}
+  {\premise \\\\ \oftp\Gm{n}{\N}}
   {\jdeqtp\Gm{\ind{\N}(x.C,c_0,x.y.c_s,\suc(n))}
    {c_s[n,\ind{\N}(x.C,c_0,x.y.c_s,n)/x,y]}{C[\suc(n)/x]}}}
 \end{mathparpagebreakable}

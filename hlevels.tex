@@ -10,17 +10,33 @@
 % \newcommand{\nminusone}{\ensuremath{(n\mbox{\rm{-}}1)}}
 \newcommand{\nplusone}{\ensuremath{(n+1)}}
 \newcommand{\nminusone}{\ensuremath{(n-1)}}
+\newcommand{\fact}{\textsf{fact}}
 
 
-\chapter{\texorpdfstring{$n$}{n}-types and modalities}
+\chapter{\texorpdfstring{$n$}{n}-types}
 \label{cha:hlevels}
 
-\section{$n$-types}
+One of the basic notions of homotopy theory is that of a \emph{homotopy $n$-type}: a space containing no interesting homotopy above dimension $n$.
+For instance, a homotopy $0$-type is essentially a set, containing no nontrivial paths, while a homotopy $1$-type may contain nontrivial paths, but no nontrivial paths between paths.
+Homotopy $n$-types are also called \emph{$n$-truncated spaces}.
+We have mentioned this notion already in \autoref{sec:basics-sets}; our first goal in this chapter is to give it a formal definition in homotopy type theory.
 
-In homotopy theory one often talks about $n$-types, i.e.\ spaces whose homotopy groups vanish above $n$.
-We mentioned in \autoref{sec:basics-sets} that a similar notion can be defined in type theory, with the $0$-types being the sets and continuing inductively.
-As mentioned in \autoref{sec:logic,sec:contractibility}, it turns out to be convenient to start two levels lower, with the $(-1)$-types being the mere propositions and the $(-2)$-types the contractible ones.
-We now define these formally for all $n$.
+A dual notion to truncatedness is connectedness: a space is \emph{$n$-connected} if it has no interesting homotopy in dimensions $n$ and \emph{below}.
+For instance, a space is $0$-connected if it has only one connected component, and $1$-connected (also called ``simply connected'') if it also has no nontrivial loops (though it may have nontrivial higher loops between loops).
+
+The duality between truncatedness and connectedness is most easily seen by extending both notions to maps.
+We call a map \emph{$n$-truncated} or \emph{$n$-connected} if all its fibers are so.
+Then $n$-connected and $n$-truncated maps form the two classes of maps in an \emph{orthogonal factorization system}, i.e.\ every map factors uniquely as an $n$-connected map followed by an $n$-truncated one.
+
+In the case $n=-1$, the $n$-truncated maps are the monomorphisms and the $n$-connected maps are the surjections, as defined in \autoref{sec:mono-surj}.
+Thus, the $n$-connected factorization system is a massive generalization of the standard image factorization of a function between sets into a surjection followed by an injection.
+At the end of this chapter, we sketch briefly an even more general theory: any type-theoretic \emph{modality} gives rise to an analogous factorization system.
+
+
+\section{$n$-types}
+\label{sec:n-types}
+
+As mentioned in \autoref{sec:logic,sec:contractibility}, it turns out to be convenient to define $n$-types starting two levels below zero, with the $(-1)$-types being the mere propositions and the $(-2)$-types the contractible ones.
 
 \begin{defn}\label{def:hlevel}
   Define the predicate $\istype{n} : \type \to \type$ for $n \geq -2$ by recursion as follows:
@@ -39,15 +55,17 @@ We now define these formally for all $n$.
   Either way, we can prove theorems about $n$-types by induction on $n$, with $n = -2$ as the base case.
 \end{rmk}
 
-As in classical homotopy theory, a type does not have to be an $n$-type for any number $n$.
-We will see some counterexamples in \autoref{sec:whitehead}.
-
 \begin{eg}
   We saw in \autoref{thm:prop-minusonetype} that $X$ is a $(-1)$-type if and only if it is a mere proposition.
   Therefore, $X$ is a $0$-type if and only if it is a set.
 \end{eg}
 
-We start by showing $n$-types are closed under certain operations and constructors.
+We have also seen that there are types which are not sets (\autoref{thm:type-is-not-a-set}).
+So far, however, we have not shown for any $n>0$ that there exist types which are not $n$-types.
+In \autoref{cha:homotopy}, however, we will show that the $(n+1)$-sphere $\Sn^{n+1}$ is not an $n$-type.
+Moreover, in \autoref{sec:whitehead} will give an example of a type that is not an $n$-type for \emph{any} (finite) number $n$.
+
+We begin the general theory of $n$-types by showing they are closed under certain operations and constructors.
 
 \begin{thm}\label{thm:h-level-retracts}
  Let $p : X \to Y$ be a retraction and suppose that $X$ is an $n$-type, for any $n\geq -2$.
@@ -72,7 +90,7 @@ We start by showing $n$-types are closed under certain operations and constructo
  But this follows easily from \autoref{lem:htpy-natural}.
 \end{proof}
 
-As an immediate corollary we obtain the stability of $n$-types under equivalence:
+As an immediate corollary we obtain the stability of $n$-types under equivalence (which is also immediate from univalence):
 
 \begin{cor}\label{cor:preservation-hlevels-weq}
  If $\eqv{X}{Y}$ and $X$ is an $n$-type, then so is $Y$.
@@ -141,6 +159,12 @@ We now show that $n$-types are preserved by most type forming operations.
    induction hypothesis.
 \end{proof}
 
+As a special case, if $A$ and $B$ are $n$-types, so is $A\times B$.
+Note also that \autoref{thm:hlevel-cumulative} implies that if $A$ is an $n$-type, then so is $\id[A]xy$ for any $x,y:A$.
+Combining this with \autoref{thm:ntypes-sigma}, we see that for any functions $f:A\to C$ and $g:B\to C$ between $n$-types, the \define{pullback}
+\[ A\times_C B \defeq \sm{x:A}{y:B} (f(x)=g(y)) \]
+is also an $n$-type.
+More generally, $n$-types are closed under all \emph{limits}.
 
 \begin{thm}\label{thm:hlevel-prod}
  Let $n\geq -2$, and let $A : \type$ and $B : A \to \type$.
@@ -154,7 +178,7 @@ We now show that $n$-types are preserved by most type forming operations.
   For the inductive step, let $f, g : \prd{a:A}B(a)$.
   We need to show that $\id{f}{g}$ is an $n$-type.
   By function extensionality and closure of $n$-types under equivalence, it suffices to show that $\prd{a : A} (\id[B(a)]{f(a)}{g(a)})$ is an $n$-type.
-  But this follows from the inductive hypothesis.
+  This follows from the inductive hypothesis.
 \end{proof}
 
 As a special case of the above theorem, the function space $A \to B$ is an $n$-type provided that $B$ is an $n$-type.
@@ -182,7 +206,7 @@ But this follows from the induction hypothesis applied to the type $(x =_X x')$.
 Finally, we show that the type of $n$-types is itself an $\nplusone$-type.
 We define this to be:
 \[\ntype{n} \defeq \sm{X : \type} \istype{n}(X) \]
-If necessary, we may specify the universe $\UU$ by writing $\ntype{n}_\UU$.
+%If necessary, we may specify the universe $\UU$ by writing ${\ntype{n}}_\UU$.
 In particular, we have $\prop \defeq \ntype{(-1)}$ and $\set \defeq \ntype{0}$, as defined in \autoref{cha:basics}.
 Note that just as for \prop and \set, because $\istype{n}(X)$ is a mere proposition, by \autoref{thm:path-subset} for any $(X,p), (X',p'):\ntype{n}$ we have
 \begin{align*}
@@ -203,7 +227,7 @@ Note that just as for \prop and \set, because $\istype{n}(X)$ is a mere proposit
 
   In the case $n=-2$, this argument shows that $\eqv{X}{X'}$ is a $(-1)$-type --- but it is also inhabited, since any two contractible types
 are equivalent to \unit, and hence to each other.
-  Thus, $\eqv{X}{X'}$ it is also a $(-2)$-type.
+  Thus, $\eqv{X}{X'}$ is also a $(-2)$-type.
 \end{proof}
 
 \section{UIP and Hedberg's theorem}
@@ -225,6 +249,7 @@ Here is another equivalent characterization, involving Streicher's ``axiom K" \c
 \end{proof}
 
 We stress that \emph{we} are not assuming the K principle as an axiom!
+It is simply a property which a particular type may or may not satisfy (which is equivalent to being a set).
 
 The following theorem is another useful way to show that types are sets.
 
@@ -551,6 +576,45 @@ This yields the following universal property.
   And the map $\extend{g\circ\tprojf n}$ is equal to $g$, because they both send $\tproj na$ to $g(\tproj na)$.
 \end{proof}
 
+\begin{cor}
+  A type $A$ is an $n$-type if and only if the map $\tproj n- : A \to \trunc n A$ is an equivalence.
+\end{cor}
+\begin{proof}
+  ``If'' follows from closure of $n$-types under equivalence.
+  On the other hand, if $A$ is an $n$-type, we can define $\ext(\idfunc[A]):\trunc n A\to{}A$.
+  Then we have $\ext(\idfunc[A])\circ\tproj n-=\idfunc[A]:A\to{}A$ by
+  definition.  In order to prove that
+  $\tproj n-\circ\ext(\idfunc[A])=\idfunc[\trunc nA]$, we only need to prove
+  that $\tproj n-\circ\ext(\idfunc[A])\circ\tproj n-=
+  \idfunc[\trunc nA]\circ\tproj n-$.
+  This is again true:
+  \[\xymatrix{
+    A \ar^{\tproj n-}[r] \ar_{\idfunc[A]}[rd] &
+    \trunc nA \ar^>>>{\ext(\idfunc[A])}[d] \ar@/^40pt/^{\idfunc[\trunc nA]}[dd] \\
+    & A \ar_{\tproj n-}[d] \\
+    & \trunc nA}\]
+\end{proof}
+
+The category of $n$-types also has some special properties not possesed by all reflective subcategories.
+For instance, the reflector $\trunc n-$ preserves finite products.
+
+\begin{thm}\label{cor:trunc-prod}
+  For any types $A$ and $B$, the induced map $\trunc -{A\times B} \to \trunc nA \times \trunc nB$ is an equivalence.
+\end{thm}
+\begin{proof}
+  It suffices to show that $\trunc nA \times \trunc nB$ has the same universal property as $\trunc n{A\times B}$.
+  Thus, let $C$ be an $n$-type; we have
+  \begin{align*}
+    (\trunc nA \times \trunc nB \to C)
+    &= (\trunc nA \to (\trunc nB \to C))\\
+    &= (\trunc nA \to (B \to C))\\
+    &= (A \to (B \to C))\\
+    &= (A \times B \to C)
+  \end{align*}
+  using the universal properties of $\trunc nB$ and $\trunc nA$, along with the fact that $B\to C$ is an $n$-type since $C$ is.
+  It is straightforward to verify that this equivalence is given by composing with $\tproj n- \times \tproj n-$, as needed.
+\end{proof}
+
 We can characterize the path spaces of a truncation using the same method that we used in \autoref{sec:compute-coprod,sec:compute-nat} for
 coproducts and natural numbers (and which we will use in \autoref{cha:homotopy} to calculate homotopy groups).
 Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
@@ -659,6 +723,1138 @@ well have truncated directly to a $k$-type.
 %   Indeed, $\unit$ is $n$-truncated for every $n$ hence $\trunc n{\unit}=\unit$ by
 %   \autoref{reflectPequiv}.
 % \end{proof}
+
+
+\section{Colimits of $n$-types}
+\label{sec:pushouts}
+
+Recall that in \autoref{sec:colimits}, we used higher inductive types to define pushouts of types, and proved their universal property.
+In general, a (homotopy) colimit of $n$-types may no longer be an $n$-type.
+However, if we $n$-truncate it, we obtain an $n$-type which satisfies the correct universal property with respect to other $n$-types.
+
+In this section we prove this formally for the case of pushouts, which is the most important and nontrivial one.
+There is a lot of bookkeeping in the proof to deal with higher homotopies, but the idea is simply an adaptation of the standard categorical fact that left adjoints (such as reflectors) preserve colimits.
+The reader willing to accept that this standard argument works in our context can freely skip this section.
+
+Recall the following definitions from \autoref{sec:colimits}.
+
+\begin{defn}
+  A \emph{span} % in $\P$
+  is a 5-tuple $\Ddiag=(A,B,C,f,g)$ with % $A,B,C:\P$ and
+  $f:C\to{}A$ and $g:C\to{}B$.
+  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
+\end{defn}
+
+\begin{defn}
+  Given a span $\Ddiag=(A,B,C,f,g)$ and a type $D$, a %$D:\P$, a
+  \emph{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
+  $i:A\to{}D$, $j:B\to{}D$ and $h : \prd{c:C}i(f(c))=j(g(c))$
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^j[d] \\ A \ar_i[r] & D
+  }\]
+  We denote by $\cocone{\Ddiag}{D}$ the type of all such cocones.
+\end{defn}
+
+The type of cocones is (covariantly) functorial.
+For instance, given $D,E$ % $D,E:\P$
+and a map $t:D\to{}E$, there is a map
+  \[\function{\cocone{\Ddiag}{D}}{\cocone{\Ddiag}{E}}{c}{\composecocone{t}c}\]
+  defined by:
+  \[\composecocone{t}(i,j,h)=(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h)\]
+  % \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  % \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar_j[d]
+  %   \ar@/_/^{t\circ{}j}[rdd] & \\
+  %   A \ar^i[r] \ar@/^/_{t\circ{}i}[rrd] & D \ar[rd]|<<<<t & \\
+  %   & & E }\]
+And given $D,E,F$, %$:\P$,
+functions $t:D\to{}E$, $u:E\to{}F$ and $c:\cocone{\Ddiag}{D}$, we have
+\begin{align*}
+  \composecocone{\idfunc[D]}c &= c\\
+  \composecocone{(u\circ{}t)}c&=\composecocone{u}(\composecocone{t}c)
+\end{align*}
+
+\begin{defn}
+  Given a span $\Ddiag$ of $n$-types, an $n$-type $D$, and a cocone
+  $c:\cocone{\Ddiag}{D}$, the pair $(D,c)$ is said to be a \define{pushout
+  of $\Ddiag$ in $n$-types} if for every $n$-type $E$, the map
+  \[\function{(D\to{}E)}{\cocone{\Ddiag}{E}}{t}{\composecocone{t}c}\]
+  is an equivalence.
+\end{defn}
+
+\begin{comment}
+We showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher
+inductive types.
+For a general \P, pushouts may or may not exist, but if they do, then they are unique.
+
+\begin{lem}
+  If $(D,c)$ and $(D',c')$ are two pushouts of $\Ddiag$ in $\P$, then
+  $(D,c)=(D',c')$.
+\end{lem}
+\begin{proof}
+  We first prove that the two types $D$ and $D'$ are equivalent.
+
+  Using the universal property of $D$ with $D'$, we see that the following map is an
+  equivalence
+  \[\function{(D\to{}D')}{\cocone{\Ddiag}{D'}}{t}{\composecocone{t}c}\]
+
+  In particular, there is a function $f:D\to{}D'$ satisfying $\composecocone{f}c=c'$. In the
+  same way there is a function $g:D'\to{}D$ such that $\composecocone{g}c'=c$.
+
+  In order to prove that $g\circ{}f=\idfunc[D]$ we use the universal property of
+  $D$ for $D$, which says that the following map is an equivalence:
+  \[\function{(D\to{}D)}{\cocone{\Ddiag}{D}}{t}{\composecocone{t}c}\]
+
+  Using the functoriality of $t\mapsto{}\composecocone{t}c$ we see that
+  \begin{align*}
+    \composecocone{(g\circ{}f)}c &= \composecocone{g}(\composecocone{f}c) \\
+    &= \composecocone{g}c' \\
+    &= c \\
+    &= \composecocone{\idfunc[D]}c
+  \end{align*}
+  hence
+  $g\circ{}f=\idfunc[D]$, because equivalences are injective. The same argument
+  with $D'$ instead of $D$ shows that $f\circ{}g=\idfunc[D']$.
+
+  Hence $D$ and $D'$ are equal, and the fact that $(D,c)=(D',c')$ follows from
+  the fact that the equivalence between $D$ and $D'$ we just defined sends $c$
+  to $c'$.
+\end{proof}
+
+\begin{cor}
+  The type of pushouts of $\Ddiag$ in $\P$ is \anhprop. In particular if
+  pushouts merely exist then they actually exist.
+\end{cor}
+
+As in the case of pullbacks, if \P is reflective, then pushouts in \P always exist.
+However, unlike the case of pullbacks, pushouts in \P are not the same as the pushouts in \type: they are obtained by applying the
+reflector.
+\end{comment}
+
+In order to construct pushouts of $n$-types, we need to explain how to reflect spans and cocones.
+(TODO: Fix up notation to use $\trunc n-$ rather than $\reflect$.)
+%For the rest of this section, let \P be a reflective subuniverse.
+
+\begin{defn}
+  Let
+  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
+  be a span in $\type$. We denote by $\reflect(\Ddiag)$ the following
+  span in $\P$:
+  \[\reflect(\Ddiag)=\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
+    \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }\]
+\end{defn}
+
+\begin{defn}
+  Let $D:\type$ and $c=(i,j,h):\cocone{\Ddiag}{D}$.
+  We define
+  \[\reflect(c)=(\reflect(i),\reflect(j),\reflect(h)):
+  \cocone{\reflect(\Ddiag)}{\reflect(D)}\]
+  where
+  \[\reflect(h):\prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
+  is defined in the following way:
+
+  We have \[h:\prd{c:C}i(f(c))=j(g(c))\]
+  hence
+  \[\funext(h):i\circ{}f=j\circ{}g\]
+  We can apply $\reflect$ and we get
+  \[\mapfunc{\reflect}(\funext(h)):\reflect(i\circ{}f)=\reflect(j\circ{}g)\]
+  Now we can compose with the fact that $\reflect$ commutes with composition and
+  we get the following (the proofs that $\reflect$ commutes with composition are
+  not written in order to keep terms readable; we will later see that they don't
+  get in the way):
+  \[\mapfunc{\reflect}(\funext(h)):
+  \reflect(i)\circ\reflect(f)=\reflect(j)\circ\reflect(g)\]
+  and then
+  \[\reflect(h)\defeq\happly(\mapfunc{\reflect}(\funext(h))):
+  \prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
+\end{defn}
+
+\begin{lem}
+  \label{reflectcommutespushout}
+  Let $\Ddiag$ be a span in $\type$ and $(D,c)$ a pushout of $\Ddiag$
+  in $\type$. Then $(\reflect(D),\reflect(c))$ is a pushout of
+  $\reflect(\Ddiag)$ in $\P$.
+\end{lem}
+
+\begin{proof}
+  Let $E:\P$ and let's consider the following diagram:
+
+  \[\xymatrix{ (\reflect(D)\to E)
+    \ar^{t\mapsto{}\composecocone{t}{\reflect(c)}}[r] \ar_{f_1}^\sim[d]
+    &
+    \cocone{\reflect(\Ddiag)}{E}\\
+    (D\to E) \ar_{f_2}^\sim[d] &
+    (\reflect(A)\to{}E)\times_{(\reflect(C)\to{}E)}(\reflect(B)\to{}E)
+    \ar_{f_5}^\sim[u] \\
+    \cocone{\Ddiag}{E}\ar_-{f_3}^-\sim[r] & (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
+    \ar_{f_4}^\sim[u] }\]
+
+  We need to prove that the top arrow is an equivalence, we will do this by
+  proving that it is a composite of five equivalences.
+
+  The first equivalence, $f_1$, comes from the universal property of $\reflect$ and the fact
+  that $E$ is in \P:
+  \[f_1(t) \defeq t\circ\project_D.\]
+
+  The second equivalence comes from the universal property of $(D,c)$, as a pushout of
+  $\Ddiag$ in \type:
+  \[f_2(u) \defeq (u\circ{}i,u\circ{}j,\mapfunc{u}\circ{}h).\]
+
+  The third map comes from \autoref{coneispb}, and is defined by
+  \[f_3(i,j,h) \defeq (i,j,\funext(h)).\]
+
+  The fourth map comes from the universal property of $\reflect$ applied three
+  times and the fact that pullbacks are invariant under equivalence (everything
+  is invariant under equivalence anyway):
+  \[f_4(i,j,p) \defeq (\ext(i),\ext(j),\mapfunc{\ext}(p)).\]
+
+  Note that $\mapfunc{\ext}(p)$ has type $\ext(i\circ{}f)=\ext(j\circ{}g)$
+  instead of $\ext(i)\circ\reflect(f)=\ext(j)\circ\reflect(g)$ but we
+  (implicitely) concatenate with the proofs that
+  $\ext(i\circ{}f)=\ext(i)\circ\reflect(f)$ and the same for $j$ and $g$. Again,
+  we will see later that these proof do not get in the way.
+
+  The fifth equivalence comes from \autoref{coneispb}, and is defined by
+  \[f_5(a,b,q) \defeq (a,b,\happly(q)).\]
+
+  We now need to prove that the diagram commutes, so we can conclude that the map
+  $t\mapsto{}t\circ\reflect(c)$ is an equivalence.
+
+  We have
+  \begin{align*}
+    f_5(f_4(f_3(f_2(f_1(t))))) &= f_5(f_4(f_3(f_2(t\circ\project_D)))) \\
+    &= f_5(f_4(f_3(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
+    \mapfunc{(t\circ\project_D)}\circ{}h))) \\
+    &=f_5(f_4(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
+    \funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
+    &=f_5(\ext(t\circ\project_D\circ{}i),\ext(t\circ\project_D\circ{}j),\\
+    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
+    \\
+    &=f_5(\ext(t\circ\project_D)\circ\reflect(i),
+    \ext(t\circ\project_D)\circ\reflect(j),\\
+    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
+    \\
+    &=f_5(t\circ\reflect(i),
+    t\circ\reflect(j),
+    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
+    &=(t\circ\reflect(i),t\circ\reflect(j),
+    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))))
+  \end{align*}
+
+  Note that in the two steps before the last equality we are using the fact
+  that if $a=a'$ and $b=b'$, then $(a,b,q)=(a',b',q)$. This is actually not
+  even well typed given that the type of $q$ depends on $a$ and $b$, so we
+  have to transport $q$ along the proofs $p:a=a'$ and $q:b=b'$. In the present
+  case we have $q:a\circ\reflect(f)=b\circ\reflect(g)$ hence the correct
+  statement is
+  \[(a,b,q)=(a',b',q')\] where
+  \[q'\defeq\map{(\lam{u} u\circ\reflect(f))}{\rev p} \ct q \ct
+  \map{(\lam{u} u\circ\reflect(g))}{p'})\] Again we will leave this
+  implicit and take care of it only when it will be needed.
+
+  \bigskip
+
+  In order to prove that the diagram commutes, we now only need to prove that
+  \begin{align*}
+    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) &=
+    \mapfunc{t}\circ\reflect(h)
+  \end{align*}
+  This is an equality in the type
+  \[(c:\reflect(C))\to{}t(\reflect(i)(\reflect(f)(c)))=
+  t(\reflect(j)(\reflect(g)(c)))\]
+  This type is equal to
+  \[t\circ\reflect(i)\circ\reflect(f) = t\circ\reflect(j)\circ\reflect(g)\]
+  via $\funext$ so we only need to prove
+  \begin{align*}
+    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)) &=
+    \funext(\mapfunc{t}\circ\reflect(h)) \\
+    &: t\circ\reflect(i)\circ\reflect(f) =
+    t\circ\reflect(j)\circ\reflect(g)
+  \end{align*}
+
+  Note that for any appropriately typed $t$ and $p$ we have
+  \[\funext(\mapfunc{t}\circ\happly(p))=\map{(\lam{u} t\circ{}u)}p\]
+  (by induction on $p$.)
+  Hence the previous equality becomes the following, using the definition of
+  $\reflect(h)$ and expanding $h$ to $\happly(\funext(h))$:
+  \[\map{\ext}{\map{(\lam{u} t\circ\project_D\circ{}u)}{\funext(h)}}=
+  \map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}\]
+
+  The idea is now to do an induction on the path $\funext(h):i\circ f = j\circ
+  g$, which should be allowed because nothing in the previous expression seems to
+  depend on the fact that $\funext(h)$ goes from a composition to another
+  composition.  But let's not forget that there are implicit equalities on
+  both sides of the equation and they use the fact that $i\circ f$ and
+  $j\circ g$ are compositions, so first we need to deal with that.
+
+  % After that, using the fact that for every $k:C\to{}D$ we have
+
+  % \begin{align*}
+  %   \ext(t\circ\project_D\circ{}k) &= \ext(t\circ\project_D)\circ\reflect(k) \\
+  %   &= t\circ\reflect(k)
+  % \end{align*}
+
+  % We will have
+
+  % \[\ext\circ(\lam{u} t\circ\project_D\circ{}u)=
+  % (\lam{u} t\circ{}u)\circ\reflect\]
+
+  % Hence the result, using the functoriality of $f\mapsto{}f_*$.
+
+  \bigskip
+
+  % Let's prove that the implicit equalities around $\mapfunc{r}$ and
+  % $\mapfunc{\ext}$ cancel.
+  We have the following diagram:
+
+  \[\xymatrix{
+    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
+      t\circ\reflect(j\circ g) \ar@{=}[d] \\
+    t\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
+      t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
+    \extend{t\circ\project_D}\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
+      \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
+    \extend{t\circ\project_D\circ i}\circ\reflect(f) \ar@{=}[d] &
+      \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] \\
+    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
+      \extend{t\circ\project_D\circ j\circ g}\\
+  }\]
+
+  \begin{itemize}
+  \item The top horizontal equality is
+    $\map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}$ without the
+    implicit equalities around.
+  \item The first line of vertical equalities are the implicit equalities around
+    $\map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}$ (the
+    right hand side of the equality we want to prove).
+  \item The next two lines of vertical equalities are around the left hand side
+    of the equality we want to prove and come from the long computation a few
+    pages ago.
+  \item The last line of vertical equalities are the implicit equalities around
+    $\mapfunc{\extendsmb}$.
+  \item The bottom horizontal equality is
+    $\map{\ext}{\map{(\lam{u} t\circ\project_D\circ{}u)}{\funext(h)}}$
+    without the implicit equalities around.
+  \end{itemize}
+
+  The commutativity of the diagram is the equality we want to prove and
+  the fact that the compositions $i\circ f$ and $j\circ g$ are being split in
+  the middle of the diagram is the reason why we cannot work directly, by induction on
+  $\funext(h)$.
+
+  So we will prove that the following diagram (where the vertical part is the
+  right hand side of the previous diagram) commutes. Note that on the right hand
+  side of this diagram, we do no longer use the fact that $j\circ g$ is a
+  composition of two functions, so induction on it will be allowed.
+
+  \[\xymatrix{
+    t\circ\reflect(j\circ g) \ar@{=}[d] & \\
+    t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] & \\
+    \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] &
+    \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[l] \ar@{=}[luu]
+    \ar@{=}[ldd] \\
+    \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] & \\
+    \extend{t\circ\project_D\circ j\circ g} & \\
+  }\]
+
+  The top square commutes because it is the concatenation of the two equalities
+  $t=\extend{t\circ\project_D}$ and $\reflect(j)\circ\reflect(g)=\reflect(j\circ
+  g)$ in two different orders (interchange law). In order to prove that the
+  bottom square commutes, we only have to prove that it commutes after
+  composition with $\project_C$ on the right. Let's write $u=t\circ\project_D$
+  and let's consider the following diagram.
+
+  \[\xymatrix@C=-30pt{
+    \extend{u}\circ\reflect(j)\circ\reflect(g)\circ\project_C
+      \ar@{=}[rrrr] \ar@{=}[ddd] \ar@{=}[rd] & & & &
+    \extend{u}\circ\reflect(j\circ g)\circ\project_C
+      \ar@{=}[ld] \ar@{=}[ddd] \\ &
+    \extend{u}\circ\reflect(j)\circ\project_B\circ g
+      \ar@{=}[rr] \ar@{=}[d] & {\phantom{thisisanuglyhack}} &
+    \extend{u}\circ\project_D\circ j\circ g
+      \ar@{=}[d] & \\ &
+    \extend{u\circ j}\circ\project_B\circ g
+      \ar@{=}[rr] \ar@{=}[ld] & &
+    u\circ j\circ g
+      \ar@{=}[rd] & \\
+    \extend{u\circ j}\circ\reflect(g)\circ\project_C
+      \ar@{=}[rrrr] & & & &
+    \extend{u\circ j\circ g}\circ\project_C
+  }\]
+
+  We need to prove that the outer square commutes.
+
+  \begin{itemize}
+  \item The left square commutes because of the interchange law
+  \item The top square commutes because of the definition of the equality
+    $\reflect(j\circ g)=\reflect(j)\circ\reflect(g)$
+  \item The bottom, right and interior squares commute because of the definition
+    of the equality $\extend{a}\circ\reflect(b)=\extend{a\circ b}$
+  \end{itemize}
+
+  This proves that the outer square commutes, hence the previous triangular
+  diagram commutes. We can do the same for the left part of the first
+  rectangular diagram so we now only have to prove that the following diagram
+  commutes:
+
+  \[\xymatrix{
+    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
+      t\circ\reflect(j\circ g) \ar@{=}[d] \\
+    \extend{t\circ\project_D}\circ\reflect(i\circ f) \ar@{=}[d] &
+      \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[d] \\
+    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
+      \extend{t\circ\project_D\circ j\circ g}\\
+  }\]
+
+  And now we are finally allowed to induct on $\funext(h)$ because the diagram
+  is not relying anymore on the fact that $i\circ f$ and $j\circ g$ are
+  compositions.
+
+  \bigskip
+
+  This proves that the diagram commutes, hence the map
+  $t\mapsto{}\composecocone{t}\reflect(c)$ is an equivalence which proves that
+  the reflector commutes with pushouts.
+\end{proof}
+
+This proof was rather tedious, but we can hope that at some point we will
+understand better what $(\infty,1)$-functoriality means in homotopy type theory, and
+that we will be able to omit rigorously the equalities left implicit above and still
+conclude that every coherence condition is always satisfied.
+
+% \begin{cor}
+%   If \P is a reflective subuniverse, then
+%   every span $\Ddiag$ in $\P$ has a pushout in $\P$.
+% \end{cor}
+
+% \begin{proof}
+%   According to \autoref{reflectPequiv} and to the diagram defining the action of
+%   $\reflect$ on functions, the diagram $\reflect(\Ddiag)$ is equivalent to
+%   $\Ddiag$. But we just proved that $\reflect(\Ddiag)$ has a pushout, namely the
+%   reflection of the pushout in \type of $\Ddiag$, hence $\Ddiag$ has a pushout
+%   in \P.
+% \end{proof}
+
+% Similar (but simpler) arguments prove that any reflective subuniverse has an initial object (namely $\reflect(\emptyt)$), coproducts
+% (constructed as $\reflect(A+B)$), coequalizers, and so on.
+
+
+\section{Truncated and connected functions}
+\label{sec:connectivity}
+
+TODO: change this section and the next to refer to $n$-truncation and $n$-connectedness rather than a modality $\modal$.
+
+\begin{defn}
+  A function $f:A\to B$ is \define{$\modal$-modal} if the fiber $\hfib f b$ is $\modal$-modal for all $b:B$.
+\end{defn}
+
+\begin{lem}\label{thm:modal-mono}
+  When $\modal$ is the propositional truncation, $f$ is $\modal$-modal if and only if it is a monomorphism in the sense of \autoref{sec:mono-surj}.
+\end{lem}
+\begin{proof}
+  TODO.
+\end{proof}
+
+\begin{defn}
+A function $f:A\to B$ is said to be \define{$\modal$-connected} if for all $b:B$, the type $\modal(\hfiber f b)$ is contractible:
+\begin{equation*}
+  \mathsf{conn}_\modal(f)\defeq \prd{b:B}\iscontr(\modal\hfiber{f}b). 
+\end{equation*}
+\end{defn}
+
+\begin{lem}
+  When $\modal$ is the propositional truncation, $f$ is $\modal$-connected if and only if it is surjective in the sense of \autoref{sec:mono-surj}.
+\end{lem}
+\begin{proof}
+  We defined $f$ to be surjective if $\brck{\hfiber f b}$ is inhabited for all $b$.
+  But since it is a mere proposition, inhabitation is equivalent to contractibility.
+\end{proof}
+
+\begin{eg}
+  If $\modal$ is the $n$-truncation, we speak of \define{$n$-connected} types and functions.
+  Thus every function is $(-2)$-connected, while a function is $(-1)$-connected precisely when it is surjective.
+\end{eg}
+
+Of course, modal functions are a ``relativized'' version of modal types: a type $A$ is modal if and only if the map $A\to \unit$ is modal.
+Similarly, connected functions are a relativization of a notion for types.
+
+\begin{defn}
+  A type $A$ is said to be \define{\modal-connected} if the unique function $A\to\unit$ is \modal-connected.
+  Likewise, a type family $P:A\to\type$ is said to be \define{\modal-connected} if $P(x)$ is \modal-connected for every $x:A$. 
+\end{defn}
+
+A type $A$ is \modal-connected precisely when $\modal A$ is contractible. Thus, a function $f:A\to B$ is
+$\modal$-connected if and only if $\hfib{f}b$ is \modal-connected for every $b:B$. 
+And a type family $P:A\to\type$ is \modal-connected precisely when $\proj1:\sm{x:A} P(x)\to A$ is a \modal-connected function.
+
+\begin{eg}
+  In particular, a type $A$ is $0$-connected if $\trunc0A$ is contractible.
+  Intuitively, this says that $A$ has exactly one connected component, which is the usual definintion of connectedness from homotopy theory.
+  More generally, $A$ is $n$-connected if $\trunc nA$ is contractible, which also agrees with the classical homotopy-theoretic notion.
+
+  Unfortunately, our notion of $n$-connectedness for \emph{functions} is off by one from a common indexing in classical homotopy theory: whereas we say a function $f$ is $n$-connected if all its fibers are $n$-connected, some classical homotopy theorists would call such a function $(n+1)$-connected.
+  (This is due to a historical focus on \emph{cofibers} rather than fibers.)
+  In the general context of a single modality $\modal$ (rather than an \nat-indexed family of modalities such as the $n$-truncations), we have no choice but to define connectivity as above, and so it is natural to use a matching indexing for $n$-connectivity.
+\end{eg}
+
+We now observe a few closure properties of connected maps.
+
+\begin{lem}
+Suppose that $g$ is a retract of a $\modal$-connected function $f$.  Then $g$ is
+$\modal$-connected.
+\end{lem}
+\begin{proof}
+This is a direct consequence of \autoref{lem:func_retract_to_fiber_retract}.
+\end{proof}
+
+\begin{cor}
+If $g$ is homotopic to a $\modal$-connected function $f$, then $g$ is $\modal$-connected.
+\end{cor}
+
+\begin{lem}\label{lem:nconnected_postcomp}
+Suppose that $f:A\to B$ is $\modal$-connected. Then $g:B\to C$ is $\modal$-connected if and only if $g\circ f$ is
+$\modal$-connected.
+\end{lem}
+
+\begin{proof}
+Let $c:C$. We have $\hfib{g\circ f}c \simeq \sm{w:\hfib{g}c}\hfib{f}{\proj1 w}$ and, so 
+\begin{align*}
+\modal\hfib{g\circ f}c& \simeq \modal \sm{w:\hfib{g}c}\hfib{f}{\proj1 w}\\
+& \simeq \modal\sm{w:\hfib{g}c}\modal\hfib{f}{\proj1 w}\\
+& \simeq \modal\hfib{g}c.
+\end{align*}
+
+It follows that $\modal\hfib{g}c$ is contractible if and only if $\modal\hfib{g\circ f}c$ is
+contractible.
+\end{proof}
+
+The $\modal$-connected functions can be characterized as those which satisfy an ``induction principle'' with respect to modal types.
+
+\begin{lem}\label{prop:nconnected_tested_by_lv_n_dependent types}
+A function $f:A\to B$ is \modal-connected if and only if for every $P:B\to\type_\modal$, the function
+\begin{equation*}
+\varphi :\big(\prd{b:B} P(b)\big)\to\big(\prd{a:A}P(f(a))\big)
+\end{equation*}
+defined by $\varphi(s):=s\circ f$ is an equivalence.
+\end{lem}
+
+\begin{proof}
+Suppose that $f$ is \modal-connected and let $P:B\to\type$ be a dependent type over $B$. Then we have the equivalences
+\begin{align*}
+\prd{b:B} P(b) & \simeq \prd{b:B} \modal\hfib{f}b\to P(b)\\
+& \simeq \prd{b:B} \hfib{f}b\to P(b)\\
+& \simeq \prd{b:B}(a:A)(p:f(a)= b),\ P(b)\\
+& \simeq \prd{a:A} P(f(a)).
+\end{align*}
+We omit the proof that this equivalence is indeed given by $\lambda s.s\circ f$. 
+
+For the other direction, suppose that the function $\lambda s.s\circ f$ from $(\prd{b:B} P(b))$ to $(\prd{a:A} P(f(a)))$ is an
+equivalence for each $P:B\to\modaltype$. Considering the dependent type 
+\begin{equation*}
+b:B\vdash\modal\hfib{f}b:\modaltype,
+\end{equation*}
+we obtain from the assumed equivalence a term $c$ of type $\prd{b:B} \modal\hfib{f}b$ with
+$c(f(a))\equiv\mreturn(\pair{a,\idfunc{f(a)}})$. To show that each $\modal\hfib{f}b$ is contractible 
+we will find a function of type
+\begin{equation*}
+\prd{b:B}(w:\modal\hfib{f}b),\ w= c(b).
+\end{equation*}
+By the universal property of \modal\ the above type is equivalent to
+\begin{equation*}
+\prd{b:B}(a:A)(p:f(a)= b),\ \mreturn(\pairr{a,p})= c(b),
+\end{equation*}
+which is furthermore equivalent to the type
+\begin{equation*}
+\prd{a:A} \mreturn(\pairr{a,\idfunc{f(a)}})= c(f(a)).
+\end{equation*}
+This property holds by our choice of $c(f(a))$. 
+\end{proof}
+
+\begin{cor}\label{cor:totrunc_is_connected}
+For any $A$, the canonical function $\mreturn:A\to\modal A$ is \modal-connected.
+\end{cor}
+\begin{proof}
+By \autoref{prop:lv_n_deptype_sec_equiv_by_precomp,prop:nconnected_tested_by_lv_n_dependent types}.
+\end{proof}
+
+\begin{cor}
+A type $A$ is \modal-connected if and only if the map
+\begin{equation*}
+  \lam{b}{a} b: B \to (A\to B)
+\end{equation*}
+is an equivalence for every modal type $B$.
+In other words, ``every map from $A$ to a modal type is constant''.
+\end{cor}
+\begin{proof}
+  By \autoref{prop:nconnected_tested_by_lv_n_dependent types} applied to a function with codomain $\unit$.
+\end{proof}
+
+\begin{lem}\label{lem:nconnected_to_leveln_to_equiv}
+Let $B$ be a modal type and let $f:A\to B$ be a function. Then the induced function $g:\modal A\to B$ is an
+equivalence if and only if $f$ is \modal-connected.
+\end{lem}
+
+\begin{proof}
+Note that $f$ is homotopic to $g\circ\mreturn$. By \autoref{cor:totrunc_is_connected} we know that $\mreturn$ is \modal-connected, so
+by
+\autoref{lem:nconnected_postcomp} $f$ is \modal-connected if and only if $g$ is \modal-connected. Since $g$ is a function between
+modal types, the homotopy fibers of $g$ are modal. Hence it follows that $g$ is \modal-connected if and only if $g$ is an equivalence.
+\end{proof}
+
+A useful variation on \autoref{lem:nconnected_postcomp} is:
+
+\begin{lem}\label{lem:nconnected_postcomp_variation}
+Let $f:A\to B$ be a function and $P:A\to\type$ and $Q:B\to\type$ be dependent types. Suppose that $g:\prd{a:A} P(a)\to Q(f(a))$
+is a fiberwise \modal-connected function, i.e.\ each $g(a)$ is \modal-connected. Then the function
+\begin{align*}
+\varphi &:\big(\sm{a:A} P(a)\big)\to\big(\sm{b:B} Q(b)\big)\\
+\varphi(a,u) &\defeq \pairr{f(a),g(u)}
+\end{align*}
+is \modal-connected if and only if $f$ is \modal-connected.
+\end{lem}
+
+\begin{proof}
+For $b:B$ and $v:Q(b)$ we have
+\begin{align*}
+\modal\hfib{\varphi}{\pairr{b,v}} & \simeq \modal\sm{a:A}{u:P(a)}{p:f(a)= b} \trans{f(p)}{g(u)}= v\\
+& \simeq \modal\sm{w:\hfib{f}b}{u:P(\proj1(w))} g(u)= \trans{\opp{f(p)}}{v}\\
+& \simeq \modal\sm{w:\hfib{f}b} \modal\hfib{g(\proj1 w)}{\trans{\opp{f(p)}}{v}}\\
+& \simeq \modal\hfib{f}b
+\end{align*}
+where the transportations along $f(p)$ and $f(p)^{-1}$ are taken with respect to the dependent type $Q$.
+Therefore, if either is contractible, so is the other.
+\end{proof}
+
+In the other direction, we have
+
+\begin{lem}\label{prop:nconn_fiber_to_total}
+Let $P,Q:A\to\type$ be dependent types and consider a fiberwise transformation
+\begin{equation*}
+f:\prd{a:A} P(a)\to Q(a)
+\end{equation*}
+from $P$ to $Q$. Then the induced map $\total f: \sm{a:A}P(a) \to \sm{a:A} Q(a)$ is \modal-connected if and only if each $f(a)$ is \modal-connected. 
+\end{lem}
+
+\begin{proof}
+By \autoref{fibwise-fiber-total-fiber-equiv}, we have
+$\hfib{\total f}{\pairr{x,v}}\simeq\hfib{f(x)}v$
+for each $x:A$ and $v:Q(x)$. Hence $\modal\hfib{\total f}{\pairr{x,v}}$ is contractible if and only if
+$\modal\hfib{f(x)}v$ is contractible.
+\end{proof}
+
+
+\section{Orthogonal factorization}
+\label{sec:image-factorization}
+
+We now show that the $n$-connected functions and the $n$-truncated functions form an orthogonal factorization system.
+For $n=-1$, of course, this factorization system consists of surjections and monomorphisms, and when further restricted to sets, it yields the usual factorization into surjections and injections.
+
+% The following two corollaries are reformulations of \autoref{prop:nconnected_tested_by_lv_n_dependent types}:
+
+% \begin{cor}
+% A function $f:A\to B$ is \modal-connected if and only if for every modal function $g:X\to B$, the function
+% \begin{equation*}
+% \varphi:\big(\prd{b:B}\hfib{g}b\big)\to\big(\prd{a:A} \hfib{g}{f(a)}\big)
+% \end{equation*}
+% defined by $\varphi(s):=s\circ f$ is an equivalence.
+% \end{cor}
+
+% \begin{cor}
+% A function $f:A\to B$ is \modal-connected if and only if for every modal function $g:X\to B$, the function
+% \begin{equation*}
+% \varphi :\big(\sm{h:B\to X} g\circ h\sim \idfunc{B}\big)\to\big(\sm{k:A\to X} g\circ k\sim f\big)
+% \end{equation*}
+% defined by $\varphi(h,H):=\pairr{h\circ f,H\circ f}$ is an equivalence.
+% \end{cor}
+
+
+\begin{defn}\label{def:modal-image}
+Let $f:A\to B$ be a function. The \define{\modal-image} of $f$ is defined as
+\begin{equation*}
+\im_\modal(f):=\sm{b:B} \modal\hfib{f}b
+\end{equation*}
+When $\modal$ is the $n$-truncation, we write $\im_n (f)$, and when $n=-1$ we write simply $\im(f)$.
+\end{defn}
+
+\begin{lem}\label{prop:to_image_is_connected}
+For any function $f:A\to B$, the canonical function $\tilde{f}:A\to\im_\modal(f)$ is \modal-connected. 
+Consequently, any function factors as an \modal-connected function followed by a modal function.
+\end{lem}
+
+\begin{proof}
+Note that $A\simeq\sm{b:B}\hfib{f}b$. The function $\tilde{f}$ is the function on total spaces induced by the fiberwise
+transformation
+\begin{equation*}
+\lambda b.\eta^{\hfib{f}b}:\prd{b:B} \hfib{f}b\to\modal\hfib{f}b.
+\end{equation*}
+Since each $\eta$ is \modal-connected by \autoref{cor:totrunc_is_connected}, the statement follows from
+\autoref{prop:nconn_fiber_to_total}.
+\end{proof}
+
+In the following proposition we set up some machinery to prove the unique factorization theorem.
+
+\begin{thm}\label{prop:factor_equiv_fiber}
+Suppose we have a commutative diagram of functions
+\begin{equation*}
+\begin{tikzpicture}
+\node (A) at (-3em,0) {$A$};
+\node (B) at (3em,0) {$B$};
+\node (X1) at (0,1.5em) {$X_1$};
+\node (X2) at (0,-1.5em) {$X_2$};
+\draw[ar] (A) -- node[auto] {$g_1$} (X1);
+\draw[ar] (X1) -- node[auto] {$h_1$} (B);
+\draw[ar] (A) -- node[auto,swap] {$g_2$} (X2);
+\draw[ar] (X2) -- node[auto,swap] {$h_2$} (B);
+\end{tikzpicture}
+\end{equation*}
+with $H:h_1\circ g_1\sim h_2\circ g_2$, where $g_1$ and $g_2$ are \modal-connected and where $h_1$ and $h_2$ are modal.
+Then there is an equivalence
+\begin{equation*}
+E(H,b):\hfib{h_1}b\simeq\hfib{h_2}b
+\end{equation*}
+for any $b:B$, such that for any $a:A$ we have
+\[E(H,h_1(g_1(a)))(\pairr{g_1(a),\refl{h_1(g_1(a))}}) = \pairr{g_2(a),H(a)^{-1}}.\]
+\end{thm}
+
+\begin{proof}
+Let $b:B$. Then we have the following equivalences:
+\begin{align*}
+\hfib{h_1}b & \simeq \sm{w:\hfib{h_1}b} \modal \hfib{g_1}{\proj1 w}\\
+& \simeq \modal\sm{w:\hfib{h_1}b}\hfib{g_1}{\proj1 w}\\
+& \simeq \modal\hfib{h_1\circ g_1}b
+\end{align*}
+and likewise for $h_2$ and $g_2$. Here, the first equivalence holds because $g_1$ is assumed to be \modal-connected; the second equivalence
+holds because $h_1$ is assumed to be modal and the third equivalence holds by \autoref{lem:hfiber_basics}. Also, since we have a
+homotopy $H:h_1\circ g_1\sim h_2\circ g_2$, there is an obvious equivalence $\hfib{h_1\circ g_1}b\simeq\hfib{h_2\circ g_2}b$. Hence we
+obtain
+\begin{equation*}
+\hfib{h_1}b\simeq\hfib{h_2}b
+\end{equation*}
+for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the term
+$\pairr{g_1(a),\idfunc{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
+\begin{align*}
+\pairr{g_1(a),\idfunc{h_1(g_1(a))}} & 
+    \mapsto \pairr{\pairr{g_1(a),\idfunc{h_1(g_1(a))}}, \eta( \pairr{a,\idfunc{g_1(a)}} )}\\
+  & \mapsto \eta( \pairr{\pairr{g_1(a),\idfunc{h_1(g_1(a))}}, \pairr{a,\idfunc{g_1(a)}} }\\
+  & \mapsto \eta( \pairr{a,\idfunc{h_1(g_1(a))}})\\
+  & \mapsto \eta( \pairr{a,H(a)^{-1}})\\
+  & \mapsto \eta( \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\idfunc{g_2(a)}}}\\
+  & \mapsto \pairr{\pairr{g_2(a),H(a)^{-1}}, \eta(\pairr{a,\idfunc{g_2(a)}}) }\\
+  & \mapsto \pairr{g_2(a),H(a)^{-1}}\qedhere
+\end{align*}
+\end{proof}
+
+The equivalences $E(H,b)$ are such that $E(H^{-1},b)= E(H,b)^{-1}$.
+
+Combining \autoref{prop:to_image_is_connected,prop:factor_equiv_fiber}, we have the following unique factorization result:
+
+\begin{thm}
+For each $f:A\to B$, the space $\fact_\modal(f)$ defined by
+\begin{equation*}
+\sm{X:\type}(g:A\to X)(h:X\to B),\ (h\circ g\sim f)\times\mathsf{conn}_\modal(g)\times\ismodal\ h.
+\end{equation*}
+is contractible. By \autoref{prop:to_image_is_connected} we know that there is the term
+\begin{equation*}
+\pairr{\im(f),\tilde{f},\proj1,\theta,\varphi,\psi}:\fact_\modal(f)
+\end{equation*}
+where $\theta:\proj1\circ\tilde{f}\sim f$ is the canonical homotopy, where $\varphi$ is the proof of
+\autoref{prop:to_image_is_connected}, and where $\psi$ is the obvious proof that $\proj1:\im(f)\to B$ has modal fibers.
+\end{thm}
+
+In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker operations. Recall that if we have paths
+$p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whisker operation provides a path $q\ct p=
+q\ct p^\prime$, wich is denoted by $q\leftwhisker s$. Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim
+f^\prime$ is a homotopy, then there is a homotopy $g\leftwhisker H:g\circ f\sim g\circ f^\prime$.
+
+\begin{proof}
+By \autoref{prop:to_image_is_connected} we know that there is a term of $\fact_\modal(f)$, hence it is enough to
+show that $\fact_\modal(f)$ is a proposition. Suppose we have two \modal-factorizations
+\begin{equation*}
+\pairr{X_1,g_1,h_1,H_1,\varphi_1,\psi_1}\qquad\text{and}\qquad\pairr{X_2,g_2,h_2,H_2,\varphi_2,\psi_2}
+\end{equation*}
+of $f$. Then we have the homotopy $H:=H_2^{-1}\circ H_1:h_1\circ g_1\sim h_2\circ g_2$. By the univalence axiom, it suffices to show that
+\begin{enumerate}
+\item there is an equivalence $e:X_1\simeq X_2$,
+\item there is a homotopy $\zeta:\underline{e}\circ g_1\sim g_2$,
+% \note{Is it easy enough to see that these terms are the various transports?}
+\item there is a homotopy $\eta:h_2\circ\underline{e}\sim h_1$,
+\item there is a homotopy $H_1 \circ(h_1\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_2)\sim H_2$.
+\end{enumerate}
+where $\underline{e}$ is the function underlying the equivalence. We prove these four assertions in that order.
+\begin{enumerate}
+\item By \autoref{prop:factor_equiv_fiber}, we have a fiberwise equivalence
+% \note{It could be a nice exercise for the book to show
+% that if $f_1:A_1\to B$ and $f_2:A_2\to B$ have equivalent fibers, then $A_1\simeq A_2$}.
+\begin{equation*}
+\prd{b:B} \hfib{h_1}b\to\hfib{h_2}b.
+\end{equation*}
+This induces an equivalence of total spaces, i.e.\ we have
+\begin{equation*}
+\sm{b:B} \hfib{h_1}b\simeq\sm{b:B}\hfib{h_2}b
+\end{equation*}
+Of course, we also have the familiar equivalences $X_1\simeq\sm{b:B}\hfib{h_1}b$ and $X_2\simeq\sm{b:B}
+\hfib{h_2}b$. This gives us our equivalence $e(H):X_1\simeq X_2$. The reader may verify that the underlying function
+$\underline{e}(H)$ of $e(H)$ is defined by
+\begin{equation*}
+\underline{e}(H,x):=\proj1\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}})
+\end{equation*}
+\item By \autoref{prop:factor_equiv_fiber} we have $\underline{e}(H,g_1(a))=g_2(a)$. Thus we get $\zeta(a):=\idfunc{g_2(a)}$. 
+\item For every $x:X_1$, we have
+\begin{equation*}
+\proj2\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}}):h_2(\underline{e}(H,x))= h_1(x),
+\end{equation*}
+giving us a homotopy $\eta:h_2\circ \underline{e}\sim h_1$.
+\item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a))=H(a)^{-1}$ and by {\it ii.} we have
+$h_2(\zeta(a))=\idfunc{h_2(g_2(a))}$. Thus we have
+\begin{align*}
+(H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\ct h_2(\zeta(a))^{-1}\ct \eta(g_1(a))\\
+& = H_1(a)\ct H(a)^{-1}\\
+& = H_2(a).\qedhere
+\end{align*}
+\end{enumerate}
+\end{proof}
+
+% I can't make sense of this, and it doesn't seem necessary
+%
+% \begin{cor}
+% A function $f:A\to B$ is \modal-connected if and only if
+% \begin{equation*}
+% \prd C\prd{g:\modalfunc(B\to C)} \iscontr\big(\sm{h:\modalfunc(B\to C)}\underline{h}\circ
+% f\sim\underline{g}\circ f\big).
+% \end{equation*}
+% \end{cor}
+
+By standard arguments, this yields the following orthogonality principle.
+
+\begin{thm}
+  Let $e:A\to B$ be $\modal$-connected and $m:C\to D$ be $\modal$-modal.
+  Then the map
+  \[ \varphi: (B\to C) \;\to\; \sm{h:A\to C}{k:B\to D} (m\circ h \htpy k \circ e) \]
+  is an equivalence.
+\end{thm}
+\begin{proof}[Sketch of proof]
+  For any $(h,k,H)$ in the codomain, let $h = h_2 \circ h_1$ and $k = k_2 \circ k_1$, where $h_1$ and $k_1$ are $\modal$-connected and $h_2$ and $k_2$ are $\modal$-modal.
+  Then $f = (m\circ h_2) \circ h_1$ and $f = k_2 \circ (k_1\circ e)$ are both $\modal$-factorizations of $m \circ h = k\circ e$.
+  Thus, there is a unique equivalence between them.
+  It is straightforward (if a bit tedious) to extract from this that $\hfib\varphi{(h,k,H)}$ is contractible.
+\end{proof}
+
+We end by showing that images are stable under pullback.
+
+\begin{lem}\label{lem:hfiber_wrt_pullback}
+Suppose that the square
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & C \\ B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$g$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left] {$f$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$h$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+is a pullback square and let $b:B$. Then $\hfib{f}b\simeq\hfib{g}{h(b)}$.
+\end{lem}
+
+\begin{proof}
+\note{Do we have pasting of pullbacks anywhere?}
+This follows from pasting of pullbacks, since the type $X$ in the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {X & A & C \\ \unit & B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- (m-1-3);
+\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
+\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
+\draw[ar] (m-1-1) -- (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$b$} (m-2-2);
+\draw[ar] (m-2-2) -- node[below] {$h$} (m-2-3);
+\end{tikzpicture}
+\end{equation*}
+is the pullback of the left square if and only if it is the pullback of the outer rectangle: $\hfib{f}b$ is the pullback of the
+square on the left and $\hfib{g}{h(b)}$ is the pullback of the outer rectangle.
+\end{proof}
+
+\begin{thm}
+Consider functions $f:A\to B$, $g:C\to D$ and the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & C \\ \im_\modal(f) & \im_\modal(g) \\ B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$\tilde{g}_n$} (m-2-2);
+\draw[ar] (m-2-2) -- node[right] {$\proj1$} (m-3-2);
+\draw[ar] (m-1-1) -- node[left] {$\tilde{f}_n$} (m-2-1);
+\draw[ar] (m-2-1) -- (m-2-2);
+\draw[ar] (m-2-1) -- node[left] {$\proj1$} (m-3-1);
+\draw[ar] (m-3-1) -- node[below] {$h$} (m-3-2);
+\end{tikzpicture}
+\end{equation*}
+Then the outer rectangle is a pullback if and only if the bottom square is a pullback. In either of these equivalent cases, the top square
+is also a pullback. Consequently, images are stable under pullbacks.
+\end{thm}
+
+\begin{proof}
+Suppose first that the outer square is a pullback. Note that we have the equivalences
+\begin{align*}
+B\times_D\im_\modal(g) & \equiv\sm{b:B}(w:\im_\modal(g)),\ h(b)=\proj1 w\\
+& \simeq \sm{b:B}(d:D)(w:\modal\hfib{g}d),\ h(b)= d\\
+& \simeq \sm{b:B} \modal\hfib{g}{h(b)}.\\
+& \simeq \sm{b:B} \modal\hfib{f}b\\
+& \equiv \im_\modal(f).
+\end{align*}
+In the last equivalence we have used \autoref{lem:hfiber_wrt_pullback}.
+
+Now suppose that the bottom square is a pullback, of which we denote the top arrow by $\psi$. By the pasting lemma for pullbacks, it
+suffices to show that the top square is a pullback. We have the equivalences
+\begin{align*}
+\im(f)\times_{\im(g)} C & \equiv \sm{w:\im(f)}(c:C),\ \psi(w)=\tilde{g}_n(c)\\
+& \simeq \sm{b:B}(w:\im(g))(p:h(b)=\proj1 w)(c:C),\ w=\tilde{g}_n(c)\\
+& \simeq \sm{b:B}(c:C),\ h(b)= g(c)\\
+& \simeq \sm{b:B}\hfib{f}b\\
+& \simeq A.\qedhere
+\end{align*}
+\end{proof}
+
+
+\begin{comment}
+
+\section{Modalities}
+\label{sec:modalities}
+
+Since $n$-types form a reflective subuniverse for any $n\ge -2$, the theory of \autoref{sec:pullbacks,sec:pushouts} applies to them.
+However, $n$-types have additional properties not shared by other reflective subuniverses, particularly \autoref{thm:ntypes-sigma,thm:truncn-ind}.
+In fact, these two properties are equivalent to each other.
+
+\begin{thm}\label{thm:modal-char}
+  For a reflective subuniverse \P, the following are logically equivalent.
+  \begin{enumerate}
+  \item If $A:\P$ and $B:A\to \P$, then $\sm{x:A} B(x)$ is in \P.\label{item:mchr1}
+  \item for every $A:\type$, type family $B:\reflect A\to\P$, and function $g:\prd{a:A} B(\project(a))$, there exists $f:\prd{z:\reflect A} B(z)$ such that $f(\project(a)) = g(a)$ for all $a:A$.\label{item:mchr2}
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  Suppose~\ref{item:mchr1}.
+  Then in the situation of~\ref{item:mchr2}, the type $\sm{z:\reflect A} B(z)$ lies in $\P$, and we have $g':A\to \sm{z:\reflect A} B(z)$ defined by $g'(a)\defeq (\project(a),g(a))$.
+  Thus, we have $\ext(g'):\reflect A \to \sm{z:\reflect A} B(z)$ such that $\ext(g')(\project(a)) = (\project(a),g(a))$.
+
+  Now consider the functions $\proj2 \circ \ext(g') : \reflect A \to \reflect A$ and $\idfunc[\reflect A]$.
+  By assumption, these become equal when precomposed with $\project$.
+  Thus, by the universal property of $\reflect$, they are equal already, i.e.\ we have $p_z:\proj2(\ext(g')(z)) = z$ for all $z$.
+  Now we can define $f(z) \defeq \trans{p_z}{\proj2(\ext(g')(z))}$, and the second component of $\ext(g')(\project(a)) = (\project(a),g(a))$ yields $f(\project(a)) = g(a)$.
+
+  Conversely, suppose~\ref{item:mchr2}, and that $A:\P$ and $B:A\to\P$.
+  Let $h$ be the composite
+  \[ \reflect(\sm{x:A} B(x)) \xrightarrow{\reflect(\proj1)} \reflect A \xrightarrow{\opp{(\project_A)}} A. \]
+  Then for $z:\sm{x:A} B(x)$ we have
+  \begin{align*}
+    h(\project(z)) &= \opp\project(\reflect(\proj1)(\project(z)))\\
+    &= \opp\project(\project(\proj1(z)))\\
+    &= \proj1(z).
+  \end{align*}
+  Denote this path by $p_z$.
+  Now if we define $C:\reflect(\sm{x:A} B(x)) \to \type$ by $C(w) \defeq B(h(w))$, we have
+  \[ g \defeq \lam{z} \trans{p_z}{\proj2(z)} \;:\; \prd{z:\sm{x:A} B(x)} C(\project(z)). \]
+  Thus, the assumption yields $f:\prd{w:\reflect(\sm{x:A}B(x))} C(w)$ such that $f(\project(z)) = g(z)$.
+  Together, $h$ and $f$ give a function $k:\reflect(\sm{x:A}B(x)) \to \sm{x:A}B(x)$ defined by $k(w) \defeq (h(w),f(w))$, while $p_z$ and the equality $f(\project(z)) = g(z)$ show that $k$ is a retraction of $\project_{\sm{x:A}B(x)}$.
+  Therefore, $\sm{x:A}B(x)$ is in \P.
+\end{proof}
+
+Condition~\ref{item:mchr2} is a more familiar type-theoretic condition, which has the flavor of an induction principle.
+This flavor is strengthened if we rephrase it in the following way.
+Note that any reflective subuniverse can be characterized by the operation $\reflect:\type\to\type$ and the functions $\project_A:A\to \reflect A$, since we have $P(A) = \isequiv(\project_A)$.
+
+\begin{defn}\label{defn:modality}
+A \define{modality} is an operation $\modal:\type\to\type$ for which there are
+\begin{enumerate}
+\item functions $\mreturn^\modal_A:A\to\modal(A)$ for every type $A$.\label{item:modal1}
+\item for every $A:\type$ and every type family $B:\modal(A)\to\type$, a function\label{item:modal2}
+\begin{equation*}
+\ext:\big(\prd{a:A}\modal(B(\mreturn^\modal_A(a)))\big)\to\prd{z:\modal(A)}\modal(B(z)).
+\end{equation*}
+\item A path $\ext(f)(\mreturn^\modal_A(a)) = f(a)$ for each $f:\prd{a:A}\modal(B(\mreturn^\modal_A(a)))$.\label{item:modal3}
+\item For any $z,z':\modal(A)$, the function $\mreturn^\modal_{z=z'} : (z=z') \to \modal(z=z')$ is an equivalence.\label{item:modal4}
+\end{enumerate}
+We say that $A$ is \define{modal} for $\modal$ if $\mreturn^\modal_A:A\to\modal(A)$ is an equivalence, and we write
+\[\modaltype\defeq\sm{X:\type}\ismodal X\]
+for the type of modal types.
+\end{defn}
+
+Conditions~\ref{item:modal2} and~\ref{item:modal3} are very similar to \autoref{thm:modal-char}\ref{item:mchr2}, but phrased using $\modal B(z)$ rather than assuming $B$ to be valued in $\P$.
+This allows us to state the condition purely in terms of the operation $\modal$, rather than requiring the predicate $P:\type\to\prop$ to be given in advance.
+(It is not entirely satisfactor, since we still have to refer to $P$ not-so-subtly in clause~\ref{item:modal4}.
+We do not know whether~\ref{item:modal4} follows from~\ref{item:modal1}--\ref{item:modal3}.)
+However, the stronger-looking property of \autoref{thm:modal-char}\ref{item:mchr2} follows from \autoref{defn:modality}\ref{item:modal2} and~\ref{item:modal3}, since for any $C:\modal A \to \modaltype$ we have $C(z) \simeq \modal C(z)$, and we can pass back across this equivalence.
+
+As with other induction principles, this implies a universal property.
+
+\begin{thm}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
+Let $A$ be a type and let $B:\modal(A)\to\modaltype$. Then the function
+\begin{equation*}
+(-\circ \mreturn^\modal_A) : \Big(\prd{z:\modal(A)}B(z)\Big) \to \Big(\prd{a:A}B(\mreturn^\modal_A(a))\Big)
+\end{equation*}
+is an equivalence.
+\end{thm}
+\begin{proof}
+By definition, the operation $\ext$ is a right inverse to $(-\circ \mreturn^\modal_A)$.
+Thus, we only need to find a homotopy
+\begin{equation*}
+\prd{z:\modal(A)}s(z)= \ext(s\circ \mreturn^\modal_A)(z)
+\end{equation*}
+for each $s:\prd{z:\modal(A)}B(z)$, exhibiting it as a left inverse as well.
+By assumption, each $B(z)$ is modal, and hence each type $s(z)= R^\modal_X(s\circ \mreturn^\modal_A)(z)$
+is also modal.
+Thus, it suffices to find a function of type
+\begin{equation*}
+\prd{a:A}s(\mreturn^\modal_A(a))= \ext(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a)).
+\end{equation*}
+which follows straight from the definition of modalities.
+\end{proof}
+
+In particular, for every type $A$ and every modal type $B$, we have an equivalence $(\modal A\to B)\simeq (A\to B)$.
+
+\begin{cor}
+  For any modality $\modal$, the $\modal$-modal types form a reflective subuniverse satisfying the equivalent conditions of \autoref{thm:modal-char}.
+\end{cor}
+
+Thus, modalities can be identified with reflective subuniverses closed under $\Sigma$-types.
+The name \emph{modality} comes, of course, from \emph{modal logic}, which studies logic where we can form statements such as ``possibly $A$'' (usually written $\diamond A$) or ``necessarily $A$'' (usually written $\Box A$).
+The symbol $\modal$ is somewhat common for a monadic modal operator. % (rather than a specific one such as $\diamond$ or $\Box$).
+Under the propositions-as-types principle, of course, a modality corresponds to an operation on types, and \autoref{defn:modality} seems a reasonable candidate for how such an operation should be defined.
+More precisely, we should perhaps call these \emph{idempotent, monadic} modalities, but they will be the only kind we consider.
+
+
+
+\subsection{The principle of modal choice}\label{sec:ac_truncated}
+
+In this section generalize the principle of unique choice to a lemma we call the principle of modal
+choice, or simply $\mathsf{AC}_{\modal}$. We also introduce various degrees of surjectivity and see how they interact with modal choice.
+We will derive
+the principle of unique choice from the following more general discussion in \autoref{cor:auc}.
+
+\begin{defn}
+Suppose $P:A\to\type$ is a dependent type over a type $A$. We write $\{A\mid P\}\defeq\sm{A}{\brck{P}}$ and define:
+\begin{align*}
+\existsmodal(x:A),\ P(x) & \equiv \modal\sm{A}P\\
+\existsmodalunique(P) & \equiv  (\existsmodal(x:A),\ P(x))\times\ismodal(\{A\mid P\}).
+\end{align*}
+\end{defn}
+
+\begin{lem}\label{lem:modal_Sigma}
+ Suppose that $A$ is modal and for each $a:A$, $B (a)$ is modal. Then $\sm{a:A}B(a)$ is modal.
+\end{lem}
+\begin{proof}
+We first define a map $\modal \sm{a:A}B(a)\to \sm{a:A}B(a)$ and then show that it is inverse to $\eta$. Consider $\hat{\proj1}:\modal \sm{a:A}B(a)
+\to \modal A$. Because $A$ is modal, this gives us an element $a:A$. Combining this with $\hat{\proj2^a}:\modal \sm{a:A}B(a) \to \modal (B
+(a))$ and the modality of $B (a)$, we obtain an element of $\sm{a:A}B(a)$. It is easy to check that this is in fact an inverse.
+\end{proof}
+
+\begin{lem}\label{lem:hlevel_sum_destructed}
+Let $P:A\to\modaltype$. If $\setof{a:A | \brck{P(a)} }$ is modal, then the total space $\sm{x:A} P(x)$ is modal.
+\end{lem}
+\begin{proof}
+Define $\tilde{P}:\{A\mid P\}\to \type$ by $\tilde{P}(a;p)\defeq P(a)$.
+Then $\sm{A}P\simeq \sm{\{A\mid P\}}{\tilde{P}}$. The latter is a sum of modal types and hence itself modal by lemma~\ref{lem:modal_Sigma}.
+\end{proof}
+
+\begin{lem}[Iota]\label{lem:iota}
+For every dependent type $P:A\to\modaltype$, there is a function
+\begin{equation*}
+\exists!_\modal(P)\to\sm{x:A} P(x).
+\end{equation*}
+\end{lem}
+
+\begin{proof}
+Since $\{A\mid P\}$ is modal, by \autoref{lem:hlevel_sum_destructed}, 
+it follows that $\sm{x:A} P(x)$ is modal, so there is
+an equivalence $\existsmodal(x:A),\ P(x)\simeq\sm{x:A}{P(x)}$.
+\end{proof}
+
+\begin{thm}[The principle of modal choice]
+Let $P:X\to\type$ and $R:\prd{x:X}(P(x)\to\modaltype)$. Then there is a function of type
+\begin{equation*}
+\prd{x:X} \existsmodalunique(R(x))\to\sum\big(f:\prd{x:X} P(x)\big)\prd{x:X} R(x,f(x)).
+\end{equation*}
+\end{thm}
+
+\begin{proof}
+Suppose that $\prd{x:X} \existsmodalunique(R(x))$. By \autoref{lem:iota}, 
+we can find a term of type $\sm{u:P(x)} R(x,u)$
+for every $x:X$. The statement now follows from the usual principle of choice.
+\end{proof}
+
+For truncation we obtain the principle of unique choice. 
+However, the of principle of unique choice is usually stated quite differently:
+the type $\ismodal(\{A\mid P\})$ may be replaced by the type
+\begin{equation*}
+\mathsf{atMostOne}(P) \equiv  \prd{x,y:A} P(x)\to P(y)\to(x= y)
+\end{equation*}
+However, a term of $\ism{-1}(P)$ can be deduced from a term of $\mathsf{atMostOne}(P)$. This is the content of the following
+lemma. In order to prove this, we will use that there is an equivalence
+\begin{equation*}
+\mathsf{isprop}(P)\simeq \prd{x,y:A} P(x)\to P(y)\to\iscontr(x= y)
+\end{equation*}
+This is not hard to verify, and a proof relies on the fact that $\pairr{x,u}=\pairr{x^\prime,u^\prime}$ is equivalent to the type
+$x= x^\prime$ for any two terms $\pairr{x,u},\pairr{x^\prime,u^\prime}:\sm{x:A}{\brck{P(x)}}$.
+
+% The following lemma will be used later on in the proof that images are strict coequalizers, see
+% proposition\ref{prop:images_are_coequalizers}.
+
+\begin{lem}\label{lem:atmostone_to_atlevel}
+For any $P:A\to\type$, there is a function of type
+\begin{equation*}
+\mathsf{atMostOne}(P)\to\ism{-1}(P).
+\end{equation*}
+\end{lem}
+
+\begin{proof}
+We will show that there is a function of type
+\begin{equation*}
+\mathsf{atMostOne}(P)\to\prd{x,y:A} P(x)\to P(y)\to\iscontr(x= y).
+\end{equation*}
+Let $H$ be a term of type $\mathsf{atMostOne}(P)$ and let $x,y:A$, $u:P(x)$ and $v:P(y)$. Our goal is to show that $x= y$ is
+contractible by showing that for any $p:x= y$ there is a path $p= H(x,y,u,v)$. The idea is that we apply $H$ to the paths $p$ and
+$H(x,y,u,v)$ to obtain a path between them. The following general statement is useful to compute the terms $H(p,z,u,w)$:
+
+\begin{lem}
+Suppose that $H:\prd{x,y:A} P(x)\to P(y)\to (x= y)$. Then for any $p:x= x^\prime$ and $q:y= y^\prime$ there are paths
+\begin{align*}
+(p\cdot H(x))(y,u^\prime,v) & = H(x,y,p^{-1}\cdot u^\prime,v)\ct p^{-1} & & [u^\prime:P(x^\prime),\ v:P(y)]\\
+(q\cdot H(x,y))(u,v^\prime) & = q\ct H(x,y,u,p^{-1}\cdot v^\prime) & & [u : P(x),\ v^\prime :P(y^\prime)].
+\end{align*} 
+\end{lem}
+The proof of this statement is by path induction. We see from the above that the path $H(p,H(x,y,u,v))$ induces a witness of the
+commutativity of the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {x & y \\ x & y \\};
+\draw[patharrow] (m-2-2) -- node[below] {$p^{-1}$} (m-2-1);
+\draw[patharrow] (m-2-1) -- node[left]  {$H(x,x,u,u)$} (m-1-1);
+\draw[patharrow] (m-1-1) -- node[above] {$H(x,y,u,v)$} (m-1-2);
+\draw[patharrow] (m-2-2) -- node[right] {$H(y,y,v,v)$} (m-1-2);
+\end{tikzpicture}
+\end{equation*}
+Therefore, the assertion would follow if there is a function of type
+\begin{equation*}
+\mathsf{atMostOne}(P)\to\sm{H^\prime:\mathsf{atMostOne}(P)}{\prd{x:X}{u:P(x)}}H^\prime(x,x,u,u)=\idfunc{x}.
+\end{equation*}
+This is easy, since we can define the function $H^\prime:\prd{x,y:X} P(x)\to P(y)\to(x= y)$ by
+\begin{equation*}
+H^\prime(x,y,u,v)\equiv H(x,y,u,v)\ct H(x,x,u,u)^{-1}.\qedhere
+\end{equation*}
+\end{proof}
+
+\begin{defn}
+Suppose $P:A\to\type$ is a dependent type over $A$. We define
+\begin{equation*}
+\exists!(x:A),\ P(x)\equiv \brck{\sm{x:A}P(x)}\times\mathsf{atMostOne}(P).
+\end{equation*}
+\end{defn}
+
+\begin{cor}[The principle of unique choice]\label{cor:auc}
+Let $P:X\to\type$ and $R:\prd{x:X} (P(x)\to\mathsf{hProp})$. Then there is a function
+\begin{equation*}
+\big(\prd{x:X} \exists !(u:P(x)),\ R(x,u)\big) \to
+\sum \big(f:\prd{x:X} P(x)\big) \prd{x:X} R(x,f(x)).
+\end{equation*}
+\end{cor}
 
 
 \section{Reflective subuniverses}
@@ -1005,7 +2201,7 @@ As usual, the induction principle allows us to prove essential uniqueness.
 % \beta(f) & : \prd{u:P(b)}f(u)=\alpha(f)\\
 % \gamma(f) & : \prd{w:\mathcal{L}_P(X)}(H:f\sim\lambda u.w),\ w=\alpha(f)\\
 % \delta(f) & : \prd{w:\mathcal{L}_P(X)}(H:f\sim\lambda u.w)(u:P(b)),\ \gamma(f,H)
-% \bullet H(u)=\beta(f,u)
+% \ct H(u)=\beta(f,u)
 % \end{align*}
 % for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$. The induction principle for
 % $\mathcal{L}_P(X)$ is that for every dependent type $\Lambda:\mathcal{L}_P(X)
@@ -1033,7 +2229,7 @@ As usual, the induction principle allows us to prove essential uniqueness.
 % \end{equation*}
 % (note that in this diagram, we have not taken the canonical path
 % \begin{equation*}
-% \gamma(f,H_0)\cdot (H_0(u)\cdot F(f(u)))=(\gamma(f,H_0)\bullet H_0(u))\cdot F(f(u)),
+% \gamma(f,H_0)\cdot (H_0(u)\cdot F(f(u)))=(\gamma(f,H_0)\ct H_0(u))\cdot F(f(u)),
 % \end{equation*}
 % but it should obviously be there), then there is a section $s:\prd{w:\mathcal{L}P}(X))$
 % with the property that there is a term
@@ -1041,18 +2237,18 @@ As usual, the induction principle allows us to prove essential uniqueness.
 % \kappa & : \prd{x:X}s(i(x))= I(x)
 % \intertext{and for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$ there are terms}
 % \mu(f) & : s(\alpha(f))= \epsilon(s\circ f)\\
-% \nu(f) & : \prd{u:P(b)}\mu(f)\bullet s(\beta(f,u))=\zeta(s\circ f,\beta(f))\\
-% \xi(f) & : \prd{w:\mathcal{L}_P}(X)(H:f\sim\lambda u.w),\ \mu(f)\bullet s(\gamma(f,H))=\mreturn(s\circ f,s\circ H)
+% \nu(f) & : \prd{u:P(b)}\mu(f)\ct s(\beta(f,u))=\zeta(s\circ f,\beta(f))\\
+% \xi(f) & : \prd{w:\mathcal{L}_P}(X)(H:f\sim\lambda u.w),\ \mu(f)\ct s(\gamma(f,H))=\mreturn(s\circ f,s\circ H)
 % \end{align*}
 % and a term $o(f,H,u)$ witnessing the commutativity of the diagram
 % \begin{equation}
 % \begin{tikzpicture}
-% \matrix (m) [std] {\mu(f)\bullet s(\beta(f,u))\bullet (\delta(f,h,u)\cdot s(f(u)))\bullet (\gamma(f,H)\cdot s(H(u)))^{-1} & & \mu(f)\circ
-% s(\gamma(f,H)) \\ \zeta(s\circ f,s\circ\beta(f))\bullet (\delta(f,h,u)\cdot s(f(u)))\bullet (\gamma(f,H)\cdot s(H(u)))^{-1} & &
+% \matrix (m) [std] {\mu(f)\ct s(\beta(f,u))\ct (\delta(f,h,u)\cdot s(f(u)))\ct (\gamma(f,H)\cdot s(H(u)))^{-1} & & \mu(f)\circ
+% s(\gamma(f,H)) \\ \zeta(s\circ f,s\circ\beta(f))\ct (\delta(f,h,u)\cdot s(f(u)))\ct (\gamma(f,H)\cdot s(H(u)))^{-1} & &
 % \mreturn(f,H)\\};
 % \draw[patharrow] (m-2-1) -- node[below] {$\theta(s\circ f,s\circ H,u)$} (m-2-3);
 % \draw[patharrow] (m-1-3) -- node[right] {$\xi(f)$} (m-2-3);
-% \draw[patharrow] (m-1-1) -- node[right]  {$\nu(f)^{-1}\rightwhisker ((\delta(f,H,u)\cdot s(f(u)))\bullet(\gamma(f,H)\cdot s(H(u)))$}(m-2-1);
+% \draw[patharrow] (m-1-1) -- node[right]  {$\nu(f)^{-1}\rightwhisker ((\delta(f,H,u)\cdot s(f(u)))\ct(\gamma(f,H)\cdot s(H(u)))$}(m-2-1);
 % \draw[patharrow] (m-1-1) -- node[above,yshift=1ex] {$s(\gamma(f,H))^{-1}\leftwhisker s(\delta(f,H,u))\rightwhisker s(\beta(f,u))$}(m-1-3);
 % \end{tikzpicture}
 % \end{equation}
@@ -1269,1100 +2465,15 @@ It's just that this fact is not usually remarked on, since the classical categor
 types---does not have many interesting reflective subcategories.
 
 
-\section{Colimits in reflective subuniverses}
-\label{sec:pushouts}
+\end{comment}
 
-Recall that in \autoref{sec:colimits}, we used higher inductive types to define pushouts of types, and proved their universal property.
-We can, of course, consider pushouts in subuniverses as well.
 
-\begin{defn}
-  A \emph{span} in $\P$ is a 5-tuple $\Ddiag=(A,B,C,f,g)$ with
-  $A,B,C:\P$ and $f:C\to{}A$ and $g:C\to{}B$.
-  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
-\end{defn}
 
-\begin{defn}
-  Given a span $\Ddiag=(A,B,C,f,g)$ and a type $D:\P$, a
-  \emph{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
-  $i:A\to{}D$, $j:B\to{}D$ and $h : \prd{c:C}i(f(c))=j(g(c))$
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^j[d] \\ A \ar_i[r] & D
-  }\]
-
-  We denote by $\cocone{\Ddiag}{D}$ the type of all such cocones.
-\end{defn}
-
-As with cones, the type of cocones is (covariantly) functorial.
-For instance, given $D,E:\P$ and a map $t:D\to{}E$, there is a map
-  \[\function{\cocone{\Ddiag}{D}}{\cocone{\Ddiag}{E}}{c}{\composecocone{t}c}\]
-  defined by:
-  \[\composecocone{t}(i,j,h)=(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h)\]
-  % \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  % \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar_j[d]
-  %   \ar@/_/^{t\circ{}j}[rdd] & \\
-  %   A \ar^i[r] \ar@/^/_{t\circ{}i}[rrd] & D \ar[rd]|<<<<t & \\
-  %   & & E }\]
-And given $D,E,F:\P$, functions $t:D\to{}E$, $u:E\to{}F$ and $c:\cocone{\Ddiag}{D}$, we have
-\begin{align*}
-  \composecocone{\idfunc[D]}c &= c\\
-  \composecocone{(u\circ{}t)}c&=\composecocone{u}(\composecocone{t}c)
-\end{align*}
-We can now define the notion of pushout.
-
-\begin{defn}
-  Given a span $\Ddiag$, a type $D:\P$ and a cocone
-  $c:\cocone{\Ddiag}{D}$, the pair $(D,c)$ is said to be a \define{pushout}
-  of $\Ddiag$ in $\P$ if for every $E:\P$, the map
-  \[\function{(D\to{}E)}{\cocone{\Ddiag}{E}}{t}{\composecocone{t}c}\]
-  is an equivalence.
-\end{defn}
-
-We showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher
-inductive types.
-For a general \P, pushouts may or may not exist, but if they do, then they are unique.
-
-\begin{lem}
-  If $(D,c)$ and $(D',c')$ are two pushouts of $\Ddiag$ in $\P$, then
-  $(D,c)=(D',c')$.
-\end{lem}
-\begin{proof}
-  We first prove that the two types $D$ and $D'$ are equivalent.
-
-  Using the universal property of $D$ with $D'$, we see that the following map is an
-  equivalence
-  \[\function{(D\to{}D')}{\cocone{\Ddiag}{D'}}{t}{\composecocone{t}c}\]
-
-  In particular, there is a function $f:D\to{}D'$ satisfying $\composecocone{f}c=c'$. In the
-  same way there is a function $g:D'\to{}D$ such that $\composecocone{g}c'=c$.
-
-  In order to prove that $g\circ{}f=\idfunc[D]$ we use the universal property of
-  $D$ for $D$, which says that the following map is an equivalence:
-  \[\function{(D\to{}D)}{\cocone{\Ddiag}{D}}{t}{\composecocone{t}c}\]
-
-  Using the functoriality of $t\mapsto{}\composecocone{t}c$ we see that
-  \begin{align*}
-    \composecocone{(g\circ{}f)}c &= \composecocone{g}(\composecocone{f}c) \\
-    &= \composecocone{g}c' \\
-    &= c \\
-    &= \composecocone{\idfunc[D]}c
-  \end{align*}
-  hence
-  $g\circ{}f=\idfunc[D]$, because equivalences are injective. The same argument
-  with $D'$ instead of $D$ shows that $f\circ{}g=\idfunc[D']$.
-
-  Hence $D$ and $D'$ are equal, and the fact that $(D,c)=(D',c')$ follows from
-  the fact that the equivalence between $D$ and $D'$ we just defined sends $c$
-  to $c'$.
-\end{proof}
-
-\begin{cor}
-  The type of pushouts of $\Ddiag$ in $\P$ is \anhprop. In particular if
-  pushouts merely exist then they actually exist.
-\end{cor}
-
-As in the case of pullbacks, if \P is reflective, then pushouts in \P always exist.
-However, unlike the case of pullbacks, pushouts in \P are not the same as the pushouts in \type: they are obtained by applying the
-reflector.
-Before proving this, we first need to explain how to reflect spans and cocones.
-For the rest of this section, let \P be a reflective subuniverse.
-
-\begin{defn}
-  Let
-  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
-  be a span in $\type$. We note $\reflect(\Ddiag)$ the following
-  span in $\P$:
-  \[\reflect(\Ddiag)=\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
-    \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }\]
-\end{defn}
-
-\begin{defn}
-  Let $D:\type$ and $c=(i,j,h):\cocone{\Ddiag}{D}$.
-  We define
-  \[\reflect(c)=(\reflect(i),\reflect(j),\reflect(h)):
-  \cocone{\reflect(\Ddiag)}{\reflect(D)}\]
-  where
-  \[\reflect(h):\prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
-  is defined in the following way:
-
-  We have \[h:\prd{c:C}i(f(c))=j(g(c))\]
-  hence
-  \[\funext(h):i\circ{}f=j\circ{}g\]
-  We can apply $\reflect$ and we get
-  \[\mapfunc{\reflect}(\funext(h)):\reflect(i\circ{}f)=\reflect(j\circ{}g)\]
-  Now we can compose with the fact that $\reflect$ commutes with composition and
-  we get the following (the proofs that $\reflect$ commutes with composition are
-  not written in order to keep terms readable; we will later see that they don't
-  get in the way):
-  \[\mapfunc{\reflect}(\funext(h)):
-  \reflect(i)\circ\reflect(f)=\reflect(j)\circ\reflect(g)\]
-  and then
-  \[\reflect(h)\defeq\happly(\mapfunc{\reflect}(\funext(h))):
-  \prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
-\end{defn}
-
-\begin{lem}
-  \label{reflectcommutespushout}
-  Let $\Ddiag$ be a span in $\type$ and $(D,c)$ a pushout of $\Ddiag$
-  in $\type$. Then $(\reflect(D),\reflect(c))$ is a pushout of
-  $\reflect(\Ddiag)$ in $\P$.
-\end{lem}
-
-\begin{proof}
-  Let $E:\P$ and let's consider the following diagram:
-
-  \[\xymatrix{ (\reflect(D)\to E)
-    \ar^{t\mapsto{}\composecocone{t}{\reflect(c)}}[r] \ar_{f_1}^\sim[d]
-    &
-    \cocone{\reflect(\Ddiag)}{E}\\
-    (D\to E) \ar_{f_2}^\sim[d] &
-    (\reflect(A)\to{}E)\times_{(\reflect(C)\to{}E)}(\reflect(B)\to{}E)
-    \ar_{f_5}^\sim[u] \\
-    \cocone{\Ddiag}{E}\ar_-{f_3}^-\sim[r] & (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
-    \ar_{f_4}^\sim[u] }\]
-
-  We need to prove that the top arrow is an equivalence, we will do this by
-  proving that it is a composite of five equivalences.
-
-  The first equivalence, $f_1$, comes from the universal property of $\reflect$ and the fact
-  that $E$ is in \P:
-  \[f_1(t) \defeq t\circ\project_D.\]
-
-  The second equivalence comes from the universal property of $(D,c)$, as a pushout of
-  $\Ddiag$ in \type:
-  \[f_2(u) \defeq (u\circ{}i,u\circ{}j,\mapfunc{u}\circ{}h).\]
-
-  The third map comes from \autoref{coneispb}, and is defined by
-  \[f_3(i,j,h) \defeq (i,j,\funext(h)).\]
-
-  The fourth map comes from the universal property of $\reflect$ applied three
-  times and the fact that pullbacks are invariant under equivalence (everything
-  is invariant under equivalence anyway):
-  \[f_4(i,j,p) \defeq (\ext(i),\ext(j),\mapfunc{\ext}(p)).\]
-
-  Note that $\mapfunc{\ext}(p)$ has type $\ext(i\circ{}f)=\ext(j\circ{}g)$
-  instead of $\ext(i)\circ\reflect(f)=\ext(j)\circ\reflect(g)$ but we
-  (implicitely) concatenate with the proofs that
-  $\ext(i\circ{}f)=\ext(i)\circ\reflect(f)$ and the same for $j$ and $g$. Again,
-  we will see later that these proof do not get in the way.
-
-  The fifth equivalence comes from \autoref{coneispb}, and is defined by
-  \[f_5(a,b,q) \defeq (a,b,\happly(q)).\]
-
-  We now need to prove that the diagram commutes, so we can conclude that the map
-  $t\mapsto{}t\circ\reflect(c)$ is an equivalence.
-
-  We have
-  \begin{align*}
-    f_5(f_4(f_3(f_2(f_1(t))))) &= f_5(f_4(f_3(f_2(t\circ\project_D)))) \\
-    &= f_5(f_4(f_3(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
-    \mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=f_5(f_4(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
-    \funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=f_5(\ext(t\circ\project_D\circ{}i),\ext(t\circ\project_D\circ{}j),\\
-    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
-    \\
-    &=f_5(\ext(t\circ\project_D)\circ\reflect(i),
-    \ext(t\circ\project_D)\circ\reflect(j),\\
-    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
-    \\
-    &=f_5(t\circ\reflect(i),
-    t\circ\reflect(j),
-    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=(t\circ\reflect(i),t\circ\reflect(j),
-    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))))
-  \end{align*}
-
-  Note that in the two steps before the last equality we are using the fact
-  that if $a=a'$ and $b=b'$, then $(a,b,q)=(a',b',q)$. This is actually not
-  even well typed given that the type of $q$ depends on $a$ and $b$, so we
-  have to transport $q$ along the proofs $p:a=a'$ and $q:b=b'$. In the present
-  case we have $q:a\circ\reflect(f)=b\circ\reflect(g)$ hence the correct
-  statement is
-  \[(a,b,q)=(a',b',q')\] where
-  \[q'\defeq\map{(\lam{u} u\circ\reflect(f))}{\rev p} \ct q \ct
-  \map{(\lam{u} u\circ\reflect(g))}{p'})\] Again we will leave this
-  implicit and take care of it only when it will be needed.
-
-  \bigskip
-
-  In order to prove that the diagram commutes, we now only need to prove that
-  \begin{align*}
-    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) &=
-    \mapfunc{t}\circ\reflect(h)
-  \end{align*}
-  This is an equality in the type
-  \[(c:\reflect(C))\to{}t(\reflect(i)(\reflect(f)(c)))=
-  t(\reflect(j)(\reflect(g)(c)))\]
-  This type is equal to
-  \[t\circ\reflect(i)\circ\reflect(f) = t\circ\reflect(j)\circ\reflect(g)\]
-  via $\funext$ so we only need to prove
-  \begin{align*}
-    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)) &=
-    \funext(\mapfunc{t}\circ\reflect(h)) \\
-    &: t\circ\reflect(i)\circ\reflect(f) =
-    t\circ\reflect(j)\circ\reflect(g)
-  \end{align*}
-
-  Note that for any appropriately typed $t$ and $p$ we have
-  \[\funext(\mapfunc{t}\circ\happly(p))=\map{(\lam{u} t\circ{}u)}p\]
-  (by induction on $p$.)
-  Hence the previous equality becomes the following, using the definition of
-  $\reflect(h)$ and expanding $h$ to $\happly(\funext(h))$:
-  \[\map{\ext}{\map{(\lam{u} t\circ\project_D\circ{}u)}{\funext(h)}}=
-  \map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}\]
-
-  The idea is now to do an induction on the path $\funext(h):i\circ f = j\circ
-  g$, which should be allowed because nothing in the previous expression seems to
-  depend on the fact that $\funext(h)$ goes from a composition to another
-  composition.  But let's not forget that there are implicit equalities on
-  both sides of the equation and they use the fact that $i\circ f$ and
-  $j\circ g$ are compositions, so first we need to deal with that.
-
-  % After that, using the fact that for every $k:C\to{}D$ we have
-
-  % \begin{align*}
-  %   \ext(t\circ\project_D\circ{}k) &= \ext(t\circ\project_D)\circ\reflect(k) \\
-  %   &= t\circ\reflect(k)
-  % \end{align*}
-
-  % We will have
-
-  % \[\ext\circ(\lam{u} t\circ\project_D\circ{}u)=
-  % (\lam{u} t\circ{}u)\circ\reflect\]
-
-  % Hence the result, using the functoriality of $f\mapsto{}f_*$.
-
-  \bigskip
-
-  % Let's prove that the implicit equalities around $\mapfunc{r}$ and
-  % $\mapfunc{\ext}$ cancel.
-  We have the following diagram:
-
-  \[\xymatrix{
-    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
-      t\circ\reflect(j\circ g) \ar@{=}[d] \\
-    t\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
-      t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D}\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
-      \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i}\circ\reflect(f) \ar@{=}[d] &
-      \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
-      \extend{t\circ\project_D\circ j\circ g}\\
-  }\]
-
-  \begin{itemize}
-  \item The top horizontal equality is
-    $\map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}$ without the
-    implicit equalities around.
-  \item The first line of vertical equalities are the implicit equalities around
-    $\map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}$ (the
-    right hand side of the equality we want to prove).
-  \item The next two lines of vertical equalities are around the left hand side
-    of the equality we want to prove and come from the long computation a few
-    pages ago.
-  \item The last line of vertical equalities are the implicit equalities around
-    $\mapfunc{\extendsmb}$.
-  \item The bottom horizontal equality is
-    $\map{\ext}{\map{(\lam{u} t\circ\project_D\circ{}u)}{\funext(h)}}$
-    without the implicit equalities around.
-  \end{itemize}
-
-  The commutativity of the diagram is the equality we want to prove and
-  the fact that the compositions $i\circ f$ and $j\circ g$ are being split in
-  the middle of the diagram is the reason why we cannot work directly, by induction on
-  $\funext(h)$.
-
-  So we will prove that the following diagram (where the vertical part is the
-  right hand side of the previous diagram) commutes. Note that on the right hand
-  side of this diagram, we do no longer use the fact that $j\circ g$ is a
-  composition of two functions, so induction on it will be allowed.
-
-  \[\xymatrix{
-    t\circ\reflect(j\circ g) \ar@{=}[d] & \\
-    t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] & \\
-    \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] &
-    \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[l] \ar@{=}[luu]
-    \ar@{=}[ldd] \\
-    \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] & \\
-    \extend{t\circ\project_D\circ j\circ g} & \\
-  }\]
-
-  The top square commutes because it is the concatenation of the two equalities
-  $t=\extend{t\circ\project_D}$ and $\reflect(j)\circ\reflect(g)=\reflect(j\circ
-  g)$ in two different orders (interchange law). In order to prove that the
-  bottom square commutes, we only have to prove that it commutes after
-  composition with $\project_C$ on the right. Let's write $u=t\circ\project_D$
-  and let's consider the following diagram.
-
-  \[\xymatrix@C=-30pt{
-    \extend{u}\circ\reflect(j)\circ\reflect(g)\circ\project_C
-      \ar@{=}[rrrr] \ar@{=}[ddd] \ar@{=}[rd] & & & &
-    \extend{u}\circ\reflect(j\circ g)\circ\project_C
-      \ar@{=}[ld] \ar@{=}[ddd] \\ &
-    \extend{u}\circ\reflect(j)\circ\project_B\circ g
-      \ar@{=}[rr] \ar@{=}[d] & {\phantom{thisisanuglyhack}} &
-    \extend{u}\circ\project_D\circ j\circ g
-      \ar@{=}[d] & \\ &
-    \extend{u\circ j}\circ\project_B\circ g
-      \ar@{=}[rr] \ar@{=}[ld] & &
-    u\circ j\circ g
-      \ar@{=}[rd] & \\
-    \extend{u\circ j}\circ\reflect(g)\circ\project_C
-      \ar@{=}[rrrr] & & & &
-    \extend{u\circ j\circ g}\circ\project_C
-  }\]
-
-  We need to prove that the outer square commutes.
-
-  \begin{itemize}
-  \item The left square commutes because of the interchange law
-  \item The top square commutes because of the definition of the equality
-    $\reflect(j\circ g)=\reflect(j)\circ\reflect(g)$
-  \item The bottom, right and interior squares commute because of the definition
-    of the equality $\extend{a}\circ\reflect(b)=\extend{a\circ b}$
-  \end{itemize}
-
-  This proves that the outer square commutes, hence the previous triangular
-  diagram commutes. We can do the same for the left part of the first
-  rectangular diagram so we now only have to prove that the following diagram
-  commutes:
-
-  \[\xymatrix{
-    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
-      t\circ\reflect(j\circ g) \ar@{=}[d] \\
-    \extend{t\circ\project_D}\circ\reflect(i\circ f) \ar@{=}[d] &
-      \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
-      \extend{t\circ\project_D\circ j\circ g}\\
-  }\]
-
-  And now we are finally allowed to induct on $\funext(h)$ because the diagram
-  is not relying anymore on the fact that $i\circ f$ and $j\circ g$ are
-  compositions.
-
-  \bigskip
-
-  This proves that the diagram commutes, hence the map
-  $t\mapsto{}\composecocone{t}\reflect(c)$ is an equivalence which proves that
-  the reflector commutes with pushouts.
-\end{proof}
-
-This proof was rather tedious, but we can hope that at some point we will
-understand better what $(\infty,1)$-functoriality means in homotopy type theory, and
-that we will be able to omit rigorously the equalities left implicit above and still
-conclude that every coherence condition is always satisfied.
-
-\begin{cor}
-  If \P is a reflective subuniverse, then
-  every span $\Ddiag$ in $\P$ has a pushout in $\P$.
-\end{cor}
-
-\begin{proof}
-  According to \autoref{reflectPequiv} and to the diagram defining the action of
-  $\reflect$ on functions, the diagram $\reflect(\Ddiag)$ is equivalent to
-  $\Ddiag$. But we just proved that $\reflect(\Ddiag)$ has a pushout, namely the
-  reflection of the pushout in \type of $\Ddiag$, hence $\Ddiag$ has a pushout
-  in \P.
-\end{proof}
-
-Similar (but simpler) arguments prove that any reflective subuniverse has an initial object (namely $\reflect(\emptyt)$), coproducts
-(constructed as $\reflect(A+B)$), coequalizers, and so on.
-
-
-\section{Modalities and factorization systems}
-\label{sec:modalities}
-
-\subsection{Definition and first properties}
-\label{subsec:modal-defn}
-
-Since $n$-types form a reflective subuniverse for any $n\ge -2$, the theory of \autoref{sec:pullbacks,sec:pushouts} applies to them.
-However, $n$-types have additional properties not shared by other reflective subuniverses, particularly \autoref{thm:ntypes-sigma,thm:truncn-ind}.
-In fact, these two properties are equivalent to each other.
-
-\begin{thm}\label{thm:modal-char}
-  For a reflective subuniverse \P, the following are logically equivalent.
-  \begin{enumerate}
-  \item If $A:\P$ and $B:A\to \P$, then $\sm{x:A} B(x)$ is in \P.\label{item:mchr1}
-  \item for every $A:\type$, type family $B:\reflect(A)\to\P$, and function $g:\prd{a:A} B(\project(a))$, there exists $f:\prd{z:\reflect(A)} B(z)$ such that $f(\project(a)) = g(a)$ for all $a:A$.\label{item:mchr2}
-  \end{enumerate}
-\end{thm}
-\begin{proof}
-  Suppose~\ref{item:mchr1}.
-  Then in the situation of~\ref{item:mchr2}, the type $\sm{z:\reflect(A)} B(z)$ lies in $\P$, and we have $g':A\to \sm{z:\reflect(A)} B(z)$ defined by $g'(a)\defeq (\project(a),g(a))$.
-  Thus, we have $\ext(g'):\reflect(A) \to \sm{z:\reflect(A)} B(z)$ such that $\ext(g')(\project(a)) = (\project(a),g(a))$.
-
-  Now consider the functions $\proj2 \circ \ext(g') : \reflect(A) \to \reflect(A)$ and $\idfunc[\reflect(A)]$.
-  By assumption, these become equal when precomposed with $\project$.
-  Thus, by the universal property of $\reflect$, they are equal already, i.e.\ we have $p_z:\proj2(\ext(g')(z)) = z$ for all $z$.
-  Now we can define $f(z) \defeq \trans{p_z}(\proj2(\ext(g')(z)))$, and the second component of $\ext(g')(\project(a)) = (\project(a),g(a))$ yields $f(\project(a)) = g(a)$.
-
-  Conversely, suppose~\ref{item:mchr2}, and that $A:\P$ and $B:A\to\P$.
-  (TODO\dots)
-\end{proof}
-
-Condition~\ref{item:mchr2} is a more familiar type-theoretic condition, which has the flavor of an induction principle.
-This is strengthened if we rephrase it in the following way.
-Note that any reflective subuniverse can be characterized by the operation $\reflect:\type\to\type$ and the functions $\project_A:A\to \reflect(A)$, since we have $P(A) = \isequiv(\project_A)$.
-
-\begin{defn}\label{defn:modality}
-A \define{modality} is an operation $\modal:\type\to\type$ for which there are
-\begin{enumerate}
-\item functions $\mreturn^\modal_A:A\to\modal(A)$ for every type $A$.\label{item:modal1}
-\item for every $A:\type$ and every type family $B:\modal(A)\to\type$, a function\label{item:modal2}
-\begin{equation*}
-\ext:\big(\prd{a:A}\modal(B(\mreturn^\modal_A(a)))\big)\to\prd{z:\modal(A)}\modal(B(z)).
-\end{equation*}
-\item A path $\ext(f)(\mreturn^\modal_A(a)) = f(a)$ for each $f:\prd{a:A}\modal(B(\mreturn^\modal_A(a)))$.\label{item:modal3}
-\item For any $z,z':\modal(A)$, the function $\mreturn^\modal_{z=z'} : (z=z') \to \modal(z=z')$ is an equivalence.\label{item:modal4}
-\end{enumerate}
-We say that $A$ is \define{modal} for $\modal$ if $\mreturn^\modal_A:A\to\modal(A)$ is an equivalence, and we write
-\[\modaltype\defeq\sm{X:\type}\ismodal X\]
-for the type of modal types.
-\end{defn}
-
-Conditions~\ref{item:modal2} and~\ref{item:modal3} are very similar to \autoref{thm:modal-char}\ref{item:mchr2}, but phrased using $\modal B(z)$ rather than assuming $B$ to be valued in $\P$.
-Of course, since the reflector of a reflective subuniverse lands in that subuniverse, any reflective subuniverse can be regarded as a modality.
-Conversely, we have:
-
-\begin{lem}
-  For any modality $\modal$, the $\modal$-modal types form a reflective subuniverse satisfying the equivalent conditions of \autoref{thm:modal-char}.
-\end{lem}
-\begin{proof}
-  TODO.
-\end{proof}
-
-Thus, modalities can be identified with reflective subuniverses closed under $\Sigma$-types.
-The name \emph{modality} comes, of course, from \emph{modal logic}, which studies logic where we can form statements such as ``possibly $A$'' (usually written $\diamond A$) or ``necessarily $A$'' (usually written $\Box A$).
-The symbol $\modal$ is somewhat common for an arbitrary modal operator (rather than a specific one such as $\diamond$ or $\Box$).
-Under the propositions-as-types principle, of course, a modality corresponds to an operation on types, and \autoref{defn:modality} seems a reasonable candidate for how such an operation should be defined.
-More precisely, we should perhaps call these \emph{idempotent, monadic} modalities, but they will be the only kind we consider.
-
-For the rest of this section, let $\modal$ be a modality.
-We note that the universal property of a modality extends to a dependent one.
-
-\begin{thm}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
-Let $A$ be a type and let $P:\modal(A)\to\modaltype$. Then the function
-\begin{equation*}
-(-\circ \mreturn^\modal_A) : \Big(\prd{z:\modal(A)}P(z)\Big) \to \Big(\prd{a:A}P(\mreturn^\modal_A(a))\Big)
-\end{equation*}
-is an equivalence.
-\end{thm}
-
-\begin{proof}
-We only need to find a homotopy
-\begin{equation*}
-\prd{z:\modal(A)}s(z)= \ext(s\circ \mreturn^\modal_A)(z)
-\end{equation*}
-for each $s:\prd{z:\modal(A)}P(z)$. By assumption we have that $P(z)$ is
-modal for each $z:\modal(A)$ and hence it follows that $s(z)= R^\modal_X(s\circ \mreturn^\modal_A)(z)$
-is modal for each $z$. Hence it suffices to find a function of type
-\begin{equation*}
-\prd{a:A}s(\mreturn^\modal_A(a))= \ext(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a)),
-\end{equation*}
-which follows straight from the definition of modalities.
-\end{proof}
-
-In particular, for every type $A$ and every modal type $B$, we have an equivalence $(\modal A\to B)\simeq (A\to B)$.
-
-
-\subsection{Connectivity}
-\label{subsec:connectivity}
-
-\begin{defn}
-A function $f:A\to B$ is said to be \define{$\modal$-connected} if for all $b:B$, the type $\modal(\hfiber f b)$ is contractible:
-\begin{equation*}
-\mathsf{conn}_\modal(f):=\prd{b:B}\iscontr(\modal\hfiber{f}b). 
-\end{equation*}
-A type $A$ is said to be \define{\modal-connected} if the unique function
-$A\to\unit$ is \modal-connected. Likewise, a type family
-$P:A\to\type$ is said to be \define{\modal-connected} if $P(x)$ is \modal-connected for
-every $x:A$. 
-\end{defn}
-
-A type $A$ is \modal-connected precisely when $\modal A$ is contractible. Thus, a function $f:A\to B$ is
-$\modal$-connected if and only if $\hfib{f}b$ is \modal-connected for every $b:B$. 
-And a type family $P:A\to\type$ is \modal-connected precisely when $\proj1:\sm{x:A} P(x)\to A$ is a \modal-connected function.
-
-\begin{eg}
-  If $\modal$ is the $n$-truncation, we speak of \define{$n$-connected} types and functions.
-  Every function is $(-2)$-connected, while a function is $(-1)$-connected precisely when it is surjective.
-\end{eg}
-
-\begin{lem}
-Suppose that $g$ is a retract of a $\modal$-connected function $f$.  Then $g$ is
-$\modal$-connected.
-\end{lem}
-\begin{proof}
-This is a direct consequence of \autoref{lem:func_retract_to_fiber_retract}.
-\end{proof}
-
-\begin{cor}
-If $g$ is homotopic to a $\modal$-connected function $f$, then $g$ is $\modal$-connected.
-\end{cor}
-
-\begin{lem}\label{lem:nconnected_postcomp}
-Suppose that $f:A\to B$ is $\modal$-connected. Then $g:B\to C$ is $\modal$-connected if and only if $g\circ f$ is
-$\modal$-connected.
-\end{lem}
-
-\begin{proof}
-Let $c:C$. We have the equivalences
-\note{Where do these come from?}
-\begin{align*}
-\modal\hfib{g\circ f}c& \simeq \modal \sm{w:\hfib{g}c}\hfib{f}{\proj1 w}\\
-& \simeq \modal\sm{w:\hfib{g}c}\modal\hfib{f}{\proj1 w}\\
-& \simeq \modal\hfib{g}c.
-\end{align*}
-It follows that $\modal\hfib{g}c$ is contractible if and only if $\modal\hfib{g\circ f}c$ is
-contractible.
-\end{proof}
-
-The $\modal$-connected functions can be characterized as those which satisfy an ``induction principle'' with respect to modal types.
-
-\begin{lem}\label{prop:nconnected_tested_by_lv_n_dependent types}
-A function $f:A\to B$ is \modal-connected if and only if for every $P:B\to\type_\modal$, the function
-\begin{equation*}
-\varphi :\big(\prd{b:B} P(b)\big)\to\big(\prd{a:A}P(f(a))\big)
-\end{equation*}
-defined by $\varphi(s):=s\circ f$ is an equivalence.
-\end{lem}
-
-\begin{proof}
-Suppose that $f$ is \modal-connected and let $P:B\to\type$ be a dependent type over $B$. Then we have the equivalences
-\begin{align*}
-\prd{b:B} P(b) & \simeq \prd{b:B} \modal\hfib{f}b\to P(b)\\
-& \simeq \prd{b:B} \hfib{f}b\to P(b)\\
-& \simeq \prd{b:B}(a:A)(p:f(a)= b),\ P(b)\\
-& \simeq \prd{a:A} P(f(a)).
-\end{align*}
-We omit the proof that this equivalence is indeed given by $\lambda s.s\circ f$. 
-
-For the other direction, suppose that the function $\lambda s.s\circ f$ from $(\prd{b:B} P(b))$ to $(\prd{a:A} P(f(a)))$ is an
-equivalence for each $P:B\to\modaltype$. Considering the dependent type 
-\begin{equation*}
-b:B\vdash\modal\hfib{f}b:\modaltype,
-\end{equation*}
-we obtain from the assumed equivalence a term $c$ of type $\prd{b:B} \modal\hfib{f}b$ with
-$c(f(a))\equiv\mreturn(\pair{a,\idfunc{f(a)}})$. To show that each $\modal\hfib{f}b$ is contractible 
-we will find a function of type
-\begin{equation*}
-\prd{b:B}(w:\modal\hfib{f}b),\ w= c(b).
-\end{equation*}
-By the universal property of \modal\ the above type is equivalent to
-\begin{equation*}
-\prd{b:B}(a:A)(p:f(a)= b),\ \mreturn(\pairr{a,p})= c(b),
-\end{equation*}
-which is furthermore equivalent to the type
-\begin{equation*}
-\prd{a:A} \mreturn(\pairr{a,\idfunc{f(a)}})= c(f(a)).
-\end{equation*}
-This property holds by our choice of $c(f(a))$. 
-\end{proof}
-
-\begin{cor}\label{cor:totrunc_is_connected}
-For any $A$, the canonical function $\mreturn:A\to\modal A$ is \modal-connected.
-\end{cor}
-\begin{proof}
-By \autoref{prop:lv_n_deptype_sec_equiv_by_precomp,prop:nconnected_tested_by_lv_n_dependent types}.
-\end{proof}
-
-\begin{cor}
-A type $A$ is \modal-connected if and only if the map
-\begin{equation*}
-  \lam{b}{a} b: B \to (A\to B)
-\end{equation*}
-is an equivalence for every modal type $B$.
-In other words, ``every map from $A$ to a modal type is constant''.
-\end{cor}
-\begin{proof}
-  By \autoref{prop:nconnected_tested_by_lv_n_dependent types} applied to a function with codomain $\unit$.
-\end{proof}
-
-\begin{lem}\label{lem:nconnected_to_leveln_to_equiv}
-Let $B$ be a modal type and let $f:A\to B$ be a function. Then the induced function $g:\modal A\to B$ is an
-equivalence if and only if $f$ is \modal-connected.
-\end{lem}
-
-\begin{proof}
-Note that $f$ is homotopic to $g\circ\mreturn$. By \autoref{cor:totrunc_is_connected} we know that $\mreturn$ is \modal-connected, so
-by
-\autoref{lem:nconnected_postcomp} $f$ is \modal-connected if and only if $g$ is \modal-connected. Since $g$ is a function between
-modal types, the homotopy fibers of $g$ are modal. Hence it follows that $g$ is \modal-connected if and only if $g$ is an equivalence.
-\end{proof}
-
-A useful variation on \autoref{lem:nconnected_postcomp} is:
-
-\begin{lem}\label{lem:nconnected_postcomp_variation}
-Let $f:A\to B$ be a function and $P:A\to\type$ and $Q:B\to\type$ be dependent types. Suppose that $g:\prd{a:A} P(a)\to Q(f(a))$
-is a fiberwise \modal-connected function, i.e.\ each $g(a)$ is \modal-connected. Then the function
-\begin{align*}
-\varphi &:\big(\sm{a:A} P(a)\big)\to\big(\sm{b:B} Q(b)\big)\\
-\varphi(a,u) &\defeq \pairr{f(a),g(u)}
-\end{align*}
-is \modal-connected if and only if $f$ is \modal-connected.
-\end{lem}
-
-\begin{proof}
-For $b:B$ and $v:Q(b)$ we have
-\begin{align*}
-\modal\hfib{\varphi}{\pairr{b,v}} & \simeq \modal\sm{a:A}{u:P(a)}{p:f(a)= b} f(p)\cdot g(u)= v\\
-& \simeq \modal\sm{w:\hfib{f}b}{u:P(\proj1(w))} g(u)= f(p)^{-1}\cdot v\\
-& \simeq \modal\sm{w:\hfib{f}b} \modal\hfib{g(\proj1 w}{f(p)^{-1}\cdot v}\\
-& \simeq \modal\hfib{f}b
-\end{align*}
-where the transportations along $f(p)$ and $f(p)^{-1}$ are taken with respect to the dependent type $Q$.
-Therefore, if either is contractible, so is the other.
-\end{proof}
-
-
-\subsection{Orthogonal factorization through the \modal-image}\label{sec:image_factorization}
-
-\begin{defn}
-  A function $f:A\to B$ is \define{modal} if the fiber $\hfib f b$ is modal for all $b:B$.
-\end{defn}
-
-We now show that for any modality, the $\modal$-connected functions and the \modal-modal functions form an orthogonal factorization system.
-When specialized to the $n$-truncation, this yields a factorization system system consisting of $n$-connected functions and $n$-truncated ones.
-
-% Every modality $\modal$ defines 
-% a stable factorization system $(\mathcal{E}_\modal,\mathcal{M}_\modal)$ with:
-% \begin{equation*}
-% \mathcal{E}_\modal(f)\equiv \prd{b:B}
-% \iscontr(\modal\hfiber{f}b).
-% \end{equation*}
-% and \Mcirc\ the class of functions all of which fibers are
-% modal, \emph{modal functions} for short.
-
-% The following two corollaries are reformulations of \autoref{prop:nconnected_tested_by_lv_n_dependent types}:
-
-% \begin{cor}
-% A function $f:A\to B$ is \modal-connected if and only if for every modal function $g:X\to B$, the function
-% \begin{equation*}
-% \varphi:\big(\prd{b:B}\hfib{g}b\big)\to\big(\prd{a:A} \hfib{g}{f(a)}\big)
-% \end{equation*}
-% defined by $\varphi(s):=s\circ f$ is an equivalence.
-% \end{cor}
-
-% \begin{cor}
-% A function $f:A\to B$ is \modal-connected if and only if for every modal function $g:X\to B$, the function
-% \begin{equation*}
-% \varphi :\big(\sm{h:B\to X} g\circ h\sim \idfunc{B}\big)\to\big(\sm{k:A\to X} g\circ k\sim f\big)
-% \end{equation*}
-% defined by $\varphi(h,H):=\pairr{h\circ f,H\circ f}$ is an equivalence.
-% \end{cor}
-
-
-\begin{defn}\label{def:modal-image}
-Let $f:A\to B$ be a function. The \define{\modal-image} of $f$ is defined as
-\begin{equation*}
-\im_\modal(f):=\sm{b:B} \modal\hfib{f}b
-\end{equation*}
-We also define $\im(f)$ for $\im_{-1}(f)$. 
-\end{defn}
-
-
-\begin{lem}
-Let $P:A\to\type$ be defined by $P(x):=\unit$. Then
-$\brck{A}\simeq\im(P)$.
-\end{lem}
-
-\begin{proof}
-First we have to show that $\im(P)$ is a mere proposition. Suppose that $\pairr{X,u}:\im(P)$, we are essentially done showing
-that
-$\im(P)$ is a proposition if we show that $X\simeq \unit$. Note that $X\simeq\unit$ is a proposition, so there is an
-equivalence
-\begin{equation*}
-\brck{\hfib{P}X}\to (X\simeq\unit))\simeq(\hfib{P}X\to(X\simeq\unit)).
-\end{equation*}
-The latter type is clearly inhabited and the type $\brck{\hfib{P}X}$ is inhabited by assumption. Therefore, there is a term
-of $X\simeq\unit$.
-
-Note that for any proposition $B$, there is an equivalence
-\begin{equation*}
-(\im(P)\to B)\simeq \big(\big(\sm{X:\type}(a:A),\ X\simeq P(a)\big)\to B\big) \simeq A\to B,
-\end{equation*}
-so $\im(P)$ satisfies the same universal property as $\brck{A}$. 
-Therefore they are equivalent.
-\end{proof}
-
-\begin{lem}\label{prop:nconn_fiber_to_total}
-Let $P,Q:A\to\type$ be dependent types and consider a fiberwise transformation
-\begin{equation*}
-f:\prd{a:A} P(a)\to Q(a)
-\end{equation*}
-from $P$ to $Q$. Then $\Sigma_A f$ is \modal-connected if and only if each $f(a)$ is \modal-connected. 
-\end{lem}
-
-\begin{proof}
-Recall that we have the equivalence
-\begin{equation*}
-\hfib{\Sigma_A f}{\pairr{x,v}}\simeq\hfib{f(x)}v
-\end{equation*}
-for each $x:A$ and $v:Q(x)$. Hence $\modal\hfib{\Sigma_A f}{\pairr{x,v}}$ is contractible if and only if
-$\modal\hfib{f(x)}v$ is contractible.
-\end{proof}
-
-\begin{lem}\label{prop:to_image_is_connected}
-For any function $f:A\to B$, the canonical function $\tilde{f}:A\to\im_\modal(f)$ is \modal-connected. 
-Consequently, any function factors as an \modal-connected function followed by a modal function.
-\end{lem}
-
-\begin{proof}
-Note that $A\simeq\sm{b:B}\hfib{f}b$. The function $\tilde{f}$ is the function on total spaces induced by the fiberwise
-transformation
-\begin{equation*}
-\lambda b.\eta^{\hfib{f}b}:\prd{b:B} \hfib{f}b\to\modal\hfib{f}b.
-\end{equation*}
-Since each $\eta$ is \modal-connected by corollary \ref{cor:totrunc_is_connected}, the statement follows from
-proposition \ref{prop:nconn_fiber_to_total}.
-\end{proof}
-
-In the following proposition we set up some machinery to prove the unique factorization theorem.
-
-\begin{thm}\label{prop:factor_equiv_fiber}
-Suppose we have a commutative diagram of functions
-\begin{equation*}
-\begin{tikzpicture}
-\node (A) at (-3em,0) {$A$};
-\node (B) at (3em,0) {$B$};
-\node (X1) at (0,1.5em) {$X_1$};
-\node (X2) at (0,-1.5em) {$X_2$};
-\draw[ar] (A) -- node[auto] {$g_1$} (X1);
-\draw[ar] (X1) -- node[auto] {$h_1$} (B);
-\draw[ar] (A) -- node[auto,swap] {$g_2$} (X2);
-\draw[ar] (X2) -- node[auto,swap] {$h_2$} (B);
-\end{tikzpicture}
-\end{equation*}
-with $H:h_1\circ g_1\sim h_2\circ g_2$, where $g_1$ and $g_2$ are \modal-connected and where $h_1$ and $h_2$ are modal.
-Then there is an equivalence
-\begin{equation*}
-E(H,b):\hfib{h_1}b\simeq\hfib{h_2}b
-\end{equation*}
-for any $b:B$ such that the underlying map $\underline{E}(H,h_1(g_1(a)))$ of $E(H,h_1(g_1(a))$ maps $\pairr{g_1(a),\idfunc{h_1(g_1(a))}}$ to
-$\pairr{g_2(a),H(a)^{-1}}$ for any $a:A$.
-\end{thm}
-
-\begin{proof}
-Let $b:B$. Then we have the following equivalences:
-\begin{align*}
-\hfib{h_1}b & \simeq \sm{w:\hfib{h_1}b} \modal \hfib{g_1}{\proj1 w}\\
-& \simeq \modal\sm{w:\hfib{h_1}b}\hfib{g_1}{\proj1 w}\\
-& \simeq \modal\hfib{h_1\circ g_1}b
-\end{align*}
-and likewise for $h_2$ and $g_2$. Here, the first equivalence holds because $g_1$ is assumed to be \modal-connected; the second equivalence
-holds because $h_1$ is assumed to be modal and the third equivalence holds by \autoref{lem:hfiber_basics}. Also, since we have a
-homotopy $H:h_1\circ g_1\sim h_2\circ g_2$, there is an obvious equivalence $\hfib{h_1\circ g_1}b\simeq\hfib{h_2\circ g_2}b$. Hence we
-obtain
-\begin{equation*}
-\hfib{h_1}b\simeq\hfib{h_2}b
-\end{equation*}
-for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the term
-$\pairr{g_1(a),\idfunc{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
-\begin{align*}
-\pairr{g_1(a),\idfunc{h_1(g_1(a))}} & 
-    \mapsto \pairr{\pairr{g_1(a),\idfunc{h_1(g_1(a))}}, \eta( \pairr{a,\idfunc{g_1(a)}} )}\\
-  & \mapsto \eta( \pairr{\pairr{g_1(a),\idfunc{h_1(g_1(a))}}, \pairr{a,\idfunc{g_1(a)}} }\\
-  & \mapsto \eta( \pairr{a,\idfunc{h_1(g_1(a))}})\\
-  & \mapsto \eta( \pairr{a,H(a)^{-1}})\\
-  & \mapsto \eta( \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\idfunc{g_2(a)}}}\\
-  & \mapsto \pairr{\pairr{g_2(a),H(a)^{-1}}, \eta(\pairr{a,\idfunc{g_2(a)}}) }\\
-  & \mapsto \pairr{g_2(a),H(a)^{-1}}\qedhere
-\end{align*}
-\end{proof}
-
-The equivalences $E(H,b)$ are such that $E(H^{-1},b)= E(H,b)^{-1}$.
-
-Combining \autoref{prop:to_image_is_connected,prop:factor_equiv_fiber}, we have the following unique factorization result:
-
-\begin{thm}
-For each $f:A\to B$, the space $\mathsf{factorizations}_\modal(f)$ defined by
-\begin{equation*}
-\sm{X:\type}(g:A\to X)(h:X\to B),\ (h\circ g\sim f)\times\mathsf{conn}_\modal(g)\times\ismodal\ h.
-\end{equation*}
-is contractible. By \autoref{prop:to_image_is_connected} we know that there is the term
-\begin{equation*}
-\pairr{\im(f),\tilde{f},\proj1,\theta,\varphi,\psi}:\mathsf{factorizations}_\modal(f)
-\end{equation*}
-where $\theta:\proj1\circ\tilde{f}\sim f$ is the canonical homotopy, where $\varphi$ is the proof of
-\autoref{prop:to_image_is_connected}, and where $\psi$ is the obvious proof that $\proj1:\im(f)\to B$ has modal fibers.
-\end{thm}
-
-In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker operations. Recall that if we have paths
-$p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whisker operation provides a path $q\bullet p=
-q\bullet p^\prime$, wich is denoted by $q\leftwhisker s$. Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim
-f^\prime$ is a homotopy, then there is a homotopy $g\leftwhisker H:g\circ f\sim g\circ f^\prime$.
-
-\begin{proof}
-By \autoref{prop:to_image_is_connected} we know that there is a term of $\mathsf{factorizations}_\modal(f)$, hence it is enough to
-show that $\mathsf{factorizations}_\modal(f)$ is a proposition. Suppose we have two \modal-factorizations
-\begin{equation*}
-\pairr{X_1,g_1,h_1,H_1,\varphi_1,\psi_1}\qquad\text{and}\qquad\pairr{X_2,g_2,h_2,H_2,\varphi_2,\psi_2}
-\end{equation*}
-of $f$. Then we have the homotopy $H:=H_2^{-1}\circ H_1:h_1\circ g_1\sim h_2\circ g_2$. By the univalence axiom, it suffices to show that
-\begin{enumerate}
-\item there is an equivalence $e:X_1\simeq X_2$,
-\item there is a homotopy $\zeta:\underline{e}\circ g_1\sim g_2$,
-% \note{Is it easy enough to see that these terms are the various transports?}
-\item there is a homotopy $\eta:h_2\circ\underline{e}\sim h_1$,
-\item there is a homotopy $H_1 \circ(h_1\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_2)\sim H_2$.
-\end{enumerate}
-where $\underline{e}$ is the function underlying the equivalence. We prove these four assertions in that order.
-\begin{enumerate}
-\item By \autoref{prop:factor_equiv_fiber}, we have a fiberwise equivalence
-% \note{It could be a nice exercise for the book to show
-% that if $f_1:A_1\to B$ and $f_2:A_2\to B$ have equivalent fibers, then $A_1\simeq A_2$}.
-\begin{equation*}
-\prd{b:B} \hfib{h_1}b\to\hfib{h_2}b.
-\end{equation*}
-This induces an equivalence of total spaces, i.e.\ we have
-\begin{equation*}
-\sm{b:B} \hfib{h_1}b\simeq\sm{b:B}\hfib{h_2}b
-\end{equation*}
-Of course, we also have the familiar equivalences $X_1\simeq\sm{b:B}\hfib{h_1}b$ and $X_2\simeq\sm{b:B}
-\hfib{h_2}b$. This gives us our equivalence $e(H):X_1\simeq X_2$. The reader may verify that the underlying function
-$\underline{e}(H)$ of $e(H)$ is defined by
-\begin{equation*}
-\underline{e}(H,x):=\proj1\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}})
-\end{equation*}
-\item By \autoref{prop:factor_equiv_fiber} we have $\underline{e}(H,g_1(a))=g_2(a)$. Thus we get $\zeta(a):=\idfunc{g_2(a)}$. 
-\item For every $x:X_1$, we have
-\begin{equation*}
-\proj2\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}}):h_2(\underline{e}(H,x))= h_1(x),
-\end{equation*}
-giving us a homotopy $\eta:h_2\circ \underline{e}\sim h_1$.
-\item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a))=H(a)^{-1}$ and by {\it ii.} we have
-$h_2(\zeta(a))=\idfunc{h_2(g_2(a))}$. Thus we have
-\begin{align*}
-(H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\bullet h_2(\zeta(a))^{-1}\bullet \eta(g_1(a))\\
-& = H_1(a)\bullet H(a)^{-1}\\
-& = H_2(a).
-\end{align*}
-\end{enumerate}
-\end{proof}
-
-\begin{cor}
-A function $f:A\to B$ is \modal-connected if and only if there is a term of type
-\begin{equation*}
-\prd C\prd{g:\modalfunc(B\to C)} \iscontr\big(\sm{h:\modalfunc(B\to C)}\underline{h}\circ
-f\sim\underline{g}\circ f\big).
-\end{equation*}
-\end{cor}
-
-\subsection{The principle of modal choice}\label{sec:ac_truncated}
-
-In this section generalize the principle of unique choice to a lemma we call the principle of modal
-choice, or simply $\mathsf{AC}_{\modal}$. We also introduce various degrees of surjectivity and see how they interact with modal choice.
-We will derive
-the principle of unique choice from the following more general discussion in corollary \ref{cor:auc}.
-
-\begin{defn}
-Suppose $P:A\to\type$ is a dependent type over a type $A$. We write $\{A\mid P\}\defeq\sm{A}{\brck{P}}$ and define:
-\begin{align*}
-\existsmodal(x:A),\ P(x) & \equiv \modal\sm{A}P\\
-\existsmodalunique(P) & \equiv  (\existsmodal(x:A),\ P(x))\times\ismodal(\{A\mid P\}).
-\end{align*}
-\end{defn}
-
-\begin{lem}\label{lem:modal_Sigma}
- Suppose that $A$ is modal and for each $a:A$, $B (a)$ is modal. Then $\sm{a:A}B(a)$ is modal.
-\end{lem}
-\begin{proof}
-We first define a map $\modal \sm{a:A}B(a)\to \sm{a:A}B(a)$ and then show that it is inverse to $\eta$. Consider $\hat{\proj1}:\modal \sm{a:A}B(a)
-\to \modal A$. Because $A$ is modal, this gives us an element $a:A$. Combining this with $\hat{\proj2^a}:\modal \sm{a:A}B(a) \to \modal (B
-(a))$ and the modality of $B (a)$, we obtain an element of $\sm{a:A}B(a)$. It is easy to check that this is in fact an inverse.
-\end{proof}
-
-\begin{lem}\label{lem:hlevel_sum_destructed}
-Let $P:A\to\modaltype$. If $\setof{a:A | \brck{P(a)} }$ is modal, then the total space $\sm{x:A} P(x)$ is modal.
-\end{lem}
-\begin{proof}
-Define $\tilde{P}:\{A\mid P\}\to \type$ by $\tilde{P}(a;p)\defeq P(a)$.
-Then $\sm{A}P\simeq \sm{\{A\mid P\}}{\tilde{P}}$. The latter is a sum of modal types and hence itself modal by lemma~\ref{lem:modal_Sigma}.
-\end{proof}
-
-\begin{lem}[Iota]\label{lem:iota}
-For every dependent type $P:A\to\modaltype$, there is a function
-\begin{equation*}
-\exists!_\modal(P)\to\sm{x:A} P(x).
-\end{equation*}
-\end{lem}
-
-\begin{proof}
-Since $\{A\mid P\}$ is modal, by \autoref{lem:hlevel_sum_destructed}, 
-it follows that $\sm{x:A} P(x)$ is modal, so there is
-an equivalence $\existsmodal(x:A),\ P(x)\simeq\sm{x:A}{P(x)}$.
-\end{proof}
-
-\begin{thm}[The principle of modal choice]
-Let $P:X\to\type$ and $R:\prd{x:X}(P(x)\to\modaltype)$. Then there is a function of type
-\begin{equation*}
-\prd{x:X} \existsmodalunique(R(x))\to\sum\big(f:\prd{x:X} P(x)\big)\prd{x:X} R(x,f(x)).
-\end{equation*}
-\end{thm}
-
-\begin{proof}
-Suppose that $\prd{x:X} \existsmodalunique(R(x))$. By \autoref{lem:iota}, 
-we can find a term of type $\sm{u:P(x)} R(x,u)$
-for every $x:X$. The statement now follows from the usual principle of choice.
-\end{proof}
-
-For truncation we obtain the principle of unique choice. 
-However, the of principle of unique choice is usually stated quite differently:
-the type $\ismodal(\{A\mid P\})$ may be replaced by the type
-\begin{equation*}
-\mathsf{atMostOne}(P) \equiv  \prd{x,y:A} P(x)\to P(y)\to(x= y)
-\end{equation*}
-However, a term of $\ism{-1}(P)$ can be deduced from a term of $\mathsf{atMostOne}(P)$. This is the content of the following
-lemma. In order to prove this, we will use that there is an equivalence
-\begin{equation*}
-\mathsf{isprop}(P)\simeq \prd{x,y:A} P(x)\to P(y)\to\iscontr(x= y)
-\end{equation*}
-This is not hard to verify, and a proof relies on the fact that $\pairr{x,u}=\pairr{x^\prime,u^\prime}$ is equivalent to the type
-$x= x^\prime$ for any two terms $\pairr{x,u},\pairr{x^\prime,u^\prime}:\sm{x:A}{\brck{P(x)}}$.
-
-% The following lemma will be used later on in the proof that images are strict coequalizers, see
-% proposition\ref{prop:images_are_coequalizers}.
-
-\begin{lem}\label{lem:atmostone_to_atlevel}
-For any $P:A\to\type$, there is a function of type
-\begin{equation*}
-\mathsf{atMostOne}(P)\to\ism{-1}(P).
-\end{equation*}
-\end{lem}
-
-\begin{proof}
-We will show that there is a function of type
-\begin{equation*}
-\mathsf{atMostOne}(P)\to\prd{x,y:A} P(x)\to P(y)\to\iscontr(x= y).
-\end{equation*}
-Let $H$ be a term of type $\mathsf{atMostOne}(P)$ and let $x,y:A$, $u:P(x)$ and $v:P(y)$. Our goal is to show that $x= y$ is
-contractible by showing that for any $p:x= y$ there is a path $p= H(x,y,u,v)$. The idea is that we apply $H$ to the paths $p$ and
-$H(x,y,u,v)$ to obtain a path between them. The following general statement is useful to compute the terms $H(p,z,u,w)$:
-
-\begin{lem}
-Suppose that $H:\prd{x,y:A} P(x)\to P(y)\to (x= y)$. Then for any $p:x= x^\prime$ and $q:y= y^\prime$ there are paths
-\begin{align*}
-(p\cdot H(x))(y,u^\prime,v) & = H(x,y,p^{-1}\cdot u^\prime,v)\bullet p^{-1} & & [u^\prime:P(x^\prime),\ v:P(y)]\\
-(q\cdot H(x,y))(u,v^\prime) & = q\bullet H(x,y,u,p^{-1}\cdot v^\prime) & & [u : P(x),\ v^\prime :P(y^\prime)].
-\end{align*} 
-\end{lem}
-The proof of this statement is by path induction. We see from the above that the path $H(p,H(x,y,u,v))$ induces a witness of the
-commutativity of the diagram
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {x & y \\ x & y \\};
-\draw[patharrow] (m-2-2) -- node[below] {$p^{-1}$} (m-2-1);
-\draw[patharrow] (m-2-1) -- node[left]  {$H(x,x,u,u)$} (m-1-1);
-\draw[patharrow] (m-1-1) -- node[above] {$H(x,y,u,v)$} (m-1-2);
-\draw[patharrow] (m-2-2) -- node[right] {$H(y,y,v,v)$} (m-1-2);
-\end{tikzpicture}
-\end{equation*}
-Therefore, the assertion would follow if there is a function of type
-\begin{equation*}
-\mathsf{atMostOne}(P)\to\sm{H^\prime:\mathsf{atMostOne}(P)}{\prd{x:X}{u:P(x)}}H^\prime(x,x,u,u)=\idfunc{x}.
-\end{equation*}
-This is easy, since we can define the function $H^\prime:\prd{x,y:X} P(x)\to P(y)\to(x= y)$ by
-\begin{equation*}
-H^\prime(x,y,u,v)\equiv H(x,y,u,v)\bullet H(x,x,u,u)^{-1}.
-\end{equation*}
-\end{proof}
-
-\begin{defn}
-Suppose $P:A\to\type$ is a dependent type over $A$. We define
-\begin{equation*}
-\exists!(x:A),\ P(x)\equiv \brck{\sm{x:A}P(x)}\times\mathsf{atMostOne}(P).
-\end{equation*}
-\end{defn}
-
-\begin{cor}[The principle of unique choice]\label{cor:auc}
-Let $P:X\to\type$ and $R:\prd{x:X} (P(x)\to\mathsf{hProp})$. Then there is a function
-\begin{equation*}
-\big(\prd{x:X} \exists !(u:P(x)),\ R(x,u)\big) \to
-\sum \big(f:\prd{x:X} P(x)\big) \prd{x:X} R(x,f(x)).
-\end{equation*}
-\end{cor}
-
-\subsection{Images are stable under pullbacks}
-In this section we will show that pullbacks and images commute.
-
-\begin{lem}\label{lem:hfiber_wrt_pullback}
-Suppose that the square
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & C \\ B & D \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$g$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left] {$f$} (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$h$} (m-2-2);
-\end{tikzpicture}
-\end{equation*}
-is a pullback square and let $b:B$. Then $\hfib{f}b\simeq\hfib{g}{h(b)}$.
-\end{lem}
-
-\begin{proof}
-This follows from pasting of pullbacks, since the type $X$ in the diagram
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {X & A & C \\ \unit & B & D \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- (m-1-3);
-\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
-\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
-\draw[ar] (m-1-1) -- (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$b$} (m-2-2);
-\draw[ar] (m-2-2) -- node[below] {$h$} (m-2-3);
-\end{tikzpicture}
-\end{equation*}
-is the pullback of the left square if and only if it is the pullback of the outer rectangle: $\hfib{f}b$ is the pullback of the
-square on the left and $\hfib{g}{h(b)}$ is the pullback of the outer rectangle.
-\end{proof}
-
-\begin{thm}
-Consider functions $f:A\to B$, $g:C\to D$ and the diagram
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & C \\ \im_\modal(f) & \im_\modal(g) \\ B & D \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$\tilde{g}_n$} (m-2-2);
-\draw[ar] (m-2-2) -- node[right] {$\proj1$} (m-3-2);
-\draw[ar] (m-1-1) -- node[left] {$\tilde{f}_n$} (m-2-1);
-\draw[ar] (m-2-1) -- (m-2-2);
-\draw[ar] (m-2-1) -- node[left] {$\proj1$} (m-3-1);
-\draw[ar] (m-3-1) -- node[below] {$h$} (m-3-2);
-\end{tikzpicture}
-\end{equation*}
-Then the outer rectangle is a pullback if and only if the bottom square is a pullback. In either of these equivalent cases, the top square
-is also a pullback. Consequently, images are stable under pullbacks.
-\end{thm}
-
-\begin{proof}
-Suppose first that the outer square is a pullback. Note that we have the equivalences
-\begin{align*}
-B\times_D\im_\modal(g) & \equiv\sm{b:B}(w:\im_\modal(g)),\ h(b)=\proj1 w\\
-& \simeq \sm{b:B}(d:D)(w:\modal\hfib{g}d),\ h(b)= d\\
-& \simeq \sm{b:B} \modal\hfib{g}{h(b)}.\\
-& \simeq \sm{b:B} \modal\hfib{f}b\\
-& \equiv \im_\modal(f).
-\end{align*}
-In the last equivalence we have used \autoref{lem:hfiber_wrt_pullback}.
-
-Now suppose that the bottom square is a pullback, of which we denote the top arrow by $\psi$. By the pasting lemma for pullbacks, it
-suffices to show that the top square is a pullback. We have the equivalences
-\begin{align*}
-\im(f)\times_{\im(g)} C & \equiv \sm{w:\im(f)}(c:C),\ \psi(w)=\tilde{g}_n(c)\\
-& \simeq \sm{b:B}(w:\im(g))(p:h(b)=\proj1 w)(c:C),\ w=\tilde{g}_n(c)\\
-& \simeq \sm{b:B}(c:C),\ h(b)= g(c)\\
-& \simeq \sm{b:B}\hfib{f}b\\
-& \simeq A.\qedhere
-\end{align*}
-\end{proof}
-
-\section*{Notes}
+\sectionNotes
 
 \autoref{thm:hedberg} is due to Hedberg~\cite{hedberg1998coherence}; for more information and generalizations see~\cite{krausgeneralizations}.
 
-\section*{Exercises}
+\sectionExercises
 
 \begin{ex}
   \begin{enumerate}

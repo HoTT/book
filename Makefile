@@ -1,3 +1,5 @@
+.PHONY: all once clean
+
 all: main.pdf
 
 main.pdf: *.tex cover.png

@@ -576,6 +576,35 @@ This yields the following universal property.
   And the map $\extend{g\circ\tprojf n}$ is equal to $g$, because they both send $\tproj na$ to $g(\tproj na)$.
 \end{proof}
 
+In categorical language, this says that the $n$-types form a \emph{reflective subcategory} of the category of types.
+(To state this fully precisely, one ought to use the language of $(\infty,1)$-categories.)
+In particular, this implies that the $n$-truncation is functorial:
+given $f:A\to B$, applying the recursion principle to the composite $A\xrightarrow{f} B \to \trunc n B$ yields a map $\trunc n f: \trunc n A \to \trunc n B$.
+
+Uniqueness implies functoriality laws such as $\trunc n {g\circ f} = \trunc n g \circ \trunc n f$ and $\trunc n{\idfunc[A]} = \idfunc[\trunc n A]$, with attendant coherence laws.
+We also have higher functoriality, for instance:
+
+\begin{lem}\label{thm:trunc-htpy}
+  Given $f,g:A\to B$ and a homotopy $h:f\htpy g$, there is an induced homotopy $\trunc n h : \trunc n f \htpy \trunc n g$.
+\end{lem}
+\begin{proof}
+  By function extensionality, we have $\funext(h):f=g$.
+  Now applying the function $\trunc n- : (A\to B) \to (\trunc nA \to \trunc nB)$, we get
+  \[\apfunc{\trunc n-}(\funext(h)):\trunc nf=\trunc ng\]
+  % Now we can compose with the fact that $\reflect$ commutes with composition and
+  % we get the following (the proofs that $\reflect$ commutes with composition are
+  % not written in order to keep terms readable; we will later see that they don't
+  % get in the way):
+  % \[\mapfunc{\reflect}(\funext(h)):
+  % \reflect(i)\circ\reflect(f)=\reflect(j)\circ\reflect(g)\]
+  % and then
+  Passing back across function extensionality, we have
+  \[\trunc nh\defeq\happly(\apfunc{\trunc n-}(\funext(h))): \trunc nf \htpy \trunc ng. \qedhere \]
+  % \prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))
+\end{proof}
+
+The following observation about reflective subcategories is also standard.
+
 \begin{cor}
   A type $A$ is an $n$-type if and only if the map $\tproj n- : A \to \trunc n A$ is an equivalence.
 \end{cor}
@@ -739,10 +768,10 @@ The reader willing to accept that this standard argument works in our context ca
 Recall the following definitions from \autoref{sec:colimits}.
 
 \begin{defn}
-  A \emph{span} % in $\P$
+  A \define{span} % in $\P$
   is a 5-tuple $\Ddiag=(A,B,C,f,g)$ with % $A,B,C:\P$ and
   $f:C\to{}A$ and $g:C\to{}B$.
-  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
+  \[\Ddiag=\quad\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}\]
 \end{defn}
 
 \begin{defn}
@@ -834,13 +863,16 @@ In order to construct pushouts of $n$-types, we need to explain how to reflect s
 (TODO: Fix up notation to use $\trunc n-$ rather than $\reflect$.)
 %For the rest of this section, let \P be a reflective subuniverse.
 
+\bgroup
+\def\reflect(#1){\trunc n{#1}}
+
 \begin{defn}
   Let
-  \[\Ddiag=\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }\]
+  \[\Ddiag=\quad\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}\]
   be a span in $\type$. We denote by $\reflect(\Ddiag)$ the following
   span in $\P$:
-  \[\reflect(\Ddiag)=\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
-    \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }\]
+  \[\reflect(\Ddiag)\defeq\quad \vcenter{\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
+      \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }}\]
 \end{defn}
 
 \begin{defn}
@@ -848,36 +880,24 @@ In order to construct pushouts of $n$-types, we need to explain how to reflect s
   We define
   \[\reflect(c)=(\reflect(i),\reflect(j),\reflect(h)):
   \cocone{\reflect(\Ddiag)}{\reflect(D)}\]
-  where
-  \[\reflect(h):\prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
-  is defined in the following way:
-
-  We have \[h:\prd{c:C}i(f(c))=j(g(c))\]
-  hence
-  \[\funext(h):i\circ{}f=j\circ{}g\]
-  We can apply $\reflect$ and we get
-  \[\mapfunc{\reflect}(\funext(h)):\reflect(i\circ{}f)=\reflect(j\circ{}g)\]
-  Now we can compose with the fact that $\reflect$ commutes with composition and
-  we get the following (the proofs that $\reflect$ commutes with composition are
-  not written in order to keep terms readable; we will later see that they don't
-  get in the way):
-  \[\mapfunc{\reflect}(\funext(h)):
-  \reflect(i)\circ\reflect(f)=\reflect(j)\circ\reflect(g)\]
-  and then
-  \[\reflect(h)\defeq\happly(\mapfunc{\reflect}(\funext(h))):
-  \prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
+  where $\reflect(h): \reflect(i) \circ \reflect(f) \htpy \reflect(j) \circ \reflect(g)$ is defined as in \autoref{thm:trunc-htpy}.
+  % \[\reflect(h):\prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
+  % is defined in the following way:
 \end{defn}
 
-\begin{lem}
+\begin{thm}
   \label{reflectcommutespushout}
-  Let $\Ddiag$ be a span in $\type$ and $(D,c)$ a pushout of $\Ddiag$
-  in $\type$. Then $(\reflect(D),\reflect(c))$ is a pushout of
-  $\reflect(\Ddiag)$ in $\P$.
-\end{lem}
+  Let $\Ddiag$ be a span and $(D,c)$ its pushout.
+  Then $(\reflect(D),\reflect(c))$ is a pushout of $\reflect(\Ddiag)$ in $n$-types.
+\end{thm}
+\egroup
 
 \begin{proof}
-  Let $E:\P$ and let's consider the following diagram:
 
+\bgroup
+\def\reflect(#1){\trunc n{#1}}
+
+  Let $E$ be an $n$-type, and consider the following diagram:
   \[\xymatrix{ (\reflect(D)\to E)
     \ar^{t\mapsto{}\composecocone{t}{\reflect(c)}}[r] \ar_{f_1}^\sim[d]
     &
@@ -887,37 +907,35 @@ In order to construct pushouts of $n$-types, we need to explain how to reflect s
     \ar_{f_5}^\sim[u] \\
     \cocone{\Ddiag}{E}\ar_-{f_3}^-\sim[r] & (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
     \ar_{f_4}^\sim[u] }\]
+  We need to prove that the top arrow is an equivalence; we will do this by
+  proving that it is a composite of five equivalences, as shown.
 
-  We need to prove that the top arrow is an equivalence, we will do this by
-  proving that it is a composite of five equivalences.
+  The first equivalence, $f_1$, is just \autoref{thm:trunc-reflective}, since $E$ is an $n$-type.
 
-  The first equivalence, $f_1$, comes from the universal property of $\reflect$ and the fact
-  that $E$ is in \P:
-  \[f_1(t) \defeq t\circ\project_D.\]
-
-  The second equivalence comes from the universal property of $(D,c)$, as a pushout of
-  $\Ddiag$ in \type:
+  The second equivalence, $f_2$, comes from the universal property of $(D,c)$, as a pushout of $\Ddiag$:
   \[f_2(u) \defeq (u\circ{}i,u\circ{}j,\mapfunc{u}\circ{}h).\]
 
-  The third map comes from \autoref{coneispb}, and is defined by
-  \[f_3(i,j,h) \defeq (i,j,\funext(h)).\]
+  The third equivalence, $f_3$, is defined by
+  \[f_3(i,j,h) \defeq (i,j,\funext(h))\]
+  which is an equivalence by function extensionality.
 
-  The fourth map comes from the universal property of $\reflect$ applied three
-  times and the fact that pullbacks are invariant under equivalence (everything
-  is invariant under equivalence anyway):
+  The fourth equivalence, $f_4$, comes from the universal property of truncation applied three
+  times, and the fact that pullbacks are invariant under equivalence (as is everything, by univalence):
   \[f_4(i,j,p) \defeq (\ext(i),\ext(j),\mapfunc{\ext}(p)).\]
 
   Note that $\mapfunc{\ext}(p)$ has type $\ext(i\circ{}f)=\ext(j\circ{}g)$
   instead of $\ext(i)\circ\reflect(f)=\ext(j)\circ\reflect(g)$ but we
-  (implicitely) concatenate with the proofs that
-  $\ext(i\circ{}f)=\ext(i)\circ\reflect(f)$ and the same for $j$ and $g$. Again,
-  we will see later that these proof do not get in the way.
+  (implicitly) concatenate with the path
+  $\ext(i\circ{}f)=\ext(i)\circ\reflect(f)$ and the same for $j$ and $g$.
+  We will see later that these do not get in the way.
 
-  The fifth equivalence comes from \autoref{coneispb}, and is defined by
+  The fifth equivalence, $f_5$, is just like $f_3$ in reverse:
   \[f_5(a,b,q) \defeq (a,b,\happly(q)).\]
 
   We now need to prove that the diagram commutes, so we can conclude that the map
   $t\mapsto{}t\circ\reflect(c)$ is an equivalence.
+
+\egroup
 
   We have
   \begin{align*}
@@ -1114,6 +1132,7 @@ In order to construct pushouts of $n$-types, we need to explain how to reflect s
   This proves that the diagram commutes, hence the map
   $t\mapsto{}\composecocone{t}\reflect(c)$ is an equivalence which proves that
   the reflector commutes with pushouts.
+
 \end{proof}
 
 This proof was rather tedious, but we can hope that at some point we will

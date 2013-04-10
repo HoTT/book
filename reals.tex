@@ -70,7 +70,7 @@ constructions more elegant, and it works constructively as well as classically. 
 \begin{enumerate}
 \item \emph{inhabited}: there are $q \in L$ and $r \in U$,
 \item \emph{rounded:} $q \in L \Leftrightarrow \exis {r \in \Q} q < r \in L$
-  and $r \in U \Leftrightarrow \exis {r \in \Q} U \ni q < r$,
+  and $r \in U \Leftrightarrow \exis {q \in \Q} U \ni q < r$,
 \item \emph{disjoint:} $\lnot (q \in L \land q \in U)$, and
 \item \emph{located:} $q < r \Rightarrow q \in L \lor r \in U$.
 \end{enumerate}
@@ -147,7 +147,7 @@ logical notation from \autoref{defn:logical-notation}.
     \begin{equation*}
       L(q) \Leftrightarrow \exis{r : \Q} (q < r) \land L(r)
       \quad\text{and}\quad
-      U(r) \Leftrightarrow \exis{r : \Q} (q < r) \land L(r),
+      U(r) \Leftrightarrow \exis{q : \Q} (q < r) \land U(q),
     \end{equation*}
   \item \emph{disjoint:} $\lnot (L(q) \land U(q))$ for for all $q : \Q$,
   \item \emph{located:} $(q < r) \Rightarrow L(q) \lor U(r)$ for all $q, r : \Q$.
@@ -284,8 +284,9 @@ are \textbf{apart} from each other, written $x \apart y$, when $(x < y) \lor (y 
   (x \apart y) \defeq (x < y) \lor (y < x).
 \end{equation*}
 %
-If $x \apart y$ then $\lnot (x = y)$, but the converse implies a little bit of excluded
-middle, see \autoref{ex:reals-apart-neq-MP}.
+If $x \apart y$, then $\lnot (x = y)$.
+The converse is true if we assume excluded middle, but is not provable constructively.
+Indeed, if $\lnot (x = y)$ implies $x\apart y$, then a little bit of excluded middle follows; see \autoref{ex:reals-apart-neq-MP}.
 
 \begin{thm} \label{RD-inverse-apart-0}
   A real is invertible if, and only if, it is apart from $0$.
@@ -1528,7 +1529,7 @@ establish $\RC$ as an archimedean ordered field, we still need inverses.
   %
   Then, as $q$ ranges over $\Qp$, the types $(-\infty, q]$ and $[q, \infty)$ jointly cover
   $\setof{u : \RC | u \apart 0}$. On each such $[q, \infty)$ and $[-\infty, q)$ the
-  inverse function is obtained by an application of Lemma~\autoref{RC-extend-Q-Lipschitz}
+  inverse function is obtained by an application of \autoref{RC-extend-Q-Lipschitz}
   with Lipschitz constant $1/q^2$. Finally, \autoref{lem:images_are_coequalizers}
   guarantees that the inverse function factors uniquely through $\setof{ u : \RC | u
     \apart 0 }$.
@@ -1537,12 +1538,11 @@ establish $\RC$ as an archimedean ordered field, we still need inverses.
 We summarize the algebraic structure of $\RC$ with a theorem.
 
 \begin{thm} \label{RC-archimedean-ordered-field}
-  The Cauchy reals form an archimidean ordered field.
+  The Cauchy reals form an archimedean ordered field.
 \end{thm}
 
 \subsection{Cauchy Reals are Cauchy Complete}
 \label{sec:cauchy-reals-cauchy-complete}
-\label{sec:comp-cauchy-dedek}
 
 We constructed $\RC$ by closing $\Q$ under limits of Cauchy approximations, so it better
 be the case that $\RC$ is Cauchy complete. Thanks to \autoref{RC-sim-eqv-le} there is no
@@ -1588,7 +1588,9 @@ An archimedean ordered field in which every Cauchy approximation has a limit is 
   an emedding of ordered fields which fixes the rationals.
 \end{proof}
 
-\medskip
+
+\section{Comparison of Cauchy and Dedekind Reals}
+\label{sec:comp-cauchy-dedek}
 
 Let us also say something about the relationship between the Cauchy and Dedekind reals. By
 \autoref{RC-archimedean-ordered-field}, $\RC$ is an archimedean ordered field. It is also
@@ -1601,51 +1603,358 @@ Therefore, by \autoref{RD-final-field} there is an embedding of ordered fields
 \end{equation*}
 %
 which fixes the rational numbers. In general we do not expect $\RC$ and $\RD$ to coincide
-without further assumptions. One such assumption is Countable Choice; see
-\autoref{ex:countable-ac-reals-coincide}.
-Another is LEM; see \autoref{ex:lem-reals-coincide}.
+without further assumptions. 
 
+\begin{lem} \label{lem:untruncated-linearity-reals-coincide}
+  %
+  If for every $x : \RD$ there merely exists
+  %
+  \begin{equation}
+    \label{eq:untruncated-linearity}
+    c : \prd{x : \RD} \prd{q, r : \Q} (p < r) \to (p < x) + (x < r)
+  \end{equation}
+  %
+  then the Cauchy and Dedekind reals coincide.
+\end{lem}
 
-\subsection{Intuitionstic vs.\ Classical Analysis}
+\begin{proof}
+  Note that the type in~\eqref{eq:untruncated-linearity} is an untruncated variant
+  of~\eqref{eq:RD-linear-order}, which states that~$<$ is an intuitionistic linear order.
+  We already know that $\RC$ embeds into $\RD$, so it suffices to show that every Dedekind
+  real merely is the limit of a Cauchy sequence of rational numbers.
+
+  Consider any $x : \RD$. By asumption there merely exists $c$ as in the statement of the
+  lemma, and by boundedness of cuts there merely exist $a, b : \Q$ such that $a < x < b$.
+  We construct a sequence $f : \N \to \setof{ \pairr{r, q} \in \Q \times \Q | p < q }$ by
+  recursion:
+  %
+  \begin{enumerate}
+  \item Set $f(0) \defeq \pairr{a, b}$.
+  \item Suppose $f(n)$ is already defined as $\pairr{q_n, r_n}$ such that $q_n < r_n$.
+    Define $s \defeq (2 q_n + r_n)/3$ and $t \defeq (q_n + 2 r_n)/3$. Then $c(x,s,t)$
+    decides between $s < x$ and $x < t$. If it decides $s < x$ then we set $f(n+1) \defeq
+    \pairr{s, r_n}$, otherwise $f(n+1) \defeq \pairr{q_n, t}$.
+  \end{enumerate}
+  %
+  Let us write $\pairr{q_n, r_n}$ for the $n$-th term of the sequence~$f$. Then it is easy
+  to see that $q_n < x < r_n$ and $|q_n - r_n| \leq (2/3)^n \cdot |q_0 - r_0|$ for all $n
+  : \N$. Therefore $q_0, q_1, \ldots$ and $r_0, r_1, \ldots$ are both Cauchy sequences
+  converging to the Dedekind cut~$x$. We have shown that for every $x : \RD$ there merely
+  exists a Cauchy sequence converging to $x$.
+\end{proof}
+
+The lemma implies that either Countable Choice or excluded middle suffice for coincidence
+of $\RC$ and $\RD$.
+
+\begin{cor} \label{when-reals-coincide}
+  If excluded middle or Countable Choice holds then $\RC$ and $\RD$ are equivalent.
+\end{cor}
+
+\begin{proof}
+  If excluded middle holds then $(x < y) \to (x < z) + (z < y)$ can be proved: either $x <
+  z$ or $\lnot (x < z)$. In the former case we are done, while in the latter we get $z <
+  y$ because $z \leq x < y$. Therefore, we get~\eqref{eq:untruncated-linearity} so that we
+  can apply \autoref{lem:untruncated-linearity-reals-coincide}.
+
+  Suppose Countable Choice holds. The set $S = \setof{ \pairr{q, r} \in \Q \times \Q | q <
+    r }$ is equivalent to $\N$, so we may apply Countable Choice to the statement that $x$
+  is located,
+  %
+  \begin{equation*}
+    \fall{\pairr{q, r} : S} (q < x) \lor (x < r).
+  \end{equation*}
+  %
+  (Note that $(q < x) \lor (x < r)$ is expressible as an existential statement $\exis{b :
+    \bool} (b = \bfalse \to q < x) \land (b = \btrue \to x < r)$. The (curried form) of
+  the choice function is then precisely~\eqref{eq:untruncated-linearity} so that
+  \autoref{lem:untruncated-linearity-reals-coincide} is applicable again.
+\end{proof}
+
+\section{Intuitionistic vs.\ Classical Analysis}
 \label{sec:intuitionistic-vs-classical-analysis}
 
 We already pointed out that our constructions of reals are entirely compatible with
 classical logic. Thus, by assuming the law of excluded middle~\eqref{eq:lem} and the axiom
-of choice~\eqref{eq:ac} we obtain classical analysis. Nevertheless, anyone interested in
-computation, for example a numerical analyst, ought to be curious about developing
-analysis without taking such drastic steps. That analysis in a constructive setting is
-even possible was demonstrated~\cite{Bishop1967}. As a sample of the
-differences and similarities between classical and constructive analysis we shall briefly
-discuss just one topic---compactness of the closed interval $[0,1]$ and several theorems
-surrounding the concept.
+of choice~\eqref{eq:ac} we could develop classical analysis, which would essentially
+amount to copying any standard book on analysis.
 
-It is a common phenomenon in constructive mathematics that several notions which are
-classically equivalent need not be so constructively. Compactness is no exception to this
-rule. The three most frequently used notions of compactness of the closed interval are:
+Nevertheless, anyone interested in computation, for example a numerical analyst, ought to
+be curious about developing analysis in a computationally meaningful setting. That
+analysis in a constructive setting is even possible was demonstrated by~\cite{Bishop1967}.
+As a sample of the differences and similarities between classical and constructive
+analysis we shall briefly discuss just one topic---compactness and connectednes of the
+closed interval $[0,1]$ and several theorems surrounding these concepts.
+
+\subsection{Compactness of the closed interval}
+\label{sec:compactness-closed-interval}
+
+Compactness is no exception to the common phenomenon in constructive mathematics that
+classically equivalent notions bifurcate. The three most frequently used notions of
+compactness are:
 %
 \begin{enumerate}
-\item $[0,1]$ is Cauchy complete and totally bounded,
-\item $[0,1]$ has the Bolzano-Wierstraß property ``every sequence has a convergent subsequence''.
-\item $[0,1]$ has the Heine-Borel finite property ``every open cover has a finite subcover'',
+\item Cauchy complete and totally bounded,
+\item Bolzano-Weierstraß property ``every sequence has a convergent subsequence''.
+\item Heine-Borel finite property ``every open cover has a finite subcover'',
 \end{enumerate}
 %
-The first one holds constructively.
+These are all true in classical mathematics.
+Let us see how they fare in homotopy type theory. We can use either the Dedekind or the
+Cauchy reals, so we shall denote the reals just as~$\R$. We first recall several basic
+definitions.
 
-\begin{thm}
-  The closed interval is Cauchy complete and totally bounded.
+\begin{defn} \label{defn:metric-space}
+  A \define{metric space $(M, d)$} is a set $M$ with a map $d : M \times M \to \R$
+  satisfying, for all $x, y, z : M$,
+  %
+  \begin{align*}
+    d(x,y) &\geq 0, &
+    d(x,y) &= d(y,x), \\
+    d(x,y) &= 0 \Leftrightarrow x = y, &
+    d(x,z) &\leq d(x,y) + d(y,z).
+  \end{align*}
+  %
+\end{defn}
+
+\begin{defn} \label{defn:complete-metric-space}
+  A \define{Cauchy approximation} in $M$ is a sequence $x : \Qp \to M$ satisfying
+  %
+  \begin{equation*}
+    \fall{\delta, \epsilon} d(x_\delta, x_\epsilon) < \delta + \epsilon.
+  \end{equation*}
+  %
+  The \define{limit} of a Cauchy approximation $x : \Qp to M$ is a point $\ell : M$
+  satisfying
+  %
+  \begin{equation*}
+    \fall{\epsilon, \theta : \Qp} d(x_\epsilon, \ell) < \epsilon + \theta.
+  \end{equation*}
+  %
+  A \define{complete metric space} is one in which every Cauchy sequence has a limit.
+\end{defn}
+
+\begin{defn} \label{defn:totall-bounded-metric-space}
+  For a positive rational $\epsilon$, an \define{$\epsilon$-net} in a metric space $(M,
+  d)$ is an element of
+  %
+  \begin{equation*}
+    \sm{n : \N}{x_1, \ldots, x_n : M}
+    \fall{y : M} \exis{k \leq n} d(x_k, y) < \epsilon.
+  \end{equation*}
+  %
+  In words, this is a finite sequence of points $x_1, \ldots, x_n$ such that every point
+  in $M$ merely is within $\epsilon$ of some~$x_k$.
+
+  A metric space $(M, d)$ is \define{totally bounded} when it has $\epsilon$-nets of all
+  sizes:
+  %
+  \begin{equation*}
+    \prd{\epsilon : \Qp} 
+    \sm{n : \N}{x_1, \ldots, x_n : M}
+    \fall{y : M} \exis{k \leq n} d(x_k, y) < \epsilon.
+  \end{equation*}
+\end{defn}
+
+\begin{rmk}
+  In the definition of total boundedness we wrote $\sm{n : \N}{x_1, \ldots, x_n : M}$,
+  which is sloppy notation. Formally, we should have written $\sm{x : \lst{M}}$ instead,
+  where $\lst{M}$ is the inductive type of finite lists from \autoref{sec:bool-nat}.
+  However, that would make the rest of the statement a bit more cumbersome to express.
+\end{rmk}
+
+Note that in the definition of total boundedness we require pure existence of an
+$\epsilon$-net, not mere existence. This way we obtain a function which assigns to each
+$\epsilon : \Qp$ a specific $\epsilon$-net. Such a function might be called a ``modulus of
+total boundedness''. In general, when porting classical metric notions to homotopy type
+theory, we should use propositional truncation sparingly, typically so that we avoid
+asking for a non-constant map from $\R$ to $\Q$ or $\N$. For instance, here is the
+``correct'' definition of uniform continuity.
+
+\begin{defn} \label{defn:uniformly-continuous}
+  A map $f : M \to \R$ on a metric space is \define{uniformly continuous} when
+  %
+  \begin{equation*}
+    \prd{\epsilon : \Qp}
+    \sm{\delta : \Qp}
+    \fall{x, y : M}
+    d(x,y) < \delta \Rightarrow |f(x) - f(y)| < \epsilon.
+  \end{equation*}
+  %
+  In particular, a uniformly continuous map has a modulus of uniform continuity,
+  which is a function that assings to each $\epsilon$ a corresponding $\delta$.
+\end{defn}
+
+Let us show that $[0,1]$ is compact in the first sense.
+
+\begin{thm} \label{analysis-interval-ctb}
+  The closed interval $[0,1]$ is complete and totally bounded.
 \end{thm}
 
 \begin{proof}
-  \textbf{TODO}.
+  Given $\epsilon : \Qp$, there is $n : \N$ such that $2/k < \epsilon$, so we may take the
+  $\epsilon$-net $x_i = i/k$ for $i = 0, \ldots, k-1$. This is an $\epsilon$-net because,
+  for every $y : [0,1]$ there merely exists $i$ such that $0 \leq i < k$ and $(i -
+  1)/k < y < (i+1)/k$, and so $|y - x_i| < 2/k < \epsilon$.
+
+  For completeness of $[0,1]$, consider a Cauchy approximation $x : \Qp \to
+  [0,1]$ and let $\ell$ be its limit in $\R$. Since $\max$ and $\min$ are Lipschitz maps,
+  the retraction $r : \R \to [0,1]$ defined by $r(x) \defeq \max(0, \min(1, x))$ commutes
+  with limits of Cauchy approximations, therefore
+  %
+  \begin{equation*}
+    r(\ell) =
+    r (\lim x) =
+    \lim (r \circ x) =
+    r (\lim x) =
+    \ell,
+  \end{equation*}
+  %
+  which means that $0 \leq \ell \leq 1$, as required.
 \end{proof}
 
-The Bolzano-Wierstraß property 
+We thus have at least one good notion of compactness in homotopy type theory.
+Unfortunately, it is limited to metric spaces because total boundedness is a metric
+notion. We shall consider the other two notions shortly, but first we prove that a
+uniformly continuous map on a totally bounded space has a supremum.
 
+\begin{thm} \label{ctb-uniformly-continuous-sup}
+  %
+  A uniformly continuous map $f : M \to \R$ on a totally bounded metric space
+  $(M, d)$ has a supremum $m : \R$. For every $\epsilon : \Qp$ there exists $u : M$ such
+  that $|m - f(u)| < \epsilon$.
+\end{thm}
 
-\textbf{TODO: supremum of a uniformly continuos map on $[0,1]$.}
+\begin{proof}
+  Let $h : \Qp \to \Qp$ be the modulus of uniform continuity of~$f$.
+  We define a sequence $x : \Qp \to \R$ as follows: for any $\epsilon : \Q$ total
+  boundedness of $M$ gives a $h(\epsilon)$-net $y_0, \ldots, y_n$. Define
+  %
+  \begin{equation*}
+    x_\epsilon \defeq \max (f(y_0), \ldots, f(y_n)).
+  \end{equation*}
+  %
+  We claim that $x$ is a Cauchy approximation. Consider any $\epsilon, \eta : \Q$, so that
+  %
+  \begin{equation*}
+    x_\epsilon \jdeq \max (f(y_0), \ldots, f(y_n))
+    \quad\text{and}\quad
+    x_\eta \jdeq \max (f(z_0), \ldots, f(z_m))
+  \end{equation*}
+  %
+  for some $h(\epsilon)$-net $y_0, \ldots, y_n$ and $h(\eta)$-net $z_0, \ldots, z_m$.
+  Every $z_i$ is merely $h(\epsilon)$-close to some $y_j$, therefore $|f(z_i) - f(y_j)| <
+  \epsilon$, from which we may conclude that
+  %
+  \begin{equation*}
+    f(z_i) < \epsilon + f(y_j) \leq \epsilon + x_\epsilon,
+  \end{equation*}
+  %
+  therfore $x_\eta < \epsilon + x_\epsilon$. Symmetrically we obtain $x_\eta < \eta +
+  x_\eta$, therefore $|x_\eta - x_\epsilon| < \eta + \epsilon$.
 
-\textbf{TODO: mean value theorem}
+  We claim that $m \defeq \lim x$ is the supremum of~$f$. To prove that $f(x) \leq m$ for
+  all $x : M$ it suffices to show $\lnot (m < f(x))$. So suppose to the contrary that $m <
+  f(x)$. There is $\epsilon : \Qp$ such that $m + \epsilon < f(x)$. But now merely for
+  some $y_i$ participating in the definition of $x_\epsilon$ we get $|f(x) - f(y_i) <
+  \epsilon$, therefore $m < f(x) - \epsilon < f(y_i) \leq m$, a contradition.
 
+  We finish the proof by showing that $m$ satifies the second part of the theorem, because
+  it is then automatically a least upper bound. Given any $\epsilon : \Qp$, on one hand
+  $|m - fx_{\epsilon/2}| < 3 \epsilon/4$, and on the other $|f(x_{\epsilon/2}) - f(y_i)| <
+  \epsilon/4$ merely for some $y_i$ participating in the definition of $x_{\epsilon/2}$,
+  therefore by taking $u \defeq y_i$ we obtain $|m - f(u)| < \epsilon$ by triangle
+  inequality.
+\end{proof}
+
+Now, if in \autoref{ctb-uniformly-continuous-sup} we also knew that $M$ is complete, we
+could hope to weaken the assumption of uniform continuity to continuity, and strengthen
+the conclusion to existence of a point at which the supremum is attained. But for this to
+be possible, we would have to prove that:
+%
+\begin{enumerate}
+\item a continuous map on a complete totally bounded space is uniformly continuous, and
+\item every sequence in a complete totally bounded space has a convergent subsequence.
+\end{enumerate}
+%
+The first statement follows easily from the Heine-Borel property, and the second is the
+Bolzano-Weierstraß property. Unfortunately, both properties are somewhat problematic. Let
+us first show that the Bolzano-Weirstraß property implies an instance of excluded middle
+known as the \define{Limited Principle of Omniscience (LPO)}: every $\alpha : \N \to
+\bool$,
+% 
+\begin{equation} \label{eq:lpo}
+  \left(\sm{n : \N} \alpha(n) = \btrue\right) +
+  \left(\prd{n : \N} \alpha(n) = \bfalse\right).
+\end{equation}
+%
+Computationally speaking, we would not expect LPO to hold because it asks us to decide
+whether infinitely many values of a function are~$\bfalse$.
+  
+\begin{thm} \label{analysis-bw-lpo}
+  %
+  The Bolzano-Weirstraß property of $[0,1]$ implies the Limited Principle of Omniscience.
+\end{thm}
+
+\begin{proof}
+  Given any $\alpha : \N \to \bool$, define the sequence $x : \N \to [0,1]$ by
+  %
+  \begin{equation*}
+    x_n \defeq
+    \begin{cases}
+      0 & \text{if $\alpha(k) = \bfalse$ for all $k < n$,}\\
+      1 & \text{if $\alpha(k) = \btrue$ for some $k < n$}.
+    \end{cases}
+  \end{equation*}
+  %
+  If the Bolzano-Weirstraß property holds, there exists a strictly increasing $f : \N \to
+  \N$ such that $x \circ f$ is a Cauchy sequence. For a sufficiently large $n :
+  \N$ the $n$-th term $x_{f(n)}$ is within $1/6$ of its limit. Either $x_{f(n)} < 2/3$ or
+  $x_{f(n)} > 1/3$. If $x_{f(n)} < 2/3$ then~$x_n$ converges to $0$ and so $\prd{n : \N}
+  \alpha(n) = \bfalse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
+  \alpha(n) = \btrue$.
+\end{proof}
+
+While we might not mourn the Bolzano-Weierstraß property too much, it seems harder to live
+without the Heine-Borel property, as attested by the fact that both classical mathematics
+and Brouwer's Intuitionism accepted it. As we do not want to wade too deeply into general
+topology, we shall work with basic open sets. In the case of $\R$ these are the open
+intervals with rational endpoints. A family of such intervals is given as a map
+$\mathcal{F} : I \to \setof{ \pairr{q, r} : \Q \times \Q | q < r }$ where $I$ is some
+indexing type. We shall write $(q_i, r_i)$ for the open interval whose endpoints are $q_i
+\defeq \fst(\mathcal{F}_i)$ and $r_i \defeq \snd(\mathcal{F}_i)$. A finite subfamily of
+$\mathcal{F}$ is a finite list $[i_0, \ldots, i_n]$ of indices in~$I$. We say that
+$\mathcal{F}$ \define{covers $[0,1]$} when
+%
+\begin{equation*}
+  \fall{x : [0,1]} \exis{i : I} q_i < x < r_i.
+\end{equation*}
+%
+The \define{Heine-Borel property for $[0,1]$} states that every covering family of $[0,1]$
+has a finite subfamily which still covers $[0,1]$.
+
+\begin{thm}
+  If excluded middle holds then $[0,1]$ has the Heine-Borel property.
+\end{thm}
+
+\begin{proof}
+  \textbf{TODO: put in the usual proof}
+\end{proof}
+
+Without excluded middle, or a pinch of Brouwerian Intuitionism, we seem to be stuck.
+Nevertheless, the Heine-Borel property \emph{can} be recovered in a constructive setting!
+The price to pay is to strengthen the notion of cover so that it still remains compatible
+with the classical setting, but allows us to extract finite subcovers. This is a lesson
+learned from point-free topology.
+
+\textbf{TODO: define inductive cover, show HB, show that classicaly this is all kosher.}
+
+\subsection{Connectedness of $[0,1]$ and the Mean Value Theorem}
+\label{sec:mean-value-theorem}
+
+\textbf{TODO: Prove connectedness of $[0,1]$ in a suitable form which is compatible with
+  classical version.}
+
+\textbf{TODO: Prove the Mean-Value theorem and discuss relation to classical version.}
 
 \section{The Surreal Numbers}
 \label{sec:surreals}
@@ -1657,7 +1966,7 @@ The Bolzano-Wierstraß property
 
 In this section we consider another example of a higher inductive-inductive type, which draws together many of our threads: Conway's field \NO of \emph{surreal numbers}~\cite{conway:onag}.
 The surreal numbers are the natural common generalization of the (Dedekind) real numbers (\autoref{sec:dedekind-reals}) and the ordinal numbers (\autoref{sec:ordinals}).
-Conway, working in classical mathematics with LEM and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
+Conway, working in classical mathematics with excluded middle and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
 This obviously looks like an inductive definition, but there are three issues with regarding it as such.
 
 Firstly, the definition requires the relation of (strict) inequality between surreals, so that relation must be defined simultaneously with the type \NO of surreals.
@@ -2170,12 +2479,11 @@ This description closely matches the higher-inductive construction of the cumula
 Conway's metatheorem would then correspond to the fact we have referred to several times that we can construct a model of Univalent Foundations inside ZFC (which is outside the scope of this book).
 
 However, Univalent Foundations is so rich and powerful in its own right that it would be foolish to relegate it to only a metatheory in which to construct set-like theories.
-We have seen that even at the level of sets (0-types), the higher inductive types in Univalent Foundations yield such things as direct constructions of objects by their universal properties (\autoref{sec:free-algebras}), highly filtered ordinals without choice (\autoref{sec:ordinals}), and a constructive theory of Cauchy completion (\autoref{sec:cauchy-reals}).
+We have seen that even at the level of sets (0-types), the higher inductive types in Univalent Foundations yield direct constructions of objects by their universal properties (\autoref{sec:free-algebras}), such as a constructive theory of Cauchy completion (\autoref{sec:cauchy-reals}).
 But most importantly, the potential to model homotopy theory and category theory directly in the foundational system (\autoref{cha:homotopy,cha:category-theory}) gives Univalent Foundations an advantage which no set-theoretic foundation can match.
 
 
-\section*{Notes}
-\label{sec:reals-notes}
+\sectionNotes
 
 In traditional constructive mathematics constructions of real numbers always seem to
 require certain compromises. For example, the Dedekind reals do not work well without
@@ -2188,6 +2496,13 @@ The fact that $\RC$ is the least Cauchy complete archimedean ordered field, as w
 in \autoref{RC-initial-Cauchy-complete}, indicates that our Cauchy reals coincide with
 those of~\cite{EscardoSimpson:01}.
 
+It is constructive folklore that coincidence of Cauchy and Dedekind reals requires
+\define{Dependent Choice}, which states that, for any set $A$, a total relation $R : A
+\times A \to \prop$, and $a : A$ there exists $f : \N \to A$ such that $f(0) = a$ and
+$R(f(n), f(n+1))$ for all $n : \N$. Our \autoref{when-reals-coincide} is a slight
+improvement because Countable Choice is weaker than Dependent Choice. In any case, none of
+these observations are new.
+
 The intricate relationship between various notions of compactness in a constructive
 setting is discussed in \cite{bridges2002compactness}.
 
@@ -2196,13 +2511,12 @@ setting is discussed in \cite{bridges2002compactness}.
 
 The surreal numbers were defined by~\cite{conway:onag}, using a sort of inductive definition but without justifying it explicitly in terms of any foundational system.
 For this reason, some later authors have tended to use sign-expansions or other more explicit presentations which can be coded more obviously into set theory.
-Setzer and Forsberg have previously noted that the surreals and their inequality relations $<$ and $\le$ naturally form an inductive-inductive definition.
-\note{I have found slides on the web from several talks by Setzer which mention the inductive-inductive surreals, but no papers or preprints?}
-The \emph{higher} inductive-inductive version presented here, which builds in the correct notion of equality of surreals, is new.
+The idea of representing them in type theory was first considered by Hancock, while
+Setzer and Forsberg noted that the surreals and their inequality relations $<$ and $\le$ naturally form an inductive-inductive definition.
+The \emph{higher} inductive-inductive version presented here, which builds in the correct notion of equality for surreals, is new.
 
 
-\section*{Exercises}
-\label{sec:reals-exercises}
+\sectionExercises
 
 \begin{ex} \label{ex:RD-extended-reals}
   %
@@ -2274,13 +2588,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
     Assuming excluded middle, construct a non-constant map $\RD \to \Z$.
   \item 
     Suppose $f : \RD \to \Z$ is a map such that $f(0) = 0$ and $f(x) \neq 0$ for all $x >
-    0$. Derive from this the following limited form of excluded middle, known as the
-    \emph{Limited Principle of Omniscience (LPO)}: for every $\alpha : \N \to \bool$,
-  % 
-    \begin{equation*}
-      (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
-    \end{equation*}
-  % 
+    0$. Derive from this the Limited Principle of Omniscience~\eqref{eq:lpo}.
   \end{enumerate}
 \end{ex}
 
@@ -2320,24 +2628,6 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 \begin{ex} \label{ex:reals-apart-zero-divisors}
   Verify that the following ``no zero divisors'' property holds for the real numbers:
   $x y \apart 0 \Leftrightarrow x \apart 0 \land y \apart 0$.
-\end{ex}
-
-\begin{ex} \label{ex:countable-ac-reals-coincide}
-  In \autoref{sec:comp-cauchy-dedek} we constructed an embedding $e : \RC \to \RD$. Show
-  that Countable Choice (the instance of \autoref{eq:ac} where $X=\N$) implies that~$e$ is
-  an equivalence. For this it suffices to construct for each $y : \RD$ a Cauchy
-  approximation $x : \Qp \to \Q$ such that $y = e(\rclim(x))$. Hint: start by applying
-  Countable Choice to the statement
-  %
-  \begin{equation*}
-    \fall{q, r : \Q} (q < r) \Rightarrow L_y(q) \lor U_y(r).
-  \end{equation*}
-  %
-  You should first figure out how to apply Countable Choice to the above statement.
-\end{ex}
-
-\begin{ex}\label{ex:lem-reals-coincide}
-  Prove that the embedding $\RC\to\RD$ is also an equivalence if we assume the law of excluded middle (but no axioms of choice).
 \end{ex}
 
 \begin{ex}

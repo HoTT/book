@@ -580,27 +580,29 @@ In categorical language, this says that the $n$-types form a \emph{reflective su
 (To state this fully precisely, one ought to use the language of $(\infty,1)$-categories.)
 In particular, this implies that the $n$-truncation is functorial:
 given $f:A\to B$, applying the recursion principle to the composite $A\xrightarrow{f} B \to \trunc n B$ yields a map $\trunc n f: \trunc n A \to \trunc n B$.
+By definition, we have a homotopy
+\begin{equation}
+  \mathsf{nat}^f_n : \prd{a:A} \trunc n f(\tproj n a) = \tproj n {f(a)},\label{eq:trunc-nat}
+\end{equation}
+expressing \emph{naturality} of the maps $\tproj n-$.
 
 Uniqueness implies functoriality laws such as $\trunc n {g\circ f} = \trunc n g \circ \trunc n f$ and $\trunc n{\idfunc[A]} = \idfunc[\trunc n A]$, with attendant coherence laws.
 We also have higher functoriality, for instance:
 
 \begin{lem}\label{thm:trunc-htpy}
-  Given $f,g:A\to B$ and a homotopy $h:f\htpy g$, there is an induced homotopy $\trunc n h : \trunc n f \htpy \trunc n g$.
+  Given $f,g:A\to B$ and a homotopy $h:f\htpy g$, there is an induced homotopy $\trunc n h : \trunc n f \htpy \trunc n g$ such that the composite
+  \begin{equation}
+    \xymatrix@C=4pc{\tproj n{f(a)} \ar@{=}[r]^-{\opp{\mathsf{nat}^f_n(a)}} &
+      \trunc n f(\tproj n a) \ar@{=}[r]^-{\trunc n h(\tproj na)} &
+      \trunc n g(\tproj n a) \ar@{=}[r]^-{\mathsf{nat}^g_n(a)} &
+      \tproj n{g(a)}}\label{eq:trunc-htpy}
+  \end{equation}
+  is equal to $\apfunc{\tproj n-}(h(a))$.
 \end{lem}
 \begin{proof}
-  By function extensionality, we have $\funext(h):f=g$.
-  Now applying the function $\trunc n- : (A\to B) \to (\trunc nA \to \trunc nB)$, we get
-  \[\apfunc{\trunc n-}(\funext(h)):\trunc nf=\trunc ng\]
-  % Now we can compose with the fact that $\reflect$ commutes with composition and
-  % we get the following (the proofs that $\reflect$ commutes with composition are
-  % not written in order to keep terms readable; we will later see that they don't
-  % get in the way):
-  % \[\mapfunc{\reflect}(\funext(h)):
-  % \reflect(i)\circ\reflect(f)=\reflect(j)\circ\reflect(g)\]
-  % and then
-  Passing back across function extensionality, we have
-  \[\trunc nh\defeq\happly(\apfunc{\trunc n-}(\funext(h))): \trunc nf \htpy \trunc ng. \qedhere \]
-  % \prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))
+  First, we indeed have a homotopy with components $\apfunc{\tproj n-}(h(a)) : \tproj n{f(a)} = \tproj n{g(a)}$.
+  Composing on either sides with the paths $\tproj n{f(a)} = \trunc n f(\tproj n a)$ and $\tproj n{g(a)} = \trunc n g(\tproj n a)$, which arise from the definitions of $\trunc n f$ and $\trunc ng$, we obtain a homotopy $(\trunc n f \circ \tproj n-) \htpy (\trunc n g \circ \tproj n-)$, and hence an equality by function extensionality.
+  But since $(-\circ \tproj n-)$ is an equivalence, there must be a path $\trunc nf = \trunc ng$ inducing it, and the coherence laws for function extensionality imply~\eqref{eq:trunc-htpy}.
 \end{proof}
 
 The following observation about reflective subcategories is also standard.
@@ -628,7 +630,7 @@ The category of $n$-types also has some special properties not possesed by all r
 For instance, the reflector $\trunc n-$ preserves finite products.
 
 \begin{thm}\label{cor:trunc-prod}
-  For any types $A$ and $B$, the induced map $\trunc -{A\times B} \to \trunc nA \times \trunc nB$ is an equivalence.
+  For any types $A$ and $B$, the induced map $\trunc n{A\times B} \to \trunc nA \times \trunc nB$ is an equivalence.
 \end{thm}
 \begin{proof}
   It suffices to show that $\trunc nA \times \trunc nB$ has the same universal property as $\trunc n{A\times B}$.
@@ -762,9 +764,6 @@ In general, a (homotopy) colimit of $n$-types may no longer be an $n$-type.
 However, if we $n$-truncate it, we obtain an $n$-type which satisfies the correct universal property with respect to other $n$-types.
 
 In this section we prove this formally for the case of pushouts, which is the most important and nontrivial one.
-There is a lot of bookkeeping in the proof to deal with higher homotopies, but the idea is simply an adaptation of the standard categorical fact that left adjoints (such as reflectors) preserve colimits.
-The reader willing to accept that this standard argument works in our context can freely skip this section.
-
 Recall the following definitions from \autoref{sec:colimits}.
 
 \begin{defn}
@@ -776,8 +775,8 @@ Recall the following definitions from \autoref{sec:colimits}.
 
 \begin{defn}
   Given a span $\Ddiag=(A,B,C,f,g)$ and a type $D$, a %$D:\P$, a
-  \emph{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
-  $i:A\to{}D$, $j:B\to{}D$ and $h : \prd{c:C}i(f(c))=j(g(c))$
+  \define{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
+  $i:A\to{}D$, $j:B\to{}D$ and $h : \prd{c:C}i(f(c))=j(g(c))$:
   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^j[d] \\ A \ar_i[r] & D
   }\]
@@ -797,10 +796,10 @@ and a map $t:D\to{}E$, there is a map
   %   & & E }\]
 And given $D,E,F$, %$:\P$,
 functions $t:D\to{}E$, $u:E\to{}F$ and $c:\cocone{\Ddiag}{D}$, we have
-\begin{align*}
-  \composecocone{\idfunc[D]}c &= c\\
-  \composecocone{(u\circ{}t)}c&=\composecocone{u}(\composecocone{t}c)
-\end{align*}
+\begin{align}
+  \composecocone{\idfunc[D]}c &= c \label{eq:composeconeid}\\
+  \composecocone{(u\circ{}t)}c&=\composecocone{u}(\composecocone{t}c)\label{eq:composeconefunc}
+\end{align}
 
 \begin{defn}
   Given a span $\Ddiag$ of $n$-types, an $n$-type $D$, and a cocone
@@ -860,8 +859,6 @@ reflector.
 \end{comment}
 
 In order to construct pushouts of $n$-types, we need to explain how to reflect spans and cocones.
-(TODO: Fix up notation to use $\trunc n-$ rather than $\reflect$.)
-%For the rest of this section, let \P be a reflective subuniverse.
 
 \bgroup
 \def\reflect(#1){\trunc n{#1}}
@@ -869,8 +866,8 @@ In order to construct pushouts of $n$-types, we need to explain how to reflect s
 \begin{defn}
   Let
   \[\Ddiag=\quad\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}\]
-  be a span in $\type$. We denote by $\reflect(\Ddiag)$ the following
-  span in $\P$:
+  be a span. We denote by $\reflect(\Ddiag)$ the following
+  span of $n$-types:
   \[\reflect(\Ddiag)\defeq\quad \vcenter{\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
       \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }}\]
 \end{defn}
@@ -885,276 +882,155 @@ In order to construct pushouts of $n$-types, we need to explain how to reflect s
   % is defined in the following way:
 \end{defn}
 
+\egroup
+
+We now observe that the maps from each type to its $n$-truncation assemble into a map of spans, in the following sense.
+
+\begin{defn}
+  Let 
+  \[\Ddiag=\quad\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}
+  \qquad\text{and}\qquad
+  \Ddiag'=\quad\vcenter{\xymatrix{C' \ar^{g'}[r] \ar_{f'}[d] & B' \\ A' & }}
+  \]
+  be spans.
+  A \define{map of spans} $\Ddiag \to \Ddiag'$ consists of functions $\alpha:A\to A'$, $\beta:B\to B'$, and $\gamma:C\to C'$ and homotopies $\phi: \alpha\circ f \htpy f'\circ \gamma$ and $\psi:\beta\circ g \htpy g' \circ \gamma$.
+\end{defn}
+
+Thus, for any span $\Ddiag$, we have a map of spans $\tproj[\Ddiag] n- : \Ddiag \to \trunc n\Ddiag$ consisting of $\tproj[A]n-$, $\tproj[B]n-$, $\tproj[C]n-$, and the naturality homotopies $\mathsf{nat}^f_n$ and $\mathsf{nat}^g_n$ from~\eqref{eq:trunc-nat}.
+
+We also need to know that maps of spans behave functorially.
+Namely, if $(\alpha,\beta,\gamma,\phi,\psi):\Ddiag \to \Ddiag'$ is a map of spans and $D$ any type, then we have
+\[ \function{\cocone{\Ddiag'}{D}}{\cocone{\Ddiag}{D}}{(i,j,h)}{(i\circ \alpha,j\circ\beta, k)} \]
+where $k: \prd{z:C} i(\alpha(f(z))) = j(\beta(g(z)))$ is the composite
+\begin{equation}\label{eq:mapofspans-htpy}
+\xymatrix{
+  i(\alpha(f(z))) \ar@{=}[r]^{\apfunc{i}(\phi)} &
+  i(f'(\gamma(z))) \ar@{=}[r]^{h(\gamma(z))} &
+  j(g'(\gamma(z))) \ar@{=}[r]^{\apfunc{j}(\psi)} &
+  j(\beta(g(z))). }
+\end{equation}
+We denote this cocone by $(i,j,h) \circ (\alpha,\beta,\gamma,\phi,\psi)$.
+Moreover, this functorial action commutes with the other functoriality of cocones:
+
+\begin{lem}\label{thm:conemap-funct}
+  Given $(\alpha,\beta,\gamma,\phi,\psi):\Ddiag \to \Ddiag'$ and $t:D\to E$, the following diagram commutes:
+  \begin{equation*}
+    \vcenter{\xymatrix{
+        \cocone{\Ddiag'}{D}\ar[r]^-{t\circ -}\ar[d] &
+        \cocone{\Ddiag'}{E}\ar[d]\\
+        \cocone{\Ddiag}{D}\ar[r]_-{t\circ -} &
+        \cocone{\Ddiag}{E}
+      }}
+  \end{equation*}
+\end{lem}
+\begin{proof}
+  Given $(i,j,h):\cocone{\Ddiag'}{D}$, note that both composites yield a cocone whose first two components are $t\circ i\circ \alpha$ and $t\circ j\circ\beta$.
+  Thus, it remains to verify that the homotopies agree.
+  For the top-right composite, the homotopy is~\eqref{eq:mapofspans-htpy} with $(i,j,h)$ being replaced by $(t\circ i, t\circ j, \apfunc{t}\circ h)$:
+  \begin{equation*}
+    \xymatrix@C=3pc{
+      t(i(\alpha(f(z)))) \ar@{=}[r]^{\apfunc{t\circ i}(\phi)} &
+      t(i(f'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t}(h(\gamma(z)))} &
+      t(j(g'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t\circ j}(\psi)} &
+      t(j(\beta(g(z)))). }
+  \end{equation*}
+  On the other hand, for the left-bottom composite, the homotopy is $\apfunc{t}$ applied to~\eqref{eq:mapofspans-htpy}.
+  Since $\apfunc{}$ respects path-concatenation, this is equal to
+  \begin{equation*}
+    \xymatrix@C=3pc{
+      t(i(\alpha(f(z)))) \ar@{=}[r]^{\apfunc{t}(\apfunc{i}(\phi))} &
+      t(i(f'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t}(h(\gamma(z)))} &
+      t(j(g'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t}(\apfunc{j}(\psi))} &
+      t(j(\beta(g(z)))). }
+  \end{equation*}
+  But $\apfunc{t}\circ \apfunc{i} = \apfunc{t\circ i}$ and similarly for $j$, so these two homotopies are equal.
+\end{proof}
+
+Finally, note that since we defined $\trunc nc : \cocone{\trunc n \Ddiag}{\trunc n D}$ using \autoref{thm:trunc-htpy}, the additional condition~\eqref{eq:trunc-htpy} implies
+\begin{equation}
+  \tproj[D] n- \circ c = \trunc n c \circ \tproj[\Ddiag]n- .\label{eq:conetrunc}
+\end{equation}
+for any $c:\cocone{\Ddiag}{D}$.
+Now we can prove our desired theorem.
+
 \begin{thm}
   \label{reflectcommutespushout}
   Let $\Ddiag$ be a span and $(D,c)$ its pushout.
-  Then $(\reflect(D),\reflect(c))$ is a pushout of $\reflect(\Ddiag)$ in $n$-types.
+  Then $(\trunc nD,\trunc n c)$ is a pushout of $\trunc n\Ddiag$ in $n$-types.
 \end{thm}
-\egroup
-
 \begin{proof}
-
+  Let $E$ be an $n$-type, and consider the following diagram:
 \bgroup
 \def\reflect(#1){\trunc n{#1}}
-
-  Let $E$ be an $n$-type, and consider the following diagram:
-  \[\xymatrix{ (\reflect(D)\to E)
-    \ar^{t\mapsto{}\composecocone{t}{\reflect(c)}}[r] \ar_{f_1}^\sim[d]
-    &
-    \cocone{\reflect(\Ddiag)}{E}\\
-    (D\to E) \ar_{f_2}^\sim[d] &
-    (\reflect(A)\to{}E)\times_{(\reflect(C)\to{}E)}(\reflect(B)\to{}E)
-    \ar_{f_5}^\sim[u] \\
-    \cocone{\Ddiag}{E}\ar_-{f_3}^-\sim[r] & (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
-    \ar_{f_4}^\sim[u] }\]
-  We need to prove that the top arrow is an equivalence; we will do this by
-  proving that it is a composite of five equivalences, as shown.
-
-  The first equivalence, $f_1$, is just \autoref{thm:trunc-reflective}, since $E$ is an $n$-type.
-
-  The second equivalence, $f_2$, comes from the universal property of $(D,c)$, as a pushout of $\Ddiag$:
-  \[f_2(u) \defeq (u\circ{}i,u\circ{}j,\mapfunc{u}\circ{}h).\]
-
-  The third equivalence, $f_3$, is defined by
-  \[f_3(i,j,h) \defeq (i,j,\funext(h))\]
-  which is an equivalence by function extensionality.
-
-  The fourth equivalence, $f_4$, comes from the universal property of truncation applied three
-  times, and the fact that pullbacks are invariant under equivalence (as is everything, by univalence):
-  \[f_4(i,j,p) \defeq (\ext(i),\ext(j),\mapfunc{\ext}(p)).\]
-
-  Note that $\mapfunc{\ext}(p)$ has type $\ext(i\circ{}f)=\ext(j\circ{}g)$
-  instead of $\ext(i)\circ\reflect(f)=\ext(j)\circ\reflect(g)$ but we
-  (implicitly) concatenate with the path
-  $\ext(i\circ{}f)=\ext(i)\circ\reflect(f)$ and the same for $j$ and $g$.
-  We will see later that these do not get in the way.
-
-  The fifth equivalence, $f_5$, is just like $f_3$ in reverse:
-  \[f_5(a,b,q) \defeq (a,b,\happly(q)).\]
-
-  We now need to prove that the diagram commutes, so we can conclude that the map
-  $t\mapsto{}t\circ\reflect(c)$ is an equivalence.
-
+  \begin{equation*}
+  \vcenter{\xymatrix{
+      (\trunc nD \to E)\ar[r]^-{-\circ \tproj[D] n-}\ar[d]_{-\circ \trunc nc} &
+      (D\to E)\ar[d]^{-\circ c}\\
+      \cocone{\trunc n \Ddiag}{E}\ar[r]^-{-\circ \tproj[\Ddiag]n-}\ar@{<-}[d]_{\ell_1} &
+      \cocone{\Ddiag}{E}\ar@{<-}[d]^{\ell_2}\\
+      (\reflect(A)\to{}E)\times_{(\reflect(C)\to{}E)}(\reflect(B)\to{}E)\ar[r] &
+      (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
+      }}
+  \end{equation*}
 \egroup
-
-  We have
+  The upper horizontal arrow is an equivalence since $E$ is an $n$-type, while $-\circ c$ is an equivalence since $c$ is a pushout cocone.
+  Thus, by the 2-out-of-3 property, to show that $-\circ \trunc nc$ is an equivalence, it will suffice to show that the upper square commutes and that the middle horizontal arrow is an equivalence.
+  To see that the upper square commutes, let $t:\trunc nD \to E$; then
+  \begin{alignat*}{2}
+    \big(t \circ \trunc n c\big) \circ \tproj[\Ddiag] n-
+    &= t \circ \big(\trunc n c \circ \tproj[\Ddiag] n-\big)
+    &&\quad\text{by \autoref{thm:conemap-funct}}\\
+    &= t\circ \big(\tproj[D]n- \circ c\big)
+    &&\quad\text{by~\eqref{eq:conetrunc}}\\
+    &= \big(t\circ \tproj[D]n-\big) \circ c
+    &&\quad\text{by~\eqref{eq:composeconefunc}}.
+  \end{alignat*}
+  To show that the middle horizontal arrow is an equivalence, consider the lower square.
+  The two lower vertical arrows are simply applications of $\happly$:
   \begin{align*}
-    f_5(f_4(f_3(f_2(f_1(t))))) &= f_5(f_4(f_3(f_2(t\circ\project_D)))) \\
-    &= f_5(f_4(f_3(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
-    \mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=f_5(f_4(t\circ\project_D\circ{}i,t\circ\project_D\circ{}j,
-    \funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=f_5(\ext(t\circ\project_D\circ{}i),\ext(t\circ\project_D\circ{}j),\\
-    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
-    \\
-    &=f_5(\ext(t\circ\project_D)\circ\reflect(i),
-    \ext(t\circ\project_D)\circ\reflect(j),\\
-    &\qquad\qquad\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)))
-    \\
-    &=f_5(t\circ\reflect(i),
-    t\circ\reflect(j),
-    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) \\
-    &=(t\circ\reflect(i),t\circ\reflect(j),
-    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))))
+    \ell_1(i,j,p) &\defeq (i,j,\happly(p))\\
+    \ell_2(i,j,p) &\defeq (i,j,\happly(p))
   \end{align*}
-
-  Note that in the two steps before the last equality we are using the fact
-  that if $a=a'$ and $b=b'$, then $(a,b,q)=(a',b',q)$. This is actually not
-  even well typed given that the type of $q$ depends on $a$ and $b$, so we
-  have to transport $q$ along the proofs $p:a=a'$ and $q:b=b'$. In the present
-  case we have $q:a\circ\reflect(f)=b\circ\reflect(g)$ hence the correct
-  statement is
-  \[(a,b,q)=(a',b',q')\] where
-  \[q'\defeq\map{(\lam{u} u\circ\reflect(f))}{\rev p} \ct q \ct
-  \map{(\lam{u} u\circ\reflect(g))}{p'})\] Again we will leave this
-  implicit and take care of it only when it will be needed.
-
-  \bigskip
-
-  In order to prove that the diagram commutes, we now only need to prove that
+  and hence are equivalences by function extensionality.
+  The lowest horizontal arrow is defined by
+  \[ (i,j,p) \mapsto \big( i\circ \tproj[A]n- ,\;\; j \circ \tproj[B] n- ,\;\; q\big) \]
+  where $q$ is the composite
+  \begin{alignat*}{2}
+    i\circ \tproj[A]n- \circ f
+    &= i\circ \trunc nf \circ \tproj[C]n-
+    &&\quad\text{by }{\funext(\lam{z} \apfunc{i}(\mathsf{nat}^f_n(z)))}\\
+    &= j\circ \trunc ng \circ \tproj[C]n-
+    &&\quad\text{by }\apfunc{-\circ \tproj[C] n-}(p)\\
+    &= j\circ \tproj[B]n- \circ g
+    &&\quad\text{by }{\funext(\lam{z} \apfunc{j}(\mathsf{nat}^g_n(z)))}.
+  \end{alignat*}
+  This is an equivalence, because it is induced by an equivalence of cospans.
+  Thus, by 2-out-of-3, it will suffice to show that the lower square commutes.
+  But the two composites around the lower square agree definitionally on the first two components, so it suffices to show that for $(i,j,p)$ in the lower-left corner and $z:C$, the path
+  \[ \happly(q,z) : i(\tproj n{f(z)}) = j(\tproj n{g(z)}) \]
+  (with $q$ as above)
+  is equal to the composite
+  \begin{alignat*}{2}
+    i(\tproj n{f(z)})
+    &= i(\trunc nf(\tproj nz))
+    &&\quad\text{by }{\apfunc{i}(\mathsf{nat}^f_n(z))}\\
+    &= j(\trunc ng(\tproj nz))
+    &&\quad\text{by }{\happly(p,\tproj nz)}\\
+    &= j(\tproj n{g(z)})
+    &&\quad\text{by }{\apfunc{j}(\mathsf{nat}^g_n(z))}.
+  \end{alignat*}
+  However, since $\happly$ is functorial, it suffices to check equality for the three component paths:
   \begin{align*}
-    \happly(\mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h))) &=
-    \mapfunc{t}\circ\reflect(h)
+    \happly({\funext(\lam{z} \apfunc{i}(\mathsf{nat}^f_n(z)))},z)
+    &= {\apfunc{i}(\mathsf{nat}^f_n(z))}\\
+    \happly(\apfunc{-\circ \tproj[C] n-}(p), z)
+    &= {\happly(p,\tproj nz)}\\
+    \happly({\funext(\lam{z} \apfunc{j}(\mathsf{nat}^g_n(z)))},z)
+    &= {\apfunc{j}(\mathsf{nat}^g_n(z))}.
   \end{align*}
-  This is an equality in the type
-  \[(c:\reflect(C))\to{}t(\reflect(i)(\reflect(f)(c)))=
-  t(\reflect(j)(\reflect(g)(c)))\]
-  This type is equal to
-  \[t\circ\reflect(i)\circ\reflect(f) = t\circ\reflect(j)\circ\reflect(g)\]
-  via $\funext$ so we only need to prove
-  \begin{align*}
-    \mapfunc{\ext}(\funext(\mapfunc{(t\circ\project_D)}\circ{}h)) &=
-    \funext(\mapfunc{t}\circ\reflect(h)) \\
-    &: t\circ\reflect(i)\circ\reflect(f) =
-    t\circ\reflect(j)\circ\reflect(g)
-  \end{align*}
-
-  Note that for any appropriately typed $t$ and $p$ we have
-  \[\funext(\mapfunc{t}\circ\happly(p))=\map{(\lam{u} t\circ{}u)}p\]
-  (by induction on $p$.)
-  Hence the previous equality becomes the following, using the definition of
-  $\reflect(h)$ and expanding $h$ to $\happly(\funext(h))$:
-  \[\map{\ext}{\map{(\lam{u} t\circ\project_D\circ{}u)}{\funext(h)}}=
-  \map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}\]
-
-  The idea is now to do an induction on the path $\funext(h):i\circ f = j\circ
-  g$, which should be allowed because nothing in the previous expression seems to
-  depend on the fact that $\funext(h)$ goes from a composition to another
-  composition.  But let's not forget that there are implicit equalities on
-  both sides of the equation and they use the fact that $i\circ f$ and
-  $j\circ g$ are compositions, so first we need to deal with that.
-
-  % After that, using the fact that for every $k:C\to{}D$ we have
-
-  % \begin{align*}
-  %   \ext(t\circ\project_D\circ{}k) &= \ext(t\circ\project_D)\circ\reflect(k) \\
-  %   &= t\circ\reflect(k)
-  % \end{align*}
-
-  % We will have
-
-  % \[\ext\circ(\lam{u} t\circ\project_D\circ{}u)=
-  % (\lam{u} t\circ{}u)\circ\reflect\]
-
-  % Hence the result, using the functoriality of $f\mapsto{}f_*$.
-
-  \bigskip
-
-  % Let's prove that the implicit equalities around $\mapfunc{r}$ and
-  % $\mapfunc{\ext}$ cancel.
-  We have the following diagram:
-
-  \[\xymatrix{
-    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
-      t\circ\reflect(j\circ g) \ar@{=}[d] \\
-    t\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
-      t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D}\circ\reflect(i)\circ\reflect(f) \ar@{=}[d] &
-      \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i}\circ\reflect(f) \ar@{=}[d] &
-      \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
-      \extend{t\circ\project_D\circ j\circ g}\\
-  }\]
-
-  \begin{itemize}
-  \item The top horizontal equality is
-    $\map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}$ without the
-    implicit equalities around.
-  \item The first line of vertical equalities are the implicit equalities around
-    $\map{(\lam{u} t\circ{}u)}{\map{\reflect}{\funext(h)}}$ (the
-    right hand side of the equality we want to prove).
-  \item The next two lines of vertical equalities are around the left hand side
-    of the equality we want to prove and come from the long computation a few
-    pages ago.
-  \item The last line of vertical equalities are the implicit equalities around
-    $\mapfunc{\extendsmb}$.
-  \item The bottom horizontal equality is
-    $\map{\ext}{\map{(\lam{u} t\circ\project_D\circ{}u)}{\funext(h)}}$
-    without the implicit equalities around.
-  \end{itemize}
-
-  The commutativity of the diagram is the equality we want to prove and
-  the fact that the compositions $i\circ f$ and $j\circ g$ are being split in
-  the middle of the diagram is the reason why we cannot work directly, by induction on
-  $\funext(h)$.
-
-  So we will prove that the following diagram (where the vertical part is the
-  right hand side of the previous diagram) commutes. Note that on the right hand
-  side of this diagram, we do no longer use the fact that $j\circ g$ is a
-  composition of two functions, so induction on it will be allowed.
-
-  \[\xymatrix{
-    t\circ\reflect(j\circ g) \ar@{=}[d] & \\
-    t\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] & \\
-    \extend{t\circ\project_D}\circ\reflect(j)\circ\reflect(g) \ar@{=}[d] &
-    \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[l] \ar@{=}[luu]
-    \ar@{=}[ldd] \\
-    \extend{t\circ\project_D\circ j}\circ\reflect(g) \ar@{=}[d] & \\
-    \extend{t\circ\project_D\circ j\circ g} & \\
-  }\]
-
-  The top square commutes because it is the concatenation of the two equalities
-  $t=\extend{t\circ\project_D}$ and $\reflect(j)\circ\reflect(g)=\reflect(j\circ
-  g)$ in two different orders (interchange law). In order to prove that the
-  bottom square commutes, we only have to prove that it commutes after
-  composition with $\project_C$ on the right. Let's write $u=t\circ\project_D$
-  and let's consider the following diagram.
-
-  \[\xymatrix@C=-30pt{
-    \extend{u}\circ\reflect(j)\circ\reflect(g)\circ\project_C
-      \ar@{=}[rrrr] \ar@{=}[ddd] \ar@{=}[rd] & & & &
-    \extend{u}\circ\reflect(j\circ g)\circ\project_C
-      \ar@{=}[ld] \ar@{=}[ddd] \\ &
-    \extend{u}\circ\reflect(j)\circ\project_B\circ g
-      \ar@{=}[rr] \ar@{=}[d] & {\phantom{thisisanuglyhack}} &
-    \extend{u}\circ\project_D\circ j\circ g
-      \ar@{=}[d] & \\ &
-    \extend{u\circ j}\circ\project_B\circ g
-      \ar@{=}[rr] \ar@{=}[ld] & &
-    u\circ j\circ g
-      \ar@{=}[rd] & \\
-    \extend{u\circ j}\circ\reflect(g)\circ\project_C
-      \ar@{=}[rrrr] & & & &
-    \extend{u\circ j\circ g}\circ\project_C
-  }\]
-
-  We need to prove that the outer square commutes.
-
-  \begin{itemize}
-  \item The left square commutes because of the interchange law
-  \item The top square commutes because of the definition of the equality
-    $\reflect(j\circ g)=\reflect(j)\circ\reflect(g)$
-  \item The bottom, right and interior squares commute because of the definition
-    of the equality $\extend{a}\circ\reflect(b)=\extend{a\circ b}$
-  \end{itemize}
-
-  This proves that the outer square commutes, hence the previous triangular
-  diagram commutes. We can do the same for the left part of the first
-  rectangular diagram so we now only have to prove that the following diagram
-  commutes:
-
-  \[\xymatrix{
-    t\circ\reflect(i\circ f) \ar@{=}[r] \ar@{=}[d] &
-      t\circ\reflect(j\circ g) \ar@{=}[d] \\
-    \extend{t\circ\project_D}\circ\reflect(i\circ f) \ar@{=}[d] &
-      \extend{t\circ\project_D}\circ\reflect(j\circ g) \ar@{=}[d] \\
-    \extend{t\circ\project_D\circ i\circ f} \ar@{=}[r] &
-      \extend{t\circ\project_D\circ j\circ g}\\
-  }\]
-
-  And now we are finally allowed to induct on $\funext(h)$ because the diagram
-  is not relying anymore on the fact that $i\circ f$ and $j\circ g$ are
-  compositions.
-
-  \bigskip
-
-  This proves that the diagram commutes, hence the map
-  $t\mapsto{}\composecocone{t}\reflect(c)$ is an equivalence which proves that
-  the reflector commutes with pushouts.
-
+  The first and third of these are just the fact that $\happly$ is quasi-inverse to $\funext$, while
+  the second is an easy general lemma about $\happly$ and precomposition.
 \end{proof}
-
-This proof was rather tedious, but we can hope that at some point we will
-understand better what $(\infty,1)$-functoriality means in homotopy type theory, and
-that we will be able to omit rigorously the equalities left implicit above and still
-conclude that every coherence condition is always satisfied.
-
-% \begin{cor}
-%   If \P is a reflective subuniverse, then
-%   every span $\Ddiag$ in $\P$ has a pushout in $\P$.
-% \end{cor}
-
-% \begin{proof}
-%   According to \autoref{reflectPequiv} and to the diagram defining the action of
-%   $\reflect$ on functions, the diagram $\reflect(\Ddiag)$ is equivalent to
-%   $\Ddiag$. But we just proved that $\reflect(\Ddiag)$ has a pushout, namely the
-%   reflection of the pushout in \type of $\Ddiag$, hence $\Ddiag$ has a pushout
-%   in \P.
-% \end{proof}
-
-% Similar (but simpler) arguments prove that any reflective subuniverse has an initial object (namely $\reflect(\emptyt)$), coproducts
-% (constructed as $\reflect(A+B)$), coequalizers, and so on.
 
 
 \section{Truncated and connected functions}

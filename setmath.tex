@@ -836,6 +836,10 @@ which therefore merely has a section.
 But a section of this is exactly an inhabitant of $A+\neg A$, so we have $\brck{A+\neg A}$.
 \end{proof}
 
+\begin{thm}\label{thm:ETCS} Assuming the axiom of choice for sets in the form $\mathsf{AC}$, the category $\set$ is a boolean elementary topos with choice, and thus satisfies Lawvere's axioms for the \emph{Elementary Theory of the Category of Sets}.
+ \end{thm}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \input{ordcard}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -941,7 +945,7 @@ Take any presentation $u = \vset(A,f)$ and factor $f:A\to V$ as $$f = m_u\circ e
 \end{proof}
 
 \begin{defn}\label{def:TypeOfElements}
-For $u:V$, the just constructed monic presentation $m_u: A_u \mono V$ such that $u = \vset(A_u, m_u)$ may be called the \define{type of elements} of $u$ and denoted $m_u : [u] \mono V$, or even $[u] \mono V$.  We can think of $[u]$ as the ``subclass of $V$ consisting of members of $u$".
+For $u:V$, the just constructed monic presentation $m_u: A_u \mono V$ such that $u = \vset(A_u, m_u)$ may be called the \define{type of members} of $u$ and denoted $m_u : [u] \mono V$, or even $[u] \mono V$.  We can think of $[u]$ as the ``subclass of $V$ consisting of members of $u$".
 \end{defn}
 
 \begin{thm}\label{thm:VisCST}
@@ -991,7 +995,7 @@ For $u:V$, the just constructed monic presentation $m_u: A_u \mono V$ such that 
 
   \item Infinity: take $w = \vset(\nat,I)$, where $I: \nat \to V$ is given by the recursion $I(0) = \varnothing$ and $I(n+1) = I(n)\cup \{I(n)\}$.
  
-  \item Union: Take any $v:V$ and any presentation $f :A\to V$ with $v=\vset(A,f)$.  Then let $\tilde{A} \defeq \sm{a:A}[fa]$, where $[fa] \mono V$ is the type of elements from \autoref{def:TypeOfElements}.  $\tilde{A}$ is plainly $\UU$-small and has a projection map $\pi:\tilde{A}\to A$.  We then let $w \defeq \vset(\tilde{A}, f\circ\pi)$.
+  \item Union: Take any $v:V$ and any presentation $f :A\to V$ with $v=\vset(A,f)$.  Then let $\tilde{A} \defeq \sm{a:A}[fa]$, where $[fa] \mono V$ is the type of members from \autoref{def:TypeOfElements}.  $\tilde{A}$ is plainly $\UU$-small and has a projection map $\pi:\tilde{A}\to A$.  We then let $w \defeq \vset(\tilde{A}, f\circ\pi)$.
   
   \item Function set: given $u, v:V$, take the types of elements $[u] \mono V$ and $[u] \mono V$, and the function type $[u]\to [v]$.  We want to define a map
   \[
@@ -1020,14 +1024,15 @@ If the class $C: V \to \prop$ is $\Delta_0$ in the above sense, then it is separ
 \end{cor}
 
 \begin{proof}
-Recall that we have a $\UU$-small resizing $x\sim y$ of identity $x = y$. Since $x\in y$ is defined in terms of $x=y$, we also have a $\UU$-small resizing of membership $$x\bin\vset(A,f) \defeq \exis{a:A} x\sim f(a).$$ Now, let $\Phi$ be a $\Delta_0$ expression for $C$, so that as classes $\Phi = C$ (strictly speaking, we should distinguish expressions from their meanings here, but we will blur this point). Let $\widetilde{\Phi}$ be the result of replacing all occurrences of $=$ and $\in$ by their resized equivalents $\sim$ and $\bin$.  Clearly then $\widetilde{\Phi}$ also expresses $C$, in the sense that for all $x:V$, $\Phi(x) \Leftrightarrow C(x)$, and hence $\widetilde{\Phi}=C$ by univalence.  It now suffices to show that $\widetilde{\Phi}$ is $\UU$-small, for then it will be separable by the theorem.  
+Recall that we have a $\UU$-small resizing $x\sim y$ of identity $x = y$. Since $x\in y$ is defined in terms of $x=y$, we also have a $\UU$-small resizing of membership $$x\bin\vset(A,f) \defeq \exis{a:A} x\sim f(a).$$ Now, let $\Phi$ be a $\Delta_0$ expression for $C$, so that as classes $\Phi = C$ (strictly speaking, we should distinguish expressions from their meanings, but we will blur the difference). Let $\widetilde{\Phi}$ be the result of replacing all occurrences of $=$ and $\in$ by their resized equivalents $\sim$ and $\bin$.  Clearly then $\widetilde{\Phi}$ also expresses $C$, in the sense that for all $x:V$, $\widetilde{\Phi}(x) \Leftrightarrow C(x)$, and hence $\widetilde{\Phi}=C$ by univalence.  It now suffices to show that $\widetilde{\Phi}$ is $\UU$-small, for then it will be separable by the theorem.  
 
 We show that  $\widetilde{\Phi}$ is $\UU$-small by induction on the construction of the expression.  The base cases are $x\sim y$ and $x\bin y$, which have already been resized into $\UU$.  It is also clear that $\UU$ is closed under the propositional operations (and $(-1)$-truncation), so it just remains to check the bounded quantifiers $\exists(x\in a)$ and $\forall(y\in b)$.  By definition,  
 \begin{align*}
 \exists(x\in a) P(x)\ &\defeq \brck {\sm{x:V}(x\bin a \land P(x))}\\
 \forall(y\in b) P(x)\ &\defeq  \prd{x:V}(x\bin a \to P(x))
 \end{align*} 
-Let us consider $\brck {\sm{x:V}(x\bin a \land P(x))}$.  Although the body $(x\bin a \land P(x))$ is $\UU$-small since $P(x)$ is so, by induction hypothesis, the quantification over $V$ need not stay inside $\UU$.  However, in the present case we can replace this with a quantification over the type $[a]\mono V$ of members of $a$, and easily show that $\sm{x:V}(x\bin a \land P(x)) = \sm{x:[a]} P(x)$, which does remain $\UU$, since $[a]$ and $P(x)$ are in $\UU$.  The case of $\prd{x:V}(x\bin a \to P(x))$ is analogous, using $\prd{x:V}(x\bin a \to P(x)) = \prd{x:[a]}P(x)$.
+Let us consider $\brck {\sm{x:V}(x\bin a \land P(x))}$.  Although the body $(x\bin a \land P(x))$ is $\UU$-small since $P(x)$ is so by the induction hypothesis, the quantification over $V$ need not stay inside $\UU$.  However, in the present case we can replace this with a quantification over the type $[a]\mono V$ of members of $a$, and easily show that $$\sm{x:V}(x\bin a \land P(x)) = \sm{x:[a]} P(x).$$ 
+The righthand side does remain in $\UU$, since both $[a]$ and $P(x)$ are in $\UU$.  The case of $\prd{x:V}(x\bin a \to P(x))$ is analogous, using $\prd{x:V}(x\bin a \to P(x)) = \prd{x:[a]}P(x)$.
 \end{proof}
 
 We have shown that in type theory with a universe $\UU$, the cumulative hierarchy $V$ is a model of a ``constructive set theory" with many of the standard axioms, but (as far as we know) without the usual \emph{strong collection} or \emph{subset collection} axioms of the set theory CZF.  We do not expect these to hold, since they seem to be related to the interaction between the type-theoretic axiom of choice $\mathsf{AC}_\infty$ and the (setoid-like) definition of equality in the usual interpretation of CZF into type theory.  Indeed, our model $(V,\in)$ is based on a cumulative hierarchy $V$ which is a higher inductive type \emph{inside} the system, rather than being an \emph{external} construction, and so it is not surprising that it differs in some ways from prior interpretations.
@@ -1035,7 +1040,7 @@ We have shown that in type theory with a universe $\UU$, the cumulative hierarch
 Finally, consider the result of adding the axiom of choice for sets to our type theory, in the form  $\mathsf{AC}$ from \autoref{subsec:emacinsets} above.  This has the consequence that $\mathsf{LEM}$ then also holds, by \autoref{thm:1surj_to_surj_to_pem}, and so $\set$ is a topos with subobject classifier $\bool$, by \autoref{thm:settopos}.  In this case, we have $\prop = \bool:\UU$, and so \emph{all classes are separable}.  Thus we have shown:
 
 \begin{lem}\label{lem:fullsep}
-In type theory with $\mathsf{AC}$, the law of \emph{(full) separation} holds: given \emph{any} class $C : V \to \prop$ and $a : V$, the class $a \cap C$ is a $V$-set.
+In type theory with $\mathsf{AC}$, the law of \emph{(full) separation} holds for $V$: given \emph{any} class $C : V \to \prop$ and $a : V$, the class $a \cap C$ is a $V$-set.
 \end{lem}
 
 \begin{thm}\label{thm:zfc}
@@ -1101,6 +1106,14 @@ The idea of algebraic set theory, which informs our development in \autoref{sec:
   Define the usual algebraic operations on ordinals, and prove that they satisfy the usual properties.
 \end{ex}
 
+\begin{ex}
+   In the constructive set theory CZF, the \define{axiom of strong collection} has the form:
+   \begin{multline*}
+   \fall{x\in v}\exis{y} R(x,y) \Rightarrow \\
+   \exis{w}\big[\big(\fall{x\in v}\exis{y\in w}R(x,y)\big)\land \big(\fall{y\in w}\exis{x\in v}R(x,y) \big)\big]
+   \end{multline*}
+   Does it hold in the cumulative hierarchy $V$?  (We do not know the answer to this.)
+\end{ex}
 
 % Local Variables:
 % TeX-master: "main"

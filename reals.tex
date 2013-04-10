@@ -285,7 +285,7 @@ are \textbf{apart} from each other, written $x \apart y$, when $(x < y) \lor (y 
 \end{equation*}
 %
 If $x \apart y$, then $\lnot (x = y)$.
-The converse is true if we assume LEM, but is not provable constructively.
+The converse is true if we assume excluded middle, but is not provable constructively.
 Indeed, if $\lnot (x = y)$ implies $x\apart y$, then a little bit of excluded middle follows; see \autoref{ex:reals-apart-neq-MP}.
 
 \begin{thm} \label{RD-inverse-apart-0}
@@ -1651,9 +1651,10 @@ of $\RC$ and $\RD$.
 \end{cor}
 
 \begin{proof}
-  If excluded middle holds then $A \lor B$ and $A + B$ are equivalent,
-  therefore~\eqref{eq:RD-linear-order} immediately gives~\eqref{eq:untruncated-linearity}
-  so that we can apply \autoref{lem:untruncated-linearity-reals-coincide}.
+  If excluded middle holds then $(x < y) \to (x < z) + (z < y)$ can be proved: either $x <
+  z$ or $\lnot (x < z)$. In the former case we are done, while in the latter we get $z <
+  y$ because $z \leq x < y$. Therefore, we get~\eqref{eq:untruncated-linearity} so that we
+  can apply \autoref{lem:untruncated-linearity-reals-coincide}.
 
   Suppose Countable Choice holds. The set $S = \setof{ \pairr{q, r} \in \Q \times \Q | q <
     r }$ is equivalent to $\N$, so we may apply Countable Choice to the statement that $x$
@@ -1674,13 +1675,15 @@ of $\RC$ and $\RD$.
 
 We already pointed out that our constructions of reals are entirely compatible with
 classical logic. Thus, by assuming the law of excluded middle~\eqref{eq:lem} and the axiom
-of choice~\eqref{eq:ac} we obtain classical analysis. Nevertheless, anyone interested in
-computation, for example a numerical analyst, ought to be curious about developing
-analysis without taking such drastic steps. That analysis in a constructive setting is
-even possible was demonstrated by~\cite{Bishop1967}. As a sample of the differences and
-similarities between classical and constructive analysis we shall briefly discuss just one
-topic---compactness and connectednes of the closed interval $[0,1]$ and several theorems
-surrounding these concepts.
+of choice~\eqref{eq:ac} we could develop classical analysis, which would essentially
+amount to copying any standard book on analysis.
+
+Nevertheless, anyone interested in computation, for example a numerical analyst, ought to
+be curious about developing analysis in a computationally meaningful setting. That
+analysis in a constructive setting is even possible was demonstrated by~\cite{Bishop1967}.
+As a sample of the differences and similarities between classical and constructive
+analysis we shall briefly discuss just one topic---compactness and connectednes of the
+closed interval $[0,1]$ and several theorems surrounding these concepts.
 
 \subsection{Compactness of the closed interval}
 \label{sec:compactness-closed-interval}
@@ -1691,10 +1694,11 @@ compactness are:
 %
 \begin{enumerate}
 \item Cauchy complete and totally bounded,
-\item the Bolzano-Weierstraß property ``every sequence has a convergent subsequence''.
-\item the Heine-Borel finite property ``every open cover has a finite subcover'',
+\item Bolzano-Weierstraß property ``every sequence has a convergent subsequence''.
+\item Heine-Borel finite property ``every open cover has a finite subcover'',
 \end{enumerate}
 %
+These are all true in classical mathematics.
 Let us see how they fare in homotopy type theory. We can use either the Dedekind or the
 Cauchy reals, so we shall denote the reals just as~$\R$. We first recall several basic
 definitions.
@@ -1808,11 +1812,14 @@ Let us show that $[0,1]$ is compact in the first sense.
   which means that $0 \leq \ell \leq 1$, as required.
 \end{proof}
 
-We now come to the first difference between classical and constructive analysis.
+We thus have at least one good notion of compactness in homotopy type theory.
+Unfortunately, it is limited to metric spaces because total boundedness is a metric
+notion. We shall consider the other two notions shortly, but first we prove that a
+uniformly continuous map on a totally bounded space has a supremum.
 
 \begin{thm} \label{ctb-uniformly-continuous-sup}
   %
-  A uniformly continuous map $f : M \to \R$ on a complete totally bounded metric space
+  A uniformly continuous map $f : M \to \R$ on a totally bounded metric space
   $(M, d)$ has a supremum $m : \R$. For every $\epsilon : \Qp$ there exists $u : M$ such
   that $|m - f(u)| < \epsilon$.
 \end{thm}
@@ -1857,43 +1864,31 @@ We now come to the first difference between classical and constructive analysis.
   \epsilon/4$ merely for some $y_i$ participating in the definition of $x_{\epsilon/2}$,
   therefore by taking $u \defeq y_i$ we obtain $|m - f(u)| < \epsilon$ by triangle
   inequality.
-
-  Note: we never used completeness of~$M$.
 \end{proof}
 
-With respect to the classical theorem we would expect the weaker assumption that~$f$ is
-continuous, rather than uniformly continuous, and the stronger conclusion that $f$
-actually attains its supremum, rather than just approaches it. The classical proof
-proceeds as follows:
+Now, if in \autoref{ctb-uniformly-continuous-sup} we also knew that $M$ is complete, we
+could hope to weaken the assumption of uniform continuity to continuity, and strengthen
+the conclusion to existence of a point at which the supremum is attained. But for this to
+be possible, we would have to prove that:
 %
 \begin{enumerate}
-\item $f$ is uniformly continuous because it is a continuous map on a complete totally
-  bounded space,
-\item by \autoref{ctb-uniformly-continuous-sup} there is a supremum $m$ and a sequence $x
-  : \N \to M$ such that $f(x_k)$ is within $2^{-k}$ of~$m$,
-\item select a convergent subsequence of $x$ and prove that its limit attains $m$.
+\item a continuous map on a complete totally bounded space is uniformly continuous, and
+\item every sequence in a complete totally bounded space has a convergent subsequence.
 \end{enumerate}
 %
-But this proof clearly shows that the classical theorem is really a composition of three
-theorems. The first one uses the Heine-Borel property to turn continuous maps into
-uniformly continuous maps, the second one we just proved, and the third one relies on the
-Bolzano-Weirstraß property to extract a convergent subsequence. Since we have neither of
-these two properties, we cannot recover the first and the third steps. Nevertheless, the
-second step is often good enough for applications.
-
-Let us turn attention to the Bolzano-Weirstraß property.
-The \define{Limited Principle of Omniscience (LPO)} states that for every $\alpha : \N \to
+The first statement follows easily from the Heine-Borel property, and the second is the
+Bolzano-Weierstraß property. Unfortunately, both properties are somewhat problematic. Let
+us first show that the Bolzano-Weirstraß property implies an instance of excluded middle
+known as the \define{Limited Principle of Omniscience (LPO)}: every $\alpha : \N \to
 \bool$,
 % 
 \begin{equation} \label{eq:lpo}
-  (\sm{n : \N} \alpha(n) = \btrue) + (\prd{n : \N} \alpha(n) = \bfalse).
+  \left(\sm{n : \N} \alpha(n) = \btrue\right) +
+  \left(\prd{n : \N} \alpha(n) = \bfalse\right).
 \end{equation}
 %
-It is an instance of excluded middle which cannot be proved without additional axioms.
 Computationally speaking, we would not expect LPO to hold because it asks us to decide
-whether infinitely many values of a function are $\bfalse$.
-Often we can show that a statement in analysis is essentially classical because it implies
-LPO. The Bolzano-Weirstraß property is such an example.
+whether infinitely many values of a function are~$\bfalse$.
   
 \begin{thm} \label{analysis-bw-lpo}
   %
@@ -1901,7 +1896,7 @@ LPO. The Bolzano-Weirstraß property is such an example.
 \end{thm}
 
 \begin{proof}
-  Define the sequence $x : \N \to [0,1]$ by
+  Given any $\alpha : \N \to \bool$, define the sequence $x : \N \to [0,1]$ by
   %
   \begin{equation*}
     x_n \defeq
@@ -1919,16 +1914,39 @@ LPO. The Bolzano-Weirstraß property is such an example.
   \alpha(n) = \btrue$.
 \end{proof}
 
-While the failure of Bolzano-Weirstraß property is not surpising from a computational
-point of view (you should try and fail devising an algorithm which extracts a convergent
-subsequence from any sequence $\N \to [0,1])$), it is not so easy to give up the
-Heine-Borel property.
+While we might not mourn the Bolzano-Weierstraß property too much, it seems harder to live
+without the Heine-Borel property, as attested by the fact that both classical mathematics
+and Brouwer's Intuitionism accepted it. As we do not want to wade too deeply into general
+topology, we shall work with basic open sets. In the case of $\R$ these are the open
+intervals with rational endpoints. A family of such intervals is given as a map
+$\mathcal{F} : I \to \setof{ \pairr{q, r} : \Q \times \Q | q < r }$ where $I$ is some
+indexing type. We shall write $(q_i, r_i)$ for the open interval whose endpoints are $q_i
+\defeq \fst(\mathcal{F}_i)$ and $r_i \defeq \snd(\mathcal{F}_i)$. A finite subfamily of
+$\mathcal{F}$ is a finite list $[i_0, \ldots, i_n]$ of indices in~$I$. We say that
+$\mathcal{F}$ \define{covers $[0,1]$} when
+%
+\begin{equation*}
+  \fall{x : [0,1]} \exis{i : I} q_i < x < r_i.
+\end{equation*}
+%
+The \define{Heine-Borel property for $[0,1]$} states that every covering family of $[0,1]$
+has a finite subfamily which still covers $[0,1]$.
 
-\textbf{TODO: Excluded middle implies $[0,1]$ is Heine-Borel compact.}
+\begin{thm}
+  If excluded middle holds then $[0,1]$ has the Heine-Borel property.
+\end{thm}
 
-\textbf{TODO: Strenthen the notion of cover by an inductive definition so that
-  Heiner-Borel for $[0,1]$ is recovered. Comment that this is still compatible with
-  classical version.}
+\begin{proof}
+  \textbf{TODO: put in the usual proof}
+\end{proof}
+
+Without excluded middle, or a pinch of Brouwerian Intuitionism, we seem to be stuck.
+Nevertheless, the Heine-Borel property \emph{can} be recovered in a constructive setting!
+The price to pay is to strengthen the notion of cover so that it still remains compatible
+with the classical setting, but allows us to extract finite subcovers. This is a lesson
+learned from point-free topology.
+
+\textbf{TODO: define inductive cover, show HB, show that classicaly this is all kosher.}
 
 \subsection{Connectedness of $[0,1]$ and the Mean Value Theorem}
 \label{sec:mean-value-theorem}
@@ -1948,7 +1966,7 @@ Heine-Borel property.
 
 In this section we consider another example of a higher inductive-inductive type, which draws together many of our threads: Conway's field \NO of \emph{surreal numbers}~\cite{conway:onag}.
 The surreal numbers are the natural common generalization of the (Dedekind) real numbers (\autoref{sec:dedekind-reals}) and the ordinal numbers (\autoref{sec:ordinals}).
-Conway, working in classical mathematics with LEM and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
+Conway, working in classical mathematics with excluded middle and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
 This obviously looks like an inductive definition, but there are three issues with regarding it as such.
 
 Firstly, the definition requires the relation of (strict) inequality between surreals, so that relation must be defined simultaneously with the type \NO of surreals.

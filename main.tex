@@ -1,6 +1,10 @@
-\documentclass[openany,11pt]{book}
+\documentclass[twopage,11pt]{book}
 
 \usepackage[pagebackref,colorlinks,citecolor=darkgreen,linkcolor=darkgreen,unicode]{hyperref}
+
+% Use this package and stick \layout somewhere in the text to see
+% page margins, text size and width etc. Useful for debugging page format.
+%\usepackage{layout}
 
 %%% Because Germans have umlauts and Slavs have even stranger ways of mangling letters
 \usepackage[utf8]{inputenc}
@@ -19,8 +23,13 @@
 % for type setting urls
 \usepackage{url}
 
-\usepackage{wallpaper} % For the background image on the cover page
-\usepackage{geometry} % For the cover page
+%\usepackage{wallpaper} % For the background image on the cover page
+
+% We set a bindingoffset so that extra space for binding is provided.
+% This also makes the page look more symmetric when the book is not bound.
+% We make the page 40pt taller than the standard LaTeX book.
+\usepackage[text={405pt,596pt},twoside,bindingoffset=1.25cm]{geometry}
+
 \usepackage{fancyhdr} % To set headers and footers
 
 \usepackage{nextpage}
@@ -77,20 +86,28 @@
 \author{The Univalent Foundations Program}
 
 \frontmatter
-\include{front} %%% Front matter
-% \setcounter{chapter}{-1}% To start counting at 0
+
+% Title page, preface and TOC do not have headers and footers
+\pagestyle{empty}
+
+\include{front} %%% Title page and copyright
+
+\mainmatter
+
+\cleartooddpage
+
 \include{preface}
 
-\pagestyle{empty}               % No headers and page numbers on table of contents
+\cleartooddpage
+
 \setcounter{tocdepth}{1}        % chapters and sections for the toc
 \tableofcontents
 \setcounter{tocdepth}{2}        % chapters, sections, and subsections for the
                                 % metadata of the pdf
+\cleartooddpage
 
-\cleardoublepage
-\pagestyle{fancyplain}          % Restore headers (must be done after \cleardoublepage)
-
-\mainmatter
+% Turn on headers and footers for mainmatter (must appear after \cleartooddpage)
+\pagestyle{fancyplain}
 
 \include{introduction}
 

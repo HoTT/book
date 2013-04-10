@@ -892,12 +892,48 @@ not judgmental, equality. These differences are discussed in
 
 In $\ind{\Sn^1}$, $x$ is bound in $C$.  The notation ${\dpath C \lloop b b}$ for dependent paths was introduced in \autoref{sec:dependent-paths}.
 
-\subsection{Further rules}
+\subsection{Further axioms}
 
-We assume stronger rules about $\Pi$ types than fit cleanly into the pattern
-above. In the extensionality rule below, $\isequiv$ is any of the equivalent
-notions defined in \autoref{cha:equivalences}, and $\happly$ is the function
-defined in \autoref{sec:compute-pi}.
+There are two basic ways of treating the univalence axiom, or any other axiom
+which does not introduce new syntax or new judgmental equalities---we could
+either add a primitive constant to the theory which inhabits the axiom, or we
+could simply prove all theorems in a context hypothesizing a variable which
+inhabits the axiom. While these are essentially equivalent, we choose the former
+approach because we consider the univalence axiom a core part of homotopy type
+theory. 
+
+We begin by introducing some definitions that allow us to state the univalence
+axiom.
+
+The type $\iscontr(X)$ represents the proposition that a type $X$ is contractible; see \autoref{defn:contractible}.
+
+\begin{mathparpagebreakable}
+  \def\hfiber{\hfibsym}
+  \inferrule*[]
+  {\wfctx \Gm}
+  {\jdeqtp\Gm{\iscontr}{\lam{X:\UU_i} \sm{x:X} \prd{x':X} \id[X]{x}{x'}}{\UU_i\to\UU_i}}
+\end{mathparpagebreakable}
+
+The type $\hfiber(X)(Y)(f)(y)$ represents the homotopy fiber of a map $f : X
+\to Y$ over a point $y$ of $Y$.
+
+\begin{mathparpagebreakable}
+  \inferrule*[]
+  {\wfctx \Gm}
+  {\jdeqtp\Gm{\hfiber}{\lam{X:\UU_i}{Y:\UU_i}{f:X \to Y}{y:Y} \sm{x:X} \id[Y]{f(x)}{y}}{\UU_i\to\UU_i}}
+\end{mathparpagebreakable}
+
+\begin{mathparpagebreakable}
+  \inferrule*[]
+  {\wfctx \Gm}
+  {\jdeqtp\Gm{\isequiv}{\lam{X:\UU_i}{Y:\UU_i}{f:X \to Y} \prd{y:Y} \iscontr(\hfiber(X,Y,f,y))}{\UU_i\to\UU_i}}
+\end{mathparpagebreakable}
+
+\begin{mathparpagebreakable}
+  \inferrule*[]
+  {\wfctx \Gm}
+  {\jdeqtp\Gm{weq}{\lam{X:\UU_i}{Y:\UU_i} \sm{f:X \to Y} ...}{\UU_i\to\UU_i}}
+\end{mathparpagebreakable}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-$\eta$]
@@ -909,14 +945,6 @@ defined in \autoref{sec:compute-pi}.
    \oftp\Gm{g}{\tprd{x:A} B}}
   {\oftp\Gm{\happly\text{-}\isequiv}{\isequiv(\happly_{f,g})}}
 \end{mathparpagebreakable}
-
-There are two basic ways of treating the univalence axiom, or any other axiom
-which does not introduce new syntax or new judgmental equalities---we could
-either add a primitive constant to the theory which inhabits the axiom, or we
-could simply prove all theorems in a context hypothesizing a variable which
-inhabits the axiom. While these are essentially equivalent, we choose the former
-approach because we consider the univalence axiom a core part of homotopy type
-theory. 
 
 In the axiom below, $\idtoeqv$ is the function defined in
 \autoref{sec:compute-universe}, and $\isequiv$ is again any suitable notion

@@ -5,174 +5,151 @@
 
 Our conception of sets as types with particularly simple homotopical character, cf.\
 \autoref{sec:basics-sets}, is quite different from the sets of Zermelo-Frankel set theory, which form a
-cumulative hierarchy. For many mathematical purposes the homotopy-theoretic sets are just as good as
-the Zermelo-Fraenkel ones, but there are also important differences. We consider these in
-the present chapter. 
+cumulative hierarchy with an intricate nested membership structure.
+For many mathematical purposes, the homotopy-theoretic sets are just as good as
+the Zermelo-Fraenkel ones, but there are important differences.
 
-This chapter has three parts. First, we show that the category $\set$ of all $0$-types and maps between them has (most of) the usual properties of the category of sets; i.e.\ technically speaking, it is a ``$\Pi\mathsf{W}$-pretopos".  We then  consider the possibility of constructing a cumulative hierarchy of sets, equipped with a binary membership relation. Algebraic set theory is a convenient framework for this construction. Finally, we show that the theory of ordinals and cardinals from classical set theory can be developed in a natural way by considering sets with isomorphisms as equalities. This equality is, of course, precisely the one we obtain from the univalence axiom.
+We begin this chapter in \autoref{sec:piw-pretopos} by showing that the category $\uset$ has (most of) the usual properties of the category of sets.
+In constructive, predicative, univalent foundations, it is a ``$\Pi\mathsf{W}$-pretopos''; whereas if we assume propositional resizing (\autoref{subsec:prop-subsets}) it is an elementary topos, and if we assume LEM and AC then it is a model of Lawvere's Elementary Theory of the Category of Sets.
+This is sufficient to ensure that the sets in homotopy type theory behave mostly like sets as used by most mathematicians outside of set theory.
+
+In the rest of the chapter, we investigate some subjects that traditionally belong to ``set theory''.
+In \autoref{sec:cardinals,sec:ordinals,sec:wellorderings} we study cardinal and ordinal numbers.
+These are traditionally defined in set theory using the global membership relation, but we will see that the univalence axiom enables an equally convenient, more ``structural'' approach.
+
+Finally, in \autoref{sec:cumulative-hierarchy} we consider the possibility of constructing \emph{inside} of homotopy type theory a cumulative hierarchy of sets, equipped with a binary membership relation akin to that of Zermelo-Fraenkel set theory.
+This combines higher inductive types with ideas from the field of Algebraic Set Theory.
+
+In this chapter we will often use the traditional logical notation described in \autoref{subsec:prop-trunc}.
 
 %\section{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}W-pretopos}
 \section{The category of sets}
 \label{sec:piw-pretopos}
 
-%We will show that $\set$ is a $\Pi$W-pretopos. 
-We begin by proving that $\set$ is a \emph{regular} category, i.e.:
+Recall that in \autoref{cha:category-theory} we defined the category \uset to consist of all $0$-types (in some universe \UU) and maps between them, and observed that it is a category (not just a precategory).
+We consider successively the levels of structure which \uset possesses.
+
+\subsection{Limits and colimits}
+\label{subsec:limits-sets}
+
+Since sets are closed under products, the universal propertyof products in \autoref{thm:prod-ump} shows immediately that \uset has finite products.
+In fact, infinite products follow just as easily from the equivalence
+\[ \left(X\to \prd{a:A} B(a) \right) \simeq \left(\prd{a:A} (X\to B)\right) .\]
+And we remarked already that the pullback of $f:A\to C$ and $g:B\to C$ can be defined as $\sm{a:A}{b:B} f(a)=g(b)$; this is a set if $A,B,C$ are and inherits the correct universal property.
+Thus, \uset is a \emph{complete} category in the obvious sense.
+
+Since sets are closed under $+$ and contain \emptyt, \uset has finite coproducts.
+Similarly, since $\sm{a:A}B(a)$ is a set whenever $A$ and each $B(a)$ are, it yields a coproduct of the family $B$ in \uset.
+Finally, we showed in \autoref{sec:pushouts} that pushouts exist in $n$-types, which includes \uset in particular.
+Thus, \uset is also \emph{cocomplete}.
+
+\subsection{Images}
+\label{sec:image}
+
+%We will show that $\uset$ is a $\Pi$W-pretopos. 
+Next, we show that $\uset$ is a \define{regular category}, i.e.:
 %
 \begin{enumerate}
-\item $\set$ is finitely complete.
-\item The kernel pair $\pi_1,\pi_2: (\sm{x,y:A} f(x)= f(y)) \to A$ of any
-      function $f : A \to B$ has a coequalizer.
-\item Pullbacks of regular epimorphisms are again regular epimorphisms.
+\item $\uset$ is finitely complete.\label{item:reg1}
+\item The kernel pair $\proj1,\proj2: (\sm{x,y:A} f(x)= f(y)) \to A$ of any
+      function $f : A \to B$ has a coequalizer.\label{item:reg2}
+\item Pullbacks of regular epimorphisms are again regular epimorphisms.\label{item:reg3}
 \end{enumerate}
 %
-Recall that an epi is called \emph{regular} if it is the coequalizer of \emph{some} pair of maps; so in (iii) the pullback of a coequalizer is required to again be a coequalizer, but not necessarily of the pulled-back pair. 
+Recall that a \define{regular epimorphism} is a morphism that is the coequalizer of \emph{some} pair of maps.
+Thus in~\ref{item:reg3} the pullback of a coequalizer is required to again be a coequalizer, but not necessarily of the pulled-back pair.
 
-The obvious candidate for the coequalizer of the kernel pair of a function is the \emph{image} of the function, to be defined below.
-%
+The obvious candidate for the coequalizer of the kernel pair of $f:A\to B$ is its \emph{image}, as defined in \autoref{sec:image-factorization}.
+Recall that we defined $\im(f)\defeq \sm{b:B} \brck{\hfib f b}$, with functions 
+$\tilde{f}:A\to\im(f)$ and $i_f:\im(f)\to B$ defined by
+\begin{align*}
+  \tilde{f} & \defeq \lam{a} \pairr{f(a),|\pairr{a,\refl{f(a)}}|}\\
+i_f & \defeq \proj1
+\end{align*}
+fitting into a diagram:
 \begin{equation*}
 \begin{tikzpicture}
 \matrix (m) [std] {\sm{x,y:A} f(x)= f(y) & A & \mathsf{im}(f) \\ & & B \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- node[above] {$\tilde{f}$} (m-1-3);
 \draw[ar] (m-1-2) -- node[auto,swap] {$f$} (m-2-3);
-\draw[ar,densely dotted] (m-1-3) -- (m-2-3);
+\draw[ar,densely dotted] (m-1-3) -- node[auto] {$i_f$} (m-2-3);
 \end{tikzpicture}
 \end{equation*}
 
-We will show that the image of a function $f$ is indeed the coequalizer of its kernel pair, that the resulting map from the image into the codomain $B$ is a monic, and that the resulting (regular) epi-mono factorization is stable under pullback.
+Recall that a function $f:A\to B$ is called \emph{surjective} if $\fall{b:B}\brck{\hfib f b}$, or equivalently $\fall{b:B} \exis{a:A} f(a)=b$.
+A function $f:A\to B$ between sets is called \emph{injective} if $\fall{a,a':A} f(a) = f(a') \Rightarrow a=a'$, or equivalently if each of its fibers is a mere proposition.
+Since these are the $(-1)$-connected and $(-1)$-truncated maps in the sense of \autoref{cha:hlevels}, the general theory there implies that $\tilde f$ above is surjective and $i_f$ is injective, and that this factorization is stable under pullback.
 
-\subsection{The image of a function}
-\label{sec:image}
+We now identify surjectivity and injectivity with the appropriate category-theoretic notions.
+First we observe that categorical monomorphisms and epimorphisms have a slightly stronger equivalent formulation.
 
-The truncations introduced in~\autoref{subsec:reflective-subuniverses} allow us to define the stable factorization
-system we seek.
-%\footnote{\url{http://uf-ias-2012.wikispaces.com/file/view/images.pdf/401765624/images.pdf}}
- Specifically, we use the $(-1)$-truncation $\|X\|$ to define a stable orthogonal factorization system  on $\set$: every map factors as an ``surjection" followed by an ``injection", and this factorization is stable under pullback.
-We first define these notions:
-
-We can use the logical notation from \autoref{defn:logical-notation}; in particular, below we can also write $\fall{b:B} \exis{a:A} f(a)=b$ for $\prd{b:B} \|\hfiber{f}b\|$.
-
-\begin{defn}
-A function $f:A\to B$  between sets is \emph{surjective} if
-\begin{align*}
-\mathsf{surj}(f) &\defeq\prd{b:B} \|\hfiber{f}b\| \\
-&= \fall{b:B} \exis{a:A}f(a)=b
-\end{align*}
-
-%In general, the monomorphisms of types are functions with contractible homotopy fibers over images of points in $A$; thus we define
-%\note{Move to \autoref{sec:mono-epi}?}
-
-A function $f:A\to B$  between sets is \emph{injective} if
-\begin{align*}
-\mathsf{inj}(f) &\defeq\prd{a:A} \mathsf{isContr}(\hfiber{f}{f(a)})\\
-	&= \fall{a,a':A} f(a) = f(a') \Rightarrow a=a'
-\end{align*}
-\end{defn}
-
-\noindent The injective functions can be seen to be the monomorphisms of $\set$, which can also be characterized as those $f:A\to B$ such that the function
-\begin{equation*}
-  \lam{a} \pairr{a,a,\refl{f(a)}}:A\to A\times_B A
-\end{equation*}
-is an equivalence.
-
-\begin{defn}
-Let $f:A\to B$ be a function between sets. Define the \emph{image} of $f$ by: 
-\begin{align*}
-\im(f) &\defeq\sm{b:B} \|\hfiber{f}b\|\\
-	&= \sm{b:B} \|\sm{a:A}f(a)=b\|
-\end{align*}
-Moreover, define the functions $\tilde{f}:A\to\im(f)$ and $i_f:\im(f)\to B$ by
-\begin{align*}
-  \tilde{f} & \defeq \lam{a} \pairr{f(a),|\pairr{a,\refl{f(a)}}|}\\
-i_f & \defeq \pi_1.
-\end{align*}
-\end{defn}
+\begin{lem}\label{thm:mono}
+  For a morphism $f:\hom_A(a,b)$ in a category $A$, the following are equivalent.
+  \begin{enumerate}
+  \item $f$ is a \define{monomorphism}: for all $x:A$ and ${g,h:\hom_A(x,a)}$, if $f\circ g = f\circ h$ then $g=h$.\label{item:mono1}
+  \item (If $A$ has products) the diagonal map $A\to A\times A$ is an isomorphism.\label{item:mono4}
+  \item For all $x:A$ and $k:\hom_A(x,b)$, the type $\sm{h:\hom_A(x,a)} k = f\circ h$ is a mere proposition.\label{item:mono2}
+  \item For all $x:A$ and ${g:\hom_A(x,a)}$, the type $\sm{h:\hom_A(x,a)} f\circ g = f\circ h$ is contractible.\label{item:mono3}
+  \end{enumerate}
+\end{lem}
+\begin{proof}
+  The equivalence of conditions~\ref{item:mono1} and~\ref{item:mono4} is standard category theory.
+  Now consider the function $(f\circ -):\hom_A(x,a) \to \hom_A(x,b)$ between sets.
+  Condition~\ref{item:mono1} says that it is injective, while~\ref{item:mono2} says that its fibers are mere propositions; hence they are equivalent.
+  And~\ref{item:mono2} implies~\ref{item:mono3} by taking $k\defeq f\circ g$ and recalling that an inhabited mere proposition is contractible.
+  Finally,~\ref{item:mono3} implies~\ref{item:mono1} since if $p:f\circ g= f\circ h$, then $(g,\refl{})$ and $(h,p)$ both inhabit the type in~\ref{item:mono3}, hence are equal and so $g=h$.
+\end{proof}
 
 \begin{lem}
-As just defined, $\tilde{f}$ is surjective and $i_f$ is injective.
+  A function $f:A\to B$ between sets is injective if and only if it is a monomorphism in \uset.
 \end{lem}
+\begin{proof}
+  Left to the reader.
+\end{proof}
 
-Next, we use the insights from~\autoref{subsec:reflective-subuniverses} and consider coequalizers
-in $\set$. The coequalizer of a pair of maps in $\set$ is defined as the 0-truncation of a general coequalizer.  Given a pair of maps $f,g:A\to B$, the general, non-truncated, pushout does not have the quotient-like properties expected in the category $\set$.  For instance, the untruncated coequalizer of $\unit\rightrightarrows\unit$ is the circle. Nevertheless, the $0$-truncation of the circle is again $\unit$, which is the expected coequalizer in $\set$. Thus we set
+Of course, an \define{epimorphism} is a monomorphism in the opposite category.
+We now show that in \uset, the epimorphisms are precisely the surjections, and also precisely the coequalizers (regular epimorphisms).
 
-\begin{defn}
-Let $A$ and $B$ be sets and let $f,g:A\to B$.
-We define the \emph{set-coequalizer} of $f$ and $g$ to be the $0$-truncation of their general coequalizer, as defined in \autoref{sec:colimits},
-\[
-c_{f,g}:B\to B\sslash(f=g) \defeq \|B/(f=g)\|_0.
-\]
-\end{defn}
+The coequalizer of a pair of maps $f,g:A\to B$ in $\uset$ is defined as the 0-truncation of a general (homotopy) coequalizer.
+For clarity, we may call this the \define{set-coequalizer}.
+It is convenient to express its universal property as follows.
 
-Recall from \autoref{defn:homotopy} the notation $f \sim g$ for homotopy between functions.
+% Recall from \autoref{defn:homotopy} the notation $f \sim g$ for homotopy between functions.
 
 \begin{lem}
 Let $f,g:A\to B$ be functions between sets $A$ and $B$. The 
-{set-co}equalizer $c_{f,g}:B\to B\sslash(f=g)$ has the property that, for any set $C$, any $h:B\to C$ with $h\circ f\sim h\circ g$, the type\begin{equation*}
-\sm{k:B\sslash(f=g)\to C} k\circ c_{f,g}\sim h
+{set-co}equalizer $c_{f,g}:B\to Q$ has the property that, for any set $C$ and any $h:B\to C$ with $h\circ f\sim h\circ g$, the type
+\begin{equation*}
+\sm{k:Q\to C} k\circ c_{f,g}\sim h
 \end{equation*}
 is contractible.
 \end{lem}
-%
-\noindent As explained in~\autoref{subsec:reflective-subuniverses}, this is a general phenomenon, the 0-truncated colimits behave as expected.
-
-We next connect regular epis and surjective functions; for this, we use the principle of unique choice; see~\autoref{cor:UC}. 
-
-\begin{defn}
-Let $f:A\to B$ be a function between sets. Define
-\begin{align*}
-\mathsf{epi}(f) & \defeq \prd{X:\set}{g,h:B\to X}
-(g\circ f\sim h\circ f)\to (g\sim h)\\
-\mathsf{epi}'(f) & \defeq\prd{X:\set}{g:B\to X}
-\mathsf{isContr}\big(\sm{h:B\to X} g\circ f\sim h\circ f\big).
-\end{align*}
-\end{defn}
-
-Note that $\mathsf{epi}(f)$ is the usual notion of epimorphism while the
-notion $\mathsf{epi}'(f)$ seems to be stronger. The latter seems to be the right notion for general types.
 
 \begin{lem}\label{epis-surj}
 For any function $f:A\to B$ between sets, the following are equivalent:
 \begin{enumerate}
-\item $f$ is an epimorphism, i.e.\ we have $\mathsf{epi}(f)$.
-\item We have $\mathsf{epi}'(f)$.
+\item $f$ is an epimorphism.
 \item Consider the pushout diagram
 \begin{equation*}
 \begin{tikzpicture}
-\matrix (m) [std] {A & B \\ \mathsf{unit} & C_f \\};
+\matrix (m) [std] {A & B \\ \unit & C_f \\};
 \draw[ar] (m-1-1) -- node[above] {$f$} (m-1-2);
 \draw[ar] (m-1-2) -- node[right] {$\iota$} (m-2-2);
 \draw[ar] (m-1-1) -- (m-2-1);
 \draw[ar] (m-2-1) -- node[below] {$t$} (m-2-2);
 \end{tikzpicture}
 \end{equation*}
-in $\set$ defining the mapping cone. The type $C_f$ is contractible.
+in $\uset$ defining the mapping cone. Then the type $C_f$ is contractible.
 \item $f$ is surjective.
 \end{enumerate}
 \end{lem}
 
 \begin{proof}
-Let $f:A\to B$ be a function between sets.
-To show that $\mathsf{epi}(f)\to\mathsf{epi}'(f)$, assume $f$ is an epimorphism,
-let $X$ be a set and let $g:B\to X$ be a function. Then we find
-\begin{equation*}
-\pairr{g,\refl{g\circ f}}:\sm{h:B\to X} g\circ f\sim h\circ f.
-\end{equation*}
-Thus, to show that $\sm{h:B\to X} g\circ f\sim h\circ f$ 
-is contractible we need to show that
-\begin{equation*}
-\prd{h:B\to X}{K:g\circ f\sim h\circ f}\sm{L:g\sim h} K\sim L\circ f.
-\end{equation*}
-Note that $K\sim L\circ f$ is contractible since $X$ is assumed to be a set,
-hence it suffices to show that
-\begin{equation*}
-\prd{h:B\to X} (g\circ f\sim h\circ f)\to (g\sim h).
-\end{equation*}
-This follows at once from the assumption that $f$ is an epimorphism.
-
-To show that $\mathsf{epi}'(f)\to\mathsf{isContr}(C_f)$, suppose that
-$\mathsf{epi}'(f)$. The basic constructor of $C_f$ corresponding to
-$\mathsf{unit}\to C_f$ gives us an element $t:C_f$. We have to show that
+Let $f:A\to B$ be a function between sets, and suppose it to be an epimorphism; we show $C_f$ is contractible.
+The basic constructor of $C_f$ corresponding to
+$\unit\to C_f$ gives us an element $t:C_f$. We have to show that
 \begin{equation*}
 \prd{x:C_f} x= t.
 \end{equation*}
@@ -189,7 +166,7 @@ $\mathsf{const}_t\circ f$, so we find the terms
 \pairr{\iota,\refl{\iota\circ f}},\pairr{\mathsf{const}_t,\alpha_1}:
 \sm{h:B\to C_f} \iota\circ f\sim h\circ f.
 \end{equation*}
-By the assumption of $\mathsf{epi}'(f)$, it follows that there is a path
+By the dual of \autoref{thm:mono}\ref{item:mono3}, there is a path
 \begin{equation*}
 \gamma:\pairr{\iota,\refl{\iota\circ f}}=\pairr{\mathsf{const}_t,\alpha_1}
 \end{equation*}
@@ -199,11 +176,11 @@ We also have
 This transport involves precomposition with $f$, which commutes with $\happly$.
 Thus, from transport in path types we obtain $I_0(f(a)) = \alpha_1(a)$ for any $a:A$, which gives us $I_1$.
 
-To show that $\mathsf{isContr}(C_f)\to\mathsf{surj}(f)$, assume $\mathsf{isContr}(C_f)$.
-We first construct a dependent type $P:C_f\to\prop$ by recursion on $C_f$, which is valid since \prop is a set.
+Now suppose $C_f$ is contractible; we show $f$ is surjective.
+We first construct a type family $P:C_f\to\prop$ by recursion on $C_f$, which is valid since \prop is a set.
 On the point constructors, we define
 \begin{align*}
-P(t) & \defeq \mathsf{unit}\\
+P(t) & \defeq \unit\\
 P(\iota(b)) & \defeq \brck{\hfiber{f}b}.
 \end{align*}
 To complete the construction of $P$, it remains to give a path $\brck{\hfiber{f}{f(a)}} =_\prop \unit$ for all $a:A$.
@@ -214,24 +191,19 @@ Now, since $C_f$ is assumed to be contractible, it follows that $P(x)$ is equiva
 In particular, $P(\iota(b))\jdeq \brck{\hfiber{f}b}$ is equivalent to $P(t)\jdeq \unit$ for each $b:B$, and hence contractible.
 Thus, $f$ is surjective.
 
-To show that $\mathsf{surj}(f)\to\mathsf{epi}(f)$,
-let $f:A\to B$ be a surjective function and consider a set $C$ and two functions
+Finally, suppose $f:A\to B$ to be surjective, and consider a set $C$ and two functions
 $g,h:B\to C$ with the property that $g\circ f\sim h\circ f$. Since $f$ 
 is assumed to be surjective,
 we have an equivalence $B\simeq\mathsf{im}(f)$. We have the following equivalences
 \begin{align*}
-\prd{b:B} g(b)= h(b) 
-& \simeq \prd{w:\mathsf{im}(f)} g(\pi_1 w)= h(\pi_1(w))\\
+\prd{b:B} (g(b)= h(b))
+& \simeq \prd{w:\mathsf{im}(f)} g(\proj1 w)= h(\proj1(w))\\
 & \simeq \prd{b:B}{a:A}{p:f(a)= b} g(b)= h(b)\\
 & \simeq \prd{a:A} g(f(a))= h(f(a)).
 \end{align*}
 By assumption, there is an element of the latter type.
 \end{proof}
-The proof that epis are surjective in~\cite{Mines/R/R:1988} uses the power set operation. 
-This proof can be made predicative by using a large power set and typical ambiguity.
-A predicative proof for setoids was given by Wilander~\cite{Wilander2010}. 
-The proof above is similar, but avoids setoids by using the pushout and the
-univalence axiom. 
+
 % \begin{rem}
 % The above theorem is not true when we replace $\set$ by $\type$
 % (replacing it also in the definition of $\mathsf{epi}$ and $\mathsf{epi}'$). 
@@ -248,29 +220,29 @@ Surjective functions between sets are regular epimorphisms.
 Note that it suffices to show that for any function $f:A\to B$, the diagram
 \begin{equation*}
 \begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} f(x)= f(y) & A & \mathsf{im}(f) \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\matrix (m) [std] {\sm{x,y:A} (f(x)= f(y)) & A & \mathsf{im}(f) \\};
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- node[above] {$\tilde{f}$} (m-1-3);
 \end{tikzpicture}
 \end{equation*}
 is a coequalizer diagram.
 
 The first thing we have to verify is that there is a homotopy 
-$H:\tilde{f}\circ\pi_1\sim\tilde{f}\circ\pi_2$. Let $\pairr{x,y,p}$ be an element
+$H:\tilde{f}\circ\proj1\sim\tilde{f}\circ\proj2$. Let $\pairr{x,y,p}$ be an element
 of $\sm{x,y:A} f(x)= f(y)$. 
-Then we have $\tilde{f}(\pi_1(\pairr{x,y,p}))= \pairr{f(x),u}$, 
+Then we have $\tilde{f}(\proj1(\pairr{x,y,p}))= \pairr{f(x),u}$, 
 where $u$ belongs to the contractible type $\|\hfiber{f}{f(x)}\|$. 
 Similarly, we have a path 
-$\tilde{f}(\pi_2(\pairr{x,y,p}))= \pairr{f(y),v}$,
+$\tilde{f}(\proj2(\pairr{x,y,p}))= \pairr{f(y),v}$,
 where $v$ belongs to the contractible type $\|\hfiber{f}{f(y)}\|$.
 Since we have $p:f(x)= f(y)$ and since
 $\|\hfiber{f}{f(y)}\|$ is contractible, 
-it follows that we get a path from $\tilde{f}(\pi_1(\pairr{x,y,p}))$ to
-$\tilde{f}(\pi_2(\pairr{x,y,p}))$, which gives us our homotopy.
+it follows that we get a path from $\tilde{f}(\proj1(\pairr{x,y,p}))$ to
+$\tilde{f}(\proj2(\pairr{x,y,p}))$, which gives us our homotopy.
 
 Now suppose that $g:A\to X$ is a function for which there is a homotopy 
-$K:g\circ\pi_1\sim g\circ\pi_2$. We have to show that the space
+$K:g\circ\proj1\sim g\circ\proj2$. We have to show that the space
 \begin{equation*}
 \sm{h:\mathsf{im}(f)\to X}{L:h\circ\tilde{f}\sim g} h\circ H\sim K
 \end{equation*}
@@ -324,50 +296,40 @@ is contractible because $\tilde{f}$ is an epimorphism.
 \end{proof}
 
 \begin{lem}\label{lem:pb_of_coeq_is_coeq}
-Pullbacks of surjective functions are surjective. Consequently,
-pullbacks of regular epis are regular epis.
+Pullbacks of regular epis in \uset are regular epis.
 \end{lem}
-
 \begin{proof}
-Consider a pullback diagram
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & B \\ C & D \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$g$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left]  {$f$} (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$h$} (m-2-2);
-\end{tikzpicture}
-\end{equation*}
-and assume that $g$ is surjective. Applying the pasting lemma of pullbacks
-with the morphism $c:\mathsf{unit}\to C$, we obtain an
-equivalence $\hfiber{f}c\simeq\hfiber{g}{h(c)}$ for any
-$c:C$. This equivalence gives that $f$ is surjective.
+  We showed in \autoref{thm:stable-images} that pullbacks of $n$-connected functions are $n$-connected.
+  By \autoref{lem:images_are_coequalizers}, it suffices to apply this when $n=-1$.
 \end{proof}
 
 \begin{thm}\label{thm:set_regular}
-The category $\set$ is regular.
+The category $\uset$ is regular.
 \end{thm}
 
 \begin{proof}
-$\set$ has all limits, so it is finitely complete. 
+$\uset$ has all limits, so it is finitely complete. 
 \autoref{lem:images_are_coequalizers} gives
 that the kernel pair of each function has a coequalizer.
 \autoref{lem:pb_of_coeq_is_coeq} shows that
 regular epis are stable under pullback.
 \end{proof}
 
+In fact, we didn't really have to prove \autoref{lem:images_are_coequalizers} by hand.
+It is a standard lemma in category theory that a category is regular as soon as it admits finite limits and a pullback-stable orthogonal factorization system $(\mathcal{E},\mathcal{M})$ with $\mathcal{M}$ the monomorphisms, in which case $\mathcal{E}$ conists automatically of the regular epimorphisms.
+However, the proof of \autoref{lem:images_are_coequalizers} is interesting as an application of unique choice.
+
 
 \subsection{Quotients}\label{subsec:quotients}
-Now that we know that $\set$ is regular, to show that $\set$ is exact, we need to show that every
+Now that we know that $\uset$ is regular, to show that $\uset$ is exact, we need to show that every
 equivalence relation is effective. In other words, given an equivalence
 relation $R:A\to A\to\prop$, there is a coequalizer $c_R$ of the pair
-$\pi_1,\pi_2:\sm{x,y:A} R(x,y)\to A$ and, moreover, the $\pi_1$ and $\pi_2$
+$\proj1,\proj2:\sm{x,y:A} R(x,y)\to A$ and, moreover, the $\proj1$ and $\proj2$
 for the kernel pair of $c_R$.
 
 We have already seen, in \autoref{sec:set-quotients}, two general ways to construct the quotient of a set by an equivalence relation $R:A\to A\to\prop$.
 The first can be described as the set-coequalizer of the two projections
-\[\pi_1,\pi_2:\sm{x,y:A} R(x,y)\to A.\]
+\[\proj1,\proj2:\sm{x,y:A} R(x,y)\to A.\]
 The important property of such a quotient is the following.
 
 \begin{defn}
@@ -375,9 +337,9 @@ A relation $R:A\to A\to\prop$ is said to be \emph{effective} if the square
 \begin{equation*}
 \begin{tikzpicture}
 \matrix (m) [std] {\sm{x,y:A} R (x,y) & A \\ A & A/R \\};
-\draw[ar] (m-1-1) -- node[above] {$\pi_1$} (m-1-2);
+\draw[ar] (m-1-1) -- node[above] {$\proj1$} (m-1-2);
 \draw[ar] (m-1-2) -- node[right] {$c_{R }$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left]  {$\pi_2$} (m-2-1);
+\draw[ar] (m-1-1) -- node[left]  {$\proj2$} (m-2-1);
 \draw[ar] (m-2-1) -- node[below] {$c_R $} (m-2-2);
 \end{tikzpicture}
 \end{equation*}
@@ -423,8 +385,8 @@ coequalizers. In particular, we immediately get the coequalizer diagram
 \begin{equation*}
 \begin{tikzpicture}
 \matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A\sslash  R.  \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- (m-1-3);
 \end{tikzpicture}
 \end{equation*}
@@ -437,14 +399,14 @@ $\ker(f,x,y)\defeq f(x)= f(y)$ is effective.
 \end{thm}
 
 \begin{proof}
-We will use that $\im(f)$ is the coequalizer of $\pi_1,\pi_2:
+We will use that $\im(f)$ is the coequalizer of $\proj1,\proj2:
 \sm{x,y:A} f(x)= f(y)\to A$; 
 %we get this equivalence from proposition~\ref{prop:images_are_coequalizers}
 . Note that the canonical kernel pair of the function 
 $c_f\defeq\lam{a} \pairr{f(a),\tau_1(\pairr{a,\refl{f(a)}})}$ consists
 of the two projections
 \begin{equation*}
-\pi_1,\pi_2:\big(\sm{x,y:A} c_f(x)= c_f(y)\big)\to A.
+\proj1,\proj2:\big(\sm{x,y:A} c_f(x)= c_f(y)\big)\to A.
 \end{equation*}
 For any $x,y:A$, we have equivalences
 \begin{align*}
@@ -470,8 +432,8 @@ We need to analyze the coequalizer diagram
 \begin{equation*}
 \begin{tikzpicture}
 \matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A\sslash  R. \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- (m-1-3);
 \end{tikzpicture}
 \end{equation*}
@@ -482,8 +444,8 @@ the diagram
 \begin{equation*}
 \begin{tikzpicture}
 \matrix (m) [std] {\sm{x,y:A} R (x,y) & A & A\sslash  R. \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\pi_1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\pi_2$} ([yshift=-.5ex]m-1-2.west);
+\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
+\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
 \draw[ar] (m-1-2) -- (m-1-3);
 \end{tikzpicture}
 \end{equation*}
@@ -566,22 +528,22 @@ is a coequalizer diagram. Since coequalizers are unique up to equivalence, it fo
 %\psi & : (B\to\type)\to\big(\sm{A:\type} A\to B\big).
 %\end{align*}
 %The function $\chi$ is defined by $\chi(f,b)\defeq\hfiber{f}b$. The
-%function $\psi$ is defined by $\psi(P)\defeq\pairr{(\sm{b:B} P(b)),\pi_1}$. Now
+%function $\psi$ is defined by $\psi(P)\defeq\pairr{(\sm{b:B} P(b)),\proj1}$. Now
 %we have to verify that $\chi\circ\psi\sim\idfunc{}$ and that $\psi\circ\chi
 %\sim\idfunc{}$:
 %\begin{enumerate}
 %\item Let $P$ be a dependent type over $B$. It is a basic fact that 
-%$\hfiber{\pi_1}{b}\simeq P(b)$ and therefore it follows immediately
+%$\hfiber{\proj1}{b}\simeq P(b)$ and therefore it follows immediately
 %that $P\sim\chi(\psi(P))$.
 %\item Let $f:A\to B$ be a function. We have to find a path
 %\begin{equation*}
-%\pairr{(\sm{b:B} \hfiber{f}b),\pi_1}=\pairr{A,f}
+%\pairr{(\sm{b:B} \hfiber{f}b),\proj1}=\pairr{A,f}
 %\end{equation*}
 %First note that we have the basic equivalence
 %$e:\sm{b:B} \hfiber{f}b\simeq A$ with $e(b,a,p)\defeq a$ and $e^{-1}(a)
 %\defeq(f(a),a,\refl{f(a)})$. It also follows that
-%$e\cdot\pi_1=\pi_1\circ e^{-1}$. From this, we immediately read off
-%that $(e\cdot\pi_1)(a)= f(a)$ for each $a:A$. This completes the proof
+%$e\cdot\proj1=\proj1\circ e^{-1}$. From this, we immediately read off
+%that $(e\cdot\proj1)(a)= f(a)$ for each $a:A$. This completes the proof
 %of the first of the asserted equivalences.
 %\end{enumerate}
 %To find the second set of equivalences, note that if we restrict $\chi$ to
@@ -607,7 +569,7 @@ is a coequalizer diagram. Since coequalizers are unique up to equivalence, it fo
 %\begin{tikzpicture}
 %\matrix (m) [std] {A & \pointed{\type} \\ B & \type \\};
 %\draw[ar] (m-1-1) -- node[above] {$\vartheta_f$} (m-1-2);
-%\draw[ar] (m-1-2) -- node[right] {$\pi_1$} (m-2-2);
+%\draw[ar] (m-1-2) -- node[right] {$\proj1$} (m-2-2);
 %\draw[ar] (m-1-1) -- node[left]  {$f$} (m-2-1);
 %\draw[ar] (m-2-1) -- node[below] {$\chi_f$} (m-2-2);
 %\end{tikzpicture}
@@ -633,7 +595,7 @@ is a coequalizer diagram. Since coequalizers are unique up to equivalence, it fo
 % & \mapsto \pairr{f(a),\hfiber{f}{f(a)},\refl{\hfiber{f}{f(a)}},\pairr{a,\refl{f(a)}}}\\
 % & \mapsto \pairr{f(a),\hfiber{f}{f(a)},\pairr{a,\refl{f(a)}},\refl{\hfiber{f}{f(a)}}}
 %\end{align*}
-%Therefore, we get homotopies $f\sim\pi_1\circ e$ and $\vartheta_f\sim \pi_2\circ e$. 
+%Therefore, we get homotopies $f\sim\proj1\circ e$ and $\vartheta_f\sim \proj2\circ e$. 
 %\end{proof}
 %
 %\begin{lem}\label{lem:subobject}
@@ -646,22 +608,22 @@ is a coequalizer diagram. Since coequalizers are unique up to equivalence, it fo
 %\end{proof}
 
 
-\subsection{\texorpdfstring{$\set$}{Set} is a \texorpdfstring{$\Pi$}{Π}$\mathsf{W}$-pretopos}
+\subsection{\texorpdfstring{$\uset$}{Set} is a \texorpdfstring{$\Pi$}{Π}$\mathsf{W}$-pretopos}
 \label{subsec:piw}
 
 The notion of a \emph{$\Pi\mathsf{W}$-pretopos} -- that is, a locally cartesian closed category with finite coproducts, effective equivalence relations, and $\mathsf{W}$-types -- is intended as a ``predicative" notion of topos, i.e.\ a category of ``predicative sets", which can serve the purpose for constructive mathematics that the usual category of sets does for classical mathematics.  
 
 Typically, in constructive type theory, one resorts to an external construction of ``setoids" -- an exact completion -- to obtain a category with such closure properties.  In particular, the well-behaved quotients are required for many constructions in mathematics that usually involve (non-constructive) power sets.  It is noteworthy that HoTT  provides these constructions \emph{internally} (via HITs), without requiring such external constructions.  This represents a powerful advantage of our approach, as we shall see in subsequent examples.
 
-\begin{thm} The category $\set$ is a $\Pi\mathsf{W}$-pretopos.
+\begin{thm} The category $\uset$ is a $\Pi\mathsf{W}$-pretopos.
 \end{thm}
 \begin{proof}
-We have an initial object $0$ and finite, disjoint sums $A+B$.  These are stable under pullback, simply because pullback has a right adjoint.  Indeed, $\set$ is locally cartesian closed, since for any map $f:A\to B$ between sets, the ``fibrant replacement" $\sm{a:A}f(a)=b$ is equivalent to $A$ (over $B$), and we have $\prod$-types for the replacement.
-We've just shown that $\set$ is regular (\autoref{thm:set_regular}) and that quotients are effective (\autoref{lem:sets_exact}). We thus have an LCC pretopos. Finally, since the $n$-types are closed under the formation of $\mathsf{W}$-types
-(\autoref{sec:w-types}), we see that $\set$ is a $\Pi\mathsf{W}$-pretopos. 
+We have an initial object $0$ and finite, disjoint sums $A+B$.  These are stable under pullback, simply because pullback has a right adjoint.  Indeed, $\uset$ is locally cartesian closed, since for any map $f:A\to B$ between sets, the ``fibrant replacement" $\sm{a:A}f(a)=b$ is equivalent to $A$ (over $B$), and we have $\prod$-types for the replacement.
+We've just shown that $\uset$ is regular (\autoref{thm:set_regular}) and that quotients are effective (\autoref{lem:sets_exact}). We thus have an LCC pretopos. Finally, since the $n$-types are closed under the formation of $\mathsf{W}$-types
+(\autoref{sec:w-types}), we see that $\uset$ is a $\Pi\mathsf{W}$-pretopos. 
 \end{proof}
 
-One naturally wonders what, if anything, prevents $\set$ from being a topos? In addition to the structure already mentioned, a topos has a subobject classifier, i.e.\ a pointed object classifying (equivalence classes of) monomorphisms.  (In fact, in the presence of a subobject classifier, things become somewhat simpler: one merely needs cartesian closure in order to get the colimits).  In HoTT,  univalence implies that the type $\prop$ does classify monos, but in general it is as large as the universe $\UU$ over which it is formed by the definition $\prop \defeq \sm{X:U}\isprop(X)$. It is a ``set" in the sense of being a $0$-type, but it is not ``small" in the sense of being an object of $\UU$.
+One naturally wonders what, if anything, prevents $\uset$ from being a topos? In addition to the structure already mentioned, a topos has a subobject classifier, i.e.\ a pointed object classifying (equivalence classes of) monomorphisms.  (In fact, in the presence of a subobject classifier, things become somewhat simpler: one merely needs cartesian closure in order to get the colimits).  In HoTT,  univalence implies that the type $\prop$ does classify monos, but in general it is as large as the universe $\UU$ over which it is formed by the definition $\prop \defeq \sm{X:U}\isprop(X)$. It is a ``set" in the sense of being a $0$-type, but it is not ``small" in the sense of being an object of $\UU$.
 
 Now consider the following ``resizing rule", with respect to a sequence $\UU_0, \UU_1, \ldots$ of universes:
 \[\text{if } a:\UU_n \text{ and\ } \isprop(a), \text{ then } \mathsf{r}_{n}(a): \UU_0\]
@@ -670,10 +632,10 @@ It may also be assumed that $\mathsf{r}_{n}(a) = a$; hence, that $\mathsf{r}_n$ 
 This is a version of the ``axiom of impredicativity for mere propositions" mentioned in \autoref{subsec:prop-subsets}.  A related axiom resizes, not just mere propositions $a:\UU$, but each type $\prop_n$ itself, down to the lowest universe -- observe that this can be justified from the previous version just by considering the next higher universe $\UU_1$, in which $\prop_0$ already \emph{is} small.
 If we assume some such a resizing rule allowing us to replace the large type $\prop$ with a small type $\Omega:U$ containing all mere propositions, we thereby obtain the usual notion of a subobject classifier.
  
- \begin{thm}\label{thm:settopos} Assuming a resizing rule for mere propositions, together with a type $\Omega:\UU$ of all mere propositions, the category $\set$ is then an elementary  topos.
+ \begin{thm}\label{thm:settopos} Assuming a resizing rule for mere propositions, together with a type $\Omega:\UU$ of all mere propositions, the category $\uset$ is then an elementary  topos.
  \end{thm}
 
-Another condition sufficient for making $\set$ into a topos is the law of excluded middle, in the ``mere-propositional" form that we have called LEM; for then we have $\prop = \bool$, which \emph{is} small, and which then also classifies all mere propositions.
+Another condition sufficient for making $\uset$ into a topos is the law of excluded middle, in the ``mere-propositional" form that we have called LEM; for then we have $\prop = \bool$, which \emph{is} small, and which then also classifies all mere propositions.
 In topos theory a well-known sufficient condition for LEM is the axiom of choice, which is of course often assumed as an axiom in classical set theory. We next briefly investigate the relation between these conditions in our setting.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -836,7 +798,7 @@ which therefore merely has a section.
 But a section of this is exactly an inhabitant of $A+\neg A$, so we have $\brck{A+\neg A}$.
 \end{proof}
 
-\begin{thm}\label{thm:ETCS} Assuming the axiom of choice for sets in the form $\mathsf{AC}$, the category $\set$ is a boolean elementary topos with choice, and thus satisfies Lawvere's axioms for the \emph{Elementary Theory of the Category of Sets}.
+\begin{thm}\label{thm:ETCS} Assuming the axiom of choice for sets in the form $\mathsf{AC}$, the category $\uset$ is a boolean elementary topos with choice, and thus satisfies Lawvere's axioms for the \emph{Elementary Theory of the Category of Sets}.
  \end{thm}
 
 
@@ -1064,7 +1026,14 @@ We have all the axioms listed in \autoref{thm:VisCST}, plus full separation, so 
 \sectionNotes
 
 The treatment of the category of sets in \autoref{sec:piw-pretopos} roughly follows that in~\cite{RijkeSpitters}.
-The notion of a predicative topos, as a $\Pi$W pretopos, was introduced in \cite{MoerdijkPalmgren}.
+
+The fact that epimorphisms are surjective (\autoref{epis-surj}) is well-known in classical mathematics, but is not as trivial as it may seem to prove \emph{predicatively}.
+The proof in~\cite{Mines/R/R:1988} uses the power set operation, although it can be made predicative by using a large power set and typical ambiguity.
+\note{Does this just mean ``using universes''?}
+A predicative proof for setoids was given by Wilander~\cite{Wilander2010}. 
+Our proof is similar to Wilander's, but avoids setoids by using pushouts and univalence.
+
+The notion of $\Pi$W-pretopos, regarded as a predicative version of an elementary topos, was introduced in~\cite{MoerdijkPalmgren}.
 
 The implication in \autoref{sec:surj-split} from $\mathsf{AC}$ to $\mathsf{LEM}$ is an adaptation to homotopy type theory of a theorem from topos theory due to Diaconescu~\cite{Diaconescu}; it was posed as a problem already by Bishop~\cite[Problem 2,p58]{Bishop1967}.
 

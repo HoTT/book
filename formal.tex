@@ -1013,12 +1013,20 @@ type
 The rule
 \begin{mathparpagebreakable}
   \inferrule*[]
-  {\oftp \Gm p {\id[\UU_i] A B}}
-  {\oftp \Gm {\idtoeqv(\UU_i,A,B,p)} {\eqv A B}}
+  {\oftp \Gm A {\UU_i} \\ \oftp \Gm B {\UU_i} }
+  {\oftp \Gm {\idtoeqv(\UU_i,A,B)} {(\id[\UU_i] A B) \to (\eqv A B)}}
 \end{mathparpagebreakable}
-is derivable from the others if we let $\idtoeqv(\UU_i,A,B,p)$ (see \autoref{eq:uidtoeqv}) serve as an abbreviation for
+is derivable from the others if we let $\idtoeqv(\UU_i,A,B)$ (see \autoref{eq:uidtoeqv}) serve as an abbreviation for
 \[
-...
+  \lamu{p:\id[\UU_i] A B}
+  \ind{\idsym_{\UU_i}}(
+        A.B.p.(\eqv A B),
+        A.{\tup {\lamu{x:A} x}
+                {\tup {\lamu{x:A} x}
+                      {\tup {\lamu{x:A} \refl x}
+                            {\tup {\lamu{x:A} \refl x}
+                                  {\lamu{x:A} \refl {\refl x}}}}}},
+        A,B,p)
 \]
 
 In order to assert the univalence axiom (see \autoref{axiom:univalence}), we introduce a new
@@ -1027,7 +1035,7 @@ constant, ${\idtoeqv\text{-}\isequiv}$, and the following new inference rule.
   \inferrule*[right=$\UU_i$-\textsc{univ}]
   {\oftp\Gm{A}{\UU_i} \\
    \oftp\Gm{B}{\UU_i}}
-  {\oftp\Gm{\idtoeqv\text{-}\isequiv(\UU_i,A,B)}{\isequiv(\id[\UU_i] A B, \eqv A B, \lamu{p : \id[\UU_i] A B} \idtoeqv(\UU_i,A,B,p))}}
+  {\oftp\Gm{\idtoeqv\text{-}\isequiv(\UU_i,A,B)}{\isequiv(\id[\UU_i] A B, \eqv A B, \idtoeqv(\UU_i,A,B))}}
 \end{mathparpagebreakable}
 
 \egroup

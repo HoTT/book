@@ -497,7 +497,7 @@ and a few features essential for homotopy type theory:
 As a matter of convenience, the book primarily defines functions by induction
 using definition by \emph{pattern matching}. It is possible to formalize the
 notion of pattern matching, as done in \autoref{syntax-informally}. However, the
-standard type-theoretic presentation is to introduce a single \emph{dependent
+standard type-theoretic presentation, adopted in this section, is to introduce a single \emph{dependent
 eliminator} for each type former, from which functions out of that type must be
 defined.\footnote{This approach is easier to formalize both syntactically and
 semantically, as it amounts to the universal property of the type former.}
@@ -833,6 +833,8 @@ $d$.
 
 \subsection{The natural number type}
 
+We give the rules for natural numbers, following \autoref{sec:inductive-types}.
+
 \begin{mathparpagebreakable}
   \def\premise{
      \wfctx{\Gm,\tmtp x{\N},\tmtp y C} \\
@@ -867,6 +869,9 @@ $d$.
 
 In $\ind{\N}$, $x$ is bound in $C$, and $x$ and $y$ are bound in $c_s$.
 
+Other inductively defined types follow the same general scheme --- it is beyond
+the scope of this appendix to cover them all.
+
 \subsection{The \texorpdfstring{$\eta$}{η}-conversion rule}
 
 \begin{mathparpagebreakable}
@@ -877,12 +882,15 @@ In $\ind{\N}$, $x$ is bound in $C$, and $x$ and $y$ are bound in $c_s$.
 
 \subsection{The circle type}
 
-Here we give an example of a higher inductive type. Note that these rules do not
-precisely follow the pattern of the ordinary inductive types above: the rules
-refer to the notions of transport and functoriality of maps
-(\autoref{sec:functors}), and the second computation rule is a propositional,
-not judgmental, equality. These differences are discussed in
-\autoref{sec:dependent-paths}.
+Here we give an example of a higher inductive type.  Other inductively defined
+types follow the same general scheme --- it is beyond the scope of this
+appendix to cover them all.
+
+Note that the rules below do not precisely follow the pattern of the ordinary
+inductive types above: the rules refer to the notions of transport and
+functoriality of maps (\autoref{sec:functors}), and the second computation rule
+is a propositional, not judgmental, equality. These differences are discussed
+in \autoref{sec:dependent-paths}.
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Sn^1$-\form]
@@ -934,10 +942,6 @@ present.
 We begin by introducing some definitions that allow us to state the function
 extensionality axiom and the univalence axiom.
 
-Given $f:A \to B$ and $g : B \to C$, we let $g \circ f$ stand for the function $\lamu{x:A} g(f(x)$ of type $A \to C$.
-
-Given $f:A \to B$ and $g:A \to B$, recall that $f \htpy g$ stands for $\prd{x:A} \id[B] {f(x)} {g(x)}$; see \autoref{defn:homotopy}.
-
 The rule 
 \begin{mathparpagebreakable}
   \inferrule*[]
@@ -949,19 +953,23 @@ is derivable from the others if, as in \autoref{lem:map}, we let $\apfunc f$ ser
   \lamu{p:\id[A] x y} \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p )
 \]
 
+Given $f:A \to B$ and $g : B \to C$, we let $g \circ f$ stand for the composite function $\lamu{x:A} g(f(x)$ of type $A \to C$.
+
+Given $f:A \to B$ and $g:A \to B$, recall that $f \htpy g$ stands for the type $\prd{x:A} \id[B] {f(x)} {g(x)}$; see \autoref{defn:homotopy}.
+
 The rule
 \begin{mathparpagebreakable}
   \inferrule*[]
   {\oftp \Gm A {\UU_i} \\ \oftp \Gm B {\UU_i} \\ \oftp \Gm f {A \to B}}
-  {\oftp \Gm {\ishae(f)} {\UU_i}}
+  {\oftp \Gm {\ishae(A,B,f)} {\UU_i}}
 \end{mathparpagebreakable}
-is derivable from the others if we let $\ishae(f)$ (see \autoref{defn:ishae}) serve as abbreviation for
+is derivable from the others if we let $\ishae(A,B,f)$ (see \autoref{defn:ishae}) serve as an abbreviation for
 \[
-  \sm{g:B\to A}{\eta: g \circ f \sim \idfunc[A]}{\epsilon:f \circ g \sim \idfunc[B]} \prd{x:A} \apfunc{f}{(\eta x)} = \epsilon(fx)
+  \sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]} \prd{x:A} \apfunc{f}{(\eta x)} = \epsilon(fx)
 \]
-The type $\ishae(f)$ represents the proposition that the map $f : X \to Y$ is a
+The type $\ishae(A,B,f)$ represents the proposition that the map $f : X \to Y$ is a
 half-adjoint equivalence.  As in \autoref{sec:concluding-remarks}, we let
-$\isequiv(f)$ serve as an abbreviation for $\ishae(f)$, and we say simply that
+$\isequiv(A,B,f)$ serve as an abbreviation for $\ishae(A,B,f)$, and we say simply that
 $f$ is an equivalence.
 
 The rule
@@ -969,12 +977,12 @@ The rule
   \inferrule*
   {\oftp\Gm{f}{\tprd{x:A} B} \\
    \oftp\Gm{g}{\tprd{x:A} B}}
-  {\oftp\Gm{\happly_{f,g}}{\id f g \to {\prd{x:A} \id[B(x)]{f(x)}{g(x)}}}}
+  {\oftp\Gm{\happly_{f,g}}{\id f g \to f \htpy g}}
 \end{mathparpagebreakable}
 is derivable from the others if we let $\happly_{f,g}$, introduced in
 \autoref{eq:happly}, serve as an abbreviation for
 \[
-  \lamu{p:f=g} \ind{\idsym_{\tprd{x:A} B}} (
+  \lam{p:f=g} \ind{\idsym_{\tprd{x:A} B}} (
         f.g.p. {\prd{x:A} \id[B(x)]{f(x)}{g(x)}},
         h. \lamu{x:A} \refl {h(x)},
         f,g,p)
@@ -988,8 +996,19 @@ provides it with the desired type.
   \inferrule*[right=$\Pi$-\textsc{ext}]
   {\oftp\Gm{f}{\tprd{x:A} B} \\
    \oftp\Gm{g}{\tprd{x:A} B}}
-  {\oftp\Gm{\isequiv\text{-}\happly}{\isequiv(\happly_{f,g})}}
+  {\oftp\Gm{\isequiv\text{-}\happly_{f,g}}{\isequiv(\id f g, f \htpy g,\happly_{f,g})}}
 \end{mathparpagebreakable}
+
+The rule
+\begin{mathparpagebreakable}
+  \inferrule*
+  {\oftp\Gm A {\UU_i} \\ \oftp\Gm B {\UU_i} }
+  {\oftp\Gm{(\eqv A B)}{\UU_i}}
+\end{mathparpagebreakable}
+is derivable from the others if, as in \autoref{sec:basics-equivalences}, we
+write $\eqv A B$ for the type of equivalences from $A$ to $B$, i.e., for the
+type
+\[ \sm{f:A\to B} \isequiv(A,B,f) \]
 
 The rule
 \begin{mathparpagebreakable}
@@ -1003,13 +1022,12 @@ is derivable from the others if we let $\idtoeqv(\UU_i,A,B,p)$ (see \autoref{eq:
 \]
 
 In order to assert the univalence axiom (see \autoref{axiom:univalence}), we introduce a new
-constant, ${\idtoeqv\text{-}\isequiv}$, and the following new family of
-inference rules, one for each $i$.
+constant, ${\idtoeqv\text{-}\isequiv}$, and the following new inference rule.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\UU_i$-\textsc{univ}]
   {\oftp\Gm{A}{\UU_i} \\
    \oftp\Gm{B}{\UU_i}}
-  {\oftp\Gm{\idtoeqv\text{-}\isequiv}{\isequiv(\lamu{p : \id[\UU_i] A B} \idtoeqv(\UU_i,A,B,p))}}
+  {\oftp\Gm{\idtoeqv\text{-}\isequiv(\UU_i,A,B)}{\isequiv(\id[\UU_i] A B, \eqv A B, \lamu{p : \id[\UU_i] A B} \idtoeqv(\UU_i,A,B,p))}}
 \end{mathparpagebreakable}
 
 \egroup

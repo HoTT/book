@@ -5,7 +5,9 @@
 \newcommand{\Qp}{\Q_{+}}
 \newcommand{\apart}{\mathrel{\#}}  % apartness
 \newcommand{\dcut}{\mathsf{isCut}}  % Dedekind cut
+\newcommand{\cover}{\triangleleft} % inductive cover
 
+\newcommand{\intfam}[3]{(#2, \lam{#1} #3)} % family of rational intervals
 
 \chapter{Real Numbers}
 \label{cha:real-numbers}
@@ -1665,7 +1667,7 @@ of $\RC$ and $\RD$.
     \fall{\pairr{q, r} : S} (q < x) \lor (x < r).
   \end{equation*}
   %
-  (Note that $(q < x) \lor (x < r)$ is expressible as an existential statement $\exis{b :
+  Note that $(q < x) \lor (x < r)$ is expressible as an existential statement $\exis{b :
     \bool} (b = \bfalse \to q < x) \land (b = \btrue \to x < r)$. The (curried form) of
   the choice function is then precisely~\eqref{eq:untruncated-linearity} so that
   \autoref{lem:untruncated-linearity-reals-coincide} is applicable again.
@@ -1782,7 +1784,7 @@ asking for a non-constant map from $\R$ to $\Q$ or $\N$. For instance, here is t
   \end{equation*}
   %
   In particular, a uniformly continuous map has a modulus of uniform continuity,
-  which is a function that assings to each $\epsilon$ a corresponding $\delta$.
+  which is a function that assigns to each $\epsilon$ a corresponding $\delta$.
 \end{defn}
 
 Let us show that $[0,1]$ is compact in the first sense.
@@ -1869,12 +1871,12 @@ uniformly continuous map on a totally bounded space has a supremum.
 
 Now, if in \autoref{ctb-uniformly-continuous-sup} we also knew that $M$ is complete, we
 could hope to weaken the assumption of uniform continuity to continuity, and strengthen
-the conclusion to existence of a point at which the supremum is attained. But for this to
-be possible, we would have to prove that:
+the conclusion to existence of a point at which the supremum is attained. The usual proofs
+of these improvements rely on the the facts that in a complete totally bounded space
 %
 \begin{enumerate}
-\item a continuous map on a complete totally bounded space is uniformly continuous, and
-\item every sequence in a complete totally bounded space has a convergent subsequence.
+\item continuity implies uniform continuity, and
+\item every sequence has a convergent subsequence.
 \end{enumerate}
 %
 The first statement follows easily from the Heine-Borel property, and the second is the
@@ -1919,33 +1921,142 @@ While we might not mourn the Bolzano-Weierstraß property too much, it seems har
 without the Heine-Borel property, as attested by the fact that both classical mathematics
 and Brouwer's Intuitionism accepted it. As we do not want to wade too deeply into general
 topology, we shall work with basic open sets. In the case of $\R$ these are the open
-intervals with rational endpoints. A family of such intervals is given as a map
-$\mathcal{F} : I \to \setof{ \pairr{q, r} : \Q \times \Q | q < r }$ where $I$ is some
-indexing type. We shall write $(q_i, r_i)$ for the open interval whose endpoints are $q_i
-\defeq \fst(\mathcal{F}_i)$ and $r_i \defeq \snd(\mathcal{F}_i)$. A finite subfamily of
-$\mathcal{F}$ is a finite list $[i_0, \ldots, i_n]$ of indices in~$I$. We say that
-$\mathcal{F}$ \define{covers $[0,1]$} when
+intervals with rational endpoints. A family of such intervals, indexed by a type~$I$,
+would be a map
 %
 \begin{equation*}
-  \fall{x : [0,1]} \exis{i : I} q_i < x < r_i.
+  I \to \sm{q, r : \Q} (q < r) \to \setof{ x : \R | q < x < r},
 \end{equation*}
 %
+but since the pair $(q, r)$ already determines the open interval $\setof{ x : \R | q < x <
+  r}$, and no harm is done if we throw in empty intervals, we might as well take a
+\define{family of basic intervals} to be a map
+%
+\begin{equation*}
+  \mathcal{F} : I \to \Q \times \Q.
+\end{equation*}
+%
+To be quite precise, a family is a dependent pair $(I, \mathcal{F})$, not just
+$\mathcal{F}$. A \define{finite family of basic intervals} is one indexed by $\setof{ m :
+  \N | m < n}$ for some $n : \N$. We often presented by a finite list $[(q_0, r_0), \ldots,
+(q_{n-1}, r_{n-1})]$. Finally, a \define{finite subfamily} of $(I, \mathcal{F})$ is given
+by a list of indices $[i_1, \ldots, i_n]$ which then determine the finite family
+$[\mathcal{F}(i_1), \ldots, \mathcal{F}(i_n)]$.
+
+As long as we are aware of the distinction between a pair $(q, r)$ and the corresponding
+interval $\setof{ x : \R | q < x < r}$, we may safely use the same notation $(q, r)$ for
+both. Intersections and inclusions of intervals are expressible in terms of their
+endpoints:
+%
+\begin{align*}
+  (q, r) \cap (s, t) &\ \defeq\  (\max(q, s), \min(r, t)),\\
+  (q, r) \subseteq (s, t) &\ \defeq\ (q < r \Rightarrow s \leq q < r \leq t), \\
+  (q, r) \subsetneq (s, t) &\ \defeq\ (q < r \Rightarrow s < q < r < t).
+\end{align*}
+%
+We say that $\intfam{i}{I}{(q_i, r_i)}$ \define{(pointwise) covers $[a,b]$} when
+%
+\begin{equation} \label{eq:cover-pointwise-truncated}
+  \fall{x : [a,b]} \exis{i : I} q_i < x < r_i.
+\end{equation}
+%
 The \define{Heine-Borel property for $[0,1]$} states that every covering family of $[0,1]$
-has a finite subfamily which still covers $[0,1]$.
+merely has a finite subfamily which still covers $[0,1]$.
 
 \begin{thm}
   If excluded middle holds then $[0,1]$ has the Heine-Borel property.
 \end{thm}
 
 \begin{proof}
-  \textbf{TODO: put in the usual proof}
+  Assume for the purpose of reaching a contradiction that a family $\intfam{i}{I}{(a_i,
+    b_i)}$ covers $[0,1]$ but no finite subfamily does. We construct a sequence of closed
+  intervals $[q_n, r_n]$ which are nested, their sizes shrink, and none of them is covered
+  by a finite subafmily of $\intfam{i}{I}{(a_i, b_i)}$.
+
+  We set $[q_0, r_0] \defeq [0,1]$. Assuming $[q_n, r_n]$ has been constructed, let $s
+  \defeq (2 q_n + r_n)/3$ and $t \defeq (q_n + 2 r_n)/3$. Both $[q_n, t]$ and $[s, r_n]$
+  are covered by $(I, \mathcal{F})$, and they cover $[q_n, r_n]$. So they cannot both have
+  a finite subcover, or else so would $[q_n, r_n]$. Either $[q_n, t]$ has a finite
+  subcover or it does not. If it does not then we set $[q_{n+1}, r_{n+1}] \defeq [q_n,
+  t]$, otherwise we set $[q_{n+1}, r_{n+1}] \defeq [s, r_n]$.
+
+  The sequences $q_0, q_1, \ldots$ and $r_0, r_1, \ldots$ are both Cauchy and they
+  converge to a point $x \defeq \lim_n q_n$ which is contained in every $[q_n, r_n]$.
+  There merely exists $i : I$ such that $a_i < x < b_i$. Because the sizes of the
+  intervals $[q_n, r_n]$ shrink to zero, there is $n : \N$ such that $a_i < q_n \leq x
+  \leq r_n < b_i$, but this means that $[q_n, r_n]$ is covered by a single interval $(a_i,
+  b_i)$, while at the same time it has no finite subcover. A contradiction.
 \end{proof}
 
 Without excluded middle, or a pinch of Brouwerian Intuitionism, we seem to be stuck.
-Nevertheless, the Heine-Borel property \emph{can} be recovered in a constructive setting!
-The price to pay is to strengthen the notion of cover so that it still remains compatible
-with the classical setting, but allows us to extract finite subcovers. This is a lesson
-learned from point-free topology.
+Nevertheless, the Heine-Borel property \emph{can} be recovered in a constructive setting,
+in a fashion that is still compatible with classical mathematics! For this to be done, we
+need to revisit the notion of cover. The trouble with \eqref{eq:cover-pointwise-truncated}
+is that the truncated existential allows a space to be covered in any haphazard way, and
+so computationally speaking, we stand no chance of merely extracting a finite
+subcover. By removing the truncation we get
+%
+\begin{equation} \label{eq:cover-pointwise}
+  \prd{x : [0,1]} \sm{i : I} q_i < x < r_i,
+\end{equation}
+%
+which might help, if only it were not too demanding of covers. With this definition we
+could not even show that $(-1,1/2)$ and $(1/2,2)$ cover $[0,1]$ because that would amount
+to exhibiting a non-constant map $[0,1] \to \bool$, see
+\autoref{ex:reals-non-constant-into-Z}. We take a lesson from pointfree topology and
+locale theory: the notion of cover ought to be expressed in terms of open sets, without
+reference to points. Such a ``holistic'' view of space will then allow us to analyze the
+notion of cover, and we shall be able to recover the Heine-Borel property. Since locale
+theory uses powersets, which we do not have, we steal ideas from its predicative cousin,
+formal topology.
+
+Suppose that we have a family $\intfam{i}{I}{(q_i, r_i)}$ and an interval $(a, b)$. How
+might we express the fact that $(a,b)$ is covered by the family, without referring to
+points? Here is one: if $(a, b)$ equals some $(q_i, r_i)$ then it is covered by the
+family. And another one: if $(a,b)$ is covered by some other family $\intfam{j}{J}{(s_j,
+  t_j)}$, and each $(s_j, t_j)$ is covered by $\intfam{i}{I}{(q_i, r_i)}$, then $(a,b)$ is
+covered $\intfam{i}{I}{(q_i, r_i)}$. Notice that we are listing \emph{rules} which can be
+used to \emph{deduce} that $(q_i, r_i)_{i : I}$ covers $(a,b)$. We should find
+sufficiently good rules and turn them into an inductive definition.
+
+\begin{defn} \label{defn:inductive-cover}
+  %
+  The \define{inductive cover $\cover$} is a mere relation
+  %
+  \begin{equation*}
+    {\cover} : (\Q \times \Q) \to (\sm{I : \type} I \to \Q \times \Q) \to \prop
+  \end{equation*}
+  %
+  defined inductively by the following rules, where $q, r, s, t$ are rational numbers, $I,
+  J$ are types, and $\mathcal{F} : I \to \Q \times \Q$ and $\mathcal{G} : J \to \Q \times
+  \Q$:
+  %
+  \begin{enumerate}
+
+  \item \define{relexivity:}
+    $(q_j, r_j) \cover \intfam{i}{I}{(q_i, r_i)}$ for all $j : I$,
+      
+  \item \define{transitivity:}
+    if $(q, r) \cover \intfam{i}{I}{(q_i, r_i)}$ and
+    $\fall{i : I} (q_i, r_i) \cover \intfam{j}{J}{(s_j, t_j)}$ then
+    $(q, r) \cover \intfam{j}{J}{(s_j, t_j)}$,
+
+  \item \define{monotonicity:}
+    if $(q, r) \subseteq (s, t)$ and $(s,t) \cover \intfam{i}{I}{(q_i, r_i)}$ then $(q, r) \cover
+    \intfam{i}{I}{(q_i, r_i)}$,
+
+  \item \define{localization:}
+    if $(q, r) \cover (q_i, r_i)+{i : I}$ then $(q, r) \cap (s, t) \cover SOMETHING$.
+
+  \item if $s < t$ then $(q, r) \cover [(q, t), (r, s)]$,
+
+  \item $(q, r) \cover (s, t)_{ (s, t) : \Q \times \Q | q < s < t < r}$.
+  \end{enumerate}
+\end{defn}
+
+Formally speaking, we have defined a parametrized higher-inductive type in which the
+listed rules are point constructors, and the type is $-1$-truncated.
+
 
 \textbf{TODO: define inductive cover, show HB, show that classicaly this is all kosher.}
 

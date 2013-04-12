@@ -288,7 +288,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
   Such an equality between any two particular proofs can, again, be proven by induction, reducing all the paths in question to reflexivities and then observing that both proofs reduce themselves to reflexivities.
 \end{rmk}
 
-We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence laws, which are themselves higher paths, and so on ``all the way up to infinity" (this is made precise using e.g.\ the the notion of a globular operad).
+We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence laws, which are themselves higher paths, and so on ``all the way up to infinity" (this can be made precise using e.g.\ the notion of a globular operad).
 However, for most purposes it is unnecessary to make the whole infinite-dimensional structure explicit.
 One of the nice things about homotopy type theory is that all of this structure can be \emph{proven} starting from only the inductive property of identity types, so we can make explicit as much or as little of it as we need.
 In particular, in this book we will not need any of the complicated combinatorics involved in making precise notions such as ``coherent structure at all higher levels''.
@@ -303,9 +303,68 @@ thus we have an operation $\Omega A\times \Omega A\to \Omega A$.
 More generally, the higher groupoid structure of $A$ gives $\Omega A$ the analogous structure of a ``higher group''.
 
 It can also be useful to consider the loop space \emph{of} the loop space of $A$, which is the space of 2-dimensional loops on the identity loop in $a$.
-This is written $\Omega^2(A,a)$ and represented in type theory by the type $\id[{\id[A]{a}{a}}]{\refl{a}}{\refl{a}}$.
-And so on.
-In general, we make the following definitions:
+This is written $\Omega^2(A,a)$ and represented in type theory by the type $\id[({\id[A]{a}{a}})]{\refl{a}}{\refl{a}}$.
+While $\Omega^2(A,a)$, as a loop space, is again a ``higher group", it now also has some additional structure resulting from the fact that its elements are 2-dimensional loops between 1-dimensional loops.  
+
+\begin{thm}\label{thm:EckmannHilton}
+The composition operation on the second loop space $$\Omega^2(A)\times \Omega^2(A)\to \Omega^2(A)$$  is abelian: $\alpha\ct\beta = \beta\ct\alpha$, for any $\alpha, \beta:\Omega^2(A)$.
+\end{thm}
+
+\begin{proof}
+First, observe that the composition of $1$-loops $\Omega A\times \Omega A\to \Omega A$ induces an operation 
+$$
+\star : \Omega^2(A)\times \Omega^2(A)\to \Omega^2(A)
+$$
+ as follows: consider elements $a, b, c : A$ and 1- and 2-paths,
+%
+$$
+\begin{array}{ccc}
+p: a = b & , & r : b = c \\
+q : a = b & , & s : b = c \\
+\alpha : p = q & , & \beta : r = s
+\end{array}
+$$
+%
+as depicted in the following diagram.
+$$
+\ \xy
+(0,0)*+{a}="a";
+(45,0)*+{b}="b";
+(90,0)*+{c}="c";
+{\ar@/^3pc/^{p} "a";"b"};
+{\ar@/_3pc/_{q} "a";"b"};
+{\ar@/^3pc/^{r} "b";"c"};
+{\ar@/_3pc/_{s} "b";"c"};
+{\ar@{=>} (22,10)*{};(22,-10)*{}};
+(28,0)*{\alpha};
+{\ar@{=>} (67,10)*{};(67,-10)*{}};
+(72,0)*{\beta};
+\endxy \ 
+$$
+
+Composing the upper and lower 1-paths, respectively, we get two paths $p\ct r,\ q\ct s : a = c$, and there is then a ``horizontal composition" $$\alpha\star\beta : p\ct r = q\ct s$$ between them,
+defined as follows: first let $\alpha.r : p\ct r = q\ct r$ be determined by path induction on $r$, then let $q.\beta : q\ct r = q\ct s$ be given by induction on $q$.  Since these paths are composable in the type of 2-paths, we can define the \emph{horizontal composition}  by:
+\[
+\alpha\star\beta\ \defeq\ \alpha.r \ct q.\beta\, .
+\]
+Now suppose that $a \jdeq  b \jdeq  c$, so that all the above 1-paths are in $\Omega(A,a)$, and assume moreover that $q \jdeq  \refl{a}\jdeq  r$, so that $\alpha$ and $\beta$ become composable.  In that case, we therefore have
+\[
+\alpha\star\beta\ =\ \alpha.\refl{a} \ct \refl{a}.\beta = \alpha \ct \beta\, .
+\]
+On the other hand, we can define another horizontal composition analogously by
+\[
+\alpha\star'\beta\ \defeq\ p.\beta\ct \alpha.s\, .
+\]
+and setting $p \jdeq  \refl{a}\jdeq  s$ we learn that in that case 
+\[
+\alpha\star'\beta\ =\ \refl{a}.\beta\ct \alpha.\refl{a} = \beta\ct\alpha\, .
+\]
+But, in general, the two ways of defining horizontal composition agree, $\alpha\star\beta = \alpha\star'\beta$, as we can see by induction on $\alpha$ and $\beta$.  Thus when $p \jdeq  q \jdeq  \refl{a} \jdeq  r\jdeq  s$ we have $$\alpha \ct \beta = \alpha\star\beta = \alpha\star'\beta = \beta\ct\alpha\,.$$\end{proof}
+
+The foregoing fact, which is known as the \emph{Eckmann-Hilton argument}, comes from classical homotopy theory,  and indeed it is used in \autoref{cha:homotopy} below to show that the higher homotopy groups of a type are always abelian groups. 
+
+As this example shows, the algebra of higher path types is much more intricate than just the groupoid-like structure at each level; the levels interact to give many further operations and laws, as in the study of iterated loop spaces in homotopy theory.
+Indeed, as in classical homotopy theory, we can make the following general definitions:
 
 \begin{defn} \label{def:pointedtype}
   A \textbf{pointed type} $(A,a)$ is a type $A:\type$ together with a point $a:A$.

@@ -498,11 +498,11 @@ In \autoref{sec:axiom-choice} we will give a correct formulation of ``the axiom 
 \section{Coproduct types}
 \label{sec:coproduct-types}
 
-Given $A,B:\UU$, we introduce their \emph{coproduct} type $A+B:\UU$.
+Given $A,B:\UU$, we introduce their \define{coproduct} type $A+B:\UU$.
 This corresponds to the \emph{disjoint union} in set theory, and we may also use that name for it.
 In type theory, as was the case with functions and products, the coproduct must be a fundamental construction, since there is no previously given notion of ``union of types''.
 We also introduce a
-nullary version: the empty type $\emptyt:\UU$.
+nullary version: the \define{empty type $\emptyt:\UU$}.
 
 There are two ways to construct elements of $A+B$, either as $\inl(a) : A+B$ for $a:A$, or as
 $\inr(b):A+B$ for $b:B$. There are no ways to construct elements of the empty type. 
@@ -524,7 +524,7 @@ with the defining equations
 \end{eqnarray*}
 
 We can always construct a function $f : \emptyt \to C$ without
-having to give any defining equations, because there are no canonical elements of \emptyt on which to define $f$.
+having to give any defining equations, because there are no elements of \emptyt on which to define $f$.
 Thus, the recursor for $\emptyt$ is
 \[\rec{\emptyt} : \tprd{C:\UU'} \emptyt \to C,\]
 which constructs the canonical function from the empty type to any other type.
@@ -552,11 +552,20 @@ As before, the recursor arises in the case that the family $C$ is
 constant. 
 
 The induction principle for the empty type
-\[ \ind{\emptyt} : \tprd{C:\emptyt \to \UU}{z:\emptyt} C(z) \]
+\[ \ind{\emptyt} : \prd{C:\emptyt \to \UU}{z:\emptyt} C(z) \]
 gives us a way to define a trivial dependent function out of the
 empty type. % In the presence of $\eta$-equality it is derivable
 % from the recursor.
 % ex
+
+We define \define{negation} of a type $A$ to be
+%
+\begin{equation*}
+  \neg A \ \defeq\ A \to \emptyt.
+\end{equation*}
+%
+To construct an element of $\neg A$ is the same thing as to construct a function $A \to
+\emptyt$, which is done by assuming $x : A$ and deriving an element of~$\emptyt$.
 
 \section{The type of booleans}
 \label{sec:type-booleans}
@@ -1119,14 +1128,32 @@ In terms of induction constants, this construction becomes:
 
 Note that the construction given above uses universes. That is, if we want to
 model $\ind{=_A}^{PM}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
-to use $\ind{=_A}^{ML}$ with $D:\prd{x,y:A}\prd{p:x =_A y} \UU_{i+1}$,
+to use $\ind{=_A}^{ML}$ with 
+%
+\[ D:\prd{x,y:A}\prd{p:x =_A y} \UU_{i+1} \]
+%
 since $D$ quantifies over all $C$ of the given type. While this is
 compatible with our definition of universes, it is also possible to
-derive $\ind{=_A}^{PM}$ without using universes: we can show that $\ind{=_A}^{ML}$ entails \autoref{lem:transport} and  \autoref{thm:contr-paths}, and that these two principles imply $\ind{=_A}^{PM}$ directly.
+derive $\ind{=_A}^{PM}$ without using universes: we can show that $\ind{=_A}^{ML}$ entails \autoref{lem:transport,thm:contr-paths}, and that these two principles imply $\ind{=_A}^{PM}$ directly.
 We leave the details to the reader as \autoref{ex:pm-to-ml}.
 
 We can use the eliminator for equality to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
 
+Let us also say something about \define{inequality}, which is negation of equality (of
+course, it makes no sense to negate judgmental equality $\jdeq$ because judgments are not
+subject to logical operations):
+%
+\begin{equation*}
+  (x \neq_A y) \ \defeq\ \lnot (x =_A y).
+\end{equation*}
+%
+Just like negation, inequality plays a less important role here than it does in classical
+mathematics. For example, we cannot prove that two things are equal by proving that they
+are not unequal, that would be an application the classical law of double negation.
+Sometimes it is useful to phrase inequality in a positive way. For example,
+in~\autoref{RD-inverse-apart-0} we shall prove that a real number $x$ has an inverse if,
+and only if, its distance from~$0$ is positive, which is a stronger requirement than $x
+\neq 0$.
 
 \sectionExercises
 

@@ -688,29 +688,25 @@ other type formers.
 
 \begin{mathparpagebreakable}
   \def\premise{\oftp{\Gm}{A}{\UU_i} \and \oftp{\Gm,\tmtp xA}{B}{\UU_i}}
-  \def\npremise{\wfctx {\Gm, \tmtp x A, \tmtp y B}}
   \inferrule*[right=$\Sigma$-\form]
     \premise
     {\oftp\Gm{\tsm{x:A} B}{\UU_i}}
   \and
   \inferrule*[right=$\Sigma$-\intro]
-    {\npremise \\\\
+    {\oftp{\Gm, \tmtp x A}{B}{\UU_i} \\\\
      \oftp\Gm{a}{A} \\ \oftp\Gm{b}{B[a/x]}}
     {\oftp\Gm{\tup ab}{\tsm{x:A} B}}
   \and
   \inferrule*[right=$\Sigma$-\elim]
-    {\wfctx {\Gm, \tmtp z {\tsm{x:A} B}, \tmtp w C} \\
+    {\oftp{\Gm, \tmtp z {\tsm{x:A} B}}{C}{\UU_i} \\
      \oftp{\Gm,\tmtp x A,\tmtp y B}{g}{C[\tup x y/z]} \\\\
      \oftp\Gm{p}{\tsm{x:A} B}}
     {\oftp\Gm{\ind{\tsm{x:A} B}(z.C,x.y.g,p)}{C[p/z]}}
   \and
   \inferrule*[right=$\Sigma$-\comp]
-    { \wfctx {\Gm, \tmtp z {\tsm{x:A} B}, \tmtp w C}
-      \\
-      \oftp{\Gm, \tmtp x A, \tmtp y B}{g}{C[\tup x y/z]}
-      \\\\
-      \oftp\Gm{a'}{A} \\ \oftp\Gm{b'}{B[a'/x]} 
-    }
+    {\oftp{\Gm, \tmtp z {\tsm{x:A} B}}{C}{\UU_i} \\
+     \oftp{\Gm, \tmtp x A, \tmtp y B}{g}{C[\tup x y/z]} \\\\
+     \oftp\Gm{a'}{A} \\ \oftp\Gm{b'}{B[a'/x]}}
     {\jdeqtp\Gm{\ind{\tsm{x:A} B}(y.C,x.y.g,\tup{a'}{b'})}{g[a',b'/x,y]}{C[\tup {a'} {b'}/z]}}
 \end{mathparpagebreakable}
 
@@ -742,13 +738,13 @@ This presentation corresponds to the Martin-L\"{o}f rule in
   {\oftp\Gm{\refl a}{\id[A]aa}}
 \and
   \inferrule*[right=$\idsym$-\elim]
-  {\wfctx{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}, \tmtp w C} \\
+  {\oftp{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gm,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gm{a}{A} \\ \oftp\Gm{b}{A} \\ \oftp\Gm{p'}{\id[A]ab}}
   {\oftp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
 \and
   \inferrule*[right=$\idsym$-\comp]
-  {\wfctx{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}, \tmtp w C} \\
+  {\oftp{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gm,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gm{a}{A}}
   {\jdeqtp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a,a,\refl a/x,y,p]}}
@@ -765,7 +761,7 @@ $c$.
   {\oftp\Gm\emptyt{\UU_i}}
 \and
   \inferrule*[right=$\emptyt$-\elim]
-  {\wfctx{\Gm,\tmtp x\emptyt,\tmtp w C} \\ \oftp\Gm{a}{\emptyt}}
+  {\oftp{\Gm,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\Gm{a}{\emptyt}}
   {\oftp\Gm{\ind{\emptyt}(x.C,a)}{C[a/x]}}
 \end{mathparpagebreakable}
 
@@ -783,13 +779,13 @@ In $\ind{\emptyt}$, $x$ is bound in $C$.  The empty type comes with no introduct
   {\oftp\Gm{\ttt}{\unit}}
 \and
   \inferrule*[right=$\unit$-\elim]
-  {\wfctx{\Gm,\tmtp x\unit, \tmtp w C} \\
+  {\oftp{\Gm,\tmtp x\unit}{C}{\UU_i} \\
    \oftp{\Gm,\tmtp y\unit}{c}{C[y/x]} \\
    \oftp\Gm{a}{\unit}}
   {\oftp\Gm{\ind{\unit}(x.C,y.c,a)}{C[a/x]}}
 \and
   \inferrule*[right=$\unit$-\comp]
-  {\wfctx{\Gm,\tmtp x\unit,\tmtp w C} \\
+  {\oftp{\Gm,\tmtp x\unit}{C}{\UU_i} \\
    \oftp{\Gm,\tmtp y\unit}{c}{C[y/x]}}
   {\jdeqtp\Gm{\ind{\unit}(x.C,y.c,\ttt)}{c[\ttt/y]}{C[\ttt/x]}}
 \end{mathparpagebreakable}
@@ -804,29 +800,29 @@ In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
   {\oftp\Gm{A+B}{\UU_i}}
 \\\\
   \inferrule*[right=$+$-\intro${}_1$]
-  {\wfctx {\Gm, \tmtp w A} \\ \wfctx {\Gm,\tmtp w B} \\\\ \oftp\Gm{a}{A}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i} \\\\ \oftp\Gm{a}{A}}
   {\oftp\Gm{\inl(a)}{A+B}}
 \and
   \inferrule*[right=$+$-\intro${}_2$]
-  {\wfctx {\Gm, \tmtp w A} \\ \wfctx {\Gm,\tmtp w B} \\\\ \oftp\Gm{b}{B}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{B}{\UU_i} \\\\ \oftp\Gm{b}{B}}
   {\oftp\Gm{\inr(b)}{A+B}}
 \\\\
   \inferrule*[right=$+$-\elim]
-  {\wfctx{\Gm,\tmtp x{(A+B)},\tmtp w C} \\
+  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\\\
    \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
    \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
    \oftp\Gm{e}{A+B}}
   {\oftp\Gm{\ind{A+B}(x.C,a.c,b.d,e)}{C[e/x]}}
 \and
   \inferrule*[right=$+$-\comp${}_1$]
-  {\wfctx{\Gm,\tmtp x{(A+B)},\tmtp w C} \\
+  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
    \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
    \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
    \oftp\Gm{a'}{A}}
   {\jdeqtp\Gm{\ind{A+B}(x.C,a.c,b.d,\inl(a'))}{c[a'/a]}{C[\inl(a')/x]}}
 \and
   \inferrule*[right=$+$-\comp${}_2$]
-  {\wfctx{\Gm,\tmtp x{(A+B)},\tmtp w C} \\
+  {\oftp{\Gm,\tmtp x{(A+B)}}{C}{\UU_i} \\
    \oftp{\Gm,\tmtp aA}{c}{C[\inl(a)/x]} \\
    \oftp{\Gm,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
    \oftp\Gm{b'}{B}}
@@ -842,7 +838,7 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
 
 \begin{mathparpagebreakable}
   \def\premise{
-     \wfctx{\Gm,\tmtp x{\N},\tmtp y C} \\
+     \oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
      \oftp\Gm{c_0}{C[0/x]} \\
      \oftp{\Gm,\tmtp{x'}\N,\tmtp y C}{c_s}{C[\suc(x')/x]}}
   \inferrule*[right=$\N$-\form]
@@ -917,20 +913,20 @@ in \autoref{sec:dependent-paths}.
   {\oftp\Gm{\lloop}{\id[\Sn^1]{\base}{\base}}}
 \and
   \inferrule*[right=$\Sn^1$-\elim]
-  {\wfctx{\Gm,\tmtp x{\Sn^1}, \tmtp y C} \\
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gm}{b}{C[\base/x]} \\
    \oftp{\Gm}{\ell}{\dpath C \lloop b b} \\
    \oftp\Gm{p}{\Sn^1}}
   {\oftp\Gm{\ind{\Sn^1}(x.C,b,\ell,p)}{C[p/x]}}
 \and
   \inferrule*[right=$\Sn^1$-\comp${}_1$]
-  {\wfctx{\Gm,\tmtp x{\Sn^1}, \tmtp y C} \\
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gm}{b}{C[\base/x]} \\
    \oftp{\Gm}{\ell}{\dpath C \lloop b b}}
   {\jdeqtp\Gm{\ind{\Sn^1}(x.C,b,\ell,\base)}{b}{C[\base/x]}}
 \and
   \inferrule*[right=$\Sn^1$-\comp${}_2$]
-  {\wfctx{\Gm,\tmtp x{\Sn^1}, \tmtp y C} \\
+  {\oftp{\Gm,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gm}{b}{C[\base/x]} \\
    \oftp{\Gm}{\ell}{\dpath C \lloop b b}}
   {\oftp\Gm{\Sn^1\text{-}\mathsf{loopcomp}}

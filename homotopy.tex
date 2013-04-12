@@ -2027,9 +2027,17 @@ It is a bit more convenient both to prove and use, however, if we use the charac
   Since $b_0:\unit\to B$ is $(m-1)$-connected, for this fiber to be $(n-1)$-connected, by \autoref{thm:conn-trunc-variable-ind} it suffices for each type $P(a,b)$ to be an $(n+m)$-type, which we have assumed.
 \end{proof}
 
-\begin{thm}[The Freudenthal Suspension Theorem]
+Let $(X,x_0)$ be a pointed type, and recall the definition of the suspension $\susp X$ from \autoref{sec:suspension}, with constructors $\north,\south:\susp X$ and $\merid:X \to (\north=\south)$.
+We regard $\susp X$ as a pointed space with basepoint $\north$, so that we have $\Omega\susp X \defeq (\id[\susp X]\north\north)$.
+Then there is a canonical map
+\begin{align*}
+  \sigma &: X \to \Omega\susp X\\
+  \sigma(x) &\defeq \merid(x) \ct \opp{\merid(x_0)}.
+\end{align*}
+
+\begin{thm}[The Freudenthal Suspension Theorem]\label{thm:freudenthal}
   Suppose that $X$ is $n$-connected and pointed, with $n\geq 0$.
-  Then the canonical map $\sigma:X\to \Omega\susp(X)$ is $2n$-connected.
+  Then the map $\sigma:X\to \Omega\susp(X)$ is $2n$-connected.
 \end{thm}
 \begin{proof}
   We will use the encode/decode methodology, but applied in a slightly different way.
@@ -2043,8 +2051,58 @@ It is a bit more convenient both to prove and use, however, if we use the charac
   Moreover, instead of constructing $\code$ and $\decode$ separately, we can construct directly a family of \emph{codes for the truncations of the fibers}.
 
   Specifically, we will construct a family
-  \[\code:\prd{w:\susp X} (\north=w) \to \type\] such that $\code(\north,p) \jdeq \trunc{2n}{\hfib{\sigma}{p}}$.
-  If we can show that $\code(w,p)$ is contractible for all $w:\susp X$ and $p:\north=w$, then applying this with $w\defeq \north$ will prove that all fibers of $\sigma$ are $2n$-connected, and thus $\sigma$ is $2n$-connected.
+  \begin{equation}
+    \code:\prd{y:\susp X} (\north=y) \to \type\label{eq:freudcode}
+  \end{equation}
+  such that $\code(\north,p) \jdeq \trunc{2n}{\hfib{\sigma}{p}}$.
+  If we can show that $\code(y,p)$ is contractible for all $y:\susp X$ and $p:\north=y$, then applying this with $y\defeq \north$ will prove that all fibers of $\sigma$ are $2n$-connected, and thus $\sigma$ is $2n$-connected.
+
+  We define $\code(y,p)$ by induction on $y:\susp X$, starting with
+  \begin{alignat*}{2}
+    \code(\north,p) &\defeq \trunc{2n}{\hfib{\sigma}{p}}
+    &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = p)}\\
+    \code(\south,q) &\defeq \trunc{2n}{\hfib{\merid}{q}}
+    &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) = q)}.
+  \end{alignat*}
+  It remains to construct, for each $x_1:X$, a family of equivalences
+  \[ \prd{q:\north=\south} \code(\north,q \ct \opp{\merid(x_1)}) \simeq \code(\south,q). \]
+  For this it will suffice to define a family of maps
+  \begin{equation}\label{eq:freudmap}
+    \prd{q:\north=\south} \code(\north,q \ct \opp{\merid(x_1)}) \to \code(\south,q).
+  \end{equation}
+  and show that each is an equivalence.
+  Thus, let $q:\north=\south$; by the universal property of truncation and the definitions of $\code(\north,-)$ and $\code(\south,-)$, it will suffice to define for each $x_2:X$, a map
+  \begin{equation*}
+    \big(\merid(x_2)\ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}\big)
+    \to \trunc{2n}{\tsm{x:X} (\merid(x) = q)}.
+  \end{equation*}
+  Now for each $x_1,x_2:X$, this type is $2n$-truncated, while $X$ is $n$-connected.
+  Thus, by \autoref{thm:wedge-connectivity}, it suffices to define this map when $x_1$ is $x_0$, when $x_2$ is $x_0$, and check that they agree when both are $x_0$.
+
+  When $x_1$ is $x_0$, the hypothesis is $r:\merid(x_2)\ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_0)}$.
+  Thus, by canceling $\opp{\merid(x_0)}$ from $r$ to get $r':\merid(x_2)=q$, so we can define the image to be $\tproj{2n}{(x_2,r')}$.
+
+  When $x_2$ is $x_0$, the hypothesis is $r:\merid(x_0)\ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}$.
+  Rearranging this, we obtain $r'':\merid(x_1)=q$, and we can define the image to be $\tproj{2n}{(x_1,r'')}$.
+
+  Finally, when both $x_1$ and $x_2$ are $x_0$, it suffices to show the resulting $r'$ and $r''$ agree; this is an easy lemma about path composition.
+  This completes the definition of~\eqref{eq:freudmap}.
+  To show that it is a family of equivalences, since being an equivalence is a mere proposition and $x_0:\unit\to X$ is (at least) $(-1)$-connected, it suffices to assume $x_1$ is $x_0$.
+  In this case, inspecting the above construction we see that it is essentially the $2n$-truncation of the function that cancels $\opp{\merid(x_0)}$, which is an equivalence.
+
+  This completes the definition of the $\code$ family~\eqref{eq:freudcode}.
+  It remains to show that $\code(y,p)$ is contractible for each $y:\susp X$ and $p:\north=y$.
+  First we must choose a center of contraction, and by path induction it is sufficient to assume $y$ is $\north$ and $p$ is $\refl{\north}$.
+  In this case, $\code(\north,\refl{\north})$ is $\trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = \refl{\north})}$, so we can choose $\tproj{2n}{(x_0,s)}$ where $s$ is the obvious path.
+
+  Next, we must show that every element of $\code(y,p)$ is equal to the center.
+  Again, by path induction, it suffices to assume $y$ is $\north$ and $p$ is $\refl{\north}$.
+  In fact, we will prove it more generally when $y$ is $\north$ and $p$ is arbitrary.
+  That is, we will show that for any $p:\north=\north$ and $c:\code(\north,p)$, $c$ is equal to the center.
+  Since this equality is a $(2n-1)$-type, we may assume $c$ is of the form $\tproj{2n}{(x_1,r)}$ for some $x_1:X$ and $r:\merid(x_1) \ct \opp{\merid(x_0)} = p$.
+
+  Now by a further path induction, we may assume that $r$ is reflexivity, and $p$ is $\merid(x_1) \ct \opp{\merid(x_0)}$.
+  Thus, we have to prove that $\tproj{2n}{(x_1, \refl{\merid(x_1) \ct \opp{\merid(x_0)}})}$ is equal to the center.
 
   \dots
 \end{proof}

@@ -2035,6 +2035,12 @@ Then there is a canonical map
   \sigma(x) &\defeq \merid(x) \ct \opp{\merid(x_0)}.
 \end{align*}
 
+\begin{rmk}
+  In classical algebraic topology, one considers the \emph{reduced suspension}, in which the path $\merid(x_0)$ is collapsed down to a point, identifying $\north$ and $\south$.
+  The reduced and unreduced suspensions are homotopy equivalent, so the distinction is invisible to our purely homotopy-theoretic eyes --- and higher inductive types only allow us to ``identify'' points up to a higher path anyway, there is no purpose to considering reduced suspensions in homotopy type theory.
+  However, the unreducedness of our suspension is the reason for the (possibly unexpected) appearance of $\opp{\merid(x_0)}$ in the definition of $\sigma$.
+\end{rmk}
+
 \begin{thm}[The Freudenthal Suspension Theorem]\label{thm:freudenthal}
   Suppose that $X$ is $n$-connected and pointed, with $n\geq 0$.
   Then the map $\sigma:X\to \Omega\susp(X)$ is $2n$-connected.
@@ -2058,12 +2064,12 @@ Then there is a canonical map
   If we can show that $\code(y,p)$ is contractible for all $y:\susp X$ and $p:\north=y$, then applying this with $y\defeq \north$ will prove that all fibers of $\sigma$ are $2n$-connected, and thus $\sigma$ is $2n$-connected.
 
   We define $\code(y,p)$ by induction on $y:\susp X$, starting with
-  \begin{alignat*}{2}
+  \begin{alignat}{2}
     \code(\north,p) &\defeq \trunc{2n}{\hfib{\sigma}{p}}
-    &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = p)}\\
+    &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = p)}\label{eq:freudcodeN}\\
     \code(\south,q) &\defeq \trunc{2n}{\hfib{\merid}{q}}
-    &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) = q)}.
-  \end{alignat*}
+    &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) = q)}.\label{eq:freudcodeS}
+  \end{alignat}
   It remains to construct, for each $x_1:X$, a family of equivalences
   \[ \prd{q:\north=\south} \code(\north,q \ct \opp{\merid(x_1)}) \simeq \code(\south,q). \]
   For this it will suffice to define a family of maps
@@ -2091,18 +2097,41 @@ Then there is a canonical map
   In this case, inspecting the above construction we see that it is essentially the $2n$-truncation of the function that cancels $\opp{\merid(x_0)}$, which is an equivalence.
 
   This completes the definition of the $\code$ family~\eqref{eq:freudcode}.
-  It remains to show that $\code(y,p)$ is contractible for each $y:\susp X$ and $p:\north=y$.
-  First we must choose a center of contraction, and by path induction it is sufficient to assume $y$ is $\north$ and $p$ is $\refl{\north}$.
-  In this case, $\code(\north,\refl{\north})$ is $\trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = \refl{\north})}$, so we can choose $\tproj{2n}{(x_0,s)}$ where $s$ is the obvious path.
+  In addition to~\eqref{eq:freudcodeN} and~\eqref{eq:freudcodeS}, we can conclude from the definition that
+  \begin{align*}
+    \transfib{\code}{\merid(x_1)}
+  \end{align*}
 
-  Next, we must show that every element of $\code(y,p)$ is equal to the center.
+  It remains to show that $\code(y,p)$ is contractible for each $y:\susp X$ and $p:\north=y$.
+  First we must choose a center of contraction, say $c(y,p):\code(y,p)$.
+  This corresponds to the definition of the function $\encode$ in our previous proofs, so we define it by transport.
+  Note that in the special case when $y$ is $\north$ and $p$ is $\refl{\north}$, we have
+  \[\code(\north,\refl{\north}) \jdeq \trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = \refl{\north})}.\]
+  Thus, we can choose $c(\north,\refl{\north})\defeq \tproj{2n}{(x_0,\mathsf{rinv}_{\merid(x_0)})}$, where $\mathrm{rinv}_q$ is the obvious path $q\ct\opp q = \refl{}$ for any $q$.
+  We can now obtain $c:\prd{y:\susp X}{p:\north=y} \code(y,p)$ by path-induction on $p$, but it will be important below that we can also give a concrete definition in terms of transport:
+  \[ c(y,p) \defeq \transfib{\hat{\code}}{\pairpath(p,\mathsf{tid}_p)}{c(\north,\refl{\north})}
+  \]
+  where $\hat{\code}: \big(\sm{y:\susp X} (\north=y)\big) \to \type$ is the uncurried version of \code, and $\mathsf{tid}_p:\trans{p}{\refl{}} = p$ is a standard lemma.
+
+  Next, we must show that every element of $\code(y,p)$ is equal to $c(y,p)$.
   Again, by path induction, it suffices to assume $y$ is $\north$ and $p$ is $\refl{\north}$.
   In fact, we will prove it more generally when $y$ is $\north$ and $p$ is arbitrary.
-  That is, we will show that for any $p:\north=\north$ and $c:\code(\north,p)$, $c$ is equal to the center.
-  Since this equality is a $(2n-1)$-type, we may assume $c$ is of the form $\tproj{2n}{(x_1,r)}$ for some $x_1:X$ and $r:\merid(x_1) \ct \opp{\merid(x_0)} = p$.
+  That is, we will show that for any $p:\north=\north$ and $d:\code(\north,p)$ we have $d = c(\north,p)$.
+  Since this equality is a $(2n-1)$-type, we may assume $d$ is of the form $\tproj{2n}{(x_1,r)}$ for some $x_1:X$ and $r:\merid(x_1) \ct \opp{\merid(x_0)} = p$.
 
   Now by a further path induction, we may assume that $r$ is reflexivity, and $p$ is $\merid(x_1) \ct \opp{\merid(x_0)}$.
-  Thus, we have to prove that $\tproj{2n}{(x_1, \refl{\merid(x_1) \ct \opp{\merid(x_0)}})}$ is equal to the center.
+  (This is why we generalized to arbitrary $p$ above.)
+  Thus, we have to prove that
+  \[\tproj{2n}{(x_1, \refl{\merid(x_1) \ct \opp{\merid(x_0)}})}
+  \;=\;
+  c\left(\north,\refl{\merid(x_1) \ct \opp{\merid(x_0)}}\right).
+  \]
+  By definition, the right-hand side of this equality is
+  \begin{multline*}
+    \Transfib{\hat{\code}}{\pairpath(\merid(x_1) \ct \opp{\merid(x_0)}, \blank)}{\tproj{2n}{(x_0,\mathsf{rinv}_{\merid(x_0)})}}\\
+    = \Transfib{\hat{\code}}{\pairpath(\opp{\merid(x_0)}, \blank)}
+    {\\\Transfib{\hat{\code}}{\pairpath(\merid(x_1), \blank)}{\tproj{2n}{(x_0,\mathsf{rinv}_{\merid(x_0)})}}}
+\end{multline*}
 
   \dots
 \end{proof}

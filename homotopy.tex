@@ -2041,42 +2041,52 @@ Then there is a canonical map
   However, the unreducedness of our suspension is the reason for the (possibly unexpected) appearance of $\opp{\merid(x_0)}$ in the definition of $\sigma$.
 \end{rmk}
 
+Our goal is now to prove the following.
+
 \begin{thm}[The Freudenthal Suspension Theorem]\label{thm:freudenthal}
   Suppose that $X$ is $n$-connected and pointed, with $n\geq 0$.
   Then the map $\sigma:X\to \Omega\susp(X)$ is $2n$-connected.
 \end{thm}
-\begin{proof}
-  We will use the encode/decode methodology, but applied in a slightly different way.
-  Originally, we used it when we wanted to characterize the loop space $\Omega (A,a_0)$ of some type as equivalent to some other type $B$, which we did by constructing a family $\code:A\to \type$ with $\code(a_0)\defeq B$ and a family of equivalences $\decode:\prd{x:A}\code(x) \simeq (a_0=x)$.
-  We have also generalized it to characterize truncations of loop spaces by way of a family of equivalences $\prd{x:A}\code(x) \simeq \trunc n{a_0=x}$.
 
-  In this case, however, we want to show that $\sigma:X\to \Omega \susp X$ is $2n$-connected.
-  We could use the previous method to prove that $\trunc{2n}X\to \trunc{2n}{\Omega \susp X}$ is an equivalence, but this is a slightly weaker statement than the map being $2n$-connected (insert references, proof?).
-  However, note that in the general case, to prove that $\decode(x)$ is an equivalence, we could equivalently be proving that its fibers are contractible, and we would still be able to use induction over the base type.
-  This we can generalize to prove connectedness of a map into a loop space, i.e.\ that the \emph{truncations} of its fibers are contractible.
-  Moreover, instead of constructing $\code$ and $\decode$ separately, we can construct directly a family of \emph{codes for the truncations of the fibers}.
+We will use the encode/decode methodology, but applied in a slightly different way.
+Originally, we used it when we wanted to characterize the loop space $\Omega (A,a_0)$ of some type as equivalent to some other type $B$, which we did by constructing a family $\code:A\to \type$ with $\code(a_0)\defeq B$ and a family of equivalences $\decode:\prd{x:A}\code(x) \simeq (a_0=x)$.
+We have also generalized it to characterize truncations of loop spaces by way of a family of equivalences $\prd{x:A}\code(x) \simeq \trunc n{a_0=x}$.
 
-  Specifically, we will construct a family
+In this case, however, we want to show that $\sigma:X\to \Omega \susp X$ is $2n$-connected.
+We could use the previous method to prove that $\trunc{2n}X\to \trunc{2n}{\Omega \susp X}$ is an equivalence, but this is a slightly weaker statement than the map being $2n$-connected (insert references, proof?).
+However, note that in the general case, to prove that $\decode(x)$ is an equivalence, we could equivalently be proving that its fibers are contractible, and we would still be able to use induction over the base type.
+This we can generalize to prove connectedness of a map into a loop space, i.e.\ that the \emph{truncations} of its fibers are contractible.
+Moreover, instead of constructing $\code$ and $\decode$ separately, we can construct directly a family of \emph{codes for the truncations of the fibers}.
+
+\begin{lem}\label{thm:freudcode}
+  If $X$ is $n$-connected and pointed with $n\geq 0$, then there is a family
   \begin{equation}
     \code:\prd{y:\susp X} (\north=y) \to \type\label{eq:freudcode}
   \end{equation}
-  such that $\code(\north,p) \jdeq \trunc{2n}{\hfib{\sigma}{p}}$.
-  If we can show that $\code(y,p)$ is contractible for all $y:\susp X$ and $p:\north=y$, then applying this with $y\defeq \north$ will prove that all fibers of $\sigma$ are $2n$-connected, and thus $\sigma$ is $2n$-connected.
-
-  We define $\code(y,p)$ by induction on $y:\susp X$, starting with
+  such that
   \begin{alignat}{2}
     \code(\north,p) &\defeq \trunc{2n}{\hfib{\sigma}{p}}
     &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = p)}\label{eq:freudcodeN}\\
     \code(\south,q) &\defeq \trunc{2n}{\hfib{\merid}{q}}
     &\quad\jdeq\quad & \trunc{2n}{\tsm{x:X} (\merid(x) = q)}.\label{eq:freudcodeS}
   \end{alignat}
-  It remains to construct, for each $x_1:X$, a family of equivalences
+\end{lem}
+
+Our eventual goal will be to prove that $\code(y,p)$ is contractible for all $y:\susp X$ and $p:\north=y$, then applying this with $y\defeq \north$ will prove that all fibers of $\sigma$ are $2n$-connected, and thus $\sigma$ is $2n$-connected.
+
+\begin{proof}[Proof of \autoref{thm:freudcode}]
+  We define $\code(y,p)$ by induction on $y:\susp X$, with~\eqref{eq:freudcodeN} and~\eqref{eq:freudcodeS} as the first two cases.
+  It remains to construct, for each $x_1:X$, a dependent path
+  \[ \dpath{\lam{y}(\north=y)\to\type}{\merid(x_1)}{\code(\north)}{\code(\south)}. \]
+  By \autoref{thm:dpath-arrow}, this is equivalent to giving a family of paths
+  \[ \prd{q:\north=\south} \code(\north)(\transfib{\lam{y}(\north=y)}{\merid(x_1)}{q}) = \code(\south)(q). \]
+  And by univalence and transport in path types, this is equivalent to a family of equivalences
   \[ \prd{q:\north=\south} \code(\north,q \ct \opp{\merid(x_1)}) \simeq \code(\south,q). \]
-  For this it will suffice to define a family of maps
+  We will define a family of maps
   \begin{equation}\label{eq:freudmap}
     \prd{q:\north=\south} \code(\north,q \ct \opp{\merid(x_1)}) \to \code(\south,q).
   \end{equation}
-  and show that each is an equivalence.
+  and then show that they are all equivalences.
   Thus, let $q:\north=\south$; by the universal property of truncation and the definitions of $\code(\north,-)$ and $\code(\south,-)$, it will suffice to define for each $x_2:X$, a map
   \begin{equation*}
     \big(\merid(x_2)\ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}\big)
@@ -2095,13 +2105,47 @@ Then there is a canonical map
   This completes the definition of~\eqref{eq:freudmap}.
   To show that it is a family of equivalences, since being an equivalence is a mere proposition and $x_0:\unit\to X$ is (at least) $(-1)$-connected, it suffices to assume $x_1$ is $x_0$.
   In this case, inspecting the above construction we see that it is essentially the $2n$-truncation of the function that cancels $\opp{\merid(x_0)}$, which is an equivalence.
+\end{proof}
 
-  This completes the definition of the $\code$ family~\eqref{eq:freudcode}.
-  In addition to~\eqref{eq:freudcodeN} and~\eqref{eq:freudcodeS}, we can conclude from the definition that
-  \begin{align*}
-    \transfib{\code}{\merid(x_1)}
-  \end{align*}
+In addition to~\eqref{eq:freudcodeN} and~\eqref{eq:freudcodeS}, we will need to extract from the construction of $\code$ some information about how it acts on paths.
+For this we use the following lemma.
 
+\begin{lem}\label{thm:freudlemma}
+  Let $A:\UU$, $B:A\to \UU$, and $C:\prd{a:A} B(a)\to\UU$, and also $a_1,a_2:A$ with $m:x=y$ and $b:B(a_2)$.
+  Then the function
+  \[\transfib{\hat{C}}{\pairpath(m,t)}{-} : C(a_1,\transfib{B}{\opp m}{b}) \to C(a_2,b),\]
+  where $t:\transfib{B}{m}{\transfib{B}{\opp m}{b}} = b$ is the obvious coherence path and $\hat{C}:(\sm{a:A} B(a)) \to\type$ is the uncurried form of $C$, is equal to the equivalence obtained by univalence from the composite
+  \begin{alignat*}{2}
+    C(x,\transfib{B}{\opp m}{b})
+    &= \transfib{\lam{a} B(a)\to \UU}{m}{C(a_1)}(b)
+    &&\quad\text{by~\eqref{eq:transport-arrow}}\\
+    &= C(a_2,b) &&\quad\text{by }\happly(\apd{C}{m},b).
+  \end{alignat*}
+\end{lem}
+\begin{proof}
+  By path induction, we may assume $y$ is $x$ and $m$ is $\refl{x}$, in which case both functions are the identity.
+\end{proof}
+
+We apply this lemma with $A\defeq\susp X$ and $B\defeq \lam{y}(\north=y)$ and $C\defeq\code$, while $a_1\defeq\north$ and $a_2\defeq\south$ and $m\defeq \merid(x_1)$ for some $x_1:X$, and finally $b\defeq q$ is some path $\north=\south$.
+The computation rule for induction over $\susp X$ identifies $\apd{C}{m}$ with a path constructed in a certain way out of univalence and function extensionality.
+The second function described in \autoref{thm:freudlemma} essentially consists of undoing these applications of univalence and function extensionality, reducing back to the particular functions~\eqref{eq:freudmap} that we defined using \autoref{thm:wedge-connectivity}.
+Therefore, \autoref{thm:freudlemma} says that transporting along $\pairpath(q,t)$ essentially recovers these functions.
+
+Finally, by construction, when $x_1$ or $x_2$ coincides with $x_0$ and the input is in the image of $\tproj{2n}{-}$, we know more explicitly what these functions are.
+Thus, for any $x_2:X$, we have
+\begin{equation}
+  \transfib{\hat{\code}}{\pairpath(\merid(x_0),t)}{\tproj{2n}{(x_2,r)}}
+  =\tproj{2n}{(x_1,r'')}\label{eq:freudcompute1}
+\end{equation}
+where $r:\merid(x_2) \ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_0)}$ as before, and $r':\merid(x_2)=q$ is obtained by canceling $\opp{\merid(x_0)}$.
+Similarly, for any $x_1:X$, we have
+\begin{equation}
+  \transfib{\hat{\code}}{\pairpath(\merid(x_1),t)}{\tproj{2n}{(x_0,r)}}
+  = \tproj{2n}{(x_1,r'')}\label{eq:freudcompute2}
+\end{equation}
+where $r:\merid(x_0) \ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}$, and $r'':\merid(x_1)=q$ is obtained by rearrangement.
+
+\begin{proof}[Proof of \autoref{thm:freudenthal}]
   It remains to show that $\code(y,p)$ is contractible for each $y:\susp X$ and $p:\north=y$.
   First we must choose a center of contraction, say $c(y,p):\code(y,p)$.
   This corresponds to the definition of the function $\encode$ in our previous proofs, so we define it by transport.
@@ -2122,18 +2166,23 @@ Then there is a canonical map
   Now by a further path induction, we may assume that $r$ is reflexivity, and $p$ is $\merid(x_1) \ct \opp{\merid(x_0)}$.
   (This is why we generalized to arbitrary $p$ above.)
   Thus, we have to prove that
-  \[\tproj{2n}{(x_1, \refl{\merid(x_1) \ct \opp{\merid(x_0)}})}
-  \;=\;
-  c\left(\north,\refl{\merid(x_1) \ct \opp{\merid(x_0)}}\right).
-  \]
+  \begin{equation}
+    \tproj{2n}{(x_1, \refl{\merid(x_1) \ct \opp{\merid(x_0)}})}
+    \;=\;
+    c\left(\north,\refl{\merid(x_1) \ct \opp{\merid(x_0)}}\right).\label{eq:freudgoal}
+  \end{equation}
   By definition, the right-hand side of this equality is
-  \begin{multline*}
-    \Transfib{\hat{\code}}{\pairpath(\merid(x_1) \ct \opp{\merid(x_0)}, \blank)}{\tproj{2n}{(x_0,\mathsf{rinv}_{\merid(x_0)})}}\\
-    = \Transfib{\hat{\code}}{\pairpath(\opp{\merid(x_0)}, \blank)}
-    {\\\Transfib{\hat{\code}}{\pairpath(\merid(x_1), \blank)}{\tproj{2n}{(x_0,\mathsf{rinv}_{\merid(x_0)})}}}
-\end{multline*}
-
-  \dots
+  \begin{align*}
+    &\Transfib{\hat{\code}}{\pairpath(\merid(x_1) \ct \opp{\merid(x_0)}, \blank)}{\tproj{2n}{(x_0,\blank)}}\\
+    &= \Transfib{\hat{\code}}{\pairpath(\opp{\merid(x_0)}, \blank)}
+    {\Transfib{\hat{\code}}{\pairpath(\merid(x_1), \blank)}{\tproj{2n}{(x_0,\blank)}}}\\
+    &= \Transfib{\hat{\code}}{\pairpath(\opp{\merid(x_0)}, \blank)}{\tproj{2n}{(x_1,\blank)}}\\
+    &= \tproj{2n}{(x_1,\blank)}
+  \end{align*}
+  where the blanks $\blank$ denote coherence paths.
+  Here the first step is just functoriality of transport, the second invokes~\eqref{eq:freudcompute2}, and the third invokes~\eqref{eq:freudcompute1} (with the transport moved to the other side).
+  Thus we have the same first component as the left-hand side of~\eqref{eq:freudgoal}.
+  We leave it to the reader to verify that the coherence paths all cancel, giving reflexivity in the second component.
 \end{proof}
 
 \begin{cor}

@@ -521,7 +521,8 @@ necessary to prove the judgments above the line. A valid derivation of a
 judgment is a tree constructed from these inference rules, whose final
 conclusion is the judgment in question, and none of whose component rules has
 unresolved hypotheses. (In other words, all the leaves of the tree must be
-instances of the only rule with no hypotheses, namely $\ctx-\textsc{emp}$.)
+instances of the only rule with no hypotheses, namely
+$\ctx\text{-}\textsc{emp}$.)
 
 
 For example, the following is part of a derivation of $\oftp{\emptyctx}{\lamu{x:\unit}
@@ -568,9 +569,11 @@ Each assumption in the context can be concluded.
 \end{mathpar}
 
 The following important principles, called \emph{substitution} and
-\emph{weakening}, need not be assumed. It is possible to show, by induction on
-the structure of each judgment's derivation, that whenever their hypotheses are
-provable, their conclusion is also provable.
+\emph{weakening}, need not be explicitly assumed. Rather, it is possible to
+show, by induction on the structure of all possible derivations, that whenever
+the hypotheses of these rules are provable, their conclusion is also
+provable.\footnote{Such rules are called \emph{admissible}.} ($\mathcal{J}$ is
+any judgment $a:A$ or $a\equiv b:A$.)
 
 \begin{mathpar}
   \inferrule*[right=$\Subst$]
@@ -596,7 +599,7 @@ assume that judgmental equality is an equivalence relation respected by typing.
   \inferrule*{\jdeqtp\Gm{a}{b}{A} \\ \jdeqtp\Gm{A}{B}{\UU_i}}{\jdeqtp\Gm{a}{b}{B}}
 \end{mathparpagebreakable}
 
-Additionally, in the logical rules below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
+Additionally, for all the type formers below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
 \[
   \inferrule*[right=$\Pi$-\intro-eq]
   {\jdeqtp\Gm{A}{A'}{\UU_i} \\
@@ -671,8 +674,10 @@ introductory form.
 The expression $\lamu{x:A} b$ binds free occurrences of $x$ in $b$, as does $\tprd{x:A} B$ for
 $B$.
 
-When $B$ does not contain free occurrences of $x$, we obtain the ordinary
-function type $A\to B \defeq \tprd{x:A} B$.
+When $B$ does not contain free occurrences of $x$, we obtain as a special case
+the ordinary function type $A\to B \defeq \tprd{x:A} B$. Because we did not use
+$\to$ to define $\prdsym$, we can simply take this as the \emph{definition} of
+$\to$.
 
 \subsection{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:more-formal-sigma}
@@ -719,8 +724,9 @@ two of whose arguments contain binders; this is superficially similar to, but
 different from, $\ind{\tsm{x:A} B}$ being a function that takes functions as
 arguments.
 
-When $B$ does not contain free occurrences of $x$, we obtain the cartesian
-product $A \times B := \tsm{x:A} B$.
+When $B$ does not contain free occurrences of $x$, we obtain as a special case
+the cartesian product $A \times B \defeq \tsm{x:A} B$. (Again, we can take this
+as the \emph{definition} of the cartesian product.)
 
 \subsection{Identity types}
 
@@ -733,14 +739,14 @@ This presentation corresponds to the Martin-L\"{o}f rule in
   {\oftp\Gm{\id[A]{a}{b}}{\UU_i}}
 \and
   \inferrule*[right=$\idsym$-\intro]
-  {\oftp\Gm{a}{A}}
+  {\oftp\Gm{A}{\UU_i} \\ \oftp\Gm{a}{A}}
   {\oftp\Gm{\refl a}{\id[A]aa}}
 \and
   \inferrule*[right=$\idsym$-\elim]
   {\wfctx{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}, \tmtp w C} \\
    \oftp{\Gm,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gm{a}{A} \\ \oftp\Gm{b}{A} \\ \oftp\Gm{p'}{\id[A]ab}}
-  {\oftp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p)}{C[a,b,p'/x,y,p]}}
+  {\oftp\Gm{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
 \and
   \inferrule*[right=$\idsym$-\comp]
   {\wfctx{\Gm,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}, \tmtp w C} \\
@@ -757,7 +763,7 @@ $c$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\emptyt$-\form]
   {\wfctx\Gm}
-  {\oftp\Gm\emptyt{\UU_0}}
+  {\oftp\Gm\emptyt{\UU_i}}
 \and
   \inferrule*[right=$\emptyt$-\elim]
   {\wfctx{\Gm,\tmtp x\emptyt,\tmtp w C} \\ \oftp\Gm{a}{\emptyt}}
@@ -771,7 +777,7 @@ In $\ind{\emptyt}$, $x$ is bound in $C$.  The empty type comes with no introduct
 \begin{mathparpagebreakable}
   \inferrule*[right=$\unit$-\form]
   {\wfctx\Gm}
-  {\oftp\Gm\unit{\UU_0}}
+  {\oftp\Gm\unit{\UU_i}}
 \and
   \inferrule*[right=$\unit$-\intro]
   {\wfctx\Gm}
@@ -839,10 +845,10 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
   \def\premise{
      \wfctx{\Gm,\tmtp x{\N},\tmtp y C} \\
      \oftp\Gm{c_0}{C[0/x]} \\
-     \oftp{\Gm,\tmtp x \N,\tmtp y C}{c_s}{C[\suc(x)/x]}}
+     \oftp{\Gm,\tmtp{x'}\N,\tmtp y C}{c_s}{C[\suc(x')/x]}}
   \inferrule*[right=$\N$-\form]
   {\wfctx\Gm}
-  {\oftp\Gm{\N}{\UU_0}}
+  {\oftp\Gm{\N}{\UU_i}}
 \and
   \inferrule*[right=$\N$-\intro${}_1$]
   {\wfctx\Gm}
@@ -854,17 +860,17 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
 \and
   \inferrule*[right=$\N$-\elim]
   {\premise \\\\ \oftp\Gm{n}{\N}}
-  {\oftp\Gm{\ind{\N}(x.C,c_0,x.y.c_s,n)}{C[n/x]}}
+  {\oftp\Gm{\ind{\N}(x.C,c_0,x'.y.c_s,n)}{C[n/x]}}
 \and
   \inferrule*[right=$\N$-\comp${}_1$]
   {\premise}
-  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,x.y.c_s,0)}{c_0}{C[0/x]}}
+  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,x'.y.c_s,0)}{c_0}{C[0/x]}}
 \and
 {\small
   \inferrule*[right=$\N$-\comp${}_2$]
   {\premise \\\\ \oftp\Gm{n}{\N}}
-  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,x.y.c_s,\suc(n))}
-   {c_s[n,\ind{\N}(x.C,c_0,x.y.c_s,n)/x,y]}{C[\suc(n)/x]}}}
+  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,x'.y.c_s,\suc(n))}
+   {c_s[n,\ind{\N}(x.C,c_0,x'.y.c_s,n)/x,y]}{C[\suc(n)/x]}}}
 \end{mathparpagebreakable}
 
 In $\ind{\N}$, $x$ is bound in $C$, and $x$ and $y$ are bound in $c_s$.
@@ -884,14 +890,13 @@ We introduce the $\eta$-conversion rule for functions; see
 \end{mathparpagebreakable}
 
 Various theorems in the text of the book, such as \autoref{thm:eta-sigma}, are
-referred to as $\eta$-equivalence rules.  Since the corresponding judgmental
-equalities are not asserted, we don't have to present them here.
+referred to as $\eta$-equivalence rules, but these are derivable propositional
+equalities, and so need not be asserted as part of the type theory.
 
 \subsection{The circle type}
 
-Here we give an example of a higher inductive type.  Other inductively defined
-types follow the same general scheme --- it is beyond the scope of this
-appendix to cover them all.
+Here we give an example of a higher inductive type.  Other HITs follow the same
+general scheme --- it is beyond the scope of this appendix to cover them all.
 
 Note that the rules below do not precisely follow the pattern of the ordinary
 inductive types above: the rules refer to the notions of transport and
@@ -902,7 +907,7 @@ in \autoref{sec:dependent-paths}.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Sn^1$-\form]
   {\wfctx\Gm}
-  {\oftp\Gm{\Sn^1}{\UU_0}}
+  {\oftp\Gm{\Sn^1}{\UU_i}}
 \and
   \inferrule*[right=$\Sn^1$-\intro${}_1$]
   {\wfctx\Gm}
@@ -937,13 +942,13 @@ In $\ind{\Sn^1}$, $x$ is bound in $C$.  The notation ${\dpath C \lloop b b}$ for
 
 \subsection{HoTT axioms}
 
-There are two basic ways of introducing an axiom such as function
-extensionality, or any other axiom which does not introduce new syntax or new
+There are two basic ways of introducing axioms such as function extensionality,
+univalence, or any other axiom which does not introduce new syntax or new
 judgmental equalities---we could either add a primitive constant to the theory
 which inhabits the axiom, or we could simply prove all theorems in a context
 hypothesizing the presence of a variable that inhabits the axiom.  While these
 are essentially equivalent, we choose the former approach because we consider
-the axioms of homotopy type theory to be part of the core theory, always
+these axioms of homotopy type theory to be part of the core theory, always
 present.
 
 We begin by introducing some abbreviations that allow us to state the function
@@ -960,7 +965,7 @@ is derivable from the others if, as in \autoref{lem:map}, we let $\apfunc f$ ser
   \lamu{p:\id[A] x y} \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p )
 \]
 
-Given $f:A \to B$ and $g : B \to C$, we let $g \circ f$ stand for the composite function $\lamu{x:A} g(f(x)$ of type $A \to C$.
+Given $f:A \to B$ and $g : B \to C$, we let $g \circ f$ stand for the composite function $\lamu{x:A} g(f(x))$ of type $A \to C$.
 
 Given $f:A \to B$ and $g:A \to B$, recall that $f \htpy g$ stands for the type $\prd{x:A} \id[B] {f(x)} {g(x)}$; see \autoref{defn:homotopy}.
 

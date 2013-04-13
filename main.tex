@@ -90,18 +90,17 @@
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathmorphing}
 
-\usepackage{etoolbox}           % get \apptocmd for bibliography
-% tell bibliography to get itself into the table of contents
-\apptocmd{\thebibliography}{
-  \markboth{}{\textsc{Bibliography}}
-  \renewcommand{\markboth}[2]{}
-  \addcontentsline{toc}{part}{\bibname}}{}{}
+\usepackage{etoolbox}           % why is this needed?
 
 \usepackage{mathpartir}         % for formal.tex appendix, section 3
 
 \usepackage[numbered]{bookmark} % add chapter/section numbers to the toc in the pdf metadata
 
 \input{macros}
+
+%%%% Indexing
+\usepackage{makeidx}
+\makeindex
 
 %%%% Header and footers
 \pagestyle{fancyplain}
@@ -200,9 +199,22 @@
 \backmatter
 
 % Bibliography
-
+\phantomsection % black magic to get TOC to point to correct page
+\addcontentsline{toc}{part}{\bibname}
 \bibliographystyle{abbrvnat}
+\markboth{}{\textsc{Bibliography}}
+\renewcommand{\markboth}[2]{}
 \bibliography{references}
+
+\cleartooddpage
+
+% Index
+% tell the index to get itself into the table of contents
+\phantomsection % black magic to get TOC to point to correct page
+\markboth{}{\textsc{Index}}
+\renewcommand{\markboth}[2]{}
+\addcontentsline{toc}{part}{Index}
+\printindex
 
 % This is commented out because we are going to have a separate
 % page document for cover, spine and back.

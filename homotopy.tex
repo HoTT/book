@@ -1049,7 +1049,199 @@ $\Sn$ is $n\mathord{-}1$-connected by \autoref{cor:sn-connected}.  Therefore
 \end{proof}
 
 \section{Fiber sequences and the long exact sequence of homotopy groups}
+\label{sec:long-exact-sequence-homotopy-groups}
+Given a fibration $E\twoheadrightarrow B$ with fiber $F$, there is a relation
+between the homotopy groups of $F$, $E$ and $B$ in the form of a long exact
+sequence. We will start by defining the fiber sequence associated to a map
+between pointed spaces
 
+\begin{defn}
+  A \define{pointed space} is a space $X$ together with a point $x_0:X$.
+
+  A \define{pointed map} between two pointed spaces $(X,x_0)$ and $(Y,y_0)$ is a
+  map $f$ between $X$ and $Y$ together with a path $f_0:f(x_0)=y_0$.
+\end{defn}
+
+\begin{defn}
+  Given a pointed space $X$, the \define{loop space} of $X$ is the type
+  $(x_0=x_0)$ (where $x_0$ is the base point of $X$).
+\end{defn}
+
+\begin{defn}
+  Given a map between pointed spaces $f:X\to{}Y$, we define a function $\Omega
+  f:\Omega X \to \Omega Y$ by
+  \[(\Omega f)(p) \defeq \rev{f_0}\ct\ap{f}{p}\ct f_0\]
+\end{defn}
+
+
+\begin{defn}
+  A \define{fiber sequence} is a (possibly bounded) sequence of pointed types
+  and pointed maps:
+  \[\xymatrix{\dots \ar[r] & X_{n+1} \ar[r] & X_n \ar[r] & X_{n-1} \ar[r] &
+    \dots}\]
+  %
+  such that for every $n$ the map $X_{n+1}\to{}X_n$ is the fiber of the map
+  $X_n\to{}X_{n-1}$.
+\end{defn}
+
+Given a map $f:X\to Y$ it is easy to extend it to a fiber sequence infinite to
+the left and ending by $f$ by taking the iterated fiber. The following lemma
+shows that what we obtain is the sequence of iterated loop spaces (at the base
+point) of the base space, the total space and the fiber.
+
+\begin{lem}
+  Let $f:X\to Y$ be a map of pointed spaces. Then the fiber of the fiber of $f$
+  is equivalent to $\Omega Y$, and the map from the fiber iterated three times
+  of $f$ (which is $\Omega X$) to the fiber of the fiber of $f$ (which is
+  $\Omega Y$) is $\Omega f\circ\rev{-}$.
+\end{lem}
+\begin{proof}
+  The fiber of the fiber of $f$ is
+  \begin{align*}
+    \setof{z:\hfib{f}{y_0} | \proj{1}(z) = x_0} &=
+    \setof{x:A,p:f(x)=y_0 | x = x_0}
+  \end{align*}
+  %
+  So a point of this space $F$ is a triple consisting of a point $x:X$, a path
+  $p$ from $f(x)$ to $y_0$ and a path $q$ from $x$ to $x_0$. Let’s prove that
+  $F$ and $\Omega Y$ are equivalent.
+
+  We define the following two maps
+  %
+  \begin{align*}
+    g &: F \to \Omega Y\\
+    g(x,p,q) &= \rev{p}\ct\ap{f}{q}\ct f_0
+  \end{align*}
+  %
+  \begin{align*}
+    h &: \Omega Y \to F\\
+    h(p) &= (x_0, f_0\ct\rev{p}, \refl{x_0})
+  \end{align*}
+  %
+  We can now check that they are inverse to each other:
+  %
+  \begin{align*}
+    g(h(p)) &= g(x_0, f_0\ct\rev{p}, \refl{x_0}) \\
+    &= \rev{(f_0\ct\rev{p})}\ct\ap{f}{\refl{x_0}}\ct f_0 \\
+    &= \rev{(\rev{p})}\ct\rev{f_0}\ct f_0 \\
+    &= p\\
+    &\\
+    h(g(x,p,q)) &= h(\rev{p}\ct\ap{f}{q}\ct f_0)\\
+    &= (x_0, f_0\ct\rev{(\rev{p}\ct\ap{f}{q}\ct f_0)}, \refl{x_0}) \\
+    &= (x_0, f_0\ct\rev{f_0}\ct\rev{\ap{f}{q}}\ct\rev{(\rev{p})}, \refl{x_0}) \\
+    &= (x_0, \rev{\ap{f}{q}}\ct p, \refl{x_0}) \\
+  \end{align*}
+  %
+  But we have $(x,p,q)=(x_0, \rev{\ap{f}{q}}\ct p, \refl{x_0})$ because $q$ is
+  an equality between $x$ and $x_0$, the paths $p$ and $\rev{\ap{f}{q}}\ct p$
+  are equal over $q$, and the paths $q$ and $\refl{x_0}$ are equal over $q$.
+
+  We have the following fiber sequence
+  %
+  \[\xymatrix{F' \ar^-k[r] & F \ar[r] & F_0 \ar[r] & X \ar[r] & Y}\]
+  %
+  and we’ve constructed equivalences $e_X:\eqv{\Omega X}{F'}$ and
+  $e_Y\eqv{\Omega Y}{F}$. The map $\Omega X\to\Omega Y$ obtained in this way
+  sends a loop $p$ to the following path:
+  %
+  \begin{align*}
+    e_Y^{-1}(k(e_X(p))) &=
+    e_Y^{-1}(k((x_0,f_0),\refl{x_0}\ct\rev{p},\refl{(x_0,f_0)}) \\
+    &= e_Y^{-1}((x_0,f_0),\refl{x_0}\ct\rev{p}) \\
+    &= \rev{f_0}\ct\ap{f}{\refl{x_0}\ct\rev{p}}\ct f_0 \\
+    &= (\Omega f)(\rev{p})
+  \end{align*}
+\end{proof}
+
+From this fiber sequence we will deduce an exact sequence of pointed sets.
+
+\begin{defn}
+  An \define{exact sequence} is a (possibly bounded) sequence of pointed sets
+  and pointed maps:
+  \[\xymatrix{\dots \ar[r] & X_{n+1} \ar[r] & X_n \ar[r] & X_{n-1} \ar[r] &
+    \dots}\]
+  %
+  such that for every $n$ the image of the map $X_{n+1}\to{}X_n$ (cf
+  \autoref{def:modal-image}) is equal to the kernel of the map $X_n\to{}X_{n-1}$
+  (the kernel is the set of elements of $X_n$ whose image is equal to the base
+  point of $X_{n-1}$).
+
+  If the sets $X_n$ are groups, we require moreover that the maps are morphisms
+  of groups.
+\end{defn}
+
+\begin{lem}
+  The $0$-truncation of a fiber sequence is an exact sequence.
+\end{lem}
+\begin{proof}
+  Given a fiber sequence
+  %
+  \[\xymatrix{\hfib{f}{z_0} \ar^-g[r] & Y \ar^-f[r] & Z}\]
+  %
+  we need to prove that
+  %
+  \[\xymatrix{\trunc{0}{\hfib{f}{z_0}} \ar^-{\trunc0g}[r] & \trunc0{Y}
+    \ar^-{\trunc0{f}}[r] & \trunc0{Z}}\]
+  %
+  is exact.
+
+  We need to prove that $\im(\trunc0g)\subset\ker(\trunc0f)$ and
+  $\ker(\trunc0f)\subset\im(\trunc0)$.
+
+  The first inclusion is equivalent to $\trunc0g\circ\trunc0f=0$, which is true
+  by functoriality of 0-truncation and using the fact that $g\circ f=0$.
+
+  For the second inclusion assume we have $y':\trunc0Y$ and
+  $p':\trunc0f(y')=\tproj0{z_0}$, we want to prove that there merely exists a
+  $t:\hfib{f}{z_0}$ such that $g(t)=y'$.
+
+  We want to prove a mere proposition, hence we can assume that $y'$ is of the
+  form $\tproj0y$ for some $y:Y$ and then $p'$ is of type
+  $\tproj0{f(y)}=\tproj0{z_0}$. According to \autoref{thm:path-truncation} this
+  type is equivalent to $\trunc{-1}{f(y)=z_0}$ hence we can assume that $p'$ is
+  of the form $\tproj{-1}{p}$ for some $p:f(y)=z_0$. But now the pair $(y,p)$ is
+  an element of $\tproj0{\hfib{f}{z_0}}$ whose image by $\trunc0g$ is
+  $\tproj0y=y'$ which is what we want.
+\end{proof}
+
+\begin{thm}
+  Let $f:X\to{}Y$ be a pointed map between pointed spaces with fiber $F$. Then
+  we have a long exact sequence of homotopy groups:
+  %
+  \[
+  \xymatrix{
+    \vdots & \vdots & \vdots \ar[lld] \\
+    \pi_k(F) \ar[r] & \pi_k(X) \ar[r] & \pi_k(Y) \ar[lld] \\
+    \vdots & \vdots & \vdots \ar[lld] \\
+    \pi_2(F) \ar[r] & \pi_2(X) \ar[r] & \pi_2(Y) \ar[lld] \\
+    \pi_1(F) \ar[r] & \pi_1(X) \ar[r] & \pi_1(Y) \ar[lld]\\
+    \pi_0(F) \ar[r] & \pi_0(X) \ar[r] & \pi_0(Y)}
+  \]
+\end{thm}
+\begin{proof}
+  This is the exact sequence obtained by taking the $0$-truncation of the fiber
+  sequence associated to $f$. Note that $\pi_k$ is a group for $k\ge1$ and the
+  maps $\pi_k(F)\to\pi_k(X)$ and $\pi_k(X)\to\pi_k(Y)$ are morphisms of groups.
+
+  The fact that the maps $\pi_{k+1}(Y)\to\pi_k(F)$ are also morphisms of groups
+  is not immediately obvious but can be easily checked using the formulas above.
+\end{proof}
+
+The usual properties of exact sequences of abelian groups can be proved as
+usual. In particular we have:
+\begin{lem}
+  In an exact sequence of abelian groups
+  %
+  \[\xymatrix{0 \ar[r]& G \ar^f[r] & H \ar[r] & 0}\]
+  %
+  the map $f$ is an isomorphism of groups.
+\end{lem}
+\begin{proof}
+  The left-hand side of the diagram shows that the kernel of $f$ is $\{0\}$,
+  hence $f$ is injective because it’s a group morphism. Moreover the right-hand
+  side of the diagrams shows that $f$ is surjective. Hence $f$ is an isomorphism
+  of groups by \autoref{thm:mono-surj-equiv}.
+\end{proof}
 
 \section{The Hopf fibration}
 \label{sec:hopf}

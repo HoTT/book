@@ -1,4 +1,48 @@
-\documentclass[twopage,11pt]{book}
+% This is the main LaTeX file for the HoTT book.
+
+% This file supports two book sizes:
+% - Letter size (8.5" x 11")
+% - US Trade size (6" x 9")
+%
+% To activate one or the other, uncomment the appropriate font size in
+% the documentclass below, and then one of the two page geometry incantations
+%
+% NOTE: The 6" x 9" format is only experimental. It will break the
+% title page, for example.
+
+% DOCUMENT CLASS
+\documentclass[twopage,
+%10pt % for US Trade 6" x 9" book
+11pt % for Letter size book
+]{book}
+
+% PAGE GEOMETRY
+%
+% Uncomment one of these
+
+% We make the page 40pt taller than the standard LaTeX book.
+
+% OPTION 1: Letter
+\usepackage[papersize={8.5in,11in},
+            twoside,
+            includehead,
+            top=1in,
+            bottom=1in,
+            inner=0.75in,
+            outer=1.0in,
+            bindingoffset=0.35in]{geometry}
+
+% OPTION 2: US Trade
+% \usepackage[papersize={6in,9in},
+%             twoside,
+%             includehead,
+%             top=0.75in,
+%             bottom=0.75in,
+%             inner=0.5in,
+%             outer=0.75in,
+%             bindingoffset=0.35in]{geometry}
+
+% HYPERLINKING AND PDF METADATA
 
 \usepackage[pagebackref,
             colorlinks,
@@ -9,6 +53,8 @@
             pdftitle={Homotopy Type Theory: Univalent Foundations of Mathematics},
             pdfsubject={Mathematics},
             pdfkeywords={type theory, homotopy theory, univalence axiom}]{hyperref}
+
+% OTHER PACKAGES
 
 % Use this package and stick \layout somewhere in the text to see
 % page margins, text size and width etc. Useful for debugging page format.
@@ -28,15 +74,8 @@
 
 \usepackage{graphicx}
 \usepackage{comment}
-% for type setting urls
-\usepackage{url}
 
 %\usepackage{wallpaper} % For the background image on the cover page
-
-% We set a bindingoffset so that extra space for binding is provided.
-% This also makes the page look more symmetric when the book is not bound.
-% We make the page 40pt taller than the standard LaTeX book.
-\usepackage[text={405pt,596pt},twoside,bindingoffset=1.25cm]{geometry}
 
 \usepackage{fancyhdr} % To set headers and footers
 
@@ -54,18 +93,17 @@
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathmorphing}
 
-\usepackage{etoolbox}           % get \apptocmd for bibliography
-% tell bibliography to get itself into the table of contents
-\apptocmd{\thebibliography}{
-  \markboth{}{\textsc{Bibliography}}
-  \renewcommand{\markboth}[2]{}
-  \addcontentsline{toc}{part}{\bibname}}{}{}
+\usepackage{etoolbox}           % why is this needed?
 
 \usepackage{mathpartir}         % for formal.tex appendix, section 3
 
 \usepackage[numbered]{bookmark} % add chapter/section numbers to the toc in the pdf metadata
 
 \input{macros}
+
+%%%% Indexing
+\usepackage{makeidx}
+\makeindex
 
 %%%% Header and footers
 \pagestyle{fancyplain}
@@ -77,9 +115,14 @@
       {\fancyplain{}{\nouppercase{\rightmark}}}
 \rhead[\fancyplain{}{\nouppercase{\leftmark}}]%
       {\fancyplain{}{\thepage}}
-\cfoot{\textsc{\footnotesize [Draft of \today]}}
+\cfoot{\textsc{\scriptsize \textcolor{gray}{[Draft of \today]}}}
 \lfoot[]{}
 \rfoot[]{}
+
+%%%% Chapter & part style
+\usepackage{titlesec}
+\titleformat{\part}[display]{\fontsize{40}{40}\fontseries{m}\fontshape{sc}\selectfont}{\hfil\partname\ \Roman{part}}{20pt}{\fontsize{60}{60}\fontseries{b}\fontshape{sc}\selectfont\hfil}
+\titleformat{\chapter}[display]{\fontsize{23}{25}\fontseries{m}\fontshape{it}\selectfont}{\chaptertitlename\ \thechapter}{20pt}{\fontsize{35}{35}\fontseries{b}\fontshape{rm}\selectfont}
 
 % To avoid compiling stuff other than what you're working on right
 % now, uncomment the following command and give your file as its
@@ -156,10 +199,25 @@
 
 \include{formal}
 
-% Bibliography
+\backmatter
 
+% Bibliography
+\phantomsection % black magic to get TOC to point to correct page
+\addcontentsline{toc}{part}{\bibname}
 \bibliographystyle{abbrvnat}
+\markboth{}{\textsc{Bibliography}}
+\renewcommand{\markboth}[2]{}
 \bibliography{references}
+
+\cleartooddpage
+
+% Index
+% tell the index to get itself into the table of contents
+\phantomsection % black magic to get TOC to point to correct page
+\markboth{}{\textsc{Index}}
+\renewcommand{\markboth}[2]{}
+\addcontentsline{toc}{part}{Index}
+\printindex
 
 % This is commented out because we are going to have a separate
 % page document for cover, spine and back.

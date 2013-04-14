@@ -383,7 +383,7 @@ with defining equation
   f(a,\refl{a})\defeq d.
 \]
 
-\subsection{Algorithmic and semantic issues}
+\subsection{Algorithmic and semantic properties}
 
 \message{Thierry and Peter can now start re-writing this section.  The
   following text is old.}
@@ -518,15 +518,18 @@ Type theory has three basic judgments:
 
 We define these judgments inductively using inference rules. In the notation of
 this section, to conclude the judgment below the horizontal line, it is
-necessary to prove the judgments above the line. A valid derivation of a
+necessary to prove the judgments above the line. For clarity, each rule has a
+name displayed to the right of the horizontal line.
+
+A valid derivation of a
 judgment is a tree constructed from these inference rules, whose final
 conclusion is the judgment in question, and none of whose component rules has
 unresolved hypotheses. (In other words, all the leaves of the tree must be
 instances of the only rule with no hypotheses, namely
 $\ctx\text{-}\textsc{emp}$.)
 
-For example, the following is part of a derivation of $\oftp{\emptyctx}{\lamu{x:\unit}
-x}{\unit\to\unit}$ (a copy of the missing part is visible on the left hand side).
+For example, the following is a derivation of $\oftp{\emptyctx}{\lamu{x:\unit}
+x}{\unit\to\unit}$.
 \begin{mathpar}
   \def\deriveemptycontext{\inferrule*[right=\ctx-\textsc{emp}] {\ } {\wfctx {\emptyctx}}}
   \def\deriveunitform{\inferrule*[right=$\unit$-\form] \deriveemptycontext {\oftp{}{\unit}{\UU_0}}}
@@ -537,7 +540,7 @@ x}{\unit\to\unit}$ (a copy of the missing part is visible on the left hand side)
            \derivexisoftypeunit
            {\oftp{\tmtp x\unit}{\unit}{\UU_0}} \\
         \inferrule*[right=$\Vble$]
-           \vdots % \derivexisoftypeunit
+           \derivexisoftypeunit
            {\oftp{\tmtp x\unit}{x}{\unit}}}
      {\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}}
 \end{mathpar}
@@ -840,7 +843,7 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
   \def\premise{
      \oftp{\Gm,\tmtp x{\N}}{C}{\UU_i} \\
      \oftp\Gm{c_0}{C[0/x]} \\
-     \oftp{\Gm,\tmtp{x'}\N,\tmtp y C}{c_s}{C[\suc(x')/x]}}
+     \oftp{\Gm,\tmtp{x}\N,\tmtp y C}{c_s}{C[\suc(x)/x]}}
   \inferrule*[right=$\N$-\form]
   {\wfctx\Gm}
   {\oftp\Gm{\N}{\UU_i}}
@@ -855,17 +858,17 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
 \and
   \inferrule*[right=$\N$-\elim]
   {\premise \\\\ \oftp\Gm{n}{\N}}
-  {\oftp\Gm{\ind{\N}(x.C,c_0,x'.y.c_s,n)}{C[n/x]}}
+  {\oftp\Gm{\ind{\N}(x.C,c_0,x.y.c_s,n)}{C[n/x]}}
 \and
   \inferrule*[right=$\N$-\comp${}_1$]
   {\premise}
-  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,x'.y.c_s,0)}{c_0}{C[0/x]}}
+  {\jdeqtp\Gm{\ind{\N}(x.C,c_0,x.y.c_s,0)}{c_0}{C[0/x]}}
 \and
   \inferrule*[right=$\N$-\comp${}_2$]
   {\premise \\\\ \oftp\Gm{n}{\N}}
-  {\Gm\vdash \ind{\N}(x.C,c_0,x'.y.c_s,\suc(n))
+  {\Gm\vdash \ind{\N}(x.C,c_0,x.y.c_s,\suc(n))
    \hspace{2.3cm}\\ \hspace{2.3cm}\equiv
-   c_s[n,\ind{\N}(x.C,c_0,x'.y.c_s,n)/x,y] : C[\suc(n)/x]}
+   c_s[n,\ind{\N}(x.C,c_0,x.y.c_s,n)/x,y] : C[\suc(n)/x]}
 \end{mathparpagebreakable}
 
 In $\ind{\N}$, $x$ is bound in $C$, and $x$ and $y$ are bound in $c_s$.
@@ -889,6 +892,7 @@ referred to as $\eta$-equivalence rules, but these are derivable propositional
 equalities, and so need not be asserted as part of the type theory.
 
 \subsection{Definitions}
+
 
 
 
@@ -939,7 +943,7 @@ in \autoref{sec:dependent-paths}.
 
 In $\ind{\Sn^1}$, $x$ is bound in $C$.  The notation ${\dpath C \lloop b b}$ for dependent paths was introduced in \autoref{sec:dependent-paths}.
 
-\subsection{HoTT axioms}
+\subsection{Axioms for homotopy type theory}
 
 There are two basic ways of introducing axioms such as function extensionality,
 univalence, or any other axiom which does not introduce new syntax or new

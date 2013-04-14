@@ -93,7 +93,7 @@
 \usepackage{tikz}
 \usetikzlibrary{decorations.pathmorphing}
 
-\usepackage{etoolbox}           % why is this needed?
+\usepackage{etoolbox}           % hacking commands for TOC
 
 \usepackage{mathpartir}         % for formal.tex appendix, section 3
 
@@ -191,7 +191,29 @@
 
 \include{reals}
 
-% Appendix
+%%%% Appendix
+% We use magic to get the appendix look like Bibliography and Index
+\newcommand{\ignoring}[3]{}
+\makeatletter
+\newcommand{\appchapter}[1]{%
+  \begingroup
+  % Hack the looks
+  \titleformat{\chapter}[display]{\fontsize{23}{25}\fontseries{m}\fontshape{it}\selectfont}{\chaptertitlename}{20pt}{\fontsize{35}{35}\fontseries{b}\fontshape{rm}\selectfont}
+  % Hack TOC appearance
+  \patchcmd{\@chapter}
+   {\addcontentsline{toc}{chapter}}
+   {\addcontentsline{toc}{part}}
+   {}{}
+  \patchcmd{\@chapter}
+   {\addcontentsline{toc}{chapter}}
+   {\addcontentsline{toc}{part}}
+   {}{}
+  % Start appendix as a chapter
+  \chapter{#1}
+  \endgroup
+}
+\makeatother
+
 \appendix
 
 \renewcommand{\chaptermark}[1]{\markboth{\textsc{Appendix. \thechapter. #1}}{}}
@@ -199,9 +221,7 @@
 
 \include{formal}
 
-\backmatter
-
-% Bibliography
+%%%% Bibliography
 \phantomsection % black magic to get TOC to point to correct page
 \addcontentsline{toc}{part}{\bibname}
 \bibliographystyle{abbrvnat}

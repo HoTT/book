@@ -476,8 +476,9 @@ in normal form, the typing relation is {\em decidable}, and identifying type-che
 \newcommand{\Vble}{\mathsf{Vble}}
 \newcommand{\Exch}{\mathsf{Exch}}
 \newcommand{\Subst}{\mathsf{Subst}}
-
-\let\syn\mathsf
+% axioms
+\newcommand{\isequivhapply}{\isequiv\text{-}\happly}
+\newcommand{\isequividtoeqv}{\isequiv\text{-}\idtoeqv}
 
 A remark for experts---the following comprises a fairly standard presentation of
 intensional Martin-L\"{o}f type theory, with some additional features needed in
@@ -516,9 +517,9 @@ Type theory has three basic judgments:
 \jdeqtp\Gm{a}{a'}{A}
 \end{mathpar}
 
-We define these judgments inductively using inference rules. In the notation of
-this section, to conclude the judgment below the horizontal line, it is
-necessary to prove the judgments above the line. For clarity, each rule has a
+We will define these judgments inductively using inference rules. In the
+notation of this section, to conclude the judgment below the horizontal line, it
+is necessary to prove the judgments above the line. For clarity, each rule has a
 name displayed to the right of the horizontal line.
 
 A valid derivation of a
@@ -893,8 +894,27 @@ equalities, and so need not be asserted as part of the type theory.
 
 \subsection{Definitions}
 
+Although this section's formalism allows us to construct functions out of
+inductive types without defining new constants, we would still like to define
+named constants like $\isequiv$ as a matter of convenience. Informally, we can
+think of these constants as abbreviations of their definitions, but the
+situation is a bit more subtle than this. 
 
+For example, consider function composition, which we say takes $f:A\to B$ and
+$g:B\to C$ to $g\circ f:A\to C$. But for $\circ$ to work for any such $f,g$, we
+must abstract not only over the functions $f,g$ but also the types $A,B,C$:
+\[ \circ \defeq \lam{A:\UU_i}{B:\UU_i}{C:\UU_i}{g:B\to C}{f:A\to B}{x:A} g(f(x)) \]
+On the other hand, we don't want to annotate each application of $\circ$ with
+applications to $A,B,C$. Thus, $\circ$ does not, strictly speaking, stand for
+its precise definition; its suppressed arguments, which can be inferred from
+$f,g$, are called \emph{implicit arguments}.
 
+Implicit argument inference, typical ambiguity (\autoref{sec:universes}),
+ensuring that symbols are only defined once, etc., are collectively called
+\emph{elaboration}. Elaboration must take place prior to typechecking, and is
+thus not usually presented as part of the core type theory. However, it is
+essentially impossible to use any implementation of type theory which does not
+perform robust elaboration.
 
 \subsection{The circle type}
 
@@ -954,103 +974,74 @@ are essentially equivalent, we choose the former approach because we consider
 these axioms of homotopy type theory to be part of the core theory, always
 present.
 
-We begin by introducing some abbreviations that allow us to state the function
-extensionality axiom and the univalence axiom.
+In order to state the function extensionality and univalence axioms, we begin by
+recalling some auxiliary definitions.
 
-The rule 
-\begin{mathparpagebreakable}
-  \inferrule*[]
-  {\oftp \Gm f {A \to B} \\ \oftp \Gm x A  \\ \oftp \Gm y A }
-  {\oftp \Gm {\apfunc f} {(\id[A] x y) \to (\id[B] {f(x)} {f(y)})}}
-\end{mathparpagebreakable}
-is derivable from the others if, as in \autoref{lem:map}, we let $\apfunc f$ serve as an abbreviation for 
+In \autoref{lem:map}, we defined the functorial action of $f:A\to B$ on a path
+$p:\id[A] xy$ as
 \[
-  \lamu{p:\id[A] x y} \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p )
+\apfunc f(p) \defeq \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p )
+\]
+%
+In \autoref{ex:composition}, we defined the composition of $g:B\to C$ after
+$f:A\to B$ as
+\[ g \circ f \defeq \lamu{x:A} g(f(x)) \]
+%
+In \autoref{defn:homotopy}, we said $f,f':A\to B$ are homotopic ($f\htpy f'$) if
+\[ \prd{x:A} \id[B] {f(x)} {g(x)} \]
+%
+In \autoref{defn:ishae}, we said $f:A\to B$ is a half-adjoint equivalence
+($\ishae(f)$) when
+\[
+\sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]} \prd{x:A} \apfunc{f}{(\eta x)} = \epsilon(fx)
+\]
+%
+As in \autoref{sec:concluding-remarks}, we define $\isequiv(f) \defeq
+\ishae(f)$, and we say simply that $f$ is an equivalence. We write $\eqv AB$
+for the type of equivalences $\sm{f:A\to B} \isequiv(f)$.
+
+In \autoref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
+\[
+\happly_{f,g}(p) \defeq
+  \ind{\idsym_{\tprd{x:A} B}} (
+    f.g.p. {\prd{x:A} \id[B(x)]{f(x)}{g(x)}},
+    h. \lamu{x:A} \refl {h(x)},
+    f,g,p)
 \]
 
-Given $f:A \to B$ and $g : B \to C$, we let $g \circ f$ stand for the composite function $\lamu{x:A} g(f(x))$ of type $A \to C$.
-
-Given $f:A \to B$ and $g:A \to B$, recall that $f \htpy g$ stands for the type $\prd{x:A} \id[B] {f(x)} {g(x)}$; see \autoref{defn:homotopy}.
-
-The rule
-\begin{mathparpagebreakable}
-  \inferrule*[]
-  {\oftp \Gm A {\UU_i} \\ \oftp \Gm B {\UU_i} \\ \oftp \Gm f {A \to B}}
-  {\oftp \Gm {\ishae(A,B,f)} {\UU_i}}
-\end{mathparpagebreakable}
-is derivable from the others if we let $\ishae(A,B,f)$ (see \autoref{defn:ishae}) serve as an abbreviation for
-\[
-  \sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]} \prd{x:A} \apfunc{f}{(\eta x)} = \epsilon(fx)
-\]
-The type $\ishae(A,B,f)$ represents the proposition that the map $f : X \to Y$ is a
-half-adjoint equivalence.  As in \autoref{sec:concluding-remarks}, we let
-$\isequiv(A,B,f)$ serve as an abbreviation for $\ishae(A,B,f)$, and we say simply that
-$f$ is an equivalence.
-
-The rule
-\begin{mathparpagebreakable}
-  \inferrule*
-  {\oftp\Gm{f}{\tprd{x:A} B} \\
-   \oftp\Gm{g}{\tprd{x:A} B}}
-  {\oftp\Gm{\happly_{f,g}}{\id f g \to f \htpy g}}
-\end{mathparpagebreakable}
-is derivable from the others if we let $\happly_{f,g}$, introduced in
-\autoref{eq:happly}, serve as an abbreviation for
-\[
-  \lam{p:f=g} \ind{\idsym_{\tprd{x:A} B}} (
-        f.g.p. {\prd{x:A} \id[B(x)]{f(x)}{g(x)}},
-        h. \lamu{x:A} \refl {h(x)},
-        f,g,p)
-\]
-
-In order to assert the axiom of function extensionality (see
-\autoref{axiom:funext}), we introduce a new constant,
-${\isequiv\text{-}\happly}$, and the following new inference rule, which
-provides it with the desired type.
+Finally, we assert the axiom of function extensionality (\autoref{axiom:funext})
+by introducing a new constant, $\isequivhapply$, which asserts that for each
+$f,g$, $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\textsc{ext}]
   {\oftp\Gm{f}{\tprd{x:A} B} \\
    \oftp\Gm{g}{\tprd{x:A} B}}
-  {\oftp\Gm{\isequiv\text{-}\happly_{f,g}}{\isequiv(\id f g, f \htpy g,\happly_{f,g})}}
+  {\oftp\Gm{\isequivhapply(f,g)}{\isequiv(\happly_{f,g})}}
 \end{mathparpagebreakable}
 
-The rule
-\begin{mathparpagebreakable}
-  \inferrule*
-  {\oftp\Gm A {\UU_i} \\ \oftp\Gm B {\UU_i} }
-  {\oftp\Gm{(\eqv A B)}{\UU_i}}
-\end{mathparpagebreakable}
-is derivable from the others if, as in \autoref{sec:basics-equivalences}, we
-write $\eqv A B$ for the type of equivalences from $A$ to $B$, i.e., for the
-type
-\[ \sm{f:A\to B} \isequiv(A,B,f) \]
-
-The rule
-\begin{mathparpagebreakable}
-  \inferrule*[]
-  {\oftp \Gm A {\UU_i} \\ \oftp \Gm B {\UU_i} }
-  {\oftp \Gm {\idtoeqv(\UU_i,A,B)} {(\id[\UU_i] A B) \to (\eqv A B)}}
-\end{mathparpagebreakable}
-is derivable from the others if we let $\idtoeqv(\UU_i,A,B)$ (see \autoref{eq:uidtoeqv}) serve as an abbreviation for
+In \autoref{eq:uidtoeqv}, we defined the conversion from paths $\id[\UU_i] AB$
+to equivalences $\eqv AB$ as
 \[
-  \lamu{p:\id[\UU_i] A B}
-  \ind{\idsym_{\UU_i}}(
-        A.B.p.(\eqv A B),
-        A.{\tup {\lamu{x:A} x}
-                {\tup {\lamu{x:A} x}
-                      {\tup {\lamu{x:A} \refl x}
-                            {\tup {\lamu{x:A} \refl x}
-                                  {\lamu{x:A} \refl {\refl x}}}}}},
-        A,B,p)
+\idtoeqv_{A,B} \defeq
+\lamu{p:\id[\UU_i] A B}
+\ind{\idsym_{\UU_i}}(
+      A.B.p.(\eqv A B),
+      A.{\tup {\lamu{x:A} x}
+              {\tup {\lamu{x:A} x}
+                    {\tup {\lamu{x:A} \refl x}
+                          {\tup {\lamu{x:A} \refl x}
+                                {\lamu{x:A} \refl {\refl x}}}}}},
+      A,B,p)
 \]
 
-In order to assert the univalence axiom (see \autoref{axiom:univalence}), we introduce a new
-constant, ${\idtoeqv\text{-}\isequiv}$, and the following new inference rule.
+We assert the univalence axiom (\autoref{axiom:univalence}), by introducing a new
+constant, $\isequividtoeqv$, which asserts that for each $A,B$, $\idtoeqv_{A,B}$
+is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\UU_i$-\textsc{univ}]
   {\oftp\Gm{A}{\UU_i} \\
    \oftp\Gm{B}{\UU_i}}
-  {\oftp\Gm{\idtoeqv\text{-}\isequiv(\UU_i,A,B)}{\isequiv(\id[\UU_i] A B, \eqv A B, \idtoeqv(\UU_i,A,B))}}
+  {\oftp\Gm{\isequividtoeqv(A,B)}{\isequiv(\idtoeqv_{A,B})}}
 \end{mathparpagebreakable}
 
 \egroup

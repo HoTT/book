@@ -827,11 +827,11 @@ We conclude by observing:
 \label{sec:computational}
 
 In \autoref{cha:typetheory}, we introduced many ways to form new types: cartesian products, disjoint unions, dependent products, dependent sums, etc.
-In the previous sections of this chapter, we have seen that \emph{all} types in homotopy type theory behave like spaces or higher groupoids.
-Our goal in the rest of the chapter is to make explicit how this higher structure behaves, for particular types defined as in \autoref{cha:typetheory}.
+In \autoref{sec:equality,sec:functors,sec:fibrations}, we saw that \emph{all} types in homotopy type theory behave like spaces or higher groupoids.
+Our goal in the rest of the chapter is to make explicit how this higher structure behaves in the case of the particular types defined in \autoref{cha:typetheory}.
 
 It turns out that for many types $A$, the equality types $\id[A]xy$ can be characterized, up to equivalence, in terms of whatever data was used to construct $A$.
-For instance, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and $y\jdeq(b',c')$, then we have an equivalence
+For example, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and $y\jdeq(b',c')$, then we have an equivalence
 \begin{equation}\label{eq:prodeqv}
   \eqv{\Big((b,c)=(b',c')\Big)}{\Big((b=b')\times (c=c')\Big)}.
 \end{equation}
@@ -845,15 +845,29 @@ For instance, if $P(x) \jdeq B(x)\times C(x)$, then we have
 Finally, the type forming rules are also functorial, and if a function $f$ is built from this functoriality, then the operations $\apfunc f$ and $\apdfunc f$ can be computed based on the corresponding ones on the data going into $f$.
 For instance, if $g:B\to B'$ and $h:C\to C'$ and we define $f:B\times C \to B'\times C'$ by $f(b,c)\defeq (g(b),h(c))$, then modulo the equivalence~\eqref{eq:prodeqv}, we can identify $\apfunc f$ with ``$(\apfunc g,\apfunc h)$''.
 
-We will now state and prove theorems of this sort for all the basic type forming rules.
+The rest of this chapter will be devoted to stating and proving theorems of this sort for all the basic type forming rules, with one section for each basic type former.
+It is here that we encounter most clearly the defects of currently available type theories.
+As will become clear in later chapters, it would be most convienient and intuitive if these characterizations of identity types, transport, and so on were \emph{definitional} equalities.
+However, in the theory presented in \autoref{cha:typetheory}, the identity types are defined simultaneously for all types by their induction principle, so we cannot ``redefine'' them to be different things at different types.
+Thus, the characterizations for particular types to be discussed in this chapter are, for the most part, \emph{theorems} which we have to discover and prove.
 
-\begin{rmk}\label{rmk:computational-hope}
-  In the type theory we are working with, identity types are defined simultaneously for all types by their induction principle.
-  The characterizations for particular types to be discussed in this chapter are then theorems which we have to discover and prove.
-  An alternative presentation of type theory might take these characterizations as \emph{definitions} of the identity types (by induction over the construction of types), with the general induction principle then being provable.
-  While such a type theory has not yet been made precise except in very simple cases, it is still helpful to think of the rules to be presented in this section as ``computation'' rules for ``evaluating'' identity types, transport, and function application.
-  It is important to note, though, that not \emph{all} identity types can be ``defined'' by induction over the construction of types; counterexamples include most nontrivial higher inductive types (see \autoref{cha:hits,cha:homotopy}).
-\end{rmk}
+Actually, the type theory of \autoref{cha:typetheory} is insufficient to prove the desired theorems for two of the type formers: $\Pi$-types and universes.
+For this reason, we are forced to introduce \emph{axioms} (c.f.~\autoref{sec:axioms}) into our type theory, in order to make those ``theorems'' true.
+The axiom for $\Pi$-types (\autoref{sec:compute-pi}) is familiar to type theorists: it is called \emph{function extensionality}, and states (roughly) that if two functions are homotopic in the sense of \autoref{sec:basics-equivalences}, then they are equal.
+The axiom for universes, however (\autoref{sec:compute-universe}), is a new contribution of homotopy type theory due to Voevodsky: it is called the \emph{univalence axiom}, and states (roughly) that if two types are equivalent in the sense of \autoref{sec:basics-equivalences}, then they are equal.
+We have already remarked on this axiom in the introduction; it will play a very important role in this book.
+
+As remarked in \autoref{sec:axioms}, type theory is better-behaved if we can base it entirely on rules rather than asserting axioms.
+Moreover, it is inconvenient that the characterizations to be presented below are only propositional equalities (paths) or equivalences, since then we must explicitly mention whenever we pass back and forth across them.
+A direction of current research in homotopy type theory is to describe a type system in which these rules are \emph{definitional} equalities, solving both of these problems at once.
+So far this has only been done in some simple cases, although these preliminary results are promising.
+But for the moment, we are stuck with using the type theories we have.
+However, it is still helpful to think of the rules to be presented in this section as ``computation'' rules for ``evaluating'' identity types, transport, and function application.
+
+It is important to note, though, that not \emph{all} identity types can be ``defined'' by induction over the construction of types.
+Counterexamples include most nontrivial higher inductive types (see \autoref{cha:hits,cha:homotopy}).
+For instance, calculating the identity types of the types $\Sn^n$ (see \autoref{sec:circle}) is equivalent to calculating the higher homotopy groups of spheres, a deep and important field of research in algebraic topology.
+
 
 \section{Cartesian product types}
 \label{sec:compute-cartprod}
@@ -1154,7 +1168,7 @@ For the moment, therefore, we will assume:
 \end{axiom}
 
 We will see in later chapters that this axiom follows both from univalence (see \autoref{sec:compute-universe} and \autoref{sec:univalence}) and from an interval type (see \autoref{sec:interval}).
-Moreover, it could be more naturally built into a computational version of homotopy type theory, as envisioned in \autoref{rmk:computational-hope}.
+Moreover, it could be more naturally built into a computational version of homotopy type theory, as mentioned in \autoref{sec:computational}.
 
 In particular,~\eqref{eq:happly} has a quasi-inverse
 \[
@@ -1577,7 +1591,8 @@ We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
   \[ \code(\suc(m),\suc(n))\jdeq\code(m,n) \xrightarrow{\decode(m,n)} (m=n) \xrightarrow{\apfunc{\suc}} (\suc(m)=\suc(n)). \]
   Next we show that $\encode(m,n)$ and $\decode(m,n)$ are quasi-inverses for all $m,n$.
 
-  On one hand, if we start with $p:m=n$, then by induction on $p$ it suffices to show $\decode(n,n,\encode(n,n,\refl{n}))=\refl{n}$.
+  On one hand, if we start with $p:m=n$, then by induction on $p$ it suffices to show
+  \[\decode(n,n,\encode(n,n,\refl{n}))=\refl{n}.\]
   But $\encode(n,n,\refl{n}) \jdeq r(n)$, so it suffices to show that $\decode(n,n,r(n)) =\refl{n}$.
   We can prove this by induction on $n$.
   If $n\jdeq 0$, then $\decode(0,0,r(0)) =\refl{0}$ by definition of \decode.
@@ -1620,7 +1635,7 @@ In \autoref{cha:homotopy} we will see that the same technique used here to chara
 \section{Universal properties}
 \label{sec:universal-properties}
 
-By combining the path computation rules described in \autoref{sec:computational}, we can show that various type forming operations satisfy the expected universal properties.
+By combining the path computation rules described in the preceeding sections, we can show that various type forming operations satisfy the expected universal properties.
 For instance, given types $X,A,B$, we have a function
 \begin{equation}
   (X\to A\times B) \;\to \; (X\to A)\times (X\to B)\label{eq:prod-ump-map}
@@ -1694,7 +1709,7 @@ If we read $\Sigma$ as ``there exists'' and $\Pi$ (sometimes) as ``for all'', we
 \end{itemize}
 Thus, \autoref{thm:ttac} says that not only is the axiom of choice ``true'', it hypotheses are equivalent to its conclusion.
 (On the other hand, the classical mathematician may find that~\eqref{eq:sigma-ump-map} does not carry the usual meaning of the axiom of choice, since we have already specified the values of $g$, and there are no choices left to be made.
-We will return to this point in \autoref{sec:logic}.)
+We will return to this point in \autoref{sec:axiom-choice}.)
 
 The above universal property for pair types is for ``mapping in'', which is familiar from the category-theoretic notion of products.
 However, pair types also have a universal property for ``mapping out'', which may look less familiar.
@@ -1753,27 +1768,6 @@ The simple conclusions in \crefrange{sec:compute-coprod}{sec:compute-nat} such a
 The more refined approach we have described, which characterizing the entire identity type of a positive type (up to equivalence), is a more recent development; see e.g.~\cite{ls:pi1s1}.
 
 The type-theoretic axiom of choice~\eqref{eq:sigma-ump-map} was noticed in William Howard's original paper~\cite{howard:pat} on the propositions-as-types correspondence, and was studied further by Martin-L\"of with the introduction of his dependent type theory.  It is mentioned as a ``distributivity law" in Bourbaki's set theory \cite{Bourbaki}.
-
-The fact that it is possible to define sets, mere propositions, and contractible types in type theory, with all higher homotopies automatically taken care of as in \autoref{sec:basics-sets,subsec:hprops,sec:contractibility}, was first observed by Voevodsky.
-In fact, he defined the entire hierarchy of $n$-types by induction, as we will do in \autoref{cha:hlevels}.
-
-\autoref{thm:not-dneg,thm:not-lem} rely in essense on a classical theorem of Hedberg, which we will prove in \autoref{cha:hlevels}.
-The implication that the propositions-as-types form of LEM contradicts univalence was observed by Martin Escardo on the Agda mailing list.
-The proof we have given of \autoref{thm:not-dneg} is due to Thierry Coquand.
-
-The propositional truncation was introduced in the extensional type theory of
-NuPRL in 1983 by Constable~\cite{Con85} as an
-application of ``subset'' and ``quotient'' types.  What is here called the
-``propositional truncation'' was called ``squashing'' in the NuPRL type theory~\cite{constable+86nuprl-book}.
-Rules characterizing the propositional truncation directly, still in extensional type theory, were given in~\cite{ab:bracket-types}.
-The intensional version in homotopy type theory was constructed by Voevodsky using an impredicative quantification, and later by Lumsdaine using higher inductive types (see \autoref{sec:hittruncations}).
-
-The adverb ``purely'' as used to refer to untruncated logic is a reference to the use of monadic modalities to model effects in programming languages.
-A computation is said to be \emph{pure} if its execution results in no side effects (such as printing a message to the screen, playing music, or sending data over the Internet).
-There exist ``purely functional'' programming languages, such as Haskell, in which it is technically only possible to write pure functions: side effects are represented by applying ``monads'' to output types.
-For instance, a function of type $\mathsf{Int}\to\mathsf{Int}$ is pure, while a function of type $\mathsf{Int}\to \mathsf{IO}(\mathsf{Int})$ may perform input and output along the way to computing its result.
-Inside of type theory, the propositional truncation $\brck-$ is also a monad, as are the more general modalities one might consider replacing it with; thus it makes sense to call a type \emph{pure} when no such modality is present.
-
 
 \sectionExercises
 

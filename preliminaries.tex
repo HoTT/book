@@ -276,7 +276,7 @@ $(\lamu{x:A} b)(a) \jdeq b'$, where $b' $ is obtained by replacing all
 occurences of $x$ in $b$ by $a$.
 Similarly, we have $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
 
-An example of a dependent function is $\fmax : \prd{x:\nat} \Fin(n+1)$
+An example of a dependent function is $\fmax : \prd{n:\nat} \Fin(n+1)$
 which returns the largest element in a nonempty finite type, $\fmax(n) \defeq
 n_{n+1}$. 
 Another source of dependent function types
@@ -389,7 +389,7 @@ Induction is also called the \emph{(dependent) eliminator} of the product type, 
 % We can read induction propositionally as saying that a property which
 % is true for all pairs holds for all elements of the product type.
 
-Induction for the unit type turns out to be more useful then the
+Induction for the unit type turns out to be more useful than the
 recursor: 
 \[ \ind{\unit} : \prd{C:\unit \to \UU'} C(\star) \to \prd{x:\unit}C(x)\]
 with the defining equation
@@ -845,7 +845,7 @@ The observation which makes this identification feasible is that we have the fol
 \end{tabular}
 \end{center}
 
-The point of the corrspondence is that in each case, the rules for constructing and using elements of the type on the right correspond to the rules for reasoning about the proposition on the left.
+The point of the correspondence is that in each case, the rules for constructing and using elements of the type on the right correspond to the rules for reasoning about the proposition on the left.
 For instance, the basic way to prove a statement of the form ``$A$ and $B$'' is to prove $A$ and also prove $B$, while the basic way to construct an element of $A\times B$ is as a pair $(a,b)$, where $a$ is an element (or witness) of $A$ and $b$ is an element (or witness) of $B$.
 Similarly, the basic way to prove an implication ``if $A$ then $B$'' is to assume $A$ and prove $B$, while the basic way to construct an element of $A\to B$ is to give an expression which denotes an element (witness) of $B$ which may involve an unspecified variable element (witness) of type $A$.
 
@@ -959,6 +959,18 @@ The next two sentences fill the other hole in the obvious way:
 Of course, the English proofs we have been using as examples are much more verbose than those that mathematicians usually use in practice; they are more like the sort of language one uses in an ``introduction to proofs'' class.
 The practicing mathematician has learned to fill in the gaps, so in practice we can omit plenty of details; and we will generally do so.
 The criterion of validity for proofs, however, is always that they can be translated back into the construction of an element of the corresponding type.
+
+As a more concrete example, consider how to define inequalities of natural numbers.
+One natural definition is that $n\le m$ if there exists a $k:\nat$ such that $n+k=m$.
+(This uses again the identity types that we will introduce in the next section, but we will not need very much about them.)
+Under the propositions-as-types translation, this would yield:
+\[ (n\le m) \defeq \sm{k:\nat} (n+k=m) .\]
+The reader is invited to prove the familiar properties of $\le$ from this definition.
+For strict inequality, there are a couple of natural choices, such as
+\[ (n<m) \defeq \sm{k:\nat} (n+\suc(k)=m) \]
+or
+\[ (n<m) \defeq (n\le m) \times \neg(n=m). \]
+The former is more natural in constructive mathematics, but in this case it is actually equivalent to the latter, since $\nat$ has ``decidable equality'' (see \autoref{prop:nat-is-set}).
 
 Note that we can use the universes in type theory to represent ``higher order logic'' --- that is, we can quantify over all propositions or over all predicates.
 For example, we can represent the proposition \emph{for all properties $P : A \to \UU$, if $P(a)$ then $P(b)$} as

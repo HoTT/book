@@ -857,14 +857,9 @@ Type-theoretically, an \emph{axiom} (c.f.~\autoref{sec:axioms}) is an ``atomic''
 
 The axiom for $\Pi$-types (\autoref{sec:compute-pi}) is familiar to type theorists: it is called \emph{function extensionality}, and states (roughly) that if two functions are homotopic in the sense of \autoref{sec:basics-equivalences}, then they are equal.
 The axiom for universes, however (\autoref{sec:compute-universe}), is a new contribution of homotopy type theory due to Voevodsky: it is called the \emph{univalence axiom}, and states (roughly) that if two types are equivalent in the sense of \autoref{sec:basics-equivalences}, then they are equal.
-We have already remarked on this axiom in the introduction; it will play a very important role in this book.
-
-As remarked in \autoref{sec:axioms}, type theory is better-behaved if we can base it entirely on rules rather than asserting axioms.
-Moreover, it is inconvenient that the characterizations to be presented below are only propositional equalities (paths) or equivalences, since then we must explicitly mention whenever we pass back and forth across them.
-A direction of current research in homotopy type theory is to describe a type system in which these rules are \emph{definitional} equalities, solving both of these problems at once.
-So far this has only been done in some simple cases, although these preliminary results are promising.
-But for the moment, we are stuck with using the type theories we have.
-However, it is still helpful to think of the rules to be presented in this section as ``computation'' rules for ``evaluating'' identity types, transport, and function application.
+We have already remarked on this axiom in the introduction; it will play a very important role in this book.%
+\footnote{We have chosen to introduce these principles as axioms, but there are potentially other ways to formulate a type theory in which they hold.
+  See the Notes to this chapter.}
 
 It is important to note, though, that not \emph{all} identity types can be ``defined'' by induction over the construction of types.
 Counterexamples include most nontrivial higher inductive types (see \autoref{cha:hits,cha:homotopy}).
@@ -1169,14 +1164,13 @@ For the moment, therefore, we will assume:
   For any $A$, $B$, $f$, and $g$, the function~\eqref{eq:happly} is an equivalence.
 \end{axiom}
 
-We will see in later chapters that this axiom follows both from univalence (see \autoref{sec:compute-universe} and \autoref{sec:univalence}) and from an interval type (see \autoref{sec:interval}).
-Moreover, it could be more naturally built into a computational version of homotopy type theory, as mentioned in \autoref{sec:computational}.
+We will see in later chapters that this axiom follows both from univalence (see \autoref{sec:compute-universe,sec:univalence}) and from an interval type (see \autoref{sec:interval}).
 
-In particular,~\eqref{eq:happly} has a quasi-inverse
+In particular, \autoref{axiom:funext} implies that~\eqref{eq:happly} has a quasi-inverse
 \[
-\funext : \left(\prd{x:A} (\id{f(x)}{g(x)})\right) \to {(\id{f}{g})}
+\funext : \left(\prd{x:A} (\id{f(x)}{g(x)})\right) \to {(\id{f}{g})}.
 \]
-which is also called ``function extensionality''.
+This function is also referred to as ``function extensionality''.
 As we did with $\pairpath$ in \autoref{sec:compute-cartprod}, we can regard $\funext$ as an \emph{introduction rule} for the type $\id f g$.
 From this point of view, $\happly$ is the \emph{elimination rule}, while the homotopies witnessing $\funext$ as quasi-inverse to $\happly$ become a $\beta$-reduction rule
 \[
@@ -1290,8 +1284,6 @@ Thus, as we did for function extensionality, we formulate this property as an ax
 \eqv{(\id[\type]{A}{B})}{(\eqv A B)}.
 \]
 \end{axiom}
-%
-As with function extensionality, the univalence axiom could eventually be built into a more computational version of homotopy type theory.
 
 \begin{rmk}
   It is important for the univalence axiom that we defined $\eqv AB$ using a ``good'' version of $\isequiv$ as described in \autoref{sec:basics-equivalences}, rather than (say) as $\sm{f:A\to B} \qinv(f)$.
@@ -1761,10 +1753,19 @@ The possibility of extending this to the full untruncated theory is a subject of
 
 The naive form of function extensionality which says that ``if two functions are pointwise equal, then they are equal'' is a common axiom in type theory.
 Some stronger forms of function extensionality were considered in~\cite{garner:depprod}.
-The version we have used, which identifies the identity types of function types up to equivalence, was first studied by Voevodsky, who also proved that it is implied by the naive version.
+The version we have used, which identifies the identity types of function types up to equivalence, was first studied by Voevodsky, who also proved that it is implied by the naive version (and by univalence; see \autoref{sec:univalence}).
 
 The univalence axiom is also due to Voevodsky.
 It was originally motivated by semantic considerations; see~\cite{klv:ssetmodel}.
+
+In the type theory we are using in this book, function extensionality and univalence have to be assumed as axioms, i.e.\ elements asserted to belong to some type but not constructed according to the rules for that type.
+While serviceable, this has a few drawbacks.
+For instance, type theory is formally better-behaved if we can base it entirely on rules rather than asserting axioms.
+It is also sometimes inconvenient that the theorems of \crefrange{sec:compute-cartprod}{sec:compute-nat} are only propositional equalities (paths) or equivalences, since then we must explicitly mention whenever we pass back and forth across them.
+
+One direction of current research in homotopy type theory is to describe a type system in which these rules are \emph{definitional} equalities, solving both of these problems at once.
+So far this has only been done in some simple cases, although preliminary results such as~\cite{lh:canonicity} are promising.
+There are also other potential ways to introduce univalence and function extensionality into a type theory, such as having a sufficiently powerful notion of ``higher quotients'' or ``higher inductive-recursive types''.
 
 The simple conclusions in \crefrange{sec:compute-coprod}{sec:compute-nat} such as ``coproduct injections are injective and disjoint'' are well-known in type theory, and the construction of the function \encode is the usual way to prove them.
 The more refined approach we have described, which characterizing the entire identity type of a positive type (up to equivalence), is a more recent development; see e.g.~\cite{ls:pi1s1}.

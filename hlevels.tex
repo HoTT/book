@@ -1542,836 +1542,56 @@ suffices to show that the top square is a pullback. We have the equivalences
 \end{proof}
 
 
-\begin{comment}
-
 \section{Modalities}
 \label{sec:modalities}
 
-Since $n$-types form a reflective subuniverse for any $n\ge -2$, the theory of \autoref{sec:pullbacks,sec:pushouts} applies to them.
-However, $n$-types have additional properties not shared by other reflective subuniverses, particularly \autoref{thm:ntypes-sigma,thm:truncn-ind}.
-In fact, these two properties are equivalent to each other.
+Nearly all of the theory of $n$-types and connectedness can be done in much greater generality.
+This section will not be used in the rest of the book.
 
-\begin{thm}\label{thm:modal-char}
-  For a reflective subuniverse \P, the following are logically equivalent.
-  \begin{enumerate}
-  \item If $A:\P$ and $B:A\to \P$, then $\sm{x:A} B(x)$ is in \P.\label{item:mchr1}
-  \item for every $A:\type$, type family $B:\reflect A\to\P$, and function $g:\prd{a:A} B(\project(a))$, there exists $f:\prd{z:\reflect A} B(z)$ such that $f(\project(a)) = g(a)$ for all $a:A$.\label{item:mchr2}
-  \end{enumerate}
-\end{thm}
-\begin{proof}
-  Suppose~\ref{item:mchr1}.
-  Then in the situation of~\ref{item:mchr2}, the type $\sm{z:\reflect A} B(z)$ lies in $\P$, and we have $g':A\to \sm{z:\reflect A} B(z)$ defined by $g'(a)\defeq (\project(a),g(a))$.
-  Thus, we have $\ext(g'):\reflect A \to \sm{z:\reflect A} B(z)$ such that $\ext(g')(\project(a)) = (\project(a),g(a))$.
-
-  Now consider the functions $\proj2 \circ \ext(g') : \reflect A \to \reflect A$ and $\idfunc[\reflect A]$.
-  By assumption, these become equal when precomposed with $\project$.
-  Thus, by the universal property of $\reflect$, they are equal already, i.e.\ we have $p_z:\proj2(\ext(g')(z)) = z$ for all $z$.
-  Now we can define $f(z) \defeq \trans{p_z}{\proj2(\ext(g')(z))}$, and the second component of $\ext(g')(\project(a)) = (\project(a),g(a))$ yields $f(\project(a)) = g(a)$.
-
-  Conversely, suppose~\ref{item:mchr2}, and that $A:\P$ and $B:A\to\P$.
-  Let $h$ be the composite
-  \[ \reflect(\sm{x:A} B(x)) \xrightarrow{\reflect(\proj1)} \reflect A \xrightarrow{\opp{(\project_A)}} A. \]
-  Then for $z:\sm{x:A} B(x)$ we have
-  \begin{align*}
-    h(\project(z)) &= \opp\project(\reflect(\proj1)(\project(z)))\\
-    &= \opp\project(\project(\proj1(z)))\\
-    &= \proj1(z).
-  \end{align*}
-  Denote this path by $p_z$.
-  Now if we define $C:\reflect(\sm{x:A} B(x)) \to \type$ by $C(w) \defeq B(h(w))$, we have
-  \[ g \defeq \lam{z} \trans{p_z}{\proj2(z)} \;:\; \prd{z:\sm{x:A} B(x)} C(\project(z)). \]
-  Thus, the assumption yields $f:\prd{w:\reflect(\sm{x:A}B(x))} C(w)$ such that $f(\project(z)) = g(z)$.
-  Together, $h$ and $f$ give a function $k:\reflect(\sm{x:A}B(x)) \to \sm{x:A}B(x)$ defined by $k(w) \defeq (h(w),f(w))$, while $p_z$ and the equality $f(\project(z)) = g(z)$ show that $k$ is a retraction of $\project_{\sm{x:A}B(x)}$.
-  Therefore, $\sm{x:A}B(x)$ is in \P.
-\end{proof}
-
-Condition~\ref{item:mchr2} is a more familiar type-theoretic condition, which has the flavor of an induction principle.
-This flavor is strengthened if we rephrase it in the following way.
-Note that any reflective subuniverse can be characterized by the operation $\reflect:\type\to\type$ and the functions $\project_A:A\to \reflect A$, since we have $P(A) = \isequiv(\project_A)$.
-
-\begin{defn}\label{defn:modality}
-A \define{modality} is an operation $\modal:\type\to\type$ for which there are
-\begin{enumerate}
-\item functions $\mreturn^\modal_A:A\to\modal(A)$ for every type $A$.\label{item:modal1}
-\item for every $A:\type$ and every type family $B:\modal(A)\to\type$, a function\label{item:modal2}
-\begin{equation*}
-\ext:\big(\prd{a:A}\modal(B(\mreturn^\modal_A(a)))\big)\to\prd{z:\modal(A)}\modal(B(z)).
-\end{equation*}
-\item A path $\ext(f)(\mreturn^\modal_A(a)) = f(a)$ for each $f:\prd{a:A}\modal(B(\mreturn^\modal_A(a)))$.\label{item:modal3}
-\item For any $z,z':\modal(A)$, the function $\mreturn^\modal_{z=z'} : (z=z') \to \modal(z=z')$ is an equivalence.\label{item:modal4}
-\end{enumerate}
-We say that $A$ is \define{modal} for $\modal$ if $\mreturn^\modal_A:A\to\modal(A)$ is an equivalence, and we write
-\[\modaltype\defeq\sm{X:\type}\ismodal X\]
-for the type of modal types.
-\end{defn}
-
-Conditions~\ref{item:modal2} and~\ref{item:modal3} are very similar to \autoref{thm:modal-char}\ref{item:mchr2}, but phrased using $\modal B(z)$ rather than assuming $B$ to be valued in $\P$.
-This allows us to state the condition purely in terms of the operation $\modal$, rather than requiring the predicate $P:\type\to\prop$ to be given in advance.
-(It is not entirely satisfactor, since we still have to refer to $P$ not-so-subtly in clause~\ref{item:modal4}.
-We do not know whether~\ref{item:modal4} follows from~\ref{item:modal1}--\ref{item:modal3}.)
-However, the stronger-looking property of \autoref{thm:modal-char}\ref{item:mchr2} follows from \autoref{defn:modality}\ref{item:modal2} and~\ref{item:modal3}, since for any $C:\modal A \to \modaltype$ we have $C(z) \simeq \modal C(z)$, and we can pass back across this equivalence.
-
-As with other induction principles, this implies a universal property.
-
-\begin{thm}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
-Let $A$ be a type and let $B:\modal(A)\to\modaltype$. Then the function
-\begin{equation*}
-(-\circ \mreturn^\modal_A) : \Big(\prd{z:\modal(A)}B(z)\Big) \to \Big(\prd{a:A}B(\mreturn^\modal_A(a))\Big)
-\end{equation*}
-is an equivalence.
-\end{thm}
-\begin{proof}
-By definition, the operation $\ext$ is a right inverse to $(-\circ \mreturn^\modal_A)$.
-Thus, we only need to find a homotopy
-\begin{equation*}
-\prd{z:\modal(A)}s(z)= \ext(s\circ \mreturn^\modal_A)(z)
-\end{equation*}
-for each $s:\prd{z:\modal(A)}B(z)$, exhibiting it as a left inverse as well.
-By assumption, each $B(z)$ is modal, and hence each type $s(z)= R^\modal_X(s\circ \mreturn^\modal_A)(z)$
-is also modal.
-Thus, it suffices to find a function of type
-\begin{equation*}
-\prd{a:A}s(\mreturn^\modal_A(a))= \ext(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a)).
-\end{equation*}
-which follows straight from the definition of modalities.
-\end{proof}
-
-In particular, for every type $A$ and every modal type $B$, we have an equivalence $(\modal A\to B)\simeq (A\to B)$.
-
-\begin{cor}
-  For any modality $\modal$, the $\modal$-modal types form a reflective subuniverse satisfying the equivalent conditions of \autoref{thm:modal-char}.
-\end{cor}
-
-Thus, modalities can be identified with reflective subuniverses closed under $\Sigma$-types.
-The name \emph{modality} comes, of course, from \emph{modal logic}, which studies logic where we can form statements such as ``possibly $A$'' (usually written $\diamond A$) or ``necessarily $A$'' (usually written $\Box A$).
-The symbol $\modal$ is somewhat common for a monadic modal operator. % (rather than a specific one such as $\diamond$ or $\Box$).
-Under the propositions-as-types principle, of course, a modality corresponds to an operation on types, and \autoref{defn:modality} seems a reasonable candidate for how such an operation should be defined.
-More precisely, we should perhaps call these \emph{idempotent, monadic} modalities, but they will be the only kind we consider.
-
-
-
-\subsection{The principle of modal choice}\label{sec:ac_truncated}
-
-In this section generalize the principle of unique choice to a lemma we call the principle of modal
-choice, or simply $\mathsf{AC}_{\modal}$. We also introduce various degrees of surjectivity and see how they interact with modal choice.
-We will derive
-the principle of unique choice from the following more general discussion in \autoref{cor:auc}.
+Our first thought regarding generalizing the theory of $n$-types might be to take \autoref{thm:trunc-reflective} as a definition.
 
 \begin{defn}
-Suppose $P:A\to\type$ is a dependent type over a type $A$. We write $\{A\mid P\}\defeq\sm{A}{\brck{P}}$ and define:
-\begin{align*}
-\existsmodal(x:A),\ P(x) & \equiv \modal\sm{A}P\\
-\existsmodalunique(P) & \equiv  (\existsmodal(x:A),\ P(x))\times\ismodal(\{A\mid P\}).
-\end{align*}
+  A \textbf{reflective subuniverse} is a predicate $P:\type\to\prop$ such that
+  for every $A:\type$ we have a type $\reflect A$ such that $P(\reflect A)$ and a map
+  $\project_A:A\to\reflect A$, with the property that for every $B:\type$ with $P(B)$, the following map is an equivalence:
+  \[\function{(\reflect A\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}.\]
 \end{defn}
 
-\begin{lem}\label{lem:modal_Sigma}
- Suppose that $A$ is modal and for each $a:A$, $B (a)$ is modal. Then $\sm{a:A}B(a)$ is modal.
-\end{lem}
-\begin{proof}
-We first define a map $\modal \sm{a:A}B(a)\to \sm{a:A}B(a)$ and then show that it is inverse to $\eta$. Consider $\hat{\proj1}:\modal \sm{a:A}B(a)
-\to \modal A$. Because $A$ is modal, this gives us an element $a:A$. Combining this with $\hat{\proj2^a}:\modal \sm{a:A}B(a) \to \modal (B
-(a))$ and the modality of $B (a)$, we obtain an element of $\sm{a:A}B(a)$. It is easy to check that this is in fact an inverse.
-\end{proof}
+We write $\P \defeq \setof{A:\type | P(A)}$, so $A:\P$ means that $A:\type$ and we have $P(A)$.
+We also write $\rec{\modal}$ for the quasi-inverse of the above map.
+The notation $\reflect$ may seem slightly odd, but it will make more sense soon.
 
-\begin{lem}\label{lem:hlevel_sum_destructed}
-Let $P:A\to\modaltype$. If $\setof{a:A | \brck{P(a)} }$ is modal, then the total space $\sm{x:A} P(x)$ is modal.
-\end{lem}
-\begin{proof}
-Define $\tilde{P}:\{A\mid P\}\to \type$ by $\tilde{P}(a;p)\defeq P(a)$.
-Then $\sm{A}P\simeq \sm{\{A\mid P\}}{\tilde{P}}$. The latter is a sum of modal types and hence itself modal by lemma~\ref{lem:modal_Sigma}.
-\end{proof}
-
-\begin{lem}[Iota]\label{lem:iota}
-For every dependent type $P:A\to\modaltype$, there is a function
-\begin{equation*}
-\exists!_\modal(P)\to\sm{x:A} P(x).
-\end{equation*}
-\end{lem}
-
-\begin{proof}
-Since $\{A\mid P\}$ is modal, by \autoref{lem:hlevel_sum_destructed}, 
-it follows that $\sm{x:A} P(x)$ is modal, so there is
-an equivalence $\existsmodal(x:A),\ P(x)\simeq\sm{x:A}{P(x)}$.
-\end{proof}
-
-\begin{thm}[The principle of modal choice]
-Let $P:X\to\type$ and $R:\prd{x:X}(P(x)\to\modaltype)$. Then there is a function of type
-\begin{equation*}
-\prd{x:X} \existsmodalunique(R(x))\to\sum\big(f:\prd{x:X} P(x)\big)\prd{x:X} R(x,f(x)).
-\end{equation*}
-\end{thm}
-
-\begin{proof}
-Suppose that $\prd{x:X} \existsmodalunique(R(x))$. By \autoref{lem:iota}, 
-we can find a term of type $\sm{u:P(x)} R(x,u)$
-for every $x:X$. The statement now follows from the usual principle of choice.
-\end{proof}
-
-For truncation we obtain the principle of unique choice. 
-However, the of principle of unique choice is usually stated quite differently:
-the type $\ismodal(\{A\mid P\})$ may be replaced by the type
-\begin{equation*}
-\mathsf{atMostOne}(P) \equiv  \prd{x,y:A} P(x)\to P(y)\to(x= y)
-\end{equation*}
-However, a term of $\ism{-1}(P)$ can be deduced from a term of $\mathsf{atMostOne}(P)$. This is the content of the following
-lemma. In order to prove this, we will use that there is an equivalence
-\begin{equation*}
-\mathsf{isprop}(P)\simeq \prd{x,y:A} P(x)\to P(y)\to\iscontr(x= y)
-\end{equation*}
-This is not hard to verify, and a proof relies on the fact that $\pairr{x,u}=\pairr{x^\prime,u^\prime}$ is equivalent to the type
-$x= x^\prime$ for any two terms $\pairr{x,u},\pairr{x^\prime,u^\prime}:\sm{x:A}{\brck{P(x)}}$.
-
-% The following lemma will be used later on in the proof that images are strict coequalizers, see
-% proposition\ref{prop:images_are_coequalizers}.
-
-\begin{lem}\label{lem:atmostone_to_atlevel}
-For any $P:A\to\type$, there is a function of type
-\begin{equation*}
-\mathsf{atMostOne}(P)\to\ism{-1}(P).
-\end{equation*}
-\end{lem}
-
-\begin{proof}
-We will show that there is a function of type
-\begin{equation*}
-\mathsf{atMostOne}(P)\to\prd{x,y:A} P(x)\to P(y)\to\iscontr(x= y).
-\end{equation*}
-Let $H$ be a term of type $\mathsf{atMostOne}(P)$ and let $x,y:A$, $u:P(x)$ and $v:P(y)$. Our goal is to show that $x= y$ is
-contractible by showing that for any $p:x= y$ there is a path $p= H(x,y,u,v)$. The idea is that we apply $H$ to the paths $p$ and
-$H(x,y,u,v)$ to obtain a path between them. The following general statement is useful to compute the terms $H(p,z,u,w)$:
-
-\begin{lem}
-Suppose that $H:\prd{x,y:A} P(x)\to P(y)\to (x= y)$. Then for any $p:x= x^\prime$ and $q:y= y^\prime$ there are paths
-\begin{align*}
-(p\cdot H(x))(y,u^\prime,v) & = H(x,y,p^{-1}\cdot u^\prime,v)\ct p^{-1} & & [u^\prime:P(x^\prime),\ v:P(y)]\\
-(q\cdot H(x,y))(u,v^\prime) & = q\ct H(x,y,u,p^{-1}\cdot v^\prime) & & [u : P(x),\ v^\prime :P(y^\prime)].
-\end{align*} 
-\end{lem}
-The proof of this statement is by path induction. We see from the above that the path $H(p,H(x,y,u,v))$ induces a witness of the
-commutativity of the diagram
-\begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {x & y \\ x & y \\};
-\draw[patharrow] (m-2-2) -- node[below] {$p^{-1}$} (m-2-1);
-\draw[patharrow] (m-2-1) -- node[left]  {$H(x,x,u,u)$} (m-1-1);
-\draw[patharrow] (m-1-1) -- node[above] {$H(x,y,u,v)$} (m-1-2);
-\draw[patharrow] (m-2-2) -- node[right] {$H(y,y,v,v)$} (m-1-2);
-\end{tikzpicture}
-\end{equation*}
-Therefore, the assertion would follow if there is a function of type
-\begin{equation*}
-\mathsf{atMostOne}(P)\to\sm{H^\prime:\mathsf{atMostOne}(P)}{\prd{x:X}{u:P(x)}}H^\prime(x,x,u,u)=\idfunc{x}.
-\end{equation*}
-This is easy, since we can define the function $H^\prime:\prd{x,y:X} P(x)\to P(y)\to(x= y)$ by
-\begin{equation*}
-H^\prime(x,y,u,v)\equiv H(x,y,u,v)\ct H(x,x,u,u)^{-1}.\qedhere
-\end{equation*}
-\end{proof}
-
-\begin{defn}
-Suppose $P:A\to\type$ is a dependent type over $A$. We define
-\begin{equation*}
-\exists!(x:A),\ P(x)\equiv \brck{\sm{x:A}P(x)}\times\mathsf{atMostOne}(P).
-\end{equation*}
-\end{defn}
-
-\begin{cor}[The principle of unique choice]\label{cor:auc}
-Let $P:X\to\type$ and $R:\prd{x:X} (P(x)\to\mathsf{hProp})$. Then there is a function
-\begin{equation*}
-\big(\prd{x:X} \exists !(u:P(x)),\ R(x,u)\big) \to
-\sum \big(f:\prd{x:X} P(x)\big) \prd{x:X} R(x,f(x)).
-\end{equation*}
-\end{cor}
-
-
-\section{Reflective subuniverses}
-\label{subsec:reflective-subuniverses}
-
-So far, in this chapter, we have focused on $n$-types and the $n$-truncation operation.
-In fact, $n$-types and their truncation are a special case of a more general notion called a \emph{reflective subuniverse}, and many of
-their properties can be proven formally in this generality.
-
-\begin{defn}
-  A \textbf{subuniverse} of \type is a predicate $P:\type \to \prop$.
-  We write
-  \[\P \defeq \sm{A:\type} P(A).\]
-\end{defn}
-
-An inhabitant of $\P$ is a pair $(A,s)$ with $A:\type$ and $s:P(A)$, but we will often simply write it as $A$.
-Thus $A:\P$ means that $A:\type$ and $P(A)$ holds.
-For instance, $P$ could be \isprop, \isset, or more generally $\istype{n}$ for any $n\ge-2$, in which case \P would be \prop, \set, or
-$\typele{n}$.
-On the other hand, if $P(A)\defeq \unit$, then every type lies in \P, i.e.\ $\P=\type$.
-
-\begin{defn}
-  A subuniverse $\P$ of $\type$ is a \textbf{reflective subuniverse} if
-  for every $A:\type$ we have a type $\reflect(A):\P$ and a map
-  $\project_A:A\to\reflect(A)$ such that for every $A:\type$ and $B:\P$, the following map is an equivalence:
-  \[\function{(\reflect(A)\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}.\]
-\end{defn}
-
-The notation $\reflect$ for this operation may seem slightly odd, but it will make more sense after \autoref{sec:modalities}.
-
-In particular, reflectivity implies that for every $B:\P$ and $g:A\to{}B$ there is a unique map $\ext(g):\reflect(A)\to{}B$ making the following
-diagram commute (up to homotopy, of course).
-\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-\xymatrix{A \ar^{\project_A}[r] \ar_g[rd] \druppertwocell{=} & \reflect(A)
-  \ar@{-->}^{\ext(g)}[d] \\
-  & B}\]
-
-The universal property means that $\reflect$ is left adjoint to the inclusion
-$\iota:\P\to\type$ with $\project_A$ as the unit, because the last $B$ in the
-universal property can be replaced by $\iota(B)$ given that $B$ is in $\P$.
-
-One example is truncations, as defined in \autoref{sec:truncations}.
-\begin{lem}%[Truncations are reflective]
-  $\typele{n}$ is a reflective subuniverse of $\type$, with $\reflect$
-  given by $\trunc{n}{-}$.
-\end{lem}
-\begin{proof}
-  Immediate from the universal property of truncations, \autoref{thm:trunc-reflective}.
-\end{proof}
-
-\begin{lem}
-  Let \P be a subuniverse of \type. The assertion that \P is reflective is \anhprop.
-\end{lem}
-
-\begin{proof}
-  Let's assume that \P is reflective in two different ways
-  $(\reflect,\project,\ext)$ and $(\reflect',\project',\ext')$. We need to
-  construct an equivalence between $\reflect(A)$ and $\reflect'(A)$ for every
-  $A:\type$, and we need to prove that the following diagram commutes:
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd] \druppertwocell{=} &
-    \reflect(A) \ar@{->}^\sim[d] \\
-    & \reflect'(A)}\]
-  (We can ignore the components $\ext$ and $\ext'$, since they belong to mere propositions---the assertion that precomposing with $\project$
-and $\project'$ are equivalences.)
-
-  Now the type $\reflect'(A)$ is in \P, so we can define the map
-  \[\ext(\project'_A):\reflect(A)\to\reflect'(A)\]
-  which is exactly the map making the previous diagram commute.
-  We can also define
-  \[\ext'(\project_A):\reflect'(A)\to\reflect(A).\]
-  In order to prove that the composite is the identity, we only need to prove
-  that $\ext'(\project_A)\circ\ext(\project'_A)\circ\project_A=\project_A$,
-  which is the case:
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A \ar^{\project_A}[r] \ar_{\project'_A}[rd]
-    \ar@/_5mm/_{\project_A}[rdd] &
-    \reflect(A) \ar@{->}^{\ext(\project'_A)}[d] \\
-    & \reflect'(A) \ar@{->}^{\ext'(\project_A)}[d] \\
-    & \reflect(A)}\]
-  The other composite is just as easy.
-  Thus, $\ext'(\project_A)$ is a quasi-inverse of $\ext(\project'_A)$, so the latter is an equivalence as desired.
-\end{proof}
-
-For the rest of this section, we assume that $\P$ is a reflective subuniverse of
-$\type$.
-
-The following lemma says that the counit of the adjunction is an equivalence, as expected for a reflection.
-\begin{lem}
-  \label{reflectPequiv}
-  If $A:\P$, then the map $\project_A:A\to\reflect(A)$ is an equivalence.
-\end{lem}
-\begin{proof}
-  Given that $A$ is in $\P$, we can define $\ext(\idfunc[A]):\reflect(A)\to{}A$.
-
-  Then we have $\ext(\idfunc[A])\circ\project_A=\idfunc[A]:A\to{}A$ by
-  definition.  In order to prove that
-  $\project_A\circ\ext(\idfunc[A])=\idfunc[\reflect(A)]$, we only need to prove
-  that $\project_A\circ\ext(\idfunc[A])\circ\project_A=
-  \idfunc[\reflect(A)]\circ\project_A$.
-  This is again true:
-  \[\xymatrix{
-    A \ar^{\project_A}[r] \ar_{\idfunc[A]}[rd] &
-    \reflect(A) \ar^>>>{\ext(\idfunc[A])}[d] \ar@/^40pt/^{\idfunc[\reflect(A)]}[dd] \\
-    & A \ar_{\project_A}[d] \\
-    & \reflect(A)}\]
-\end{proof}
-
-Note that the converse is always true: if $\project_A$ is an equivalence, then $A:\P$.
-This is easy using univalence and the fact that $\reflect(A):\P$.
-
-The reflector $\reflect$ is a map $\type\to\P$, which (like any map in type theory) is a functor of $\infty$-groupoids.
-Using the universal property, we should be able to prove that $\reflect$ is in fact $(\infty,1)$-functorial, i.e.\ preserves composition of
-(not necessarily invertible) functions up to all higher homotopies.
-But we don't know how to express $(\infty,1)$-functoriality all at once, so we will only prove a few bits of it.
-
-\begin{defn}
-  If $f:A\to{}B$, there is a map $\reflect(f):\reflect(A)\to\reflect(B)$ defined
-  by
-  \begin{equation}
-    \reflect(f)\circ\project_A=\project_B\circ{}f\label{eq:project-natural}
-  \end{equation}
-  (or in other words $\reflect(f)=\ext(\project_B\circ{}f)$).
-\end{defn}
-
-\[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-\xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
-  \ar@{-->}^-{\reflect(f)}[d]
-  \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
-
-Moreover, this operation satisfies the following functoriality conditions:
-  \begin{align*}
-    \reflect(\idfunc[A])=\idfunc[\reflect(A)]\\
-    \reflect(f\circ{}g)=\reflect(f)\circ\reflect(g)
-  \end{align*}
-  In order to define these equalities, we only need to define them after
-  composition by $\project(A)$, because of the universal property.
-  The first is defined by
-  \[\xymatrix{
-    \reflect(\idfunc[A])\circ\project_A \ar@{==}[r] \ar@{=}[d] &
-    \idfunc[\reflect(A)]\circ\project_A \ar@{=}[d] \\
-    \project_A \ar@{=}[r] & \project_A
-  }\]
-  The second one is defined by
-  \[\xymatrix{
-    \reflect(f\circ g)\circ\project_A \ar@{==}[r] \ar@{=}[d] &
-    \reflect(f)\circ\reflect(g)\circ\project_A \ar@{=}[d] \\
-    \project_C\circ f\circ g \ar@{=}[r] & \reflect(f)\circ\project_B\circ g
-  }\]
-
-% \begin{proof}
-%   The map $\reflect(f)$ is defined to be the unique map
-%   $\reflect(A)\to\reflect(B)$ such that
-%   $\reflect(f)\circ\project_A=\project_B\circ{}f$ (using the universal property
-%   of $\reflect$), or in other words $\reflect(f)=\ext(\project_B\circ{}f)$.
-
-%   \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-%   \xymatrix{A \ar^-{\project_A}[r] \ar_-f[d] \drtwocell{=} & \reflect(A)
-%     \ar@{-->}^-{\reflect(f)}[d]
-%     \\ B \ar_-{\project_B}[r] & \reflect(B)}\]
-%   In order to prove that $\reflect(\idfunc[A])=\idfunc[\reflect(A)]$, we only
-%   need to prove that
-%   $\reflect(\idfunc[A])\circ\project_A=\idfunc[\reflect(A)]\circ\project_A$. But
-%   both sides are equal to $\project_A$.
-
-%   Similarly, to prove that $\reflect(f\circ{}g)=\reflect(f)\circ\reflect(g)$ we
-%   only need to prove that $\reflect(f\circ{}g)\circ\project_A=
-%   \reflect(f)\circ\reflect(g)\circ\project_A$ and both sides are equal to
-%   $\project_C\circ{}f\circ{}g$.
-
-%   Note that by definition, the following diagram commutes:
-
-%   \[\xymatrix{
-%     \reflect(f\circ g)\circ\project_A \ar@{=}[r] \ar@{=}[d] &
-%     \reflect(f)\circ\reflect(g)\circ\project_A \ar@{=}[d] \\
-%     \project_C\circ f\circ g \ar@{=}[r] & \reflect(f)\circ\project_B\circ g
-%     }\]
-% \end{proof}
-
-Note also that the defining equation~\eqref{eq:project-natural} asserts the first level of $(\infty,1)$-naturality for the transformation
-$\project$.
-This implies a generalization of \autoref{thm:h-level-retracts}.
-
-\begin{lem}\label{thm:reflsubuniv-retract}
-  A reflective subuniverse is closed under retractions.
-  That is, if $B$ is in $\P$ and $A$ is a retract of $B$, then $A$ is in $\P$.
-\end{lem}
-\begin{proof}
-  By functoriality and naturality, $\project_A$ is a retract of $\project_B$ in the sense of \autoref{defn:retract}.
-  But $\project_B$ is an equivalence, hence so is $\project_A$.
-  Thus, $A$ is in $\P$.
-\end{proof}
-
-We also have the following ``functoriality'' property for the factorizations.
-
-\begin{defn}
-  Given types $A,B:\type$ and any $C:\P$, for any functions $f:A\to{}B$ and $i:B\to{}C$ we have
-  \[\ext(i\circ{}f)=\ext(i)\circ\reflect(f)\]
-
-  \[\xymatrix{
-    A \ar^{\project_A}[r] \ar_f[d] & \reflect(A) \ar^{\reflect(f)}[d]
-    \ar@/^15mm/^{\ext(i\circ f)}[dd] \\
-    B \ar^{\project_B}[r] \ar_i[rd] & \reflect(B) \ar^{\ext(i)}[d] \\
-    & C}\]
-
-  This equality is defined by
-  \[\xymatrix{
-    \ext(i\circ f)\circ\project_A \ar@{==}[r] \ar@{=}[d] &
-    \ext(i)\circ\reflect(f)\circ\project_A \ar@{=}[d] \\
-    i\circ f \ar@{=}[r] & \ext(i)\circ\project_B\circ f
-  }\]
-
-\end{defn}
-
-% \begin{proof}
-%   \[\xymatrix{A \ar^{\project_A}[r] \ar_f[d] & \reflect(A) \ar^{\reflect(f)}[d]
-%     \\
-%     B \ar^{\project_B}[r] \ar_i[d] & \reflect(B) \ar^{\ext(i)}[ld] \\
-%     C &}\]
-
-%   We only have to prove that
-%   \[\ext(i\circ{}f)\circ\project_A=\ext(i)\circ\reflect(f)\circ\project_A\]
-%   which is the case, because they are both equal to $i\circ{}f$.
-% \end{proof}
-
-\section{Localizations}
-\label{sec:localizations}
-
-A wide class of reflective subuniverses can be obtained by the process of \emph{localization}.
-
-\begin{defn}
-  Let $I:\type$ and $A,B:I\to\type$, with $f:\prd{i:I} A_i \to B_i$.
-  A type $Z$ is \define{$f$-local} if for every $i:I$, the induced map
-  \[ (-\circ f_i) : (B_i \to Z) \to (A_i \to Z) \]
-  is an equivalence.
-  Thus, we have
-  \[ \islocal f (Z) \defeq \prd{i:I} \isequiv(-\circ f_i). \]
-\end{defn}
-
-\noindent
-Of course, $\islocal f: \UU\to \prop$ is a subuniverse.
-
-\begin{eg}
-  Let $I\defeq\unit$ and $A_{\ttt}\defeq\unit$, while $B_\ttt\defeq \Sn^{n+1}$, with $f_\ttt$ the unique map.
-  Then $(A_\ttt \to Z) \simeq Z$, and the fiber of $(-\circ f_\ttt)$ over $z:Z$ is equivalent to $\Omega^{n+1}(Z,z)$.
-  Thus, by \autoref{thm:ntype-nloop}, $Z$ is $f$-local exactly when it is an $n$-type.
-  (Although \autoref{thm:ntype-nloop} only applies to $n\ge 0$, this statement holds for $n=-1$ as well, recalling that $\Sn^0 = \bool$.)
-\end{eg}
-
-\begin{eg}
-  Let $p:\nat$ be a prime number and $I\subseteq \nat$ be the set of prime numbers other than $p$.
-  For $q:I$, let $A_q \defeq B_q \defeq \Sn^1$, and define $f_q:\Sn^1\to\Sn^1$ by $f_q(\base)\defeq\base$ and $\ap{f_q}{\lloop} \defid \lloop^q$.
-  Then $Z$ is $f$-local just when the map $(-)^q : \Omega(Z,z) \to \Omega(Z,z)$ is an equivalence for all $z:Z$ and $q:I$.
-  This is closely related to \emph{$p$-locality} in the sense of classical homotopy theory.
-\end{eg}
-
-We will show that the subuniverse of $f$-local types is always reflective.
-Given $X$, define $\loc f(X)$ to be the higher inductive type generated by:
+For any reflective subuniverse, we can prove all the familiar facts about reflective subcategories from category theory, in the usual way.
+For instance, we have:
 \begin{itemize}
-\item A map $\mreturn_X: X \to \loc f(X)$.
-\item For each $i:I$ and $g:A_i\to \loc f(X)$, a function $s_{i}(g):B_i \to \loc f(X)$.
-\item For each $i:I$ and $g:A_i\to \loc f(X)$, a function $r_{i}(g):B_i \to \loc f(X)$.
-\item For each $i:I$ and $g:A_i\to \loc f(X)$ and $a:A_i$, a path
-  \[\alpha_{i}(g,a):\id[\loc f(X)] {s_{i}(g)(f_i(a))}{g(a)}.\]
-\item For each $i:I$ and $h:B_i\to \loc f(X)$ and $b:B_i$, a path
-  \[\beta_i(h,b):\id[\loc f(X)]{r_{i}(h\circ f_i)(b)}{h(b)}.\]
+\item A type $A$ lies in $\P$ if and only if $\project_A:A\to\reflect A$ is an equivalence.
+\item $\P$ is closed under retracts.
+  In particular, $A$ lies in $\P$ as soon as $\project_A$ admits a retraction.
+\item The operation $\reflect$ is a functor in a suitable up-to-coherent-homotopy sense, which we can make precise at as high levels as necessary.
+\item The types in $\P$ are closed under all limits such as products and pullbacks.
+  In particular, for any $A:\P$ and $x,y:A$, the identity type $(x=_A y)$ is also in $\P$, since it is a pullback of two functions $\unit\to A$.
+\item Colimits in $\P$ can be constructed by applying $\reflect$ to ordinary colimits of types.
 \end{itemize}
 
-The idea is to start with $X$ and freely force all the functions $(-\circ f_i)$ to be equivalences.
-
-\begin{lem}\label{thm:localization-is-local}
-  For any $X$, the type $\loc f(X)$ is $f$-local.
-\end{lem}
-\begin{proof}
-  For any $i$, the operations $s_i$ and $r_i$ are a right and a left inverse to $(-\circ f_i)$, respectively.
-  (We use function extensionality, to make the homotopies arising from the last two constructors into paths in function types.)
-\end{proof}
-
-Instead of freely adding a left and a right inverse, we could have freely added a quasi-inverse by combining the constructors $s$ and $r$, but this would have been ill-behaved and not given us what we want.
-Rather than diving $s$ and $r$, we could also have solved that problem by adding a constructor for the half-adjoint coherence condition, but this would have been a 2-dimensional path, whereas the definition we have given is simpler, as it involves only 1-dimensional paths.
-
-The standard induction principle of $\loc f(X)$ applies to any $C:\loc f(X) \to \type$ with the following:
-\begin{itemize}
-\item A function $k:\prd{x:X} C(\mreturn(x))$.
-\item For each $i,g$ and $g':\prd{a:A_i} C(g(a))$, a function $s'_{i}(g,g'):\prd{b:B_i} C(s_i(g)(b))$.
-\item For each $i,g$ and $g':\prd{a:A_i} C(g(a))$, a function $r'_{i}(g,g'):\prd{b:B_i} C(s_i(g)(b))$.
-\item For each $i,g,g'$ and $a:A_i$, a dependent path
-  \[ \alpha'_i(g,g',a) : \dpath{C}{\alpha_i(g,a)}{s'_i(g,g')(f_i(a))}{g'(a)}. \]
-\item For each $i,h$ and $h':\prd{b:B_i} C(h(b))$ and $b:B_i$, a dependent path
-  \[ \beta'_i(h,h',b) : \dpath{C}{\beta_i(h,b)}{r'_i(h\circ f_i,h' \circ f_i)(b)}{h'(b)}. \]
-\end{itemize}
-Under these hypotheses, we can define $\ell:\prd{z:\loc f(X)} C(z)$ such that
-\begin{align*}
-  \ell(\mreturn(x)) &\defeq k(x)
-  % \ell(s_i(g)(b)) &\defeq s'_i(g, \ell \circ g)(b)\\
-  % \ell(r_i(g)(b)) &\defeq r'_i(g, \ell \circ g)(b)\\
-  % \apd{\ell}{\alpha_i(g,a)} &\defeq \alpha'_i(g,\ell\circ g,a)\\
-  % \apd{\ell}{\beta_i(h,b)} &\defeq \beta'_i(h,\ell\circ h,b).
-\end{align*}
-and four other computation rules.
-
-Note that when $C$ is non-dependent, the latter four hypotheses give exactly (modulo function extensionality) the data in a proof that $(-\circ f_i) : (B_i \to C) \to (A_i\to C)$ is bi-invertible for each $i:I$.
-Thus, the recursion principle of $\loc f(X)$ says simply that if $C$ is $f$-local and $k:X\to C$, we have an induced $\ext(k):\loc f(X)\to C$ with $\ext(k)\circ \mreturn \jdeq k$.
-As usual, the induction principle allows us to prove essential uniqueness.
-
-\begin{lem}\label{thm:local-eta}
-  If $C$ is $f$-local and $\ell,\ell':\loc f(X) \to C$ are functions with $\ell\circ \mreturn = \ell'\circ\mreturn$, then $\ell=\ell'$.
-\end{lem}
-\begin{proof}
-  Define $D:{z:\loc f(X)} \to \type$ by $D(z) \defeq (\ell(z)=\ell'(z))$.
-  By assumption, we have $\prd{x:X} D(\mreturn(x))$; it remains to give the other four data of the induction principle.
-  Fix $i:I$; since $C$ is $f$-local, the function $(-\circ f_i):(B_i\to C) \to (A_i\to C)$ has a left inverse $\rho$ and a right inverse $\sigma$.
-
-  (TODO\dots)
-\end{proof}
-
-\begin{thm}\label{thm:local-reflective}
-  The subuniverse of $f$-local types is reflective.
-\end{thm}
-\begin{proof}
-  Just like the proof of \autoref{thm:trunc-reflective}.
-\end{proof}
-
-% \begin{thm}\label{thm:local-modal}
-%   Suppose $C:\loc f(X) \to \type$ has the property that every $C(z)$ is $f$-local.
-%   Then given $k:\prd{x:X} C(\mreturn(x))$, there exists $\ell:\prd{z:\loc f(X)} C(z)$ such that $\ell(\mreturn(x)) \jdeq k(x)$.
-% \end{thm}
-% \begin{proof}
-%   We must specify the four additional data in the standard induction principle.
-%   [TODO\dots]
-% \end{proof}
-
-% The localization will make all the maps $B a \to
-% \mathcal{L}_P(X)$ constant in a free way.
-% \begin{defn}\label{defn:localization_as_hit}
-% Let $P:B\to\type$ be a dependent type. The localization $\mathcal{L}_P$ with
-% respect to $P$ is an operator of type $\type\to\type$, where
-% for each $X:\type$, the type $\mathcal{L}_P(X)$ is constructed as a higher
-% inductive type. The basic constructors of $\mathcal{L}_P(X)$ are
-% \begin{align*}
-% i & : X\to\mathcal{L}_P(X)
-% \intertext{and terms}
-% \alpha(f) & : \mathcal{L}_P(X)\\
-% \beta(f) & : \prd{u:P(b)}f(u)=\alpha(f)\\
-% \gamma(f) & : \prd{w:\mathcal{L}_P(X)}(H:f\sim\lambda u.w),\ w=\alpha(f)\\
-% \delta(f) & : \prd{w:\mathcal{L}_P(X)}(H:f\sim\lambda u.w)(u:P(b)),\ \gamma(f,H)
-% \ct H(u)=\beta(f,u)
-% \end{align*}
-% for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$. The induction principle for
-% $\mathcal{L}_P(X)$ is that for every dependent type $\Lambda:\mathcal{L}_P(X)
-% \to\type$ over $\mathcal{L}_P(X)$, if there are
-% \begin{align*}
-% I & : \prd{x:X}\Lambda(i(x))
-% \intertext{and for every $b:B$, $f:P(b)\to\mathcal{L}_P(X)$ and $F:\prd{u:P(b)}\Lambda(f(u))$}
-% \epsilon(F) & : \Lambda(\alpha(f))\\
-% \zeta(F) & : \prd{u:P(b)}\beta(f,u)\cdot F(f(u))= \epsilon(F)
-% \intertext{and for every $w_0:\mathcal{L}_P(X)$, $w_1:\Lambda(w_0)$, 
-% $H_0:f\sim\lambda u.w$ and $H_1:\prd{u:P(b)}H_0(u)\cdot F(f(u))= w_1$
-% a path}
-% \mreturn(F,H_1) & : \gamma(f,H_0)\cdot w_1= \epsilon(F)
-% \end{align*}
-% a path $\theta(F,H_1,u)$ witnessing the commutativity of the diagram
-% \begin{equation*}
-% \begin{tikzpicture}
-% \matrix (m) [std] {\beta(f,u)\cdot F(f(u)) & & \varepsilon(F) \\
-% \gamma(f,H_0)\cdot H_0(u)\cdot F(f(u)) & & \gamma(f,H_0)\cdot w_1 \\};
-% \draw[patharrow] (m-2-3) -- node[below] {$(\gamma(f,H_0)\cdot H_1(u))^{-1}$} (m-2-1);
-% \draw[patharrow] (m-2-1) -- node[left]  {$\delta(f,H_0,u)\cdot F(f(u))$} (m-1-1);
-% \draw[patharrow] (m-1-1) -- node[above] {$\zeta(f,u)$} (m-1-3);
-% \draw[patharrow] (m-2-3) -- node[right] {$\mreturn(F,H_1)$} (m-1-3);
-% \end{tikzpicture}
-% \end{equation*}
-% (note that in this diagram, we have not taken the canonical path
-% \begin{equation*}
-% \gamma(f,H_0)\cdot (H_0(u)\cdot F(f(u)))=(\gamma(f,H_0)\ct H_0(u))\cdot F(f(u)),
-% \end{equation*}
-% but it should obviously be there), then there is a section $s:\prd{w:\mathcal{L}P}(X))$
-% with the property that there is a term
-% \begin{align*}
-% \kappa & : \prd{x:X}s(i(x))= I(x)
-% \intertext{and for every $b:B$ and $f:P(b)\to\mathcal{L}_P(X)$ there are terms}
-% \mu(f) & : s(\alpha(f))= \epsilon(s\circ f)\\
-% \nu(f) & : \prd{u:P(b)}\mu(f)\ct s(\beta(f,u))=\zeta(s\circ f,\beta(f))\\
-% \xi(f) & : \prd{w:\mathcal{L}_P}(X)(H:f\sim\lambda u.w),\ \mu(f)\ct s(\gamma(f,H))=\mreturn(s\circ f,s\circ H)
-% \end{align*}
-% and a term $o(f,H,u)$ witnessing the commutativity of the diagram
-% \begin{equation}
-% \begin{tikzpicture}
-% \matrix (m) [std] {\mu(f)\ct s(\beta(f,u))\ct (\delta(f,h,u)\cdot s(f(u)))\ct (\gamma(f,H)\cdot s(H(u)))^{-1} & & \mu(f)\circ
-% s(\gamma(f,H)) \\ \zeta(s\circ f,s\circ\beta(f))\ct (\delta(f,h,u)\cdot s(f(u)))\ct (\gamma(f,H)\cdot s(H(u)))^{-1} & &
-% \mreturn(f,H)\\};
-% \draw[patharrow] (m-2-1) -- node[below] {$\theta(s\circ f,s\circ H,u)$} (m-2-3);
-% \draw[patharrow] (m-1-3) -- node[right] {$\xi(f)$} (m-2-3);
-% \draw[patharrow] (m-1-1) -- node[right]  {$\nu(f)^{-1}\rightwhisker ((\delta(f,H,u)\cdot s(f(u)))\ct(\gamma(f,H)\cdot s(H(u)))$}(m-2-1);
-% \draw[patharrow] (m-1-1) -- node[above,yshift=1ex] {$s(\gamma(f,H))^{-1}\leftwhisker s(\delta(f,H,u))\rightwhisker s(\beta(f,u))$}(m-1-3);
-% \end{tikzpicture}
-% \end{equation}
-% \end{defn}
-
-
-\section{Limits in reflective subuniverses}
-\label{sec:pullbacks}
-
-In \autoref{sec:universal-properties} we observed that certain type forming operations have universal properties in the
-$(\infty,1)$-category of types.
-For instance, we had an equivalence
-\[ \eqvspaced{(X\to A\times B) }{(X\to A)\times (X\to B)}. \]
-We can ask for objects in any subuniverse with similar universal properties, for instance:
-
-\begin{defn}
-  Let $A,B:\P$, with $\P$ any subuniverse.
-  A \textbf{product} of $A$ and $B$ in $\P$ is an object $C:\P$ together with functions $p:C\to A$ and $q:C\to B$ such that for any $X:\P$,
-the induced map
-  \[ (X\to C) \to (X\to A)\times (X\to B) \]
-  is an equivalence.
-\end{defn}
-
-Of course, if the product type $A\times B$ lies in $\P$, then it is a product of $A$ and $B$ in $\P$.
-As usual in category theory, if the subuniverse is reflective, then this is automatic.
-
-\begin{thm}\label{thm:reflsubuniv-prod}
-  If $\P$ is a reflective subuniverse and $A,B:\P$, then $A\times B$ is also in $\P$.
-  Therefore, any pair of objects in $\P$ has a product in $\P$.
-\end{thm}
-\begin{proof}
-  Since $A,B:\P$, the projections $\proj1:A\times B\to A$ and $\proj2:A\times B\to B$ factor uniquely through $\reflect(A\times B)$,
-yielding $\ext(\proj1)$ and $\ext(\proj2)$.
-  But now by the universal property of $A\times B$, we have a unique map $h:\reflect(A\times B) \to A\times B$ such that $\proj1 \circ h =
-\ext(\proj1)$ and $\proj2\circ h = \ext(\proj2)$.
-  It follows that $h$ is a retraction of $\project_{A\times B}$.
-  Thus, $A\times B$ is a retract of $\reflect(A\times B)$, hence by \autoref{thm:reflsubuniv-retract} it is in $\P$.
-\end{proof}
-
-A similar argument shows that $\unit$ is in every reflective subuniverse.
-Somewhat more interesting is the case of (homotopy) pullbacks, which requires some more definitions to state precisely.
-
-\begin{defn}
-  A \emph{cospan} in $\P$ is a diagram of the following form
-  \[\xymatrix{& B \ar^g[d] \\ A \ar_f[r] & C}\]
-  with $A,B,C:\P$.
-\end{defn}
-
-\begin{defn}
-  If $\Ddiag$ is a cospan and $D:\P$, a \emph{cone over $\Ddiag$ with
-    base $D$} is a triple $(i,j,h)$ such as in the following diagram:
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{D \ar^j[r] \ar_i[d] \drtwocell{^h} & B \ar^g[d] \\
-    A \ar_f[r] & C
-  }\]
-
-  We denote by $\cone{\Ddiag}{D}$ the type of all such cones.
-\end{defn}
-
-The map $D\mapsto\cone{\Ddiag}{D}$ is contravariantly $(\infty,1)$-functorial, but we don't know how to express this internally in homotopy type theory.
-Thus, we will only prove the bits of functoriality that we need.
-First, if $t:E\to{}D$ we have a map
-\[\function{\cone{\Ddiag}{D}}{\cone{\Ddiag}{E}}{c}{\composecone{t}{c}}\]
-defined by $\composecone{t}{(i,j,h)}=(i\circ{}t,j\circ{}t,h\circ{}t)$.
-Second, for any types $D,E,F:\P$, functions $t:E\to{}D$, $u:F\to{}E$ and
-$c:\cone{\Ddiag}{D}$ we have
-\begin{align*}
-\composecone{\idfunc[D]}c &= c\\
-\composecone{(t\circ{}u)}c &= \composecone{u}(\composecone{t}c)
-\end{align*}
-These equations follow easily from the unit laws and associativity of composition of
-functions, and from the functoriality of $f\mapsto{}\mapfunc{f}$ which has been proved earlier.
-
-\begin{defn}
-  A pair $(D,c)$ where $D:\P$ and $c:\cone{\Ddiag}{D}$ is called a
-  \define{pullback} of $\Ddiag$ in \P if for all $E:\P$ the map
-  \[\function{(E\to{}D)}{\cone{\Ddiag}{E}}{t}{\composecone{t}{c}}\]
-  is an equivalence.
-\end{defn}
-
-This definition says that for every $E:\P$ and for every cone over $\Ddiag$
-with base $E$, there is an essentially unique map $E\to{}D$ such that the whole
-diagram commutes, the proof of commutation being essentially unique too.
-
-As remarked earlier, pullbacks in \type can be constructed directly in the expected way.
-
-\begin{defn}
-  Let $\Ddiag$ be a cospan in $\type$. We define the following type
-  \[A\times_CB=\setof{(a,b):A\times{}B | f(a) = g(b)}\]
-
-  There is a canonical cone $c_\times=(\pi_1,\pi_2,\pi_3)$ over $\Ddiag$ with
-  base $A\times_CB$ given by the following diagram
-  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
-  \xymatrix{A\times_CB \ar^-{\pi_2}[r] \ar_{\pi_1}[d] \drtwocell{^\pi_3\ }
-    & B \ar^g[d] \\ A \ar_f[r] & C}\]
-  where
-  \begin{align*}
-    \pi_1((a,b),p)&=a\\
-    \pi_2((a,b),p)&=b\\
-    \pi_3((a,b),p)&=p\\
-  \end{align*}
-\end{defn}
-
-\begin{lem}
-  Let $\Ddiag$ be a diagram in $\type$. Then $(A\times_CB,c_\times)$ is a
-  pullback of $\Ddiag$.
-\end{lem}
-\begin{proof}
-  Given a type $E$ and a cone $c=(i,j,h):\cone{\Ddiag}{E}$ we construct a map
-  $\Sn(c):E\to{}A\times_CB$ by
-  \[\Sn(c)(x)=((i(x), j(x)), h(x))\]
-  and we need to prove that $\composecone{\Sn(c)}{c_\times}=c$ and
-  $\Sn(\composecone{t}{c_\times})=t$ for all $c:\cone{\Ddiag}{E}$ and
-  $t:E\to{}A\times_CB$ and both are easy computations:
-  \begin{align*}
-    \composecone{\Sn(c)}{c_\times}
-    &=\composecone{\Sn(c)}{(\pi_1,\pi_2,\pi_3)} \\
-    &=(\pi_1\circ\Sn(c),\pi_2\circ\Sn(c),
-    \pi_3\circ\Sn(c))\\
-    &=(i,j,h)\\
-    &=c
-  \end{align*}
-  \begin{align*}
-    \Sn(\composecone{t}{c_\times})(x) &=
-    \Sn(\pi_1\circ{}t,\pi_2\circ{}t,\pi_3\circ{}t)(x)\\
-    &=(\pi_1(t(x)),\pi_2(t(x)),\pi_3(t(x)))\\
-    &=t(x)\qedhere
-  \end{align*}
-\end{proof}
-
-We observe in passing that pullbacks are preserved by function spaces.
-
-\begin{defn}
-  If $\Ddiag$ is a cospan and $D:\type$, then we define another
-  cospan called $D\to\Ddiag$:
-  \[\xymatrix{& (D\to B) \ar^{g\circ-}[d] \\ (D\to A) \ar_{f\circ-}[r] & (D\to
-    C)}\]
-
-  Similarly if $\Ddiag$ is a span and $D:\type$, then we have a
-  cospan $\Ddiag\to{}D$:
-  \[\xymatrix{& (B\to D) \ar^{-\circ{}g}[d] \\ (A\to D) \ar_{-\circ{}f}[r] &
-    (C\to D)}\]
-\end{defn}
-
-\begin{lem}
-  \label{coneispb}
-  If $\Ddiag$ is a cospan and $D:\P$, then
-  \[\cone{\Ddiag}{D}=(D\to{}A)\times_{(D\to{}C)}(D\to{}B)\]
-
-  If $\Ddiag$ is a span and $D:\P$, then
-  \[\cocone{\Ddiag}{D}=(A\to{}D)\times_{(C\to{}D)}(B\to{}D)\]
-\end{lem}
-\begin{proof}
-  In both cases the map from left to right is $(i,j,h)\mapsto(i,j,\funext(h))$
-  and the map from right to left is $(i,j,p)\mapsto(i,j,\happly(p))$ and they
-  are inverse to each other.
-\end{proof}
-
-Finally, we have the analogous result to \autoref{thm:reflsubuniv-prod}.
-
-\begin{thm}\label{thm:reflsubuniv-pb}
-  If $A \xrightarrow{f}  C \xleftarrow{g} B$ is a cospan in a reflective $\P$, then $A\times_C B$ is also in $\P$.
-\end{thm}
-\begin{proof}
-  Essentially just like \autoref{thm:reflsubuniv-prod}.
-\end{proof}
-
-\begin{cor}\label{thm:reflsubuniv-idtype}
-  If $\P$ is reflective, then for any $A:\P$ and $x,y:A$, the identity type $(x=_A y)$ is also in $\P$.
-\end{cor}
-\begin{proof}
-  $(x=_A y)$ is equivalent to the pullback of the two functions $\unit \to A$ and $\unit\to A$ defined by $x$ and $y$.
-\end{proof}
-
-There is another interesting generalization of \autoref{thm:reflsubuniv-prod}.
-Recall that the dependent function type $\prd{x:A} B(x)$ can also be regarded as the (possibly infinitary) cartesian product of all the
-types $B(x)$.
+Importantly, closure under products extends also to ``infinite products'', i.e.\ dependent function types.
 
 \begin{thm}\label{thm:reflsubunv-forall}
-  If $B:A\to\P$ is any family of types in \P, then $\prd{x:A} B(x)$ is also in \P.
+  If $B:A\to\P$ is any family of types in a reflective subuniverse \P, then $\prd{x:A} B(x)$ is also in \P.
 \end{thm}
 \begin{proof}
   For any $x:A$, consider the function $\mathsf{ev}_x : (\prd{x:A} B(x)) \to B(x)$ defined by $\mathsf{ev}_x(f) \defeq f(x)$.
-  Since $B(x)$ lies in $P$, this extends to
-  \[ \ext(\mathsf{ev}_x) : \reflect(\prd{x:A} B(x)) \to B(x). \]
-  Thus we can define $h:\reflect(\prd{x:A} B(x)) \to \prd{x:A} B(x)$ by $h(z)(x) \defeq \ext(\mathsf{ev}_x)(z)$.
-  As before, $h$ is a retraction of $\project_{\prd{x:A} B(x)}$, so that ${\prd{x:A} B(x)}$ is in $\P$.
+  Since $B(x)$ lies in $P$, this extends to a function
+  \[ \rec{\modal}(\mathsf{ev}_x) : \reflect\left(\prd{x:A} B(x)\right) \to B(x). \]
+  Thus we can define $h:\reflect(\prd{x:A} B(x)) \to \prd{x:A} B(x)$ by $h(z)(x) \defeq \rec{\modal}(\mathsf{ev}_x)(z)$.
+  Then $h$ is a retraction of $\project_{\prd{x:A} B(x)}$, so that ${\prd{x:A} B(x)}$ is in $\P$.
 \end{proof}
 
 In particular, if $B:\P$ and $A$ is any type, then $(A\to B)$ is in \P.
 In categorical language, this means that any reflective subuniverse is an \textbf{exponential ideal}.
-This, in turn, implies that the reflector preserves finite products.
+This, in turn, implies by a standard argument that the reflector preserves finite products.
 
 \begin{cor}\label{cor:trunc_prod}
-  For any types $A$ and $B$, the induced map $\reflect(A\times B) \to \reflect(A) \times \reflect(B)$ is an equivalence.
+  For any types $A$ and $B$ and any reflective subuniverse, the induced map $\reflect(A\times B) \to \reflect(A) \times \reflect(B)$ is an equivalence.
 \end{cor}
 \begin{proof}
   It suffices to show that $\reflect(A) \times \reflect(B)$ has the same universal property as $\reflect(A\times B)$.
@@ -2392,9 +1612,122 @@ However, this is also the case classically in the category of \emph{sets}, for t
 It's just that this fact is not usually remarked on, since the classical category of sets---in contrast to the category of homotopy
 types---does not have many interesting reflective subcategories.
 
+Two basic properties of $n$-types are \emph{not} shared by general reflective subuniverses: \autoref{thm:ntypes-sigma} (closure under $\Sigma$-types) and \autoref{thm:truncn-ind} (truncation induction).
+However, the analogues of these two properties are equivalent to each other.
 
-\end{comment}
 
+\begin{thm}\label{thm:modal-char}
+  For a reflective subuniverse \P, the following are logically equivalent.
+  \begin{enumerate}
+  \item If $A:\P$ and $B:A\to \P$, then $\sm{x:A} B(x)$ is in \P.\label{item:mchr1}
+  \item for every $A:\type$, type family $B:\reflect A\to\P$, and function $g:\prd{a:A} B(\project(a))$, there exists $f:\prd{z:\reflect A} B(z)$ such that $f(\project(a)) = g(a)$ for all $a:A$.\label{item:mchr2}
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  Suppose~\ref{item:mchr1}.
+  Then in the situation of~\ref{item:mchr2}, the type $\sm{z:\reflect A} B(z)$ lies in $\P$, and we have $g':A\to \sm{z:\reflect A} B(z)$ defined by $g'(a)\defeq (\project(a),g(a))$.
+  Thus, we have $\rec{\modal}(g'):\reflect A \to \sm{z:\reflect A} B(z)$ such that $\rec{\modal}(g')(\project(a)) = (\project(a),g(a))$.
+
+  Now consider the functions $\proj2 \circ \rec{\modal}(g') : \reflect A \to \reflect A$ and $\idfunc[\reflect A]$.
+  By assumption, these become equal when precomposed with $\project$.
+  Thus, by the universal property of $\reflect$, they are equal already, i.e.\ we have $p_z:\proj2(\rec{\modal}(g')(z)) = z$ for all $z$.
+  Now we can define $f(z) \defeq \trans{p_z}{\proj2(\rec{\modal}(g')(z))}$, and the second component of $\rec{\modal}(g')(\project(a)) = (\project(a),g(a))$ yields $f(\project(a)) = g(a)$.
+
+  Conversely, suppose~\ref{item:mchr2}, and that $A:\P$ and $B:A\to\P$.
+  Let $h$ be the composite
+  \[ \reflect\left(\sm{x:A} B(x)\right) \xrightarrow{\reflect(\proj1)} \reflect A \xrightarrow{\opp{(\project_A)}} A. \]
+  Then for $z:\sm{x:A} B(x)$ we have
+  \begin{align*}
+    h(\project(z)) &= \opp\project(\reflect(\proj1)(\project(z)))\\
+    &= \opp\project(\project(\proj1(z)))\\
+    &= \proj1(z).
+  \end{align*}
+  Denote this path by $p_z$.
+  Now if we define $C:\reflect(\sm{x:A} B(x)) \to \type$ by $C(w) \defeq B(h(w))$, we have
+  \[ g \defeq \lam{z} \trans{p_z}{\proj2(z)} \;:\; \prd{z:\sm{x:A} B(x)} C(\project(z)). \]
+  Thus, the assumption yields $f:\prd{w:\reflect(\sm{x:A}B(x))} C(w)$ such that $f(\project(z)) = g(z)$.
+  Together, $h$ and $f$ give a function $k:\reflect(\sm{x:A}B(x)) \to \sm{x:A}B(x)$ defined by $k(w) \defeq (h(w),f(w))$, while $p_z$ and the equality $f(\project(z)) = g(z)$ show that $k$ is a retraction of $\project_{\sm{x:A}B(x)}$.
+  Therefore, $\sm{x:A}B(x)$ is in \P.
+\end{proof}
+
+Note the similarity to the discussion in \autoref{sec:htpy-inductive}.
+The universal property of the reflector of a reflective subuniverse is like a recursion principle with its uniqueness property, while \autoref{thm:modal-char}\ref{item:mchr2} is like the corresponding induction principle.
+Unlike in \autoref{sec:htpy-inductive}, the two are not equivalent here, because of the restriction that we can only eliminate into types that lie in $\P$.
+Condition~\ref{item:mchr1} of \autoref{thm:modal-char} is what fixes the disconnect.
+
+Unsurprisingly, of course, if we have the induction principle, then we can derive the recursion principle.
+We can also derive its uniqueness property, as long as we allow ourselves to eliminate into path types.
+This suggests the following definition.
+Note that any reflective subuniverse can be characterized by the operation $\reflect:\type\to\type$ and the functions $\project_A:A\to \reflect A$, since we have $P(A) = \isequiv(\project_A)$.
+
+\begin{defn}\label{defn:modality}
+A \define{modality} is an operation $\modal:\type\to\type$ for which there are
+\begin{enumerate}
+\item functions $\mreturn^\modal_A:A\to\modal(A)$ for every type $A$.\label{item:modal1}
+\item for every $A:\type$ and every type family $B:\modal(A)\to\type$, a function\label{item:modal2}
+\begin{equation*}
+\ind{\modal}:\left(\prd{a:A}\modal(B(\mreturn^\modal_A(a)))\right)\to\prd{z:\modal(A)}\modal(B(z)).
+\end{equation*}
+\item A path $\ind\modal(f)(\mreturn^\modal_A(a)) = f(a)$ for each $f:\prd{a:A}\modal(B(\mreturn^\modal_A(a)))$.\label{item:modal3}
+\item For any $z,z':\modal(A)$, the function $\mreturn^\modal_{z=z'} : (z=z') \to \modal(z=z')$ is an equivalence.\label{item:modal4}
+\end{enumerate}
+We say that $A$ is \define{modal} for $\modal$ if $\mreturn^\modal_A:A\to\modal(A)$ is an equivalence, and we write
+\[\modaltype\defeq\setof{X:\type | X \text{ is $\modal$-modal} }\]
+for the type of modal types.
+\end{defn}
+
+Conditions~\ref{item:modal2} and~\ref{item:modal3} are very similar to \autoref{thm:modal-char}\ref{item:mchr2}, but phrased using $\modal B(z)$ rather than assuming $B$ to be valued in $\P$.
+This allows us to state the condition purely in terms of the operation $\modal$, rather than requiring the predicate $P:\type\to\prop$ to be given in advance.
+(It is not entirely satisfactory, since we still have to refer to $P$ not-so-subtly in clause~\ref{item:modal4}.
+We do not know whether~\ref{item:modal4} follows from~\ref{item:modal1}--\ref{item:modal3}.)
+However, the stronger-looking property of \autoref{thm:modal-char}\ref{item:mchr2} follows from \autoref{defn:modality}\ref{item:modal2} and~\ref{item:modal3}, since for any $C:\modal A \to \modaltype$ we have $C(z) \simeq \modal C(z)$, and we can pass back across this equivalence.
+
+As with other induction principles, this implies a universal property.
+
+\begin{thm}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
+Let $A$ be a type and let $B:\modal(A)\to\modaltype$. Then the function
+\begin{equation*}
+(-\circ \mreturn^\modal_A) : \left(\prd{z:\modal(A)}B(z)\right) \to \left(\prd{a:A}B(\mreturn^\modal_A(a))\right)
+\end{equation*}
+is an equivalence.
+\end{thm}
+\begin{proof}
+By definition, the operation $\ind{\modal}$ is a right inverse to $(-\circ \mreturn^\modal_A)$.
+Thus, we only need to find a homotopy
+\begin{equation*}
+\prd{z:\modal(A)}s(z)= \ind{\modal}(s\circ \mreturn^\modal_A)(z)
+\end{equation*}
+for each $s:\prd{z:\modal(A)}B(z)$, exhibiting it as a left inverse as well.
+By assumption, each $B(z)$ is modal, and hence each type $s(z)= R^\modal_X(s\circ \mreturn^\modal_A)(z)$
+is also modal.
+Thus, it suffices to find a function of type
+\begin{equation*}
+\prd{a:A}s(\mreturn^\modal_A(a))= \ind{\modal}(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a)).
+\end{equation*}
+which follows from \autoref{defn:modality}\ref{item:modal3}.
+\end{proof}
+
+In particular, for every type $A$ and every modal type $B$, we have an equivalence $(\modal A\to B)\simeq (A\to B)$.
+
+\begin{cor}
+  For any modality $\modal$, the $\modal$-modal types form a reflective subuniverse satisfying the equivalent conditions of \autoref{thm:modal-char}.
+\end{cor}
+
+Thus, modalities can be identified with reflective subuniverses closed under $\Sigma$-types.
+The name \emph{modality} comes, of course, from \emph{modal logic}, which studies logic where we can form statements such as ``possibly $A$'' (usually written $\diamond A$) or ``necessarily $A$'' (usually written $\Box A$).
+The symbol $\modal$ is somewhat common for an arbitrary modal operator. % (rather than a specific one such as $\diamond$ or $\Box$).
+Under the propositions-as-types principle, a modality in the sense of modal logic corresponds to an operation on \emph{types}, and \autoref{defn:modality} seems a reasonable candidate for how such an operation should be defined.
+(More precisely, we should perhaps call these \emph{idempotent, monadic} modalities.)
+
+For any modality $\modal$, we define a map $f:A\to B$ to be \define{$\modal$-connected} if $\modal(\hfib f b)$ is contractible for all $b:B$, and to be \define{$\modal$-truncated} if $\hfib f b$ is modal for all $b:B$.
+All of the theory of \autoref{sec:connectivity,sec:image-factorization} which doesn't involve relating $n$-types for different values of $n$ applies verbatim in this generality.
+In particular, we have an orthogonal factorization system.
+
+An important class of modalities which does \emph{not} include the $n$-truncations is the \emph{left exact} modalities: those for which the functor $\modal$ preserves pullbacks as well as finite products.
+These are a categorification of ``Lawvere-Tierney topologies'' in elementary topos theory, and correspond in higher-categorical semantics to sub-$\infty$-toposes.
+However, this is beyond the scope of this book.
+
+Some particular examples of modalities other than $n$-truncation can be found in the exercises.
 
 
 \sectionNotes
@@ -2405,22 +1738,20 @@ It was Voevodsky who realized that the notion can be defined recursively in homo
 The property ``Axiom K'' was so named by Thomas Streicher, as a property of identity types which comes after J, the latter being the traditional name for the eliminator of identity types.
 \autoref{thm:hedberg} is due to Hedberg~\cite{hedberg1998coherence}; for more information and generalizations see~\cite{krausgeneralizations}.
 
-The notions of $n$-connected spaces and functions are also classical in homotopy theory.
-The importance of the resulting factorization system has been emphasized by recent work in higher topos theory.
+The notions of $n$-connected spaces and functions are also classical in homotopy theory, although as mentioned before, our indexing for connectedness of functions is off by one from the classical indexing.
+The importance of the resulting factorization system has been emphasized by recent work in higher topos theory by Rezk, Lurie, and others.
+In particular, the results of this chapter should be compared with~\cite[\S6.5.1]{lurie:higher-topoi}.
+In \autoref{sec:freudenthal}, the theory of $n$-connected maps will be crucial to our proof of the Freudenthal suspension theorem.
 
-In fact, almost all of the theory of $n$-types and $n$-connectedness (for a fixed $n$) can be done much more generally, in terms of an abstract structure that may be called an (idempotent, monadic) \emph{modality}.
-This is an operation $\modal:\type\to\type$ which generalizes the $n$-truncation $\trunc n-$, acting as the reflector into a certain subcategory of types, with an induction principle analogous to \autoref{thm:truncn-ind}.
-The name comes from \emph{modal logic}, where one studies statements such as ``possibly $A$'' (usually written $\diamond A$) or ``necessarily $A$'' (usually written $\Box A$).
-In addition to $n$-truncations, modalities include \emph{subtoposes}, as a categorification of Lawvere--Tierney topologies.
 
 \sectionExercises
 
-\begin{ex}
+\begin{ex}\ 
   \begin{enumerate}
     \item Use \autoref{thm:h-set-refrel-in-paths-sets} to show 
     that if $\brck{A}\to A$ for every type $A$, 
     then every type is a set.
-    \item Show that if every surjective function splits, 
+    \item Show that if every surjective function (purely) splits, 
     i.e.~if $\prd{b:B}\brck{\hfib{f}{b}}\to\prd{b:B}\hfib{f}{b}$
     for every $f:A\to B$, then every type is a set.
   \end{enumerate}
@@ -2428,6 +1759,34 @@ In addition to $n$-truncations, modalities include \emph{subtoposes}, as a categ
 
 \begin{ex}
   Use \autoref{prop:nconn_fiber_to_total} to extend \autoref{thm:connected-pointed} to any section/retraction pair.
+\end{ex}
+
+\begin{ex}
+  Show that the $n$-truncation modality is not left exact for any $n$.
+  That is, exhibit a pullback which it fails to preserve.
+\end{ex}
+
+\begin{ex}
+  Show that $X\mapsto (\neg\neg X)$ is a modality.
+\end{ex}
+
+\begin{ex}
+  Let $P$ be a mere proposition.
+  \begin{enumerate}
+  \item Show that $X\mapsto (P\to X)$ is a left exact modality.
+    This is called the \emph{open modality} associated to $P$.
+  \item Show that $X\mapsto P*X$ is a left exact modality, where $*$ denotes the join (see \autoref{sec:colimits}).
+    This is called the \emph{closed modality} associated to $P$.
+  \end{enumerate}
+\end{ex}
+
+\begin{ex}
+  Let $f:A\to B$ be a map; a type $Z$ is \define{$f$-local} if $(-\circ f):(B\to Z) \to (A\to Z)$ is an equivalence.
+  \begin{enumerate}
+  \item Prove that the $f$-local types form a reflective subuniverse.
+    You will want to use a higher inductive type to define the reflector (localization).
+  \item Prove that if $B=\unit$, then this subuniverse is a modality.
+  \end{enumerate}
 \end{ex}
 
 \egroup

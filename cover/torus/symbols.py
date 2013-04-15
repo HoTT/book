@@ -6,12 +6,10 @@ import os.path
 
 symbols = [
   r"$$\sum$$",
-  r"$$\prod$$",
-  r"$$\lambda$$",
-  r"$$=$$"
+  r"$$\prod$$"
 ]
 
-ncols = 5
+ncols = 8
 colors = [("gray", str(float(i)/ncols)) for i in range(0, ncols+1)]
 
 ## Generate LaTeX
@@ -47,7 +45,7 @@ filelist = [f for f in os.listdir('preimg') if f.endswith(".png")]
 for f in filelist:
     fin = os.path.join("preimg", f)
     fout = os.path.join("srcimg", os.path.splitext(f)[0] + ".jpg")
-    subprocess.call(["convert", "-quality", "100", fin, fout])
+    subprocess.call(["convert", "-bordercolor", "white", "-border", "20x20", "-quality", "100", fin, fout])
 
 # Remove auxiliary files
 
@@ -56,4 +54,3 @@ for f in filelist:
 
 for f in [f for f in os.listdir('.') if f.startswith("temp.")]:
     os.remove(f)
-

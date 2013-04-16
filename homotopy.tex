@@ -903,7 +903,7 @@ Roughly, we can say that it unifies the proofs of \autoref{thm:pi1s1-decode,lem:
 The aim of this section is to prove that the operation of suspension increases
 connectedness.
 
-\begin{thm}
+\begin{thm} \label{thm:suspension-increases-connectedness}
   Let $n\ge-2$ and $A:\type$.
 
   If $A$ is $n$-connected then the suspension of $A$ is $(n+1)$-connected.
@@ -2368,12 +2368,8 @@ where $r:\merid(x_0) \ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}$, and $r'':
   We leave it to the reader to verify that the coherence paths all cancel, giving reflexivity in the second component.
 \end{proof}
 
-\note{move to chapter 6 section on connectedness}
-
-\subsection{Consequences for Homotopy Groups of Spheres}
-
 As a corollary, we have 
-\begin{cor}[Freudenthal Equivalence]
+\begin{cor}[Freudenthal Equivalence] \label{cor:freudenthal-equiv}
 Suppose that $X$ is $n$-connected and pointed, with $n\geq 0$.
 Then $\eqv{\trunc{2n}{X}}{\trunc{2n}{\Omega\susp(X)}}$.
 \end{cor}
@@ -2383,22 +2379,55 @@ By \cref{thm:freudenthal}, $\sigma$ is $2n$-connected.  By
 equivalence on $2n$-truncations.  
 \end{proof}
 
-One important corollary of Freudenthal is that the homotopy groups of
-spheres are stable in a certain range
-\begin{cor}[Stability of Homotopy Groups of Spheres]
-\note{TODO}
-\end{cor}
+\subsection{Consequences for Homotopy Groups of Spheres}
 
+One important corollary of Freudenthal is that the homotopy groups of
+spheres are stable in a certain range (these are the colored diagonals
+in \cref{fig:homotopy-groups-of-spheres}):
+\begin{cor}[Stability for Spheres] \label{cor:stability-spheres}
+If $k \le 2n-2$, then $\pi_{k+1}(S^{n+1}) = \pi_{k}(S^{n})$
+\end{cor}
+\begin{proof}
+Assume $k \le 2n-2$.  
+
+By \cref{cor:sn-connected}, $\Sn ^{n}$ is $(n\mathord{-}1)$-connected.  Therefore,
+by \cref{cor:freudenthal-equiv}, 
+\[
+\trunc{2(n-1)}{\Omega(\susp(\Sn^{n}))} = \trunc{2(n-1)}{\Sn^{n}}
+\]
+By \cref{lem:truncation-le}, because $k \le 2(n-1)$, applying $\trunc{k}{-}$
+to both sides shows that this equation holds for $k$:
+\begin{equation}\label{eq:freudenthal-for-spheres}
+\trunc{k}{\Omega(\susp(\Sn^{n}))} = \trunc{k}{\Sn^{n}}
+\end{equation}
+
+Then, the main idea of the proof is as follows; we omit checking that these
+equivalences act appropriately on the base points of these spaces:
+\[
+\begin{array}{rcll}
+\pi_{k+1}(\Sn^{n+1}) & = & \trunc{0}{\Omega^{k+1}(\Sn^{n+1})} & \text{definition} \\
+                     & = & \trunc{0}{\Omega^k(\Omega(\Sn^{n+1}))} & \text{definition}\\
+                     & = & \trunc{0}{\Omega^k(\Omega(\susp(\Sn^{n})))} & \text{definition}\\
+                     & = & \Omega^k(\trunc{k}{(\Omega(\susp(\Sn^{n})))}) & \text{\cref{thm:path-truncation}}\\
+                     & = & \Omega^k(\trunc{k}{\Sn^{n}}) & \text{\cref{eq:freudenthal-for-spheres}}\\
+                     & = & \trunc{0}{\Omega^k(\Sn^{n})} & \text{\cref{thm:path-truncation}}\\
+                     & = & \pi_k{\Sn^{n}} & \text{definition}\\
+\end{array}
+\]
+\end{proof}
+
+This means that once we have calculated one entry in one of these stable
+diagonals, we know all of them.  For example:
 \begin{thm}
 $\pi_n(\Sn^n)=\Z$ for every $n\geq 1$. 
 \end{thm}
 
 \begin{proof}
-We already have $\pi_1(\Sn ^1) = \Z$ (\cref{cor:pi1s1}) and $\pi_2(\Sn
-^2) = \Z$ (\cref{cor:pis2-hopf}).  To complete the proof, we will show
-that $\pi_{n+1}(\Sn ^{n+1}) = \pi_n(\Sn ^ n)$ for $n \ge 2$ as a
-corollary of the Freudenthal suspension theorem.  Then the result
-follows by a simple induction.  
+The proof is by induction on $n$.  We already have $\pi_1(\Sn ^1) = \Z$
+(\cref{cor:pi1s1}) and $\pi_2(\Sn ^2) = \Z$ (\cref{cor:pis2-hopf}).
+When $n \ge 2$, $n \le (2n - 2)$. Therefore, by
+\cref{cor:stability-spheres}, $\pi_{n+1}(S^{n+1}) = \pi_{n}(S^{n})$, and
+this equivalence, combined with the inductive hypothesis, gives the result.  
 \end{proof}
 
 \section{The General Form of an Encode/Decode Proof}

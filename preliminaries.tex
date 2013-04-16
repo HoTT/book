@@ -17,7 +17,7 @@ By contrast, type theory is its own deductive system: it need not be formulated 
 Instead of the two basic notions of set theory, sets and propositions, type theory has one basic notion: \emph{types}.
 Propositions (statements which we can prove, disprove, assume, negate, and so on\footnote{Confusingly, it is also a common practice (dating back to Euclid) to use the word ``proposition'' synonomously with ``theorem''.
   We will confine ourselves to the logician's usage, according to which a \emph{proposition} is a statement \emph{susceptible to} proof, whereas a \emph{theorem} (or ``lemma'' or ``corollary'') is such a statement that \emph{has been} proven.
-Thus ``$0=1$'' and its negation ``$\neg(0=1)$'' are both propositions, but only the latter is a theorem.}) are identified with particular types, via the correspondence shown in Table~\ref{tab:pov} on page~\pageref{tab:pov}.
+Thus ``$0=1$'' and its negation ``$\neg(0=1)$'' are both propositions, but only the latter is a theorem.}) are identified with particular types, via the correspondence shown in \autoref{tab:pov} on page~\pageref{tab:pov}.
 Thus, the mathematical activity of \emph{proving a theorem} is identified with a special case of the mathematical activity of \emph{constructing an object}---in this case, an inhabitant of a type that represents a proposition.
 
 This leads us to another difference between type theory and set theory, but to explain it we must say a little about deductive systems in general.
@@ -76,7 +76,7 @@ Thus, for us, type theory will be a deductive system based on two forms of judgm
   $a \jdeq_A b$ & $a$ and $b$ are definitionally equal objects of type $A$.
 \end{tabular}
 \end{center}
-When introducing a definitional equality, i.e., defining one thing is equal to another, we will use the symbol ``$\defeq$''.
+When introducing a definitional equality, i.e., defining one thing to be equal to another, we will use the symbol ``$\defeq$''.
 Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
 
 Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.%
@@ -90,8 +90,8 @@ This is perhaps also an appropriate place to mention that the common mathematica
 Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
 For example, we may construct an object $m + n : \Nat$ under the assumptions that $m,n : \Nat$.
 Another example is that assuming $A$ is a type, $x,y : A$, and $p : x =_A y$, we may construct an element $p^{-1} : y =_A x$.
-The sequence of all such assumptions is called the \emph{context}; from a topological point of view it may be thought of as a ``parameter space''.
-Later assumptions may depend on previous ones, as in the example: the assumption $x:A$ can only be made \textbf{after} the assumption $A$ is a type has been introduced.
+The collection of all such assumptions is called the \emph{context}; from a topological point of view it may be thought of as a ``parameter space''.
+In fact, technically the context must be an ordered list of assumptions, since later assumptions may depend on previous ones: the assumption $x:A$ can only be made \emph{after} the assumptions of any variables appearing in the type $A$.
 
 If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
 When types are regarded as propositions, we may omit the names of their proofs.
@@ -138,32 +138,39 @@ either by direct definition or by using
 $\lambda$-abstraction. Introducing a function by definition means that
 we introduce a function by giving it a name --- let's say, $f$ --- and saying
 we define $f : A \to B$ by giving an equation
-\[ f(x) \defeq b \]
+\begin{equation}
+  f(x) \defeq b\label{eq:expldef}
+\end{equation}
 where $x$ is a variable and $b$ is an expression which may use $x$.
 In order for this to be valid, we have to check that $b : B$ assuming $x:A$.
 
 Now we can compute $f(a)$ by replacing the variable $x$ in $b$ with
 $a$. As an example, consider the function $f : \Nat \to \Nat$ which is
-defined by $f(x) \defeq x+x$. Now $f(2)$ is judgmentally equal to $2+2$.
+defined by $f(x) \defeq x+x$.  (We will define $\nat$ and $+$ in \autoref{sec:inductive-types}.)
+Then $f(2)$ is judgmentally equal to $2+2$.
 
-If we don't want to introduce a name for the function we can use
-$\lambda$-abstraction. Given an expression $b : B$ which may use $x:A$, as above, we can
-construct 
-\[ (\lamt{x:A}b) : A \to B \]
+If we don't want to introduce a name for the function, we can use
+\define{$\lambda$-abstraction}. Given an expression $b : B$ which may use $x:A$, as above, we write $\lam{x:A} b$ to indicate the same function defined by~\eqref{eq:expldef}.
+Thus, we have
+\[ (\lamt{x:A}b) : A \to B. \]
+For the example in the previous paragraph, we have the typing judgment
+\[ (\lam{x:\nat}x+x) : \nat \to \nat. \]
 We generally omit the type of the variable $x$ and write $\lam{x}b$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x b$ has type $A\to B$.
+By convention, the ``scope'' of the variable binding ``$\lam{x}$'' is the entire rest of the expression, unless delimited with parentheses.
+Thus, for instance, $\lam{x} x+x$ should be parsed as $\lam{x} (x+x)$, not as $(\lam{x}x)+x$ (which would, in this case, be ill-typed anyway).
+
 Another equivalent notation is
 \[ (x \mapsto b) : A \to B. \]
-Applying a $\lambda$-abstraction to an argument $a:A$ introduces the
-definitional equality\footnote{Use of this equality is often referred to as $\beta$-conversion or $\beta$-reduction.}
+We may also sometimes use a blank ``$-$'' in the expression $b$ in place of a variable, to denote an implicit $\lambda$-abstraction.
+For instance, $g(x,-)$ is another way to write $\lam{y} g(x,y)$.
+
+Now a $\lambda$-abstraction is a function, so we can apply it to an argument $a:A$.
+We then have the definitional equality\footnote{Use of this equality is often referred to as $\beta$-conversion or $\beta$-reduction.}
 \[(\lamu{x:A}b)(a) \jdeq b'\]
  where $b'$ is the
 expression $b$ in which all occurences of $x$ have been replaced by $a$.
-Reusing the same example, we have the typing judgment
-\[ (\lamu{x:\nat}x+x) : \nat \to \nat \]
-and the judgmental equality
+Continuing the above example, we have
 \[ (\lamu{x:\nat}x+x)(2) \jdeq 2+2. \]
-By convention, the ``scope'' of the variable binding ``$\lam{x}$'' is the entire rest of the expression, unless delimited with parentheses.
-Thus, for instance, $\lam{x} x+x$ should be parsed as $\lam{x} (x+x)$, not as $(\lam{x}x)+x$ (which would, in this case, be ill-typed anyway).
 
 Note that from any function $f:A\to B$, we can construct a lambda abstraction function $\lam{x} f(x)$.
 Since this is by definition ``the function which applies $f$ to its argument'' we consider it to be definitionally equal to $f$:\footnote{Use of this equality is often referred to as $\eta$-conversion or $\eta$-expansion.}
@@ -184,9 +191,9 @@ invisible link generated by binders such as $\lambda$, $\Pi$ and
 $\Sigma$ (the latter we are going to meet soon) between the place where the variable is introduced and where it is used. As an example, consider $f : \nat \to (\nat \to \nat)$
 defined as 
 \[ f(x) \defeq \lamu{y:\nat} x + y \] 
-Now if we have assumed somewhere that $y : \nat$, then what is $f(y)$? It would be wrong to just naively replace $x$ by $y$ everywhere, obtaining $\lamu{y:\nat} y + y$, because this means that $y$ gets \textbf{captured}. Previously, the substituted $y$ was referring to our assumption, but now it is referring to the parameter of the anonymous function. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
+Now if we have assumed somewhere that $y : \nat$, then what is $f(y)$? It would be wrong to just naively replace $x$ by $y$ everywhere in the expression ``$\lam{y}x+y$'' defining $f(x)$, obtaining $\lamu{y:\nat} y + y$, because this means that $y$ gets \textbf{captured}. Previously, the substituted $y$ was referring to our assumption, but now it is referring to the parameter of the anonymous function. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
 
-But what \emph{is} $f(y)$ in this example? Note that bound
+But what \emph{is} $f(y)$ in this example? Note that bound (or ``dummy'')
 variables such as $y$ in the expression $\lamu{y:\nat} x + y$
 have only a local meaning, and can be consistently replaced by any
 other variable, preserving the binding structure. Indeed, $\lamu{y:\nat} x + y$ is declared to be judgmentally equal\footnote{Use of this equality is called $\alpha$-conversion.} to
@@ -194,17 +201,22 @@ $\lamu{z:\nat} x + z$.  It follows that
 $f(y)$ is judgmentally equal to  $\lamu{z:\nat} y + z$, and that answers our question.  (Instead of $z$,
 any variable distinct from $y$ could have been used, yielding an equal result.)
 
+Of course, this should all be familiar to any mathematician: it is the same phenomenon as the fact that if $f(x) \defeq \int_1^2 \frac{dt}{x-t}$, then $f(t)$ is not $\int_1^2 \frac{dt}{t-t}$ but rather $\int_1^2 \frac{ds}{t-s}$.
+A $\lambda$-abstraction binds a dummy variable in exactly the same way that an integral does.
+
 We have seen how to define functions in one variable. One
 way to define functions in several variables would be to use the
 cartesian product, which will be introduced later; a function with
 parameters $A$ and $B$ and results in $C$ would be given the type 
 $f : A \times B \to C$. However, there is another choice that avoids
-using product types --- it is called \textbf{currying} in functional
-programming; we write $f : A \to (B \to C)$.
-We may also write it without the parentheses, as $f : A \to B \to C$, with
-associativity to the right as the default convention.  Given $a : A$ and $b : B$
-we can apply $f$ to $a$ and then apply the result to $b$ to obtain 
-$f(a)(b) : C$. To avoid the proliferation of parentheses we allow ourselves to
+using product types, which is called \textbf{currying} in functional programming.
+
+The idea of currying is to represent a function of two inputs $a:A$ and $b:B$ as a function which takes \emph{one} input $a:A$ and returns \emph{another function}, which then takes a second input $b:B$ and returns the result.
+That is, we consider two-variable functions to belong to an iterated function type, $f : A \to (B \to C)$.
+We may also write this without the parentheses, as $f : A \to B \to C$, with
+associativity to the right as the default convention.  Then given $a : A$ and $b : B$,
+we can apply $f$ to $a$ and then apply the result to $b$, obtaining
+$f(a)(b) : C$. To avoid the proliferation of parentheses, we allow ourselves to
 write $f(a)(b)$ as $f(a,b)$ even though there are no products
 involved. Our notation for definitions with explicit parameters extends to
 this situation: we can define a named function $f : A \to B \to C$ by
@@ -260,7 +272,8 @@ To model a collection of types varying over a given type $A$, we use functions $
 codomain is a universe. These functions are called
 \textbf{families of types}; they correspond to families of sets as used in
 set theory. An example of a family is the family of finite sets $\Fin
-: \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.  (We will be able to define this family soon.) 
+: \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.
+(We will be able to define this family soon; see \autoref{ex:fin}.)
 
 
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
@@ -290,23 +303,24 @@ Alternatively, we can use $\lambda$-abstraction
 The equalities are the same as for the ordinary function type, i.e.\
 given $a:A$ we have $f(a) \jdeq b'$ and  
 $(\lamu{x:A} b)(a) \jdeq b'$, where $b' $ is obtained by replacing all
-occurences of $x$ in $b$ by $a$.
+occurences of $x$ in $b$ by $a$ (avoiding variable capture, as always).
 Similarly, we have $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
 
 An example of a dependent function is $\fmax : \prd{n:\nat} \Fin(n+1)$
 which returns the largest element in a nonempty finite type, $\fmax(n) \defeq
 n_{n+1}$. 
-Another source of dependent function types
-are functions which are \emph{polymorphic} over a given universe.
-This means a function which takes a type as one of its arguments, and then acts on elements of that type (or other types constructed from it).
-An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, which we define by $\idfunc[A] \defeq \lamu{x:A}x$.
+Another important class of dependent function types are functions which are \emph{polymorphic} over a given universe.
+A polymorphic function is one which takes a type as one of its arguments, and then acts on elements of that type (or other types constructed from it).
+An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
 
 As for ordinary functions, we use currying to define dependent functions with
 several arguments. However, in the dependent case the second domain may
 depend on the first one, and the codomain may depend on both. That is,
 given $A:U$ and type families $B : A \to U$ and $C : \prd{x:A}B(x) \to \UU$, we may construct
 the type $\prd{x:A}{y : B(x)} C(x,y)$ of functions with two
-arguments.  Likewise, given $f:\prd{x:A}{y : B(x)} C(x,y)$ and arguments $a:A$ and $b:B(a)$, we have $f(a)(b) : C(a,b)$, which,
+arguments.
+(Like $\lambda$-abstractions, $\Pi$s automatically scope over the rest of the expression unless delimited; thus $C : \prd{x:A}B(x) \to \UU$ means $C : \prd{x:A}(B(x) \to \UU)$.)
+Likewise, given $f:\prd{x:A}{y : B(x)} C(x,y)$ and arguments $a:A$ and $b:B(a)$, we have $f(a)(b) : C(a,b)$, which,
 as before, we write as $f(a,b) : C(a,b)$.
 
 
@@ -326,7 +340,7 @@ However, we do not assert as a rule of type theory that ``every element of $A\ti
 
 Now, what can we \emph{do} with pairs, i.e.\ how can we define functions out of a product type?
 Let us first consider the definition of a non-dependent function $f : A\times B \to C$.
-Since we intend the only elements of $A\times B$ to be pairs, in order to define such a function, it should be enough to prescibe the result
+Since we intend the only elements of $A\times B$ to be pairs, in order to define such a function, it should be enough to prescribe the result
 when $f$ is applied to a pair $\tup{a}{b}$.  We prescribe these results by
 providing a function $g : A \to B \to C$ and defining
 \[ f(\tup{a}{b}) \defeq g(a)(b). \]
@@ -458,7 +472,7 @@ However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ 
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
 Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
 This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU'$, we need a function
-\[ g : \prd{x:A} B(x) \to C(\tup{a}{b}). \]
+\[ g : \prd{a:A}{b:B(x)} C(\tup{a}{b}). \]
 We can then derive a function 
 \[ f : \prd{p : \sm{x:A}B(x)} C(p) \]
 with  defining equation
@@ -476,7 +490,7 @@ with the defining equation
 and the corresponding induction operator:
 \begin{align*}
   \ind{\Sigma{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU'}
-    \Big(\tprd{x:A} B(x) \to C(\tup{a}{b})\Big)
+    \Big(\tprd{a:A}{b:B(x)} C(\tup{a}{b})\Big)
     \to \dprd{p : \sm{x:A}B(x)} C(p)
 \end{align*}
 with the defining equation 
@@ -493,12 +507,12 @@ Then $\ac$ says intuitively that if we have a dependent function $g$ assigning t
 Our intuition tells us that we can just split up the values of $g$ into their components.
 Indeed, using the projections we have just defined, we can define:
 \[ \ac(g) \defeq \Big(\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))\Big). \]
-To verify that this is well-typed, note that $g:\prd{x:A} \sm{y :B} R(x,y)$, we have
+To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, we have
 \begin{eqnarray*}
 \lamu{x:A} \fst(g(x)) & : &  A \to  B \\
 \lamu{x:A} \snd(g(x)) & : &  \tprd{x:A} R(a,\fst(g(x))).
 \end{eqnarray*}
-Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the functior $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the codomain of \ac:
+Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the codomain of \ac:
 \[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
 \Big(\lamu{f:A\to B} \tprd{x:A} R(x,f(x))\Big)\big(\lamu{x:A} \fst(g(x))\big). \]
 Thus, we have
@@ -625,12 +639,16 @@ with the defining equations
 \end{eqnarray*}
 
 We have remarked that $\Sigma$-types can be regarded as analogous to indexed disjoint unions, while coproducts are binary disjoint unions.
-It is natural to expect that a binary disjoint union could be constructed as an indexed one over the two-element type \bool, and indeed we could have defined
+It is natural to expect that a binary disjoint union $A+B$ could be constructed as an indexed one over the two-element type \bool.
+For this we need a type family $P:\bool\to\type$ such that $P(\bfalse)\jdeq A$ and $P(\bfalse)\jdeq B$.
+But we can obtain such a family precisely by the recursion principle for $\bool$.
+(The ability to define \emph{type families} by induction and recursion, using the fact that the universe $\UU$ is itself a type, is one of the most subtle and important aspects of type theory.)
+Thus, we could have defined
 \[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x) \]
 with
 \begin{eqnarray*}
   \inl(a) & \defeq & \tup{\bfalse}{a} \\
-  \inr(a) & \defeq & \tup{\btrue}{a}.
+  \inr(b) & \defeq & \tup{\btrue}{b}.
 \end{eqnarray*}
 We leave it as an exercise to derive the induction principle of a coproduct type from this definition.
 (See also \autoref{ex:sum-via-bool,sec:appetizer-univalence}.)
@@ -754,17 +772,17 @@ To derive
 it is sufficient to supply
 \[ \ass_0 :  \prd{j,k:\nat} 0 + (j + k) = (0+ j) + n \]
 and
-\begin{multline*}
-  \ass_s  : \prd{n:\nat} \big(\prd{j,k:\nat} i + (j + k) = (i + j) + n\big) \\
+\begin{equation*}
+  \ass_s  : \prd{n:\nat} \left(\prd{j,k:\nat} i + (j + k) = (i + j) + n\right) 
    \to \prd{j,k:\nat} \suc(n) + (j + k) = (\suc(n) + j) + n.
-\end{multline*}
+\end{equation*}
 To derive $\ass_0$, recall that $0+n \jdeq n$, and hence  $0 + (j + k) \jdeq j+k \jdeq (0+ j) + k$.
 Hence we can just set
 \[ ass_0(j,k) \defeq \refl{j+k} \]
 For $\ass_s$, recall that the definition of $+$ gives $\suc(m)+n \jdeq \suc(m+n)$, and hence 
 \begin{eqnarray*}
-   \suc(n) + (j + k)  & \jdeq & \suc(n+(j+k)) \\
-   (\suc(n)+j)+k & \jdeq & \suc((n+j)+k.
+   \suc(n) + (j + k)  & \jdeq & \suc(n+(j+k)) \qquad\text{and}\\
+   (\suc(n)+j)+k & \jdeq & \suc((n+j)+k).
 \end{eqnarray*}
 Thus, the output type of $\ass_s$ is equivalently $\suc(n+(j+k)) = \suc((n+j)+k)$.
 But its input (the ``inductive hypothesis'') yields $n+(j+k)=(n+j)+k$, so it suffices to invoke the fact that if two natural numbers are equal, then so are their successors.
@@ -992,11 +1010,11 @@ The former is more natural in constructive mathematics, but in this case it is a
 Note that we can use the universes in type theory to represent ``higher order logic'' --- that is, we can quantify over all propositions or over all predicates.
 For example, we can represent the proposition \emph{for all properties $P : A \to \UU$, if $P(a)$ then $P(b)$} as
 \[ \prd{P : A \to \UU} P(a) \to P(b) \]
-where $A : \UU$ and $a,b : A$. However, unless we assume the existence
-of an impredicative universe of propositions, this
-proposition  lives in a different, higher, universe than the
+where $A : \UU$ and $a,b : A$.
+However, \textit{a priori} this proposition lives in a different, higher, universe than the
 propositions we are quantifying over; that is
 \[ \Big(\prd{P : A \to \UU_i} P(a) \to P(b)\Big) : \UU_{i+1}. \]
+We will return to this question in \autoref{subsec:prop-subsets}.
 
 We have descibed here a ``proof-relevant'' translation of propositions, where the proofs of disjunctions and existential statements carry some information.
 For instance, if we have an inhabitant of $A+B$, regarded as a witness of ``$A$ or $B$'', then we know whether it came from $A$ or from $B$.
@@ -1017,10 +1035,10 @@ However, once we are familiar with propositions-as-types, is convenient to also 
 Thus, ``$a=b$'' will also be a notation for the \emph{type} $\idtype[A]ab$ corresponding to the proposition that $a$ equals $b$.
 For clarity, we may also write ``$a=_A b$'' to specify the type $A$.
 
-Just as we remarked in \S\ref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include nontrivial information, nothing prevents the type $a=b$ from also including nontrivial information.
+Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include nontrivial information, nothing prevents the type $a=b$ from also including nontrivial information.
 This is the cornerstone of the homotopical interpretation, where we regard witnesses of $a=b$ as \emph{paths} or \emph{equivalences} between $a$ and $b$ in the space $A$.
 Since there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.
-We will return to this in \S\ref{cha:basics}; for now we focus on the basic rules for the identity type.
+We will return to this in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
 
 Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $a=_A b:\UU$ in the same universe.
 The basic way to construct an element of $a=b$ is to know that $a$ and $b$ are the same.
@@ -1039,7 +1057,7 @@ The first is:
 \begin{description}
 \item[Martin-L\"{o}f Rule:] 
 Given a family 
-\[ C : \prd{x,y:A}\prd{p:x =_A y} \UU \]
+\[ C : \prd{x,y:A}{p:x =_A y} \UU \]
 and a function
 \[ c :  \prd{x:A} C(x,x,\refl{x})\]
 we can construct a function
@@ -1061,7 +1079,7 @@ If we view types as like sets, it is unclear what this buys us, but in \autoref{
 
 If we package the Martin-L\"of rule as an induction constant, it becomes:
 \begin{align*}
- \ind{=_A}^{ML} :  \dprd{C : \prd{x,y:A}\prd{p:x =_A y} \UU} 
+ \ind{=_A}^{ML} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
      \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y} C(x,y,p)
 \end{align*}
 with the equality
@@ -1103,12 +1121,12 @@ Fortunately, the two induction principles are equivalent.
 It is easy to see that the Martin-L\"of rule follows from the Paulin-Mohring rule.
 Let us assume the premises of the Martin-L\"of rule
 \begin{eqnarray*}
-C & : & \prd{x,y:A}\prd{p:x =_A y} \UU  \\
+C & : & \prd{x,y:A}{p:x =_A y} \UU  \\
 c & :  & \prd{x:A} C(x,x,\refl{x}).
 \end{eqnarray*}
 Now, given an element $x:A$, we can instantiate both, obtaining
 \begin{eqnarray*}
-C' & : & \prd{y:A}\prd{p:x =_A y} \UU  \\
+C' & : & \prd{y:A}{p:x =_A y} \UU  \\
 C' & \defeq & C(x) \\
 c' & : & C'(x,\refl{x}) \\
 c' & \defeq & c(x)
@@ -1131,7 +1149,7 @@ the Paulin-Mohring rule. What we can do instead is construct one instance of the
 all possible instantiations of the Paulin-Mohring rule at once.
 Define
 \begin{eqnarray*}
-D & : & \prd{x,y:A}\prd{p:x =_A y} \UU' \\
+D & : & \prd{x,y:A}{p:x =_A y} \UU' \\
 D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p).
 \end{eqnarray*}
 Then we can construct the function
@@ -1148,9 +1166,8 @@ Now given $x:A$ and $p:a =_A x$, we can derive the conclusion of the Paulin-Mohr
 Notice that we also obtain the correct definitional equality.
 In terms of induction constants, this construction becomes:
 \begin{align*}
-\ind{=_A}^{PM}(a,C,c,x,p) \defeq \\
-\ind{=_A}^{ML}( & \lamu{x,y:A}{p:x =_A y} \prd{C : \prd{z:A}{p : x =_A z} \UU} \\
-&\qquad C(x,\refl{x}) \to C(y,p),\\
+\ind{=_A}^{PM}(a,C,c,x,p) \defeq 
+\ind{=_A}^{ML}( & \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),\\
 & \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x,\\
 & a,x,p,C,c) 
 \end{align*}
@@ -1159,7 +1176,7 @@ Note that the construction given above uses universes. That is, if we want to
 model $\ind{=_A}^{PM}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
 to use $\ind{=_A}^{ML}$ with 
 %
-\[ D:\prd{x,y:A}\prd{p:x =_A y} \UU_{i+1} \]
+\[ D:\prd{x,y:A}{p:x =_A y} \UU_{i+1} \]
 %
 since $D$ quantifies over all $C$ of the given type. While this is
 compatible with our definition of universes, it is also possible to
@@ -1168,9 +1185,9 @@ We leave the details to the reader as \autoref{ex:pm-to-ml}.
 
 We can use the eliminator for equality to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
 
-Let us also say something about \define{inequality}, which is negation of equality (of
-course, it makes no sense to negate judgmental equality $\jdeq$ because judgments are not
-subject to logical operations):
+Let us also say something about \define{inequality}, which is negation of equality%
+\footnote{Note that this is negation of the \emph{propositional} identity type.
+Of course, it makes no sense to negate judgmental equality $\jdeq$, because judgments are not subject to logical operations.}:
 %
 \begin{equation*}
   (x \neq_A y) \ \defeq\ \lnot (x =_A y).
@@ -1178,7 +1195,7 @@ subject to logical operations):
 %
 Just like negation, inequality plays a less important role here than it does in classical
 mathematics. For example, we cannot prove that two things are equal by proving that they
-are not unequal, that would be an application the classical law of double negation.
+are not unequal: that would be an application the classical law of double negation, which is unprovable without additional assumptions (see \autoref{sec:intuitionism}).
 Sometimes it is useful to phrase inequality in a positive way. For example,
 in~\autoref{RD-inverse-apart-0} we shall prove that a real number $x$ has an inverse if,
 and only if, its distance from~$0$ is positive, which is a stronger requirement than $x
@@ -1186,6 +1203,15 @@ and only if, its distance from~$0$ is positive, which is a stronger requirement 
 
 
 \sectionNotes
+
+There are many small variations in type theories of the sort we have described here, both in presentation and in the details of the rules.
+For instance, we have chosen to include a judgmental equality $f \jdeq \lam{x} f(x)$, which is called \emph{$\eta$-conversion}.
+This rule has a slightly different status from the other judgmental equalities, but it is quite convenient to have.
+It is also possible to write down similar ``$\eta$-conversion'' rules for other types: for instance, the $\eta$-rule for cartesian products would be a \emph{judgmental} version of surjective pairing, $u \jdeq (\proj1(u),\proj2(u))$.
+We have not included any of these, because they do not follow from the general framework of inductive definitions (see \autoref{cha:induction}).
+Moreover, the corresponding ``$\eta$-rule'' for identity types would trivialize all the higher structure to be discussed in \autoref{cha:basics}, so we are \emph{forced} to leave it out, and the question then becomes where to draw the line.
+It is not unreasonable to include judgmental $\eta$-rules at least for cartesian products and more generally $\Sigma$-types, but we have chosen not to.
+
 
 \sectionExercises
 
@@ -1199,7 +1225,8 @@ Derive the non-dependent eliminator for products $\rec{A\times B} $ using only t
 \end{ex}
 
 \begin{ex}
-Derive the dependent eliminator for products $\ind{A\times B}$ using only the projections and $\spr$ and verify that the definitional equalities are valid. Generalize $\spr$ to $\Sigma$-types and do the same for $\Sigma$-types.
+  Derive the dependent eliminator for products $\ind{A\times B}$ using only the projections and $\spr$ and verify that the definitional equalities are valid. Generalize $\spr$ to $\Sigma$-types and do the same for $\Sigma$-types.
+  \emph{(This requires concepts from \autoref{cha:basics}.)}
 \end{ex}
 
 \begin{ex}
@@ -1214,19 +1241,24 @@ derive the recursor $\rec{\nat}$.
 \end{ex}
 
 \begin{ex}\label{ex:sum-via-bool}
-Show that if we define $\ind{A+B}$ as $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x)$, then the definitional equalities stated for $\ind{A+B}$ in \S\ref{sec:coproduct-types} hold.
+Show that if we define $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x)$, then we can give a definition of $\ind{A+B}$ for which the definitional equalities stated in \autoref{sec:coproduct-types} hold.
 \end{ex}
 
 \begin{ex}\label{ex:prod-via-bool}
-Show that if we define $\ind{A\times B}$ as $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, then the definitional equalities state for $\ind{A\times B}$ in \S\ref{sec:finite-product-types} hold propositionally (i.e.\ using equality types).
+Show that if we define $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, then we can give a definition of  $\ind{A\times B}$ for which the definitional equalities stated in \autoref{sec:finite-product-types} hold propositionally (i.e.\ using equality types).
 \end{ex}
 
 \begin{ex}\label{ex:pm-to-ml}
 Give an alternative derivation of $\ind{=_A}^{PM}$ from $\ind{=_A}^{ML}$ which avoids the use of universes.
+  \emph{(This requires concepts from later chapters.)}
 \end{ex}
 
 \begin{ex}
 Define multiplication and exponentiation using $\rec{\Nat}$. Formally verify that $(\nat,+,0,\times,1)$ is a semiring using only $\ind{\Nat}$.  
+\end{ex}
+
+\begin{ex}\label{ex:fin}
+  Define the type family $\Fin : \nat \to \UU$ mentioned at the end of \autoref{sec:universes}, and the dependent function $\fmax : \prd{n:\nat} \Fin(n+1)$ mentioned in \autoref{sec:pi-types}.
 \end{ex}
 
 \begin{ex}\label{ex:ackermann}

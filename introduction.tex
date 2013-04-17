@@ -241,7 +241,7 @@ Accordingly, we can regard a term $a : A$ as both an element of the type $A$ (or
 To take an example, suppose we have sets $A$ and $B$ (discrete spaces), and consider the statement ``$A$ is isomorphic to $B$.''
 In type theory, this can be rendered as:
 \[
-\mathsf{Iso}(A,B) \defeq\ \Sigma_{f : A\to B}\Sigma_{g : B\to A}\big((\Pi_{x:A}\, g(f(x)) = x) \times (\Pi_{y:B}\, f(g(y)) = y)\big)
+\mathsf{Iso}(A,B) \defeq\ \tsm{f : A\to B}{g : B\to A}\Bigl(\bigl(\tprd{x:A} g(f(x)) = x\bigr) \times \bigl(\tprd{y:B}\, f(g(y)) = y\bigr)\Bigr)
 \]
 %
 Reading the type constructors $\Sigma, \Pi, \times$  here  as ``there exists'', ``for all'', and ``and'' respectively yields the usual formulation of ``$A$ and $B$ are isomorphic''; on the other hand, reading them as sums and products yields the \emph{type of all isomorphisms} between $A$ and $B$!  To prove that $A$ and $B$ are isomorphic, one  constructs a proof $p : \mathsf{Iso}(A,B)$, which is therefore the same  as constructing an isomorphism between $A$ and $B$, i.e., exhibiting a pair of functions $f, g$ together with \emph{proofs} that their composites are the respective identity maps.  The latter proofs, in turn, are nothing but homotopies of the appropriate sorts.  In this way, \emph{proving a proposition is the same as constructing an element of some particular type.}
@@ -288,14 +288,14 @@ However, type theory does encourage avoiding these principles when they are unne
 First of all, every mathematician knows that a theorem is more powerful when proven using fewer assumptions, since it applies to more examples.
 The situation with AC and LEM is no different:
 type theory admits many interesting ``nonstandard'' models, such as in sheaf toposes, where classicality principles such as AC and LEM tend to fail.
-Homotopy type theory admits similar models in higher toposes, such as are studied in~\cite{lurie:higher-topoi}.
+Homotopy type theory admits similar models in higher toposes, such as are studied in~\cite{ToenVezzosi02,Rezk05,lurie:higher-topoi}.
 Thus, if we avoid using these principles, the theorems we prove will be valid internally to all such models.
 
 Secondly, one of the additional virtues of type theory is its computable character.
 In addition to being a foundation for mathematics, type theory is a formal theory of computation, and can be treated as a powerful programming language.
 From this perspective, the rules of the system cannot be chosen arbitrarily the way set-theoretic axioms can: there must be a harmony between them which allows all proofs to be ``executed'' as programs.
 We do not yet fully understand the new principles introduced by homotopy type theory, such as univalence and higher inductive types, from
-this point of view, but the basic outlines are clear; see, for example, \autoref{sec:computational} and~\cite{lh:canonicity}.
+this point of view, but the basic outlines are clear; see, for example, \crefrange{sec:computational}{sec:compute-nat} and~\cite{lh:canonicity}.
 It has been known for a long time, however, that principles such as AC and LEM are fundamentally antithetical to computability, since they assert baldly that certain things exist without giving any way to compute them.
 Thus, avoiding them is necessary to maintain the character of type theory as a theory of computation.
 
@@ -315,7 +315,7 @@ For instance:
   But with higher inductive types, we can give a version of this definition which is well-behaved and avoids any choice principles; see \autoref{cha:real-numbers}.
 \end{enumerate}
 However, we emphasize again that the reader does not have to care about, or worry about, constructivity to read this book.
-The point is that in all of the above examples, the version of the theory we give is the \emph{best} way we know how to do it, whether or not LEM and AC are available.
+The point is that in all of the above examples, the version of the theory we give has independent advantages, whether or not LEM and AC are available.
 Constructivity is an added bonus.
 
 Given this discussion of adding new principles such as univalence, higher inductive types, AC, and LEM, one may wonder whether the resulting system remains consistent.
@@ -362,11 +362,11 @@ Type-theoretically, this means there are many paths that are equal to reflexivit
 While this homotopy-invariance has advantages, these ``meaningless'' identity terms do introduce needless complications into arguments and constructions, so it would be convenient to have a systematic way of eliminating or collapsing them.
 In some cases, the proliferation of such superfluous identity terms makes it very difficult or impossible to formulate what should be a straightforward concept, such as the definition of a (semi-)simplicial type.
 
-A more specialized, but no less important, problem is the relation between HoTT and the research  on \emph{higher toposes} currently happening at the intersection of higher category theory and homotopy theory.
-There is a growing conviction among those familiar with both subjects that they are, at root, one.
+A more specialized, but no less important, problem is the relation between homotopy type theory and the research  on \emph{higher toposes} currently happening at the intersection of higher category theory and homotopy theory.
+There is a growing conviction among those familiar with both subjects that they are intimately connected.
 For instance, the notion of a univalent universe should coincide with that of an object classifier, while higher inductive types should be an ``elementary'' reflection of local presentability.
-More generally, we expect that HoTT should be the internal language of $(\infty,1)$-toposes.
-Despite this general consensus, however, the details remain to be worked out, and doing so will undoubtedly lead to further insights into both concepts.
+More generally, homotopy type theory should be the ``internal language'' of $(\infty,1)$-toposes, just as intuitionistic higher-order logic is the internal language of ordinary 1-toposes.
+Despite this general consensus, however, details remain to be worked out --- in particular, questions of coherence and strictness remain to be addressed  --- and doing so will undoubtedly lead to further insights into both concepts.
 
 But by far the largest field of work to be done is in the ongoing formalization of everyday mathematics in this new system.
 Recent successes in formalizing some facts from basic homotopy theory and category theory have been encouraging; some of these are described in \cref{cha:homotopy,cha:category-theory}.
@@ -375,6 +375,47 @@ Obviously, however, much work remains to be done.
 %\subsection*{Some references?}
 %
 %Some other surveys and introductions?
+
+\subsection*{How to read this book}
+
+This book is divided into two parts.
+Part I, ``Foundations'', develops the fundamental concepts of homotopy type theory.
+In a hypothetical world where univalent foundations was the accepted foundation of mathematics, this might be material that a senior undergraduate or beginning graduate student would be expected to know.
+To a programmer, this is ``library code''.
+However, in the real world where univalent foundations is a new and different kind of mathematics, its basic notions take some getting used to; thus Part I is fairly extensive.
+
+Part II, ``Mathematics'', consists of four chapters that build on the basic notions of Part I to exhibit some of the new things we can do with univalent foundations in four different areas of mathematics: homotopy theory (\autoref{cha:homotopy}), category theory (\autoref{cha:category-theory}), set theory (\autoref{cha:set-math}), and real analysis (\autoref{cha:real-numbers}).
+The chapters in Part II are more or less independent of each other, although occasionally one will use a lemma proven in another.
+
+A reader who wants to seriously understand univalent foundations, and be able to work in it, will eventually have to read and understand most of Part I.
+However, a reader who wants to get a flavor of univalent foundations and what it can do, before commiting to a long-term relationship, may understandably balk at having to work through over 200 pages before getting to the ``meat'' in Part II.
+Fortunately, not all of Part I is necessary in order to read the chapters in Part II.
+Each chapter in Part II begins with a brief overview of its subject, what univalent foundations has to contribute to it, and the necessary background from Part I, so the courageous reader can turn immediately to the appropriate chapter for their favorite subject.
+For those who want to understand one or more chapters in Part II more deeply than this, but are not ready to read all of Part I, we provide here a brief summary of Part I, with remarks about which parts are necessary for which chapters in Part II.
+
+\autoref{cha:typetheory} is about the basic notions of type theory, prior to any homotopical interpretation.
+A reader who is familiar with Martin-L\"of type theory can quickly skim it to pick up the particulars of the theory we are using.
+However, readers without experience in type theory are encouraged to read \autoref{cha:typetheory} carefully, as there are many subtle differences between type theory and other foundations such as set theory.
+
+\autoref{cha:basics} introduces the homotopical viewpoint on type theory, along with the basic notions supporting this view, and describes the homotopical behavior of each component of the type theory from \autoref{cha:typetheory}.
+It also introduces the \emph{univalence axiom} (\autoref{sec:compute-universe}) --- the first of the two basic innovations of homotopy type theory --- and the ``encode/decode'' methodology for characterizing path types.
+Thus, it is quite basic and we encourage everyone to read it, especially \crefrange{sec:equality}{sec:basics-equivalences}.
+
+\autoref{cha:logic} describes how we represent logic in homotopy type theory, and its connection to classical logic as well as to constructive and intuitionistic logic.
+Here we define the law of excluded middle and the axiom of choice (although, for the most part, we do not need to assume them in the rest of the book), as well as the \emph{propositional truncation} which is essential for representing traditional logic.
+This is essential for \autoref{cha:set-math,cha:real-numbers}, less important for \autoref{cha:category-theory}, and not so necessary for \autoref{cha:homotopy}.
+
+\autoref{cha:equivalences,cha:induction} study two special topics in detail: equivalences (and related notions) and generalized inductive definitions.
+While these are important subjects for understanding homotopy type theory, for the most part they are not necessary for Part II.
+Only a few lemmas from \autoref{cha:equivalences} are used here and there, while the general discussions in \autoref{sec:bool-nat,sec:strictly-positive,sec:generalizations} may be helpful for intuition.
+
+\autoref{cha:hits} introduces the second basic innovation of homotopy type theory --- \emph{higher inductive types} --- with many examples.
+Higher inductive types are used extensively in \autoref{cha:homotopy}, and some particular ones play important roles in \autoref{cha:set-math,cha:real-numbers}.
+They are not so necessary for \autoref{cha:category-theory}, although one example is used in \autoref{sec:rezk}.
+
+Finally, \autoref{cha:hlevels} discusses homotopy $n$-types and related notions such as $n$-connected types.
+These notions are important for \autoref{cha:homotopy}, but not so important in the rest of Part II, although the case $n=-1$ of some of the lemmas are used in \autoref{sec:piw-pretopos}.
+
 
 
 % Local Variables:

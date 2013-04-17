@@ -560,14 +560,12 @@ $\opp{\lloop}$ to the predecessor function:
 \end{lem}
 \begin{proof}
 For the first, we calculate as follows:
-\[
-\begin{array}{lll}
- & {\transfib \code \lloop x} &\\
-= & \transfib {A \mapsto A} {(\ap{\code}{\lloop})} x & \text{associativity}\\
-= & \transfib {A \mapsto A} {\ua (\Zsuc)} x & \text{reduction for circle-recursion}\\
-= & x + 1 & \text{reduction for \ua}
-\end{array}
-\]
+\begin{alignat*}{2}
+{\transfib \code \lloop x} 
+&= \transfib {A \mapsto A} {(\ap{\code}{\lloop})} x &&\quad\text{by associativity}\\
+&= \transfib {A \mapsto A} {\ua (\Zsuc)} x &&\quad\text{by computation for $\rec{\Sn^1}$}\\
+&= x + 1 &&\quad\text{computation for \ua}
+\end{alignat*}
 The second follows from the first, because $\transfib B p-$  and ${\transfib B {\opp p}{-}}$ are always inverses, so ${\transfib\code {\opp \lloop}{-}}$ must be the inverse of $\Zsuc$.
 \end{proof}
 
@@ -642,7 +640,6 @@ This will be one half of our desired equivalence; indeed, it is exactly the func
 
 Similarly, the function~\eqref{eq:pi1s1-decode} is a generalization of the function $\lloop^-$ from \autoref{sec:pi1s1-initial-thoughts}.
 
-%% deliberately making a ``definition'' with a proof here :-) --Dan
 \begin{defn}\label{thm:pi1s1-decode}
 Define $\decode : \prd{x : \Sn ^1}\code(x) \rightarrow (\base=x)$ by 
 circle induction on $x$.  It suffices to give a function 
@@ -656,25 +653,21 @@ from $\lloop^-$ to itself that lies over $\lloop$.
 Formally, this means a path from $\transfib {(x' \mapsto \code(x')
 \rightarrow (\base=x'))} {\lloop} {\lloop^-}$ to $\lloop^-$.  We define such a
 path as follows:
-
-\[
-\begin{array}{lll}
-  & \transfib {(x' \mapsto \code(x') \rightarrow (\base=x'))} \lloop {\lloop^-} & \\
-= & \transfibf {x'\mapsto (\base=x')} \lloop \circ {\lloop^-} \circ \transfibf \code {\opp \lloop} & \\
-= & (- \ct \lloop) \circ (\lloop^-) \circ \transfibf \code {\opp \lloop} & \\
-= & (- \ct \lloop) \circ (\lloop^-) \circ (- - 1) & \\
-= & (n \mapsto \lloop^{n - 1} \ct \lloop) \\                       
-\end{array}
-\]
-
-From line 1 to line 2, we apply the definition of $\mathsf{transport}$
+\begin{align*}
+  \MoveEqLeft \transfib {(x' \mapsto \code(x') \rightarrow (\base=x'))} \lloop {\lloop^-}\\
+&= \transfibf {x'\mapsto (\base=x')}(\lloop) \circ {\lloop^-} \circ \transfibf \code ({\opp \lloop}) \\
+&= (- \ct \lloop) \circ (\lloop^-) \circ \transfibf \code ({\opp \lloop}) \\
+&= (- \ct \lloop) \circ (\lloop^-) \circ \Zpred \\
+&= (n \mapsto \lloop^{n - 1} \ct \lloop)                 
+\end{align*}
+On the first line, we apply the characterization of $\mathsf{transport}$
 when the outer connective of the fibration is $\rightarrow$, which
 reduces the $\mathsf{transport}$ to pre- and post-composition with
-$\mathsf{transport}$ at the domain and range types.  From line 2 to line
-3, we apply the definition of $\mathsf{transport}$ when the type family
-is $\id{\base}{x}$, which is post-composition of paths.  From line 3 to
-line 4, we use the action of $\code$ on $\opp \lloop$ defined in
-\autoref{lem:transport-s1-code}.  From line 4 to line 5, we simply
+$\mathsf{transport}$ at the domain and range types.  On the second line,
+we apply the characterization of $\mathsf{transport}$ when the type family
+is $x\mapsto \id{\base}{x}$, which is post-composition of paths.  On the third line,
+we use the action of $\code$ on $\opp \lloop$ from
+\autoref{lem:transport-s1-code}.  And on the fourth line, we simply
 reduce the function composition.  Thus, it suffices to show that for all
 $n$, \id{\lloop^{n - 1} \ct \lloop}{\lloop^{n}}, which is an easy
 induction, using the groupoid laws.  
@@ -724,16 +717,14 @@ The proof is by induction, using \cref{thm:looptothe}.
 %% \autoref{lem:transport-s1-code} is $0 + 1 = 1$.  
 
 \item In the case for $n+1$, 
-\[
-\begin{array}{lll}
-  & {\encode'(\lloop^{n+1})}  \\
-= & {\encode'(\lloop^{n} \ct \lloop)} & \text{by definition of $\lloop^{-}$} \\
-= & \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} & \text{by definition of $\encode$}\\
-= & \transfib{\code}{\lloop}{(\transfib{\code}{\lloop^n}{0})} & \text{by functoriality}\\
-= & {(\transfib{\code}{\lloop^n}{0})} + 1 & \text{by \autoref{lem:transport-s1-code}}\\
-= & n + 1 & \text{by the IH} \\
-\end{array}
-\]
+\begin{alignat*}{2}
+ {\encode'(\lloop^{n+1})}
+&= {\encode'(\lloop^{n} \ct \lloop)} &&\quad\text{by definition of $\lloop^{-}$} \\
+&= \transfib{\code}{(\lloop^{n} \ct \lloop)}{0} &&\quad\text{by definition of $\encode$}\\
+&= \transfib{\code}{\lloop}{(\transfib{\code}{\lloop^n}{0})} &&\quad\text{by functoriality}\\
+&= {(\transfib{\code}{\lloop^n}{0})} + 1 &&\quad\text{by \autoref{lem:transport-s1-code}}\\
+&= n + 1 &&\quad\text{by the IH} \\
+\end{alignat*}
 
 \item The case for negatives is analogous.  \qedhere
 \end{itemize}
@@ -757,7 +748,7 @@ $\eqv {\Omega(\Sn^1,\base)} {\Z}$.
 A simple induction shows that this equivalence takes addition to
 composition, so that $\Omega(\Sn ^1) = \Z$ as groups.
 
-\begin{cor}
+\begin{cor} \label{cor:pi1s1}
 $\id{\pi_1(\Sn ^1)} {\Z}$, while $\id{\pi_n(\Sn ^1)}0$ for $n>1$.
 \end{cor}
 \begin{proof}
@@ -912,7 +903,7 @@ Roughly, we can say that it unifies the proofs of \autoref{thm:pi1s1-decode,lem:
 The aim of this section is to prove that the operation of suspension increases
 connectedness.
 
-\begin{thm}
+\begin{thm} \label{thm:suspension-increases-connectedness}
   Let $n\ge-2$ and $A:\type$.
 
   If $A$ is $n$-connected then the suspension of $A$ is $(n+1)$-connected.
@@ -945,7 +936,7 @@ connectedness.
   \[\function{(\unit\to{}E)}{\cocone{\Ddiag}{E}}{y}
   {(y,y,\lamu{u:{\trunc{n+1}A}} \refl{y(\ttt)})}\]
   where we recall that $\cocone{\Ddiag}{E}$ is the type
-  \[\sum_{f:\unit\to{}E}\sum_{g:\unit\to{}E}(\trunc{n+1}A\to
+  \[\sm{f:\unit\to{}E}{g:\unit\to{}E}(\trunc{n+1}A\to
   (f(\ttt)=_E{}g(\ttt)))\]
 
   The map $\function{(\unit\to{}E)}{E}{f}{f(\ttt)}$ is an equivalence, hence
@@ -959,10 +950,10 @@ connectedness.
   \[\function{(x=_Ey)}{(\trunc{n+1}A\to(x=_Ey))}{p}{\lam{z} p}\]
 
   Hence we have
-  \[\cocone{\Ddiag}{E}=\sum_{x:E}\sum_{y:E}(x=_Ey)\]
+  \[\cocone{\Ddiag}{E}=\sm{x:E}{y:E}(x=_Ey)\]
 
   But the following map is an equivalence
-  \[\function{E}{\sum_{x:E}\sum_{y:E}(x=_Ey)}{x}{(x,x,\refl{x})}\]
+  \[\function{E}{\sm{x:E}{y:E}(x=_Ey)}{x}{(x,x,\refl{x})}\]
 
   Hence
   \[\cocone{\Ddiag}{E}=E\]
@@ -1281,7 +1272,7 @@ long exact sequence becomes the following:
 
 In particular we get the following result:
 
-\begin{cor}
+\begin{cor} \label{cor:pis2-hopf}
   We have $\eqv{\pi_2(\Sn^2)}{\Z}$ and $\eqv{\pi_k(\Sn^3)}{\pi_k(\Sn^2)}$ for
   every $k\ge3$ (where the map is induced by the Hopf fibration, seen as a map
   from the total space $\Sn^3$ to the base space $\Sn^2$).
@@ -1757,7 +1748,7 @@ We also have:
 This follows essentially from the definition of $\code$.
 
 We also construct a function
-\[ r : \prod_{u:P} \code(u,u) \]
+\[ r : \prd{u:P} \code(u,u) \]
 by induction on $u$ as follows:
 \begin{align*}
   rib &\defeq (b,\refl{b},b)\\
@@ -1890,18 +1881,18 @@ There is an obvious induced function $\kbar:T\to A$ such that $\kbar \ell = k$, 
   $\kbar$ is (fiberwise) 0-connected.
 \end{lem}
 \begin{proof}
-  We must show that for all $a:A$, the 0-truncation of the type $\sum_{t:T}(\kbar t = a)$ is contractible.
+  We must show that for all $a:A$, the 0-truncation of the type $\sm{t:T}(\kbar t = a)$ is contractible.
   Since contractibility is a mere proposition and $k$ is $(-1)$-connected, we may assume that $a=ks$ for some $s:S$.
   Now we can take the center of contraction to be $\tproj0{(\ell s,q)}$ where $q$ is the equality $\kbar\ell s = k s$.
 
-  It remains to show that for any $\phi:\trunc0{\sum_{t:T} (\kbar t = ks)}$ we have $\phi = \tproj0{(\ell s,q)}$.
+  It remains to show that for any $\phi:\trunc0{\sm{t:T} (\kbar t = ks)}$ we have $\phi = \tproj0{(\ell s,q)}$.
   Since the latter is a mere proposition, and in particular a set, we may assume that $\phi=\tproj0{(t,p)}$ for $t:T$ and $p:\kbar t = ks$.
 
   Now we can do induction on $t:T$.
   If $t\jdeq\ell s'$, then $ks' = \kbar \ell s' \overset{p}{=} ks$ yields via $m$ an equality $\ell s = \ell s'$.
   Hence by definition of $\kbar$ and of equality in homotopy fibers, we obtain an equality $(ks',p) = (ks,q)$, and thus $\tproj0{(ks',p)} = \tproj0{(ks,q)}$.
   Next we must show that as $t$ varies along $m$ these equalities agree.
-  But they are equalities in a set (namely $\trunc0{\sum_{t:T} (\kbar t = ks)}$), and hence this is automatic.
+  But they are equalities in a set (namely $\trunc0{\sm{t:T} (\kbar t = ks)}$), and hence this is automatic.
 \end{proof}
 
 \begin{rmk}
@@ -2377,9 +2368,67 @@ where $r:\merid(x_0) \ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}$, and $r'':
   We leave it to the reader to verify that the coherence paths all cancel, giving reflexivity in the second component.
 \end{proof}
 
-\begin{cor}
-$\pi_n(\Sn^n)=\Z$ for every $n\geq 1$. 
+As a corollary, we have 
+\begin{cor}[Freudenthal Equivalence] \label{cor:freudenthal-equiv}
+Suppose that $X$ is $n$-connected and pointed, with $n\geq 0$.
+Then $\eqv{\trunc{2n}{X}}{\trunc{2n}{\Omega\susp(X)}}$.
 \end{cor}
+\begin{proof}
+By \cref{thm:freudenthal}, $\sigma$ is $2n$-connected.  By
+\cref{lem:connected-map-equiv-truncation}, it is therefore an
+equivalence on $2n$-truncations.  
+\end{proof}
+
+\subsection{Consequences for Homotopy Groups of Spheres}
+
+One important corollary of Freudenthal is that the homotopy groups of
+spheres are stable in a certain range (these are the colored diagonals
+in \cref{fig:homotopy-groups-of-spheres}):
+\begin{cor}[Stability for Spheres] \label{cor:stability-spheres}
+If $k \le 2n-2$, then $\pi_{k+1}(S^{n+1}) = \pi_{k}(S^{n})$
+\end{cor}
+\begin{proof}
+Assume $k \le 2n-2$.  
+
+By \cref{cor:sn-connected}, $\Sn ^{n}$ is $(n\mathord{-}1)$-connected.  Therefore,
+by \cref{cor:freudenthal-equiv}, 
+\[
+\trunc{2(n-1)}{\Omega(\susp(\Sn^{n}))} = \trunc{2(n-1)}{\Sn^{n}}
+\]
+By \cref{lem:truncation-le}, because $k \le 2(n-1)$, applying $\trunc{k}{-}$
+to both sides shows that this equation holds for $k$:
+\begin{equation}\label{eq:freudenthal-for-spheres}
+\trunc{k}{\Omega(\susp(\Sn^{n}))} = \trunc{k}{\Sn^{n}}
+\end{equation}
+
+Then, the main idea of the proof is as follows; we omit checking that these
+equivalences act appropriately on the base points of these spaces:
+\[
+\begin{array}{rcll}
+\pi_{k+1}(\Sn^{n+1}) & = & \trunc{0}{\Omega^{k+1}(\Sn^{n+1})} & \text{definition} \\
+                     & = & \trunc{0}{\Omega^k(\Omega(\Sn^{n+1}))} & \text{definition}\\
+                     & = & \trunc{0}{\Omega^k(\Omega(\susp(\Sn^{n})))} & \text{definition}\\
+                     & = & \Omega^k(\trunc{k}{(\Omega(\susp(\Sn^{n})))}) & \text{\cref{thm:path-truncation}}\\
+                     & = & \Omega^k(\trunc{k}{\Sn^{n}}) & \text{\cref{eq:freudenthal-for-spheres}}\\
+                     & = & \trunc{0}{\Omega^k(\Sn^{n})} & \text{\cref{thm:path-truncation}}\\
+                     & = & \pi_k{\Sn^{n}} & \text{definition}\\
+\end{array}
+\]
+\end{proof}
+
+This means that once we have calculated one entry in one of these stable
+diagonals, we know all of them.  For example:
+\begin{thm}
+$\pi_n(\Sn^n)=\Z$ for every $n\geq 1$. 
+\end{thm}
+
+\begin{proof}
+The proof is by induction on $n$.  We already have $\pi_1(\Sn ^1) = \Z$
+(\cref{cor:pi1s1}) and $\pi_2(\Sn ^2) = \Z$ (\cref{cor:pis2-hopf}).
+When $n \ge 2$, $n \le (2n - 2)$. Therefore, by
+\cref{cor:stability-spheres}, $\pi_{n+1}(S^{n+1}) = \pi_{n}(S^{n})$, and
+this equivalence, combined with the inductive hypothesis, gives the result.  
+\end{proof}
 
 \section{The General Form of an Encode/Decode Proof}
 \label{sec:general-encode-decode}

@@ -32,8 +32,8 @@ A rule of first-order logic such as ``from $A$ and $B$ infer $A\wedge B$'' is ac
 Note that the judgment ``$A$ has a proof'' exists at a different level from the \emph{proposition} $A$ itself, which is an internal statement of the theory.
 % In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
 
-The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, a ``point of $A$'').
-When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness} to the provability of $A$, or \emph{evidence} of the truth of $A$.
+The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, ``$a$ is a point of $A$'').
+When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness} to the provability of $A$, or \emph{evidence} of the truth of $A$ (or even a \emph{proof} of $A$, but we will try to avoid this confusing terminology).
 In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
 % (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
 
@@ -65,7 +65,7 @@ Alternatively, if we regard a deductive system as an algebraic theory, then judg
 
 The reason we \emph{want} a judgmental notion of equality is so that it can control the other form of judgment, ``$a:A$''.
 For instance, suppose we have given a proof that $3^2=9$, i.e.\ we have derived the judgment $p:(3^2=9)$ for some term $p$.
-Then the same proof $p$ ought to count as a proof that $f(3)=9$, since $f(3)$ is $3^2$ \emph{by definition}.
+Then the same term $p$ ought to count as a proof that $f(3)=9$, since $f(3)$ is $3^2$ \emph{by definition}.
 The best way to represent this is with a rule saying that given the judgments $a:A$ and $A\jdeq B$, we can derive the judgment $a:B$.
 
 Thus, for us, type theory will be a deductive system based on two forms of judgment:
@@ -90,7 +90,7 @@ Because judgments cannot be put together into more complicated statements, the s
   However, in this book we refrain from such notation until \autoref{cha:rules}.}\nopagebreak~
 Thus, for instance, ``$p:x=y$'' should be parsed as ``$p:(x=y)$'', which makes sense since ``$x=y$'' is a type, and not as ``$(p:x)=y$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
 Similarly, ``$A\jdeq x=y$'' can only be parsed as ``$A\jdeq(x=y)$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
-This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, if we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (which is standard practice in type theory; see \autoref{sec:pi-types}).
+This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, since we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (as is standard practice in type theory; see \autoref{sec:pi-types}).
 
 Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
 For example, we may construct an object $m + n : \Nat$ under the assumptions that $m,n : \Nat$.
@@ -101,8 +101,8 @@ In fact, technically the context must be an ordered list of assumptions, since l
 If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
 When types are regarded as propositions, we may omit the names of their proofs.
 Thus, in the second example above we may instead say that assuming $x =_A y$, we can prove $y =_A x$.
-However, since we are doing proof-relevant mathematics, we will frequently refer back to proofs as objects.
-In the example, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see \autoref{cha:basics}.
+However, since we are doing ``proof-relevant" mathematics, we will frequently refer back to proofs as objects.
+In the example above, for instance, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see \autoref{cha:basics}.
 
 In the rest of this chapter, we attempt to give an informal presentation of type theory, sufficient for the purposes of this book; we will give a more formal account in \autoref{cha:rules}.
 Aside from some fairly obvious rules (such as the fact that judgmentally equal things can always be substituted for each other), the rules of type theory can be grouped into \emph{type formers}.
@@ -373,7 +373,7 @@ We may also speak of the \emph{recursion principle} for cartesian products, mean
 
 The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.
 It comes from a general framework of type definitions, and will make more sense once we consider inductive types, such as
-the natural numbers.
+the natural numbers.  The term ``eliminator" is often used as well.
 
 Note that the universes $\UU,\UU'$ may be different, i.e.\ we can
 construct functions in higher or lower universes. 
@@ -444,7 +444,7 @@ or equivalently by using induction:
 Just as we generalized function types (\autoref{sec:function-types}) to dependent function types (\autoref{sec:pi-types}), it is often useful to generalize the product types from \autoref{sec:finite-product-types} to allow the type of
 the second component of a pair to vary depending on the choice of the first
 component. This is called a $\Sigma$-type, because in set theory it
-corresponds to an infinite sum (in the sense of coproducts or
+corresponds to an indexed sum (in the sense of coproduct or
 disjoint union) over a given type.
 
 Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
@@ -527,8 +527,8 @@ as required.
 If we read $\Pi$ as ``for all'' and $\Sigma$ as ``there exists'', then the type of the function $\ac$ expresses:
 \emph{if for all $x:A$ there is a $y:B$ such that $R(x,y)$, then there is a function $f : A \to B$ such that for all $x:A$ we have $R(x,f(x))$}.
 Since this sounds like a version of the axiom of choice, the function \ac has traditionally been called the \emph{type-theoretic axiom of choice}.
-However, there is clearly no choice actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness.
-In \autoref{sec:axiom-choice} we will give a correct formulation of ``the axiom of choice''.
+However, no choice is actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness.
+In \autoref{sec:axiom-choice} we will give another formulation of an ``axiom of choice'' which is closer to the usual one.
 
 
 \section{Coproduct types}
@@ -860,18 +860,17 @@ Only then do we introduce an appropriate sort of ``pattern matching'' which can 
 \section{Propositions as types}
 \label{sec:pat}
 
-As mentioned in the introduction, to state that a proposition is true in type theory corresponds to exhibiting an element of a type corresponding to that proposition.
-We regard the elements of this type as \emph{evidence} or \emph{witnesses} that the proposition is true.%
-\footnote{They are also sometimes called \emph{proofs}, but this word can have misleading connotations, so we generally avoid it.}
-In general, however, we will not construct witnesses explicitly; instead we present the proofs in ordinary mathematical prose, in such a way that \emph{in principle} they could be translated into an element of a type.
+As mentioned in the introduction, to show that a proposition is true in type theory corresponds to exhibiting an element of the type corresponding to that proposition.
+We regard the elements of this type as \emph{evidence} or \emph{witnesses} that the proposition is true. (They are sometimes even called \emph{proofs}, but this terminology can be misleading, so we generally avoid it.)
+In general, however, we will not construct terms explicitly; instead we present the proofs in ordinary mathematical prose, in such a way that \emph{in principle} they could be translated into an element of a type.
 This is no different from reasoning in classical set theory, where we don't expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory.
 
 However, the type-theoretic perspective on proofs is nevertheless different in important ways.
-The basic principle of the logic of type theory is that a proposition is not merely true or false, but rather as classifying all possible witnesses of its truth (``proofs'').
-Under this conception, proofs are not just the means by which mathematics is communicated, but rather are mathematical objects in their own right, on a par with familiar objects such as numbers, mappings, groups, and so on.
-Thus, since types classify the available mathematical objects and govern how they interact, propositions are nothing other than types --- namely, types that classify proofs.
+The basic principle of the logic of type theory is that a proposition is not merely true or false, but rather can be seen as classifying all possible witnesses of its truth.
+Under this conception, proofs are not just the means by which mathematics is communicated, but rather are mathematical objects in their own right, on a par with more familiar objects such as numbers, mappings, groups, and so on.
+Thus, since types classify the available mathematical objects and govern how they interact, propositions are nothing but special  types --- namely, types that classify proofs.
 
-The observation which makes this identification feasible is that we have the following natural correspondence between \emph{logical} operations on propositions and \emph{type-theoretic} operations on their corresponding types of witnesses.
+The basic observation which makes this identification feasible is that we have the following natural correspondence between \emph{logical} operations on propositions, expressed in English, and \emph{type-theoretic} operations on their corresponding types of witnesses.
 \begin{center}
 \medskip
 \begin{tabular}{ll}
@@ -946,9 +945,9 @@ For example, the rule
 \emph{``If not ($A$ and $B$), then (not $A$) or (not $B$)''} is not valid: we cannot, in general, construct an element of the corresponding type
 \[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt).\]
 This reflects the fact that the ``natural'' logic of type theory is \emph{constructive}, as discussed in the introduction.
-Formally, this means it does not include certain classical principles, such as the law of excluded middle (LEM) or proof by contradiction (proving $A$ by deriving a contradiction from $\lnot A$%
+Formally, this means it does not include certain classical principles, such as the law of excluded middle (LEM) or proof by contradiction (proving $A$ by deriving a contradiction from $\lnot A$)%
 \footnote{Note that the pattern ``assume $A$ and derive a contradiction'' is perfectly valid in constructive logic as a way (in fact, \emph{the} way) to prove ``not $A$''; indeed, we used it in our example above.
-  The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.}),
+  The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.},
 and others which depend on them.
 
 Philosophically, constructive logic is so-called because it confines itself to constructions that can be carried out \emph{effectively}, which is to say those with a computational meaning.
@@ -1046,7 +1045,7 @@ According to the propositions-as-types conception, the \emph{proposition} of equ
 Since this proposition depends on what $a$ and $b$ are, these \emph{equality types} or \emph{identity types} must be type families dependent on two copies of $A$.
 
 We may write the family as $\idtypevar{A}:A\to A\to\type$, with $\idtype[A]ab$ the type representing the proposition of equality between $a$ and $b$.
-However, once we are familiar with propositions-as-types, is convenient to also use the standard equality symbol for this.
+However, once we are familiar with propositions-as-types, it is convenient to also use the standard equality symbol for this.
 Thus, ``$a=b$'' will also be a notation for the \emph{type} $\idtype[A]ab$ corresponding to the proposition that $a$ equals $b$.
 For clarity, we may also write ``$a=_A b$'' to specify the type $A$.
 

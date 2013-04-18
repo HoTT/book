@@ -30,31 +30,31 @@
 %%      - Coq development, new proof assistant, etc. - ok
 %%
 
-\emph{Homotopy type theory} is a new field of mathematics that combines aspects of several different areas in a surprising way. It is based on a recently discovered connection between \emph{homotopy theory} and \emph{type theory}.
+\emph{Homotopy type theory} is a new branch of mathematics that combines aspects of several different fields in a surprising way. It is based on a recently discovered connection between \emph{homotopy theory} and \emph{type theory}.
 Homotopy theory is an outgrowth of algebraic topology and homological algebra, with relationships to higher category theory; while type theory is a branch of mathematical logic and theoretical computer science.
 Although the connections between the two are currently the focus of intense investigation, it is increasingly clear that they are just the beginning of a subject that will take more time and more hard work to fully understand.
 It touches on topics as seemingly distant as the homotopy groups of spheres, the decidability of type checking algorithms, and the definition of weak $\infty$-groupoids.
 
 Homotopy type theory also brings new ideas into the very foundation of mathematics.
 On the one hand, there is Voevodsky's subtle and beautiful \emph{Univalence Axiom}.
-The univalence axiom implies, in particular, that isomorphic structures can be identified: a principle that mathematicians have been happily using on workdays, despite its incompatibility with the ``official'' doctrines of conventional foundations.
+The univalence axiom implies, in particular, that isomorphic structures can be identified, a principle that mathematicians have been happily using on workdays, despite its incompatibility with the ``official'' doctrines of conventional foundations.
 On the other hand, we have \emph{Higher Inductive Types}, which provide direct, logical descriptions of some of the basic spaces and constructions of homotopy theory: spheres, cylinders, truncations, localizations, etc.
 Both ideas are impossible to capture directly in classical set-theoretic foundations, but when combined in homotopy type theory, they permit an entirely new kind of ``logic of homotopy types''.
 
 This suggests a new conception of foundations of mathematics, with intrinsic homotopical content, an ``invariant'' conception of the objects of mathematics --- and convenient machine implementations, which can serve as a practical aid to the working mathematician.
-This is the \emph{univalent foundations program}.
+This is the \emph{Univalent Foundations} program.
 The present book is intended as a first systematic exposition of the basics of univalent foundations, and a collection of examples of this new style of reasoning --- but without requiring the reader to know or learn any formal logic, or to use any computer proof assistant.
 
 We emphasize that homotopy type theory is a young field, and univalent foundations is very much a work in progress.
 This book should be regarded as a ``snapshot'' of the state of the field at the time it was written, rather than a polished exposition of an established edifice.
 As we will discuss briefly later, there are many aspects of homotopy type theory that are not yet fully understood --- but as of this writing, its broad outlines seem clear enough.
-The eventual theory will probably not look exactly like the one described in this book, but it will certainly be \emph{at least} as capable and powerful.  And on the basis of the results achieved so far and presented here, we believe that univalent foundations will eventually be able to replace set theory as the ``implicit foundation'' for the unformalized mathematics done by most mathematicians.
+The eventual theory will probably not look exactly like the one described in this book, but it will certainly be \emph{at least} as capable and powerful; thus we believe that univalent foundations may eventually be able to replace set theory as the ``implicit foundation'' for the unformalized mathematics done by most mathematicians.
 
 
 \subsection*{Type theory}
 
-Type theory was originally invented by Bertrand Russell \cite{Russell:1908}, as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. It was later developed as a rigorous formal system  in its own right (under the name ``$\lambda$-calculus'') by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory still has numerous applications, especially in computer science and the theory of programming languages \cite{Pierce:2002tp}.   Per Martin-L\"{o}f \cite{MartinLof:1998tw,MartinLof:1975tb,MartinLof:1982bn,MartinLof:1984tr}, among others,
-developed a ``predicative" modification of Church's type system which is now usually called dependent, constructive, intuitionistic, or simply {\bf Martin\--L\"of type theory}. This is the basis of the system that we consider here; it was originally intended as a rigorous framework for the formalization of constructive mathematics.  In what follows, we will often use ``type theory'' to refer specifically to this system and similar ones, although type theory as a subject is much broader.
+Type theory was originally invented by Bertrand Russell \cite{Russell:1908}, as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. It was later developed as a rigorous formal system in its own right (under the name ``$\lambda$-calculus'') by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory still has numerous applications, especially in computer science and the theory of programming languages \cite{Pierce:2002tp}.   Per Martin-L\"{o}f \cite{MartinLof:1998tw,MartinLof:1975tb,MartinLof:1982bn,MartinLof:1984tr}, among others,
+developed a ``predicative" modification of Church's type system, which is now usually called dependent, constructive, intuitionistic, or simply {\bf Martin\--L\"of type theory}. This is the basis of the system that we consider here; it was originally intended as a rigorous framework for the formalization of constructive mathematics.  In what follows, we will often use ``type theory'' to refer specifically to this system and similar ones, although type theory as a subject is much broader (see \cite{history of TT} for the history of type theory).
 
 In type theory, unlike set theory, objects are classified using a primitive notion of \emph{type}, similar to the data-types used in programming languages.  These elaborately structured types can be used to express detailed specifications of the objects classified, giving rise to principles of reasoning about these objects.  To take a very simple example, the objects of a product type $A\times B$ are known to be of the form $\pairr{a,b}$, and so one automatically knows how to construct them and how to decompose them. Similarly, an object of function type $A\to B$ can be acquired from an object of type $B$ parametrized by objects of type $A$, and can be evaluated at an argument of type $A$.  This rigidly predictable behavior of all objects (as opposed to set theory's more liberal formation principles, allowing inhomogeneous sets) is one aspect of type theory that has led to its extensive use in verifying the correctness of computer programs.  The clear reasoning principles associated with the construction of types also form the basis of modern {\bf computer proof assistants}, which are used for formalizing mathematics and verifying the correctness of formalized proofs.  We return to this aspect of type theory below.  
 
@@ -258,15 +258,14 @@ However, univalence implies that the element of $A$ selected by such a choice op
 But clearly some types have automorphisms with no fixed points, e.g.\ we can swap the elements of a two-element type.
 
 Thus, the logic of ``proposition as types'' suggested by traditional type theory is not the ``classical'' logic familiar to most mathematicians.
-But it is also different from the logic often called ``intuitionistic'', which lacks \emph{both} the law of excluded middle and the axiom of choice.
-It is sometimes called ``constructive'' logic, but one should be aware that intuitionistic logic is also sometimes given that name; for emphasis we may call it \emph{pure constructive logic}.
+But it is also different from the logic sometimes called ``intuitionistic'', which may lack \emph{both} the law of excluded middle and the axiom of choice. For present purposes, it may be called \emph{constructive logic} (but one should be aware that the terms  ``intuitionistic" and ``constructive" are often used differently).
 
-The computational advantages of pure constructive logic imply that we should not  discard it lightly; but for some purposes in classical mathematics, its non-classical character can be problematic.
-Many mathematicians are, of course, accustomed to rely on the law of excluded middle; while the ``axiom of choice'' that is available in pure constructive logic looks superficially similar to its classical namesake, but does not have any of its strong consequences.
-Fortunately, homotopy type theory gives a finer analysis of this question, which allows various different kinds of logic to coexist and intermix.
+The computational advantages of constructive logic imply that we should not  discard it lightly; but for some purposes in classical mathematics, its non-classical character can be problematic.
+Many mathematicians are, of course, accustomed to rely on the law of excluded middle; while the ``axiom of choice'' that is available in constructive logic looks superficially similar to its classical namesake, but does not have all of its strong consequences.
+Fortunately, homotopy type theory gives a finer analysis of this situation,  allowing various different kinds of logic to coexist and intermix.
 
 The new insight that makes this possible is that the system of all types, just like spaces in classical homotopy theory, is ``stratified'' according to the dimensions in which their higher homotopy structure exists or collapses.
-In particular, Voevodsky has found a purely type-theoretic definition of \emph{homotopy $n$-types}: corresponding to spaces with no nontrivial homotopy information above dimension $n$.
+In particular, Voevodsky has found a purely type-theoretic definition of \emph{homotopy $n$-types}, corresponding to spaces with no nontrivial homotopy information above dimension $n$.
 (The $0$-types are the ``sets'' mentioned previously as satisfying Lawvere's axioms.)
 Moreover, with higher inductive types, we can universally ``truncate'' a type into an $n$-type; in classical homotopy theory this would be its $n^{\mathrm{th}}$ Postnikov section.
 
@@ -274,8 +273,8 @@ With these notions in hand, the homotopy $(-1)$-types, which we call \emph{(mere
 (Classically, every $(-1)$-type is empty or contractible; we interpret these possibilities as the truth values ``false'' and ``true'' respectively.)
 The ``$(-1)$-truncated axiom of choice'' is not automatically true, but is a strong assumption with the same sorts of consequences as its counterpart in classical set theory.
 Similarly, the ``$(-1)$-truncated law of excluded middle'' may be assumed, with many of the same consequences as in classical mathematics.
-Thus, the homotopical perspective reveals that classical/intuitionistic logic and pure constructive logic can coexist as opposite ends of a sliding scale, with an infinite number of possibilities in between (the homotopy $n$-types for $-1 < n < \infty$).
-We may speak of ``LEM$_n$'' and ``AC$_n$'', with AC$_\infty$ being provable and LEM$_\infty$ inconsistent with univalence, while AC$_{-1}$ and LEM$_{-1}$ are the versions familiar to classical mathematicians (hence in most cases it is appropriate to assume the subscript $(-1)$ when none is given).
+Thus, the homotopical perspective reveals that classical and constructive logic can coexist, as endpoints of a spectrum of different systems, with an infinite number of possibilities in between (the homotopy $n$-types for $-1 < n < \infty$).
+We may speak of ``LEM$_n$'' and ``AC$_n$'', with AC$_\infty$ being provable and LEM$_\infty$ inconsistent with univalence, while AC$_{-1}$ and LEM$_{-1}$ are the versions familiar to classical mathematicians (hence in most cases it is appropriate to assume the subscript $(-1)$ when none is given).  Indeed, one can even have useful systems in which only \emph{certain} types satisfy such further ``classical" principles, while types in general remain "constructive."
 
 It is worth emphasizing that univalent foundations does not \emph{require} the use of constructive or intuitionistic logic.
 Most of classical mathematics which depends on the law of excluded middle and the axiom of choice can be performed in univalent foundations, simply by assuming that these two principles hold (in their proper, $(-1)$-truncated, form).
@@ -338,7 +337,7 @@ We summarize the different points of view of the type-theoretic operations in \a
        $A\to B$ & $A\Rightarrow B$ & set of functions & function space\\ \addlinespace[2pt]
        $\sm{x:A}B(x)$ &  $\exists_{x:A}B(x)$ & disjoint sum & total space\\ \addlinespace[2pt]
        $\prd{x:A}B(x)$ &  $\forall_{x:A}B(x)$ & product & space of sections\\ \addlinespace[2pt]
-       $\mathsf{Id}_{A}$ & identity relation & $\{\langle x,x\rangle\, |\, x\in A\}$ & path space $A^I$ \\ \addlinespace[2pt]
+       $\mathsf{Id}_{A}$ & x = y & $\{\langle x,x\rangle\, |\, x\in A\}$ & path space $A^I$ \\ \addlinespace[2pt]
     \bottomrule
   \end{tabular}
   \caption{Comparing points of view on type-theoretic operations}\label{tab:pov}

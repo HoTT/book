@@ -1,3 +1,5 @@
+% !TeX root = main.tex
+
 \titleformat{\chapter}[display]{\fontsize{23}{25}\fontseries{m}\fontshape{it}\selectfont}{\chaptertitlename}{20pt}{\fontsize{35}{35}\fontseries{b}\fontshape{rm}\selectfont}
 \chapter{The rules of type theory}
 \label{cha:rules}
@@ -95,7 +97,7 @@ judgment
 Such judgments are justified only for contexts that are \define{well
   formed}, a notion which requires a third kind of judgment
 \[
-  \vdash (x_1:A_1, x_2:A_2,\dots,x_n:A_n) \ctx
+  \vdash (x_1:A_1, x_2:A_2,\dots,x_n:A_n)\; \ctx
 \]
 to express the notion that each $A_i$ is a valid
 type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$. Note
@@ -223,7 +225,7 @@ right of a colon in judgments:
 \begin{itemize}
 \item $\UU_m : \UU_n$ for $m < n$,
 \item if $A:\UU_m$ and $m \le n$, then $A:\UU_n$,
-\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\vdash \Gamma, x:A \ctx$.
+\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\vdash (\Gamma, x:A)\; \ctx$.
 \end{itemize}
 %
 In the body of the book, an equality judgment $A \jdeq B : \UU_n$ between types
@@ -240,21 +242,29 @@ The following conversion rule allows us to replace a type by one equal to it in 
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 
 We introduce a primitive constant $c_\Pi$.  An expression of the form
-$c_\Pi(A,\lam{a} B)$ will be written as $\tprd{a:A}B$.  Judgments concerning
+$c_\Pi(A,\lam{x} B)$ will be written as $\tprd{x:A}B$.  Judgments concerning
 such expressions and expressions of the form $\lam{x} b$ are introduced by the following rules:
 %
 \begin{itemize}
 \item if $\Gamma \vdash A:\UU_n$ and $\Gamma,x:A \vdash B:\UU_n$, then $\Gamma \vdash \tprd{x:A}B : \UU_n$
 \item if $\Gamma, x:A \vdash b:B$ then $\Gamma \vdash (\lam{x} b) : (\tprd{x:A} B)$
-\item if $g:\tprd{x:A} B$ and $t:A$ then $g(t):B[t/x]$
+\item if $\Gamma\vdash g:\tprd{x:A} B$ and $\Gamma\vdash t:A$ then $\Gamma\vdash g(t):B[t/x]$
 \end{itemize}
 %
-If $x$ does not occur freely in $B$, we abbreviate $\tprd{x:A} B$ as $A
-\rightarrow B$ and derive the following rule:
+If $x$ does not occur freely in $B$, we abbreviate $\tprd{x:A} B$ as the non-dependent function type 
+$A\rightarrow B$ and derive the following rule:
 %
 \begin{itemize}
-\item if $g:A \rightarrow B$ and $t:A$ then $g(t):B$
+\item if $\Gamma\vdash g:A \rightarrow B$ and $\Gamma\vdash t:A$ then $\Gamma\vdash g(t):B$
 \end{itemize}
+Using non-dependent function types and leaving implicit the context $\Gamma$, the rules above can be written in the following alternative style that we will continue to use in the rest of this section of the appendix.
+%
+\begin{itemize}
+\item if $A:\UU_n$ and $B:A\to\UU_n$, then $\tprd{x:A}B(x) : \UU_n$
+\item if $x:A \vdash b:B$ then $ \lam{x} b : \tprd{x:A} B(x)$
+\item if $g:\tprd{x:A} B(x)$ and $t:A$ then $g(t):B(t)$
+\end{itemize}
+%
 
 \subsection{Natural numbers}
 
@@ -268,7 +278,7 @@ $\N$, $0$, and $\suc$ with the following rules:
 \end{itemize}
 %
 Furthermore, we can define functions by primitive recursion.  If we have
-$C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\tprd{n:\N}C(n)$ whenever we have
+$C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\tprd{x:\N}C(x)$ whenever we have
 %
 \begin{align*}
   d & : C(0) \\
@@ -358,20 +368,20 @@ then we can introduce a defined constant $f:\tprd{z:A+B}C(z)$ with the defining 
 \subsection{$W$-types}
 
 For $W$-types we introduce primitive constants $c_\wtypesym$ and $c_\suppsym$.
-An expression of the form $c_\wtypesym(A,\lam{a} B)$ will be written as
-$\wtype{a:A}B$, and an expression of the form $c_\suppsym(x,u)$ will be written
+An expression of the form $c_\wtypesym(A,\lam{x} B)$ will be written as
+$\wtype{x:A}B$, and an expression of the form $c_\suppsym(x,u)$ will be written
 as $\supp(x,u)$:
 %
 \begin{itemize}
-\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\wtype{a:A}B : \UU_n$
-\item if moreover, $a:A$ and $u:B(a)\rightarrow \wtype{a:A}B$ then $\supp(a,u):\wtype{a:A}B$.
+\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\wtype{x:A}B(x) : \UU_n$
+\item if moreover, $a:A$ and $g:B(a)\rightarrow \wtype{x:A}B(x)$ then $\supp(a,g):\wtype{x:A}B(x)$.
 \end{itemize}
 % 
 Here also we can define functions by total recursion.  If we have $A$ and $B$
-as above and $C : \wtype{a:A}B \rightarrow \UU_m$, then we can introduce a defined constant
-$f:\tprd{z:\wtype{a:A}B} C(z)$ whenever we have
+as above and $C : \wtype{x:A}B(x) \rightarrow \UU_m$, then we can introduce a defined constant
+$f:\tprd{z:\wtype{x:A}B(x)} C(z)$ whenever we have
 \[
-  d:\tprd{x:A}{u:B(x) \rightarrow \wtype{a:A}B}((\tprd{y:B(x)}C(u(y))) \rightarrow C(\supp(x,u)))
+  d:\tprd{x:A}{u:B(x) \rightarrow \wtype{x:A}B(x)}((\tprd{y:B(x)}C(u(y))) \rightarrow C(\supp(x,u)))
 \]
 with the defining equation
 \[
@@ -782,28 +792,28 @@ In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
   {\oftp\Gamma{\inr(b)}{A+B}}
 \\\\
   \inferrule*[right=$+$-\elim]
-  {\oftp{\Gamma,\tmtp x{(A+B)}}{C}{\UU_i} \\\\
-   \oftp{\Gamma,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gamma,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
+  {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\\\
+   \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
+   \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
    \oftp\Gamma{e}{A+B}}
-  {\oftp\Gamma{\ind{A+B}(x.C,a.c,b.d,e)}{C[e/x]}}
+  {\oftp\Gamma{\ind{A+B}(z.C,x.c,y.d,e)}{C[e/z]}}
 \and
   \inferrule*[right=$+$-\comp${}_1$]
-  {\oftp{\Gamma,\tmtp x{(A+B)}}{C}{\UU_i} \\
-   \oftp{\Gamma,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gamma,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
-   \oftp\Gamma{a'}{A}}
-  {\jdeqtp\Gamma{\ind{A+B}(x.C,a.c,b.d,\inl(a'))}{c[a'/a]}{C[\inl(a')/x]}}
+  {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
+   \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
+   \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
+   \oftp\Gamma{a}{A}}
+  {\jdeqtp\Gamma{\ind{A+B}(z.C,x.c,y.d,\inl(a))}{c[a/x]}{C[\inl(a')/z]}}
 \and
   \inferrule*[right=$+$-\comp${}_2$]
-  {\oftp{\Gamma,\tmtp x{(A+B)}}{C}{\UU_i} \\
-   \oftp{\Gamma,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gamma,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
-   \oftp\Gamma{b'}{B}}
-  {\jdeqtp\Gamma{\ind{A+B}(x.C,a.c,b.d,\inr(b'))}{d[b'/b]}{C[\inr(b')/x]}}
+  {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
+   \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
+   \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
+   \oftp\Gamma{b}{B}}
+  {\jdeqtp\Gamma{\ind{A+B}(z.C,x.c,y.d,\inr(b))}{d[b/y]}{C[\inr(b)/z]}}
 \end{mathparpagebreakable}
 
-In $\ind{A+B}$, $x$ is bound in $C$, $a$ is bound in $c$, and $b$ is bound in
+In $\ind{A+B}$, $z$ is bound in $C$, $x$ is bound in $c$, and $y$ is bound in
 $d$.
 
 \subsection{The natural number type}

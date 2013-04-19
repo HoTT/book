@@ -52,7 +52,7 @@ In this section we exhibit a specific counterexample.
   \[ \sm{g:A\to A} \big((g = \idfunc[A]) \times (g = \idfunc[A])\big)
   \]
   and thus to
-  \[ \sm{h:\textstyle\sum_{g:A\to A} (g = \idfunc[A])} (\proj1(h) = \idfunc[A])
+  \[ \sm{h:\sm{g:A\to A} (g = \idfunc[A])} (\proj1(h) = \idfunc[A])
   \]
   However, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible with center $\idfunc[A]$, so by \autoref{thm:omit-contr} this type is equivalent to $(\idfunc[A] = \idfunc[A])$.
   And by function extensionality, $(\idfunc[A] = \idfunc[A])$ is equivalent to $\prd{x:A}(x=x)$.
@@ -224,7 +224,7 @@ from which we get the desired path $\tau(a)$.
 
 Combining this with \autoref{lem:coh-equiv} (or symmetrizing the proof), we also have $\qinv(f)\to\ishae'(f)$.
 
-It remains to show that $\ishae(f)$ a mere proposition.
+It remains to show that $\ishae(f)$ is a mere proposition.
 For this, we will need to know that the fibers of an equivalence are contractible.
 
 \begin{defn}\label{defn:homotopy-fiber}
@@ -404,7 +404,7 @@ Let $P : \iscontr(f)$. We define an inverse mapping $g : B \to A$ by sending eac
 \[ g(y) \defeq \proj{1}(\proj{1}(Py)) \]
 We can thus define the transformation $\epsilon$ by mapping $y$ to the witness that $g(y)$ indeed belongs to the h-fiber at $y$:
 \[ \epsilon(y) \defeq \proj{2}(\proj{1}(P y)) \]
-It remains to define $\eta$ and $\tau$. This of course amounts to giving an element of $\lcoh{f}{g}{\epsilon}$. By Lem.~\ref{lem:coh-hfib}, this is the same as giving for each $x:A$ a path from $(x,\refl{fx})$ to $(gfx,\epsilon(fx))$ in the fiber at $fx$. But this is easy: for any $x : A$, the type $\hfib{f}{fx}$ 
+It remains to define $\eta$ and $\tau$. This of course amounts to giving an element of $\lcoh{f}{g}{\epsilon}$. By \autoref{lem:coh-hfib}, this is the same as giving for each $x:A$ a path from $(x,\refl{fx})$ to $(gfx,\epsilon(fx))$ in the fiber at $fx$. But this is easy: for any $x : A$, the type $\hfib{f}{fx}$ 
 is contractible by assumption, hence such a path must exist. We can construct it explicitly as
 \[\opp{\big(P(fx) \; (x,\refl{fx})\big)} \ct \big(P(fx) \; (gfx,\epsilon(fx))\big). \qedhere \]
 \end{proof}
@@ -566,6 +566,9 @@ for which there are
 \end{enumerate}
 \end{defn}
 
+Recall that in \autoref{sec:contractibility} we defined what it means for a type to be a retract of another.
+This is a special case of the above definition where $B$ and $Y$ are $\unit$.
+Conversely, just as with contractibility, retractions of maps induce retractions of their fibers.
 
 \begin{lem}\label{lem:func_retract_to_fiber_retract}
 If a function $g:A\to B$ is a retract of a function $f:X\to Y$, then $\hfib{g}b$ is a retract of $\hfib{f}{s^\prime(b)}$
@@ -606,9 +609,8 @@ But this transportation computes as $R^\prime(g(a))\ct r^\prime(L(a))\ct K(s(a))
 \end{proof}
 
 Finally, we show that fiberwise equivalences can be characterized in terms of equivalences of total spaces.
-To explain the terminology, recall that in homotopy theory, a type family $P:A\to\type$ corresponds to a \emph{fibration} over $A$, and we may sometimes use that name equivalently.
-Similarly, its \emph{total space} is the $\Sigma$-type $\sm{x:A} P(x)$, and the fibration itself is the projection $\proj1:\sm{x:A} P(x) \to A$.
-Given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A} (P(x)\to Q(x))$ as a \emph{fiberwise map} or a \emph{fiberwise transformation}.
+To explain the terminology, recall from \autoref{sec:fibrations} that a type family $P:A\to\type$ can be viewed as a fibration over $A$ with total space $\sm{x:A} P(x)$, the fibration being is the projection $\proj1:\sm{x:A} P(x) \to A$.
+From this point of view, given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A} (P(x)\to Q(x))$ as a \emph{fiberwise map} or a \emph{fiberwise transformation}.
 Such a map induces a function on total spaces:
 
 \begin{defn}
@@ -665,6 +667,34 @@ We have seen that such families behave somewhat like \emph{fibrations} in homoto
 A basic fact in homotopy theory is that every map is equivalent to a fibration.
 With univalence at our disposal, we can prove the same thing in type theory.
 
+\begin{lem}\label{thm:fiber-of-a-fibration}
+  For any type family $B:A\to\type$, the fiber of $\proj1:\sm{x:A} B(x) \to A$ over $a:A$ is equivalent to $B(a)$:
+  \[ \eqv{\hfib{\proj1}{a}}{B(a)} \]
+\end{lem}
+\begin{proof}
+  We have
+  \begin{align*}
+    \hfib{\proj1}{a} &\defeq \sm{u:\sm{x:A} B(x)} \proj1(u)=a\\
+    &\simeq \sm{x:A}{b:B(x)} (x=a)\\
+    &\simeq \sm{x:A}{p:x=a} B(x)\\
+    &\simeq B(a)
+  \end{align*}
+  using the left universal property of identity types.
+\end{proof}
+
+\begin{lem}\label{thm:total-space-of-the-fibers}
+  For any function $f:A\to B$, we have $\eqv{A}{\sm{b:B}\hfib{f}{b}}$.
+\end{lem}
+\begin{proof}
+  We have
+  \begin{align*}
+    \sm{b:B}\hfib{f}{b} &\defeq \sm{b:B}{a:A} (f(a)=b)\\
+    &\simeq \sm{a:A}{b:B} (f(a)=b)\\
+    &\simeq A
+  \end{align*}
+  using the fact that $\sm{b:B} (f(a)=b)$ is contractible.
+\end{proof}
+
 \begin{thm}\label{thm:nobject_classifier_appetizer}
 For any type $B$ there is an equivalence
 \begin{equation*}
@@ -677,19 +707,18 @@ We have to construct quasi-inverses
 \chi & : \big(\sm{A:\type} (A\to B)\big)\to B\to\type\\
 \psi & : (B\to\type)\to\big(\sm{A:\type} (A\to B)\big).
 \end{align*}
-The function $\chi$ is defined by $\chi(f,b)\defeq\hfiber{f}b$. The
-function $\psi$ is defined by $\psi(P)\defeq\pairr{(\sm{b:B} P(b)),\proj1}$. Now
-we have to verify that $\chi\circ\psi\sim\idfunc{}$ and that $\psi\circ\chi
-\sim\idfunc{}$:
+We define $\chi$ by $\chi(f,b)\defeq\hfiber{f}b$, and $\psi$ by $\psi(P)\defeq\pairr{(\sm{b:B} P(b)),\proj1}$.
+Now we have to verify that $\chi\circ\psi\sim\idfunc{}$ and that $\psi\circ\chi \sim\idfunc{}$.
 \begin{enumerate}
-\item Let $P$ be a dependent type over $B$. It is a basic fact (TODO: from where?) that
-$\hfiber{\proj1}{b}\simeq P(b)$ and therefore it follows immediately
+\item Let $P:B\to\type$.
+  By \autoref{thm:fiber-of-a-fibration},
+$\hfiber{\proj1}{b}\simeq P(b)$ for any $b:B$, so it follows immediately
 that $P\sim\chi(\psi(P))$.
 \item Let $f:A\to B$ be a function. We have to find a path
 \begin{equation*}
 \pairr{\tsm{b:B} \hfiber{f}b,\,\proj1}=\pairr{A,f}
 \end{equation*}
-First note that we have the basic equivalence (TODO: from where?)
+First note that by \autoref{thm:total-space-of-the-fibers}, we have
 $e:\sm{b:B} \hfiber{f}b\simeq A$ with $e(b,a,p)\defeq a$ and $e^{-1}(a)
 \defeq(f(a),a,\refl{f(a)})$. It also follows that
 $e\cdot\proj1=\proj1\circ e^{-1}$. From this, we immediately read off
@@ -697,6 +726,7 @@ that $(e\cdot\proj1)(a)= f(a)$ for each $a:A$.\qedhere
 \end{enumerate}
 \end{proof}
 
+\noindent
 In particular, this implies that we have an \emph{object classifier} in the sense of higher topos theory.
 
 \begin{defn}
@@ -762,8 +792,8 @@ axiom implies a weak form of function extensionality, defined in \autoref{weakfu
 principle of weak function extensionality in turn implies the usual function extensionality,
 and it does so without the univalence axiom (\autoref{wfetofe}).
 
-In this section, we assume that $\type$ is a universe, of which we will explicitly indicate 
-where we assume that it is univalent.
+In this section, we assume that $\type$ is a universe.
+We will explicitly indicate where we assume that it is univalent.
 
 \begin{defn}\label{weakfunext}
 The \emph{weak function extensionality principle} asserts that there is a function

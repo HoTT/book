@@ -1,6 +1,7 @@
+% !TeX root = main.tex
+
 \titleformat{\chapter}[display]{\fontsize{23}{25}\fontseries{m}\fontshape{it}\selectfont}{\chaptertitlename}{20pt}{\fontsize{35}{35}\fontseries{b}\fontshape{rm}\selectfont}
 \chapter{The rules of type theory}
-\renewcommand{\thechapter}{A}
 \label{cha:rules}
 
 
@@ -23,10 +24,6 @@
 \newcommand{\Vble}{\mathsf{Vble}}
 \newcommand{\Exch}{\mathsf{Exch}}
 \newcommand{\Subst}{\mathsf{Subst}}
-
-% axiom names
-\newcommand{\isequivhapply}{\isequiv\text{-}\happly}
-\newcommand{\isequividtoeqv}{\isequiv\text{-}\idtoeqv}
 
 In this appendix, we offer two precise
 formulations of the formal system of homotopy type theory that is used
@@ -58,11 +55,11 @@ formulated in an ambient \define{context}, or list of assumptions, of the form
 \[
   x_1:A_1, x_2:A_2,\dots,x_n:A_n.
 \]
-An element of the context $x_i : A_i$ expresses the assumption that
-variable $x_i$ has type $A_i$. Here $x_i$ must be a variable. It does
+An element of the context $x_i : A_i$ expresses the assumption that the
+variable $x_i$ has type $A_i$. Here $x_i$ must be a variable; it does
 not make sense to place $a : A$ in the context when $a$ is something
-other than a variable. The variables $x_1, \ldots, x_n$ appearing in
-the context must be distinct. The only variable which are allowed to
+other than a variable.  The variables $x_1, \ldots, x_n$ appearing in
+the context must be distinct. The only variables allowed to
 occur freely in $A_i$ are $x_1, \ldots, x_{i-1}$.
 We abbreviate contexts with the letters $\Gamma$ and $\Delta$. We
 may juxtapose them, for example $\Gamma, x : A, \Delta$ is the context
@@ -100,7 +97,7 @@ judgment
 Such judgments are justified only for contexts that are \define{well
   formed}, a notion which requires a third kind of judgment
 \[
-  \vdash (x_1:A_1, x_2:A_2,\dots,x_n:A_n) \ctx
+  \vdash (x_1:A_1, x_2:A_2,\dots,x_n:A_n)\; \ctx
 \]
 to express the notion that each $A_i$ is a valid
 type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$. Note
@@ -120,9 +117,9 @@ substitutes expressions $a_1,\dots,a_n$ for the variables
 $x_1,\dots,x_n$ simultaneously.
 
 To \define{bind a variable $x$ in an expression $B$} means to incorporate both of
-them into a larger expression, called \define{abstraction}, whose
+them into a larger expression, called an \define{abstraction}, whose
 purpose is to express the fact that $x$ is ``local'' to $B$, i.e., it
-is not to be confused with other occurrences of $x$ which appear
+is not to be confused with other occurrences of $x$ appearing
 elsewhere. Bound variables are familiar to programmers, but less so to mathematicians.
 Various notations are used for binding, such as $x \mapsto B$,
 $\lam x B$, and $x \,.\, B$, depending on the situation.  We may write $C[a]$ for the
@@ -137,7 +134,7 @@ One may also regard each variable $x_i$ of a judgment
 \[
   x_1:A_1, x_2:A_2,\dots,x_n:A_n \vdash a : A
 \]
-to be bound in its \define{scope}, which are the expressions $A_{i+1},
+to be bound in its \define{scope}, consisting of the expressions $A_{i+1},
 \ldots, A_n$, $a$, and $A$.
 
 \section{The first presentation}
@@ -221,14 +218,14 @@ Equality is an equivalence relation.
 
 We introduce a hierarchy of {\em universes} denoted by primitive constants
 $\UU_n$, for each $n=0,1,\ldots$.  They satisfy the following rules.  The first
-two say that the universes form a sequential hierarchy of types, and the third expresses
+two say that the universes form a cumulative hierarchy of types, and the third expresses
 the idea that an object of a universe can serve as a type and stand to the
 right of a colon in judgments:
 %
 \begin{itemize}
 \item $\UU_m : \UU_n$ for $m < n$,
 \item if $A:\UU_m$ and $m \le n$, then $A:\UU_n$,
-\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\vdash \Gamma, x:A \ctx$.
+\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\vdash (\Gamma, x:A)\; \ctx$.
 \end{itemize}
 %
 In the body of the book, an equality judgment $A \jdeq B : \UU_n$ between types
@@ -245,21 +242,29 @@ The following conversion rule allows us to replace a type by one equal to it in 
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 
 We introduce a primitive constant $c_\Pi$.  An expression of the form
-$c_\Pi(A,\lam{a} B)$ will be written as $\tprd{a:A}B$.  Judgments concerning
+$c_\Pi(A,\lam{x} B)$ will be written as $\tprd{x:A}B$.  Judgments concerning
 such expressions and expressions of the form $\lam{x} b$ are introduced by the following rules:
 %
 \begin{itemize}
 \item if $\Gamma \vdash A:\UU_n$ and $\Gamma,x:A \vdash B:\UU_n$, then $\Gamma \vdash \tprd{x:A}B : \UU_n$
 \item if $\Gamma, x:A \vdash b:B$ then $\Gamma \vdash (\lam{x} b) : (\tprd{x:A} B)$
-\item if $g:\tprd{x:A} B$ and $t:A$ then $g(t):B[t/x]$
+\item if $\Gamma\vdash g:\tprd{x:A} B$ and $\Gamma\vdash t:A$ then $\Gamma\vdash g(t):B[t/x]$
 \end{itemize}
 %
-If $x$ does not occur freely in $B$, we abbreviate $\tprd{x:A} B$ as $A
-\rightarrow B$ and derive the following rule:
+If $x$ does not occur freely in $B$, we abbreviate $\tprd{x:A} B$ as the non-dependent function type 
+$A\rightarrow B$ and derive the following rule:
 %
 \begin{itemize}
-\item if $g:A \rightarrow B$ and $t:A$ then $g(t):B$
+\item if $\Gamma\vdash g:A \rightarrow B$ and $\Gamma\vdash t:A$ then $\Gamma\vdash g(t):B$
 \end{itemize}
+Using non-dependent function types and leaving implicit the context $\Gamma$, the rules above can be written in the following alternative style that we will continue to use in the rest of this section of the appendix.
+%
+\begin{itemize}
+\item if $A:\UU_n$ and $B:A\to\UU_n$, then $\tprd{x:A}B(x) : \UU_n$
+\item if $x:A \vdash b:B$ then $ \lam{x} b : \tprd{x:A} B(x)$
+\item if $g:\tprd{x:A} B(x)$ and $t:A$ then $g(t):B(t)$
+\end{itemize}
+%
 
 \subsection{Natural numbers}
 
@@ -273,7 +278,7 @@ $\N$, $0$, and $\suc$ with the following rules:
 \end{itemize}
 %
 Furthermore, we can define functions by primitive recursion.  If we have
-$C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\tprd{n:\N}C(n)$ whenever we have
+$C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\tprd{x:\N}C(x)$ whenever we have
 %
 \begin{align*}
   d & : C(0) \\
@@ -363,20 +368,20 @@ then we can introduce a defined constant $f:\tprd{z:A+B}C(z)$ with the defining 
 \subsection{$W$-types}
 
 For $W$-types we introduce primitive constants $c_\wtypesym$ and $c_\suppsym$.
-An expression of the form $c_\wtypesym(A,\lam{a} B)$ will be written as
-$\wtype{a:A}B$, and an expression of the form $c_\suppsym(x,u)$ will be written
+An expression of the form $c_\wtypesym(A,\lam{x} B)$ will be written as
+$\wtype{x:A}B$, and an expression of the form $c_\suppsym(x,u)$ will be written
 as $\supp(x,u)$:
 %
 \begin{itemize}
-\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\wtype{a:A}B : \UU_n$
-\item if moreover, $a:A$ and $u:B(a)\rightarrow \wtype{a:A}B$ then $\supp(a,u):\wtype{a:A}B$.
+\item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\wtype{x:A}B(x) : \UU_n$
+\item if moreover, $a:A$ and $g:B(a)\rightarrow \wtype{x:A}B(x)$ then $\supp(a,g):\wtype{x:A}B(x)$.
 \end{itemize}
 % 
 Here also we can define functions by total recursion.  If we have $A$ and $B$
-as above and $C : \wtype{a:A}B \rightarrow \UU_m$, then we can introduce a defined constant
-$f:\tprd{z:\wtype{a:A}B} C(z)$ whenever we have
+as above and $C : \wtype{x:A}B(x) \rightarrow \UU_m$, then we can introduce a defined constant
+$f:\tprd{z:\wtype{x:A}B(x)} C(z)$ whenever we have
 \[
-  d:\tprd{x:A}{u:B(x) \rightarrow \wtype{a:A}B}((\tprd{y:B(x)}C(u(y))) \rightarrow C(\supp(x,u)))
+  d:\tprd{x:A}{u:B(x) \rightarrow \wtype{x:A}B(x)}((\tprd{y:B(x)}C(u(y))) \rightarrow C(\supp(x,u)))
 \]
 with the defining equation
 \[
@@ -467,9 +472,9 @@ description of terms in normal form.
 \end{thm}
 
 A corollary is the \define{consistency} property: there is no proof of $\emptyt$ in the empty
-context. Indeed if we have $t:\emptyt$ then by Theorems \ref{red} and \ref{SN} the term $t$ will reduce
+context. Indeed if we have $t:\emptyt$ then by \autoref{red,SN} the term $t$ will reduce
 to a term in normal form $t'$ that satisfies $t':\emptyt$, but this is not possible by a 
-purely combinatorial argument using Lemma \ref{normal}. Similarly, we have the following
+purely combinatorial argument using \autoref{normal}. Similarly, we have the following
 {\em canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
 normal form $\suc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
 in normal form, the typing relation is \emph{decidable}, and identifying type-checking with
@@ -511,9 +516,6 @@ x}{\unit\to\unit}$.
   \def\derivexisoftypeunit{\inferrule*[right=\ctx-\textsc{ext}] \deriveunitform {\wfctx {\tmtp x\unit}}}
   \inferrule*[right=$\Pi$-\intro]
      {
-        \inferrule*[right=$\unit$-\form]
-           \derivexisoftypeunit
-           {\oftp{\tmtp x\unit}{\unit}{\UU_0}} \\
         \inferrule*[right=$\Vble$]
            \derivexisoftypeunit
            {\oftp{\tmtp x\unit}{x}{\unit}}}
@@ -603,14 +605,15 @@ $\UU_{i+1}$.
   {\oftp\Gamma{A}{\UU_{i+1}}}
 \end{mathpar}
 
-The rules of type theory maintain the invariant that if $\oftp\Gamma{a}{A}$ or
-$\jdeqtp\Gamma{a}{b}{A}$, then $\oftp\Gamma{A}{\UU_i}$ for some $i$.
+The rules of type theory maintain the invariants that if $\oftp\Gamma{a}{A}$,
+then $\oftp\Gamma{A}{\UU_i}$ for some $i$, and if $\jdeqtp\Gamma{a}{b}{A}$,
+then $\oftp\Gamma{a}{A}$ and $\oftp\Gamma{b}{A}$.
 
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:more-formal-pi}
 
 In \autoref{sec:function-types}, we introduced non-dependent functions $A\to B$ in
-order to define a family of types as a function $\lamu{x:A} B:A\to\UU_i$, which
+order to define a family of types as a function $\lam{x:A} B:A\to\UU_i$, which
 gives rise to a dependent function $\tprd{x:A} B$. Contexts allow us to speak
 directly about the types of terms with free variables, so we can instead express
 a family of types simply as a type $B$ with a free variable $x:A$, i.e.,
@@ -637,7 +640,7 @@ introductory form.
 \and
   \inferrule*[right=$\Pi$-\intro]
   {\oftp{\Gamma,\tmtp xA}{b}{B}}
-  {\oftp\Gamma{\lamu{x:A} b}{\tprd{x:A} B}}
+  {\oftp\Gamma{\lam{x:A} b}{\tprd{x:A} B}}
 \and
   \inferrule*[right=$\Pi$-\elim]
   {\oftp\Gamma{f}{\tprd{x:A} B} \\ \oftp\Gamma{a}{A}}
@@ -645,16 +648,19 @@ introductory form.
 \and
   \inferrule*[right=$\Pi$-\comp]
   {\oftp{\Gamma,\tmtp xA}{b}{B} \\ \oftp\Gamma{a}{A}}
-  {\jdeqtp\Gamma{(\lamu{x:A} b)(a)}{b[a/x]}{B[a/x]}}
+  {\jdeqtp\Gamma{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
 \end{mathparpagebreakable}
 
-The expression $\lamu{x:A} b$ binds free occurrences of $x$ in $b$, as does $\tprd{x:A} B$ for
+The expression $\lam{x:A} b$ binds free occurrences of $x$ in $b$, as does $\tprd{x:A} B$ for
 $B$.
 
 When $B$ does not contain free occurrences of $x$, we obtain as a special case
 the ordinary function type $A\to B \defeq \tprd{x:A} B$. Because we did not use
 $\to$ to define $\prdsym$, we can simply take this as the \emph{definition} of
 $\to$.
+
+We may abbreviate an expression $\lam{x:A} b$ as $\lamu{x:A} b$, with the understanding
+that the omitted type $A$ should be filled in appropriately before typechecking.
 
 \subsection{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:more-formal-sigma}
@@ -786,28 +792,28 @@ In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
   {\oftp\Gamma{\inr(b)}{A+B}}
 \\\\
   \inferrule*[right=$+$-\elim]
-  {\oftp{\Gamma,\tmtp x{(A+B)}}{C}{\UU_i} \\\\
-   \oftp{\Gamma,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gamma,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
+  {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\\\
+   \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
+   \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
    \oftp\Gamma{e}{A+B}}
-  {\oftp\Gamma{\ind{A+B}(x.C,a.c,b.d,e)}{C[e/x]}}
+  {\oftp\Gamma{\ind{A+B}(z.C,x.c,y.d,e)}{C[e/z]}}
 \and
   \inferrule*[right=$+$-\comp${}_1$]
-  {\oftp{\Gamma,\tmtp x{(A+B)}}{C}{\UU_i} \\
-   \oftp{\Gamma,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gamma,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
-   \oftp\Gamma{a'}{A}}
-  {\jdeqtp\Gamma{\ind{A+B}(x.C,a.c,b.d,\inl(a'))}{c[a'/a]}{C[\inl(a')/x]}}
+  {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
+   \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
+   \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
+   \oftp\Gamma{a}{A}}
+  {\jdeqtp\Gamma{\ind{A+B}(z.C,x.c,y.d,\inl(a))}{c[a/x]}{C[\inl(a')/z]}}
 \and
   \inferrule*[right=$+$-\comp${}_2$]
-  {\oftp{\Gamma,\tmtp x{(A+B)}}{C}{\UU_i} \\
-   \oftp{\Gamma,\tmtp aA}{c}{C[\inl(a)/x]} \\
-   \oftp{\Gamma,\tmtp bB}{d}{C[\inr(b)/x]} \\\\
-   \oftp\Gamma{b'}{B}}
-  {\jdeqtp\Gamma{\ind{A+B}(x.C,a.c,b.d,\inr(b'))}{d[b'/b]}{C[\inr(b')/x]}}
+  {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
+   \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
+   \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
+   \oftp\Gamma{b}{B}}
+  {\jdeqtp\Gamma{\ind{A+B}(z.C,x.c,y.d,\inr(b))}{d[b/y]}{C[\inr(b)/z]}}
 \end{mathparpagebreakable}
 
-In $\ind{A+B}$, $x$ is bound in $C$, $a$ is bound in $c$, and $b$ is bound in
+In $\ind{A+B}$, $z$ is bound in $C$, $x$ is bound in $c$, and $y$ is bound in
 $d$.
 
 \subsection{The natural number type}
@@ -848,8 +854,7 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
 
 In $\ind{\N}$, $x$ is bound in $C$, and $x$ and $y$ are bound in $c_s$.
 
-Other inductively defined types follow the same general scheme --- it is beyond
-the scope of this appendix to cover them all.
+Other inductively defined types follow the same general scheme.
 
 \subsection{The \texorpdfstring{$\eta$}{η}-conversion rule}
 
@@ -870,7 +875,7 @@ equalities, and so need not be asserted as part of the type theory.
 
 Although this section's formalism allows us to construct functions out of
 inductive types without defining new constants, we would still like to define
-named constants like $\isequiv$ as a matter of convenience. Informally, we can
+named constants, such as $\isequiv$, as a matter of convenience.  Informally, we can
 think of these constants as abbreviations of their definitions, but the
 situation is a bit more subtle than this. 
 
@@ -943,7 +948,7 @@ There are two basic ways of introducing axioms such as function extensionality,
 univalence, or any other axiom which does not introduce new syntax or new
 judgmental equalities---we could either add a primitive constant to the theory
 which inhabits the axiom, or we could simply prove all theorems in a context
-hypothesizing the presence of a variable that inhabits the axiom.
+hypothesizing the presence of a variable that inhabits the axiom, as proposed in \autoref{sec:axioms}.
 
 While these are essentially equivalent, we choose the former approach because we
 consider these axioms of homotopy type theory to be part of the core theory,
@@ -986,13 +991,13 @@ In \autoref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
 \]
 
 Finally, we assert the axiom of function extensionality (\autoref{axiom:funext})
-by introducing a new constant, $\isequivhapply$, which asserts that for each
+by introducing a new constant, $\funext$, which asserts that for each
 $f,g$, $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\textsc{ext}]
   {\oftp\Gamma{f}{\tprd{x:A} B} \\
    \oftp\Gamma{g}{\tprd{x:A} B}}
-  {\oftp\Gamma{\isequivhapply(f,g)}{\isequiv(\happly_{f,g})}}
+  {\oftp\Gamma{\funext(f,g)}{\isequiv(\happly_{f,g})}}
 \end{mathparpagebreakable}
 
 In \autoref{eq:uidtoeqv}, we defined the conversion from paths $\id[\UU_i] AB$
@@ -1011,13 +1016,13 @@ to equivalences $\eqv AB$ as
 \]
 
 We assert the univalence axiom (\autoref{axiom:univalence}), by introducing a new
-constant, $\isequividtoeqv$, which asserts that for each $A,B$, $\idtoeqv_{A,B}$
+constant, $\ua$, which asserts that for each $A,B$, $\idtoeqv_{A,B}$
 is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\UU_i$-\textsc{univ}]
   {\oftp\Gamma{A}{\UU_i} \\
    \oftp\Gamma{B}{\UU_i}}
-  {\oftp\Gamma{\isequividtoeqv(A,B)}{\isequiv(\idtoeqv_{A,B})}}
+  {\oftp\Gamma{\ua(A,B)}{\isequiv(\idtoeqv_{A,B})}}
 \end{mathparpagebreakable}
 
 \sectionNotes\label{subsec:general-remarks}

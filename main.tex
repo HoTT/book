@@ -11,10 +11,13 @@
 % title page, for example.
 
 % DOCUMENT CLASS
-\documentclass[twopage,
+\documentclass[
+%
 %10pt % for US Trade 6" x 9" book
+%
 11pt % for Letter size book
 ]{book}
+\usepackage{etex} % We're running out of registers and dimensions, or some such
 
 % PAGE GEOMETRY
 %
@@ -45,6 +48,7 @@
 % HYPERLINKING AND PDF METADATA
 
 \usepackage[pagebackref,
+            ocgcolorlinks,
             colorlinks,
             citecolor=darkgreen,
             linkcolor=darkgreen,
@@ -63,6 +67,9 @@
 %%% Because Germans have umlauts and Slavs have even stranger ways of mangling letters
 \usepackage[utf8]{inputenc}
 
+%%% For table {tab:theorems}
+\usepackage{pifont}
+
 %%% Multi-Columns for long lists of names
 \usepackage{multicol}
 
@@ -75,7 +82,7 @@
 \usepackage{graphicx}
 \usepackage{comment}
 
-%\usepackage{wallpaper} % For the background image on the cover page
+\usepackage{wallpaper} % For the background image on the cover page
 
 \usepackage{fancyhdr} % To set headers and footers
 
@@ -83,6 +90,8 @@
 
 \usepackage{amssymb,amsmath,amsthm,stmaryrd,mathrsfs,wasysym}
 \usepackage{enumitem,mathtools,xspace,xcolor}
+\usepackage{booktabs} % For nice tables
+\usepackage{array} % For nice tables
 \definecolor{darkgreen}{rgb}{0,0.45,0}
 \usepackage{aliascnt}
 \usepackage[capitalize]{cleveref}
@@ -127,7 +136,7 @@
 % To avoid compiling stuff other than what you're working on right
 % now, uncomment the following command and give your file as its
 % argument.
-%\includeonly{}
+%\includeonly{formal}
 
 \begin{document}
 
@@ -144,8 +153,6 @@
 
 \include{front} %%% Title page and copyright
 
-\mainmatter % Turn on roman page numbers and numbered chapters
-
 \cleartooddpage
 
 \include{preface}
@@ -157,6 +164,8 @@
 \setcounter{tocdepth}{2}        % chapters, sections, and subsections for the
                                 % metadata of the pdf
 \cleartooddpage
+
+\mainmatter % Turn on roman page numbers and numbered chapters
 
 % Turn on headers and footers for mainmatter (must appear after \cleartooddpage)
 \pagestyle{fancyplain}
@@ -170,7 +179,7 @@
 
 \include{basics}
 
-%\include{logic}
+\include{logic}
 
 \include{equivalences}
 
@@ -180,6 +189,7 @@
 
 \include{hlevels}
 
+\cleartooddpage % Needed for correct TOC
 \part{Mathematics}
 \label{part:mathematics}
 
@@ -192,7 +202,9 @@
 \include{reals}
 
 %%%% Appendix
-%
+
+\cleartooddpage % Needed for correct TOC
+\phantomsection % Needed for correct TOC also
 \part*{Appendix}
 
 % We use magic to get the appendix look like Bibliography and Index
@@ -226,8 +238,6 @@
 % page document for cover, spine and back.
 %
 %\include{back}
-
-
 
 \end{document}
 

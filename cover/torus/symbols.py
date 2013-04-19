@@ -6,10 +6,19 @@ import os.path
 
 symbols = [
   r"$$\sum$$",
-  r"$$\prod$$"
+  r"$$\sum$$",
+  r"$$\sum$$",
+  r"$$\sum$$",
+  r"$$\sum$$",
+  r"$$\prod$$",
+  r"$$\times$$",
+  r"$$+$$",
+  r"$$\to$$",
+  r"$$\leftarrow$$",
+  r"$$\simeq$$",
 ]
 
-ncols = 8
+ncols = 16
 colors = [("gray", str(float(i)/ncols)) for i in range(0, ncols+1)]
 
 ## Generate LaTeX

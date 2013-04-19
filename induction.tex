@@ -77,7 +77,7 @@ Similarly, in the case of \nat, we should expect that every element is either $0
 Rather than assert properties such as this directly, however, we express them by means of an \emph{induction principle}, also called a \emph{(dependent) elimination rule}.
 We have seen these principles already in \autoref{cha:typetheory}.
 For instance, the induction principle for \bool is:
-
+%
 \begin{itemize}
 \item When proving a statement $E : \two \to \type$ about \emph{all} inhabitants of \bool, it suffices to prove it for $\true$ and $\false$, i.e., to give proofs $ e_t : E(\true)$ and $e_f : E(\false)$.
 \end{itemize}
@@ -260,55 +260,6 @@ This is, of course, very similar to the familiar fact in category theory that if
 In \autoref{sec:initial-alg} we will see that inductive types actually do have a universal property, so that this is a manifestation of that general principle.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%\section{Coproducts and dependent sums}
-%\label{sec:coprod-depsum}
-%
-%A \emph{coproduct} of two types $A$ and $B$ behaves much like a disjunction: we can choose to supply either an element of $A$ or an element of $B$.
-%Schematically, we declare this as follows:
-%\[ \disj{A}{B} : \type \defeq \myInd \left\{
-%\begin{array}{ll}
-%\inl : & A \to (\disj{A}{B}) \\
-%\inr : & B \to (\disj{A}{B})
-%\end{array}
-%\right. \]
-%
-%In this definition, $A$ and $B$ act as \emph{parameters}, i.e., they denote arbitrary types. In other words, the type constructor $+$ is really a function taking the types $A$ and $B$ as an argument and returning a new inductive type $\disj{A}{B}$. Although omitted from the above schema for clarity, the constructors $\inl$ and $\inr$ likewise take the types $A$ and $B$ as the first 2 arguments, followed by an element of $A$ (for \inl) or of $B$ (for \inr).
-%
-%Elimination for a coproduct amounts to case analysis:
-%\begin{itemize}
-%\item When proving a statement $E : (\disj{A}{B}) \to \type$ about \emph{all} terms of the coproduct $\disj{A}{B}$, it suffices to prove it for $\inl(a)$ and $\inr(b)$, i.e., give proofs $e_l : \prd{a:A} E(\inl(a))$ and $e_r : \prd{b:B} E(\inr(b))$.
-%\end{itemize}
-%The associated computation rules for the function $\rec{\disj{A}{B}}(E,e_l,e_r) : \prd{x:\disj{A}{B}} E(x)$ are as expected:
-%\begin{itemize}
-%\item For each $a : A$, we have $\rec{\disj{A}{B}}(E,e_l,e_r,\inl(a)) \jdeq e_l(a)$.
-%\item For each $b : B$, we have $\rec{\disj{A}{B}}(E,e_l,e_r,\inr(b)) \jdeq e_r(b)$.
-%\end{itemize}
-%
-%A \emph{product} of two types $A$ and $B$ (denoted by $A \times B$) is the type of pairs $(a,b)$, where $a : A$ and $b : B$. A \emph{dependent sum} is a generalization of this concept, where we allow the type $B$ to depend on $A$. A simple example is the type of pairs $(n,(c_1,\ldots,c_n))$, where the first component is a natural number $n : \nat$ and the second component is a vector $(c_1,\ldots,c_n) : \mathbf{Vec}_C(n)$ of length $n$ over another type $C : \type$.
-%Given $A : \type$ and $B : A \to \type$, the dependent sum of $A$ and $B$ is given schematically as
-%\[ \sm{a:A} B(a) : \type \defeq \myInd \left\{
-%\begin{array}{ll}
-%\mathbf{pair} : & \prd{a:A}{b:B(a)} \\
-%& \sm{a:A} B(a)
-%\end{array}
-%\right. \]
-%Thus, the parameterized inductive type $\sm{a:A} B(a)$ has a single constructor $\mathbf{pair}$. Its first two arguments (not shown) are the parameters $A$ and $B$; the remaining two arguments are the respective components $a : A$ and $b : B(a)$. We will often denote $\mathbf{pair}(a,b)$ simply by $(a,b)$.
-%
-%The elimination and computation rules are very simple:
-%
-%\begin{itemize}
-%\item When proving a statement $E : \big(\sm{a:A} B(a)\big) \to \type$ about \emph{all} terms of the dependent sum $\sm{a:A} B(a)$, it suffices to prove it for a pair $(a,b)$, i.e., give a proof $e : \prd{a:A}{b:B(a)} E((a,b))$.
-%\end{itemize}
-%
-%\begin{itemize}
-%\item For any $a : A$ and $b : B(a)$, we have $\rec{\sm{a:A} B(a)}(E,e,(a,b)) \jdeq e(a,b)$.
-%\end{itemize}
-%Using the elimination operator, it is very easy to construct the well-known projection functions $\pi_1$ and $\pi_2$, extracting the first resp. the second component of a pair.
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \section{W-types}
 \label{sec:w-types}
 
@@ -327,8 +278,8 @@ In the case of natural numbers, the label $\true $ has arity 0, since it constru
 \[ \natw \defeq \wtype{b:\two} \rec\two(\bbU,\zero,\one) \]
 where the superscript $\mathbf{w}$ serves to distinguish this version of natural numbers from the previously used one.
 Similarly, we can define the type of lists over $A$ as a W-type with $\disj{\one}{A}$ many labels: one nullary label for the empty list, plus one unary label for each $a : A$, corresponding to appending $a$ to the head of a list:
-\[ \lst A \defeq \wtype{x:\disj{\one}{A}} \rec{\disj{\one}{A}}(\bbU, \; \zero, \; \lamu{a:A} \one) \]
-
+\[ \lst A \defeq \wtype{x:\disj{\one}{A}} \rec{\disj{\one}{A}}(\bbU, \; \zero, \; \lamu{a:A} \one). \]
+%
 In general, the W-type $\wtype{x:A} B(x)$ specified by  $A : \type$ and $B : A \to \type$ is the inductive type generated by the following constructor:
 \begin{itemize}
 \item $\supp : \prd{a:A} \Big(B(a) \to \wtype{x:A} B(x)\Big) \to \wtype{x:A} B(x)$
@@ -621,7 +572,7 @@ We omit most of the proofs, which are somewhat technical.
 \end{thm}
 
 It turns out that there is an equivalent characterization of W-types using simple elimination, plus certain \emph{uniqueness} and \emph{coherence} laws. First we give the rule for simple elimination:
-
+%
 \begin{itemize}
 \item When constructing a function from the the $W$-type $\wtypeh{x:A} B(x)$ into the type $C$, it suffices to give its value for $\supp(a,f)$, assuming we are given the values of all $f(b)$ with $b : B(a)$.
 In other words, it suffices to construct a function

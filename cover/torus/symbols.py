@@ -13,6 +13,7 @@ symbols = [
 ]
 
 ncols = 1
+
 colors = [("gray", str(float(i)/ncols)) for i in range(0, ncols+1)]
 
 ## Generate LaTeX

@@ -4,7 +4,7 @@
 \newcommand{\acc}{\ensuremath{\mathsf{acc}}}
 
 
-\chapter{Set Theory}
+\chapter{Set theory}
 \label{cha:set-math}
 
 Our conception of sets as types with particularly simple homotopical character, cf.\
@@ -72,14 +72,20 @@ i_f & \defeq \proj1
 \end{align*}
 fitting into a diagram:
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} f(x)= f(y) & A & \mathsf{im}(f) \\ & & B \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
-\draw[ar] (m-1-2) -- node[above] {$\tilde{f}$} (m-1-3);
-\draw[ar] (m-1-2) -- node[auto,swap] {$f$} (m-2-3);
-\draw[ar,densely dotted] (m-1-3) -- node[auto] {$i_f$} (m-2-3);
-\end{tikzpicture}
+  \xymatrix{
+    **[l]{\sm{x,y:A} f(x)= f(y)}
+    \ar@<0.25em>[r]^{\proj1}
+    \ar@<-0.25em>[r]_{\proj2}
+    &
+    {A}
+    \ar[r]^{\tilde{f}}
+    \ar[rd]_{f}
+    &
+    {\im(f)}
+    \ar@{..>}[d]^{i_f}
+    \\ & &
+    B
+  }
 \end{equation*}
 
 Recall that a function $f:A\to B$ is called \emph{surjective} if $\fall{b:B}\brck{\hfib f b}$, or equivalently $\fall{b:B} \exis{a:A} f(a)=b$.
@@ -137,13 +143,19 @@ For any function $f:A\to B$ between sets, the following are equivalent:
 \item $f$ is an epimorphism.
 \item Consider the pushout diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & B \\ \unit & C_f \\};
-\draw[ar] (m-1-1) -- node[above] {$f$} (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$\iota$} (m-2-2);
-\draw[ar] (m-1-1) -- (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$t$} (m-2-2);
-\end{tikzpicture}
+  \xymatrix{
+    {A}
+    \ar[r]^{f}
+    \ar[d]
+    &
+    {B}
+    \ar[d]^{\iota}
+    \\
+    {\unit}
+    \ar[r]_{t}
+    &
+    {C_f}
+  }
 \end{equation*}
 in $\uset$ defining the mapping cone. Then the type $C_f$ is contractible.
 \item $f$ is surjective.
@@ -223,12 +235,16 @@ Surjective functions between sets are regular epimorphisms.
 \begin{proof}
 Note that it suffices to show that for any function $f:A\to B$, the diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} (f(x)= f(y)) & A & \mathsf{im}(f) \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
-\draw[ar] (m-1-2) -- node[above] {$\tilde{f}$} (m-1-3);
-\end{tikzpicture}
+  \xymatrix{
+    **[l]{\sm{x,y:A} f(x)= f(y)}
+    \ar@<0.25em>[r]^{\proj1}
+    \ar@<-0.25em>[r]_{\proj2}
+    &
+    {A}
+    \ar[r]^{\tilde{f}}
+    &
+    {\im(f)}
+  }
 \end{equation*}
 is a coequalizer diagram.
 
@@ -337,15 +353,21 @@ The first can be described as the set-coequalizer of the two projections
 The important property of such a quotient is the following.
 
 \begin{defn}
-A relation $R:A\to A\to\prop$ is said to be \emph{effective} if the square
+A relation $R:A\to A\to\prop$ is said to be \define{effective} if the square
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} R (x,y) & A \\ A & A/R \\};
-\draw[ar] (m-1-1) -- node[above] {$\proj1$} (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$c_{R }$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left]  {$\proj2$} (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$c_R $} (m-2-2);
-\end{tikzpicture}
+  \xymatrix{
+    {\sm{x,y:A} R (x,y)}
+    \ar[r]^(0.7){\proj1}
+    \ar[d]_{\proj2}
+    &
+    {A}
+    \ar[d]^{c_R}
+    \\
+    {A}
+    \ar[r]_{c_R}
+    &
+    {A/R}
+    }
 \end{equation*}
 is a pullback. 
 \end{defn}
@@ -387,12 +409,16 @@ Note that if we regard $R$ as a function from $A$ to $A\to \prop$, then $A\sslas
 Now in \autoref{lem:images_are_coequalizers} we have shown that images are
 coequalizers. In particular, we immediately get the coequalizer diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A\sslash  R.  \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
-\draw[ar] (m-1-2) -- (m-1-3);
-\end{tikzpicture}
+  \xymatrix{
+    **[l]{\sm{x,y:A} R (x)= R (y)}
+    \ar@<0.25em>[r]^{\proj1}
+    \ar@<-0.25em>[r]_{\proj2}
+    &
+    {A}
+    \ar[r]
+    &
+    {A \sslash R.}
+  }
 \end{equation*}
 We can use this to give an alternative proof that any equivalence relation is effective and that the two definitions of quotients agree.
 
@@ -434,24 +460,32 @@ Equivalence relations are effective and there is an equivalence $A/R \simeq A\ss
 \begin{proof}
 We need to analyze the coequalizer diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} R (x)= R (y) & A & A\sslash  R. \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
-\draw[ar] (m-1-2) -- (m-1-3);
-\end{tikzpicture}
+  \xymatrix{
+    **[l]{\sm{x,y:A} R (x)= R (y)}
+    \ar@<0.25em>[r]^{\proj1}
+    \ar@<-0.25em>[r]_{\proj2}
+    &
+    {A}
+    \ar[r]
+    &
+    {A \sslash R.}
+  }
 \end{equation*}
 By the univalence axiom, the space $R (x)= R (y)$ is equivalent to the space of homotopies from $R (x)$ to $R (y)$, which is
 equivalent to $\prd{z:A} R (x,z)\simeq R (y,z)$. Since $R $ is an equivalence relation, the latter space is equivalent to $R (x,y)$. To
 summarize, we get that $(R (x)= R (y))\simeq R (x,y)$, so $R $ is effective since it is equivalent to an effective relation. Also,
 the diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {\sm{x,y:A} R (x,y) & A & A\sslash  R. \\};
-\draw[ar] ([yshift=.5ex]m-1-1.east) -- node[above] {$\proj1$} ([yshift=.5ex]m-1-2.west);
-\draw[ar] ([yshift=-.5ex]m-1-1.east) -- node[below] {$\proj2$} ([yshift=-.5ex]m-1-2.west);
-\draw[ar] (m-1-2) -- (m-1-3);
-\end{tikzpicture}
+  \xymatrix{
+    **[l]{\sm{x,y:A} R(x, y)}
+    \ar@<0.25em>[r]^{\proj1}
+    \ar@<-0.25em>[r]_{\proj2}
+    &
+    {A}
+    \ar[r]
+    &
+    {A \sslash R.}
+  }
 \end{equation*}
 is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \simeq A\sslash  R $.
 \end{proof}
@@ -523,25 +557,24 @@ In topos theory a well-known sufficient condition for LEM is the axiom of choice
 \subsection{Axioms of choice and excluded middle for sets}
 \label{subsec:emacinsets}
 
-Recall from \autoref{sec:axiom-choice}  the following definitions of the variations on the axiom of choice and the law of excluded middle:
 
+Recall from  \autoref{sec:axiom-choice}  the following definitions of the variations on the axiom of choice and the law of excluded middle, where $A$ is a type in $\type$, $B : A \to \type$ is a type family over $A$, while $P$ has type $\prd{a : A} B(a) \to \type$ and $Q$ has type $\prd{a : A} B(a) \to \prop$:
+%
 \begin{align*}
- \mathsf{LEM}_\infty\;\defeq\;&\ 
-  \prd{A:\UU} (A + \neg A)\\
-  %
-  \mathsf{LEM}\;\defeq\;&\ 
-  \prd{A:\UU} \Big(\isprop(A) \to (A + \neg A)\Big)\\
-  %
-  \mathsf{AC}_\infty\;\defeq\;&\ 
-    \Big(\prd{x:X} \sm{a:A(x)} P(x,a)\Big) \\
-    & \to\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))\\
-   %
-   \mathsf{AC}\;\defeq\;&\ 
-    \prd{X:\set}  \prd{A:X\to\set} \prd{P:\prd{x:X}A(x)\to\prop} \\
-    & \Big(\prd{x:X} \Brck{\sm{a:A(x)} P(x,a)}\Big) \\
-    & \to\Brck{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
+ \mathsf{LEM}_\infty(A) \;&\defeq\; (A + \neg A),
+ \\
+ \mathsf{LEM}(A) \;&\defeq\; \isprop(A) \to (A + \neg A),
+ \\
+ \mathsf{AC}_\infty(A,B,P) \;&\defeq\;
+    \Big(\prd{a:A} \sm{b:B(a)} P(a,b)\Big)
+    \to\sm{g:\prd{a:A} B(a)} \prd{a : A} P(a,g(a)),
+ \\
+ \mathsf{AC}(A,B,Q) \;&\defeq\;
+   \Big(\prd{a:A} \Brck{\sm{b:B(a)} Q(a,b)}\Big)
+   \to
+   \Brck{\sm{g:\prd{a:A} B(a)} \prd{a:A} Q(a,g(a))}.
 \end{align*}
-
+%
 The subscript $\infty$ denotes the absence of any assumptions that the types involved are $n$-types for any $n$, and also the absence of any truncation operations.
 The unsubscripted versions, which match most closely the versions assumed in classical set theory, involve a judicious choice of places to apply truncation assumptions and operations.
 Of course, there are many other possible variations, involving truncation assumptions and operations into $n$-types for any $n$, which might be placed in some places but not others.
@@ -551,10 +584,16 @@ For instance, consider the following generalizations of $\mathsf{LEM}$:
 %
 \begin{align*}
   \mathsf{LEM}_{0,0}\;\defeq\;&\ \prd{A:\set} (A + \neg A) \\
-  \mathsf{LEM}_{0,-1}\;\defeq\;&\ \prd{A:\set} \brck{A + \neg A}.
+  \mathsf{LEM}_{0,(-1)}\;\defeq\;&\ \prd{A:\set} \brck{A + \neg A}.
 \end{align*}
 %
-More generally, we might consider $\mathsf{LEM}_{n,m}\defeq \prd{A:\ntype{n}} \trunc m{A+\neg A}$, with $\mathsf{LEM}$ being $\mathsf{LEM}_{-1,\infty}$.
+More generally, we might consider
+%
+\begin{equation*}
+  \mathsf{LEM}_{n,m}\defeq \prd{A:\ntype{n}} \trunc m{A+\neg A},
+\end{equation*}
+%
+with $\mathsf{LEM}$ being $\mathsf{LEM}_{(-1),\infty}$.
 (If $A$ is a mere proposition, then so is $A+\neg A$; thus $\mathsf{LEM}$ is also the same as $\mathsf{LEM}_{-1,-1}$.)
 Similarly, in $\mathsf{AC}$ we might include various homotopy level assumptions on $X$, $A$, and $P$, and/or truncations into various levels.
 The implications between these principles have yet to be fully explored, but in this section we will prove the following implications that are most relevant for the study of sets.
@@ -690,9 +729,9 @@ We leave the proof of well-pointedness as an exercise for the reader.
 \label{sec:cardinals}
 
 \begin{defn}
-  The \textbf{type of cardinal numbers} is the 0-truncation of \set:
+  The \define{type of cardinal numbers} is the 0-truncation of \set:
   \[ \card \defeq \pizero{\set} \]
-  Thus, a \textbf{cardinal number}, or \textbf{cardinal}, is an inhabitant of $\card\jdeq \pizero\set$.
+  Thus, a \define{cardinal number}, or \define{cardinal}, is an inhabitant of $\card\jdeq \pizero\set$.
 \end{defn}
 
 \begin{rmk}
@@ -705,7 +744,7 @@ Of course, by definition, \card is a set.
 It also inherits the structure of a semiring from \set.
 
 \begin{defn}
-  The operation of \textbf{cardinal addition}
+  The operation of \define{cardinal addition}
   \[ \blank+\blank : \card \to \card \to \card \]
   is defined by induction on truncation:
   \[ \cd{A} + \cd{B} \defeq \cd{A+B} .\]
@@ -718,7 +757,7 @@ It also inherits the structure of a semiring from \set.
 \end{proof}
 
 \begin{defn}
-  Similarly, the operation of \textbf{cardinal multiplication}
+  Similarly, the operation of \define{cardinal multiplication}
   \[ \blank\cdot\blank : \card \to \card \to \card \]
   is defined by induction on truncation:
   \[ \cd{A} \cdot \cd{B} \defeq \cd{A\times B} \]
@@ -747,7 +786,7 @@ It also inherits the structure of a semiring from \set.
 \end{proof}
 
 \begin{defn}
-  The operation of \textbf{cardinal exponentiation} is also defined by induction on truncation:
+  The operation of \define{cardinal exponentiation} is also defined by induction on truncation:
   \[ \cd{A}^{\cd{B}} \defeq \cd{B\to A}. \]
 \end{defn}
 
@@ -767,7 +806,7 @@ It also inherits the structure of a semiring from \set.
 \end{proof}
 
 \begin{defn}
-  The relation of \textbf{cardinal inequality}
+  The relation of \define{cardinal inequality}
   \[ \blank\le\blank : \card\to\card\to\prop \]
   is defined by induction on truncation:
   \[ \cd{A} \le \cd{B} \defeq \brck{\inj(A,B)} \]
@@ -873,7 +912,7 @@ Finally, we can reproduce Cantor's theorem, showing that for every cardinal ther
   Let $A$ be a set and
   \[\blank<\blank:A\to A\to \prop\]
   a binary relation on $A$.
-  We define by induction what it means for an element $a:A$ to be \textbf{accessible} by $<$:
+  We define by induction what it means for an element $a:A$ to be \define{accessible} by $<$:
   \begin{itemize}
   \item If $b$ is accessible for every $b<a$, then $a$ is accessible.
   \end{itemize}
@@ -899,7 +938,7 @@ It may seem that such an inductive definition can never get off the ground, but 
 \end{proof}
 
 \begin{defn}
-  A binary relation $<$ on a set $A$ is \textbf{well-founded} if every element of $A$ is accessible.
+  A binary relation $<$ on a set $A$ is \define{well-founded} if every element of $A$ is accessible.
 \end{defn}
 
 \begin{lem}
@@ -983,7 +1022,7 @@ In classical logic, well-foundedness has a more well-known reformulation.
 \end{proof}
 
 \begin{defn}
-  A well-founded relation $<$ on a set $A$ is \textbf{extensional} if for any $a,b:A$, we have
+  A well-founded relation $<$ on a set $A$ is \define{extensional} if for any $a,b:A$, we have
   \[ \Big(\prd{c:A} (c<a) \leftrightarrow (c<b)\Big) \to (a=b). \]
 \end{defn}
 
@@ -1008,7 +1047,7 @@ Rather, it is a ``local'' counterpart of the axiom of extensionality in classica
 \end{proof}
 
 \begin{defn}\label{def:simulation}
-  If $(A,<)$ and $(B,<)$ are extensional and well-founded, a \textbf{simulation} is a function $f:A\to B$ such that
+  If $(A,<)$ and $(B,<)$ are extensional and well-founded, a \define{simulation} is a function $f:A\to B$ such that
   \begin{enumerate}
   \item if $a<a'$, then $f(a)<f(a')$, and\label{item:sim1}
   \item for all $a:A$ and $b:B$, if $b<f(a)$, then there merely exists an $a'<a$ with $f(a')=b$.\label{item:sim2}
@@ -1040,7 +1079,7 @@ In particular, this implies that the word ``merely'' in \autoref{def:simulation}
   Since $f$ is injective, $\sm{a:A} (f(a)=b)$ is a mere proposition.
 \end{proof}
 
-We say that a subset $C :\mathcal{P}B$ is an \textbf{initial segment} if $c\in C$ and $b<c$ imply $b\in C$.
+We say that a subset $C :\mathcal{P}B$ is an \define{initial segment} if $c\in C$ and $b<c$ imply $b\in C$.
 The image of a simulation must be an initial segment, while the inclusion of any initial segment is a simulation.
 Thus, by univalence, every simulation $A\to B$ is \emph{equal} to the inclusion of some initial segment of $B$.
 
@@ -1081,7 +1120,7 @@ Thus, if $A$ and $B$ are equipped with extensional and well-founded relations, w
 \autoref{thm:wfcat} implies that if $A\le B$ and $B\le A$, then $A=B$.
 
 \begin{defn}
-  An \textbf{ordinal} is a set $A$ with an extensional well-founded relation which is \emph{transitive}, i.e.\ $\prd{a,b,c:A}(a<b)\to (b<c) \to (a<c)$.
+  An \define{ordinal} is a set $A$ with an extensional well-founded relation which is \emph{transitive}, i.e.\ $\prd{a,b,c:A}(a<b)\to (b<c) \to (a<c)$.
 \end{defn}
 
 \begin{eg}
@@ -1100,7 +1139,7 @@ Therefore, since $A$ is extensional, $a=b$.
 Thus the function $a\mapsto \ordsl A a$ is an injection $A\to \ord$.
 
 \begin{defn}
-  For ordinals $A$ and $B$, a simulation $f:A\to B$ is said to be \textbf{bounded} if there exists $b:B$ such that $A = \ordsl B b$.
+  For ordinals $A$ and $B$, a simulation $f:A\to B$ is said to be \define{bounded} if there exists $b:B$ such that $A = \ordsl B b$.
 \end{defn}
 
 The remarks above imply that such a $b$ is unique when it exists, so that boundedness is a mere property.
@@ -1227,7 +1266,7 @@ We now show the equivalence of our ordinals with the more familiar classical wel
   Similarly, it implies extensionality, for if $\prd{c:A}(c<a)\leftrightarrow (c<b)$, then $a<b$ implies (letting $c$ be $a$) that $a<a$, which is a cycle, and similarly if $b<a$; hence $a=b$.
 \end{proof}
 
-In classical mathematics, the characterization of \autoref{thm:wellorder} is taken as the definition of a \textbf{well-ordering}, with the \emph{ordinals} being a canonical set of representatives of isomorphism classes for well-orderings.
+In classical mathematics, the characterization of \autoref{thm:wellorder} is taken as the definition of a \emph{well-ordering}, with the \emph{ordinals} being a canonical set of representatives of isomorphism classes for well-orderings.
 In our context, the Structure Identity Principle means that there is no need to look for such representatives: any well-ordering is as good as any other.
 
 We now move on to consider consequences of the axiom of choice.
@@ -1331,7 +1370,7 @@ Then (assuming AC) the image of $\aleph$ is exactly the image of \card.
 We can define a cumulative hierarchy $V$ of all sets in a given universe $\UU$ as a higher inductive type, in such a way that $V$ is again a set (in a larger universe $\UU'$), equipped with a binary ``membership" relation $x\in y$ which satisfies the usual laws of set theory.
 
 \begin{defn}
-  The \emph{cumulative hierarchy $V$} relative to a type universe $\UU$ is the
+  The \define{cumulative hierarchy $V$} relative to a type universe $\UU$ is the
   higher inductive type generated by the following constructors.
   %
   \begin{enumerate}
@@ -1388,7 +1427,7 @@ The \define{subset relation} $x\subseteq y$ is defined on $V$ as usual by
 \end{equation*}
 
 A \define{class} may be taken to be a mere predicate on~$V$. We can say that a class $C : V \to \prop$ is a
-  \emph{$V$-set} if there merely exists $v\in V$ such that
+  \define{$V$-set} if there merely exists $v\in V$ such that
 %
 \begin{equation*}
   \fall{x : V} C(x) \Leftrightarrow x \in v.
@@ -1530,7 +1569,7 @@ We have shown that in type theory with a universe $\UU$, the cumulative hierarch
 Finally, consider the result of adding the axiom of choice for sets to our type theory, in the form  $\mathsf{AC}$ from \autoref{subsec:emacinsets} above.  This has the consequence that $\mathsf{LEM}$ then also holds, by \autoref{thm:1surj_to_surj_to_pem}, and so $\set$ is a topos with subobject classifier $\bool$, by \autoref{thm:settopos}.  In this case, we have $\prop = \bool:\UU$, and so \emph{all classes are separable}.  Thus we have shown:
 
 \begin{lem}\label{lem:fullsep}
-In type theory with $\mathsf{AC}$, the law of \emph{(full) separation} holds for $V$: given \emph{any} class $C : V \to \prop$ and $a : V$, the class $a \cap C$ is a $V$-set.
+In type theory with $\mathsf{AC}$, the law of \define{(full) separation} holds for $V$: given \emph{any} class $C : V \to \prop$ and $a : V$, the class $a \cap C$ is a $V$-set.
 \end{lem}
 
 \begin{thm}\label{thm:zfc}

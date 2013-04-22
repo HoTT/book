@@ -1794,24 +1794,24 @@ semigroup is a type equipped with an associative ``multiplication''
 operation.  The same ideas apply to other algebraic structures, such as
 monoids, groups, and rings.
 
-\begin{defn}[Semigroup]
-Given a type $A$, the type \semigroupstr{A} of semigroup structures on $A$ is defined by
+\begin{defn}
+Given a type $A$, the type \semigroupstr{A} of \define{semigroup structures} with carrier $A$ is defined by
 \[
-\semigroupstr{A} \defeq \sm{m:A \to A \to A} \prd{x,y,z:A} m(x,m(y,z)) = m(m(x,y),z)
+\semigroupstr{A} \defeq \sm{m:A \to A \to A} \prd{x,y,z:A} m(x,m(y,z)) = m(m(x,y),z).
 \]
-
-A semigroup is a type paired with such a structure:
+%
+A \define{semigroup} is a type paired with such a structure:
+%
 \[
 \semigroup \defeq \sm{A:\type} \semigroupstr A
 \]
 \end{defn}
 
 \noindent 
-
 In the next two sections, we describe two ways in which univalence makes
 it easier to work with semigroups.
 
-\subsection{Lifting Equivalences}
+\subsection{Lifting equivalences}
 
 When working loosely, one might say that a bijection between sets $A$
 and $B$ ``obviously'' induces an isomorphism between semigroup
@@ -1843,9 +1843,9 @@ First, because
 \begin{align} 
   & \transfib{X \mapsto \semigroupstr{X}}{\ua(e)}{(m,a)} \notag \\
 = & (\transfib{X \mapsto (X \to X \to X)}{\ua(e)}{m}, 
-   \transfibf{(X,m) \mapsto \mathit{Assoc}(X,m)}{(\pairpath(\ua(e),\refl{}))}{a}) \label{eq:transport-semigroup-step1}
+   \transfibf{(X,m) \mapsto \mathsf{Assoc}(X,m)}{(\pairpath(\ua(e),\refl{}))}{a}) \label{eq:transport-semigroup-step1}
 \end{align}
-where $\mathit{Assoc}(X,m)$ is the type $\prd{x,y,z:X} m(x,m(y,z)) = m(m(x,y),z)$.  
+where $\mathsf{Assoc}(X,m)$ is the type $\prd{x,y,z:X} m(x,m(y,z)) = m(m(x,y),z)$.  
 That is, the induced semigroup structure consists of an induced
 multiplication operation on $B$
 \begin{flalign*}
@@ -1855,7 +1855,7 @@ multiplication operation on $B$
 together with an induced proof that $m'$ is associative.  By function
 extensionality, it suffices to investigate the behavior of $m'$ when
 applied to arguments $b_1,b_2 : B$. By applying
-\cref{eq:transport-arrow} twice, we have that $m'(b_1,b_2)$ is equal to
+\eqref{eq:transport-arrow} twice, we have that $m'(b_1,b_2)$ is equal to
 \[
 \transfib{X \mapsto X}{\ua(e)}{m(\transfib{X \mapsto X}{\opp{\ua(e)}}{b_1}, \transfib{X \mapsto X}{\opp{\ua(e)}}{b_2})} 
 \]
@@ -1869,18 +1869,21 @@ then brings the result back to $B$ by $e$, just as one would expect.
 
 Moreover, though we do not show the proof, one can calculate that the
 induced proof that $m'$ is associative (the second component of the pair
-in \cref{eq:transport-semigroup-step1}) is equal to a function sending
+in \eqref{eq:transport-semigroup-step1}) is equal to a function sending
 $b_1,b_2,b_3 : B$ to a path given by the following steps:
-\begin{align}
-  & m'(b_1,m'(b_2,b_3)) \label{eq:transport-semigroup-assoc}\\
-= & e(m(\opp{e}(m'(b_1,b_2)),\opp{e}(b_3))) \notag \\
-= & e(m(\opp{e}(e(m(\opp{e}(b_1),\opp{e}(b_2)))),\opp{e}(b_3))) \notag \\
-= & e(m(m(\opp{e}(b_1),\opp{e}(b_2)),\opp{e}(b_3))) \notag \\
-= & e(m(\opp{e}(b_1),m(\opp{e}(b_2),\opp{e}(b_3)))) \notag \\
-= & e(m(\opp{e}(b_1),\opp{e}(e(m(\opp{e}(b_2),\opp{e}(b_3)))))) \notag \\
-= & e(m(\opp{e}(b_1),\opp{e}(m'(b_2,b_3)))) \notag \\
-= & m'(b_1,m'(b_2,b_3)) \notag 
-\end{align}
+\begin{equation}
+  \label{eq:transport-semigroup-assoc}
+  \begin{aligned}
+    m'(b_1,m'(b_2,b_3))
+    &= e(m(\opp{e}(m'(b_1,b_2)),\opp{e}(b_3))) \\
+    &= e(m(\opp{e}(e(m(\opp{e}(b_1),\opp{e}(b_2)))),\opp{e}(b_3))) \\
+    &= e(m(m(\opp{e}(b_1),\opp{e}(b_2)),\opp{e}(b_3))) \\
+    &= e(m(\opp{e}(b_1),m(\opp{e}(b_2),\opp{e}(b_3)))) \\
+    &= e(m(\opp{e}(b_1),\opp{e}(e(m(\opp{e}(b_2),\opp{e}(b_3)))))) \\
+    &= e(m(\opp{e}(b_1),\opp{e}(m'(b_2,b_3)))) \\
+    &= m'(b_1,m'(b_2,b_3)).
+\end{aligned}
+\end{equation}
 These steps use the proof $a$ that $m$ is associative and the inverse
 laws for $e$.  From an algebra perspective, it may seem strange to
 investigate the identity of a proof that an operation is associative,
@@ -1888,18 +1891,19 @@ but this makes sense if we think of $A$ and $B$ as general spaces, with
 non-trivial homotopies between paths.  In \cref{cha:logic}, we will
 introduce the notion of a \emph{set}, which is a type with only trivial
 homotopies, and if we consider semigroup structures on sets, then any
-two such associativity proofs are always equal.
+two such associativity proofs are automatically equal.
 
-\subsection{Equality of Semigroups}
+\subsection{Equality of semigroups}
 
 Using the equations for path spaces discussed in the previous sections,
-we can investigste when two semigroups are equal. Given semigroups
+we can investigate when two semigroups are equal. Given semigroups
 $(A,m,a)$ and $(B,m',a')$, by \cref{thm:path-sigma}, the type of paths
 $(A,m,a) =_\semigroup (B,m',a')$ is equal to the type of pairs
-\begin{flalign*}
-& p_1 : A =_{\type} B \\
-& p_2 : \transfib{X \mapsto \semigroupstr{X}}{p_1}{(m,a)}{(m',a')}
-\end{flalign*}
+\begin{equation*}
+p_1 : A =_{\type} B
+\qquad\text{and}\qquad
+p_2 : \transfib{X \mapsto \semigroupstr{X}}{p_1}{(m,a)}{(m',a')}.
+\end{equation*}
 By univalence, $p_1$ is $\ua(e)$ for some equivalence $e$. By
 \cref{thm:path-sigma}, function extensionality, and the above analysis of
 \transfibf{X \mapsto \semigroupstr X}{}, $p_2$ is equivalent to a pair
@@ -1909,8 +1913,8 @@ of proofs, the first of which shows that
 \end{align}
 and the second of which shows that $a'$ is equal to the induced
 associativity proof constructed from $a$ in
-\cref{eq:transport-semigroup-assoc}.  But by cancelation of inverses
-\cref{eq:equality-semigroup-mult} is equivalent to
+\eqref{eq:transport-semigroup-assoc}.  But by cancelation of inverses
+\eqref{eq:equality-semigroup-mult} is equivalent to
 \[
 \prd{x_1,x_2:A} e(m(x_1, x_2)) = m'(e(x_2),e(x_2)) 
 \]
@@ -1923,22 +1927,22 @@ structure.
 
 For general types, the proof of associativity is thought of as part of
 the structure of a semigroup.  However, if we restrict to set-like types
-(again, see \cref{cha:logic}), associativity becomes a property, so the
+(again, see \cref{cha:logic}), associativity becomes a mere property, so the
 equation relating $a$ and $a'$ is trivially true.  Moreover, in this
 case, an equivalence between sets is exactly a bijection.  Thus, we have
 arrived at a standard definition of a \emph{semigroup isomorphism}: a
 bijection on the carrier sets that preserves the multiplication
 operation.  It is also possible to use the category-theoretic definition
 of isomorphism, by defining a \emph{semigroup homomorphism} to be a map
-that preserves the multiplcation, and showing that equality of
+that preserves the multiplcation, and arrive at the conclusion that equality of
 semigroups is the same as two mutually inverse homomorphisms; but we
 will not show the details here.
 
-This shows that univalence allows us to construct a notion of semigroup
-in such a way that isomorphic semigroups are equal.  More generally,
-when we construct algebraic structures in HoTT, all constructions on
-them automatically respect isomorphism, without any tedious proofs or
-abuse of notation.
+The conclusion is that, thanks to univalence, semigroups are equal
+precisely when they are isomorphic as algebraic structures. The
+conclusion applies more generally: in HoTT, all constructions of
+mathematical structures automatically respect isomorphisms, without any
+tedious proofs or abuse of notation.
 
 \section{Universal properties}
 \label{sec:universal-properties}

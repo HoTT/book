@@ -180,7 +180,7 @@ We begin with symmetry of equality, which, in topological language, means that `
     d\defeq \lam{x} \refl{x}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
   Thus, the eliminator $J$ for identity types gives us an element $J_{D,d}(x,y,p): (y= x)$ for each $p:(x= y)$.
-  We can now define the desired function $\opp{(-)}$ to be $\lam{p} J_{D,d}(x,y,p)$, i.e.\ we set $\opp{p} \defeq J_{D,d}(x,y,p)$.
+  We can now define the desired function $\opp{({-})}$ to be $\lam{p} J_{D,d}(x,y,p)$, i.e.\ we set $\opp{p} \defeq J_{D,d}(x,y,p)$.
   The conversion rule~\eqref{eq:Jconv} gives $\opp{\refl{x}}\jdeq \refl{x}$, as required.
 \end{proof}
 
@@ -895,10 +895,10 @@ Thus,~\eqref{eq:qinvtype} is \define{the type of quasi-inverses of $f$}; we may 
 \begin{eg}\label{eg:concatequiv}
   For any $p:\id[A]xy$ and $z:A$, the functions
   \begin{align*}
-    (p\ct -)&:(\id[A]yz) \to (\id[A]xz) \qquad\text{and}\\
-    (-\ct p)&:(\id[A]zx) \to (\id[A]zy)
+    (p\ct {-})&:(\id[A]yz) \to (\id[A]xz) \qquad\text{and}\\
+    ({-} \ct p)&:(\id[A]zx) \to (\id[A]zy)
   \end{align*}
-  have quasi-inverses given by $(\opp p \ct -)$ and $(-\ct \opp p)$, respectively.
+  have quasi-inverses given by $(\opp p \ct {-})$ and $({-} \ct \opp p)$, respectively.
 \end{eg}
 
 \begin{eg}\label{thm:transportequiv}
@@ -962,7 +962,7 @@ We conclude by observing:
 \end{proof}
 
 
-\section{The computational behavior of type formers}
+\section{The higher groupoid structure of type formers}
 \label{sec:computational}
 
 In \autoref{cha:typetheory}, we introduced many ways to form new types: cartesian products, disjoint unions, dependent products, dependent sums, etc.
@@ -1231,7 +1231,7 @@ Note that the lifted path $\mathsf{lift}(u,p)$  of $p:x=y$ at $u:P(x)$ defined i
 \[\pairpath(p,\refl{\trans p u}):(x,u) = (y,\trans p u).\]
 This appears in the statement of action of transport on $\Sigma$-types, which is also a generalization of the action for binary cartesian products:
 
-\begin{thm}
+\begin{thm}\label{transport-Sigma}
   Suppose we have type families $P:A\to\type$ and $Q:\big(\sm{x:A} P(x)\big)\to\type$.
   Then we can construct the type family over $A$ defined by
   \begin{equation*}
@@ -1532,7 +1532,7 @@ The simplest case is when $C(x)$ is a type of paths in $A$ itself, perhaps with 
 \end{proof}
 
 In other words, transporting with ${x \mapsto \id{c}{x}}$ is post-composition, and transporting with ${x \mapsto \id{x}{c}}$ is contravariant pre-composition.
-These may be familiar as the functorial actions of the covariant and contravariant hom-functors $\hom(c,-)$ and $\hom(-,c)$ in category theory.
+These may be familiar as the functorial actions of the covariant and contravariant hom-functors $\hom(c, {-})$ and $\hom({-},c)$ in category theory.
 
 Combining \autoref{cor:transport-path-prepost,thm:transport-compose}, we obtain a more general form:
 
@@ -1612,7 +1612,7 @@ The essential insight is that we can use the elimination property of $A+B$ to \e
 This is a very simple example of a proof technique that is used quite a
 bit in formalizing homotopy theory in HoTT; see
 e.g.\ \autoref{sec:pi1-s1-intro}.  
-
+%
 We can now show:
 
 \begin{thm}\label{thm:path-coprod}
@@ -1635,10 +1635,9 @@ We can now show:
   In the second case, where $x\jdeq \inr(b)$, then $\code(x)\jdeq \emptyt$, so that $c$ inhabits the empty type.
   Thus, the elimination rule of $\emptyt$ yields a value for $\decode(\inr(b),c)$.
 
-  This completes the definition of \decode; we now show that $\encode(x,-)$ and $\decode(x,-)$ are quasi-inverses for all $x$.
+  This completes the definition of \decode; we now show that $\encode(x,{-})$ and $\decode(x,{-})$ are quasi-inverses for all $x$.
   On the one hand, suppose given $x:A+B$ and $p:\inl(a_0)=x$; we want to show $\decode(x,\encode(x,p))=p$.
-  But now by path induction (in the Paulin-Mohring style), we may assume that $x\jdeq\inl(a_0)$ and $p\jdeq \refl{\inl(a_0)}$.
-  In this case we have
+  But now by path induction (in the Paulin-Mohring style), it suffices to consider $x\jdeq\inl(a_0)$ and $p\jdeq \refl{\inl(a_0)}$:
   \begin{align*}
     \decode(x,\encode(x,p))
     &\jdeq \decode(\inl(a_0),\encode(\inl(a_0),\refl{\inl(a_0)}))\\
@@ -1651,43 +1650,47 @@ We can now show:
   On the other hand, let $x:A+B$ and $c:\code(x)$; we want to show $\encode(x,\decode(x,c))=c$.
   We may again divide into cases based on $x$.
   If $x\jdeq\inl(a)$, then $c:a_0=a$ and $\decode(x,c)\jdeq \apfunc{\inl}(c)$, so that
-  \begin{alignat*}{2}
+  \begin{align}
     \encode(x,\decode(x,c))
-    &\jdeq \transfib{\code}{\apfunc{\inl}(c)}{\refl{a_0}}\\
+    &\jdeq \transfib{\code}{\apfunc{\inl}(c)}{\refl{a_0}} \notag \\
     &= \transfib{a\mapsto (a_0=a)}{c}{\refl{a_0}}
-    &&\quad\text{by \autoref{thm:transport-compose}}\\
+    \tag{by \autoref{thm:transport-compose}}\\
     &= \refl{a_0} \ct c
-    &&\quad\text{by \autoref{cor:transport-path-prepost}}\\
-    &= c.\qedhere
-  \end{alignat*}
+    \tag{by \autoref{cor:transport-path-prepost}}\\
+    &= c.\qedhere \notag
+  \end{align}
 \end{proof}
 
-Of course, there is a corresponding theorem if we fix $b_0:B$ instead of $a_0:A$.  
+\noindent
+Of course, there is a corresponding theorem if we fix $b_0:B$ instead of $a_0:A$.
 
-In particular, for any $a:A$ we have the function
-\[ \encode(a,-) : (\inl(a_0)=\inl(a)) \to (a_0=a).\]
-Similarly, for any $b:B$ we have
-\[ \encode(b,-) : (\inl(a_0)=\inr(b)) \to \emptyt \] which can be stated as
-``$\inl(a_0)$ is not equal to $\inr(b)$'', i.e.\ the images of \inl and \inr are
-disjoint.  Traditionally, with identity types viewed as propositions, these
-results may be stated as ``$\inl$ is injective'' and similarly for $\inr$.  The
+For any $a : A$ and $b : B$ there are functions
+%
+\[ \encode(a, {-}) : (\inl(a_0)=\inl(a)) \to (a_0=a)\]
+%
+and
+%
+\[ \encode(b, {-}) : (\inl(a_0)=\inr(b)) \to \emptyt. \]
+%
+The second one states
+``$\inl(a_0)$ is not equal to $\inr(b)$'', i.e.\ the images of \inl and \inr are disjoint. The traditional reading of the first one, where identity types are viewed as propositions, the first one is just injectivity of $\inl$.  The
 homotopical version gives more information: the types $\inl(a_0)=\inl(a)$ and
-$a_0=a$ are actually equivalent, as are $\inr(a_0)=\inr(a)$ and $a_0=a$.
+$a_0=a$ are actually equivalent, as are $\inr(b_0)=\inr(b)$ and $b_0=b$.
 
 \begin{rmk}\label{rmk:true-neq-false}
 In particular, since the two-element type $\bool$ is equivalent to $\unit+\unit$, we have $\btrue\neq\bfalse$.
 \end{rmk}
 
-This proof illustrates a general method for describing path spaces, which we will use often.  To characterize a path space, the first step is to define a comparison fibration $\code$ that provides a more explicit description of the paths.  There are several different methods for proving that such a comparison fibration is equivalent to the paths (we show a few different proofs of the same result in \autoref{sec:pi1-s1-intro}).  The one we have used here is called the \emph{encode-decode method}: the key idea is to define $\decode$ generally for all instances of the fibration ($\prd{x:A+B}{c:\code(x)} (\inl(a_0)=x)$), so that path induction can be used to analyze the composite $\decode(x,\encode(x,p))$.  
+This proof illustrates a general method for describing path spaces, which we will use often.  To characterize a path space, the first step is to define a comparison fibration $\code$ that provides a more explicit description of the paths.  There are several different methods for proving that such a comparison fibration is equivalent to the paths (we show a few different proofs of the same result in \autoref{sec:pi1-s1-intro}).  The one we have used here is called the \define{encode-decode method}: the key idea is to define $\decode$ generally for all instances of the fibration ($\prd{x:A+B}{c:\code(x)} (\inl(a_0)=x)$), so that path induction can be used to analyze the composite $\decode(x,\encode(x,p))$.  
 
 As usual, we can also characterize the action of transport in coproduct types.
-Given a type $X$, a path $p:\id[X]{x_1}{x_2}$, and type families $A,B:X\to\type$, we have
+Given a type~$X$, a path $p:\id[X]{x_1}{x_2}$, and type families $A,B:X\to\type$, we have
 \begin{align*}
-  \transfib{A+B}{p}{\inl(a)} &= \inl (\transfib{A}{p}{a})\\
-  \transfib{A+B}{p}{\inr(b)} &= \inr (\transfib{B}{p}{b})
+  \transfib{A+B}{p}{\inl(a)} &= \inl (\transfib{A}{p}{a}),\\
+  \transfib{A+B}{p}{\inr(b)} &= \inr (\transfib{B}{p}{b}),
 \end{align*}
-where as usual, $A+B$ denotes abusively the type family $x\mapsto A(x)+B(x)$.
-The proof is easy using path induction.
+where as usual, $A+B$ in the supscript denotes abusively the type family $x\mapsto A(x)+B(x)$.
+The proof is an easy path induction.
 
 
 \section{Natural numbers}
@@ -1715,7 +1718,7 @@ We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
 \begin{proof}
   We define
   \[ \encode : \prd{m,n:\N} (m=n) \to \code(m,n) \]
-  by transporting, $\encode(m,n,p) \defeq \transfib{\code(m,-)}{p}{r(m)}$.
+  by transporting, $\encode(m,n,p) \defeq \transfib{\code(m,{-})}{p}{r(m)}$.
   And we define
   \[ \decode : \prd{m,n:\N} \code(m,n) \to (m=n) \]
   by double induction on $m,n$.
@@ -1741,9 +1744,9 @@ We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
     \encode(\suc(m),\suc(n),\decode(\suc(m),\suc(n),c))\\
     \begin{split}
     &= \encode(\suc(m),\suc(n),\apfunc{\suc}(\decode(m,n,c)))\\
-    &= \transfib{\code(\suc(m),-)}{\apfunc{\suc}(\decode(m,n,c))}{r(\suc(m))}\\
-    &= \transfib{\code(\suc(m),\suc(-))}{\decode(m,n,c)}{r(\suc(m))}\\
-    &= \transfib{\code(m,-)}{\decode(m,n,c)}{r(m)}\\
+    &= \transfib{\code(\suc(m),{-})}{\apfunc{\suc}(\decode(m,n,c))}{r(\suc(m))}\\
+    &= \transfib{\code(\suc(m),\suc({-}))}{\decode(m,n,c)}{r(\suc(m))}\\
+    &= \transfib{\code(m,{-})}{\decode(m,n,c)}{r(m)}\\
     &= \encode(m,n,\decode(m,n,c))\\
     &= c
   \end{split}
@@ -1765,9 +1768,181 @@ which shows that the function $\suc$ is injective.
 We will study more general positive types in \autoref{cha:induction,cha:hits}.
 In \autoref{cha:homotopy}, we will see that the same technique used here to characterize the identity types of coproducts and \nat can also be used to calculate homotopy groups of spheres.
 
-\section{Example: Equality of Structures}
+\section{Example: equality of structures}
 
-% what goes here?
+We now consider one example to illustrate the groupoid structure of type
+formers.  In the introduction to the book, we remarked that one of the
+advantages of univalence is that two isomorphic things are interchangeable,
+in the sense that every property or construction involving one also
+applies to the other.  Common ``abuses of notation'' become formally
+true.  Univalence itself says that equivalent types are equal, and
+therefore interchangable, which includes the common practice in set
+theory of identifying bijective sets.  Moreover, when we define other
+mathematical concepts as types equipped with structure or properties, we
+can derive the correct notion of equality for them from univalence.  We illustrate this
+point with a significant example in \cref{cha:category-theory}, where we
+define the basic notions of category theory in such a way that equality
+of categories is equivalence, equality of functors is natural
+isomorphism, etc.  In this section, we describe a simpler example,
+coming from algebra.
+
+\newcommand{\semigroupstr}[1]{\ensuremath{\mathsf{SemigroupStr}}(#1)}
+\newcommand{\semigroup}[0]{\ensuremath{\mathsf{Semigroup}}}
+
+For simplicity, we use \emph{semigroups} as our example, where a
+semigroup is a type equipped with an associative ``multiplication''
+operation.  The same ideas apply to other algebraic structures, such as
+monoids, groups, and rings.
+
+\begin{defn}
+Given a type $A$, the type \semigroupstr{A} of \define{semigroup structures} with carrier $A$ is defined by
+\[
+\semigroupstr{A} \defeq \sm{m:A \to A \to A} \prd{x,y,z:A} m(x,m(y,z)) = m(m(x,y),z).
+\]
+%
+A \define{semigroup} is a type paired with such a structure:
+%
+\[
+\semigroup \defeq \sm{A:\type} \semigroupstr A
+\]
+\end{defn}
+
+\noindent 
+In the next two sections, we describe two ways in which univalence makes
+it easier to work with semigroups.
+
+\subsection{Lifting equivalences}
+
+When working loosely, one might say that a bijection between sets $A$
+and $B$ ``obviously'' induces an isomorphism between semigroup
+structures on $A$ and semigroup structures on $B$.  With univalence,
+this is indeed obvious, because given an equivalence between types $A$
+and $B$, we can automatically derive a semigroup structure on $B$ from
+one on $A$, and moreover show that this derivation is an equivalence of
+semigroup structures.  The reason is that \semigroupstr{-} is a family
+of types, and therefore has an action on paths between types given by
+$\mathsf{transport}$:
+\[
+\transfibf{X \mapsto \semigroupstr{X}}{(\ua(e))} : \semigroupstr{A} \to \semigroupstr{B} 
+\]
+Moreover, this map is an equivalence, because 
+$\transfibf{C}{\alpha}$ is always an equivalence with inverse 
+$\transfibf{C}{(\opp \alpha)}$ (by \cref{thm:transport-concat} and
+\cref{thm:omg}).  
+
+While the univalence axiom ensures that this map exists, we need to use
+facts about $\mathsf{transport}$ defined in the preceeding sections to
+calculate what it actually does. Let $(m,a)$ be a semigroup structure on
+$A$, and we investigate the induced semigroup structure on $B$ given by
+\[
+\transfib{X \mapsto \semigroupstr{X}}{\ua(e)}{(m,a)}
+\]
+First, because
+\semigroupstr{X} is defined to be a $\Sigma$-type, by
+\cref{transport-Sigma},
+\begin{align} 
+  & \transfib{X \mapsto \semigroupstr{X}}{\ua(e)}{(m,a)} \notag \\
+= & (\transfib{X \mapsto (X \to X \to X)}{\ua(e)}{m}, 
+   \transfibf{(X,m) \mapsto \mathsf{Assoc}(X,m)}{(\pairpath(\ua(e),\refl{}))}{a}) \label{eq:transport-semigroup-step1}
+\end{align}
+where $\mathsf{Assoc}(X,m)$ is the type $\prd{x,y,z:X} m(x,m(y,z)) = m(m(x,y),z)$.  
+That is, the induced semigroup structure consists of an induced
+multiplication operation on $B$
+\begin{flalign*}
+& m' : B \to B \to B \\
+& m'(b_1,b_2) \defeq \transfib{X \mapsto (X \to X \to X)}{\ua(e)}{m}(b_1,b_2)
+\end{flalign*}
+together with an induced proof that $m'$ is associative.  By function
+extensionality, it suffices to investigate the behavior of $m'$ when
+applied to arguments $b_1,b_2 : B$. By applying
+\eqref{eq:transport-arrow} twice, we have that $m'(b_1,b_2)$ is equal to
+\[
+\transfib{X \mapsto X}{\ua(e)}{m(\transfib{X \mapsto X}{\opp{\ua(e)}}{b_1}, \transfib{X \mapsto X}{\opp{\ua(e)}}{b_2})} 
+\]
+Then, by \cref{axiom:univalence}, this is equal to
+\[
+e(m(\opp{e}(b_1), \opp{e}(b_2)))
+\]
+Thus, given two elements of $B$, the induced multiplication $m'$ 
+sends them to $A$ using the equivalence $e$, multiplies them in $A$, and
+then brings the result back to $B$ by $e$, just as one would expect.
+
+Moreover, though we do not show the proof, one can calculate that the
+induced proof that $m'$ is associative (the second component of the pair
+in \eqref{eq:transport-semigroup-step1}) is equal to a function sending
+$b_1,b_2,b_3 : B$ to a path given by the following steps:
+\begin{equation}
+  \label{eq:transport-semigroup-assoc}
+  \begin{aligned}
+    m'(b_1,m'(b_2,b_3))
+    &= e(m(\opp{e}(m'(b_1,b_2)),\opp{e}(b_3))) \\
+    &= e(m(\opp{e}(e(m(\opp{e}(b_1),\opp{e}(b_2)))),\opp{e}(b_3))) \\
+    &= e(m(m(\opp{e}(b_1),\opp{e}(b_2)),\opp{e}(b_3))) \\
+    &= e(m(\opp{e}(b_1),m(\opp{e}(b_2),\opp{e}(b_3)))) \\
+    &= e(m(\opp{e}(b_1),\opp{e}(e(m(\opp{e}(b_2),\opp{e}(b_3)))))) \\
+    &= e(m(\opp{e}(b_1),\opp{e}(m'(b_2,b_3)))) \\
+    &= m'(b_1,m'(b_2,b_3)).
+\end{aligned}
+\end{equation}
+These steps use the proof $a$ that $m$ is associative and the inverse
+laws for $e$.  From an algebra perspective, it may seem strange to
+investigate the identity of a proof that an operation is associative,
+but this makes sense if we think of $A$ and $B$ as general spaces, with
+non-trivial homotopies between paths.  In \cref{cha:logic}, we will
+introduce the notion of a \emph{set}, which is a type with only trivial
+homotopies, and if we consider semigroup structures on sets, then any
+two such associativity proofs are automatically equal.
+
+\subsection{Equality of semigroups}
+
+Using the equations for path spaces discussed in the previous sections,
+we can investigate when two semigroups are equal. Given semigroups
+$(A,m,a)$ and $(B,m',a')$, by \cref{thm:path-sigma}, the type of paths
+$(A,m,a) =_\semigroup (B,m',a')$ is equal to the type of pairs
+\begin{equation*}
+p_1 : A =_{\type} B
+\qquad\text{and}\qquad
+p_2 : \transfib{X \mapsto \semigroupstr{X}}{p_1}{(m,a)}{(m',a')}.
+\end{equation*}
+By univalence, $p_1$ is $\ua(e)$ for some equivalence $e$. By
+\cref{thm:path-sigma}, function extensionality, and the above analysis of
+\transfibf{X \mapsto \semigroupstr X}{}, $p_2$ is equivalent to a pair
+of proofs, the first of which shows that
+\begin{align} \label{eq:equality-semigroup-mult}
+\prd{y_1,y_2:B} e(m(\opp{e}(y_1), \opp{e}(y_2))) = m'(y_1,y_2)
+\end{align}
+and the second of which shows that $a'$ is equal to the induced
+associativity proof constructed from $a$ in
+\eqref{eq:transport-semigroup-assoc}.  But by cancelation of inverses
+\eqref{eq:equality-semigroup-mult} is equivalent to
+\[
+\prd{x_1,x_2:A} e(m(x_1, x_2)) = m'(e(x_2),e(x_2)) 
+\]
+This says that $e$ commutes with the binary operation, in the sense
+that it takes multiplcation in $A$ ($m$) to multiplication in $B$
+($m'$).  A similar rearrangement is possible for the equation relating
+$a$ and $a'$.  Thus, an equality of semigroups consists exactly of an
+equivalence on the carrier types that commutes with the semigroup
+structure.  
+
+For general types, the proof of associativity is thought of as part of
+the structure of a semigroup.  However, if we restrict to set-like types
+(again, see \cref{cha:logic}), associativity becomes a mere property, so the
+equation relating $a$ and $a'$ is trivially true.  Moreover, in this
+case, an equivalence between sets is exactly a bijection.  Thus, we have
+arrived at a standard definition of a \emph{semigroup isomorphism}: a
+bijection on the carrier sets that preserves the multiplication
+operation.  It is also possible to use the category-theoretic definition
+of isomorphism, by defining a \emph{semigroup homomorphism} to be a map
+that preserves the multiplcation, and arrive at the conclusion that equality of
+semigroups is the same as two mutually inverse homomorphisms; but we
+will not show the details here.
+
+The conclusion is that, thanks to univalence, semigroups are equal
+precisely when they are isomorphic as algebraic structures. The
+conclusion applies more generally: in HoTT, all constructions of
+mathematical structures automatically respect isomorphisms, without any
+tedious proofs or abuse of notation.
 
 \section{Universal properties}
 \label{sec:universal-properties}
@@ -1943,7 +2118,7 @@ The type-theoretic axiom of choice~\eqref{eq:sigma-ump-map} was noticed in Willi
 \end{ex}
 
 \begin{ex}\label{ex:equiv-concat}
-  Prove that if $p:x=y$, then the function $(p\ct -):(y=z) \to (x=z)$ is an equivalence.
+  Prove that if $p:x=y$, then the function $(p\ct {-}):(y=z) \to (x=z)$ is an equivalence.
 \end{ex}
 
 \begin{ex}\label{ex:ap-sigma}

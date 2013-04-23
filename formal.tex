@@ -4,7 +4,6 @@
 \chapter{The rules of type theory}
 \label{cha:rules}
 
-
 \newcommand{\emptyctx}{\ensuremath{\cdot}}
 \newcommand{\production}{\vcentcolon\vcentcolon=}
 \newcommand{\conv}{\sim}
@@ -54,8 +53,9 @@ inference}---what it means to derive the judgment $a:A$.%
 sentences built from atomic formulas and logical operators, while the rules of
 inference are modus ponens, conjunction introduction, and so forth.}
 
-In this appendix, we present two precise formulations of homotopy type theory.
-The first presentation (\autoref{sec:syntax-informally}) describes our domain of
+In this appendix, we present two precise formulations of Martin-L\"{o}f type
+theory, and of the extensions we have introduced for homotopy type theory. The
+first presentation (\autoref{sec:syntax-informally}) describes our domain of
 discourse as an extension of the untyped $\lambda$-calculus, while leaving the
 rules of inference imprecise. The second (\autoref{sec:syntax-more-formally})
 makes both precise using a natural deduction presentation, as is customary in
@@ -80,51 +80,41 @@ formulated in an ambient \define{context}, or list of assumptions, of the form
   x_1:A_1, x_2:A_2,\dots,x_n:A_n.
 \]
 An element $x_i : A_i$ of the context expresses the assumption that the
-variable $x_i$ has type $A_i$. Here $x_i$ must be a variable; it does
-not make sense to place $a : A$ in the context when $a$ is something
-other than a variable.  The variables $x_1, \ldots, x_n$ appearing in
-the context must be distinct. The only variables allowed to
-occur freely in $A_i$ are $x_1, \ldots, x_{i-1}$.
-We abbreviate contexts with the letters $\Gamma$ and $\Delta$. We
-may juxtapose them, for example $\Gamma, x : A, \Delta$ is the context
-consisting of $\Gamma$, $x : A$, and $\Delta$, in that order.
+variable $x_i$ has type $A_i$. The variables $x_1, \ldots, x_n$ appearing in
+the context must be distinct. We abbreviate contexts with the letters $\Gamma$
+and $\Delta$.
 
-By contrast, in informal mathematical presentations the context is
-implicit. At each point in a proof the mathematician knows which
-variables are available and what types they have, either by historical
-convention ($n$ is usually a number, $f$ is a function, etc.) or
-because variables are explicitly introduced with sentences such as
-``let $x$ be a real number''. This works well most of the time, but
-is not sufficient for a formal treatment. We discuss the benefits of an explicit
-context in more depth in \autoref{sec:more-formal-pi,sec:more-formal-sigma}.
-
-Thus, the typing judgment
-\[
-  \Gamma \vdash a:A
-\]
-denotes that $a$ has type $A$ in the context $\Gamma$; in other words, only the
-variables declared in $\Gamma$ may appear freely in $a$ and $A$. When $\Gamma$
-is empty, we may write simply
-\[
-  \vdash a:A
-\]
+The judgment $a:A$ in context $\Gamma$ is written 
+\[ \oftp\Gamma aA \]
+and means that $a:A$ under the assumptions listed in $\Gamma$. When the list of
+assumptions is empty, we write simply
+\[ \oftp{}aA \]
 or
-\[
-  \emptyctx \vdash a:A
-\]
+\[ \oftp\emptyctx aA \]
 where $\emptyctx$ denotes the empty context. The same applies to the equality
 judgment
 \[
-  \Gamma \vdash a\jdeq b:A
+  \jdeqtp\Gamma{a}{b}{A}
 \]
-%
-Such judgments are sensible only for \define{well-formed} contexts, a
+
+However, such judgments are sensible only for \define{well-formed} contexts, a
 notion captured our third and final judgment
 \[
-  \vdash (x_1:A_1, x_2:A_2,\dots,x_n:A_n)\; \ctx
+  \wfctx{(x_1:A_1, x_2:A_2,\dots,x_n:A_n)}
 \]
-expressing that each $A_i$ is a valid
-type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.
+expressing that each $A_i$ is a valid type in the context $x_1:A_1,
+x_2:A_2,\dots,x_{i-1}:A_{i-1}$. Therefore, if $\oftp\Gamma aA$ and
+$\wfctx\Gamma$, then we know that each $A_i$ contains only the variables
+$x_1,\dots,x_{i-1}$, and that $a$ and $A$ contain only the variables
+$x_1,\dots,x_n$.
+
+In informal mathematical presentations, the context is
+implicit. At each point in a proof, the mathematician knows which
+variables are available and what types they have, either by historical
+convention ($n$ is usually a number, $f$ is a function, etc.) or
+because variables are explicitly introduced with sentences such as
+``let $x$ be a real number''. We discuss some benefits of using explicit
+contexts in \autoref{sec:more-formal-pi,sec:more-formal-sigma}.
 
 We write $B[a/x]$ for the \define{substitution} of a term $a$ for free occurrences of
 the variable~$x$ in the term $B$, with possible capture-avoiding
@@ -315,7 +305,7 @@ with the defining equations
   f(\suc (x)) & \defeq e(x,f(x))
 \end{align*}
 %
-As usual $C,d,e$ may have been obtained in an implicit context $\Gamma$ in which variables $x_1,\ldots,x_n$ are declared.  Then there will be the extra implicit parameters $x_1,\ldots,x_n$, so that the fully explicit primitive recursion schema is
+$C,d,e$ may contain extra implicit parameters $x_1,\ldots,x_n$ if they were obtained in some non-empty context; therefore, the fully explicit primitive recursion schema is
 %
 \begin{align*}
   f(x_1,\dots,x_n,0) & \defeq d(x_1,\dots,x_n) \\
@@ -432,89 +422,10 @@ with defining equation
   f(a,\refl{a})\defeq d.
 \]
 
-\subsection{Algorithmic and semantic properties}
-
-\message{Thierry and Peter can now start re-writing this section.  The
-  following text is old.}
-
-\subsubsection*{Conversion and reduction}
-
-%Together with t
-The $\beta$-conversion defining equation for lambda abstraction
-\[
-  (\lam{x} t)(u) \defeq t[u/x]
-\]
-and the defining equations for the defined constants form the
-%we have $\defeq$ as 
-rewriting rules (unfolding definitions) that determine reduction 
-steps for a rewriting 
-system which has the confluence (or Church-Rosser) property: we can
-define $t \conv u$ to mean that $t$ and $u$ can be reduced to the same term by 
-using these rewriting rules.
-
-
-\subsubsection*{Some syntactical properties of the type theory}
- This system has the following syntactical properties.
-
-\begin{thm}\label{red}
-If $A : \UU$ and $A \conv A'$ then $A' : \UU$.
-If $t:A$ and $t \conv t'$ then $t':A$.
-\end{thm}
-
-We say that a term is \define{normalizable}, respectively \define{strongly normalizable}, if 
-some, respectively every, sequence of reduction steps from the term terminates.
-
-\begin{thm}\label{SN}
- If $A : \UU$ then $A$ is strongly normalizable.
- If $t:A$ then $A$ and $t$ are strongly normalizable.
-\end{thm}
-
-We say that a term is in \define{normal form} if it cannot be reduced, and that a 
-term is a \define{closed term} if no variable occurs freely in it.  A closed
-normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$
-for some primitive constant $c$ (where the list $\vec{v}$ of closed normal terms may be omitted if empty, for
-instance, as with $\N$).  More generally we have the following explicit
-description of terms in normal form.
-
-\begin{lem}\label{normal}
-  The terms in normal form can be described by the following syntax
-  % 
-  \begin{align*}
-    v & \production  k \mid \lam{x} v \mid c(\vec{v}) \mid f(\vec{v}), \\
-    k &\production x \mid k(v) \mid f(\vec{v})(k),
-  \end{align*}
-  % 
-  where $f(\vec{v})$ represents a partial application of the defined function $f$.
-  In particular, a type in normal form is of the form $k$ or $c(\vec{v})$.
-\end{lem}
-
-\begin{thm}
-  If $A$ is in normal form then the 
-  judgment $A : \UU$ is decidable. If $A : \UU$ and $t$ is in normal form then the judgment
-  $t:A$ is decidable.
-\end{thm}
-
-A corollary is the \define{consistency} property: there is no proof of $\emptyt$ in the empty
-context. Indeed if we have $t:\emptyt$ then by \autoref{red,SN} the term $t$ will reduce
-to a term in normal form $t'$ that satisfies $t':\emptyt$, but this is not possible by a 
-purely combinatorial argument using \autoref{normal}. Similarly, we have the following
-\emph{canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
-normal form $\suc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
-in normal form, the typing relation is \emph{decidable}, and identifying type-checking with
-\emph{proof-checking}, we can indeed ``recognize a proof of an assertion when we see one''.
-
-
 \section{The second presentation}
 \label{sec:syntax-more-formally}
 
-a
-judgment holds exactly when it can be concluded by a derivation composed of
-these inference rules. The derivation must be \emph{closed}, which means that it
-is finite and does not have unfinished parts.
-\subsection{Judgments}
-
-In this presentation type theory has three basic judgments:
-%
+In this section, we define the judgments 
 \begin{mathpar}
 \wfctx\Gamma
 \and
@@ -522,31 +433,31 @@ In this presentation type theory has three basic judgments:
 \and
 \jdeqtp\Gamma{a}{a'}{A}
 \end{mathpar}
+inductively using inference rules. In the ``natural deduction'' notation of this
+section, to conclude the judgment below the horizontal line, it is necessary to
+prove the judgments above the line. For clarity, each rule has a name displayed
+to the right of the horizontal line. 
 
-We will define these judgments inductively using inference rules. In the
-notation of this section, to conclude the judgment below the horizontal line, it
-is necessary to prove the judgments above the line. For clarity, each rule has a
-name displayed to the right of the horizontal line.
-
-A valid derivation of a
-judgment is a tree constructed from these inference rules, whose final
-conclusion is the judgment in question, and none of whose component rules has
-unresolved hypotheses. (In other words, all the leaves of the tree must be
-instances of the only rule with no hypotheses, namely
-$\ctx\text{-}\textsc{emp}$.)
-
-For example, the following is a derivation of $\oftp{\emptyctx}{\lamu{x:\unit}
-x}{\unit\to\unit}$.
+A \emph{derivation} of a judgment is a tree constructed from these inference
+rules, whose final conclusion is the judgment in question. If the derivation has
+no unresolved hypotheses, we say it is \emph{closed}, and thus proves the
+judgment under no hypotheses. In other words, a derivation is closed if all its
+leaves $\ctx\text{-}\textsc{emp}$, as this is the only rule with no hypotheses.
+For example, the following is a closed derivation of
+$\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}$.
+%
 \begin{mathpar}
-  \def\deriveemptycontext{\inferrule*[right=\ctx-\textsc{emp}] {\ } {\wfctx {\emptyctx}}}
-  \def\deriveunitform{\inferrule*[right=$\unit$-\form] \deriveemptycontext {\oftp{}{\unit}{\UU_0}}}
-  \def\derivexisoftypeunit{\inferrule*[right=\ctx-\textsc{ext}] \deriveunitform {\wfctx {\tmtp x\unit}}}
-  \inferrule*[right=$\Pi$-\intro]
-     {
-        \inferrule*[right=$\Vble$]
-           \derivexisoftypeunit
-           {\oftp{\tmtp x\unit}{x}{\unit}}}
-     {\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}}
+\inferrule*[right=$\Pi$-\intro]
+  {\inferrule*[right=$\Vble$]
+    {\inferrule*[right=\ctx-\textsc{ext}]
+      {\inferrule*[right=$\unit$-\form]
+        {\inferrule*[right=\ctx-\textsc{emp}]
+          {\ }
+          {\wfctx {\emptyctx}}}
+        {\oftp{}{\unit}{\UU_0}}}
+      {\wfctx {\tmtp x\unit}}}
+   {\oftp{\tmtp x\unit}{x}{\unit}}}
+ {\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}}
 \end{mathpar}
 
 \subsection{Contexts}
@@ -1105,6 +1016,75 @@ defined.\footnote{This approach is easier to formalize both syntactically and
 semantically, as it amounts to the universal property of the type former.}
 The two approaches are equivalent; see \autoref{sec:pattern-matching} for a
 longer discussion.
+
+\section{Algorithmic and semantic properties}
+
+\subsection*{Conversion and reduction}
+
+%Together with t
+The $\beta$-conversion defining equation for lambda abstraction
+\[
+  (\lam{x} t)(u) \defeq t[u/x]
+\]
+and the defining equations for the defined constants form the
+%we have $\defeq$ as 
+rewriting rules (unfolding definitions) that determine reduction 
+steps for a rewriting 
+system which has the confluence (or Church-Rosser) property: we can
+define $t \conv u$ to mean that $t$ and $u$ can be reduced to the same term by 
+using these rewriting rules.
+
+
+\subsection*{Some syntactical properties of the type theory}
+ This system has the following syntactical properties.
+
+\begin{thm}\label{red}
+If $A : \UU$ and $A \conv A'$ then $A' : \UU$.
+If $t:A$ and $t \conv t'$ then $t':A$.
+\end{thm}
+
+We say that a term is \define{normalizable}, respectively \define{strongly normalizable}, if 
+some, respectively every, sequence of reduction steps from the term terminates.
+
+\begin{thm}\label{SN}
+ If $A : \UU$ then $A$ is strongly normalizable.
+ If $t:A$ then $A$ and $t$ are strongly normalizable.
+\end{thm}
+
+We say that a term is in \define{normal form} if it cannot be reduced, and that a 
+term is a \define{closed term} if no variable occurs freely in it.  A closed
+normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$
+for some primitive constant $c$ (where the list $\vec{v}$ of closed normal terms may be omitted if empty, for
+instance, as with $\N$).  More generally we have the following explicit
+description of terms in normal form.
+
+\begin{lem}\label{normal}
+  The terms in normal form can be described by the following syntax
+  % 
+  \begin{align*}
+    v & \production  k \mid \lam{x} v \mid c(\vec{v}) \mid f(\vec{v}), \\
+    k &\production x \mid k(v) \mid f(\vec{v})(k),
+  \end{align*}
+  % 
+  where $f(\vec{v})$ represents a partial application of the defined function $f$.
+  In particular, a type in normal form is of the form $k$ or $c(\vec{v})$.
+\end{lem}
+
+\begin{thm}
+  If $A$ is in normal form then the 
+  judgment $A : \UU$ is decidable. If $A : \UU$ and $t$ is in normal form then the judgment
+  $t:A$ is decidable.
+\end{thm}
+
+A corollary is the \define{consistency} property: there is no proof of $\emptyt$ in the empty
+context. Indeed if we have $t:\emptyt$ then by \autoref{red,SN} the term $t$ will reduce
+to a term in normal form $t'$ that satisfies $t':\emptyt$, but this is not possible by a 
+purely combinatorial argument using \autoref{normal}. Similarly, we have the following
+\emph{canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
+normal form $\suc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
+in normal form, the typing relation is \emph{decidable}, and identifying type-checking with
+\emph{proof-checking}, we can indeed ``recognize a proof of an assertion when we see one''.
+
 
 %It is possible to algorithmically determine the type, if one exists, of a term.
 %It is also possible to algorithmically establish equality between terms; an

@@ -54,6 +54,7 @@ Since in type theory, propositions are types, this means that equality is a type
 (In \emph{homotopy} type theory, of course, this equality proposition can behave in unfamiliar ways: see \autoref{sec:identity-types,cha:basics}, and the rest of the book).
 
 However, in type theory there is also a need for an equality \emph{judgment}, existing at the same level as the judgment ``$x:A$''.
+\label{defn:judgmental-equality}%
 This is called \define{judgmental equality} or \define{definitional equality}, and we write it as $a\jdeq b$ or $a \jdeq_A b$.
 It is helpful to think of this as meaning ``equal by definition''.
 For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
@@ -81,13 +82,15 @@ Thus, for us, type theory will be a deductive system based on two forms of judgm
 \end{tabular}
 \medskip
 \end{center}
+%
+\label{defn:defeq}%
 When introducing a definitional equality, i.e., defining one thing to be equal to another, we will use the symbol ``$\defeq$''.
 Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
 
 Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.%
 \footnote{In formalized type theory, commas and turnstiles can bind even more loosely.
   For instance, $x:A,y:B\vdash c:C$ is parsed as $((x:A),(y:B))\vdash (c:C)$.
-  However, in this book we refrain from such notation until \autoref{cha:rules}.}\nopagebreak~
+  However, in this book we refrain from such notation until \autoref{cha:rules}.}
 Thus, for instance, ``$p:x=y$'' should be parsed as ``$p:(x=y)$'', which makes sense since ``$x=y$'' is a type, and not as ``$(p:x)=y$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
 Similarly, ``$A\jdeq x=y$'' can only be parsed as ``$A\jdeq(x=y)$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
 This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, since we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (as is standard practice in type theory; see \autoref{sec:pi-types}).
@@ -304,8 +307,11 @@ We can introduce dependent functions by explicit definitions: to
 define $f : \prd{x:A}B(x)$, where $f$ is the name of a dependent function to be
 defined, we need an expression $b : B(x)$ involving $x:A$, and we write
 \[ f(x) \defeq b \qquad \mbox{for $x:A$}\]
-Alternatively, we can use $\lambda$-abstraction 
-\[ \lamu{x:A} b \ :\ \prd{x:A} B(x). \]
+Alternatively, we can use \define{$\lambda$-abstraction}
+\begin{equation}
+  \label{eq:lambda-abstraction}
+  \lamu{x:A} b \ :\ \prd{x:A} B(x).
+\end{equation}
 The equalities are the same as for the ordinary function type, i.e.\
 given $a:A$ we have $f(a) \jdeq b'$ and  
 $(\lamu{x:A} b)(a) \jdeq b'$, where $b' $ is obtained by replacing all
@@ -354,6 +360,7 @@ We avoid writing $g(a,b)$ here, in order to emphasize that $g$ is not a
 function on a product. 
 
 In particular, we can derive the \define{projection} functions
+\label{defn:proj}
 \begin{eqnarray*}
   \fst & : & A \times B \to A \\
   \snd & : & A \times B \to B
@@ -452,6 +459,7 @@ Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
 pair type is written as $\sm{x:A} B(x) : \UU$.
 Alternative notations are 
 \[ \tsm{x:A} B(x) \hspace{2cm} \dsm{x:A}B(x) \hspace{2cm} \lsm{x:A} B(x). \]
+\label{defn:dependent-pair}
 The way to construct elements of this type is by pairing: we have
 $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
 If $B$ is constant, then the dependent pair type is the
@@ -465,6 +473,7 @@ $g : \prd{x:A} B(x) \to C$, and then we can define $f$ via the defining
 equation
 \[ f(\tup{a}{b}) \defeq g(a)(b) \]
 For instance, we can derive the first projection from a $\Sigma$-type:
+\label{defn:dependent-proj1}
 \begin{eqnarray*}
   \fst & : & (\sm{x : A}B(x)) \to A.
   % \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p)).
@@ -475,6 +484,7 @@ by the defining equation
   % \snd(\tup{a}{b}) & \defeq & b
 \end{eqnarray*}
 However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
+\label{defn:dependent-proj2}
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
 Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
 This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU'$, we need a function

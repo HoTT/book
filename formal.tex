@@ -25,29 +25,53 @@
 \newcommand{\Exch}{\mathsf{Exch}}
 \newcommand{\Subst}{\mathsf{Subst}}
 
-In this appendix, we offer two precise
-formulations of the formal system of homotopy type theory that is used
-in this book. These supplement the informal presentation in \autoref{sec:syntax-informally}.
-The first emphasizes an underlying untyped $\lambda$-calculus as basic
-support for the syntax and the computation in the system.
-The second is closer to standard practice in the
-literature on type theory. It is more self-contained, but perhaps
-harder to digest as it is also more formalistic.
+Just as one can practice traditional mathematics without a precise understanding
+of the axioms of Zermelo--Fraenkel set theory, in this book we have developed
+mathematics in univalent foundations without yet precisely describing the formal
+system of homotopy type theory. Nevertheless, it is important to \emph{have} a
+precise description of HoTT in order to, for example,
+%
+\begin{itemize}
+\item state and prove its metatheoretic properties, including logical
+consistency (that $\emptyt$ has no elements);
+\item construct models in simplicial sets, model categories, higher toposes,
+etc.; or
+\item implement it in proof assistants like Coq or Agda.
+\end{itemize}
+
+Even the logical consistency of HoTT is not obvious: if we had erroneously
+chosen a definition of equivalence for which $\eqv{\emptyt}{\unit}$, then
+univalence would imply that $\emptyt$ has an element, since $\unit$ does.
+Nor is it obvious that, for example, our definition of $\Sn^1$ as a higher
+inductive type yields a type which behaves like the ordinary circle.
+
+There are two aspects of type theory which we must pin down before addressing
+such questions. To show that there is no term $a$ for which we can derive
+$a:\emptyt$, we must first define precisely our \emph{domain of discourse}---the
+terms of type theory.  Then we must define precisely our \emph{rules of
+inference}---what it means to derive the judgment $a:A$.%
+\footnote{In propositional logic, the domain of discourse consists of logical
+sentences built from atomic formulas and logical operators, while the rules of
+inference are modus ponens, conjunction introduction, and so forth.}
+
+In this appendix, we present two precise formulations of homotopy type theory.
+The first presentation (\autoref{sec:syntax-informally}) describes our domain of
+discourse as an extension of the untyped $\lambda$-calculus, while leaving the
+rules of inference imprecise. The second (\autoref{sec:syntax-more-formally})
+makes both precise using a natural deduction presentation, as is customary in
+type-theoretic literature.
+
+\section{Preliminaries}
 
 In \autoref{cha:typetheory}, we presented the two basic \emph{judgments} of type
 theory. The first, $a:A$, asserts that a term $a$ has type $A$.  The second,
-$a\jdeq b:A$, states that the two terms $a$ and $b$ are \emph{judgmentally equal}
-at type $A$. These judgments are inductively defined by a set of \emph{inference
-rules}, to be presented below; a judgment holds exactly when it can be concluded
-by a derivation composed of these inference rules. The derivation must
-be \emph{closed}, which means that it is finite and does not have unfinished parts.
+$a\jdeq b:A$, states that the two terms $a$ and $b$ are \emph{judgmentally
+equal} at type $A$. These judgments are inductively defined by a set of
+inference rules described in \autoref{sec:syntax-more-formally}.
 
-To give a proof $a$ of a proposition $A$ is to derive $a:A$; in the book, we
-usually give informal arguments which describe the construction of $a$, but
-formally, one must give a precise term $a$ and a full derivation that $a:A$. It
-is possible to algorithmically determine the type, if one exists, of a term. It is also
-possible to algorithmically establish equality between terms; an algorithm is
-included in \autoref{sec:syntax-informally}.
+To construct an element $a$ of a type $A$ is to derive $a:A$; in the book, we
+give informal arguments which describe the construction of $a$, but formally,
+one must specify a precise term $a$ and a full derivation that $a:A$.
 
 However, the main difference between the presentation of type theory in the book
 and in this appendix is that, in this appendix, judgments are explicitly
@@ -55,7 +79,7 @@ formulated in an ambient \define{context}, or list of assumptions, of the form
 \[
   x_1:A_1, x_2:A_2,\dots,x_n:A_n.
 \]
-An element of the context $x_i : A_i$ expresses the assumption that the
+An element $x_i : A_i$ of the context expresses the assumption that the
 variable $x_i$ has type $A_i$. Here $x_i$ must be a variable; it does
 not make sense to place $a : A$ in the context when $a$ is something
 other than a variable.  The variables $x_1, \ldots, x_n$ appearing in
@@ -63,7 +87,7 @@ the context must be distinct. The only variables allowed to
 occur freely in $A_i$ are $x_1, \ldots, x_{i-1}$.
 We abbreviate contexts with the letters $\Gamma$ and $\Delta$. We
 may juxtapose them, for example $\Gamma, x : A, \Delta$ is the context
-consisting of $\Gamma$, $x : A$, and $\Delta$.
+consisting of $\Gamma$, $x : A$, and $\Delta$, in that order.
 
 By contrast, in informal mathematical presentations the context is
 implicit. At each point in a proof the mathematician knows which
@@ -71,7 +95,7 @@ variables are available and what types they have, either by historical
 convention ($n$ is usually a number, $f$ is a function, etc.) or
 because variables are explicitly introduced with sentences such as
 ``let $x$ be a real number''. This works well most of the time, but
-is not sufficient for a formal treatment. We discuss the benefits of an explicit 
+is not sufficient for a formal treatment. We discuss the benefits of an explicit
 context in more depth in \autoref{sec:more-formal-pi,sec:more-formal-sigma}.
 
 Thus, the typing judgment
@@ -94,15 +118,13 @@ judgment
   \Gamma \vdash a\jdeq b:A
 \]
 %
-Such judgments are justified only for contexts that are \define{well
-  formed}, a notion which requires a third kind of judgment
+Such judgments are sensible only for \define{well-formed} contexts, a
+notion captured our third and final judgment
 \[
   \vdash (x_1:A_1, x_2:A_2,\dots,x_n:A_n)\; \ctx
 \]
-to express the notion that each $A_i$ is a valid
-type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$. Note
-that so far we are only listing which judgments there are, but we
-still have to give rules for deriving them.
+expressing that each $A_i$ is a valid
+type in the context $x_1:A_1, x_2:A_2,\dots,x_{i-1}:A_{i-1}$.
 
 We write $B[a/x]$ for the \define{substitution} of a term $a$ for free occurrences of
 the variable~$x$ in the term $B$, with possible capture-avoiding
@@ -485,6 +507,10 @@ in normal form, the typing relation is \emph{decidable}, and identifying type-ch
 \section{The second presentation}
 \label{sec:syntax-more-formally}
 
+a
+judgment holds exactly when it can be concluded by a derivation composed of
+these inference rules. The derivation must be \emph{closed}, which means that it
+is finite and does not have unfinished parts.
 \subsection{Judgments}
 
 In this presentation type theory has three basic judgments:
@@ -1079,6 +1105,10 @@ defined.\footnote{This approach is easier to formalize both syntactically and
 semantically, as it amounts to the universal property of the type former.}
 The two approaches are equivalent; see \autoref{sec:pattern-matching} for a
 longer discussion.
+
+%It is possible to algorithmically determine the type, if one exists, of a term.
+%It is also possible to algorithmically establish equality between terms; an
+%algorithm is included in \autoref{sec:syntax-informally}.
 
 
 

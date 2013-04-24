@@ -54,7 +54,7 @@ Since in type theory, propositions are types, this means that equality is a type
 (In \emph{homotopy} type theory, of course, this equality proposition can behave in unfamiliar ways: see \autoref{sec:identity-types,cha:basics}, and the rest of the book).
 
 However, in type theory there is also a need for an equality \emph{judgment}, existing at the same level as the judgment ``$x:A$''.
-\label{defn:judgmental-equality}%
+\symlabel{defn:judgmental-equality}%
 This is called \define{judgmental equality} or \define{definitional equality}, and we write it as $a\jdeq b$ or $a \jdeq_A b$.
 It is helpful to think of this as meaning ``equal by definition''.
 For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
@@ -83,7 +83,7 @@ Thus, for us, type theory will be a deductive system based on two forms of judgm
 \medskip
 \end{center}
 %
-\label{defn:defeq}%
+\symlabel{defn:defeq}%
 When introducing a definitional equality, i.e., defining one thing to be equal to another, we will use the symbol ``$\defeq$''.
 Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
 
@@ -96,7 +96,7 @@ Similarly, ``$A\jdeq x=y$'' can only be parsed as ``$A\jdeq(x=y)$'', although in
 This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, since we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (as is standard practice in type theory; see \autoref{sec:pi-types}).
 
 Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
-For example, we may construct an object $m + n : \Nat$ under the assumptions that $m,n : \Nat$.
+For example, we may construct an object $m + n : \nat$ under the assumptions that $m,n : \nat$.
 Another example is that assuming $A$ is a type, $x,y : A$, and $p : x =_A y$, we may construct an element $p^{-1} : y =_A x$.
 The collection of all such assumptions is called the \define{context}; from a topological point of view it may be thought of as a ``parameter space''.
 In fact, technically the context must be an ordered list of assumptions, since later assumptions may depend on previous ones: the assumption $x:A$ can only be made \emph{after} the assumptions of any variables appearing in the type $A$.
@@ -147,13 +147,14 @@ $\lambda$-abstraction. Introducing a function by definition means that
 we introduce a function by giving it a name --- let's say, $f$ --- and saying
 we define $f : A \to B$ by giving an equation
 \begin{equation}
-  f(x) \defeq b\label{eq:expldef}
+  \label{eq:expldef}
+  f(x) \defeq b
 \end{equation}
 where $x$ is a variable and $b$ is an expression which may use $x$.
 In order for this to be valid, we have to check that $b : B$ assuming $x:A$.
 
 Now we can compute $f(a)$ by replacing the variable $x$ in $b$ with
-$a$. As an example, consider the function $f : \Nat \to \Nat$ which is
+$a$. As an example, consider the function $f : \nat \to \nat$ which is
 defined by $f(x) \defeq x+x$.  (We will define $\nat$ and $+$ in \autoref{sec:inductive-types}.)
 Then $f(2)$ is judgmentally equal to $2+2$.
 
@@ -360,7 +361,7 @@ We avoid writing $g(a,b)$ here, in order to emphasize that $g$ is not a
 function on a product. 
 
 In particular, we can derive the \define{projection} functions
-\label{defn:proj}
+\symlabel{defn:proj}
 \begin{eqnarray*}
   \fst & : & A \times B \to A \\
   \snd & : & A \times B \to B
@@ -370,11 +371,15 @@ with the defining equations
   \fst(\tup{a}{b}) & \defeq & a \\
   \snd(\tup{a}{b}) & \defeq & b
 \end{eqnarray*}
-
+%
+\symlabel{defn:recursor-times}%
 We can package this principle into a constant which we call the
 \define{recursor} for product
 types.  Given types $A,B : \UU$, we have
-\[\rec{A\times B} : \prd{C:\UU'}(A \to B \to C) \to A \times B \to C\]
+%
+\begin{equation}
+  \rec{A\times B} : \prd{C:\UU'}(A \to B \to C) \to A \times B \to C
+\end{equation}
 with the defining equation
 \[\rec{A\times B}(C,g,\tup{a}{b}) = g(a)(b). \]
 We may also speak of the \define{recursion principle} for cartesian products, meaning the fact that we can define a function $f:A\times B\to C$ as above by giving its value on pairs.
@@ -389,6 +394,7 @@ We leave it as a simple exercise to show that the recursor can be
 derived from the projections and vice versa.
 % Ex: Derive from projections
 
+\symlabel{defn:recursor-unit}
 We also have a recursor for the unit type:
 \[\rec{\unit} : \prd{C:\UU'}C \to \unit \to C\]
 with the defining equation
@@ -421,6 +427,7 @@ to prove it for its canonical elements, the tuples.
 When we come to inductive types such as the natural numbers, the analogous property will be the ability to write proofs by induction.
 Thus, when we package this principle into another constant, we call it
 \define{induction} for product types: given $A,B : \UU$ we have
+\symlabel{defn:induction-times}
 \[ \ind{A\times B} : \prd{C:A \times B \to \UU'} (\prd{x:A}{y:B}
 C(\tup{x}{y})) \to \prd{x:A \times B} C(x) \]
 with the defining equation 
@@ -435,6 +442,7 @@ Induction is also called the \define{(dependent) eliminator} of the product type
 
 Induction for the unit type turns out to be more useful than the
 recursor: 
+\symlabel{defn:induction-unit}
 \[ \ind{\unit} : \prd{C:\unit \to \UU'} C(\star) \to \prd{x:\unit}C(x)\]
 with the defining equation
 \[ \ind{\unit}(C,c,\ttt) \defeq c \]
@@ -459,7 +467,7 @@ Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
 pair type is written as $\sm{x:A} B(x) : \UU$.
 Alternative notations are 
 \[ \tsm{x:A} B(x) \hspace{2cm} \dsm{x:A}B(x) \hspace{2cm} \lsm{x:A} B(x). \]
-\label{defn:dependent-pair}
+\symlabel{defn:dependent-pair}
 The way to construct elements of this type is by pairing: we have
 $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
 If $B$ is constant, then the dependent pair type is the
@@ -473,7 +481,7 @@ $g : \prd{x:A} B(x) \to C$, and then we can define $f$ via the defining
 equation
 \[ f(\tup{a}{b}) \defeq g(a)(b) \]
 For instance, we can derive the first projection from a $\Sigma$-type:
-\label{defn:dependent-proj1}
+\symlabel{defn:dependent-proj1}
 \begin{eqnarray*}
   \fst & : & (\sm{x : A}B(x)) \to A.
   % \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p)).
@@ -484,7 +492,7 @@ by the defining equation
   % \snd(\tup{a}{b}) & \defeq & b
 \end{eqnarray*}
 However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
-\label{defn:dependent-proj2}
+\symlabel{defn:dependent-proj2}
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
 Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
 This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU'$, we need a function
@@ -499,11 +507,13 @@ To convince ourselves that this is correct, we note that $B (\fst(\tup{a}{b})) \
 indeed $b : B(a)$.
 
 We can package the recursion and induction principles into the recursor for $\Sigma$:
+\symlabel{defn:recursor-sm}
 \[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU'}\Big(\tprd{x:A} B(x) \to C\Big) \to
 \big(\tsm{x:A}B(x)\big) \to C \]
 with the defining equation
 \[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
 and the corresponding induction operator:
+\symlabel{defn:induction-sm}
 \begin{align*}
   \ind{\Sigma{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU'}
     \Big(\tprd{a:A}{b:B(x)} C(\tup{a}{b})\Big)
@@ -563,6 +573,7 @@ via the defining equations
 \end{eqnarray*}
 That is, the function $f$ is defined by cases. As before, we can
 derive the recursor:
+\symlabel{defn:recursor-plus}
 \[ \rec{A+B} : \dprd{C:\UU}(A \to C) \to (B\to C) \to A+B \to C\]
 with the defining equations
 \begin{eqnarray*}
@@ -573,6 +584,7 @@ with the defining equations
 We can always construct a function $f : \emptyt \to C$ without
 having to give any defining equations, because there are no elements of \emptyt on which to define $f$.
 Thus, the recursor for $\emptyt$ is
+\symlabel{defn:recursor-emptyt}
 \[\rec{\emptyt} : \tprd{C:\UU'} \emptyt \to C,\]
 which constructs the canonical function from the empty type to any other type.
 Logically, it corresponds to the principle \emph{ex falso quod libet}. 
@@ -590,6 +602,7 @@ This yields $f$ with the defining equations:
   f(\inl(b)) & \defeq & g_1(b) .
 \end{eqnarray*}
 We package this scheme into the induction principle for coproducts:
+\symlabel{defn:induction-plus}
 \begin{align*}
   \ind{A+B} :  \dprd{C: (A + B) \to \UU'}
   \Big(\tprd{a:A} C(\inl(a))\Big) \to \Big(\tprd{b:B} C(\inr(b))\Big)
@@ -599,6 +612,7 @@ As before, the recursor arises in the case that the family $C$ is
 constant. 
 
 The induction principle for the empty type
+\symlabel{defn:induction-emptyt}
 \[ \ind{\emptyt} : \prd{C:\emptyt \to \UU}{z:\emptyt} C(z) \]
 gives us a way to define a trivial dependent function out of the
 empty type. % In the presence of $\eta$-equality it is derivable
@@ -632,6 +646,7 @@ add the defining equations
 \end{eqnarray*}
 The recursor corresponds to the if-then-else construct in
 functional programming:
+\symlabel{defn:recursor-bool}
 \[ \rec{\bool} : \prd{C:\UU'}  C \to C \to \bool \to C \]
 with the defining equations
 \begin{eqnarray*}
@@ -646,6 +661,7 @@ $f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which
   f(\btrue) & \defeq & c_1.
 \end{eqnarray*}
 We package this up into the induction principle
+\symlabel{defn:induction-bool}
 \[ \ind{\bool} : \dprd{C:\bool \to \UU'}  C(\bfalse) \to C(\btrue)
 \to \tprd{x:\bool} C(x) \]
 with the defining equations
@@ -748,6 +764,7 @@ The reader is invited to verify that $2+2\jdeq 4$.
 As in previous cases, we can package the principle of primitive recursion into a recursion constant:
 \[\rec{\nat}  : \dprd{C:\UU} C \to (\nat \to C \to C) \to \nat \to C \]
 with the defining equations
+\symlabel{defn:recursor-nat}
 \begin{eqnarray*}
 \rec{\nat}(C,c_0,c_s,0)  & \defeq & c_0 \\
 \rec{\nat}(C,c_0,c_s,\suc(n)) & \defeq & c_s(n,\rec{\nat}(C,C_0,c_s,n)  
@@ -769,6 +786,7 @@ Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(n)$, and 
   f(\suc(n)) & \defeq & c_s(n,f(n))
 \end{eqnarray*}
 We can also package this into an induction constant
+\symlabel{defn:induction-nat}
 \[\ind{\nat}  : \dprd{C:\nat\to \UU} C(0) \to \big(\tprd{n : \nat} C(n) \to C(\suc(n))\big) \to \tprd{n : \nat} C(n) \]
 with the defining equations
 \begin{eqnarray*}
@@ -1101,6 +1119,7 @@ The general form of the rule allows $C$ to depend on the witness $p:x=y$ as well
 If we view types as like sets, it is unclear what this buys us, but in \autoref{cha:basics} we will see that it is essential to the homotopy interpretation.
 
 If we package the Martin-L\"of rule as an induction constant, it becomes:
+\symlabel{defn:induction-ML-id}
 \begin{align*}
  \ind{=_A}^{ML} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
      \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y} C(x,y,p)
@@ -1126,6 +1145,7 @@ with the defining equality
 \end{description}
 
 Packaged as an induction constant, the Paulin-Mohring rule becomes:
+\symlabel{defn:induction-PM-id}
 \begin{align*}
 \ind{=_A}^{PM} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
  C(a,\refl{a}) \to \dprd{x:A}{p : a =_A x} C(x,p) 
@@ -1281,7 +1301,7 @@ Give an alternative derivation of $\ind{=_A}^{PM}$ from $\ind{=_A}^{ML}$ which a
 \end{ex}
 
 \begin{ex}
-Define multiplication and exponentiation using $\rec{\Nat}$. Formally verify that $(\nat,+,0,\times,1)$ is a semiring using only $\ind{\Nat}$.  
+Define multiplication and exponentiation using $\rec{\nat}$. Formally verify that $(\nat,+,0,\times,1)$ is a semiring using only $\ind{\nat}$.  
 \end{ex}
 
 \begin{ex}\label{ex:fin}

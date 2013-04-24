@@ -112,7 +112,8 @@ in Coq ends with a period.
 
 (** *** Properties of Constructors *)
 (**
-The constructors of an inductive type have a number of properties:
+The constructors of an inductive type have a number of properties.  In
+a rough description, the major properties are:
 
 - Constructors are axiomatic.  The function [S] exists without any
   definition - while it can be called, it cannot be evaluated.
@@ -140,7 +141,7 @@ equal.
 (**
 Coq's command [Check] will print out the type of a term.  Obviously,
 [O] is a valid term and the [Check] will print the type [nat].
-(Remember [O] here is the capital letter "oh".)
+(Remember, [O] here is the capital letter "oh".)
 *)
 (* CoqIDE users: In CoqIDE, the Check command does nothing.  Instead,
 highlight the term, open the "Queries" menu, and select [Check]. *)
@@ -230,7 +231,7 @@ identity function.
 (** *** Shorthand *)
 (**
 Coq has a shorthand for defining functions.  Here is the identity
-function again.
+function for [nat]s again.
 *)
 
 Definition idmap_nat_short (n:nat) : nat :=
@@ -249,13 +250,13 @@ The Coq command [Compute] will evaluate a function and print the result.
 
 Compute idmap_nat (S O).
 
-(** returns (S O), like an identity function should. *)
+(** prints (S O), like an identity function should. *)
 
 
 (** *** Dependant types *)
 (**
 "idmap_nat" is not dependantly typed, so we were able to use the arrow
-("->") to declare its type.  We could have written the function's type
+("->") to denote its type.  We could have written the function's type
 as if it was dependantly typed. In the book, dependant types are
 declared with a capital "#Pi#$\Pi$".  Coq uses the keyword [forall].
 *)
@@ -270,11 +271,11 @@ In Coq, a dependent function type is written:
 In the book, this would have used capital #Pi#$\Pi$ and a subscript:
 -   #\Pi#$\Pi$ (<param>) <type>
 
-The names created in the param list of a [forall] expression are only
-bound inside the "<type>" part of the [forall].  In this example, the
-parameter "nn" cannot be used when defining the function.  (Usually,
-we use the same name in the [forall] and the [fun] parts; different
-ones were used here to demonstrate the point.)
+As you'd expect, the names in the param list of a [forall] expression
+are only bound inside the "<type>" part of the [forall].  In this
+example, the parameter "nn" cannot be used when defining the function.
+(Usually, we use the same name in the [forall] and the [fun] parts;
+different ones were used here to demonstrate the point.)
 
 A [forall] can have multiple parameters.  If a parameter is
 dependently typed on another parameter, the dependent one must come
@@ -308,7 +309,7 @@ Definition idmap_short (A:Type) (x:A) : A :=
 
 Compute idmap nat (S (S O)).
 
-(** which returns (S (S O)), like an identity function should. *)
+(** Prints (S (S O)), like an identity function should. *)
 
 (**
 Coq has a number of features for making it easier to define and call functions.  We've already seen the "shorthand" for definitions.  In the rest of this section, we'll see:
@@ -335,7 +336,7 @@ for 1 more argument.  That function is the identity function on [nat]s
 and this command assigns it a name.
 
 
-We can check that this works by passing the second of the two arguments.
+We can check this new function by passing the second of the two arguments.
 *)
 
 Compute idmap_nat_from_idmap (S (S (S O))).
@@ -348,7 +349,7 @@ that "(S O)" has type [nat].  (Remember, in type theory, an element
 can belong to only one type.)  We can use Coq's implicit arguments
 feature to tell Coq to always infer some argument values.
 
-You mark a parameter for implicit arguments by using curly braces.
+Curly braces are used to mark a parameter for implicit arguments.
 *)
 
 Definition idmap_implicit {A:Type} (x:A) : A := 
@@ -413,7 +414,7 @@ on natural numbers and show how to use the operator "+" to call it.
 (**
 When we issued the command [Inductive] to create the type [nat], Coq
 also created a function "nat_rect" for induction on natural numbers.
-It's type is:
+Its type is:
 [[
   nat_rect
      : forall P : nat -> Type,
@@ -422,7 +423,7 @@ It's type is:
        forall n : nat, P n
 ]]
 This is identical to the induction constant named "ind_N" in the HoTT
-book.  We can use it to define addition.  
+book.  We can use this function to define addition.  
 *)
 
 Definition plus (m n: nat) :  nat :=
@@ -434,9 +435,10 @@ arguments:
 
 The first argument determines the type of the result.  Addition always
 results in a [nat], so the first argument is a function that always
-returns the type [nat].  When specifying the function, we use
-underscore ("_") as a parameter name to indicate to Coq that the
-parameter isn't used in the function.
+returns the type [nat].  When specifying the function, we used
+underscore ("_") which is a special parameter name that indicate to
+Coq that the parameter isn't used in the function.  (Multiple
+parameters can be named "_" if they are all not needed.)
 
 The second argument to "nat_rect" is "n".  This is the base case; the
 result when "m" is zero.
@@ -451,9 +453,9 @@ The fourth argument is "m", the value to calculate the sum at.
 Compute plus 4 2.
 
 (**
-Directly calling the induction constant, like we did here with
-"nat_rect", is one way to do induction in Coq.  The other way is
-similar to the "pattern matching" describing in the HoTT book.
+In this example, we directly called the induction constant "nat_rect".
+This is one way to do induction in Coq.  The other way is similar to
+the "pattern matching" describing in the HoTT book.
 *)
 
 (** *** Match Expressions *)
@@ -501,8 +503,8 @@ it cannot, Coq will print an error message.
 (** *** Notations *)
 (**
 We could always represent addition with "plus 4 2", but it is more
-natural to read and write "4 + 2".  We tell Coq the format through
-[Notation] command.
+natural to read and write "4 + 2".  We tell Coq to use this format
+through [Notation] command.
 *)
 
 Notation "n + m" := (plus n m) : nat_scope.
@@ -550,8 +552,9 @@ operator.
 "at level 40" indicates the precedence of the operator.  A lower
 precedence level means that an operator "binds more tightly".  That
 is, that a [Notation] is selected over another.  Thus, for natural
-numbers, multiplication is at level 40, while addition is at 50.  
-(Those operators have default precedences.)
+numbers, multiplication is at level 40, while addition is at 50.
+(Those operators have default precedences set by a "Reserved Notation"
+command.)
 
 "left associativity" is what you would expect.
 *)
@@ -587,7 +590,7 @@ it is inhabited.
 The "Set" universe contains all other "small types".  (Small types are
 ones that do not contain references to a universe.)  Since in homotopy
 type theory every equality proof is relavent, all of our inductive
-types will lie in the "Set" universe.
+types will reside in the "Set" universe.
 
 The infinite number of universes above "Prop" and "Set" are known as
 "Type(1)", "Type(2)", "Type(3)", etc.  However, the user only ever has
@@ -663,7 +666,6 @@ Inductive prod_long : Type -> Type -> Type :=
   pair_long : forall {A B: Type}, A -> B -> prod_long A B.
 
 (** 
-
 When Coq creates "prod", it also creates the induction function
 "prod_rect".  This is the inductive constant, similar to "nat_rect" we
 mentioned earlier.  What we didn't say earlier is that there are _two_
@@ -710,7 +712,7 @@ Notation "( x , y , .. , z )" := (pair .. (pair x y) .. z) : core_scope.
 Now when Coq sees "nat * nat", it will translate it into "(prod nat
 nat)" and, likewise, translate "(4, 2)" into "(pair 4 2)".  The second
 [Notation] command will also convert tuples of any length into
-pairs-of-pairs.
+pairs-within-pairs.
 
 Now, we can write the type and elements of dependent pairs like we're
 accustomed.
@@ -761,15 +763,6 @@ using the notation "(x, y)".
 Compute fst (4,2).
 Compute snd (4,2).
 
-(** *** Defining Equation *)
-(**
-We have to wait until we've defined equality to prove defining
-equations, with types such as:
-[[
-  forall (A B : Type) (p : A*B), p = (fst p, snd p).
-]]
-*)
-
 
 (** ** Dependent Pair Types *)
 (**
@@ -799,13 +792,13 @@ To repeat (for the last time), every time Coq creates a new inductive
 type, like "sigT" here, Coq also creates three induction functions,
 "sigT_ind", "sigT_rec" and "sigT_rect".  These functions put their
 results into the "Prop", "Set", and "Type" universes (respectively).
-Most of the time, we don't care, since a [match] expression will infer
-which induction function to use.
+Most of the time, we don't care, since we'll use a [match] expression
+that infers which induction function to use.
 
 Like "prod" with "and", Coq has dependent pair types besides "sigT".
-The types "ex" and "sig" both act as dependent pairs, but use the
-"Prop" universe.  But, again, we're not using "Prop", we won't cover
-them here.
+The types "ex" (short for "there exists") and "sig" both act as
+dependent pairs, but use the "Prop" universe.  Again, we're not using
+"Prop", we won't cover them here.
 *)
 
 (** *** Pair Notation *)
@@ -821,8 +814,8 @@ Check (existT (fun _:nat => nat) 4 2).
 
 (** 
 Obviously, that expression is long to write and difficult to read and
-we want to use a [Notation] for it.  Since we've already used "(a,b)"
-for non-dependent pairs, we use the semicolon here.
+we want to use a [Notation] for it.  Since Coq already uses "(a,b)"
+for non-dependent pairs, the HoTT Coq library uses the semicolon here.
 *)
 
 Notation "{ x : A  & P }" := (sigT (fun x:A => P)) : type_scope.
@@ -831,8 +824,8 @@ Open Scope fibration_scope.
 
 (**
 When Coq sees "(4;2)", it will translate that into "(existT _ 4 2)".
-The "_" in a function application indicates that Coq should try to
-infer the argument or ask for help from the user.  
+The underscore ("_") in a function application indicates that Coq
+should try to infer the argument or ask for help from the user.
 
 Here the dependent-pair [Notation] goes into the "fibration_scope".
 Since that is a new scope, we must "Open" it to make the [Notation]
@@ -840,7 +833,7 @@ available.
 *)
 
 (**
-Here is an example using the dependent pair "(4;2)".  It is necessary
+Below is an example using the dependent pair "(4;2)".  It is necessary
 to say what its type is, so that Coq can infer the hidden argument to
 "existT".
 *)
@@ -854,7 +847,7 @@ Check dep_pair_example.
 (** *** Projection functions *)
 (**
 The projection functions extract the first or second part of a pair.
-For dependent pairs in Coq, these are "projT1" and "projT2".
+For dependent pairs in Coq, these are called "projT1" and "projT2".
 *)
 
 Section Projections.
@@ -977,6 +970,10 @@ Definition Empty := Empty_set.
 Definition Unit  := unit.
 Definition Bool  := bool.
 
+(**
+Standard Coq also has finite types that live in the "Prop" universe.
+The type "True" has one constructor and the type "False" has zero.
+*)
 (** *** Not operator *)
 (**
 In HoTT, the not operator indicates that elements of a type can be
@@ -986,12 +983,18 @@ mapped to the elements of the empty (zero) type.
 Definition not (A:Type) : Type := A -> Empty.
 Notation "~ x" := (not x) : type_scope.
 
+(**
+In Standard Coq, logic is usually done in the "Prop" universe, so this
+operator maps to the type "False" that lives there (instead of "Empty"
+which lives in "Set").
+*)
+
 (** *** Absurdity Implies Anything *)
 (**
-Obviously, a match expression for the [Unit] type handles one
+Obviously, a [match] expression for the [Unit] type handles one
 constructor and the match expression for the [Bool] type handles two
 constructors.  But what about the [Empty] type?  It has no
-constructors, so it doesn't require any.  In logic, this is the
+constructors, so its [match] expression is empty.  In logic, this is the
 equivalent of "ex falso quodlibet" or "from contradiction, anything". 
 *)
 
@@ -1071,13 +1074,13 @@ For example, if we wanted to demonstrate that "4=4", we could do:
 Check @idpath nat 4.
 
 (**
-which returns an element that has type "4=4".  Obviously, with
-implicit arguments, we do not need "nat" and can use just "idpath 4".
-Not so obviously, we can go a step futher.  If type inferencing can
-determing the type returned by "idpath", such as "4=4" in our example,
-then implicit arguments can fill in the "4" as well!  So most of the
-time you will just see "idpath" or its [Notation], "1" (in the
-"path_scope" scope).
+which is an element that has type "4=4".  Obviously, with implicit
+arguments, we do not need "nat" and can use just "idpath 4".  Not so
+obviously, we can go a step futher.  If type inferencing can determing
+the type returned by "idpath", such as "4=4" in our example, then
+implicit arguments can fill in the "4" as well!  So most of the time
+you will just see "idpath" or its [Notation], "1" (in the "path_scope"
+scope).
 *)
 
 Check idpath : 4 = 4.
@@ -1085,7 +1088,7 @@ Check 1 : 4 = 4.
 
 (**
 Next, we prove that every path has an inverse.  (Or, "equality is
-symmetry".)  In Coq, this proof looks like a function that takes any
+symmetric".)  In Coq, this proof looks like a function that takes any
 path and returns its inverse.
 *)
 
@@ -1129,8 +1132,8 @@ The comma in the [match] expression is part of the [match] syntax.  It
 is _not_ a non-dependent pair.  It is a shortcut that allows two
 inductions to be done using a single [match] expression.  When the
 [match] gets translated into two calls to "paths_rect", we don't care
-which order they are called in; the results are the same.  As the HoTT
-book explains, this proof could be done with just one call to
+in which order the calls happen; the results are the same.  As the
+HoTT book explains, this proof could be done with just one call to
 "path_rect", but the result from a single induction would not behave
 symmetrically.
 
@@ -1196,7 +1199,7 @@ Notation "p # x" := (transport _ p x) (right associativity, at level 65, only pa
 (**
 Next comes the non-dependent and dependent versions of "ap".
 ("application of a function to a path" or "action across paths").  The
-HoTT library calls the dependent version "apD" rather than "apd".
+HoTT Coq library calls the dependent version "apD" rather than "apd".
 *)
 
 Definition ap {A B:Type} (f:A -> B) {x y:A} (p:x = y) : f x = f y
@@ -1213,16 +1216,16 @@ Arguments apD {A B} f {x y} p : simpl nomatch.
 
 (**
 In the HoTT book, the use of "ap" and "apd" is often implicit.  The
-reader can tell determine when "f(p)" means "ap(f,p)" because "p" is
-a path and, well, "f" called on a path just doesn't "fit" in the
-proof.  In Coq, we have to be explicit about the use of "ap" and "apD".  
+reader can determine when "f(p)" means "ap(f,p)" because "p" is a path
+and "f" called on a path just doesn't "fit" in the proof.  In Coq, we
+have to be explicit about the use of "ap" and "apD".
 *)
 
 (** ** Homotopy *)
 (**
 So far, we've been covering types and functions in the same sequence
-as the HoTT book.  At this point in the book, it defines the concept
-of homotopy.  But, if you've read further in the book, you know that
+as the HoTT book.  At this point in the book there is the definition
+of "homotopy".  But, if you've read further in the book, you know that
 homotopy and identity are equivalent.  Thus, the HoTT Coq library has
 no need to define "homotopy" and neither do we.
 
@@ -1280,7 +1283,7 @@ elements of that type declared with the "Instance" command.  As a
 result, the second argument to "BuildEquiv" can often be left
 implicit.
 
-The HoTT Coq library declares one default instance, which is the
+The HoTT Coq library declares one default [Instance], which is the
 second part of the "Equiv" record.  
 *)
 
@@ -1366,8 +1369,8 @@ every equivalence has an inverse.  However, that proof is rather long
 and complicated.  (That has to do with the choice of half-adjoint
 equivalences; the proof for bi-invertible maps is just 8 lines.)
 Since this document is about reading what has been proven, and not the
-proofs themselves, we're going to cheat.  We'll skip the proof and use
-the "admit" command so that you can read what has been proven.
+proofs themselves, we will cheat.  We'll skip the proof and use the
+"admit" command so that you can read what has been proven.
 *)
 
 Definition equiv_inverse : forall {A B : Type} (e : A <~> B), (B <~> A).
@@ -1383,10 +1386,10 @@ Definition equiv_compose' : forall {A B C : Type} (g : B <~> C) (f : A <~> B)
   admit.
 Defined.
 (**
-It is called "equiv_compose"-prime, because there is a second version
-that directly takes functions from "A" to "B" and from "B" to "C" and
-uses the implicit argument provided by [Class] and [Instance] to build
-the equivalence.
+It is called "equiv_compose"-prime, because there is a second function
+that instead takes functions from "A" to "B" and from "B" to "C" and
+uses the implicit arguments provided by [Instance] to build the
+equivalence.
 *)
 (** ** Univalence *)
 (**
@@ -1478,10 +1481,10 @@ Then, since we're using the half-adjoint equivalence, we need one of
 the coherences.
 
 Although this document is not trying to teach you how to prove, it is
-worth pointing out that this theorem is proved differently than the
-other ones.  It uses Coq's "tactic language".  The tactic language a
-large vocabulary of commands and multiple forms of automation to help
-prove theorems.  
+worth pointing out that the following theorem is proved differently
+than the other ones.  It uses Coq's "tactic language".  The tactic
+language a large vocabulary of commands and multiple forms of
+automation to help prove theorems.
 *)
 
 Theorem adj_nat2 (x : nat) :  sect_nat2 (nat_to_nat2 x) = ap nat_to_nat2 (retr_nat2 x).
@@ -1526,13 +1529,70 @@ Definition nat2_is_nat : nat = nat2 :=
 
 (**
 With that type equality, we can take any theorem we've proved on [nat]
-and convert it into a theorem on [nat2]. 
+and convert it into a theorem on [nat2].  In our final example, we'll
+convert the identity function on [nat]s into one on [nat2].
 *)
 
+Definition idmap_nat2 : nat2 -> nat2 :=
+  match nat2_is_nat in (_ = y) return (y -> y) with
+    | 1 => idmap_nat
+  end.
+
 (** * Going Further *)
-(** ** How to install Coq *)
-(** ** Tutorials *)
-(** ** The Coq Reference Manual *)
+(** ** Homotopy Type Theory in Coq *)
+(**
+The reference for HoTT in Coq is:
+-   http://homotopytypetheory.org/coq/
+
+It contains links to the HoTT Coq library and proofs that use it.
+Thanks to this document, you should now be able to read what has been
+proven.
+
+Also, the site contains links to the version of Coq that supports
+higher inductive types and is necessary to use the HoTT Coq library
+and to write new proofs using it.
+*)
+(** ** General Coq references *)
+(**
+The website for Coq is:
+-   http://coq.inria.fr/
+*)
+(** *** Installation *)
+(**
+The Coq website has links to compiled versions of standard Coq for
+Windows and OSX.  If you're running Linux, many distributions have Coq
+available.  Under Ubuntu and Debian, the command to install Coq and
+CoqIDE is "sudo apt-get install coq coqide".
+
+CoqIDE is a graphical user interface for Coq.  We strongly recommend
+using either CoqIDE or "Proof General", which lets you use Coq inside
+of the Emacs editor.  (Available at http://proofgeneral.inf.ed.ac.uk/)
+
+"ProofWeb" is a website that lets you interface to Coq by using a web
+browser.  You will not need to install anything.  It is available at
+http://prover.cs.ru.nl/
+n*)
+(** *** Documentation *)
+(**
+A good introduction to Coq is "Software Foundations".  It is, however,
+aimed at students studying programming languages.  It does not get
+quickly to "how to prove".
+
+-   http://www.cis.upenn.edu/~bcpierce/sf/
+
+The following is a good cheatsheet.  Most importantly, it has a list
+of "Basic Tactics" that guides new users on what command to use when
+working with the powerful tactics language.  Additionally, it has many
+of the book-to-Coq translations that are in this document.
+
+-   http://andrej.com/coq/cheatsheet.pdf
+
+The Coq Reference Manual, with its explanations of every feature in
+standard Coq, is available at:
+
+-   http://coq.inria.fr/documentation
+*)
+
 
 (* TODO:
 - "Require Import/Export"

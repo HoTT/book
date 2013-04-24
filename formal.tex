@@ -32,7 +32,7 @@ precise description of HoTT in order to, for example,
 %
 \begin{itemize}
 \item state and prove its metatheoretic properties, including logical
-consistency (that $\emptyt$ has no elements);
+consistency;
 \item construct models in simplicial sets, model categories, higher toposes,
 etc.; or
 \item implement it in proof assistants like Coq or Agda.
@@ -47,7 +47,7 @@ inductive type yields a type which behaves like the ordinary circle.
 There are two aspects of type theory which we must pin down before addressing
 such questions. To show that there is no term $a$ for which we can derive
 $a:\emptyt$, we must first define precisely our \emph{domain of discourse}---the
-terms of type theory.  Then we must define precisely our \emph{rules of
+terms of type theory. Then we must define precisely our \emph{rules of
 inference}---what it means to derive the judgment $a:A$.%
 \footnote{In propositional logic, the domain of discourse consists of logical
 sentences built from atomic formulas and logical operators, while the rules of
@@ -64,9 +64,9 @@ type-theoretic literature.
 \section{Preliminaries}
 \label{sec:formal-prelim}
 
-In \autoref{cha:typetheory}, we presented the two basic \emph{judgments} of type
-theory. The first, $a:A$, asserts that a term $a$ has type $A$.  The second,
-$a\jdeq b:A$, states that the two terms $a$ and $b$ are \emph{judgmentally
+In \autoref{cha:typetheory}, we presented the two basic \define{judgments} of type
+theory. The first, $a:A$, asserts that a term $a$ has type $A$. The second,
+$a\jdeq b:A$, states that the two terms $a$ and $b$ are \define{judgmentally
 equal} at type $A$. These judgments are inductively defined by a set of
 inference rules described in \autoref{sec:syntax-more-formally}.
 
@@ -75,7 +75,7 @@ give informal arguments which describe the construction of $a$, but formally,
 one must specify a precise term $a$ and a full derivation that $a:A$.
 
 However, the main difference between the presentation of type theory in the book
-and in this appendix is that, in this appendix, judgments are explicitly
+and in this appendix is that here judgments are explicitly
 formulated in an ambient \define{context}, or list of assumptions, of the form
 \[
   x_1:A_1, x_2:A_2,\dots,x_n:A_n.
@@ -135,9 +135,9 @@ purpose is to express the fact that $x$ is ``local'' to $B$, i.e., it
 is not to be confused with other occurrences of $x$ appearing
 elsewhere. Bound variables are familiar to programmers, but less so to mathematicians.
 Various notations are used for binding, such as $x \mapsto B$,
-$\lam x B$, and $x \,.\, B$, depending on the situation.  We may write $C[a]$ for the
+$\lam x B$, and $x \,.\, B$, depending on the situation. We may write $C[a]$ for the
 substitution of a term $a$ for the variable in the abstracted expression, i.e.,
-we may define $(x.B)[a]$ to be $B[a/x]$.  As discussed in
+we may define $(x.B)[a]$ to be $B[a/x]$. As discussed in
 \autoref{sec:function-types}, changing the name of a bound variable everywhere
 within an expression does not change the expression. Thus, to be very
 precise, an expression is an equivalence class of syntactic forms
@@ -155,8 +155,8 @@ to be bound in its \define{scope}, consisting of the expressions $A_{i+1},
 
 The objects and types of our type theory may be written as terms using
 the following syntax, which is an extension of $\lambda$-calculus with
-\emph{variables} $x, x',\dots$, \emph{primitive} constants
-$c,c',\dots$, \emph{defined} constants $f,f',\dots$, and term forming
+\emph{variables} $x, x',\dots$, \emph{primitive constants}
+$c,c',\dots$, \emph{defined constants} $f,f',\dots$, and term forming
 operations
 %
 \[
@@ -166,61 +166,58 @@ operations
 The notation used here means that a term $t$ is either a variable $x$, or it
 has the form $\lam{x} t$ where $x$ is a variable and $t$ is a term, or it has
 the form $t(t')$ where $t$ and $t'$ are terms, or it is a primitive constant
-$c$, or it is a defined constant $f$.  The syntactic markers '$\lambda$', '(',
+$c$, or it is a defined constant $f$. The syntactic markers '$\lambda$', '(',
 ')', and '.' are punctuation for guiding the human eye.
 
 We use $t(t_1,\dots,t_n)$ as an abbreviation for the repeated application
-$t(t_1)(t_2)\dots (t_n)$.  We may also use \emph{infix} notation, writing $t_1\;
+$t(t_1)(t_2)\dots (t_n)$. We may also use \emph{infix} notation, writing $t_1\;
 \star\; t_2$ for $\star(t_1,t_2)$ when $\star$ is a primitive or defined
 constant.
 
-Each defined constant will have zero, one or more \emph{defining equations}.
-There will be two kinds of defined constant.  An \emph{explicit} defined
-constant $f$ will have a single defining equation
+Each defined constant has zero, one or more \define{defining equations}.
+There are two kinds of defined constant. An \emph{explicit} defined
+constant $f$ has a single defining equation
   \[ f(x_1,\dots,x_n)\defeq t,\]
-where $t$ does not involve $f$.  
-
-As an example, we introduce the explicit defined constant $\circ$, for
-composition of functions, with defining equation
+where $t$ does not involve $f$. 
+%
+For example, we might introduce the explicit defined constant $\circ$ with defining equation
   \[ \circ (x,y)(z) \defeq x(y(z)),\]
-and we use infix notation $x\circ y$ for $\circ(x,y)$.
+and use infix notation $x\circ y$ for $\circ(x,y)$. This of course is just composition of functions.
 
-The second kind of defined constant will be used in connection with a form of type having some primitive constants that are used to introduce elements into types of that form.  With each such primitive constant $c$ there will be a defining  equation of the form
+The second kind of defined constant is used in connection with a form of type having some primitive constants that are used to introduce elements into types of that form. With each such primitive constant $c$ there is a defining equation of the form
 \[
   f(x_1,\dots,x_n,c(y_1,\dots,y_m)) \defeq t,
 \]
 where $f$ may occur in $t$, but now only in such a way that, in the context
-where $f$ is introduced it will be a totally defined typed function.  The
+where $f$ is introduced it will be a totally defined typed function. The
 paradigm examples of such defined functions are the functions defined by
-primitive recursion on the natural numbers.  We may call this kind of
-definition of a function a \emph{total recursive definition}.  In computer
+primitive recursion on the natural numbers. We may call this kind of
+definition of a function a \emph{total recursive definition}. In computer
 science and logic this kind of definition of a function on a recursive data
-type has been called a \emph{definition by structural recursion}.
+type has been called a \define{definition by structural recursion}.
 
-We introduce the notion of \emph{convertibility} $t \conv t'$ between terms $t$
-and $t'$ as the congruence 
-%equivalence 
-relation generated by all instances of the $\beta$-conversion
-defining equation for $\lambda$-abstraction %elementary reduction
+\define{Convertibility} $t \conv t'$ between terms $t$
+and $t'$ is the equivalence relation generated by the defining equations for constants,
+the \define{$\beta$-conversion}
 %
 \[
-  (\lam{x} t)(u) \defeq t[u/x].
+  (\lam{x} t)(u) \defeq t[u/x],
 \]
 %
-and by all instances of the defining equations for the defined constants, 
-such as the one for $x \circ y$
-presented above, and by those to be introduced below.  Here, by a congruence 
-relation on the terms of our syntax we mean an equivalence relation $\sim$ 
-such that $t(s)\sim t'(s')$ whenever $t\sim t'$ and $s\sim s'$ and 
-$\lam{x} t\sim \lam{x} t'$ whenever $t\sim t'$.
-
-The equality judgments $t \jdeq u : A$ are derived by the following single rule.
+and the rules which make it a \emph{congruence} with respect to application and $\lambda$-abstraction:
 %
 \begin{itemize}
-\item if $t:A$, $u:A$, and $t \conv u$, then $t \jdeq u : A$
+\item if $t \sim t'$ and $s \sim s'$ then $t(s) \sim t'(s')$, and
+\item if $t \sim t'$ then $(\lam{x} t) \sim (\lam{x} t')$.
+\end{itemize}
+\noindent
+The equality judgment $t \jdeq u : A$ is then derived by the following single rule:
+%
+\begin{itemize}
+\item if $t:A$, $u:A$, and $t \conv u$, then $t \jdeq u : A$.
 \end{itemize}
 %
-Equality is an equivalence relation.
+Judgmental equality is an equivalence relation.
 
 %% \begin{itemize}
 %% \item if $t:A$, then $t \jdeq t : A$
@@ -230,32 +227,42 @@ Equality is an equivalence relation.
 
 \subsection{Type universes}
 
-We introduce a hierarchy of \emph{universes} denoted by primitive constants
-$\UU_n$, for each $n=0,1,\ldots$.  They satisfy the following rules.  The first
-two say that the universes form a cumulative hierarchy of types, and the third expresses
-the idea that an object of a universe can serve as a type and stand to the
-right of a colon in judgments:
+We postulate a hierarchy of \define{universes} denoted by primitive constants
+%
+\begin{equation*}
+  \UU_0, \quad \UU_1, \quad  \UU_2, \quad \ldots
+\end{equation*}
+%
+The first two rules for universes say that they form a cumulative hierarchy of types:
 %
 \begin{itemize}
 \item $\UU_m : \UU_n$ for $m < n$,
 \item if $A:\UU_m$ and $m \le n$, then $A:\UU_n$,
-\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable, then $\vdash (\Gamma, x:A)\; \ctx$.
+\end{itemize}
+%
+and the third expresses the idea that an object of a universe can serve as a type and stand to the
+right of a colon in judgments:
+%
+\begin{itemize}
+\item if $\Gamma \vdash A : \UU_n$, and $x$ is a new variable,%
+\footnote{By ``new'' we mean that it does not appear in $\Gamma$ or $A$.}
+then $\vdash (\Gamma, x:A)\; \ctx$.
 \end{itemize}
 %
 In the body of the book, an equality judgment $A \jdeq B : \UU_n$ between types
-$A$ and $B$ is usually abbreviated to $A \jdeq B$.  This is an instance of
-typical ambiguity, and the choice of $n$ doesn't affect the validity of the judgment.
+$A$ and $B$ is usually abbreviated to $A \jdeq B$. This is an instance of
+typical ambiguity, as we can always switch to a larger universe, which however does not affect the validity of the judgment.
 
 The following conversion rule allows us to replace a type by one equal to it in a typing judgment:
 %
 \begin{itemize}
-\item if $a:A$ and $A \jdeq B$ then $a:B$
+\item if $a:A$ and $A \jdeq B$ then $a:B$.
 \end{itemize}
 
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 
-We introduce a primitive constant $c_\Pi$.  An expression of the form
-$c_\Pi(A,\lam{x} B)$ will be written as $\tprd{x:A}B$.  Judgments concerning
+We introduce a primitive constant $c_\Pi$. An expression of the form
+$c_\Pi(A,\lam{x} B)$ is written as $\tprd{x:A}B$. Judgments concerning
 such expressions and expressions of the form $\lam{x} b$ are introduced by the following rules:
 %
 \begin{itemize}
@@ -270,7 +277,7 @@ $A\rightarrow B$ and derive the following rule:
 \begin{itemize}
 \item if $\Gamma\vdash g:A \rightarrow B$ and $\Gamma\vdash t:A$ then $\Gamma\vdash g(t):B$
 \end{itemize}
-Using non-dependent function types and leaving implicit the context $\Gamma$, the rules above can be written in the following alternative style that we will continue to use in the rest of this section of the appendix.
+Using non-dependent function types and leaving implicit the context $\Gamma$, the rules above can be written in the following alternative style that we use in the rest of this section of the appendix.
 %
 \begin{itemize}
 \item if $A:\UU_n$ and $B:A\to\UU_n$, then $\tprd{x:A}B(x) : \UU_n$
@@ -281,10 +288,10 @@ Using non-dependent function types and leaving implicit the context $\Gamma$, th
 
 \subsection{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 
-We introduce primitive constants $c_\Sigma$ and $c_{\mathsf{pair}}$.  An
-expression of the form $c_\Sigma(A,\lam{a} B)$ will be written as $\sm{a:A}B$,
-and an expression of the form $c_{\mathsf{pair}}(a,b)$ will be written as $\tup
-a b$.  We write $A\times B$ instead of $\sm{x:A} B$ if $x$ is not free in $B$.
+We introduce primitive constants $c_\Sigma$ and $c_{\mathsf{pair}}$. An
+expression of the form $c_\Sigma(A,\lam{a} B)$ is written as $\sm{a:A}B$,
+and an expression of the form $c_{\mathsf{pair}}(a,b)$ is written as $\tup
+a b$. We write $A\times B$ instead of $\sm{x:A} B$ if $x$ is not free in $B$.
 
 Judgments concerning such expressions are introduced by the following
 rules:
@@ -314,7 +321,7 @@ d(x_1,\dots,x_n,\tup{x(x_1,\dots,x_n)}{y(x_1,\dots,x_n)}) \]
 \subsection{Coproduct types}
 
 We introduce primitive constants $c_+$, $c_\inlsym$, and $c_\inrsym$.
-We will write $A+B$ instead of $c_+(A,B)$, $\inl(a)$ instead of
+We write $A+B$ instead of $c_+(A,B)$, $\inl(a)$ instead of
 $c_\inlsym(a)$, and $\inr(a)$ instead of $c_\inrsym(a)$:
 %
 \begin{itemize}
@@ -355,7 +362,7 @@ $\N$, $0$, and $\suc$ with the following rules:
   \item $\suc:\N\rightarrow \N$.
 \end{itemize}
 %
-Furthermore, we can define functions by primitive recursion.  If we have
+Furthermore, we can define functions by primitive recursion. If we have
 $C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\tprd{x:\N}C(x)$ whenever we have
 %
 \begin{align*}
@@ -373,8 +380,8 @@ with the defining equations
 \subsection{\texorpdfstring{$W$}{W}-types}
 
 For $W$-types we introduce primitive constants $c_\wtypesym$ and $c_\suppsym$.
-An expression of the form $c_\wtypesym(A,\lam{x} B)$ will be written as
-$\wtype{x:A}B$, and an expression of the form $c_\suppsym(x,u)$ will be written
+An expression of the form $c_\wtypesym(A,\lam{x} B)$ is written as
+$\wtype{x:A}B$, and an expression of the form $c_\suppsym(x,u)$ is written
 as $\supp(x,u)$:
 %
 \begin{itemize}
@@ -382,7 +389,7 @@ as $\supp(x,u)$:
 \item if moreover, $a:A$ and $g:B(a)\rightarrow \wtype{x:A}B(x)$ then $\supp(a,g):\wtype{x:A}B(x)$.
 \end{itemize}
 % 
-Here also we can define functions by total recursion.  If we have $A$ and $B$
+Here also we can define functions by total recursion. If we have $A$ and $B$
 as above and $C : \wtype{x:A}B(x) \rightarrow \UU_m$, then we can introduce a defined constant
 $f:\tprd{z:\wtype{x:A}B(x)} C(z)$ whenever we have
 \[
@@ -395,7 +402,7 @@ with the defining equation
 
 \subsection{Identity types}
 
-We introduce primitive constants $c_\idsym$ and $c_\reflsym$.  We will write
+We introduce primitive constants $c_\idsym$ and $c_\reflsym$. We write
 $\id[A] a b$ for $c_\idsym(A,a,b)$ and $\refl a$ for $c_\reflsym(A,a)$, when
 $a:A$ is understood:
 %
@@ -417,7 +424,7 @@ with defining equation
 \section{The second presentation}
 \label{sec:syntax-more-formally}
 
-In this section, we define the judgments 
+In this section, there are three kinds of judgments 
 \begin{mathpar}
 \wfctx\Gamma
 \and
@@ -425,17 +432,21 @@ In this section, we define the judgments
 \and
 \jdeqtp\Gamma{a}{a'}{A}
 \end{mathpar}
-inductively using inference rules. In the ``natural deduction'' notation of this
-section, to conclude the judgment below the horizontal line, it is necessary to
-prove the judgments above the line. For clarity, each rule has a name displayed
-to the right of the horizontal line. 
+which we specify by providing inference rules for deriving them. A typical \define{inference rule} has the form
+%
+\begin{equation*}
+  \inferrule*[right=\textsc{Name}]
+  {\mathcal{J}_1 \\ \cdots \\ \mathcal{J}_k}
+  {\mathcal{J}}
+\end{equation*}
+%
+It says that we may derive the \define{conclusion} $\mathcal{J}$, provided that we have
+already derived the \define{hypotheses} $\mathcal{J}_1, \ldots, \mathcal{J}_k$. On the
+right we write the \textsc{Name} of the rule, and there may be extra side conditions that
+need to be checked before the rule is applicable.
 
-A \emph{derivation} of a judgment is a tree constructed from these inference
-rules, whose final conclusion is the judgment in question. If the derivation has
-no unresolved hypotheses, we say it is \emph{closed}, and thus proves the
-judgment under no hypotheses. In other words, a derivation is closed if all its
-leaves $\ctx\text{-}\textsc{emp}$, as this is the only rule with no hypotheses.
-For example, the following is a closed derivation of
+A \define{derivation} of a judgment is a tree constructed from such inference
+rules, with the judgment at the root of the tree. For example, with the rules given below, the following is a derivation of
 $\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}$.
 %
 \begin{mathpar}
@@ -454,37 +465,45 @@ $\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}$.
 
 \subsection{Contexts}
 
-A context is a list of assumptions of the form $x_i:A_i$. The empty list is a
-valid context; given a valid context $\Gamma$, and a valid type $A$ in that context,
-$\Gamma$ can be extended with an assumption of type $A$.
+A context is a list
+%
+\begin{equation*}
+  \tmtp{x_1}{A_1}, \tmtp{x_2}{A_2}, \ldots, \tmtp{x_n}{A_n}
+\end{equation*}
+%
+which indicates that the distinct variables $x_1, \ldots, x_n$ are assumed to have types $A_1, \ldots, A_n$, respectively. The list may be empty. We abbreviate contexts with the letters $\Gamma$ and $\Delta$, and we may juxtapose them to form larger contexts.
 
+The judgment $\wfctx{\Gamma}$ formally expresses the fact that $\Gamma$ is well-formed context, and is governed by the rules of inference
+%
 \begin{mathpar}
   \inferrule*[right=\ctx-\textsc{emp}]
   {\ }
   {\wfctx\emptyctx}
 \and
   \inferrule*[right=\ctx-\textsc{ext}]
-  {\oftp\Gamma{A}{\UU_i}}
-  {\wfctx{(\Gamma,\tmtp xA)}}
+  {\oftp{\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n-1}}{A_{n-1}}}{A_n}{\UU_i}}
+  {\wfctx{(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})}}
 \end{mathpar}
+%
+with a side condition for the second rule: $x_n$ must be distinct from $x_1, \ldots, x_{n-1}$.
 
 \subsection{Structural rules}
 
-Each assumption in the context can be concluded.
-
+The fact that the context holds assumptions is expressed by the rule which says that we may derive those typing judgments which are listed in the context:
+%
 \begin{mathpar}
   \inferrule*[right=$\Vble$]
-  {\wfctx {\Gamma,\tmtp xA,\Delta} }
-  {\oftp{\Gamma,\tmtp xA,\Delta}{x}{A}}
+  {\wfctx {(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})} }
+  {\oftp{(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})}{x_i}{A_i}}
 \end{mathpar}
-
+%
 The following important principles, called \define{substitution} and
 \define{weakening}, need not be explicitly assumed. Rather, it is possible to
 show, by induction on the structure of all possible derivations, that whenever
 the hypotheses of these rules are provable, their conclusion is also
 provable.\footnote{Such rules are called \define{admissible}.} ($\mathcal{J}$ is
 any judgment $a:A$ or $a\equiv b:A$.)
-
+%
 \begin{mathpar}
   \inferrule*[right=$\Subst$]
   {\oftp\Gamma{a}{A} \\ \judg{\Gamma,\tmtp xA,\Delta}{\mathcal{J}}}
@@ -521,10 +540,14 @@ However, we omit these rules for brevity.
 
 \subsection{Type universes}
 
-We have an infinite hierarchy of type universes $\UU_i$ for each natural number
-$i$; each universe is contained in the next, and any type in $\UU_i$ is also in
-$\UU_{i+1}$.
-
+We postulate an infinite hierarchy of type universes
+%
+\begin{equation*}
+  \UU_0, \quad \UU_1, \quad  \UU_2, \quad \ldots
+\end{equation*}
+%
+Each universe is contained in the next, and any type in $\UU_i$ is also in $\UU_{i+1}$:
+%
 \begin{mathpar}
 \inferrule*[right=\UU-\textsc{intro}]
   {\wfctx \Gamma }
@@ -534,34 +557,36 @@ $\UU_{i+1}$.
   {\oftp\Gamma{A}{\UU_i}}
   {\oftp\Gamma{A}{\UU_{i+1}}}
 \end{mathpar}
-
-The rules of type theory maintain the invariants that if $\oftp\Gamma{a}{A}$,
-then $\oftp\Gamma{A}{\UU_i}$ for some $i$, and if $\jdeqtp\Gamma{a}{b}{A}$,
-then $\oftp\Gamma{a}{A}$ and $\oftp\Gamma{b}{A}$.
+%
+We shall set up the rules of type theory in such a way that $\oftp\Gamma{a}{A}$
+implies $\oftp\Gamma{A}{\UU_i}$ for some $i$. In other words, if $A$ plays the role of a type then it is in some universe. Another property of our type system is that $\jdeqtp\Gamma{a}{b}{A}$
+implies $\oftp\Gamma{a}{A}$ and $\oftp\Gamma{b}{A}$.
 
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:more-formal-pi}
 
 In \autoref{sec:function-types}, we introduced non-dependent functions $A\to B$ in
 order to define a family of types as a function $\lam{x:A} B:A\to\UU_i$, which
-gives rise to a dependent function $\tprd{x:A} B$. Contexts allow us to speak
-directly about the types of terms with free variables, so we can instead express
-a family of types simply as a type $B$ with a free variable $x:A$, i.e.,
-$\oftp{\tmtp xA}{B}{\UU_i}$. As a consequence, we don't need non-dependent
-functions to define dependent functions. In fact, the rules for each type former
-will not refer to any other type former.
-
-Each type former from here on has a uniform set of rules:
+then gives rise to a type of dependent functions $\tprd{x:A} B$. But with explicit contexts
+we may replace $\lam{x:A} B:A\to\UU_i$ with the judgment
+%
+\begin{equation*}
+  \oftp{\tmtp xA}{B}{\UU_i}.
+\end{equation*}
+%
+Consequently, we may define dependent functions directly, without reference to non-dependent ones. This way we follow the general principle that each type former, with its constants and rules, should be introduced independently of all other type formers.
+%
+In fact, henceforth each type former is introduced systematically by:
 \begin{itemize}
-\item a \emph{formation} rule, stating when the type former can be applied;
-\item some \emph{introduction} rules, stating how to inhabit the type;
-\item an \emph{elimination} rule, or induction principle, stating how to use an
+\item a \define{formation rule}, stating when the type former can be applied;
+\item some \define{introduction rules}, stating how to inhabit the type;
+\item \define{elimination rules}, or an induction principle, stating how to use an
 element of the type;
-\item some \emph{computation} rules, corresponding to the introduction rules,
-giving a judgmental equality for when the elimination rule is applied to an
-introductory form.
+\item \define{computation rules}, which are judgmental equalities explaining what happens when elimination and introduction rules are combined.
 \end{itemize}
-
+%
+For the dependent function type these are:
+%
 \begin{mathparpagebreakable}
   \def\premise{\oftp{\Gamma}{A}{\UU_i} \and \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
   \inferrule*[right=$\Pi$-\form]
@@ -584,10 +609,8 @@ introductory form.
 The expression $\lam{x:A} b$ binds free occurrences of $x$ in $b$, as does $\tprd{x:A} B$ for
 $B$.
 
-When $B$ does not contain free occurrences of $x$, we obtain as a special case
-the ordinary function type $A\to B \defeq \tprd{x:A} B$. Because we did not use
-$\to$ to define $\prdsym$, we can simply take this as the \emph{definition} of
-$\to$.
+When $x$ does not occur freely in $B$ so that $B$ does not depend on $A$, we obtain as a
+special case the ordinary function type $A\to B \defeq \tprd{x:A} B$. We take this as the \emph{definition} of $\to$.
 
 We may abbreviate an expression $\lam{x:A} b$ as $\lamu{x:A} b$, with the understanding
 that the omitted type $A$ should be filled in appropriately before typechecking.
@@ -596,10 +619,8 @@ that the omitted type $A$ should be filled in appropriately before typechecking.
 \label{sec:more-formal-sigma}
 
 In \autoref{sec:sigma-types}, we needed $\to$ and $\prdsym$ types in order to
-define the introduction and elimination rules for $\smsym$; as in the previous
-section, we can instead use the context to express dependency without involving
-other type formers.
-
+define the introduction and elimination rules for $\smsym$; as with $\prdsym$, contexts allow us to state the rules for $\smsym$ independently:
+%
 \begin{mathparpagebreakable}
   \def\premise{\oftp{\Gamma}{A}{\UU_i} \and \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
   \inferrule*[right=$\Sigma$-\form]
@@ -607,13 +628,13 @@ other type formers.
     {\oftp\Gamma{\tsm{x:A} B}{\UU_i}}
   \and
   \inferrule*[right=$\Sigma$-\intro]
-    {\oftp{\Gamma, \tmtp x A}{B}{\UU_i} \\\\
+    {\oftp{\Gamma, \tmtp x A}{B}{\UU_i} \\
      \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{B[a/x]}}
     {\oftp\Gamma{\tup ab}{\tsm{x:A} B}}
   \and
   \inferrule*[right=$\Sigma$-\elim]
     {\oftp{\Gamma, \tmtp z {\tsm{x:A} B}}{C}{\UU_i} \\
-     \oftp{\Gamma,\tmtp x A,\tmtp y B}{g}{C[\tup x y/z]} \\\\
+     \oftp{\Gamma,\tmtp x A,\tmtp y B}{g}{C[\tup x y/z]} \\
      \oftp\Gamma{p}{\tsm{x:A} B}}
     {\oftp\Gamma{\ind{\tsm{x:A} B}(z.C,x.y.g,p)}{C[p/z]}}
   \and
@@ -634,8 +655,8 @@ different from, $\ind{\tsm{x:A} B}$ being a function that takes functions as
 arguments.
 
 When $B$ does not contain free occurrences of $x$, we obtain as a special case
-the cartesian product $A \times B \defeq \tsm{x:A} B$. (Again, we can take this
-as the \emph{definition} of the cartesian product.)
+the cartesian product $A \times B \defeq \tsm{x:A} B$. We take this
+as the \emph{definition} of the cartesian product.
 
 \subsection{Coproduct types}
 
@@ -673,7 +694,7 @@ as the \emph{definition} of the cartesian product.)
    \oftp\Gamma{b}{B}}
   {\jdeqtp\Gamma{\ind{A+B}(z.C,x.c,y.d,\inr(b))}{d[b/y]}{C[\inr(b)/z]}}
 \end{mathparpagebreakable}
-
+%
 In $\ind{A+B}$, $z$ is bound in $C$, $x$ is bound in $c$, and $y$ is bound in
 $d$.
 
@@ -688,8 +709,8 @@ $d$.
   {\oftp{\Gamma,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\Gamma{a}{\emptyt}}
   {\oftp\Gamma{\ind{\emptyt}(x.C,a)}{C[a/x]}}
 \end{mathparpagebreakable}
-
-In $\ind{\emptyt}$, $x$ is bound in $C$.  The empty type comes with no introduction rule and no computation rule.
+%
+In $\ind{\emptyt}$, $x$ is bound in $C$. The empty type has no introduction and computation rules.
 
 \subsection{The unit type \texorpdfstring{$\unit$}{1}}
 
@@ -713,7 +734,7 @@ In $\ind{\emptyt}$, $x$ is bound in $C$.  The empty type comes with no introduct
    \oftp{\Gamma,\tmtp y\unit}{c}{C[y/x]}}
   {\jdeqtp\Gamma{\ind{\unit}(x.C,y.c,\ttt)}{c[\ttt/y]}{C[\ttt/x]}}
 \end{mathparpagebreakable}
-
+%
 In $\ind{\unit}$, $x$ is bound in $C$, and $y$ is bound in $c$.
 
 \subsection{The natural number type}
@@ -751,7 +772,7 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
    \hspace{2.3cm}\\ \hspace{2.3cm}\equiv
    c_s[n,\ind{\N}(x.C,c_0,x.y.c_s,n)/x,y] : C[\suc(n)/x]}
 \end{mathparpagebreakable}
-
+%
 In $\ind{\N}$, $x$ is bound in $C$, and $x$ and $y$ are bound in $c_s$.
 
 Other inductively defined types follow the same general scheme.
@@ -782,7 +803,7 @@ This presentation corresponds to the Martin-L\"{o}f rule in
    \oftp\Gamma{a}{A}}
   {\jdeqtp\Gamma{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a,a,\refl a/x,y,p]}}
 \end{mathparpagebreakable}
-
+%
 In $\ind{\idsym_A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
 $c$.
 
@@ -803,38 +824,34 @@ equalities, and so need not be asserted as part of the type theory.
 
 \subsection{Definitions}
 
-Although this section's formalism allows us to construct functions out of
-inductive types without defining new constants, we would still like to define
-named constants, such as $\isequiv$, as a matter of convenience.  Informally, we
-can think of these constants simply as abbreviations of their definitions, but
-the situation is a bit more subtle than this. 
+Although the rules we listed so far allows us to construct everything we need directly, we
+would still like to be able to use named constants, such as $\isequiv$, as a matter of
+convenience. Informally, we can think of these constants simply as
+abbreviations, but the situation is a bit subtler in the formalization.
 
-For example, consider function composition, which we say takes $f:A\to B$ and
-$g:B\to C$ to $g\circ f:A\to C$. But for $\circ$ to work for any such $f,g$, we
-must abstract not only over the functions $f,g$ but also the types $A,B,C$:
+For example, consider function composition, which we takes $f:A\to B$ and
+$g:B\to C$ to $g\circ f:A\to C$. Somewhat unexpectedly, to make this work formally, $\circ$ must take as arguments not only $f$ and $g$, but also their types $A$, $B$, $C$:
 \[ \circ \defeq \lam{A:\UU_i}{B:\UU_i}{C:\UU_i}{g:B\to C}{f:A\to B}{x:A} g(f(x)) \]
+%
+From a practical perspective, we do not want to annotate each application of
+$\circ$ with $A$, $B$ and $C$, as the are usually quite easily guessed from surrounding information. We would like to simply write $g\circ f$.
+Then, strictly speaking, $g \circ f$ is not an abbreviation for $\lam{x : A} g(f(x))$,
+because it involves additional \define{implicit arguments} which we want to suppress.
 
-But from a practical perspective, we don't want to annotate each application of
-$\circ$ with applications to $A,B,C$; we would simply like to write $g\circ f$.
-Here, then, $\circ$ is not, strictly speaking, an abbreviation of its
-definition: it has additional \define{implicit arguments} which we choose to
-suppress.
-
-Implicit argument inference, typical ambiguity (\autoref{sec:universes}),
+Inference of implicit argument, typical ambiguity (\autoref{sec:universes}),
 ensuring that symbols are only defined once, etc., are collectively called
-\define{elaboration}. Elaboration must take place prior to typechecking, and is
+\define{elaboration}. Elaboration must take place prior to checking a derivation, and is
 thus not usually presented as part of the core type theory. However, it is
 essentially impossible to use any implementation of type theory which does not
-perform robust elaboration.
+perform robust elaboration. We do not dwell on this topic here.
 
 \section{Features of homotopy type theory}
 \label{sec:hott-features}
 
-In this section, we describe the features of homotopy type theory which are not
-present in ordinary Martin-L\"{o}f type theory---function extensionality, the
-univalence axiom, and higher inductive types. We will present these in the style
-of \autoref{sec:syntax-more-formally}, though \autoref{sec:syntax-informally}
-could be extended similarly.
+In this section we describe those aspects of homotopy type theory which differentiate
+it from standard Martin-L\"{o}f type theory: function extensionality, the
+univalence axiom, and higher inductive types. We present them in the style
+of the second presentation \autoref{sec:syntax-more-formally}, although the first presentation \autoref{sec:syntax-informally} could be used just as well.
 
 \subsection{Axioms}
 
@@ -917,7 +934,7 @@ is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$.
   {\oftp\Gamma{\ua(A,B)}{\isequiv(\idtoeqv_{A,B})}}
 \end{mathparpagebreakable}
 
-\subsection{The circle type}
+\subsection{The circle}
 
 Here we give an example of a higher inductive type; other HITs follow the same
 general scheme.
@@ -962,9 +979,12 @@ differences are discussed in \autoref{sec:dependent-paths}.
     {\id {\apd{(\lamu{y:\Sn^1} \ind{\Sn^1}(x.C,b,\ell,y))}{\lloop}} {\ell}}}
 \end{mathparpagebreakable}
 
-In $\ind{\Sn^1}$, $x$ is bound in $C$.  The notation ${\dpath C \lloop b b}$ for dependent paths was introduced in \autoref{sec:dependent-paths}.
+In $\ind{\Sn^1}$, $x$ is bound in $C$. The notation ${\dpath C \lloop b b}$ for dependent paths was introduced in \autoref{sec:dependent-paths}.
 
 \section{Metatheoretic properties}
+
+This section discusses the meta-theoretic properties of the type theory presented in 
+\autoref{sec:syntax-informally}, and similar results hold for \autoref{sec:syntax-more-formally}. Figuring out which of these still hold when we add the features from \autoref{sec:hott-features} quickly leads to open questions, as discussed at the end of this section.
 
 Recall that \autoref{sec:syntax-informally} defines the terms of type theory as
 an extension of the untyped $\lambda$-calculus. The $\lambda$-calculus is
@@ -983,7 +1003,7 @@ number of steps to both $a'$ and $a''$, there is some $b$ to which both $a'$ and
 $a''$ eventually simplify. Thus we can define $t\conv u$ to mean that $t$ and
 $u$ simplify to the same term.
 
-(The situation is similar in \autoref{sec:syntax-more-formally}: athough there
+(The situation is similar in \autoref{sec:syntax-more-formally}: Athough there
 we presented the computation rules as undirected equalities $\jdeq$, we can give
 an operational semantics by saying that the application of an eliminator to an
 introductory form simplifies to its equal, not the other way around.)
@@ -1042,7 +1062,9 @@ Finally, if $a,A$ are in normal form, it is \emph{decidable} whether $a:A$; in
 other words, because type-checking amounts to verifying the correctness of a
 proof, this means we can always ``recognize a correct proof when we see one.''
 
-Unfortunately, these results \emph{do not} currently apply to homotopy type
+\mentalpause
+
+Unfortunately, these results do \emph{not} currently apply to homotopy type
 theory (i.e., the above system extended by \autoref{sec:hott-features}), since
 occurrences of the univalence axiom and constructors of higher inductive types
 never simplify, breaking \autoref{lem:normal-forms}. It is an open question how
@@ -1074,7 +1096,7 @@ of trees introduced by \cite{Tait-1968}.
 %inspired from unpublished work of Spector.
 
 The generalized form of primitive recursion for natural numbers and ordinals
-appear in \cite{Hilbert-1925}.  This motivated G\"odel's system $T$,
+appear in \cite{Hilbert-1925}. This motivated G\"odel's system $T$,
 \cite{Goedel-T-1958}, which was analyzed by \cite{Tait-1966}, who used,
 following \cite{Goedel-1958}, the terminology ``definitional equality'' for
 conversion: two terms are \emph{judgmentally equal} if they reduce to a

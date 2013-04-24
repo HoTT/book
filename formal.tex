@@ -62,6 +62,7 @@ makes both precise using a natural deduction presentation, as is customary in
 type-theoretic literature.
 
 \section{Preliminaries}
+\label{sec:formal-prelim}
 
 In \autoref{cha:typetheory}, we presented the two basic \emph{judgments} of type
 theory. The first, $a:A$, asserts that a term $a$ has type $A$.  The second,
@@ -369,7 +370,7 @@ with the defining equations
   f(\suc (x)) & \defeq e(x,f(x))
 \end{align*}
 
-\subsection{$W$-types}
+\subsection{\texorpdfstring{$W$}{W}-types}
 
 For $W$-types we introduce primitive constants $c_\wtypesym$ and $c_\suppsym$.
 An expression of the form $c_\wtypesym(A,\lam{x} B)$ will be written as
@@ -627,7 +628,7 @@ The expression $\tsm{x:A} B$ binds free occurrences of $x$ in $B$. Furthermore, 
 $\ind{\tsm{x:A} B}$ has some arguments with free variables beyond those in $\Gamma$,
 we bind (following the variable names above) $y$ in $C$, and $a$ and $b$ in $g$.
 These bindings are written as $y.C$ and $x.y.g$, to indicate the names of the bound
-variables, as discussed in \autoref{formal-intro}. In particular, we treat $\ind{\tsm{x:A} B}$ as a primitive,
+variables, as discussed in \autoref{sec:formal-prelim}. In particular, we treat $\ind{\tsm{x:A} B}$ as a primitive,
 two of whose arguments contain binders; this is superficially similar to, but
 different from, $\ind{\tsm{x:A} B}$ being a function that takes functions as
 arguments.
@@ -676,7 +677,7 @@ as the \emph{definition} of the cartesian product.)
 In $\ind{A+B}$, $z$ is bound in $C$, $x$ is bound in $c$, and $y$ is bound in
 $d$.
 
-\subsection{The empty type $\emptyt$}
+\subsection{The empty type \texorpdfstring{$\emptyt$}{0}}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\emptyt$-\form]
@@ -690,7 +691,7 @@ $d$.
 
 In $\ind{\emptyt}$, $x$ is bound in $C$.  The empty type comes with no introduction rule and no computation rule.
 
-\subsection{The unit type $\unit$}
+\subsection{The unit type \texorpdfstring{$\unit$}{1}}
 
 \begin{mathparpagebreakable}
   \inferrule*[right=$\unit$-\form]
@@ -827,6 +828,7 @@ essentially impossible to use any implementation of type theory which does not
 perform robust elaboration.
 
 \section{Features of homotopy type theory}
+\label{sec:hott-features}
 
 In this section, we describe the features of homotopy type theory which are not
 present in ordinary Martin-L\"{o}f type theory---function extensionality, the
@@ -962,49 +964,56 @@ differences are discussed in \autoref{sec:dependent-paths}.
 
 In $\ind{\Sn^1}$, $x$ is bound in $C$.  The notation ${\dpath C \lloop b b}$ for dependent paths was introduced in \autoref{sec:dependent-paths}.
 
-\section{Algorithmic and semantic properties}
+\section{Metatheoretic properties}
 
-\subsection*{Conversion and reduction}
-
-%Together with t
-The $\beta$-conversion defining equation for lambda abstraction
+Recall that \autoref{sec:syntax-informally} defines the terms of type theory as
+an extension of the untyped $\lambda$-calculus. The $\lambda$-calculus is
+equipped with a notion of computation, namely, $\beta$-conversion:
 \[
   (\lam{x} t)(u) \defeq t[u/x]
 \]
-and the defining equations for the defined constants form the
-%we have $\defeq$ as 
-rewriting rules (unfolding definitions) that determine reduction 
-steps for a rewriting 
-system which has the confluence (or Church-Rosser) property: we can
-define $t \conv u$ to mean that $t$ and $u$ can be reduced to the same term by 
-using these rewriting rules.
+This rule, coupled with the defining equations for the defined constants form
+\emph{rewriting rules} that determine reduction steps for a rewriting 
+system. These steps yield a notion of computation in the sense that each rule
+has a natural direction: one simplifies $(\lam{x} t)(u)$ by evaluating the
+function at its argument.
 
+Moreover, this system is \emph{confluent}, that is, if $a$ simplifies in some
+number of steps to both $a'$ and $a''$, there is some $b$ to which both $a'$ and
+$a''$ eventually simplify. Thus we can define $t\conv u$ to mean that $t$ and
+$u$ simplify to the same term.
 
-\subsection*{Some syntactical properties of the type theory}
- This system has the following syntactical properties.
+(The situation is similar in \autoref{sec:syntax-more-formally}: athough there
+we presented the computation rules as undirected equalities $\jdeq$, we can give
+an operational semantics by saying that the application of an eliminator to an
+introductory form simplifies to its equal, not the other way around.)
 
-\begin{thm}\label{red}
+It is straightforward to show that the system in \autoref{sec:syntax-informally}
+has the following properties:
+
+\begin{thm}\label{thm:conversion-preserves-typing}
 If $A : \UU$ and $A \conv A'$ then $A' : \UU$.
 If $t:A$ and $t \conv t'$ then $t':A$.
 \end{thm}
 
-We say that a term is \define{normalizable}, respectively \define{strongly normalizable}, if 
-some, respectively every, sequence of reduction steps from the term terminates.
+We say that a term is \define{normalizable} (resp., \define{strongly
+normalizable}) if some (resp., every), sequence of rewriting steps from the term
+terminates.
 
-\begin{thm}\label{SN}
- If $A : \UU$ then $A$ is strongly normalizable.
- If $t:A$ then $A$ and $t$ are strongly normalizable.
+\begin{thm}\label{thm:strong-normalization}
+If $A : \UU$ then $A$ is strongly normalizable.
+If $t:A$ then $A$ and $t$ are strongly normalizable.
 \end{thm}
 
-We say that a term is in \define{normal form} if it cannot be reduced, and that a 
-term is a \define{closed term} if no variable occurs freely in it.  A closed
-normal type has to be a primitive type, i.e., to be of the form $c(\vec{v})$
-for some primitive constant $c$ (where the list $\vec{v}$ of closed normal terms may be omitted if empty, for
-instance, as with $\N$).  More generally we have the following explicit
-description of terms in normal form.
+We say that a term is in \define{normal form} if it cannot be further
+simplified, and that a term is \define{closed} if no variable occurs freely in
+it. A closed normal type has to be a primitive type, i.e., of the form
+$c(\vec{v})$ for some primitive constant $c$ (where the list $\vec{v}$ of closed
+normal terms may be omitted if empty, for instance, as with $\N$). In fact, we
+can explicitly describe all normal forms:
 
-\begin{lem}\label{normal}
-  The terms in normal form can be described by the following syntax
+\begin{lem}\label{lem:normal-forms}
+  The terms in normal form can be described by the following syntax:
   % 
   \begin{align*}
     v & \production  k \mid \lam{x} v \mid c(\vec{v}) \mid f(\vec{v}), \\
@@ -1021,15 +1030,34 @@ description of terms in normal form.
   $t:A$ is decidable.
 \end{thm}
 
-A corollary is the \define{consistency} property: there is no proof of $\emptyt$ in the empty
-context. Indeed if we have $t:\emptyt$ then by \autoref{red,SN} the term $t$ will reduce
-to a term in normal form $t'$ that satisfies $t':\emptyt$, but this is not possible by a 
-purely combinatorial argument using \autoref{normal}. Similarly, we have the following
-\emph{canonicity} property: if $t:N$ in the empty context, then $t$ has to reduce to a
-normal form $\suc^k(0)$ for some numeral $k$. Finally, it means that, if we restrict to terms
-in normal form, the typing relation is \emph{decidable}, and identifying type-checking with
-\emph{proof-checking}, we can indeed ``recognize a proof of an assertion when we see one''.
+Logical consistency (of the system in \autoref{sec:syntax-informally}) follows
+immediately if we had $a:\emptyt$ in the empty context, then by
+\autoref{thm:conversion-preserves-typing,thm:strong-normalization}, $a$
+simplifies to a normal term $a':\emptyt$. But we can see by
+\autoref{lem:normal-forms} that no such term exists.
 
+Similarly, we have the \emph{canonicity} property that if $a:\N$ in the empty
+context, then $a$ simplifies to a normal term $\suc^k(0)$ for some numeral $k$.
+Finally, if $a,A$ are in normal form, it is \emph{decidable} whether $a:A$; in
+other words, because type-checking amounts to verifying the correctness of a
+proof, this means we can always ``recognize a correct proof when we see one.''
+
+Unfortunately, these results \emph{do not} currently apply to homotopy type
+theory (i.e., the above system extended by \autoref{sec:hott-features}), since
+occurrences of the univalence axiom and constructors of higher inductive types
+never simplify, breaking \autoref{lem:normal-forms}. It is an open question how
+to simplify applications of these constants in order to restore canonicity.
+
+The consistency of univalence could be shown by an appropriate normalization
+procedure, but currently our only proof to this effect is a model in Kan
+complexes by \cite{klv:ssetmodel}. There are other desirable properties which
+simply cannot be shown by normalization arguments; for example, \cite{ls:hits}
+show that higher inductive types are logically consistent and can be modeled by
+the CW complexes which they resemble. 
+
+Other metatheoretic issues, and a summary of our current results, are discussed
+in greater length in the ``Constructivity'' and ``Open problems'' sections of
+the introduction to this book.
 
 \sectionNotes\label{subsec:general-remarks}
 
@@ -1066,12 +1094,12 @@ non-critical differences:
 %
 \begin{itemize}
 \item universes \`{a} la Russell, in the sense of
-\cite{martin-lof:bibliopolis};
+\cite{martin-lof:bibliopolis}; and
 \item judgmental $\eta$ and function extensionality for $\Pi$ types;
 \end{itemize}
 and a few features essential for homotopy type theory:
 \begin{itemize}
-\item the univalence axiom;
+\item the univalence axiom; and
 \item higher inductive types.
 \end{itemize}
 %

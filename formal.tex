@@ -44,17 +44,15 @@ univalence would imply that $\emptyt$ has an element, since $\unit$ does.
 Nor is it obvious that, for example, our definition of $\Sn^1$ as a higher
 inductive type yields a type which behaves like the ordinary circle.
 
-There are two aspects of type theory which we must pin down before addressing
-such questions. To show that there is no term $a$ for which we can derive
-$a:\emptyt$, we must first define precisely what constitutes our theory, namely the syntax of expressions, the forms of judgments, and the derivation rules.
+There are three aspects of type theory which we must pin down before addressing
+such questions. We must define precisely what constitutes the syntax of expressions, the forms of judgments, and the derivation rules.
 
 In this appendix, we present two precise formulations of Martin-L\"{o}f type
-theory, and of the extensions we have introduced for homotopy type theory. The
-first presentation (\autoref{sec:syntax-informally}) describes our domain of
-discourse as an extension of the untyped $\lambda$-calculus, while leaving the
-rules of inference imprecise. The second (\autoref{sec:syntax-more-formally})
-makes both precise using a natural deduction presentation, as is customary in
-type-theoretic literature.
+theory, and of the extensions that constitute homotopy type theory. The
+first presentation (\autoref{sec:syntax-informally}) describes the syntax of expressions and the forms of judgments as an extension of the untyped $\lambda$-calculus, while leaving the
+rules of inference informal. The second (\autoref{sec:syntax-more-formally})
+makes all three formal using a natural deduction format, as is customary in
+much type-theoretic literature.
 
 \section{Preliminaries}
 \label{sec:formal-prelim}
@@ -827,58 +825,59 @@ $\circ$ with $A$, $B$ and $C$, as the are usually quite easily guessed from surr
 Then, strictly speaking, $g \circ f$ is not an abbreviation for $\lam{x : A} g(f(x))$,
 because it involves additional \define{implicit arguments} which we want to suppress.
 
-Inference of implicit argument, typical ambiguity (\autoref{sec:universes}),
+Inference of implicit arguments, typical ambiguity (\autoref{sec:universes}),
 ensuring that symbols are only defined once, etc., are collectively called
 \define{elaboration}. Elaboration must take place prior to checking a derivation, and is
 thus not usually presented as part of the core type theory. However, it is
 essentially impossible to use any implementation of type theory which does not
-perform robust elaboration. We do not dwell on this topic here.
+perform elaboration. We do not dwell on this topic here.
 
 \section{Homotopy type theory}
 \label{sec:hott-features}
 
 In this section we state the additional axioms of homotopy type theory which distinguish it from standard Martin-L\"{o}f type theory: function extensionality, the
-univalence axiom, and higher inductive types. We present them in the style
+univalence axiom, and higher inductive types. We state them in the style
 of the second presentation \autoref{sec:syntax-more-formally}, although the first presentation \autoref{sec:syntax-informally} could be used just as well.
 
 \subsection{Axioms}
 
 There are two basic ways of introducing axioms such as function extensionality,
 univalence, or any other axiom which does not introduce new syntax or new
-judgmental equalities---we could either add a primitive constant to the theory
+judgmental equalities: we could either add a primitive constant to the theory
 which inhabits the axiom, or we could simply prove all theorems in a context
 hypothesizing the presence of a variable that inhabits the axiom, as proposed in \autoref{sec:axioms}.
 
-While these are essentially equivalent, we choose the former approach because we
-consider these axioms of homotopy type theory to be part of the core theory,
-always present. 
+While these are essentially equivalent, we choose the former approach because these axioms of homotopy type theory are to be part of the core theory, always present. 
 
 We begin by recalling some auxiliary definitions.
+\begin{itemize}
 
-In \autoref{lem:map}, we defined the functorial action of $f:A\to B$ on a path
+\item In \autoref{lem:map}, we defined the functorial action of $f:A\to B$ on a path
 $p:\id[A] xy$ as
 \[
-\apfunc f(p) \defeq \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p )
+\apfunc f(p) \defeq \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p ).
 \]
 
-In \autoref{ex:composition}, we defined the composition of $g:B\to C$ after
+\item In \autoref{ex:composition}, we defined the composition of $g:B\to C$ after
 $f:A\to B$ as
-\[ g \circ f \defeq \lamu{x:A} g(f(x)) \]
+\[ g \circ f \defeq \lamu{x:A} g(f(x)). \]
 
-In \autoref{defn:homotopy}, we said $f,f':A\to B$ are homotopic ($f\htpy f'$) if
-\[ \prd{x:A} \id[B] {f(x)} {g(x)} \]
+\item In \autoref{defn:homotopy}, we said $f,f':A\to B$ are homotopic ($f\htpy f'$) if
+\[ \prd{x:A} \id[B] {f(x)} {g(x)} .\]
 
-In \autoref{defn:ishae}, we said $f:A\to B$ is a half-adjoint equivalence
+\item In \autoref{defn:ishae}, we said $f:A\to B$ is a half-adjoint equivalence
 ($\ishae(f)$) when
 \[
-\sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]} \prd{x:A} \apfunc{f}{(\eta x)} = \epsilon(fx)
+\sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]} \prd{x:A} \apfunc{f}{(\eta x)} = \epsilon(fx).
 \]
-%
-As in \autoref{sec:concluding-remarks}, we define $\isequiv(f) \defeq
-\ishae(f)$, and we say simply that $f$ is an equivalence. We write $\eqv AB$
+
+\item As in \autoref{sec:concluding-remarks}, we define $\isequiv(f) \defeq
+\ishae(f)$, and we say simply that $f$ is an equivalence. 
+
+\item We write $\eqv AB$
 for the type of equivalences $\sm{f:A\to B} \isequiv(f)$.
 
-In \eqref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
+\item In \eqref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
 \[
 \happly_{f,g}(p) \defeq
   \ind{\idsym_{\tprd{x:A} B}} (
@@ -886,12 +885,13 @@ In \eqref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
     h. \lamu{x:A} \refl {h(x)},
     f,g,p).
 \]
+\end{itemize}
 
 Finally, we assert:
 
 \begin{defn}[Axiom of function extensionality (\autoref{axiom:funext})]
-We introducing a new constant, $\funext$, which asserts that for each
-$f,g$, $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$.
+We introduce a constant, $\funext$, which asserts that for each
+$f,g$, the term $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$:
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\textsc{ext}]
   {\oftp\Gamma{f}{\tprd{x:A} B} \\
@@ -900,7 +900,8 @@ $f,g$, $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$.
 \end{mathparpagebreakable}
 \end{defn}
 
-In \eqref{eq:uidtoeqv}, we defined the conversion from paths $\id[\UU_i] AB$
+\begin{itemize}
+\item In \eqref{eq:uidtoeqv}, we defined the conversion from paths $\id[\UU_i] AB$
 to equivalences $\eqv AB$ as
 \begin{multline}
 \idtoeqv_{A,B} \defeq\\
@@ -914,12 +915,13 @@ to equivalences $\eqv AB$ as
                                 {\lamu{x:A} \refl {\refl x}}}}}},
       A,B,p).
 \end{multline}
+\end{itemize}
 
 We assert:
 
 \begin{defn}[Univalence axiom (\autoref{axiom:univalence})]
-We introduce a new constant, $\ua$, which asserts that for each $A,B$, $\idtoeqv_{A,B}$
-is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$.
+We introduce a  constant, $\ua$, which asserts that for each $A,B$, the term $\idtoeqv_{A,B}$
+is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$:
 \begin{mathparpagebreakable}
   \inferrule*[right=$\UU_i$-\textsc{univ}]
   {\oftp\Gamma{A}{\UU_i} \\
@@ -930,8 +932,8 @@ is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$.
 
 \subsection{The circle}
 
-Here we give an example of a higher inductive type; other HITs follow the same
-general scheme.
+Here we give an example of a basic higher inductive type; other HITs follow the same
+general scheme, albeit perhaps more elaborately.
 
 Note that the rules below do not precisely follow the pattern of the ordinary
 inductive types in \autoref{sec:syntax-more-formally}: the rules refer to the

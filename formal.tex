@@ -866,11 +866,20 @@ thus not usually presented as part of the core type theory. However, it is
 essentially impossible to use any implementation of type theory which does not
 perform robust elaboration. We do not dwell on this topic here.
 
-\section{Features of homotopy type theory}
+%\section{Features of homotopy type theory}
+%\label{sec:hott-features}
+%
+%In this section we describe those aspects of homotopy type theory which differentiate
+%it from standard Martin-L\"{o}f type theory: function extensionality, the
+%univalence axiom, and higher inductive types. We present them in the style
+%of the second presentation \autoref{sec:syntax-more-formally}, although the first presentation \autoref{sec:syntax-informally} could be used just as well.
+%
+% Edit 6:
+
+\section{Homotopy type theory}
 \label{sec:hott-features}
 
-In this section we describe those aspects of homotopy type theory which differentiate
-it from standard Martin-L\"{o}f type theory: function extensionality, the
+In this section we state the additional axioms of homotopy type theory which distinguish it from standard Martin-L\"{o}f type theory: function extensionality, the
 univalence axiom, and higher inductive types. We present them in the style
 of the second presentation \autoref{sec:syntax-more-formally}, although the first presentation \autoref{sec:syntax-informally} could be used just as well.
 
@@ -893,14 +902,14 @@ $p:\id[A] xy$ as
 \[
 \apfunc f(p) \defeq \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p )
 \]
-%
+
 In \autoref{ex:composition}, we defined the composition of $g:B\to C$ after
 $f:A\to B$ as
 \[ g \circ f \defeq \lamu{x:A} g(f(x)) \]
-%
+
 In \autoref{defn:homotopy}, we said $f,f':A\to B$ are homotopic ($f\htpy f'$) if
 \[ \prd{x:A} \id[B] {f(x)} {g(x)} \]
-%
+
 In \autoref{defn:ishae}, we said $f:A\to B$ is a half-adjoint equivalence
 ($\ishae(f)$) when
 \[
@@ -920,8 +929,23 @@ In \eqref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
     f,g,p).
 \]
 
-Finally, we assert the axiom of function extensionality (\autoref{axiom:funext})
-by introducing a new constant, $\funext$, which asserts that for each
+%Finally, we assert the axiom of function extensionality (\autoref{axiom:funext})
+%by introducing a new constant, $\funext$, which asserts that for each
+%$f,g$, $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$.
+%\begin{mathparpagebreakable}
+%  \inferrule*[right=$\Pi$-\textsc{ext}]
+%  {\oftp\Gamma{f}{\tprd{x:A} B} \\
+%   \oftp\Gamma{g}{\tprd{x:A} B}}
+%  {\oftp\Gamma{\funext(f,g)}{\isequiv(\happly_{f,g})}}
+%\end{mathparpagebreakable}
+%
+% edit 7:
+%
+
+Finally, we assert:
+
+\begin{defn}[Axiom of function extensionality (\autoref{axiom:funext})]
+We introducing a new constant, $\funext$, which asserts that for each
 $f,g$, $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\textsc{ext}]
@@ -929,11 +953,12 @@ $f,g$, $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$.
    \oftp\Gamma{g}{\tprd{x:A} B}}
   {\oftp\Gamma{\funext(f,g)}{\isequiv(\happly_{f,g})}}
 \end{mathparpagebreakable}
+\end{defn}
 
 In \eqref{eq:uidtoeqv}, we defined the conversion from paths $\id[\UU_i] AB$
 to equivalences $\eqv AB$ as
-\[
-\idtoeqv_{A,B} \defeq
+\begin{multline}
+\idtoeqv_{A,B} \defeq\\
 \lamu{p:\id[\UU_i] A B}
 \ind{\idsym_{\UU_i}}(
       A.B.p.(\eqv A B),
@@ -943,10 +968,16 @@ to equivalences $\eqv AB$ as
                           {\tup {\lamu{x:A} \refl x}
                                 {\lamu{x:A} \refl {\refl x}}}}}},
       A,B,p).
-\]
+\end{multline}
 
-We assert the univalence axiom (\autoref{axiom:univalence}), by introducing a new
-constant, $\ua$, which asserts that for each $A,B$, $\idtoeqv_{A,B}$
+
+%
+% edit 8:
+%
+We assert:
+
+\begin{defn}[Univalence axiom (\autoref{axiom:univalence})]
+We introduce a new constant, $\ua$, which asserts that for each $A,B$, $\idtoeqv_{A,B}$
 is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$.
 \begin{mathparpagebreakable}
   \inferrule*[right=$\UU_i$-\textsc{univ}]
@@ -954,6 +985,7 @@ is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$.
    \oftp\Gamma{B}{\UU_i}}
   {\oftp\Gamma{\ua(A,B)}{\isequiv(\idtoeqv_{A,B})}}
 \end{mathparpagebreakable}
+\end{defn}
 
 \subsection{The circle}
 
@@ -1113,7 +1145,7 @@ other words, because type-checking amounts to verifying the correctness of a
 proof, this means we can always ``recognize a correct proof when we see one.''
 
 \begin{cor}
- For the system in \autoref{sec:syntax-informally}, provability is  decidable.
+In the system in \autoref{sec:syntax-informally}, the property of being a proof  decidable.
 \end{cor}
 
 %
@@ -1143,7 +1175,7 @@ never simplify, breaking \autoref{lem:normal-forms}. It is an open question whet
 
 The consistency of univalence could perhaps be shown by an appropriate normalization
 procedure, but currently the only proof of consistency is via a semantic model in Kan
-complexes by \cite{klv:ssetmodel}. There are other desirable properties which
+complexes due to Voevodsky \cite{klv:ssetmodel}. There are other desirable properties which
 simply cannot be shown by normalization arguments; for example, \cite{ls:hits}
 show that higher inductive types are logically consistent and can be modeled by
 the CW complexes which they resemble. 

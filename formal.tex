@@ -6,7 +6,7 @@
 
 \newcommand{\emptyctx}{\ensuremath{\cdot}}
 \newcommand{\production}{\vcentcolon\vcentcolon=}
-\newcommand{\conv}{\sim}
+\newcommand{\conv}{\downarrow}
 \newcommand{\ctx}{\ensuremath{\mathsf{ctx}}}
 \newcommand{\wfctx}[1]{\vdash #1\ \ctx}
 \newcommand{\oftp}[3]{#1 \vdash #2 : #3}
@@ -31,7 +31,7 @@ precise description of HoTT as a formal system in order to, for example,
 %
 \begin{itemize}
 \item state and prove its metatheoretic properties, including logical
-consistency;
+consistency (i.e., that in the empty context, there is no term $a:\emptyt$);
 \item construct models, e.g.\  in simplicial sets, model categories, higher toposes,
 etc.; and
 \item implement it in proof assistants like Coq or Agda.
@@ -43,15 +43,23 @@ univalence would imply that $\emptyt$ has an element, since $\unit$ does.
 Nor is it obvious that, for example, our definition of $\Sn^1$ as a higher
 inductive type yields a type which behaves like the ordinary circle.
 
-There are three aspects of type theory which we must pin down before addressing
-such questions. We must define precisely what constitutes the syntax of expressions, the forms of judgments, and the derivation rules.
+There are two aspects of type theory which we must pin down before addressing
+such questions. Recall from \autoref{cha:introduction} that type theory
+comprises a set of rules specifying when the judgments $a:A$ and $a\jdeq a':A$
+hold---for example, products are characterized by the rule that whenever $a:A$
+and $b:B$, $(a,b):A\times B$. To make this precise, we must first define
+precisely the syntax of terms---the objects $a,a',A,\dots$ which these judgments
+relate; then, we must define precisely the judgments and their rules of
+inference---the manner in which judgments can be derived from other judgments.
 
-In this appendix, we present two precise formulations of Martin-L\"{o}f type
-theory, and of the extensions that constitute homotopy type theory. The
-first presentation (\autoref{sec:syntax-informally}) describes the syntax of expressions and the forms of judgments as an extension of the untyped $\lambda$-calculus, while leaving the
-rules of inference informal. The second (\autoref{sec:syntax-more-formally})
-makes all three formal using a natural deduction format, as is customary in
-much type-theoretic literature.
+In this appendix, we present two formulations of Martin-L\"{o}f type
+theory, and of the extensions that constitute homotopy type theory.
+The first presentation (\autoref{sec:syntax-informally}) describes the syntax of
+terms and the forms of judgments as an extension of the untyped
+$\lambda$-calculus, while leaving the rules of inference informal.
+The second (\autoref{sec:syntax-more-formally}) defines the terms, judgments,
+and rules of inference inductively in the style of natural deduction, as
+is customary in much type-theoretic literature.
 
 \section*{Preliminaries}
 \label{sec:formal-prelim}
@@ -830,7 +838,7 @@ ensuring that symbols are only defined once, etc., are collectively called
 \define{elaboration}. Elaboration must take place prior to checking a derivation, and is
 thus not usually presented as part of the core type theory. However, it is
 essentially impossible to use any implementation of type theory which does not
-perform elaboration. We do not dwell on this topic here.
+perform elaboration; see \cite{Coq,norell2007toward} for further discussion.
 
 \section{Homotopy type theory}
 \label{sec:hott-features}
@@ -1052,9 +1060,6 @@ immediately: if we had $a:\emptyt$ in the empty context, then by
 simplifies to a normal term $a':\emptyt$. But we can see by
 \autoref{lem:normal-forms} that no such term exists.
 
-%
-% edit 4:
-%
 \begin{cor}
  The system in \autoref{sec:syntax-informally} is logically consistent.
 \end{cor}
@@ -1079,8 +1084,14 @@ The property of being a proof in the system in \autoref{sec:syntax-informally} i
 The above results do not apply to the extended system of homotopy type
 theory (i.e., the above system extended by \autoref{sec:hott-features}), since
 occurrences of the univalence axiom and constructors of higher inductive types
-never simplify, breaking \autoref{lem:normal-forms}. It is an open question whether one can
- simplify applications of these constants in order to restore canonicity.
+never simplify, breaking \autoref{lem:normal-forms}. It is an open question
+whether one can simplify applications of these constants in order to restore
+canonicity. We also do not have a schema describing all permissible higher
+inductive types, nor are we certain how to correctly formulate their rules
+(e.g., whether the computation rules on higher constructors should be judgmental
+equalities).
+
+It is also unknown precisely which higher inductive types
 
 The consistency of univalence could perhaps be shown by an appropriate normalization
 procedure, but currently the only proof of consistency is via a semantic model in Kan
@@ -1114,7 +1125,7 @@ following \cite{Goedel-T-1958}, the terminology ``definitional equality'' for
 conversion: two terms are \emph{judgmentally equal} if they reduce to a
 common term by means of a sequence of applications of the reduction
 rules. This terminology was also used by de Bruijn \cite{deBruijn-1973} in his
-presentation of \emph{Automath}.
+presentation of \emph{AUTOMATH}.
 
 Streicher \cite[Theorem 4.13]{Streicher-1991}, explains how to give the
 semantics in contextual category of terms in normal form using a simple syntax

@@ -1121,11 +1121,11 @@ If we view types as like sets, it is unclear what this buys us, but in \autoref{
 If we package the two-sided induction principle as an induction constant, it becomes:
 \symlabel{defn:induction-ML-id}
 \begin{align*}
- \indidtwo :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
+ \indidtwo{A} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
      \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y} C(x,y,p)
 \end{align*}
 with the equality
-\[ \indidtwo(C,c,x,x,\refl{x}) \defeq c(x) \]
+\[ \indidtwo{A}(C,c,x,x,\refl{x}) \defeq c(x) \]
 This induction constant is also called $J$.
 
 However, the two-sided induction principle does not quite capture everything we might expect of substitution.
@@ -1147,11 +1147,11 @@ with the defining equality
 Packaged as an induction constant, the one-sided induction principle becomes:
 \symlabel{defn:induction-PM-id}
 \begin{align*}
-\indidone :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
+\indidone{A} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
  C(a,\refl{a}) \to \dprd{x:A}{p : a =_A x} C(x,p) 
 \end{align*}
 with the equality
-\[ \indidone(a,C,c,a,\refl{a}) \defeq c. \]
+\[ \indidone{A}(a,C,c,a,\refl{a}) \defeq c. \]
 %\[ g(x)(x,\refl{x}) \defeq d(x) \]
 
 These principles arise from different views on the identity type.
@@ -1184,8 +1184,8 @@ Now we observe that $g$'s codomain is equal to $C(x,y,p)$.
 Thus, discharging our assumption $x:A$, we can derive a function 
 \[ f : \prd{x,y:A}{p : x =_A y} C(x,y,p) \]
 with the required definitional equality.
-In terms of induction constants, this means we can write $\indidtwo$ in terms of $\indidone$ as
-\[ \indidtwo(C,c,x,y,p) \defeq \indidone(x,C(x),c(x),y,p). \]
+In terms of induction constants, this means we can write $\indidtwo{A}$ in terms of $\indidone{A}$ as
+\[ \indidtwo{A}(C,c,x,y,p) \defeq \indidone{A}(x,C(x),c(x),y,p). \]
 %
 The other direction is a bit trickier: it is not clear how we can use a particular instance of the two-sided induction principle to derive a particular instance of
 the one-sided induction principle. What we can do instead is construct one instance of the two-sided induction principle which shows 
@@ -1209,24 +1209,24 @@ Now given $x:A$ and $p:a =_A x$, we can derive the conclusion of the one-sided i
 Notice that we also obtain the correct definitional equality.
 In terms of induction constants, this construction becomes:
 \begin{align*}
-\indidone(a,C,c,x,p) \defeq 
-\indidtwo( & \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),\\
+\indidone{A}(a,C,c,x,p) \defeq 
+\indidtwo{A}( & \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),\\
 & \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x,\\
 & a,x,p,C,c) 
 \end{align*}
 
 Note that the construction given above uses universes. That is, if we want to
-model $\indidone$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
-to use $\indidtwo$ with 
+model $\indidone{A}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
+to use $\indidtwo{A}$ with 
 %
 \[ D:\prd{x,y:A}{p:x =_A y} \UU_{i+1} \]
 %
 since $D$ quantifies over all $C$ of the given type. While this is
 compatible with our definition of universes, it is also possible to
-derive $\indidone$ without using universes: we can show that $\indidtwo$ entails \autoref{lem:transport,thm:contr-paths}, and that these two principles imply $\indidone$ directly.
+derive $\indidone{A}$ without using universes: we can show that $\indidtwo{A}$ entails \autoref{lem:transport,thm:contr-paths}, and that these two principles imply $\indidone{A}$ directly.
 We leave the details to the reader as \autoref{ex:pm-to-ml}.
 
-We can use either eliminator for equality, $\indidtwo$ or $\indidone$, to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
+We can use either eliminator for equality, $\indidtwo{A}$ or $\indidone{A}$, to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
 
 Let us also say something about \define{inequality}, which is negation of equality:%
 \footnote{Note that this is negation of the \emph{propositional} identity type.
@@ -1298,7 +1298,7 @@ Show that if we define $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, 
 \end{ex}
 
 \begin{ex}\label{ex:pm-to-ml}
-Give an alternative derivation of $\indidone$ from $\indidtwo$ which avoids the use of universes.
+Give an alternative derivation of $\indidone{A}$ from $\indidtwo{A}$ which avoids the use of universes.
   \emph{(This requires concepts from later chapters.)}
 \end{ex}
 

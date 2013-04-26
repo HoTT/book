@@ -375,10 +375,10 @@ with the defining equations
 \symlabel{defn:recursor-times}%
 We can package this principle into a constant which we call the
 \define{recursor} for product
-types.  Given universes $\UU$ and $\UU'$ and types $A,B : \UU$, we have
+types.  Given types $A,B : \UU$, we have
 %
 \begin{equation}
-  \rec{A\times B} : \prd{C:\UU'}(A \to B \to C) \to A \times B \to C
+  \rec{A\times B} : \prd{C:\UU}(A \to B \to C) \to A \times B \to C
 \end{equation}
 with the defining equation
 \[\rec{A\times B}(C,g,\tup{a}{b}) = g(a)(b). \]
@@ -388,16 +388,13 @@ The name ``recursor'' is a bit unfortunate here, since no recursion is taking pl
 It comes from a general framework of type definitions, and will make more sense once we consider inductive types, such as
 the natural numbers.  The term ``eliminator" is often used as well.
 
-Note that the universes $\UU,\UU'$ may be different, i.e. given a product
-in a universe $\UU_i$ we may use the eliminator for a type or family in a different universe 
-$\UU_j$. This is a property of all the eliminators we are going to introduce.
 We leave it as a simple exercise to show that the recursor can be
 derived from the projections and vice versa.
 % Ex: Derive from projections
 
 \symlabel{defn:recursor-unit}
 We also have a recursor for the unit type:
-\[\rec{\unit} : \prd{C:\UU'}C \to \unit \to C\]
+\[\rec{\unit} : \prd{C:\UU}C \to \unit \to C\]
 with the defining equation
 \[ \rec{\unit}(C,c,\ttt) \defeq c \]
 However, this is completely useless,
@@ -429,7 +426,7 @@ When we come to inductive types such as the natural numbers, the analogous prope
 Thus, when we package this principle into another constant, we call it
 \define{induction} for product types: given $A,B : \UU$ we have
 \symlabel{defn:induction-times}
-\[ \ind{A\times B} : \prd{C:A \times B \to \UU'} (\prd{x:A}{y:B}
+\[ \ind{A\times B} : \prd{C:A \times B \to \UU} (\prd{x:A}{y:B}
 C(\tup{x}{y})) \to \prd{x:A \times B} C(x) \]
 with the defining equation 
 \[ \ind{A\times B}(C,g,\tup{a}{b}) \defeq g(a)(b). \]
@@ -444,7 +441,7 @@ Induction is also called the \define{(dependent) eliminator} of the product type
 Induction for the unit type turns out to be more useful than the
 recursor: 
 \symlabel{defn:induction-unit}
-\[ \ind{\unit} : \prd{C:\unit \to \UU'} C(\star) \to \prd{x:\unit}C(x)\]
+\[ \ind{\unit} : \prd{C:\unit \to \UU} C(\star) \to \prd{x:\unit}C(x)\]
 with the defining equation
 \[ \ind{\unit}(C,c,\ttt) \defeq c \]
 Induction enables us to \emph{prove} that the only inhabitant of the
@@ -496,7 +493,7 @@ However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ 
 \symlabel{defn:dependent-proj2}
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
 Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
-This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU'$, we need a function
+This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU$, we need a function
 \[ g : \prd{a:A}{b:B(x)} C(\tup{a}{b}). \]
 We can then derive a function 
 \[ f : \prd{p : \sm{x:A}B(x)} C(p) \]
@@ -509,14 +506,14 @@ indeed $b : B(a)$.
 
 We can package the recursion and induction principles into the recursor for $\Sigma$:
 \symlabel{defn:recursor-sm}
-\[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU'}\Big(\tprd{x:A} B(x) \to C\Big) \to
+\[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU}\Big(\tprd{x:A} B(x) \to C\Big) \to
 \big(\tsm{x:A}B(x)\big) \to C \]
 with the defining equation
 \[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
 and the corresponding induction operator:
 \symlabel{defn:induction-sm}
 \begin{align*}
-  \ind{\sm{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU'}
+  \ind{\sm{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU}
     \Big(\tprd{a:A}{b:B(x)} C(\tup{a}{b})\Big)
     \to \dprd{p : \sm{x:A}B(x)} C(p)
 \end{align*}
@@ -586,12 +583,12 @@ We can always construct a function $f : \emptyt \to C$ without
 having to give any defining equations, because there are no elements of \emptyt on which to define $f$.
 Thus, the recursor for $\emptyt$ is
 \symlabel{defn:recursor-emptyt}
-\[\rec{\emptyt} : \tprd{C:\UU'} \emptyt \to C,\]
+\[\rec{\emptyt} : \tprd{C:\UU} \emptyt \to C,\]
 which constructs the canonical function from the empty type to any other type.
 Logically, it corresponds to the principle \emph{ex falso quod libet}. 
 
 To construct a dependent function $f:\prd{x:A+B}C(x)$ out of a coproduct, we assume as given the family 
-$C: (A + B) \to \UU'$, and 
+$C: (A + B) \to \UU$, and 
 require 
 \begin{eqnarray*}
   g_0 & : & \prd{a:A} C(\inl(a)) \\
@@ -605,7 +602,7 @@ This yields $f$ with the defining equations:
 We package this scheme into the induction principle for coproducts:
 \symlabel{defn:induction-plus}
 \begin{align*}
-  \ind{A+B} :  \dprd{C: (A + B) \to \UU'}
+  \ind{A+B} :  \dprd{C: (A + B) \to \UU}
   \Big(\tprd{a:A} C(\inl(a))\Big) \to \Big(\tprd{b:B} C(\inr(b))\Big)
   \to \tprd{x:A+B}C(x) 
 \end{align*}
@@ -648,7 +645,7 @@ add the defining equations
 The recursor corresponds to the if-then-else construct in
 functional programming:
 \symlabel{defn:recursor-bool}
-\[ \rec{\bool} : \prd{C:\UU'}  C \to C \to \bool \to C \]
+\[ \rec{\bool} : \prd{C:\UU}  C \to C \to \bool \to C \]
 with the defining equations
 \begin{eqnarray*}
   \rec{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
@@ -663,7 +660,7 @@ $f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which
 \end{eqnarray*}
 We package this up into the induction principle
 \symlabel{defn:induction-bool}
-\[ \ind{\bool} : \dprd{C:\bool \to \UU'}  C(\bfalse) \to C(\btrue)
+\[ \ind{\bool} : \dprd{C:\bool \to \UU}  C(\bfalse) \to C(\btrue)
 \to \tprd{x:\bool} C(x) \]
 with the defining equations
 \begin{eqnarray*}
@@ -1190,7 +1187,7 @@ the one-sided induction principle. What we can do instead is construct one insta
 all possible instantiations of the one-sided induction principle at once.
 Define
 \begin{eqnarray*}
-D & : & \prd{x,y:A}{p:x =_A y} \UU' \\
+D & : & \prd{x,y:A}{p:x =_A y} \UU \\
 D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p).
 \end{eqnarray*}
 Then we can construct the function

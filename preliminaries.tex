@@ -1096,7 +1096,7 @@ There are two different, but equivalent, ways to formulate it.
 The first is:
 
 \begin{description}
-\item[Martin-L\"{o}f Rule:] 
+\item[Two-sided induction principle for identity types:] 
 Given a family 
 \[ C : \prd{x,y:A}{p:x =_A y} \UU \]
 and a function
@@ -1111,29 +1111,29 @@ To understand this principle, consider first the simpler case when $C$ does not 
 Thus we have $C:A\to A\to \UU$, which we may regard as a predicate depending on two elements of $A$.
 We are interesting in knowing when the proposition $C(x,y)$ holds for some $x,y:A$.
 
-In this case, the hypothesis of the Martin-L\"of rule says that we know $C(x,x)$ holds for all $x:A$, i.e.\ that if we substitute the same element for both variables occurring in $C$, we get a true proposition.
+In this case, the hypothesis of the two-sided induction principle says that we know $C(x,x)$ holds for all $x:A$, i.e.\ that if we substitute the same element for both variables occurring in $C$, we get a true proposition.
 The conclusion then tells us we can conclude that $C(x,y)$ holds whenever $x=y$.
 That is, if $x=y$, then we can \emph{substitute} the value $y$ for some occurrences of $x$ in the true proposition $C(x,x)$ to obtain another true proposition, $C(x,y)$.
 
 The general form of the rule allows $C$ to depend on the witness $p:x=y$ as well.
 If we view types as like sets, it is unclear what this buys us, but in \autoref{cha:basics} we will see that it is essential to the homotopy interpretation.
 
-If we package the Martin-L\"of rule as an induction constant, it becomes:
+If we package the two-sided induction principle as an induction constant, it becomes:
 \symlabel{defn:induction-ML-id}
 \begin{align*}
- \ind{=_A}^{ML} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
+ \indidtwo :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
      \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y} C(x,y,p)
 \end{align*}
 with the equality
-\[ \ind{=_A}^{ML}(C,c,x,x,\refl{x}) \defeq c(x) \]
+\[ \indidtwo(C,c,x,x,\refl{x}) \defeq c(x) \]
 This induction constant is also called $J$.
 
-However, the Martin-L\"of rule does not quite capture everything we might expect of substitution.
+However, the two-sided induction principle does not quite capture everything we might expect of substitution.
 It requires the proposition $C$ to make sense for \emph{all} pairs $x,y$ of elements of $A$, which is sometimes an inconvenient restriction.
 This motivates the following different induction principle we might give for identity types.
 
 \begin{description}
-\item[Paulin-Mohring Rule:] 
+\item[One-sided induction principle for identity types:] 
 Fix an element $a:A$, and suppose given a family
 \[ C : \prd{x:A}{p : a =_A x} \UU \]
 and an element
@@ -1144,25 +1144,25 @@ with the defining equality
 \[ f(a,\refl{a}) \defeq c \]
 \end{description}
 
-Packaged as an induction constant, the Paulin-Mohring rule becomes:
+Packaged as an induction constant, the one-sided induction principle becomes:
 \symlabel{defn:induction-PM-id}
 \begin{align*}
-\ind{=_A}^{PM} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
+\indidone :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
  C(a,\refl{a}) \to \dprd{x:A}{p : a =_A x} C(x,p) 
 \end{align*}
 with the equality
-\[ \ind{=_A}^{PM}(a,C,c,a,\refl{a}) \defeq c. \]
+\[ \indidone(a,C,c,a,\refl{a}) \defeq c. \]
 %\[ g(x)(x,\refl{x}) \defeq d(x) \]
 
 These principles arise from different views on the identity type.
-While the Martin-L\"of rule is based on the view that the identity
-type is the least reflexive relation, the Paulin-Mohring rule defines 
+While the two-sided induction principle is based on the view that the identity
+type is the least reflexive relation, the one-sided induction principle defines 
 equality with respect to a given element $a:A$ as the least predicate
 over $A$ which holds for $a$.
 
 Fortunately, the two induction principles are equivalent.
-It is easy to see that the Martin-L\"of rule follows from the Paulin-Mohring rule.
-Let us assume the premises of the Martin-L\"of rule
+It is easy to see that the two-sided induction principle follows from the one-sided induction principle.
+Let us assume the premises of the two-sided induction principle:
 \begin{eqnarray*}
 C & : & \prd{x,y:A}{p:x =_A y} \UU  \\
 c & :  & \prd{x:A} C(x,x,\refl{x}).
@@ -1174,7 +1174,7 @@ C' & \defeq & C(x) \\
 c' & : & C'(x,\refl{x}) \\
 c' & \defeq & c(x)
 \end{eqnarray*}
-Clearly, $C'$ and $c'$ match the premises of the Paulin-Mohring rule and hence we can construct 
+Clearly, $C'$ and $c'$ match the premises of the one-sided induction principle and hence we can construct 
 \begin{eqnarray*}
 g : \prd{y:A}{p : x = y} C'(y,p)
 \end{eqnarray*}
@@ -1184,12 +1184,12 @@ Now we observe that $g$'s codomain is equal to $C(x,y,p)$.
 Thus, discharging our assumption $x:A$, we can derive a function 
 \[ f : \prd{x,y:A}{p : x =_A y} C(x,y,p) \]
 with the required definitional equality.
-In terms of induction constants, this means we can write $\ind{=_A}^{ML}$ in terms of $\ind{=_A}^{PM}$ as
-\[ \ind{=_A}^{ML}(C,c,x,y,p) \defeq \ind{=_A}^{PM}(x,C(x),c(x),y,p). \]
+In terms of induction constants, this means we can write $\indidtwo$ in terms of $\indidone$ as
+\[ \indidtwo(C,c,x,y,p) \defeq \indidone(x,C(x),c(x),y,p). \]
 %
-The other direction is a bit trickier: it is not clear how we can use a particular instance of the Martin-L\"of rule to derive a particular instance of
-the Paulin-Mohring rule. What we can do instead is construct one instance of the Martin-L\"of rule which shows 
-all possible instantiations of the Paulin-Mohring rule at once.
+The other direction is a bit trickier: it is not clear how we can use a particular instance of the two-sided induction principle to derive a particular instance of
+the one-sided induction principle. What we can do instead is construct one instance of the two-sided induction principle which shows 
+all possible instantiations of the one-sided induction principle at once.
 Define
 \begin{eqnarray*}
 D & : & \prd{x,y:A}{p:x =_A y} \UU' \\
@@ -1200,33 +1200,33 @@ Then we can construct the function
 d & : & \prd{x : A} D(x,x,\refl{x}) \\
 d & \defeq & \lamu{x:A}\lamu{C:\prd{z:A}{p : x =_A z} \UU}\lam{c:C(x,\refl{x})} c
 \end{eqnarray*}
-and hence using the Martin-L\"of rule obtain
+and hence using the two-sided induction principle obtain
 \[ f : \prd{x,y:A}{p:x =_A y} D(x,y,p) \]
 with $f(x,x,\refl{x}) \defeq d(x)$. Unfolding the definition of $D$, we can expand the type of $f$:
 \[ f : \prd{x,y:A}{p:x =_A y}{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p). \]
-Now given $x:A$ and $p:a =_A x$, we can derive the conclusion of the Paulin-Mohring rule:
+Now given $x:A$ and $p:a =_A x$, we can derive the conclusion of the one-sided induction principle:
 \[ f(a,x,p,C,c) : C(x,p) \]
 Notice that we also obtain the correct definitional equality.
 In terms of induction constants, this construction becomes:
 \begin{align*}
-\ind{=_A}^{PM}(a,C,c,x,p) \defeq 
-\ind{=_A}^{ML}( & \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),\\
+\indidone(a,C,c,x,p) \defeq 
+\indidtwo( & \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),\\
 & \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x,\\
 & a,x,p,C,c) 
 \end{align*}
 
 Note that the construction given above uses universes. That is, if we want to
-model $\ind{=_A}^{PM}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
-to use $\ind{=_A}^{ML}$ with 
+model $\indidone$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
+to use $\indidtwo$ with 
 %
 \[ D:\prd{x,y:A}{p:x =_A y} \UU_{i+1} \]
 %
 since $D$ quantifies over all $C$ of the given type. While this is
 compatible with our definition of universes, it is also possible to
-derive $\ind{=_A}^{PM}$ without using universes: we can show that $\ind{=_A}^{ML}$ entails \autoref{lem:transport,thm:contr-paths}, and that these two principles imply $\ind{=_A}^{PM}$ directly.
+derive $\indidone$ without using universes: we can show that $\indidtwo$ entails \autoref{lem:transport,thm:contr-paths}, and that these two principles imply $\indidone$ directly.
 We leave the details to the reader as \autoref{ex:pm-to-ml}.
 
-We can use eith eliminator for equality, $\ind{=_A}^{ML}$ or $\ind{=_A}^{PM}$, to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
+We can use either eliminator for equality, $\indidtwo$ or $\indidone$, to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
 
 Let us also say something about \define{inequality}, which is negation of equality:%
 \footnote{Note that this is negation of the \emph{propositional} identity type.
@@ -1258,7 +1258,9 @@ It is important for our purposes that (propositional) equality of functions is t
 
 Unlike the type theory of Coq we do not include a primitive type of propositions.  Instead, we embrace the \emph{propositions-as-types (PAT)} principle, identifying propositions with types as suggested originally by de Bruijn~\cite{debruijn}, Howard~\cite{howard}, Tait~\cite{tait}, and Martin-L\"{o}f~\cite{martin-lof}.  (This decision is explained more fully in \autoref{sec:pat?,sec:hprops}.)  We do, however, include a full cumulative hierarchy of universes so that the type formation and equality judgments become instances of the membership and equality judgments for a universe.  As a convenience we regard objects of a universe as types (``Russell-style universes", in the terminology of \cite{russellian-universes}), rather than as codes for types (``Tarski-style universes", in the terminology of \cite{tarskian-universes}), and we treat the universe hierarchy as cumulative in that every type in $\UU_i$ is also in $\UU_j$ for each $j\geq i$.
 
-The two formulations of the elimination rule for identity types were given, respectively, by Martin-L\"{o}f~\cite{pml-id} and Paulin-Mohring~\cite{cpm-id}.  Their equivalence was proved by \cite{cpm-id}????
+The two-sided induction principle for identity types was formulated by Martin-L\"{o}f~\cite{pml-id},
+and the one-sided induction principle for identity types was formulated by Paulin-Mohring~\cite{cpm-id}.
+Their equivalence was proved by \cite{cpm-id}. % ????
 
 \sectionExercises
 
@@ -1296,7 +1298,7 @@ Show that if we define $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, 
 \end{ex}
 
 \begin{ex}\label{ex:pm-to-ml}
-Give an alternative derivation of $\ind{=_A}^{PM}$ from $\ind{=_A}^{ML}$ which avoids the use of universes.
+Give an alternative derivation of $\indidone$ from $\indidtwo$ which avoids the use of universes.
   \emph{(This requires concepts from later chapters.)}
 \end{ex}
 

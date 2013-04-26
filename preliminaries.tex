@@ -373,20 +373,24 @@ with the defining equations
 \end{eqnarray*}
 %
 \symlabel{defn:recursor-times}%
-We can package this principle into a constant which we call the
-\define{recursor} for product
-types.  Given types $A,B : \UU$, we have
-%
+Rather than invoking this principle of function definition every time we want to define a function, an alternative approach is to invoke it once, in a universal case, and then simply apply the resulting function in all other cases.
+That is, we may define a function of type
 \begin{equation}
   \rec{A\times B} : \prd{C:\UU}(A \to B \to C) \to A \times B \to C
 \end{equation}
 with the defining equation
 \[\rec{A\times B}(C,g,\tup{a}{b}) = g(a)(b). \]
+Then instead of defining functions such as $\fst$ and $\snd$ directly by a defining equation, we could instead define
+\begin{align*}
+  \fst &\defeq \rec{A\times B}(A, \lam{a}{b} a)\\
+  \snd &\defeq \rec{A\times B}(B, \lam{a}{b} b).
+\end{align*}
+We refer to the function $\rec{A\times B}$ as the \define{recursor} for product types.
 We may also speak of the \define{recursion principle} for cartesian products, meaning the fact that we can define a function $f:A\times B\to C$ as above by giving its value on pairs.
 
 The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.
 It comes from a general framework of type definitions, and will make more sense once we consider inductive types, such as
-the natural numbers.  The term ``eliminator" is often used as well.
+the natural numbers.  The term ``eliminator'' is often used as well.
 
 We leave it as a simple exercise to show that the recursor can be
 derived from the projections and vice versa.
@@ -423,7 +427,7 @@ is well-typed, since both sides of the equality are judgmentally equal.
 More generally, the ability to define dependent functions in this way means that to prove a property for all elements of a product, it is enough 
 to prove it for its canonical elements, the tuples.
 When we come to inductive types such as the natural numbers, the analogous property will be the ability to write proofs by induction.
-Thus, when we package this principle into another constant, we call it
+Thus, if we do as we did above and apply this principle once in the universal case, we call the resulting function
 \define{induction} for product types: given $A,B : \UU$ we have
 \symlabel{defn:induction-times}
 \[ \ind{A\times B} : \prd{C:A \times B \to \UU} (\prd{x:A}{y:B}
@@ -759,7 +763,7 @@ As usual, we write $\add(m,n)$ as $m+n$.
 The reader is invited to verify that $2+2\jdeq 4$.
 % ex: define multiplication and exponentiation.
 
-As in previous cases, we can package the principle of primitive recursion into a recursion constant:
+As in previous cases, we can package the principle of primitive recursion into a recursor:
 \[\rec{\nat}  : \dprd{C:\UU} C \to (\nat \to C \to C) \to \nat \to C \]
 with the defining equations
 \symlabel{defn:recursor-nat}
@@ -783,7 +787,7 @@ Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(n)$, and 
   f(0) & \defeq & c_0 \\
   f(\suc(n)) & \defeq & c_s(n,f(n))
 \end{eqnarray*}
-We can also package this into an induction constant
+We can also package this into a single function
 \symlabel{defn:induction-nat}
 \[\ind{\nat}  : \dprd{C:\nat\to \UU} C(0) \to \big(\tprd{n : \nat} C(n) \to C(\suc(n))\big) \to \tprd{n : \nat} C(n) \]
 with the defining equations

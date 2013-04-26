@@ -1,0 +1,1866 @@
+\chapter{Homotopy \texorpdfstring{$n$}{n}-types}
+\label{cha:hlevels}
+
+One of the basic notions of homotopy theory is that of a \emph{homotopy $n$-type}: a space containing no interesting homotopy above dimension $n$.
+For instance, a homotopy $0$-type is essentially a set, containing no nontrivial paths, while a homotopy $1$-type may contain nontrivial paths, but no nontrivial paths between paths.
+Homotopy $n$-types are also called \emph{$n$-truncated spaces}.
+We have mentioned this notion already in \autoref{sec:basics-sets}; our first goal in this chapter is to give it a formal definition in homotopy type theory.
+
+A dual notion to truncatedness is connectedness: a space is \emph{$n$-connected} if it has no interesting homotopy in dimensions $n$ and \emph{below}.
+For instance, a space is $0$-connected if it has only one connected component, and $1$-connected (also called ``simply connected'') if it also has no nontrivial loops (though it may have nontrivial higher loops between loops).
+
+The duality between truncatedness and connectedness is most easily seen by extending both notions to maps.
+We call a map \emph{$n$-truncated} or \emph{$n$-connected} if all its fibers are so.
+Then $n$-connected and $n$-truncated maps form the two classes of maps in an \emph{orthogonal factorization system}, i.e.\ every map factors uniquely as an $n$-connected map followed by an $n$-truncated one.
+
+In the case $n=-1$, the $n$-truncated maps are the monomorphisms and the $n$-connected maps are the surjections, as defined in \autoref{sec:mono-surj}.
+Thus, the $n$-connected factorization system is a massive generalization of the standard image factorization of a function between sets into a surjection followed by an injection.
+At the end of this chapter, we sketch briefly an even more general theory: any type-theoretic \emph{modality} gives rise to an analogous factorization system.
+
+
+\section{Definition of \texorpdfstring{$n$}{n}-types}
+\label{sec:n-types}
+
+As mentioned in \autoref{sec:basics-sets,sec:contractibility}, it turns out to be convenient to define $n$-types starting two levels below zero, with the $(-1)$-types being the mere propositions and the $(-2)$-types the contractible ones.
+
+\begin{defn}\label{def:hlevel}
+  Define the predicate $\istype{n} : \type \to \type$ for $n \geq -2$ by recursion as follows:
+  \[ \istype{n}(X) \defeq
+  \begin{cases}
+    \iscontr(X) & \text{ if } n = -2 , \\
+    \prd{x,y : X} \istype{n'}(\id[X]{x}{y}) & \text{ if } n = n'+1
+  \end{cases}
+  \]
+  We say that $X$ \define{is an $n$-type} if $\istype{n}(X)$ is inhabited.
+\end{defn}
+
+\begin{rmk}
+  The number $n$ in \autoref{def:hlevel} ranges over all integers greater than or equal to $-2$.
+  We could make sense of this formally by defining a type $\Z_{{\geq}-2}$ of such integers (a type whose induction principle is identical to that of $\nat$), or instead defining a predicate $\istype{(k-2)}$ for $k : \nat$.
+  Either way, we can prove theorems about $n$-types by induction on $n$, with $n = -2$ as the base case.
+\end{rmk}
+
+\begin{eg}
+  We saw in \autoref{thm:prop-minusonetype} that $X$ is a $(-1)$-type if and only if it is a mere proposition.
+  Therefore, $X$ is a $0$-type if and only if it is a set.
+\end{eg}
+
+We have also seen that there are types which are not sets (\autoref{thm:type-is-not-a-set}).
+So far, however, we have not shown for any $n>0$ that there exist types which are not $n$-types.
+In \autoref{cha:homotopy}, however, we will show that the $(n+1)$-sphere $\Sn^{n+1}$ is not an $n$-type.
+Moreover, in \autoref{sec:whitehead} will give an example of a type that is not an $n$-type for \emph{any} (finite) number $n$.
+
+We begin the general theory of $n$-types by showing they are closed under certain operations and constructors.
+
+\begin{thm}\label{thm:h-level-retracts}
+ Let $p : X \to Y$ be a retraction and suppose that $X$ is an $n$-type, for any $n\geq -2$.
+ Then $Y$ is also an $n$-type.
+\end{thm}
+
+\begin{proof}
+ We proceed by induction on $n$.
+ The base case $n=-2$ is \autoref{thm:retract-contr}.
+
+ For the inductive step, assume that any retract of an $n$-type is an $n$-type, and that $X$ is an $\nplusone$-type.
+ Let $y, y' : Y$; we must show that $\id{y}{y'}$ is an $n$-type.
+ Let $s$ be a section of $p$, and let $\epsilon$ be a homotopy $\epsilon : p \circ s \htpy 1$.
+ Since $X$ is an $\nplusone$-type, $\id[X]{s(y)}{s(y')}$ is an $n$-type.
+ We claim that $\id{y}{y'}$ is a retract of $\id[X]{s(y)}{s(y')}$.
+ For the section, we take
+ \[ \apfunc s : (y=y') \to (s(y)=s(y')). \]
+ For the retraction, we define $t:(s(y)=s(y'))\to(y=y')$ by
+ \[ t(q) \defeq  \opp{\epsilon_y} \ct \ap p q \ct \epsilon_{y'}.\]
+ To show that $t$ is a retraction of $\apfunc s$, we must show that
+ \[ \opp{\epsilon_y} \ct \ap p {\ap sr} \ct \epsilon_{y'} = q \]
+ for any $r:y=y'$.
+ But this follows from \autoref{lem:htpy-natural}.
+\end{proof}
+
+As an immediate corollary we obtain the stability of $n$-types under equivalence (which is also immediate from univalence):
+
+\begin{cor}\label{cor:preservation-hlevels-weq}
+ If $\eqv{X}{Y}$ and $X$ is an $n$-type, then so is $Y$.
+\end{cor}
+
+Recall also the notion of monomorphism from \autoref{sec:mono-surj}.
+
+\begin{thm}\label{thm:isntype-mono}
+  If $f:X\to Y$ is a monomorphism and $Y$ is an $n$-type for some $n\ge -1$, then so is $X$.
+\end{thm}
+\begin{proof}
+  Let $x,x':X$; we must show that $\id[X]{x}{x'}$ is an $\nminusone$-type.
+  But since $f$ is a monomorphism, we have $(\id[X]{x}{x'}) \simeq (\id[Y]{f(x)}{f(x')})$, and the latter is an $\nminusone$-type by assumption.
+\end{proof}
+
+Note that this theorem fails when $n=-2$: the map $\emptyt \to \unit$ is a monomorphism, but $\unit$ is a $(-2)$-type while $\emptyt$ is not.
+
+\begin{thm}\label{thm:hlevel-cumulative}
+ The hierarchy of $n$-types is cumulative in the following sense:
+   given a number $n \geq -2$, if $X$ is an $n$-type, then it is also an $\nplusone$-type.
+\end{thm}
+
+\begin{proof}
+ We proceed by induction on $n$.
+
+ For $n = -2$, we need to show that a contractible type, say, $A$, has contractible path spaces.
+       Let $a_0: A$ be the center of contraction of $A$, and let $x, y : A$. We show that $\id[A]{x}{y}$
+       is contractible.
+       By contractibility of $A$ we have a path $\contr_x \ct \opp{\contr_y} : x = y$, which we choose as
+       the center of contraction for $\id{x}{y}$.
+       Given any $p : x = y$, we need to show $p = \contr_x \ct \opp{\contr_y}$.
+           By identity elimination, it suffices to show that
+        $\refl{x} = \contr_x \ct \opp{\contr_x}$, which is trivial.
+
+ For the inductive step, we need to show that $\id[X]{x}{y}$ is an $\nplusone$-type, provided
+          that $X$ is an $\nplusone$-type. Applying the induction hypothesis to $\id[X]{x}{y}$
+         yields the desired result.
+\end{proof}
+
+% \section{Preservation under constructors}
+% \label{sec:ntype-pres}
+
+We now show that $n$-types are preserved by most type forming operations.
+
+\begin{thm}\label{thm:ntypes-sigma}
+ Let $n \geq -2$, and let $A : \type$ and $B : A \to \type$.
+ If $A$ is an $n$-type and for all $a : A$, $B(a)$ is an $n$-type, then so is $\sm{x : A} B(x)$.
+\end{thm}
+
+\begin{proof}
+ We proceed by induction on $n$.
+
+ For $n = -2$, we choose the center of contraction for $\sm{x : A} B(x)$ to be the pair
+       $(a_0, b_0)$, where $a_0 : A$ is the center of contraction of $A$ and $b_0 : B(a_0)$ is the center of contraction of $B(a_0)$.
+       Given any other element $(a,b)$ of $\sm{x : A} B(x)$, we provide a path $\id{(a, b)}{(a_0,b_0)}$
+       by contractibility of $A$ and $B(a_0)$, respectively.
+
+ For the inductive step, suppose that $A$ is an $\nplusone$-type and
+         for any $a : A$, $B(a)$ is an $\nplusone$-type. We show that $\sm{x : A} B(x)$ is an $\nplusone$-type:
+      fix $(a_1, b_1)$ and $(a_2,b_2)$ in $\sm{x : A} B(x)$,
+     we show that $\id{(a_1, b_1)}{(a_2,b_2)}$ is an $n$-type.
+      By \autoref{thm:path-sigma} we have
+      \[ \eqvspaced{(\id{(a_1, b_1)}{(a_2,b_2)})}{\sm{p : \id{a_1}{a_2}} (\id[B(a_2)]{\trans{p}{b_1}}{b_2})} \]
+   and by preservation of $n$-types under equivalences (\autoref{cor:preservation-hlevels-weq})
+   it suffices to prove that the latter is an $n$-type. This follows from the
+   induction hypothesis.
+\end{proof}
+
+As a special case, if $A$ and $B$ are $n$-types, so is $A\times B$.
+Note also that \autoref{thm:hlevel-cumulative} implies that if $A$ is an $n$-type, then so is $\id[A]xy$ for any $x,y:A$.
+Combining this with \autoref{thm:ntypes-sigma}, we see that for any functions $f:A\to C$ and $g:B\to C$ between $n$-types, the \define{pullback}
+\[ A\times_C B \defeq \sm{x:A}{y:B} (f(x)=g(y)) \]
+is also an $n$-type.
+More generally, $n$-types are closed under all \emph{limits}.
+
+\begin{thm}\label{thm:hlevel-prod}
+ Let $n\geq -2$, and let $A : \type$ and $B : A \to \type$.
+ If for all $a : A$, $B(a)$ is an $n$-type, then so is $\prd{x : A} B(x)$.
+\end{thm}
+
+\begin{proof}
+  We proceed by induction on $n$.
+  For $n = -2$, the result is simply \autoref{thm:contr-forall}.
+
+  For the inductive step, assume the result is true for $n$-types, and that each $B(a)$ is an $n+1$-type.
+  Let $f, g : \prd{a:A}B(a)$.
+  We need to show that $\id{f}{g}$ is an $n$-type.
+  By function extensionality and closure of $n$-types under equivalence, it suffices to show that $\prd{a : A} (\id[B(a)]{f(a)}{g(a)})$ is an $n$-type.
+  This follows from the inductive hypothesis.
+\end{proof}
+
+As a special case of the above theorem, the function space $A \to B$ is an $n$-type provided that $B$ is an $n$-type.
+We can now generalize our observations in \autoref{cha:basics} that $\isset(A)$ and $\isprop(A)$ are mere propositions.
+
+\begin{thm}\label{thm:isaprop-isofhlevel}
+ For any $n \geq -2$ and any type $X$, the type $\istype{n}(X)$ is a mere proposition.
+\end{thm}
+\begin{proof}
+  We proceed by induction with respect to $n$.
+
+ For the base case, we need to show that for any $X$, the type $\iscontr(X)$ is a mere proposition.
+ By \autoref{thm:contr-unit}, it suffices to show that if $X$ is contractible, then $\iscontr(X)$ is a mere proposition.
+ But this follows from \autoref{thm:contr-contr}.
+
+For the inductive step we need to show
+\[\prd{X : \type} \isprop (\istype{n}(X)) \to \prd{X : \type} \isprop (\istype{\nplusone}(X)) \]
+To show the conclusion of this implication, we need to show that for any type $X$, the type
+\[\prd{x, x' : X}\istype{n}(x = x')\]
+is a mere proposition. By \autoref{thm:hlevel-prod} it suffices to show that for any $x, x' : X$, the type $\istype{n}(x =_X x')$ is a mere
+proposition.
+But this follows from the induction hypothesis applied to the type $(x =_X x')$.
+\end{proof}
+
+Finally, we show that the type of $n$-types is itself an $\nplusone$-type.
+We define this to be:
+\[\ntype{n} \defeq \sm{X : \type} \istype{n}(X) \]
+If necessary, we may specify the universe $\UU$ by writing $\ntypeU{n}$.
+In particular, we have $\prop \defeq \ntype{(-1)}$ and $\set \defeq \ntype{0}$, as defined in \autoref{cha:basics}.
+Note that just as for \prop and \set, because $\istype{n}(X)$ is a mere proposition, by \autoref{thm:path-subset} for any $(X,p), (X',p'):\ntype{n}$ we have
+\begin{align*}
+  \Big(\id[\ntype{n}]{(X, p)}{(X', p')}\Big) &\simeq (\id[\type] X X')\\
+  &\simeq (\eqv{X}{X'}).
+\end{align*}
+
+\begin{thm}\label{thm:hleveln-of-hlevelSn}
+ For any $n \geq -2$, the type $\ntype{n}$ is an $\nplusone$-type.
+\end{thm}
+\begin{proof}%[Proof of \autoref{thm:hleveln-of-hlevelSn}]
+  Let $(X, p), (X', p') : \ntype{n}$; we need to show that $\id{(X, p)}{(X', p')}$ is an $n$-type.
+  By the above observation, this type is equivalent to $\eqv{X}{X'}$.
+  Next, we observe that the projection
+  \[(\eqv{X}{X'}) \hookrightarrow (X \rightarrow X').\]
+  is a monomorphism, so that if $n\geq -1$, then by \autoref{thm:isntype-mono} it suffices to show that $X \rightarrow X'$ is an $n$-type.
+  But since $n$-types are preserved under the arrow type, this reduces to an assumption that $X'$ is an $n$-type.
+
+  In the case $n=-2$, this argument shows that $\eqv{X}{X'}$ is a $(-1)$-type --- but it is also inhabited, since any two contractible types
+are equivalent to \unit, and hence to each other.
+  Thus, $\eqv{X}{X'}$ is also a $(-2)$-type.
+\end{proof}
+
+\section{Uniqueness of identity proofs and Hedberg's theorem}
+\label{sec:hedberg}
+
+In \autoref{sec:basics-sets} we defined a type $X$ to be a \emph{set} if for all $x, y : X$ and $p, q : x =_X y$ we have $p = q$.
+In conventional type theory, this property goes by the name of \define{uniqueness of identity proofs (UIP)}.
+We have seen also that it is equivalent to being a $0$-type in the sense of the previous section.
+Here is another equivalent characterization, involving Streicher's ``axiom K" \cite{StreicherK}:
+
+\begin{thm}\label{thm:h-set-uip-K}
+ A type $X$ is a set if and only if it satisfies \define{Axiom K}: for all $x : X$ and $p : (x =_A x)$ we have $p = \refl{x}$.
+\end{thm}
+
+\begin{proof}
+  Clearly Axiom K is a special case of UIP.
+  Conversely, if $X$ satisfies Axiom K, let $x, y : X$ and $p, q : (\id{x}{y})$; we want to show $p=q$.
+  But induction on $q$ reduces this goal precisely to Axiom K.
+\end{proof}
+
+We stress that \emph{we} are not assuming the K principle as an axiom!
+It is simply a property which a particular type may or may not satisfy (which is equivalent to being a set).
+
+The following theorem is another useful way to show that types are sets.
+
+\begin{thm}\label{thm:h-set-refrel-in-paths-sets}
+  Suppose $R$ is a reflexive mere relation on a type $X$ implying identity.
+  Then $X$ is a set, and $R(x,y)$ is equivalent to $\id[X]{x}{y}$ for all $x,y:X$.
+\end{thm}
+
+\begin{proof}
+  Let $\rho : \prd{x:X} R(x,x)$ witness the reflexivity of $R$, and let $f : \prd{x,y:X} R(x,y) \to (\id[X]{x}{y})$ be a witness that $R$
+implies identity.
+  Note first that the two statements in the theorem are equivalent.
+  For on one hand, if $X$ is a set, then $\id[X]xy$ is a mere proposition, and since it is logically equivalent to the mere proposition
+$R(x,y)$ by hypothesis, it must also be equivalent to it.
+  On the other hand, if $\id[X]xy$ is equivalent to $R(x,y)$, then like the latter it is a mere proposition for all $x,y:X$, and hence $X$
+is a set.
+
+  We give two proofs of this theorem.
+  The first shows directly that $X$ is a set; the second shows directly that $R(x,y)\simeq (x=y)$.
+
+  \emph{First proof:} we show that $X$ is a set.
+  The idea is the same as that of \autoref{thm:prop-set}: the function $f$ must be continuous in its arguments $x$ and $y$.
+  However, it is slightly more notationally complicated because we have to deal with the additional argument of type $R(x,y)$.
+
+  Firstly, for any $x:X$ and $p:\id[X]xx$, consider $\apdfunc{f(x)}(p)$.
+  This is a dependent path from $f(x,x)$ to itself.
+  Since $f(x,x)$ is still a function $R(x,x) \to (\id[X]xy)$, by \autoref{thm:dpath-arrow} this yields a path
+  \[\trans{p}{f(x,x,r)} = f(x,x,\trans{p}r).
+  \]
+  On the left-hand side, we have transport in an identity type, which is concatenation.
+  And on the right-hand side, we have $\trans{p}r = r$, since both lie in the mere proposition $R(x,x)$.
+  Thus, substituting $r\defeq \rho(x)$, we obtain
+  \[ f(x,x,\rho(x)) \ct p = f(x,x,\rho(x)). \]
+  By cancellation, $p=\refl{x}$.
+  So $X$ satisfies Axiom K, and hence is a set.
+
+  \emph{Second proof:} we show that each $f(x,y) : R(x,y) \to \id[X]{x}{y}$ is an equivalence.
+  By \autoref{thm:total-fiber-equiv}, it suffices to show that $f$ induces an equivalence of total spaces:
+  \begin{equation*}
+    \eqv{\big(\sm{y:X}R(x,y)\big)}{\big(\sm{y:X}\id[X]{x}{y}\big)}.
+  \end{equation*}
+  By \autoref{thm:contr-paths}, the type on the right is contractible, so it
+  suffices to show that the type on the left is contractible. As the center of
+  contraction we take the pair $\pairr{x,\rho(x)}$.  It remains to show, for
+  every ${y:X}$ and every ${H:R(x,y)}$ that
+  \begin{equation*}
+    \id{\pairr{x,\rho(x)}}{\pairr{y,H}}.
+  \end{equation*}
+  But since $R(x,y)$ is a mere proposition, by \autoref{thm:path-sigma} it suffices to show that
+  $\id[X]{x}{y}$, which we get from $f(H)$.
+\end{proof}
+
+\begin{cor}\label{notnotstable-equality-to-set}
+  If a type $X$ has the property that $\neg\neg(x=y)\to(x=y)$ for any $x,y:X$, then $X$ is a set.
+\end{cor}
+
+Another convenient way to show that a type is a set is by way of the following property.
+
+\begin{defn}\label{defn:decidable-equality}
+ A type $X$ has \define{decidable equality} if for all $x, y : X$ we have
+ \[(x =_X y) + \neg (x =_X y).\]
+\end{defn}
+
+In the propositions-as-types language, we can say that $X$ has decidable equality if for every $x,y:X$, either $x=y$ or $x\neq y$.
+Note that this is a very constructive form of ``or''.
+LEM implies (using \autoref{thm:isprop-forall}) that \emph{any} type $X$ has \emph{decidable mere equality}, meaning
+\[\prd{x,y:X} \big(\brck{x=y} + \brck{x\neq y}\big).\]
+\autoref{defn:decidable-equality} asserts moreover that a path $x=y$ can be chosen, when it exists, continuously (or computably, or
+functorially) in $x$ and $y$.
+This turns out to imply that $X$ is a set, by way of \autoref{thm:h-set-refrel-in-paths-sets} and the following lemma.
+
+\begin{lem}
+For any type $A$ we have $(A+\neg A)\to(\neg\neg A\to A)$.
+\end{lem}
+
+\begin{proof}
+Suppose $x:A+\neg A$. We have two cases to consider.
+If $x$ is $\inl(a)$ for some $a:A$, then we have the constant function $\neg\neg A
+\to A$ which maps everything to $a$. If $x$ is $\inr(f)$ for some $f:\neg A$,
+we have the term $g(f):\emptyt$ for any $g:\neg\neg A$. Hence we may use
+\textit{ex falso quodlibet} to obtain an element of $A$ for any $g:\neg\neg A$.
+\end{proof}
+
+\begin{thm}[Hedberg]\label{thm:hedberg}
+  If $X$ has decidable equality, then $X$ is a set.
+\end{thm}
+
+\begin{proof}
+If $X$ has decidable equality, it follows that $\neg\neg(x=y)\to(x=y)$ for any
+$x,y:X$. Therefore, Hedbergs theorem follows from 
+\autoref{notnotstable-equality-to-set}.
+\end{proof}
+
+There is, of course, a strong connection between this theorem and \autoref{thm:not-lem}.
+The form of LEM denied by \autoref{thm:not-lem} clearly implies that every type has decidable equality, and hence is a set; which we know is
+not the case.
+
+Recall that in \autoref{thm:nat-set} we observed that $\nat$ is a set, using our characterization of its equality types in
+\autoref{sec:compute-nat}.
+A more traditional proof of this theorem uses only~\eqref{eq:zero-not-succ} and~\eqref{eq:suc-injective}, rather than the full
+characterization of \autoref{thm:path-nat}, with \autoref{thm:hedberg} to fill in the blanks.
+
+\begin{thm}\label{prop:nat-is-set}
+ The type $\nat$ of natural numbers has decidable equality, and hence is a set.
+\end{thm}
+
+\begin{proof}
+  Let $x, y : \nat$ be given; we proceed by induction on $x$ and case analysis on $y$ to prove $(x=y)+\neg(x=y)$.
+  If $x \jdeq 0$ and $y \jdeq 0$, we take $\inl(\refl{}(0))$.
+  If $x \jdeq 0$ and $y \jdeq \suc(n)$, then by~\eqref{eq:zero-not-succ} we get $\neg (0 = \suc (n))$.
+
+  For the inductive step, let $x \jdeq \suc (n)$.
+  If $y \jdeq 0$, we use~\eqref{eq:zero-not-succ} again.
+  Finally, if $y \jdeq \suc (m)$, the induction hypothesis gives $(m = n)+\neg(m = n)$.
+  In the first case, if $p:m=n$, then $\ap \suc p:\suc(m)=\suc(n)$.
+  And in the second case,~\eqref{eq:suc-injective} yields $\neg(\suc(m)=\suc(n))$.
+\end{proof}
+
+Although Hedberg's theorem appears rather special to sets ($0$-types), ``Axiom K'' generalizes naturally to $n$-types.
+Note that the ordinary Axiom K (as a property of a type $X$) states that for all $x:X$, the loop space $\Omega(X,x)$ (see \cref{def:loopspace}) is contractible.
+Since $\Omega(X,x)$ is always inhabited (by $\refl{x}$), this is equivalent to its being a mere proposition (a $(-1)$-type).
+Since $0 = (-1)+1$, this suggests the following generalization.
+
+\begin{thm}\label{thm:hlevel-loops}
+  For any $n\geq -1$, a type $X$ type is an $\nplusone$-type if and only if for all $x : X$, the type $\Omega(X, x)$ is an $n$-type.
+\end{thm}
+
+Before proving this, we prove an auxiliary lemma:
+
+\begin{lem}\label{lem:hlevel-if-inhab-hlevel}
+  Given $n \geq -1$ and $X : \type$.
+  If, given any inhabitant of $X$ it follows that $X$ is an $n$-type, then $X$ is an $n$-type.
+\end{lem}
+\begin{proof}
+  Let $f : X \to \istype{n}(X)$ be the given map.
+  We need to show that for any $x, x' : X$, the type $\id{x}{x'}$ is an $\nminusone$-type.
+  But then $f(x)$ shows that $X$ is an $n$-type, hence all its path spaces are $\nminusone$-types.
+\end{proof}
+
+\begin{proof}[Proof of \autoref{thm:hlevel-loops}]
+  The ``only if'' direction is obvious, since $\Omega(X,x)\defeq (\id[X]xx)$.
+  Conversely, in order to show that $X$ is an $\nplusone$-type, we need to show that for any $x, x' : X$, the type $\id{x}{x'}$ is an
+$n$-type.
+  Following \autoref{lem:hlevel-if-inhab-hlevel} it suffices to give a map
+  \[ (\id{x}{x'}) \to \istype{n}(\id{x}{x'})  .\]
+  By path induction, it suffices to do this when $x\jdeq x'$, in which case it follows from the assumption that $\Omega(X, x)$ is an
+$n$-type.
+\end{proof}
+
+By induction and some slightly clever whiskering, we can obtain a generalization of the K property to $n>0$.
+
+\begin{thm}\label{thm:ntype-nloop}
+  For every $n\ge 0$, a type $A$ is an $n$-type if and only if $\Omega^{n+1}(A,a)$ is contractible for all $a:A$.
+\end{thm}
+\begin{proof}
+  The case $n=0$ is \autoref{thm:h-set-uip-K}.
+  By induction, suppose the statement holds for $n:\N$.
+  By \autoref{thm:hlevel-loops}, $A$ is an $(n+1)$-type iff $\Omega(A,a)$ is an $n$-type for all $a:A$.
+  By the inductive hypothesis, the latter is equivalent to saying that $\Omega^{n+1}(\Omega(A,a),p)$ is contractible for all $p:\Omega(A,a)$.
+
+  Since $\Omega^{n+2}(A,a) \defeq \Omega^{n+1}(\Omega(A,a),\refl{a})$, and $\Omega^{n+1} = \Omega^n \circ \Omega$, it will suffice to show that $\Omega(\Omega(A,a),p)$ is equal to $\Omega(\Omega(A,a),\refl{a})$, in the type $\pointed\type$ of pointed types.
+  For this, it suffices to give an equivalence
+  \[ g : \Omega(\Omega(A,a),p) \simeq \Omega(\Omega(A,a),\refl{a}) \]
+  which carries the basepoint $\refl{p}$ to the basepoint $\refl{\refl{a}}$.
+  For $q:p=p$, define $g(q):\refl{a} = \refl{a}$ to be the following composite:
+  \[ \refl{a} = p\ct \opp p \overset{q}{=} p\ct\opp p = \refl{a}, \]
+  where the path labeled ``$q$'' is actually $\apfunc{\lam{r} r\ct\opp p} (q)$.
+  Then $g$ is an equivalence because it is a composite of equivalences
+  \[ (p=p) \xrightarrow{\apfunc{\lam{r} r\ct\opp p}} (p\ct \opp p = p\ct \opp p) \xrightarrow{i\ct - \ct \opp i} (\refl{a} = \refl{a}). \]
+  using \autoref{eg:concatequiv,thm:paths-respects-equiv}, where $i:\refl{a} = p\ct \opp p$ is the canonical equality.
+  And it is evident that $g(\refl{p}) = \refl{\refl{a}}$.
+\end{proof}
+
+% \begin{defn}
+%   A function $f:X\to A$ is said to be \emph{null-homotopic} if there is an $a:A$ such that $f=(\lam{x} a)$.
+%   In other words, we define
+%   \begin{equation*}
+%     \mathsf{hNull}(f)\defeq\sm{a:A} (f=(\lam{x} a)) .
+%   \end{equation*}
+% \end{defn}
+
+% \begin{lem}\label{lem:hnull_to_map_hnull}
+% If a function $f:X\to A$ is null-homotopic, then so is
+% \[\apfunc f : (x= y)\to (f(x)= f(y)).\]
+% \end{lem}
+
+% \begin{proof}
+% Suppose $H:\sm{a:A} (f=\lam{x} a)$.  A proof by path induction on $p:x= y$ reveals that there is a homotopy
+% \begin{equation*}
+% \apfunc{f} = \lam{p} (\pi_2 H(y))^{-1}\ct (\pi_2 H(x)).\qedhere
+% \end{equation*}
+% \end{proof}
+
+% Recall from \autoref{sec:suspension} that we can define the $n$-sphere $\Sn^n$ inductively as the suspension of the $(n-1)$-sphere, starting
+% with $\Sn^{-1}\defeq \emptyt$.
+
+% \begin{thm}\label{thm:sphere_n_hnull_to_hlevel_sn}
+% For every $n:\N$, a type $A$ is an $n$-type if all the functions from $\Sn^{n+1}$ to $A$ are null-homotopic.
+% \end{thm}
+
+% \begin{proof}
+% The exact statement which we will prove is
+% \begin{equation*}
+% \prd{n:\N}{A:\type} \big(\prd{f:\Sn^n\to A} \mathsf{hNull}(f)\big)\to\istype{\nminusone}(A).
+% \end{equation*}
+% The proof is by induction on $n$.  In the case $n\jdeq 0$ we have that
+% \begin{equation*}
+% \big(\prd{f:\Sn^{0}\to A} \mathsf{hNull}(f)\big)\simeq\prd{x,y:A} (x= y),
+% \end{equation*}
+% so we see immediately that a type $A$ is a proposition whenever every function $f:\Sn^0\to A$ is null-homotopic.
+
+% Now suppose that we have a function of type
+% \begin{equation*}
+% \prd{A:\type}{f:\Sn^n\to A}{t:\Sn^n} (f(t)= f(\north^n)\big)\to\istype{\nminusone}(A).
+% \end{equation*}
+% and let $A$ be a type and let 
+% \begin{equation*}
+% H:\prd{f:\Sn^{n+1}\to A}{t:\Sn^{n+1}} (f(t)= f(\north^{n+1})).
+% \end{equation*}
+% We wish to show that $A$ is an $n$-type, which we will do by showing that $x= y$ is an $\nminusone$-type for each $x,y:A$.
+% Suppose that $x,y:A$; then by the induction hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
+% We have that $\Sn^n\to(x= y)$ is equivalent to
+% \[\sm{f:S^{n+1}\to A} (f(\north^{n+1})= x)\times(f(\south^{n+1})= y).\]
+% Suppose that $f:\Sn^n\to A$ is a function and suppose that $\tilde{f}$ corresponds to $f$ via the indicated equivalence. Then $\tilde{f}$ is
+% null-homotopic, and hence $\lam{t} \tilde{f}(\merid^n(t))$ is null-homotopic (by \autoref{lem:hnull_to_map_hnull}).
+% It follows that $f$ is null-homotopic.
+% \end{proof}
+
+
+\section{Truncations}
+\label{sec:truncations}
+
+In \autoref{subsec:prop-trunc} we introduced the propositional truncation, which makes the ``best approximation'' of a type that is a mere
+proposition, i.e.\ a $(-1)$-type.
+In \autoref{sec:hittruncations} we constructed this truncation as a higher inductive type, and gave one way to generalize it to a
+0-truncation.
+We now explain a better generalization of this, which truncates any type into an $n$-type for any $n\geq -2$.
+
+The idea is to make use of \autoref{thm:ntype-nloop}, which states that $A$ is an $n$-type just when $\Omega^{n+1}(A,a)$ is contractible for
+all $a:A$, and \autoref{lem:susp-loop-adj}, which implies that $\Omega^{n+1}(A,a) \simeq \Map_*(\Sn^{n+1},(A,a))$, where $\Sn^{n+1}$ is
+equipped with some basepoint which we may as well call \base.
+However, contractibility of $\Map_*(\Sn^{n+1},(A,a))$ is something that we can ensure directly by giving path constructors.
+
+We might first of all try to define $\trunc nA$ to be generated by a function $\tproj n- : A \to \trunc n A$, together with for each
+$r:\Sn^{n+1} \to \trunc n A$ and each $x:\Sn^{n+1}$, a path $s_r(x):r(x) = r(\base)$.
+%
+But this does not quite work, for the same reason that \autoref{rmk:spokes-no-hub} fails.
+Instead, we use the full ``hub and spoke'' construction as in \autoref{sec:hubs-spokes}.
+
+Thus, we take $\trunc nA$ to be the higher inductive type generated by:
+\begin{itemize}
+\item a function $\tproj n- : A \to \trunc n A$,
+\item for each $r:\Sn^{n+1} \to \trunc n A$, a \emph{hub} point $h(r):\trunc n A$, and
+\item for each $r:\Sn^{n+1} \to \trunc n A$ and each $x:\Sn^{n+1}$, a \emph{spoke} path $s_r(x):r(x) = h(r)$.
+\end{itemize}
+
+\noindent
+The existence of these constructors is now enough to show:
+
+\begin{lem}
+  $\trunc n A$ is an $n$-type.
+\end{lem}
+\begin{proof}
+  By \autoref{thm:ntype-nloop}, it suffices to show that $\Omega ^{n+1}(\trunc nA,b)$ is contractible for all $b:\trunc nA$, which by
+\autoref{lem:susp-loop-adj} is equivalent to $\Map_*(\Sn^{n+1},(\trunc nA,b))$.
+  As center of contraction for the latter, we choose the function $c_b:\Sn^{n+1} \to \trunc nA$ which is constant at $b$, together with
+$\refl b : c_b(\base) = b$.
+
+  Now, an arbitrary element of $\Map_*(\Sn^{n+1},(\trunc nA,b))$ consists of a map $r:\Sn^{n+1} \to \trunc n A$ together with a path
+$p:r(\base)=b$.
+  By function extensionality, to show $r = c_b$ it suffices to give, for each $x:\Sn^{n+1}$, a path $r(x)=c_b(x) \jdeq b$.
+  We choose this to be the composite $s_r(x) \ct \opp{s_r(\base)} \ct p$, where $s_r(x)$ is the spoke at $x$.
+
+
+  Finally, we must show that when transported along this equality $r=c_b$, the path $p$ becomes $\refl b$.
+  By transport in path types, this means we need
+  \[\opp{(s_r(\base) \ct \opp{s_r(\base)} \ct p)} \ct p = \refl b.\]
+  But this is immediate from path operations.
+\end{proof}
+
+To show the desired universal property of the $n$-truncation, we need the induction principle.
+We extract this from the constructors in the usual way; it says that given $P:\trunc nA\to\type$ together with
+\begin{itemize}
+\item For each $a:A$, an element $g(a) : P(\tproj na)$,
+\item For each $r:\Sn^{n+1} \to \trunc n A$ and $r':\prd{x:\Sn^{n+1}}, P(r(x))$, an element $h'(r,r'):P(h(r))$.
+\item For each $r:\Sn^{n+1} \to \trunc n A$ and $r':\prd{x:\Sn^{n+1}}, P(r(x))$, and each $x:\Sn^{n+1}$, a dependent path
+$\dpath{P}{s_r(x)}{r'(x)}{h'(r,r')}$.
+\end{itemize}
+there exists a section $f:\prd{x:\trunc n A} P(x)$ with $f(\tproj n a) \jdeq g(a)$ for all $a:A$.
+To make this more useful, we reformulate it as follows.
+
+\begin{thm}\label{thm:truncn-ind}
+  For any type family $P:\trunc n A \to \type$ such that each $P(x)$ is an $n$-type, and any function $g : \prd{a:A} P(\tproj n a)$, there
+exists a section $f:\prd{x:\trunc n A} P(x)$ such that $f(\tproj n a)\defeq g(a)$ for all $a:A$.
+\end{thm}
+\begin{proof}
+  It will suffice to construct the second and third data listed above, since $g$ has exactly the type of the first datum.
+  Given $r:\Sn^{n+1} \to \trunc n A$ and $r':\prd{x:\Sn^{n+1}}, P(r(x))$, we have $h(r):\trunc n A$ and $s_r :\prd{x:\Sn^{n+1}} (r(x) =
+h(r))$.
+  Define $t:\Sn^{n+1} \to P(h(r))$ by $t(x) \defeq \trans{s_r(x)}{r'(x)}$.
+  Then since $P(h(r))$ is $n$-truncated, there exists a point $u:P(h(r))$ and a contraction $v:\prd{x:\Sn^{n+1}} (t(x) = u)$.
+  Define $h'(r,r') \defeq u$, giving the second datum.
+  Then (recalling the definition of dependent paths), $v$ has exactly the type required of the third datum.
+\end{proof}
+
+In particular, if $E$ is some $n$-type, we can consider the constant family of types equal to $E$ for every point of $A$.
+Thus, every map $f:A\to{}E$ can be extended to a map $\extend{f}:\trunc nA\to{}E$ defined by $\extend{f}(\tproj na)\defeq f(a)$; this is the \emph{recursion principle} for $\trunc n A$.
+
+The induction principle also implies a uniqueness principle for functions of this form.
+Namely, if $E$ is an $n$-type and $g,g':\trunc nA\to{}E$ are such
+that $g(\tproj na)=g'(\tproj na)$ for every $a:A$, then $g(x)=g'(x)$ for all $x:\trunc nA$, since the type $g(x)=g'(x)$ is an $n$-type.
+Thus, $g=g'$.
+This yields the following universal property.
+
+\begin{lem}[Universal property of truncations]\label{thm:trunc-reflective}
+  Let $n\ge-2$, $A:\type$ and $B:\typele{n}$. The following map is an
+  equivalence:
+  \[\function{(\trunc nA\to{}B)}{A\to{}B}{g}{g\circ\tprojf n}\]
+\end{lem}
+
+\begin{proof}
+  Given that $B$ is $n$-truncated, any $f:A\to{}B$ can be extended to a map $\extend{f}:\trunc nA\to{}B$.
+  The map $\extend{f}\circ\tprojf n$ is equal to $f$, because for every $a:A$ we have $\extend{f}(\tproj na)=f(a)$ by definition.
+  And the map $\extend{g\circ\tprojf n}$ is equal to $g$, because they both send $\tproj na$ to $g(\tproj na)$.
+\end{proof}
+
+In categorical language, this says that the $n$-types form a \emph{reflective subcategory} of the category of types.
+(To state this fully precisely, one ought to use the language of $(\infty,1)$-categories.)
+In particular, this implies that the $n$-truncation is functorial:
+given $f:A\to B$, applying the recursion principle to the composite $A\xrightarrow{f} B \to \trunc n B$ yields a map $\trunc n f: \trunc n A \to \trunc n B$.
+By definition, we have a homotopy
+\begin{equation}
+  \mathsf{nat}^f_n : \prd{a:A} \trunc n f(\tproj n a) = \tproj n {f(a)},\label{eq:trunc-nat}
+\end{equation}
+expressing \emph{naturality} of the maps $\tproj n-$.
+
+Uniqueness implies functoriality laws such as $\trunc n {g\circ f} = \trunc n g \circ \trunc n f$ and $\trunc n{\idfunc[A]} = \idfunc[\trunc n A]$, with attendant coherence laws.
+We also have higher functoriality, for instance:
+
+\begin{lem}\label{thm:trunc-htpy}
+  Given $f,g:A\to B$ and a homotopy $h:f\htpy g$, there is an induced homotopy $\trunc n h : \trunc n f \htpy \trunc n g$ such that the composite
+  \begin{equation}
+    \xymatrix@C=4pc{\tproj n{f(a)} \ar@{=}[r]^-{\opp{\mathsf{nat}^f_n(a)}} &
+      \trunc n f(\tproj n a) \ar@{=}[r]^-{\trunc n h(\tproj na)} &
+      \trunc n g(\tproj n a) \ar@{=}[r]^-{\mathsf{nat}^g_n(a)} &
+      \tproj n{g(a)}}\label{eq:trunc-htpy}
+  \end{equation}
+  is equal to $\apfunc{\tproj n-}(h(a))$.
+\end{lem}
+\begin{proof}
+  First, we indeed have a homotopy with components $\apfunc{\tproj n-}(h(a)) : \tproj n{f(a)} = \tproj n{g(a)}$.
+  Composing on either sides with the paths $\tproj n{f(a)} = \trunc n f(\tproj n a)$ and $\tproj n{g(a)} = \trunc n g(\tproj n a)$, which arise from the definitions of $\trunc n f$ and $\trunc ng$, we obtain a homotopy $(\trunc n f \circ \tproj n-) \htpy (\trunc n g \circ \tproj n-)$, and hence an equality by function extensionality.
+  But since $(-\circ \tproj n-)$ is an equivalence, there must be a path $\trunc nf = \trunc ng$ inducing it, and the coherence laws for function extensionality imply~\eqref{eq:trunc-htpy}.
+\end{proof}
+
+The following observation about reflective subcategories is also standard.
+
+\begin{cor}
+  A type $A$ is an $n$-type if and only if the map $\tproj n- : A \to \trunc n A$ is an equivalence.
+\end{cor}
+\begin{proof}
+  ``If'' follows from closure of $n$-types under equivalence.
+  On the other hand, if $A$ is an $n$-type, we can define $\ext(\idfunc[A]):\trunc n A\to{}A$.
+  Then we have $\ext(\idfunc[A])\circ\tproj n-=\idfunc[A]:A\to{}A$ by
+  definition.  In order to prove that
+  $\tproj n-\circ\ext(\idfunc[A])=\idfunc[\trunc nA]$, we only need to prove
+  that $\tproj n-\circ\ext(\idfunc[A])\circ\tproj n-=
+  \idfunc[\trunc nA]\circ\tproj n-$.
+  This is again true:
+  \[\xymatrix{
+    A \ar^{\tproj n-}[r] \ar_{\idfunc[A]}[rd] &
+    \trunc nA \ar^>>>{\ext(\idfunc[A])}[d] \ar@/^40pt/^{\idfunc[\trunc nA]}[dd] \\
+    & A \ar_{\tproj n-}[d] \\
+    & \trunc nA}\]
+\end{proof}
+
+The category of $n$-types also has some special properties not possesed by all reflective subcategories.
+For instance, the reflector $\trunc n-$ preserves finite products.
+
+\begin{thm}\label{cor:trunc-prod}
+  For any types $A$ and $B$, the induced map $\trunc n{A\times B} \to \trunc nA \times \trunc nB$ is an equivalence.
+\end{thm}
+\begin{proof}
+  It suffices to show that $\trunc nA \times \trunc nB$ has the same universal property as $\trunc n{A\times B}$.
+  Thus, let $C$ be an $n$-type; we have
+  \begin{align*}
+    (\trunc nA \times \trunc nB \to C)
+    &= (\trunc nA \to (\trunc nB \to C))\\
+    &= (\trunc nA \to (B \to C))\\
+    &= (A \to (B \to C))\\
+    &= (A \times B \to C)
+  \end{align*}
+  using the universal properties of $\trunc nB$ and $\trunc nA$, along with the fact that $B\to C$ is an $n$-type since $C$ is.
+  It is straightforward to verify that this equivalence is given by composing with $\tproj n- \times \tproj n-$, as needed.
+\end{proof}
+
+We can characterize the path spaces of a truncation using the same method that we used in \autoref{sec:compute-coprod,sec:compute-nat} for
+coproducts and natural numbers (and which we will use in \autoref{cha:homotopy} to calculate homotopy groups).
+Unsurprisingly, the path spaces in the $(n+1)$-truncation of $A$ are the $n$-truncations of the path spaces of $A$.
+Indeed, for any $x,y:A$ there is a canonical map
+\begin{equation}
+  f:\ttrunc n{x=_Ay}\to \Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)\label{eq:path-trunc-map}
+\end{equation}
+defined by
+\[f(\tproj n{p})\defeq \apfunc{\tproj {n+1}-}(p). \]
+This definition uses the recursion principle for $\trunc n-$, which is correct because $\trunc {n+1}A$ is $(n+1)$-truncated, so that the
+codomain of $f$ is $n$-truncated.
+
+\begin{thm} \label{thm:path-truncation}
+  For any $A$ and $x,y:A$ and $n\ge -2$, the map~\eqref{eq:path-trunc-map} is an equivalence; thus we have
+  \[ \eqv{\ttrunc n{x=_Ay}}{\Big(\tproj {n+1}x=_{\trunc{n+1}A}\tproj {n+1}y\Big)}. \]
+\end{thm}
+
+\begin{proof}
+  The proof is a simple application of the encode-decode method: 
+  As in previous situations, we cannot directly define a quasi-inverse to~\eqref{eq:path-trunc-map} because there is no way to induct on an
+equality between $\tproj {n+1}x$ and $\tproj {n+1}y$.
+  Thus, instead we generalize its type, in order to have general elements of the type $\trunc{n+1}A$ instead of $\tproj {n+1}x$ and $\tproj
+{n+1}y$.
+  Define $P:\trunc {n+1}A\to\trunc {n+1}A\to\typele{n}$ by
+  \[P(\tproj {n+1}x,\tproj {n+1}y)\defeq \trunc n{x=_Ay}\]
+  This definition is correct because $\trunc n{x=_Ay}$ is $n$-truncated, and $\typele{n}$ is $(n+1)$-truncated by
+\autoref{thm:hleveln-of-hlevelSn}.
+  Now for every $u,v:\trunc{n+1}A$, there is a map
+  \[\encode:P(u,v) \to \big(u=_{\trunc{n+1}A}v\big)\]
+  defined for $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and $p:x=y$ by
+  \[\encode(\tproj n{p})\defeq \apfunc{\tproj{n+1}-} (p).\]
+  Since the codomain of $\encode$ is $n$-truncated, it suffices to define it only for $u$ and $v$ of this form, and then it's just the same
+definition as before.
+  We also define a function
+  \[ r : \prd{u:\trunc{n+1} A} P(u,u) \]
+  by induction on $u$, where $r(\tproj{n+1} x) \defeq \tproj n {\refl x}$.
+
+  Now we can define an inverse map
+  \[\decode: (u=_{\trunc{n+1}A}v) \to P(u,v)\]
+  by
+  \[\decode(p) \defeq \transfib{v\mapsto P(u,v)}{p}{r(u)}. \]
+  To show that the composite
+  \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \]
+  is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that
+$\decode(r(u)) = \refl{u}$.
+  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition
+of $r$ and $\decode$.
+  Finally, to show that 
+  \[ P(u,v) \xrightarrow{\encode} (u=_{\trunc{n+1}A}v) \xrightarrow{\decode} P(u,v) \]
+  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are
+considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
+  Then we have
+  \begin{align*}
+    \decode(\encode(\tproj n p)) &= \decode(\apfunc{\tproj{n+1}-}(p))\\
+    &= \transfib{v\mapsto P(\tproj{n+1}x,v)}{\apfunc{\tproj{n+1}-}(p)}{\tproj n {\refl x}}\\
+    &= \transfib{v\mapsto \trunc n{u=v}}{p}{\tproj n {\refl x}}\\
+    &= \tproj n {\transfib{v \mapsto (u=v)}{p}{\refl x}}\\
+    &= \tproj n p.
+  \end{align*}
+  This completes the proof that \encode and \decode are quasi-inverses.
+  The stated result is then the special case where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
+\end{proof}
+
+\begin{cor}
+  Let $n\ge-2$ and $(A,a)$ be a pointed type. Then
+  \[\trunc n{\Omega(A,a)}=\Omega(\trunc{n+1}{(A,a)})\]
+\end{cor}
+\begin{proof}
+  This is a special case of the previous lemma where $x=y=a$.
+\end{proof}
+
+\begin{cor}
+  Let $n\ge -2$ and $k\ge 0$ and $(A,a)$ a pointed type.  Then
+  \[\trunc n{\Omega^k(A,a)} = \Omega^k(\trunc{n+k}{(A,a)}). \]
+\end{cor}
+\begin{proof}
+  By induction on $k$, using the recursive definition of $\Omega^k$.
+\end{proof}
+
+We also observe that ``truncations are cumulative'': if we truncate to an $n$-type and then to a $k$-type with $k\le n$, then we might as
+well have truncated directly to a $k$-type.
+
+\begin{lem} \label{lem:truncation-le}
+  Let $k,n\ge-2$ with $k\le{}n$ and $A:\type$. Then
+  $\trunc k{\trunc nA}=\trunc kA$.
+\end{lem}
+\begin{proof}
+  We define two maps $f:\trunc k{\trunc nA}\to\trunc kA$ and
+  $g:\trunc kA\to\trunc k{\trunc nA}$ by
+  %
+  \[
+   f(\tproj k{\tproj na}) \defeq \tproj ka
+   \qquad\text{and}\qquad
+   g(\tproj ka) \defeq \tproj k{\tproj na}.
+  \]
+  %
+  The map $f$ is well-defined because $\trunc kA$ is $k$-truncated and also
+  $n$-truncated (because $k\le{}n$), and the map $g$ is well-defined because
+  $\trunc k{\trunc nA}$ is $k$-truncated.
+
+  The composition $f\circ{}g:\trunc kA\to\trunc kA$ satisfies
+  $(f\circ{}g)(\tproj ka)=\tproj ka$, hence $f\circ{}g=\idfunc[\trunc kA]$.
+  Similarly, we have $(g\circ{}f)(\tproj k{\tproj na})=\tproj k{\tproj na}$ and hence $g\circ{}f=\idfunc[\trunc k{\trunc nA}]$.
+\end{proof}
+
+% \begin{lem}
+%   We have $\trunc n{\unit}=\unit$.
+% \end{lem}
+% \begin{proof}
+%   Indeed, $\unit$ is $n$-truncated for every $n$ hence $\trunc n{\unit}=\unit$ by
+%   \autoref{reflectPequiv}.
+% \end{proof}
+
+
+\section{Colimits of \texorpdfstring{$n$}{n}-types}
+\label{sec:pushouts}
+
+Recall that in \autoref{sec:colimits}, we used higher inductive types to define pushouts of types, and proved their universal property.
+In general, a (homotopy) colimit of $n$-types may no longer be an $n$-type.
+However, if we $n$-truncate it, we obtain an $n$-type which satisfies the correct universal property with respect to other $n$-types.
+
+In this section we prove this formally for the case of pushouts, which is the most important and nontrivial one.
+Recall the following definitions from \autoref{sec:colimits}.
+
+\begin{defn}
+  A \define{span} % in $\P$
+  is a 5-tuple $\Ddiag=(A,B,C,f,g)$ with % $A,B,C:\P$ and
+  $f:C\to{}A$ and $g:C\to{}B$.
+  \[\Ddiag=\quad\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}\]
+\end{defn}
+
+\begin{defn}
+  Given a span $\Ddiag=(A,B,C,f,g)$ and a type $D$, a %$D:\P$, a
+  \define{cocone under $\Ddiag$ with base $D$} is a triple $(i, j, h)$ with
+  $i:A\to{}D$, $j:B\to{}D$ and $h : \prd{c:C}i(f(c))=j(g(c))$:
+  \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar^j[d] \\ A \ar_i[r] & D
+  }\]
+  We denote by $\cocone{\Ddiag}{D}$ the type of all such cocones.
+\end{defn}
+
+The type of cocones is (covariantly) functorial.
+For instance, given $D,E$ % $D,E:\P$
+and a map $t:D\to{}E$, there is a map
+  \[\function{\cocone{\Ddiag}{D}}{\cocone{\Ddiag}{E}}{c}{\composecocone{t}c}\]
+  defined by:
+  \[\composecocone{t}(i,j,h)=(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h)\]
+  % \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
+  % \xymatrix{C \ar^g[r] \ar_f[d] \drtwocell{^h} & B \ar_j[d]
+  %   \ar@/_/^{t\circ{}j}[rdd] & \\
+  %   A \ar^i[r] \ar@/^/_{t\circ{}i}[rrd] & D \ar[rd]|<<<<t & \\
+  %   & & E }\]
+And given $D,E,F$, %$:\P$,
+functions $t:D\to{}E$, $u:E\to{}F$ and $c:\cocone{\Ddiag}{D}$, we have
+\begin{align}
+  \composecocone{\idfunc[D]}c &= c \label{eq:composeconeid}\\
+  \composecocone{(u\circ{}t)}c&=\composecocone{u}(\composecocone{t}c)\label{eq:composeconefunc}
+\end{align}
+
+\begin{defn}
+  Given a span $\Ddiag$ of $n$-types, an $n$-type $D$, and a cocone
+  $c:\cocone{\Ddiag}{D}$, the pair $(D,c)$ is said to be a \define{pushout
+  of $\Ddiag$ in $n$-types} if for every $n$-type $E$, the map
+  \[\function{(D\to{}E)}{\cocone{\Ddiag}{E}}{t}{\composecocone{t}c}\]
+  is an equivalence.
+\end{defn}
+
+\begin{comment}
+We showed in \autoref{thm:pushout-ump} that pushouts exist when $\P$ is \type itself, by giving a direct construction in terms of higher
+inductive types.
+For a general \P, pushouts may or may not exist, but if they do, then they are unique.
+
+\begin{lem}
+  If $(D,c)$ and $(D',c')$ are two pushouts of $\Ddiag$ in $\P$, then
+  $(D,c)=(D',c')$.
+\end{lem}
+\begin{proof}
+  We first prove that the two types $D$ and $D'$ are equivalent.
+
+  Using the universal property of $D$ with $D'$, we see that the following map is an
+  equivalence
+  %
+  \[
+    \function{(D\to{}D')}{\cocone{\Ddiag}{D'}}{t}{\composecocone{t}c}
+  \]
+  %
+  In particular, there is a function $f:D\to{}D'$ satisfying $\composecocone{f}c=c'$. In the
+  same way there is a function $g:D'\to{}D$ such that $\composecocone{g}c'=c$.
+
+  In order to prove that $g\circ{}f=\idfunc[D]$ we use the universal property of
+  $D$ for $D$, which says that the following map is an equivalence:
+  %
+  \[
+  \function{(D\to{}D)}{\cocone{\Ddiag}{D}}{t}{\composecocone{t}c}
+  \]
+  %
+  Using the functoriality of $t\mapsto{}\composecocone{t}c$ we see that
+  \begin{align*}
+    \composecocone{(g\circ{}f)}c &= \composecocone{g}(\composecocone{f}c) \\
+    &= \composecocone{g}c' \\
+    &= c \\
+    &= \composecocone{\idfunc[D]}c
+  \end{align*}
+  hence
+  $g\circ{}f=\idfunc[D]$, because equivalences are injective. The same argument
+  with $D'$ instead of $D$ shows that $f\circ{}g=\idfunc[D']$.
+
+  Hence $D$ and $D'$ are equal, and the fact that $(D,c)=(D',c')$ follows from
+  the fact that the equivalence between $D$ and $D'$ we just defined sends $c$
+  to $c'$.
+\end{proof}
+
+\begin{cor}
+  The type of pushouts of $\Ddiag$ in $\P$ is \anhprop. In particular if
+  pushouts merely exist then they actually exist.
+\end{cor}
+
+As in the case of pullbacks, if \P is reflective, then pushouts in \P always exist.
+However, unlike the case of pullbacks, pushouts in \P are not the same as the pushouts in \type: they are obtained by applying the
+reflector.
+\end{comment}
+
+In order to construct pushouts of $n$-types, we need to explain how to reflect spans and cocones.
+
+\bgroup
+\def\reflect(#1){\trunc n{#1}}
+
+\begin{defn}
+  Let
+  \[\Ddiag=\quad\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}\]
+  be a span. We denote by $\reflect(\Ddiag)$ the following
+  span of $n$-types:
+  \[\reflect(\Ddiag)\defeq\quad \vcenter{\xymatrix{\reflect(C) \ar^{\reflect(g)}[r]
+      \ar_{\reflect(f)}[d] & \reflect(B) \\ \reflect(A) & }}\]
+\end{defn}
+
+\begin{defn}
+  Let $D:\type$ and $c=(i,j,h):\cocone{\Ddiag}{D}$.
+  We define
+  \[\reflect(c)=(\reflect(i),\reflect(j),\reflect(h)):
+  \cocone{\reflect(\Ddiag)}{\reflect(D)}\]
+  where $\reflect(h): \reflect(i) \circ \reflect(f) \htpy \reflect(j) \circ \reflect(g)$ is defined as in \autoref{thm:trunc-htpy}.
+  % \[\reflect(h):\prd{c:\reflect(C)}\reflect(i)(\reflect(f)(c))=\reflect(j)(\reflect(g)(c))\]
+  % is defined in the following way:
+\end{defn}
+
+\egroup
+
+We now observe that the maps from each type to its $n$-truncation assemble into a map of spans, in the following sense.
+
+\begin{defn}
+  Let 
+  \[\Ddiag=\quad\vcenter{\xymatrix{C \ar^g[r] \ar_f[d] & B \\ A & }}
+  \qquad\text{and}\qquad
+  \Ddiag'=\quad\vcenter{\xymatrix{C' \ar^{g'}[r] \ar_{f'}[d] & B' \\ A' & }}
+  \]
+  be spans.
+  A \define{map of spans} $\Ddiag \to \Ddiag'$ consists of functions $\alpha:A\to A'$, $\beta:B\to B'$, and $\gamma:C\to C'$ and homotopies $\phi: \alpha\circ f \htpy f'\circ \gamma$ and $\psi:\beta\circ g \htpy g' \circ \gamma$.
+\end{defn}
+
+Thus, for any span $\Ddiag$, we have a map of spans $\tproj[\Ddiag] n- : \Ddiag \to \trunc n\Ddiag$ consisting of $\tproj[A]n-$, $\tproj[B]n-$, $\tproj[C]n-$, and the naturality homotopies $\mathsf{nat}^f_n$ and $\mathsf{nat}^g_n$ from~\eqref{eq:trunc-nat}.
+
+We also need to know that maps of spans behave functorially.
+Namely, if $(\alpha,\beta,\gamma,\phi,\psi):\Ddiag \to \Ddiag'$ is a map of spans and $D$ any type, then we have
+\[ \function{\cocone{\Ddiag'}{D}}{\cocone{\Ddiag}{D}}{(i,j,h)}{(i\circ \alpha,j\circ\beta, k)} \]
+where $k: \prd{z:C} i(\alpha(f(z))) = j(\beta(g(z)))$ is the composite
+\begin{equation}\label{eq:mapofspans-htpy}
+\xymatrix{
+  i(\alpha(f(z))) \ar@{=}[r]^{\apfunc{i}(\phi)} &
+  i(f'(\gamma(z))) \ar@{=}[r]^{h(\gamma(z))} &
+  j(g'(\gamma(z))) \ar@{=}[r]^{\apfunc{j}(\psi)} &
+  j(\beta(g(z))). }
+\end{equation}
+We denote this cocone by $(i,j,h) \circ (\alpha,\beta,\gamma,\phi,\psi)$.
+Moreover, this functorial action commutes with the other functoriality of cocones:
+
+\begin{lem}\label{thm:conemap-funct}
+  Given $(\alpha,\beta,\gamma,\phi,\psi):\Ddiag \to \Ddiag'$ and $t:D\to E$, the following diagram commutes:
+  \begin{equation*}
+    \vcenter{\xymatrix{
+        \cocone{\Ddiag'}{D}\ar[r]^-{t\circ -}\ar[d] &
+        \cocone{\Ddiag'}{E}\ar[d]\\
+        \cocone{\Ddiag}{D}\ar[r]_-{t\circ -} &
+        \cocone{\Ddiag}{E}
+      }}
+  \end{equation*}
+\end{lem}
+\begin{proof}
+  Given $(i,j,h):\cocone{\Ddiag'}{D}$, note that both composites yield a cocone whose first two components are $t\circ i\circ \alpha$ and $t\circ j\circ\beta$.
+  Thus, it remains to verify that the homotopies agree.
+  For the top-right composite, the homotopy is~\eqref{eq:mapofspans-htpy} with $(i,j,h)$ being replaced by $(t\circ i, t\circ j, \apfunc{t}\circ h)$:
+  \begin{equation*}
+    \xymatrix@C=3pc{
+      t(i(\alpha(f(z)))) \ar@{=}[r]^{\apfunc{t\circ i}(\phi)} &
+      t(i(f'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t}(h(\gamma(z)))} &
+      t(j(g'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t\circ j}(\psi)} &
+      t(j(\beta(g(z)))). }
+  \end{equation*}
+  On the other hand, for the left-bottom composite, the homotopy is $\apfunc{t}$ applied to~\eqref{eq:mapofspans-htpy}.
+  Since $\apfunc{}$ respects path-concatenation, this is equal to
+  \begin{equation*}
+    \xymatrix@C=3pc{
+      t(i(\alpha(f(z)))) \ar@{=}[r]^{\apfunc{t}(\apfunc{i}(\phi))} &
+      t(i(f'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t}(h(\gamma(z)))} &
+      t(j(g'(\gamma(z)))) \ar@{=}[r]^{\apfunc{t}(\apfunc{j}(\psi))} &
+      t(j(\beta(g(z)))). }
+  \end{equation*}
+  But $\apfunc{t}\circ \apfunc{i} = \apfunc{t\circ i}$ and similarly for $j$, so these two homotopies are equal.
+\end{proof}
+
+Finally, note that since we defined $\trunc nc : \cocone{\trunc n \Ddiag}{\trunc n D}$ using \autoref{thm:trunc-htpy}, the additional condition~\eqref{eq:trunc-htpy} implies
+\begin{equation}
+  \tproj[D] n- \circ c = \trunc n c \circ \tproj[\Ddiag]n- .\label{eq:conetrunc}
+\end{equation}
+for any $c:\cocone{\Ddiag}{D}$.
+Now we can prove our desired theorem.
+
+\begin{thm}
+  \label{reflectcommutespushout}
+  Let $\Ddiag$ be a span and $(D,c)$ its pushout.
+  Then $(\trunc nD,\trunc n c)$ is a pushout of $\trunc n\Ddiag$ in $n$-types.
+\end{thm}
+\begin{proof}
+  Let $E$ be an $n$-type, and consider the following diagram:
+\bgroup
+\def\reflect(#1){\trunc n{#1}}
+  \begin{equation*}
+  \vcenter{\xymatrix{
+      (\trunc nD \to E)\ar[r]^-{-\circ \tproj[D] n-}\ar[d]_{-\circ \trunc nc} &
+      (D\to E)\ar[d]^{-\circ c}\\
+      \cocone{\trunc n \Ddiag}{E}\ar[r]^-{-\circ \tproj[\Ddiag]n-}\ar@{<-}[d]_{\ell_1} &
+      \cocone{\Ddiag}{E}\ar@{<-}[d]^{\ell_2}\\
+      (\reflect(A)\to{}E)\times_{(\reflect(C)\to{}E)}(\reflect(B)\to{}E)\ar[r] &
+      (A\to{}E)\times_{(C\to{}E)}(B\to{}E)
+      }}
+  \end{equation*}
+\egroup
+  The upper horizontal arrow is an equivalence since $E$ is an $n$-type, while $-\circ c$ is an equivalence since $c$ is a pushout cocone.
+  Thus, by the 2-out-of-3 property, to show that $-\circ \trunc nc$ is an equivalence, it will suffice to show that the upper square commutes and that the middle horizontal arrow is an equivalence.
+  To see that the upper square commutes, let $t:\trunc nD \to E$; then
+  \begin{alignat*}{2}
+    \big(t \circ \trunc n c\big) \circ \tproj[\Ddiag] n-
+    &= t \circ \big(\trunc n c \circ \tproj[\Ddiag] n-\big)
+    &&\quad\text{by \autoref{thm:conemap-funct}}\\
+    &= t\circ \big(\tproj[D]n- \circ c\big)
+    &&\quad\text{by~\eqref{eq:conetrunc}}\\
+    &= \big(t\circ \tproj[D]n-\big) \circ c
+    &&\quad\text{by~\eqref{eq:composeconefunc}}.
+  \end{alignat*}
+  To show that the middle horizontal arrow is an equivalence, consider the lower square.
+  The two lower vertical arrows are simply applications of $\happly$:
+  \begin{align*}
+    \ell_1(i,j,p) &\defeq (i,j,\happly(p))\\
+    \ell_2(i,j,p) &\defeq (i,j,\happly(p))
+  \end{align*}
+  and hence are equivalences by function extensionality.
+  The lowest horizontal arrow is defined by
+  \[ (i,j,p) \mapsto \big( i\circ \tproj[A]n- ,\;\; j \circ \tproj[B] n- ,\;\; q\big) \]
+  where $q$ is the composite
+  \begin{alignat*}{2}
+    i\circ \tproj[A]n- \circ f
+    &= i\circ \trunc nf \circ \tproj[C]n-
+    &&\quad\text{by }{\funext(\lam{z} \apfunc{i}(\mathsf{nat}^f_n(z)))}\\
+    &= j\circ \trunc ng \circ \tproj[C]n-
+    &&\quad\text{by }\apfunc{-\circ \tproj[C] n-}(p)\\
+    &= j\circ \tproj[B]n- \circ g
+    &&\quad\text{by }{\funext(\lam{z} \apfunc{j}(\mathsf{nat}^g_n(z)))}.
+  \end{alignat*}
+  This is an equivalence, because it is induced by an equivalence of cospans.
+  Thus, by 2-out-of-3, it will suffice to show that the lower square commutes.
+  But the two composites around the lower square agree definitionally on the first two components, so it suffices to show that for $(i,j,p)$ in the lower-left corner and $z:C$, the path
+  \[ \happly(q,z) : i(\tproj n{f(z)}) = j(\tproj n{g(z)}) \]
+  (with $q$ as above)
+  is equal to the composite
+  \begin{alignat*}{2}
+    i(\tproj n{f(z)})
+    &= i(\trunc nf(\tproj nz))
+    &&\quad\text{by }{\apfunc{i}(\mathsf{nat}^f_n(z))}\\
+    &= j(\trunc ng(\tproj nz))
+    &&\quad\text{by }{\happly(p,\tproj nz)}\\
+    &= j(\tproj n{g(z)})
+    &&\quad\text{by }{\apfunc{j}(\mathsf{nat}^g_n(z))}.
+  \end{alignat*}
+  However, since $\happly$ is functorial, it suffices to check equality for the three component paths:
+  \begin{align*}
+    \happly({\funext(\lam{z} \apfunc{i}(\mathsf{nat}^f_n(z)))},z)
+    &= {\apfunc{i}(\mathsf{nat}^f_n(z))}\\
+    \happly(\apfunc{-\circ \tproj[C] n-}(p), z)
+    &= {\happly(p,\tproj nz)}\\
+    \happly({\funext(\lam{z} \apfunc{j}(\mathsf{nat}^g_n(z)))},z)
+    &= {\apfunc{j}(\mathsf{nat}^g_n(z))}.
+  \end{align*}
+  The first and third of these are just the fact that $\happly$ is quasi-inverse to $\funext$, while
+  the second is an easy general lemma about $\happly$ and precomposition.
+\end{proof}
+
+
+\section{Connectedness}
+\label{sec:connectivity}
+
+An $n$-type is one that has no interesting information above dimension $n$.
+By contrast, an \emph{$n$-connected type} is one that has no interesting information \emph{below} dimension $n$.
+It turns out to be natural to study a more general notion for functions as well.
+
+\begin{defn}
+A function $f:A\to B$ is said to be \define{$n$-connected} if for all $b:B$, the type $\trunc n{\hfiber f b}$ is contractible:
+\begin{equation*}
+  \mathsf{conn}_n(f)\defeq \prd{b:B}\iscontr(\trunc n{\hfiber{f}b}). 
+\end{equation*}
+A type $A$ is said to be \define{$n$-connected} if the unique function $A\to\unit$ is $n$-connected, i.e.\ if $\trunc nA$ is contractible.
+\end{defn}
+
+Thus, a function $f:A\to B$ is $n$-connected if and only if $\hfib{f}b$ is $n$-connected for every $b:B$.
+Of course, every function is $(-2)$-connected.
+At the next level, we have:
+
+\begin{lem}
+  A function $f$ is $(-1)$-connected if and only if it is surjective in the sense of \autoref{sec:mono-surj}.
+\end{lem}
+\begin{proof}
+  We defined $f$ to be surjective if $\brck{\hfiber f b}$ is inhabited for all $b$.
+  But since it is a mere proposition, inhabitation is equivalent to contractibility.
+\end{proof}
+
+Thus, $n$-connectedness of a function for $n\ge 0$ can be thought of as a strong form of surjectivity.
+Category-theoretically, $(-1)$-connectedness corresponds to essential surjectivity on objects, while $n$-connectedness corresponds to essential surjectivity on $k$-morphisms for $k\le n+1$.
+
+\begin{rmk}
+  While our notion of $n$-connectedness for types agrees with the standard notion in homotopy theory, our notion of $n$-connectedness for \emph{functions} is off by one from a common indexing in classical homotopy theory.
+  Whereas we say a function $f$ is $n$-connected if all its fibers are $n$-connected, some classical homotopy theorists would call such a function $(n+1)$-connected.
+  (This is due to a historical focus on \emph{cofibers} rather than fibers.)
+\end{rmk}
+
+We now observe a few closure properties of connected maps.
+
+\begin{lem}
+Suppose that $g$ is a retract of a $n$-connected function $f$.  Then $g$ is
+$n$-connected.
+\end{lem}
+\begin{proof}
+This is a direct consequence of \autoref{lem:func_retract_to_fiber_retract}.
+\end{proof}
+
+\begin{cor}
+If $g$ is homotopic to a $n$-connected function $f$, then $g$ is $n$-connected.
+\end{cor}
+
+\begin{lem}\label{lem:nconnected_postcomp}
+Suppose that $f:A\to B$ is $n$-connected. Then $g:B\to C$ is $n$-connected if and only if $g\circ f$ is
+$n$-connected.
+\end{lem}
+
+\begin{proof}
+Let $c:C$. We have $\hfib{g\circ f}c \simeq \sm{w:\hfib{g}c}\hfib{f}{\proj1 w}$ and, so 
+\begin{align*}
+\trunc n{\hfib{g\circ f}c}& \simeq \Trunc n{ \sm{w:\hfib{g}c}\hfib{f}{\proj1 w}}\\
+& \simeq \Trunc n{\sm{w:\hfib{g}c} \trunc n{\hfib{f}{\proj1 w}}}\\
+& \simeq \trunc n{\hfib{g}c}.
+\end{align*}
+It follows that $\trunc n{\hfib{g}c}$ is contractible if and only if $\trunc n{\hfib{g\circ f}c}$ is
+contractible.
+\end{proof}
+
+Importantly, $n$-connected functions can be equivalently characterized as those which satisfy an ``induction principle'' with respect to $n$-types.
+This idea will lead directly into our proof of the Freudenthal suspension theorem in \autoref{sec:freudenthal}.
+
+\begin{lem}\label{prop:nconnected_tested_by_lv_n_dependent types}
+For $f:A\to B$ and $P:B\to\type$, consider the following function:
+\begin{equation*}
+\lam{s} s\circ f :\left(\prd{b:B} P(b)\right)\to\left(\prd{a:A}P(f(a))\right).
+\end{equation*}
+For a fixed $f$ and $n\ge -2$, the following are equivalent.
+\begin{enumerate}
+\item $f$ is $n$-connected.\label{item:conntest1}
+\item For every $P:B\to\ntype{n}$, the map $\lam{s} s\circ f$ is an equivalence.\label{item:conntest2}
+\item For every $P:B\to\ntype{n}$, the map $\lam{s} s\circ f$ has a section.\label{item:conntest3}
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+Suppose that $f$ is $n$-connected and let $P:B\to\ntype{n}$. Then we have the equivalences
+\begin{align*}
+\prd{b:B} P(b) & \simeq \prd{b:B} \trunc n{\hfib{f}b} \to P(b)\\
+& \simeq \prd{b:B} \hfib{f}b\to P(b)\\
+& \simeq \prd{b:B}{a:A}{p:f(a)= b} P(b)\\
+& \simeq \prd{a:A} P(f(a)).
+\end{align*}
+We omit the proof that this equivalence is indeed given by $\lam{s} s\circ f$.
+Thus,~\ref{item:conntest1}$\Rightarrow$\ref{item:conntest2}, and clearly~\ref{item:conntest2}$\Rightarrow$\ref{item:conntest3}.
+To show~\ref{item:conntest3}$\Rightarrow$\ref{item:conntest1}, consider the type family
+\begin{equation*}
+P(b)\defeq \trunc n{\hfib{f}b}.
+\end{equation*}
+Then~\ref{item:conntest3} yields a function $c:\prd{b:B} \trunc n{\hfib{f}b}$ with
+$c(f(a))=\tproj n{\pairr{a,\refl{f(a)}}}$. To show that each $\trunc n{\hfib{f}b}$ is contractible,
+we will find a function of type
+\begin{equation*}
+\prd{b:B}{w:\trunc n{\hfib{f}b}} w= c(b).
+\end{equation*}
+By \autoref{thm:truncn-ind}, for this it suffices to find a function of type
+\begin{equation*}
+\prd{b:B}{a:A}{p:f(a)= b} \tproj n{\pairr{a,p}}= c(b).
+\end{equation*}
+But by rearranging variables and path induction, this is equivalent to the type
+\begin{equation*}
+\prd{a:A} \tproj n{\pairr{a,\refl{f(a)}}}= c(f(a)).
+\end{equation*}
+This property holds by our choice of $c(f(a))$. 
+\end{proof}
+
+\begin{cor}\label{cor:totrunc-is-connected}
+For any $A$, the canonical function $\tproj n-:A\to\trunc n A$ is $n$-connected.
+\end{cor}
+\begin{proof}
+By \autoref{thm:truncn-ind} and the associated uniqueness principle, the condition of \autoref{prop:nconnected_tested_by_lv_n_dependent types} holds.
+\end{proof}
+
+For instance, when $n=-1$, \autoref{cor:totrunc-is-connected} says that the map $A\to \brck A$ from a type to its propositional truncation is surjective.
+
+\begin{cor}\label{thm:nconn-to-ntype-const}
+A type $A$ is $n$-connected if and only if the map
+\begin{equation*}
+  \lam{b}{a} b: B \to (A\to B)
+\end{equation*}
+is an equivalence for every $n$-type $B$.
+In other words, ``every map from $A$ to an $n$-type is constant''.
+\end{cor}
+\begin{proof}
+  By \autoref{prop:nconnected_tested_by_lv_n_dependent types} applied to a function with codomain $\unit$.
+\end{proof}
+
+\begin{lem}\label{lem:nconnected_to_leveln_to_equiv}
+Let $B$ be an $n$-type and let $f:A\to B$ be a function. Then the induced function $g:\trunc n A\to B$ is an
+equivalence if and only if $f$ is $n$-connected.
+\end{lem}
+
+\begin{proof}
+Note that $f$ is homotopic to $g\circ \tproj n-$. By \autoref{cor:totrunc-is-connected}, $\tproj n-$ is $n$-connected, so
+by
+\autoref{lem:nconnected_postcomp} $f$ is $n$-connected if and only if $g$ is $n$-connected.
+But since $g$ is a function between $n$-types, its fibers are also $n$-types.
+Thus, $g$ is $n$-connected if and only if it is an equivalence.
+\end{proof}
+
+We can also characterize connected pointed types in terms of connectivity of the inclusion of their basepoint.
+
+\begin{lem}\label{thm:connected-pointed}
+  Let $A$ be a type and $a_0:\unit\to A$ a basepoint, with $n\ge -1$.
+  Then $A$ is $n$-connected if and only if the map $a_0$ is $(n-1)$-connected.
+\end{lem}
+\begin{proof}
+  First suppose $a_0:\unit\to A$ is $(n-1)$-connected and let $B$ be an $n$-type; we will use \autoref{thm:nconn-to-ntype-const}.
+  The map $\lam{b}{a} b: B \to (A\to B)$ has a retraction given by $f\mapsto f(a_0)$, so it suffices to show it also has a section, i.e.\ that for any $f:A\to B$ there is $b:B$ such that $f = \lam{a}b$.
+  We choose $b\defeq f(a_0)$.
+  Define $P:A\to\type$ by $P(a) \defeq (f(a)=f(a_0))$.
+  Then $P$ is a family of $(n-1)$-types and we have $P(a_0)$; hence we have $\prd{a:A} P(a)$ since $a_0:\unit\to A$ is $(n-1)$-connected.
+  Thus, $f = \lam{a} f(a_0)$ as desired.
+
+  Now suppose $A$ is $n$-connected, and let $P:A\to\ntype{(n-1)}$ and $u:P(a_0)$ are given.
+  By \autoref{prop:nconnected_tested_by_lv_n_dependent types}, it will suffice to construct $f:\prd{a:A} P(a)$ such that $f(a_0)=u$.
+  Now $\ntype{(n-1)}$ is an $n$-type and $A$ is $n$-connected, so by \autoref{thm:nconn-to-ntype-const}, there is an $n$-type $B$ such that $P = \lam{a} B$.
+  Hence, we have a family of equivalences $g:\prd{a:A} (\eqv{P(a)}{B})$.
+  Define $f(a) \defeq \opp{g_a}(g_{a_0}(u))$; then $f:\prd{a:A} P(a)$ and $f(a_0) = u$ as desired.
+\end{proof}
+
+A useful variation on \autoref{lem:nconnected_postcomp} is:
+
+\begin{lem}\label{lem:nconnected_postcomp_variation}
+Let $f:A\to B$ be a function and $P:A\to\type$ and $Q:B\to\type$ be type families. Suppose that $g:\prd{a:A} P(a)\to Q(f(a))$
+is a fiberwise $n$-connected family of functions, i.e.\ each $g(a)$ is $n$-connected. Then the function
+\begin{align*}
+\varphi &:\left(\sm{a:A} P(a)\right)\to\left(\sm{b:B} Q(b)\right)\\
+\varphi(a,u) &\defeq \pairr{f(a),g(u)}
+\end{align*}
+is $n$-connected if and only if $f$ is $n$-connected.
+\end{lem}
+
+\begin{proof}
+For $b:B$ and $v:Q(b)$ we have
+\begin{align*}
+\trunc n{\hfib{\varphi}{\pairr{b,v}}} & \simeq \Trunc n{\sm{a:A}{u:P(a)}{p:f(a)= b} \trans{f(p)}{g(u)}= v}\\
+& \simeq \Trunc n{\sm{w:\hfib{f}b}{u:P(\proj1(w))} g(u)= \trans{\opp{f(p)}}{v}}\\
+& \simeq \Trunc n{\sm{w:\hfib{f}b} \trunc n{\hfib{g(\proj1 w)}{\trans{\opp{f(p)}}{v}}}}\\
+& \simeq \trunc n{\hfib{f}b}
+\end{align*}
+where the transportations along $f(p)$ and $f(p)^{-1}$ are with respect to $Q$.
+Therefore, if either is contractible, so is the other.
+\end{proof}
+
+In the other direction, we have
+
+\begin{lem}\label{prop:nconn_fiber_to_total}
+Let $P,Q:A\to\type$ be dependent types and consider a fiberwise transformation
+\begin{equation*}
+f:\prd{a:A} P(a)\to Q(a)
+\end{equation*}
+from $P$ to $Q$. Then the induced map $\total f: \sm{a:A}P(a) \to \sm{a:A} Q(a)$ is $n$-connected if and only if each $f(a)$ is $n$-connected. 
+\end{lem}
+
+\begin{proof}
+By \autoref{fibwise-fiber-total-fiber-equiv}, we have
+$\hfib{\total f}{\pairr{x,v}}\simeq\hfib{f(x)}v$
+for each $x:A$ and $v:Q(x)$. Hence $\trunc n{\hfib{\total f}{\pairr{x,v}}}$ is contractible if and only if
+$\trunc n{\hfib{f(x)}v}$ is contractible.
+\end{proof}
+
+Another useful fact about connected maps is that they induce an
+equivalence on $n$-truncations:
+
+\begin{lem} \label{lem:connected-map-equiv-truncation}
+If $f : A \to B$ is $n$-connected, then it induces an equivalence
+$\eqv{\trunc{n}{A}}{\trunc{n}{B}}$.
+\end{lem}
+\begin{proof}
+Let $c$ be the proof that $f$ is $n$-connected.  From left to right, we
+use the map $\trunc{n}{f} : \trunc{n}{A} \to \trunc{n}{B}$.
+To define the map from right to left, by the universal property of
+truncations, it suffices to give a map $\mathsf{back} : B \to {\trunc{n}{A}}$.  We can
+define this map as follows:
+\[
+\mathsf{back}(y) \defeq \trunc{n}{\proj{1}}{(\proj{1}{(c(y))})}
+\]
+By definition, $c(y)$ has type $\iscontr(\trunc n {\hfiber{f}y})$, so its
+first component has type $\trunc n{\hfiber{f}y}$, and we can obtain an
+element of $\trunc n A$ from this by projection.
+
+Next, we show that the composites are the identity.  In both directions,
+because the goal is a path in an $n$-truncated type, it suffices to
+cover the case of the constructor $\tprojf{n}$.
+
+In one direction, we must show that for all $x:A$, 
+\[
+\trunc{n}{\proj{1}}{(\proj{1}{(c(f(x)))})} = \tproj{n}{x}
+\]
+But $\tproj{n}{(x , \refl{})} : \trunc n{\hfiber{f}y}$, and
+$c(y)$ says that this type is contractible, so 
+\[
+\proj{1}{(c(f(x)))} = \tproj{n}{(x , \refl{})}
+\]
+Applying $\trunc{n}{\proj{1}}$ to both sides of this equation gives the
+result.  
+
+In the other direction, we must show that for all $y:B$, 
+\[
+\trunc{n}{f}(\trunc{n}{\proj{1}} (\proj{1}{(c(y))})) = \tproj{n}{y}
+\]
+$\proj{1}{(c(y))}$ has type $\trunc n {\hfiber{f}y}$, and the path we
+want is essentially the second component of the $\hfiber{f}y$, but we
+need to make sure the truncations work out.  
+
+In general, suppose we are given $p:\trunc{n}{\sm{x:A} B(x)}$ and wish to prove
+$P(\trunc{n}{\proj{1}{}}(p))$. By truncation induction, it suffices to
+prove $P(\tproj{n}{a})$ for all $a:A$ and $b:B(a)$.  Applying this
+principle in this case, it suffices to prove
+\[
+\trunc{n}{f}(\tproj{n}{a}) = \tproj{n}{y}
+\]
+given $a:A$ and $b:f (a) = y$.  But the left-hand side equals $\tproj{n}{f (a)}$,
+so applying $\tprojf{n}$ to both sides of $b$ gives the result.
+\end{proof}
+
+One might guess that this fact characterizes the $n$-connected maps, but in fact being $n$-connected is a bit stronger than this.
+For instance, the inclusion $\bfalse:\unit \to\bool$ induces an equivalence on $(-1)$-truncations, but is not surjective (i.e.\ $(-1)$-connected).
+In \autoref{sec:long-exact-sequence-homotopy-groups} we will see that the difference in general is an analogous extra bit of surjectivity.
+
+
+\section{Orthogonal factorization}
+\label{sec:image-factorization}
+
+In set theory, the surjections and the injections form a unique factorization system: every function factors essentially uniquely as a surjection followed by an injection.
+We have seen that surjections generalize naturally to $n$-connected maps, so it is natural to inquire whether these also participate in a factorization system.
+Here is the corresponding generalization of injections.
+
+\begin{defn}
+  A function $f:A\to B$ is \define{$n$-truncated} if the fiber $\hfib f b$ is an $n$-type for all $b:B$.
+\end{defn}
+
+In particular, $f$ is $(-2)$-truncated if and only if it is an equivalence.
+And of course, $A$ is an $n$-type if and only if $A\to\unit$ is $n$-truncated.
+Moreover, $n$-truncated maps could equivalently be defined recursively, like $n$-types.
+
+\begin{lem}\label{thm:modal-mono}
+  For any $n\ge -2$, a function $f:A\to B$ is $(n+1)$-truncated if and only if for all $x,y:A$, the map $\apfunc{f}:(x=y) \to (f(x)=f(y))$ is $n$-truncated.
+  In particular, $f$ is $(-1)$-truncated if and only if it is a monomorphism in the sense of \autoref{sec:mono-surj}.
+\end{lem}
+\begin{proof}
+  Note that for any $(x,p),(y,q):\hfib f b$, we have
+  \begin{align*}
+    \big((x,p) = (y,q)\big)
+    &= \sm{r:x=y} (p = f(r)\ct q)\\
+    &= \sm{r:x=y} (\apfunc f (r) = p\ct \opp q)\\
+    &= \hfib{\apfunc{f}}{p\ct \opp q}.
+  \end{align*}
+  Thus, any path space in any fiber of $f$ is a fiber of $\apfunc{f}$.
+  On the other hand, choosing $b\defeq f(y)$ and $q\defeq \refl{f(y)}$ we see that any fiber of $\apfunc f$ is a path space in a fiber of $f$.
+  The result follows, since $f$ is $(n+1)$-connected if all path spaces of its fibers are $n$-types.
+\end{proof}
+
+% The following two corollaries are reformulations of \autoref{prop:nconnected_tested_by_lv_n_dependent types}:
+
+% \begin{cor}
+% A function $f:A\to B$ is $n$-connected if and only if for every modal function $g:X\to B$, the function
+% \begin{equation*}
+% \varphi:\big(\prd{b:B}\hfib{g}b\big)\to\big(\prd{a:A} \hfib{g}{f(a)}\big)
+% \end{equation*}
+% defined by $\varphi(s) \defeq s\circ f$ is an equivalence.
+% \end{cor}
+
+% \begin{cor}
+% A function $f:A\to B$ is $n$-connected if and only if for every modal function $g:X\to B$, the function
+% \begin{equation*}
+% \varphi :\big(\sm{h:B\to X} g\circ h\sim \refl{B}\big)\to\big(\sm{k:A\to X} g\circ k\sim f\big)
+% \end{equation*}
+% defined by $\varphi(h,H) \defeq \pairr{h\circ f,H\circ f}$ is an equivalence.
+% \end{cor}
+
+We can now construct the factorization, in a fairly obvious way.
+
+\begin{defn}\label{defn:modal-image}
+Let $f:A\to B$ be a function. The \define{$n$-image} of $f$ is defined as
+\begin{equation*}
+\im_n(f)\defeq \sm{b:B} \trunc n{\hfib{f}b}
+\end{equation*}
+When $n=-1$, we write simply $\im(f)$.
+\end{defn}
+
+\begin{lem}\label{prop:to_image_is_connected}
+For any function $f:A\to B$, the canonical function $\tilde{f}:A\to\im_n(f)$ is $n$-connected. 
+Consequently, any function factors as an $n$-connected function followed by a modal function.
+\end{lem}
+
+\begin{proof}
+Note that $A\simeq\sm{b:B}\hfib{f}b$. The function $\tilde{f}$ is the function on total spaces induced by the fiberwise
+transformation
+\begin{equation*}
+\prd{b:B} \hfib{f}b\to\trunc n{\hfib{f}b}.
+\end{equation*}
+Since this is fiberwise $n$-connected by \autoref{cor:totrunc-is-connected}, the statement follows from
+\autoref{prop:nconn_fiber_to_total}.
+\end{proof}
+
+In the following lemma we set up some machinery to prove the unique factorization theorem.
+
+\begin{lem}\label{prop:factor_equiv_fiber}
+Suppose we have a commutative diagram of functions
+\begin{equation*}
+\begin{tikzpicture}
+\node (A) at (-3em,0) {$A$};
+\node (B) at (3em,0) {$B$};
+\node (X1) at (0,1.5em) {$X_1$};
+\node (X2) at (0,-1.5em) {$X_2$};
+\draw[ar] (A) -- node[auto] {$g_1$} (X1);
+\draw[ar] (X1) -- node[auto] {$h_1$} (B);
+\draw[ar] (A) -- node[auto,swap] {$g_2$} (X2);
+\draw[ar] (X2) -- node[auto,swap] {$h_2$} (B);
+\end{tikzpicture}
+\end{equation*}
+with $H:h_1\circ g_1\htpy h_2\circ g_2$, where $g_1$ and $g_2$ are $n$-connected and where $h_1$ and $h_2$ are $n$-truncated.
+Then there is an equivalence
+\begin{equation*}
+E(H,b):\hfib{h_1}b\simeq\hfib{h_2}b
+\end{equation*}
+for any $b:B$, such that for any $a:A$ we have
+\[E(H,h_1(g_1(a)))(\pairr{g_1(a),\refl{h_1(g_1(a))}}) = \pairr{g_2(a),H(a)^{-1}}.\]
+\end{lem}
+
+\begin{proof}
+Let $b:B$. Then we have the following equivalences:
+\begin{align*}
+\hfib{h_1}b & \simeq \sm{w:\hfib{h_1}b} \trunc n{ \hfib{g_1}{\proj1 w}}\\
+& \simeq \Trunc n{\sm{w:\hfib{h_1}b}\hfib{g_1}{\proj1 w}}\\
+& \simeq \trunc n{\hfib{h_1\circ g_1}b}
+\end{align*}
+and likewise for $h_2$ and $g_2$. Here, the first equivalence holds because $g_1$ is $n$-connected; the second equivalence
+holds because $h_1$ is $n$-truncated; and the third equivalence holds by \autoref{lem:hfiber_basics}. Also, since we have a
+homotopy $H:h_1\circ g_1\sim h_2\circ g_2$, there is an obvious equivalence $\hfib{h_1\circ g_1}b\simeq\hfib{h_2\circ g_2}b$. Hence we
+obtain
+\begin{equation*}
+\hfib{h_1}b\simeq\hfib{h_2}b
+\end{equation*}
+for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the term
+$\pairr{g_1(a),\refl{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
+\begin{align*}
+\pairr{g_1(a),\refl{h_1(g_1(a))}} & 
+    \mapsto \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \eta( \pairr{a,\refl{g_1(a)}} )}\\
+  & \mapsto \eta( \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \pairr{a,\refl{g_1(a)}} }\\
+  & \mapsto \eta( \pairr{a,\refl{h_1(g_1(a))}})\\
+  & \mapsto \eta( \pairr{a,H(a)^{-1}})\\
+  & \mapsto \eta( \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\refl{g_2(a)}}}\\
+  & \mapsto \pairr{\pairr{g_2(a),H(a)^{-1}}, \eta(\pairr{a,\refl{g_2(a)}}) }\\
+  & \mapsto \pairr{g_2(a),H(a)^{-1}}\qedhere
+\end{align*}
+\end{proof}
+
+The equivalences $E(H,b)$ are such that $E(H^{-1},b)= E(H,b)^{-1}$.
+
+Combining \autoref{prop:to_image_is_connected,prop:factor_equiv_fiber}, we have the following unique factorization result:
+
+\begin{thm}
+For each $f:A\to B$, the space $\fact_n(f)$ defined by
+\begin{equation*}
+\sm{X:\type}(g:A\to X)(h:X\to B),\ (h\circ g\sim f)\times\mathsf{conn}_n(g)\times\mathsf{trunc}_n(h).
+\end{equation*}
+is contractible. By \autoref{prop:to_image_is_connected} we know that there is the term
+\begin{equation*}
+\pairr{\im(f),\tilde{f},\proj1,\theta,\varphi,\psi}:\fact_n(f)
+\end{equation*}
+where $\theta:\proj1\circ\tilde{f}\sim f$ is the canonical homotopy, where $\varphi$ is the proof of
+\autoref{prop:to_image_is_connected}, and where $\psi$ is the obvious proof that $\proj1:\im(f)\to B$ has $n$-truncated fibers.
+\end{thm}
+
+In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker operations. Recall that if we have paths
+$p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whisker operation provides a path $q\ct p=
+q\ct p^\prime$, wich is denoted by $q\leftwhisker s$. Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim
+f^\prime$ is a homotopy, then there is a homotopy $g\leftwhisker H:g\circ f\sim g\circ f^\prime$.
+
+\begin{proof}
+By \autoref{prop:to_image_is_connected} we know that there is a term of $\fact_n(f)$, hence it is enough to
+show that $\fact_n(f)$ is a mere proposition. Suppose we have two $n$-factorizations
+\begin{equation*}
+\pairr{X_1,g_1,h_1,H_1,\varphi_1,\psi_1}\qquad\text{and}\qquad\pairr{X_2,g_2,h_2,H_2,\varphi_2,\psi_2}
+\end{equation*}
+of $f$. Then we have the homotopy $H\defeq H_2^{-1}\circ H_1:h_1\circ g_1\sim h_2\circ g_2$. By the univalence axiom, it suffices to show that
+\begin{enumerate}
+\item there is an equivalence $e:X_1\simeq X_2$,
+\item there is a homotopy $\zeta:\underline{e}\circ g_1\sim g_2$,
+% \note{Is it easy enough to see that these terms are the various transports?}
+\item there is a homotopy $\eta:h_2\circ\underline{e}\sim h_1$,
+\item there is a homotopy $H_1 \circ(h_1\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_2)\sim H_2$.
+\end{enumerate}
+where $\underline{e}$ is the function underlying the equivalence. We prove these four assertions in that order.
+\begin{enumerate}
+\item By \autoref{prop:factor_equiv_fiber}, we have a fiberwise equivalence
+% \note{It could be a nice exercise for the book to show
+% that if $f_1:A_1\to B$ and $f_2:A_2\to B$ have equivalent fibers, then $A_1\simeq A_2$}.
+\begin{equation*}
+\prd{b:B} \hfib{h_1}b\to\hfib{h_2}b.
+\end{equation*}
+This induces an equivalence of total spaces, i.e.\ we have
+\begin{equation*}
+\sm{b:B} \hfib{h_1}b\simeq\sm{b:B}\hfib{h_2}b
+\end{equation*}
+Of course, we also have the familiar equivalences $X_1\simeq\sm{b:B}\hfib{h_1}b$ and $X_2\simeq\sm{b:B}
+\hfib{h_2}b$. This gives us our equivalence $e(H):X_1\simeq X_2$. The reader may verify that the underlying function
+$\underline{e}(H)$ of $e(H)$ is defined by
+\begin{equation*}
+\underline{e}(H,x)\defeq \proj1\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}})
+\end{equation*}
+\item By \autoref{prop:factor_equiv_fiber} we have $\underline{e}(H,g_1(a))=g_2(a)$. Thus we get $\zeta(a)\defeq \idfunc{g_2(a)}$. 
+\item For every $x:X_1$, we have
+\begin{equation*}
+\proj2\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}}):h_2(\underline{e}(H,x))= h_1(x),
+\end{equation*}
+giving us a homotopy $\eta:h_2\circ \underline{e}\sim h_1$.
+\item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a))=H(a)^{-1}$ and by {\it ii.} we have
+$h_2(\zeta(a))=\idfunc{h_2(g_2(a))}$. Thus we have
+\begin{align*}
+(H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\ct h_2(\zeta(a))^{-1}\ct \eta(g_1(a))\\
+& = H_1(a)\ct H(a)^{-1}\\
+& = H_2(a).\qedhere
+\end{align*}
+\end{enumerate}
+\end{proof}
+
+% I can't make sense of this, and it doesn't seem necessary
+%
+% \begin{cor}
+% A function $f:A\to B$ is $n$-connected if and only if
+% \begin{equation*}
+% \prd C\prd{g:\modalfunc(B\to C)} \iscontr\big(\sm{h:\modalfunc(B\to C)}\underline{h}\circ
+% f\sim\underline{g}\circ f\big).
+% \end{equation*}
+% \end{cor}
+
+By standard arguments, this yields the following orthogonality principle.
+
+\begin{thm}
+  Let $e:A\to B$ be $n$-connected and $m:C\to D$ be $n$-truncated.
+  Then the map
+  \[ \varphi: (B\to C) \;\to\; \sm{h:A\to C}{k:B\to D} (m\circ h \htpy k \circ e) \]
+  is an equivalence.
+\end{thm}
+\begin{proof}[Sketch of proof]
+  For any $(h,k,H)$ in the codomain, let $h = h_2 \circ h_1$ and $k = k_2 \circ k_1$, where $h_1$ and $k_1$ are $n$-connected and $h_2$ and $k_2$ are $n$-truncated.
+  Then $f = (m\circ h_2) \circ h_1$ and $f = k_2 \circ (k_1\circ e)$ are both $n$-factorizations of $m \circ h = k\circ e$.
+  Thus, there is a unique equivalence between them.
+  It is straightforward (if a bit tedious) to extract from this that $\hfib\varphi{(h,k,H)}$ is contractible.
+\end{proof}
+
+We end by showing that images are stable under pullback.
+
+\begin{lem}\label{lem:hfiber_wrt_pullback}
+Suppose that the square
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & C \\ B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$g$} (m-2-2);
+\draw[ar] (m-1-1) -- node[left] {$f$} (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$h$} (m-2-2);
+\end{tikzpicture}
+\end{equation*}
+is a pullback square and let $b:B$. Then $\hfib{f}b\simeq\hfib{g}{h(b)}$.
+\end{lem}
+
+\begin{proof}
+\note{Do we have pasting of pullbacks anywhere?}
+This follows from pasting of pullbacks, since the type $X$ in the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {X & A & C \\ \unit & B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- (m-1-3);
+\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
+\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
+\draw[ar] (m-1-1) -- (m-2-1);
+\draw[ar] (m-2-1) -- node[below] {$b$} (m-2-2);
+\draw[ar] (m-2-2) -- node[below] {$h$} (m-2-3);
+\end{tikzpicture}
+\end{equation*}
+is the pullback of the left square if and only if it is the pullback of the outer rectangle: $\hfib{f}b$ is the pullback of the
+square on the left and $\hfib{g}{h(b)}$ is the pullback of the outer rectangle.
+\end{proof}
+
+\begin{thm}\label{thm:stable-images}
+Consider functions $f:A\to B$, $g:C\to D$ and the diagram
+\begin{equation*}
+\begin{tikzpicture}
+\matrix (m) [std] {A & C \\ \im_n(f) & \im_n(g) \\ B & D \\};
+\draw[ar] (m-1-1) -- (m-1-2);
+\draw[ar] (m-1-2) -- node[right] {$\tilde{g}_n$} (m-2-2);
+\draw[ar] (m-2-2) -- node[right] {$\proj1$} (m-3-2);
+\draw[ar] (m-1-1) -- node[left] {$\tilde{f}_n$} (m-2-1);
+\draw[ar] (m-2-1) -- (m-2-2);
+\draw[ar] (m-2-1) -- node[left] {$\proj1$} (m-3-1);
+\draw[ar] (m-3-1) -- node[below] {$h$} (m-3-2);
+\end{tikzpicture}
+\end{equation*}
+Then the outer rectangle is a pullback if and only if the bottom square is a pullback. In either of these equivalent cases, the top square
+is also a pullback. Consequently, images are stable under pullbacks.
+\end{thm}
+
+\begin{proof}
+Suppose first that the outer square is a pullback. Note that we have the equivalences
+\begin{align*}
+B\times_D\im_n(g) & \jdeq \sm{b:B}{w:\im_n(g)} h(b)=\proj1 w\\
+& \simeq \sm{b:B}{d:D}{w:\trunc n{\hfib{g}d}} h(b)= d\\
+& \simeq \sm{b:B} \trunc n{\hfib{g}{h(b)}}.\\
+& \simeq \sm{b:B} \trunc n{\hfib{f}b} \\
+& \equiv \im_n(f).
+\end{align*}
+In the last equivalence we have used \autoref{lem:hfiber_wrt_pullback}.
+
+Now suppose that the bottom square is a pullback, of which we denote the top arrow by $\psi$. By the pasting lemma for pullbacks, it
+suffices to show that the top square is a pullback. We have the equivalences
+\begin{align*}
+\im(f)\times_{\im(g)} C & \jdeq \sm{w:\im(f)}{c:C} \psi(w)=\tilde{g}_n(c)\\
+& \simeq \sm{b:B}{w:\im(g)}{p:h(b)=\proj1 w}{c:C} w=\tilde{g}_n(c)\\
+& \simeq \sm{b:B}{c:C} h(b)= g(c)\\
+& \simeq \sm{b:B}\hfib{f}b\\
+& \simeq A.\qedhere
+\end{align*}
+\end{proof}
+
+
+\section{Modalities}
+\label{sec:modalities}
+
+Nearly all of the theory of $n$-types and connectedness can be done in much greater generality.
+This section will not be used in the rest of the book.
+
+Our first thought regarding generalizing the theory of $n$-types might be to take \autoref{thm:trunc-reflective} as a definition.
+
+\begin{defn}
+  A \define{reflective subuniverse} is a predicate $P:\type\to\prop$ such that
+  for every $A:\type$ we have a type $\reflect A$ such that $P(\reflect A)$ and a map
+  $\project_A:A\to\reflect A$, with the property that for every $B:\type$ with $P(B)$, the following map is an equivalence:
+  \[\function{(\reflect A\to{}B)}{(A\to{}B)}{f}{f\circ\project_A}.\]
+\end{defn}
+
+We write $\P \defeq \setof{A:\type | P(A)}$, so $A:\P$ means that $A:\type$ and we have $P(A)$.
+We also write $\rec{\modal}$ for the quasi-inverse of the above map.
+The notation $\reflect$ may seem slightly odd, but it will make more sense soon.
+
+For any reflective subuniverse, we can prove all the familiar facts about reflective subcategories from category theory, in the usual way.
+For instance, we have:
+\begin{itemize}
+\item A type $A$ lies in $\P$ if and only if $\project_A:A\to\reflect A$ is an equivalence.
+\item $\P$ is closed under retracts.
+  In particular, $A$ lies in $\P$ as soon as $\project_A$ admits a retraction.
+\item The operation $\reflect$ is a functor in a suitable up-to-coherent-homotopy sense, which we can make precise at as high levels as necessary.
+\item The types in $\P$ are closed under all limits such as products and pullbacks.
+  In particular, for any $A:\P$ and $x,y:A$, the identity type $(x=_A y)$ is also in $\P$, since it is a pullback of two functions $\unit\to A$.
+\item Colimits in $\P$ can be constructed by applying $\reflect$ to ordinary colimits of types.
+\end{itemize}
+
+Importantly, closure under products extends also to ``infinite products'', i.e.\ dependent function types.
+
+\begin{thm}\label{thm:reflsubunv-forall}
+  If $B:A\to\P$ is any family of types in a reflective subuniverse \P, then $\prd{x:A} B(x)$ is also in \P.
+\end{thm}
+\begin{proof}
+  For any $x:A$, consider the function $\mathsf{ev}_x : (\prd{x:A} B(x)) \to B(x)$ defined by $\mathsf{ev}_x(f) \defeq f(x)$.
+  Since $B(x)$ lies in $P$, this extends to a function
+  \[ \rec{\modal}(\mathsf{ev}_x) : \reflect\left(\prd{x:A} B(x)\right) \to B(x). \]
+  Thus we can define $h:\reflect(\prd{x:A} B(x)) \to \prd{x:A} B(x)$ by $h(z)(x) \defeq \rec{\modal}(\mathsf{ev}_x)(z)$.
+  Then $h$ is a retraction of $\project_{\prd{x:A} B(x)}$, so that ${\prd{x:A} B(x)}$ is in $\P$.
+\end{proof}
+
+In particular, if $B:\P$ and $A$ is any type, then $(A\to B)$ is in \P.
+In categorical language, this means that any reflective subuniverse is an \define{exponential ideal}.
+This, in turn, implies by a standard argument that the reflector preserves finite products.
+
+\begin{cor}\label{cor:trunc_prod}
+  For any types $A$ and $B$ and any reflective subuniverse, the induced map $\reflect(A\times B) \to \reflect(A) \times \reflect(B)$ is an equivalence.
+\end{cor}
+\begin{proof}
+  It suffices to show that $\reflect(A) \times \reflect(B)$ has the same universal property as $\reflect(A\times B)$.
+  Thus, let $C:\P$; we have
+  \begin{align*}
+    (\reflect(A) \times \reflect(B) \to C)
+    &= (\reflect(A) \to (\reflect(B) \to C))\\
+    &= (\reflect(A) \to (B \to C))\\
+    &= (A \to (B \to C))\\
+    &= (A \times B \to C)
+  \end{align*}
+  using the universal properties  of $\reflect(B)$ and $\reflect(A)$, along with the fact that $B\to C$ is in \P since $C$ is.
+  It is straightforward to verify that this equivalence is given by composing with $\mreturn_A \times \mreturn_B$, as needed.
+\end{proof}
+
+It may seem odd that every reflective subcategory of types is automatically an exponential ideal, with a product-preserving reflector.
+However, this is also the case classically in the category of \emph{sets}, for the same reasons.
+It's just that this fact is not usually remarked on, since the classical category of sets---in contrast to the category of homotopy
+types---does not have many interesting reflective subcategories.
+
+Two basic properties of $n$-types are \emph{not} shared by general reflective subuniverses: \autoref{thm:ntypes-sigma} (closure under $\Sigma$-types) and \autoref{thm:truncn-ind} (truncation induction).
+However, the analogues of these two properties are equivalent to each other.
+
+
+\begin{thm}\label{thm:modal-char}
+  For a reflective subuniverse \P, the following are logically equivalent.
+  \begin{enumerate}
+  \item If $A:\P$ and $B:A\to \P$, then $\sm{x:A} B(x)$ is in \P.\label{item:mchr1}
+  \item for every $A:\type$, type family $B:\reflect A\to\P$, and function $g:\prd{a:A} B(\project(a))$, there exists $f:\prd{z:\reflect A} B(z)$ such that $f(\project(a)) = g(a)$ for all $a:A$.\label{item:mchr2}
+  \end{enumerate}
+\end{thm}
+\begin{proof}
+  Suppose~\ref{item:mchr1}.
+  Then in the situation of~\ref{item:mchr2}, the type $\sm{z:\reflect A} B(z)$ lies in $\P$, and we have $g':A\to \sm{z:\reflect A} B(z)$ defined by $g'(a)\defeq (\project(a),g(a))$.
+  Thus, we have $\rec{\modal}(g'):\reflect A \to \sm{z:\reflect A} B(z)$ such that $\rec{\modal}(g')(\project(a)) = (\project(a),g(a))$.
+
+  Now consider the functions $\proj2 \circ \rec{\modal}(g') : \reflect A \to \reflect A$ and $\idfunc[\reflect A]$.
+  By assumption, these become equal when precomposed with $\project$.
+  Thus, by the universal property of $\reflect$, they are equal already, i.e.\ we have $p_z:\proj2(\rec{\modal}(g')(z)) = z$ for all $z$.
+  Now we can define $f(z) \defeq \trans{p_z}{\proj2(\rec{\modal}(g')(z))}$, and the second component of $\rec{\modal}(g')(\project(a)) = (\project(a),g(a))$ yields $f(\project(a)) = g(a)$.
+
+  Conversely, suppose~\ref{item:mchr2}, and that $A:\P$ and $B:A\to\P$.
+  Let $h$ be the composite
+  \[ \reflect\left(\sm{x:A} B(x)\right) \xrightarrow{\reflect(\proj1)} \reflect A \xrightarrow{\opp{(\project_A)}} A. \]
+  Then for $z:\sm{x:A} B(x)$ we have
+  \begin{align*}
+    h(\project(z)) &= \opp\project(\reflect(\proj1)(\project(z)))\\
+    &= \opp\project(\project(\proj1(z)))\\
+    &= \proj1(z).
+  \end{align*}
+  Denote this path by $p_z$.
+  Now if we define $C:\reflect(\sm{x:A} B(x)) \to \type$ by $C(w) \defeq B(h(w))$, we have
+  \[ g \defeq \lam{z} \trans{p_z}{\proj2(z)} \;:\; \prd{z:\sm{x:A} B(x)} C(\project(z)). \]
+  Thus, the assumption yields $f:\prd{w:\reflect(\sm{x:A}B(x))} C(w)$ such that $f(\project(z)) = g(z)$.
+  Together, $h$ and $f$ give a function $k:\reflect(\sm{x:A}B(x)) \to \sm{x:A}B(x)$ defined by $k(w) \defeq (h(w),f(w))$, while $p_z$ and the equality $f(\project(z)) = g(z)$ show that $k$ is a retraction of $\project_{\sm{x:A}B(x)}$.
+  Therefore, $\sm{x:A}B(x)$ is in \P.
+\end{proof}
+
+Note the similarity to the discussion in \autoref{sec:htpy-inductive}.
+The universal property of the reflector of a reflective subuniverse is like a recursion principle with its uniqueness property, while \autoref{thm:modal-char}\ref{item:mchr2} is like the corresponding induction principle.
+Unlike in \autoref{sec:htpy-inductive}, the two are not equivalent here, because of the restriction that we can only eliminate into types that lie in $\P$.
+Condition~\ref{item:mchr1} of \autoref{thm:modal-char} is what fixes the disconnect.
+
+Unsurprisingly, of course, if we have the induction principle, then we can derive the recursion principle.
+We can also derive its uniqueness property, as long as we allow ourselves to eliminate into path types.
+This suggests the following definition.
+Note that any reflective subuniverse can be characterized by the operation $\reflect:\type\to\type$ and the functions $\project_A:A\to \reflect A$, since we have $P(A) = \isequiv(\project_A)$.
+
+\begin{defn}\label{defn:modality}
+A \define{modality} is an operation $\modal:\type\to\type$ for which there are
+\begin{enumerate}
+\item functions $\mreturn^\modal_A:A\to\modal(A)$ for every type $A$.\label{item:modal1}
+\item for every $A:\type$ and every type family $B:\modal(A)\to\type$, a function\label{item:modal2}
+\begin{equation*}
+\ind{\modal}:\left(\prd{a:A}\modal(B(\mreturn^\modal_A(a)))\right)\to\prd{z:\modal(A)}\modal(B(z)).
+\end{equation*}
+\item A path $\ind\modal(f)(\mreturn^\modal_A(a)) = f(a)$ for each $f:\prd{a:A}\modal(B(\mreturn^\modal_A(a)))$.\label{item:modal3}
+\item For any $z,z':\modal(A)$, the function $\mreturn^\modal_{z=z'} : (z=z') \to \modal(z=z')$ is an equivalence.\label{item:modal4}
+\end{enumerate}
+We say that $A$ is \define{modal} for $\modal$ if $\mreturn^\modal_A:A\to\modal(A)$ is an equivalence, and we write
+\[\modaltype\defeq\setof{X:\type | X \text{ is $\modal$-modal} }\]
+for the type of modal types.
+\end{defn}
+
+Conditions~\ref{item:modal2} and~\ref{item:modal3} are very similar to \autoref{thm:modal-char}\ref{item:mchr2}, but phrased using $\modal B(z)$ rather than assuming $B$ to be valued in $\P$.
+This allows us to state the condition purely in terms of the operation $\modal$, rather than requiring the predicate $P:\type\to\prop$ to be given in advance.
+(It is not entirely satisfactory, since we still have to refer to $P$ not-so-subtly in clause~\ref{item:modal4}.
+We do not know whether~\ref{item:modal4} follows from~\ref{item:modal1}--\ref{item:modal3}.)
+However, the stronger-looking property of \autoref{thm:modal-char}\ref{item:mchr2} follows from \autoref{defn:modality}\ref{item:modal2} and~\ref{item:modal3}, since for any $C:\modal A \to \modaltype$ we have $C(z) \simeq \modal C(z)$, and we can pass back across this equivalence.
+
+As with other induction principles, this implies a universal property.
+
+\begin{thm}\label{prop:lv_n_deptype_sec_equiv_by_precomp}
+Let $A$ be a type and let $B:\modal(A)\to\modaltype$. Then the function
+\begin{equation*}
+(-\circ \mreturn^\modal_A) : \left(\prd{z:\modal(A)}B(z)\right) \to \left(\prd{a:A}B(\mreturn^\modal_A(a))\right)
+\end{equation*}
+is an equivalence.
+\end{thm}
+\begin{proof}
+By definition, the operation $\ind{\modal}$ is a right inverse to $(-\circ \mreturn^\modal_A)$.
+Thus, we only need to find a homotopy
+\begin{equation*}
+\prd{z:\modal(A)}s(z)= \ind{\modal}(s\circ \mreturn^\modal_A)(z)
+\end{equation*}
+for each $s:\prd{z:\modal(A)}B(z)$, exhibiting it as a left inverse as well.
+By assumption, each $B(z)$ is modal, and hence each type $s(z)= R^\modal_X(s\circ \mreturn^\modal_A)(z)$
+is also modal.
+Thus, it suffices to find a function of type
+\begin{equation*}
+\prd{a:A}s(\mreturn^\modal_A(a))= \ind{\modal}(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a)).
+\end{equation*}
+which follows from \autoref{defn:modality}\ref{item:modal3}.
+\end{proof}
+
+In particular, for every type $A$ and every modal type $B$, we have an equivalence $(\modal A\to B)\simeq (A\to B)$.
+
+\begin{cor}
+  For any modality $\modal$, the $\modal$-modal types form a reflective subuniverse satisfying the equivalent conditions of \autoref{thm:modal-char}.
+\end{cor}
+
+Thus, modalities can be identified with reflective subuniverses closed under $\Sigma$-types.
+The name \emph{modality} comes, of course, from \emph{modal logic}, which studies logic where we can form statements such as ``possibly $A$'' (usually written $\diamond A$) or ``necessarily $A$'' (usually written $\Box A$).
+The symbol $\modal$ is somewhat common for an arbitrary modal operator. % (rather than a specific one such as $\diamond$ or $\Box$).
+Under the propositions-as-types principle, a modality in the sense of modal logic corresponds to an operation on \emph{types}, and \autoref{defn:modality} seems a reasonable candidate for how such an operation should be defined.
+(More precisely, we should perhaps call these \emph{idempotent, monadic} modalities.)
+
+For any modality $\modal$, we define a map $f:A\to B$ to be \define{$\modal$-connected} if $\modal(\hfib f b)$ is contractible for all $b:B$, and to be \define{$\modal$-truncated} if $\hfib f b$ is modal for all $b:B$.
+All of the theory of \autoref{sec:connectivity,sec:image-factorization} which doesn't involve relating $n$-types for different values of $n$ applies verbatim in this generality.
+In particular, we have an orthogonal factorization system.
+
+An important class of modalities which does \emph{not} include the $n$-truncations is the \emph{left exact} modalities: those for which the functor $\modal$ preserves pullbacks as well as finite products.
+These are a categorification of ``Lawvere-Tierney topologies'' in elementary topos theory, and correspond in higher-categorical semantics to sub-$\infty$-toposes.
+However, this is beyond the scope of this book.
+
+Some particular examples of modalities other than $n$-truncation can be found in the exercises.
+
+
+\sectionNotes
+
+The notion of homotopy $n$-type in classical homotopy theory is quite old.
+It was Voevodsky who realized that the notion can be defined recursively in homotopy type theory, starting from contractibility.
+
+The property ``Axiom K'' was so named by Thomas Streicher, as a property of identity types which comes after J, the latter being the traditional name for the eliminator of identity types.
+\autoref{thm:hedberg} is due to Hedberg~\cite{hedberg1998coherence}; for more information and generalizations see~\cite{krausgeneralizations}.
+
+The notions of $n$-connected spaces and functions are also classical in homotopy theory, although as mentioned before, our indexing for connectedness of functions is off by one from the classical indexing.
+The importance of the resulting factorization system has been emphasized by recent work in higher topos theory by Rezk, Lurie, and others.
+In particular, the results of this chapter should be compared with~\cite[\S6.5.1]{lurie:higher-topoi}.
+In \autoref{sec:freudenthal}, the theory of $n$-connected maps will be crucial to our proof of the Freudenthal suspension theorem.
+
+Modal operators in \emph{simple} type theory have been studied extensively; see e.g. \cite{modalTT}.  In the setting of dependent type theory, \cite{ab:bracket-types} treats the special case of propositional, i.e.\ $(-1)$-truncation as a modal operator.  The development presented here greatly extends and generalizes this work, while drawing also on ideas from topos theory.
+
+
+\sectionExercises
+
+\begin{ex}\ 
+  \begin{enumerate}
+    \item Use \autoref{thm:h-set-refrel-in-paths-sets} to show 
+    that if $\brck{A}\to A$ for every type $A$, 
+    then every type is a set.
+    \item Show that if every surjective function (purely) splits, 
+    i.e.~if $\prd{b:B}\brck{\hfib{f}{b}}\to\prd{b:B}\hfib{f}{b}$
+    for every $f:A\to B$, then every type is a set.
+  \end{enumerate}
+\end{ex}
+
+\begin{ex}
+  Use \autoref{prop:nconn_fiber_to_total} to extend \autoref{thm:connected-pointed} to any section/retraction pair.
+\end{ex}
+
+\begin{ex}
+  Prove that for $n\ge 0$, a type $A$ is $n$-connected if and only if it is $(-1)$-connnected (i.e.\ merely inhabited) and for all $a,b:A$ the type $\id[A]ab$ is $(n-1)$-connected.
+\end{ex}
+
+\begin{ex}
+  Define the \define{$n$-connected axiom of choice} to be the statement
+  \begin{quote}
+    If $X$ is a set and $Y:X\to \type$ is a family of types such that each $Y(x)$ is $n$-connected, then $\prd{x:X} Y(x)$ is $n$-connected.
+  \end{quote}
+  Note that the $(-1)$-connected axiom of choice is a strengthening of~\eqref{eq:epis-split} where $Y$ is not required to be a set (this is also known to be consistent, as it holds in the simplicial set model).
+  Prove that for every $n\ge -1$, the $n$-connected axiom of choice implies the $(n+1)$-connected axiom of choice.
+\end{ex}
+
+\begin{ex}
+  Show that the $n$-truncation modality is not left exact for any $n$.
+  That is, exhibit a pullback which it fails to preserve.
+\end{ex}
+
+\begin{ex}
+  Show that $X\mapsto (\neg\neg X)$ is a modality.
+\end{ex}
+
+\begin{ex}
+  Let $P$ be a mere proposition.
+  \begin{enumerate}
+  \item Show that $X\mapsto (P\to X)$ is a left exact modality.
+    This is called the \define{open modality} associated to $P$.
+  \item Show that $X\mapsto P*X$ is a left exact modality, where $*$ denotes the join (see \autoref{sec:colimits}).
+    This is called the \define{closed modality} associated to $P$.
+  \end{enumerate}
+\end{ex}
+
+\begin{ex}
+  Let $f:A\to B$ be a map; a type $Z$ is \define{$f$-local} if $(-\circ f):(B\to Z) \to (A\to Z)$ is an equivalence.
+  \begin{enumerate}
+  \item Prove that the $f$-local types form a reflective subuniverse.
+    You will want to use a higher inductive type to define the reflector (localization).
+  \item Prove that if $B=\unit$, then this subuniverse is a modality.
+  \end{enumerate}
+\end{ex}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End: 

@@ -476,17 +476,27 @@ The following important principles, called \define{substitution} and
 \define{weakening}, need not be explicitly assumed. Rather, it is possible to
 show, by induction on the structure of all possible derivations, that whenever
 the hypotheses of these rules are provable, their conclusion is also
-provable.\footnote{Such rules are called \define{admissible}.} ($\mathcal{J}$ is
-any judgment $a:A$ or $a\equiv b:A$.)
+provable.\footnote{Such rules are called \define{admissible}.}
+For the typing judgments these principles are manifested as
 %
 \begin{mathpar}
-  \inferrule*[right=$\Subst$]
-  {\oftp\Gamma{a}{A} \\ \judg{\Gamma,\tmtp xA,\Delta}{\mathcal{J}}}
-  {\judg{\Gamma,\Delta[a/x]}{\mathcal{J}[a/x]}}
+  \inferrule*[right=$\Subst_1$]
+  {\oftp\Gamma{a}{A} \\ \oftp{\Gamma,\tmtp xA,\Delta}{b}{B}}
+  {\oftp{\Gamma,\Delta[a/x]}{b[a/x]}{B[a/x]}}
 \and
-  \inferrule*[right=$\Weak$]
-  {\oftp\Gamma{A}{\UU_i} \\ \judg{\Gamma,\Delta}{\mathcal{J}}}
-  {\judg{\Gamma,\tmtp xA,\Delta}{\mathcal{J}}}
+  \inferrule*[right=$\Weak_1$]
+  {\oftp\Gamma{A}{\UU_i} \\ \oftp{\Gamma,\Delta}{b}{B}}
+  {\oftp{\Gamma,\tmtp xA,\Delta}{b}{B}}
+\end{mathpar}
+and for judgmental equalities they become
+\begin{mathpar}
+  \inferrule*[right=$\Subst_2$]
+  {\oftp\Gamma{a}{A} \\ \jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
+  {\jdeqtp{\Gamma,\Delta[a/x]}{b[a/x]}{c[a/x]}{B[a/x]}}
+\and
+  \inferrule*[right=$\Weak_2$]
+  {\oftp\Gamma{A}{\UU_i} \\ \jdeqtp{\Gamma,\Delta}{b}{c}{B}}
+  {\jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
 \end{mathpar}
 
 In addition to the judgmental equality rules given for each type former, we also

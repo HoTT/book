@@ -770,16 +770,16 @@ The presentation here corresponds to the two-sided induction principle for ident
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{A} \\ \oftp\Gamma{p'}{\id[A]ab}}
-  {\oftp\Gamma{\ind{\idsym_A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
+  {\oftp\Gamma{\indidtwo{A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
 \and
   \inferrule*[right=$\idsym$-\comp]
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A}}
-  {\jdeqtp\Gamma{\ind{\idsym_A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a,a,\refl a/x,y,p]}}
+  {\jdeqtp\Gamma{\indidtwo{A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a,a,\refl a/x,y,p]}}
 \end{mathparpagebreakable}
 %
-In $\ind{\idsym_A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
+In $\indidtwo{A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
 $c$.
 
 \subsection{The \texorpdfstring{$\eta$}{η}-conversion rule}
@@ -818,7 +818,7 @@ ensuring that symbols are only defined once, etc., are collectively called
 \define{elaboration}. Elaboration must take place prior to checking a derivation, and is
 thus not usually presented as part of the core type theory. However, it is
 essentially impossible to use any implementation of type theory which does not
-perform elaboration; see \cite{Coq,norell2007toward} for further discussion.
+perform elaboration; see \cite{Coq,norell2007towards} for further discussion.
 
 \section{Homotopy type theory}
 \label{sec:hott-features}
@@ -843,7 +843,7 @@ We begin by recalling some auxiliary definitions.
 \item In \autoref{lem:map}, we defined the functorial action of $f:A\to B$ on a path
 $p:\id[A] xy$ as
 \[
-\apfunc f(p) \defeq \ind{\idsym_A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p ).
+\apfunc f(p) \defeq \indidtwo{A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p ).
 \]
 
 \item In \autoref{ex:composition}, we defined the composition of $g:B\to C$ after
@@ -868,7 +868,7 @@ for the type of equivalences $\sm{f:A\to B} \isequiv(f)$.
 \item In \eqref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
 \[
 \happly_{f,g}(p) \defeq
-  \ind{\idsym_{\tprd{x:A} B}} (
+  \indidtwo{\tprd{x:A} B} (
     f.g.p. {\prd{x:A} \id[B(x)]{f(x)}{g(x)}},
     h. \lamu{x:A} \refl {h(x)},
     f,g,p).
@@ -894,7 +894,7 @@ to equivalences $\eqv AB$ as
 \begin{multline}
 \idtoeqv_{A,B} \defeq\\
 \lamu{p:\id[\UU_i] A B}
-\ind{\idsym_{\UU_i}}(
+\indidtwo{\UU_i}(
       A.B.p.(\eqv A B),
       A.{\tup {\lamu{x:A} x}
               {\tup {\lamu{x:A} x}
@@ -1072,6 +1072,7 @@ inductive types, nor are we certain how to correctly formulate their rules
 equalities).
 
 It is also unknown precisely which higher inductive types
+% FIXME: This sentence doesn't end.
 
 The consistency of univalence could perhaps be shown by an appropriate normalization
 procedure, but currently the only proof of consistency is via a semantic model in Kan

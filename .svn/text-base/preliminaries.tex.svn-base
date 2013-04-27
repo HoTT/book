@@ -177,7 +177,7 @@ Now a $\lambda$-abstraction is a function, so we can apply it to an argument $a:
 We then have the definitional equality\footnote{Use of this equality is often referred to as $\beta$-conversion or $\beta$-reduction.}
 \[(\lamu{x:A}b)(a) \jdeq b'\]
  where $b'$ is the
-expression $b$ in which all occurences of $x$ have been replaced by $a$.
+expression $b$ in which all occurrences of $x$ have been replaced by $a$.
 Continuing the above example, we have
 %
 \[ (\lamu{x:\nat}x+x)(2) \jdeq 2+2. \]
@@ -316,7 +316,7 @@ Alternatively, we can use \define{$\lambda$-abstraction}
 The equalities are the same as for the ordinary function type, i.e.\
 given $a:A$ we have $f(a) \jdeq b'$ and  
 $(\lamu{x:A} b)(a) \jdeq b'$, where $b' $ is obtained by replacing all
-occurences of $x$ in $b$ by $a$ (avoiding variable capture, as always).
+occurrences of $x$ in $b$ by $a$ (avoiding variable capture, as always).
 Similarly, we have $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
 
 An example of a dependent function is $\fmax : \prd{n:\nat} \Fin(n+1)$
@@ -375,10 +375,10 @@ with the defining equations
 \symlabel{defn:recursor-times}%
 We can package this principle into a constant which we call the
 \define{recursor} for product
-types.  Given universes $\UU$ and $\UU'$ and types $A,B : \UU$, we have
+types.  Given types $A,B : \UU$, we have
 %
 \begin{equation}
-  \rec{A\times B} : \prd{C:\UU'}(A \to B \to C) \to A \times B \to C
+  \rec{A\times B} : \prd{C:\UU}(A \to B \to C) \to A \times B \to C
 \end{equation}
 with the defining equation
 \[\rec{A\times B}(C,g,\tup{a}{b}) = g(a)(b). \]
@@ -388,16 +388,13 @@ The name ``recursor'' is a bit unfortunate here, since no recursion is taking pl
 It comes from a general framework of type definitions, and will make more sense once we consider inductive types, such as
 the natural numbers.  The term ``eliminator" is often used as well.
 
-Note that the universes $\UU,\UU'$ may be different, i.e. given a product
-in a universe $\UU_i$ we may use the eliminator for a type or family in a different universe 
-$\UU_j$. This is a property of all the eliminators we are going to introduce.
 We leave it as a simple exercise to show that the recursor can be
 derived from the projections and vice versa.
 % Ex: Derive from projections
 
 \symlabel{defn:recursor-unit}
 We also have a recursor for the unit type:
-\[\rec{\unit} : \prd{C:\UU'}C \to \unit \to C\]
+\[\rec{\unit} : \prd{C:\UU}C \to \unit \to C\]
 with the defining equation
 \[ \rec{\unit}(C,c,\ttt) \defeq c \]
 However, this is completely useless,
@@ -429,7 +426,7 @@ When we come to inductive types such as the natural numbers, the analogous prope
 Thus, when we package this principle into another constant, we call it
 \define{induction} for product types: given $A,B : \UU$ we have
 \symlabel{defn:induction-times}
-\[ \ind{A\times B} : \prd{C:A \times B \to \UU'} (\prd{x:A}{y:B}
+\[ \ind{A\times B} : \prd{C:A \times B \to \UU} (\prd{x:A}{y:B}
 C(\tup{x}{y})) \to \prd{x:A \times B} C(x) \]
 with the defining equation 
 \[ \ind{A\times B}(C,g,\tup{a}{b}) \defeq g(a)(b). \]
@@ -444,7 +441,7 @@ Induction is also called the \define{(dependent) eliminator} of the product type
 Induction for the unit type turns out to be more useful than the
 recursor: 
 \symlabel{defn:induction-unit}
-\[ \ind{\unit} : \prd{C:\unit \to \UU'} C(\star) \to \prd{x:\unit}C(x)\]
+\[ \ind{\unit} : \prd{C:\unit \to \UU} C(\star) \to \prd{x:\unit}C(x)\]
 with the defining equation
 \[ \ind{\unit}(C,c,\ttt) \defeq c \]
 Induction enables us to \emph{prove} that the only inhabitant of the
@@ -496,7 +493,7 @@ However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ 
 \symlabel{defn:dependent-proj2}
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
 Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
-This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU'$, we need a function
+This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU$, we need a function
 \[ g : \prd{a:A}{b:B(x)} C(\tup{a}{b}). \]
 We can then derive a function 
 \[ f : \prd{p : \sm{x:A}B(x)} C(p) \]
@@ -509,14 +506,14 @@ indeed $b : B(a)$.
 
 We can package the recursion and induction principles into the recursor for $\Sigma$:
 \symlabel{defn:recursor-sm}
-\[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU'}\Big(\tprd{x:A} B(x) \to C\Big) \to
+\[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU}\Big(\tprd{x:A} B(x) \to C\Big) \to
 \big(\tsm{x:A}B(x)\big) \to C \]
 with the defining equation
 \[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
 and the corresponding induction operator:
 \symlabel{defn:induction-sm}
 \begin{align*}
-  \ind{\sm{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU'}
+  \ind{\sm{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU}
     \Big(\tprd{a:A}{b:B(x)} C(\tup{a}{b})\Big)
     \to \dprd{p : \sm{x:A}B(x)} C(p)
 \end{align*}
@@ -586,12 +583,12 @@ We can always construct a function $f : \emptyt \to C$ without
 having to give any defining equations, because there are no elements of \emptyt on which to define $f$.
 Thus, the recursor for $\emptyt$ is
 \symlabel{defn:recursor-emptyt}
-\[\rec{\emptyt} : \tprd{C:\UU'} \emptyt \to C,\]
+\[\rec{\emptyt} : \tprd{C:\UU} \emptyt \to C,\]
 which constructs the canonical function from the empty type to any other type.
 Logically, it corresponds to the principle \emph{ex falso quod libet}. 
 
 To construct a dependent function $f:\prd{x:A+B}C(x)$ out of a coproduct, we assume as given the family 
-$C: (A + B) \to \UU'$, and 
+$C: (A + B) \to \UU$, and 
 require 
 \begin{eqnarray*}
   g_0 & : & \prd{a:A} C(\inl(a)) \\
@@ -605,7 +602,7 @@ This yields $f$ with the defining equations:
 We package this scheme into the induction principle for coproducts:
 \symlabel{defn:induction-plus}
 \begin{align*}
-  \ind{A+B} :  \dprd{C: (A + B) \to \UU'}
+  \ind{A+B} :  \dprd{C: (A + B) \to \UU}
   \Big(\tprd{a:A} C(\inl(a))\Big) \to \Big(\tprd{b:B} C(\inr(b))\Big)
   \to \tprd{x:A+B}C(x) 
 \end{align*}
@@ -648,7 +645,7 @@ add the defining equations
 The recursor corresponds to the if-then-else construct in
 functional programming:
 \symlabel{defn:recursor-bool}
-\[ \rec{\bool} : \prd{C:\UU'}  C \to C \to \bool \to C \]
+\[ \rec{\bool} : \prd{C:\UU}  C \to C \to \bool \to C \]
 with the defining equations
 \begin{eqnarray*}
   \rec{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
@@ -663,7 +660,7 @@ $f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which
 \end{eqnarray*}
 We package this up into the induction principle
 \symlabel{defn:induction-bool}
-\[ \ind{\bool} : \dprd{C:\bool \to \UU'}  C(\bfalse) \to C(\btrue)
+\[ \ind{\bool} : \dprd{C:\bool \to \UU}  C(\bfalse) \to C(\btrue)
 \to \tprd{x:\bool} C(x) \]
 with the defining equations
 \begin{eqnarray*}
@@ -1089,74 +1086,120 @@ In particular, this means that if $a\jdeq b$, i.e.\ $a$ and $b$ are \emph{judgme
 This is well-typed because $a\jdeq b$ means that also the type $a=_A b$ is judgmentally equal to $a=_A a$, which is the type of $\refl{a}$.
 
 The induction principle for the identity types is one of the subtlest parts of type theory, and crucial to the homotopy interpretation.
-In essence, it encapsulates the principle of substitution, ``equals may be substituted for equals''.
-There are two different, but equivalent, ways to formulate it.
-The first is:
+One important aspect of it is the principle that ``equals may be substituted for equals,'' as expressed by Leibniz's principle of \emph{indiscernability of identicals}:
+\begin{description}
+\item[Indiscernability of identicals:]
+Given a family 
+\[
+C : A \to \UU
+\]
+we can construct a function
+\[
+f : \prd{x,y:A}{p:\id[A] x y} C(x) \to C(y)
+\]
+with the defining equality
+\[
+f(x,x,\refl{x}) = \idfunc
+\]
+\end{description}
+This says that any construction $C$ represented by a family of types respects equality, in the sense that when $C$ is applied to equal elements of $A$, there is a coercion function between the resulting types. The defining equality states that coercion by reflexivity is the identity function.
+
+Indiscernability of identicals is a recursion principle (recursor) for the identity type, analogous to those given for booleans and natural numbers above.  To fully characterize the identity type, we must generalize this to an induction principle, which not only allows equals to be substituted for equals, but gives information about the evidence for equality $p$.  There are two different, but equivalent, ways to formulate the induction principle.
+
+\subsection{Two-sided induction}
+
+Given a type $A$, we define the \define{total identity type} of $A$ to be the type
+\[
+\sm{x:A}{y:A} \id[A]{x}{y}
+\]
+We call this the total identity type because, from a homotopical point of view, it is the total space of the identity type, viewed as a fibration over two copies of $A$.
+We will also refer to it as the \define{two-sided identity type}, to refer to the fact that \emph{both} sides of the equation are existentially quantified.  The two-sided induction principle for the identity type then states that the total identity type is inductively generated by the elements of the form $(x,x,\refl{x})$:
 
 \begin{description}
 \item[Two-sided induction principle for identity types:] 
-Given a family 
-\[ C : \prd{x,y:A}{p:x =_A y} \UU \]
-and a function
-\[ c :  \prd{x:A} C(x,x,\refl{x})\]
-we can construct a function
-\[ f : \prd{x,y:A}{p:x =_A y} C(x,y,p) \]
-with the defining equality 
-\[ f(x,x,\refl{x}) \defeq c(x) \]
+  Given a family 
+  \[ C : \prd{x,y:A}{p:x =_A y} \UU \]
+  and a function
+  \[ c :  \prd{x:A} C(x,x,\refl{x})\]
+  we can construct a function
+  \[ f : \prd{x,y:A}{p:x =_A y} C(x,y,p) \]
+  with the defining equality 
+  \[ f(x,x,\refl{x}) \defeq c(x) \]
 \end{description}
 
 To understand this principle, consider first the simpler case when $C$ does not depend on $p$.
 Thus we have $C:A\to A\to \UU$, which we may regard as a predicate depending on two elements of $A$.
-We are interesting in knowing when the proposition $C(x,y)$ holds for some $x,y:A$.
-
+We are interested in knowing when the proposition $C(x,y)$ holds for some $x,y:A$.
 In this case, the hypothesis of the two-sided induction principle says that we know $C(x,x)$ holds for all $x:A$, i.e.\ that if we substitute the same element for both variables occurring in $C$, we get a true proposition.
 The conclusion then tells us we can conclude that $C(x,y)$ holds whenever $x=y$.
 That is, if $x=y$, then we can \emph{substitute} the value $y$ for some occurrences of $x$ in the true proposition $C(x,x)$ to obtain another true proposition, $C(x,y)$.
 
-The general form of the rule allows $C$ to depend on the witness $p:x=y$ as well.
-If we view types as like sets, it is unclear what this buys us, but in \autoref{cha:basics} we will see that it is essential to the homotopy interpretation.
+The general form of the rule allows $C$ to depend on the witness $p:x=y$ as well.  In the premise, we can not only replace $y$ by $x$, but also simultaneously replace $p$ by reflexivity: to prove a property for all elements $(x,y,p)$ of the total identity type, it suffices to consider all the cases of the form $(x,x,\refl{x})$.  If we view types as like sets, it is unclear what this buys us, but in \autoref{cha:basics} we will see that it is essential to the homotopy interpretation, because it expresses that the total path space of a type is inductively generated by the constant loops at each point.  
 
-If we package the two-sided induction principle as an induction constant, it becomes:
+If we package the two-sided induction principle into a function, it becomes:
 \symlabel{defn:induction-ML-id}
 \begin{align*}
- \indidtwo{A} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
-     \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y} C(x,y,p)
+  \indidtwo{A} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
+  \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y}   C(x,y,p)
 \end{align*}
 with the equality
 \[ \indidtwo{A}(C,c,x,x,\refl{x}) \defeq c(x) \]
-This induction constant is also called $J$.
+This function is also called $J$.  In \cref{sec:fibrations}, we show that the recursor (indiscernability of identicals) follows from this induction principle.  
 
-However, the two-sided induction principle does not quite capture everything we might expect of substitution.
-It requires the proposition $C$ to make sense for \emph{all} pairs $x,y$ of elements of $A$, which is sometimes an inconvenient restriction.
-This motivates the following different induction principle we might give for identity types.
+\subsection{One-sided induction}
+
+Given a proof $p : \id{a}{b}$, the
+two-sided induction principle allows you to equate $a$ and $b$ by replacing them \emph{both} with the same unknown element $x$: the induction principle says that to prove a family
+$C$ for all \emph{pairs} of elements of $A$, it suffices to prove it for the whole diagonal.
+In some proofs, however, it is simpler to use an equation $p : \id{a}{b}$ by replacing all occurrences of $b$ with $a$ (or vice versa), because it is sometimes easier to do the remainder of the proof for the specific element $a$ mentioned in the equality, than for a general unknown $x$.  This motivates a second induction principle for identity types.  As we show below, this second induction principle is equivalent to the first, but it is sometimes a more convenient packaging.
+
+Given a type $A$ with an element $a:A$, we define the \define{singleton   type} of $A$ at $a$ to be the type
+\[
+\sm{y:A} \id[A]{a}{y}
+\]
+We will also call this the \define{one-sided identity type} of $A$ at $a$, to refer to the fact that only one side of the equation is existentially quantified.  
+Intuitively, this type is a ``singleton'' because it classifies elements of $A$ that are equal to $a$, and therefore, in a sense, contains only the element $a$.  However, it is very important to observe the difference between this singleton type and a singleton set $\{a\}$: A singleton set has exactly one element, namely $a$.  In contrast, the singleton type has elements $(b, p)$ where $p : \id[A] a b$.  Because of the homotopy interpretation of equality, the singleton type can have many different elements $b$ that are not strictly equal to $a$, but are only connected to it by a path.  Nonetheless, the singleton type behaves like a singleton up to homotopy, in the sense that any two elements of it are identified by a path, i.e., it is contractible.  This follows from the second induction principle for the identity type, which states that the singleton type of $A$ at $a$ is inductively generated by the element $(a,\refl{a})$.  
 
 \begin{description}
 \item[One-sided induction principle for identity types:] 
-Fix an element $a:A$, and suppose given a family
-\[ C : \prd{x:A}{p : a =_A x} \UU \]
-and an element
-\[ c : C(a,\refl{a}). \]
-Then we obtain a function
-\[ f : \prd{x:A}{p:a = x} C(x,p) \]
-with the defining equality
-\[ f(a,\refl{a}) \defeq c \]
+  Fix an element $a:A$, and suppose given a family
+  \[ C : \prd{x:A}{p : a =_A x} \UU \]
+  and an element
+  \[ c : C(a,\refl{a}). \]
+  Then we obtain a function
+  \[ f : \prd{x:A}{p:a = x} C(x,p) \]
+  with the defining equality
+  \[ f(a,\refl{a}) \defeq c \]
 \end{description}
 
-Packaged as an induction constant, the one-sided induction principle becomes:
+The one-sided induction principle says that we may prove a family $C$ for all elements of the singleton type at $a$ in $A$ by covering the case for $(a,\refl{a})$.
+Logically, this says that given an equality $\id{a}{b}$, we can substitute the occurrences of $b$ chosen by $C$ with $a$.
+Homotopically, it expresses the that the space of paths from a chosen point to an arbitrary endpoint is inductively generated by the constant loop.
+
+Packaged as a function, the one-sided induction principle becomes:
 \symlabel{defn:induction-PM-id}
 \begin{align*}
-\indidone{A} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
- C(a,\refl{a}) \to \dprd{x:A}{p : a =_A x} C(x,p) 
+  \indidone{A} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
+  C(a,\refl{a}) \to \dprd{x:A}{p : a =_A x} C(x,p) 
 \end{align*}
 with the equality
 \[ \indidone{A}(a,C,c,a,\refl{a}) \defeq c. \]
 %\[ g(x)(x,\refl{x}) \defeq d(x) \]
 
-These principles arise from different views on the identity type.
-While the two-sided induction principle is based on the view that the identity
-type is the least reflexive relation, the one-sided induction principle defines 
-equality with respect to a given element $a:A$ as the least predicate
-over $A$ which holds for $a$.
+\subsection{Zero-sided induction}
+
+One might wonder whether there is a also a ``0-sided'' induction principle for the identity type, with no sides existentially quantified. Given a family
+\[
+C : \id{a}{b} \to \UU
+\]
+is it possible to prove $C(p)$ for all $p$ by covering specific cases?
+
+In general, it is not even clear what those cases would be, but in the special case where $C : \id{a}{a} \to \UU$, one might expect that to prove $C(p)$ for all $p$, it would suffice to prove $C(\refl{a})$.
+This principle is \textbf{not} provable in homotopy type theory.  Using it, one can easily prove that any $p : \id{a}{a}$ is equal to $\refl{a}$.  This and the univalence axiom create a contradiction, because univalence allows one to create provably unequal loops.
+
+Thus, while the two-sided induction principle says that the total path type is inductively generated (it is the least reflexive relation), and the one-sided induction principle says that the singleton type is inductively generated (it is the least predicate on $A$ that holds for $a$), there is no principle saying that the type of \emph{loops} is inductively generated.  
+
+\subsection{Equivalence of two-sided and one-sided induction}
 
 Fortunately, the two induction principles are equivalent.
 It is easy to see that the two-sided induction principle follows from the one-sided induction principle.
@@ -1182,15 +1225,17 @@ Now we observe that $g$'s codomain is equal to $C(x,y,p)$.
 Thus, discharging our assumption $x:A$, we can derive a function 
 \[ f : \prd{x,y:A}{p : x =_A y} C(x,y,p) \]
 with the required definitional equality.
-In terms of induction constants, this means we can write $\indidtwo{A}$ in terms of $\indidone{A}$ as
+
+Another proof of this fact is to observe that any such $f$ can be obtained as an instance of $\indidtwo{A}$,
+so it suffices to define $\indidtwo{A}$ in terms of $\indidone{A}$ as
 \[ \indidtwo{A}(C,c,x,y,p) \defeq \indidone{A}(x,C(x),c(x),y,p). \]
-%
+
 The other direction is a bit trickier: it is not clear how we can use a particular instance of the two-sided induction principle to derive a particular instance of
 the one-sided induction principle. What we can do instead is construct one instance of the two-sided induction principle which shows 
 all possible instantiations of the one-sided induction principle at once.
 Define
 \begin{eqnarray*}
-D & : & \prd{x,y:A}{p:x =_A y} \UU' \\
+D & : & \prd{x,y:A}{p:x =_A y} \UU \\
 D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p).
 \end{eqnarray*}
 Then we can construct the function
@@ -1205,7 +1250,8 @@ with $f(x,x,\refl{x}) \defeq d(x)$. Unfolding the definition of $D$, we can expa
 Now given $x:A$ and $p:a =_A x$, we can derive the conclusion of the one-sided induction principle:
 \[ f(a,x,p,C,c) : C(x,p) \]
 Notice that we also obtain the correct definitional equality.
-In terms of induction constants, this construction becomes:
+
+Another proof is to observe that any use of one-sided induction is an instance of $\indidone{A}$, and to define
 \begin{align*}
 \indidone{A}(a,C,c,x,p) \defeq 
 \indidtwo{A}( & \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),\\
@@ -1226,6 +1272,8 @@ We leave the details to the reader as \autoref{ex:pm-to-ml}.
 
 We can use either eliminator for equality, $\indidtwo{A}$ or $\indidone{A}$, to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
 
+\subsection{Inequality}
+
 Let us also say something about \define{inequality}, which is negation of equality:%
 \footnote{Note that this is negation of the \emph{propositional} identity type.
 Of course, it makes no sense to negate judgmental equality $\jdeq$, because judgments are not subject to logical operations.}
@@ -1244,7 +1292,7 @@ and only if, its distance from~$0$ is positive, which is a stronger requirement 
 
 
 \sectionNotes
-The type theory presented here is a version of Martin-L\"{o}f's intuitionistic type theory~\cite{martinlof71itt,Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopolis}, which itself is based on and influenced by the foundational work of Brouwer~\cite{brouwer}, Heyting~\cite{heyting}, de Bruijn~\cite{debruijn}, Howard~\cite{howard}, Tait~\cite{tait}, and Lawvere~\cite{lawvere}.  Three principal variants of Martin-L\"{o}f's type theory underlie the NuPRL~\cite{constable+86nuprl-book}, Coq~\cite{Coq}, and Agda~\cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that have not yet been studied in the homotopical setting.
+The type theory presented here is a version of Martin-L\"{o}f's intuitionistic type theory~\cite{martinlof71itt,Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopolis}, which itself is based on and influenced by the foundational work of Brouwer~\cite{brouwer}, Heyting~\cite{heyting}, de Bruijn~\cite{debruijn}, Scott~\cite{scott:validity}, Howard~\cite{howard}, Tait~\cite{tait}, and Lawvere~\cite{lawvere}.  Three principal variants of Martin-L\"{o}f's type theory underlie the NuPRL~\cite{constable+86nuprl-book}, Coq~\cite{Coq}, and Agda~\cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that have not yet been studied in the homotopical setting.
 
 Most significantly, the type theory described here is derived from the \emph{intensional} version of Martin-L\"{o}f's type theory~\cite{Martin-Lof-1973}, rather than the \emph{extensional} version~\cite{Martin-Lof-1979}.  Whereas the extensional theory makes no distinction between judgmental and propositional equality, the intensional theory regards judgmental equality as purely definitional, and admits a much broader, proof-relevant interpretation of the identity type that is central to the homotopy interpretation.  From the homotopical perspective, extensional type theory confines itself to homotopically discrete sets (see \autoref{sec:basics-sets}), whereas the intensional theory admits types with higher-dimensional structure.  The NuPRL system~\cite{constable+86nuprl-book} is extensional, whereas both Coq~\cite{Coq} and Agda~\cite{norell2007towards} are intensional.  Among intensional type theories, there are a number of variants that differ in the structure of identity proofs.  The most liberal interpretation, on which we rely here, admits a \emph{proof-relevant} interpretation of equality, whereas more restricted variants impose restrictions such as \emph{uniqueness of identity proofs (UIP)}~\cite{hofmann}, stating that any two proofs of equality are judgmentally equal, and \emph{Axiom K}~\cite{streicher}, stating that the only proof of equality is reflexivity (up to judgmental equality).  These additional requirements may be selectively imposed in the Coq and Agda systems.
 
@@ -1260,7 +1308,12 @@ However, pattern matching in general is not yet well understood from the homotop
 Moreover, it can be dangerous unless sufficient care is taken: for instance, the form of pattern-matching implemented by default in Agda allows proving Axiom K.
 For these reasons, we have chosen to regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.
 
-Unlike the type theory of Coq, we do not include a primitive type of propositions.  Instead, we embrace the \emph{propositions-as-types (PAT)} principle, identifying propositions with types as suggested originally by de Bruijn~\cite{debruijn}, Howard~\cite{howard}, Tait~\cite{tait}, and Martin-L\"{o}f~\cite{martin-lof}.  (This decision is explained more fully in \autoref{subsec:pat?,subsec:hprops}.)  We do, however, include a full cumulative hierarchy of universes so that the type formation and equality judgments become instances of the membership and equality judgments for a universe.  As a convenience we regard objects of a universe as types (``Russell-style universes", in the terminology of \cite{russellian-universes}), rather than as codes for types (``Tarski-style universes", in the terminology of \cite{tarskian-universes}), and we treat the universe hierarchy as cumulative in that every type in $\UU_i$ is also in $\UU_j$ for each $j\geq i$.
+Unlike the type theory of Coq, we do not include a primitive type of propositions.  Instead, as discussed in \autoref{sec:pat}, we embrace the \emph{propositions-as-types (PAT)} principle, identifying propositions with types.
+This was suggested originally by de Bruijn~\cite{debruijn}, Howard~\cite{howard}, Tait~\cite{tait}, and Martin-L\"{o}f~\cite{martin-lof}.
+(Our decision is explained more fully in \autoref{subsec:pat?,subsec:hprops}.)
+
+We do, however, include a full cumulative hierarchy of universes so that the type formation and equality judgments become instances of the membership and equality judgments for a universe.
+As a convenience, we regard objects of a universe as types (``Russell-style universes", in the terminology of \cite{russellian-universes}), rather than as codes for types (``Tarski-style universes", in the terminology of \cite{tarskian-universes}), and we treat the universe hierarchy as cumulative in that every type in $\UU_i$ is also in $\UU_j$ for each $j\geq i$.
 
 The two-sided induction principle for identity types was formulated by Martin-L\"{o}f~\cite{pml-id},
 and the one-sided induction principle for identity types was formulated by Paulin-Mohring~\cite{cpm-id}.

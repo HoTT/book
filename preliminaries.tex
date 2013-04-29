@@ -1065,105 +1065,91 @@ In \autoref{subsec:prop-trunc} we will introduce a modification to this logic th
 \label{sec:identity-types}
 
 While the previous constructions can be seen as generalisations of
-standard set theoretic constructions, the identity type seems to be
+standard set theoretic constructions, our handling of  identity  seems to be
 a particular feature of type theory.
-According to the propositions-as-types conception, the \emph{proposition} of equality between two elements $a,b:A$ (of the same type) must correspond to some \emph{type}.
+According to the propositions-as-types conception, the \emph{proposition} that two elements $a,b:A$ (of the same type) are equal must correspond to some \emph{type}.
 Since this proposition depends on what $a$ and $b$ are, these \emph{equality types} or \emph{identity types} must be type families dependent on two copies of $A$.
 
-We may write the family as $\idtypevar{A}:A\to A\to\type$, with $\idtype[A]ab$ the type representing the proposition of equality between $a$ and $b$.
-However, once we are familiar with propositions-as-types, it is convenient to also use the standard equality symbol for this.
-Thus, ``$a=b$'' will also be a notation for the \emph{type} $\idtype[A]ab$ corresponding to the proposition that $a$ equals $b$.
+We may write the family as $\idtypevar{A}:A\to A\to\type$, so that $\idtype[A]ab$ is the type representing the proposition of equality between $a$ and $b$.
+Once we are familiar with propositions-as-types, however, it is convenient to also use the standard equality symbol for this; thus, ``$a=b$'' will also be a notation for the \emph{type} $\idtype[A]ab$ corresponding to the proposition that $a$ equals $b$.
 For clarity, we may also write ``$a=_A b$'' to specify the type $A$.
 
-Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include nontrivial information, nothing prevents the type $a=b$ from also including nontrivial information.
-This is the cornerstone of the homotopical interpretation, where we regard witnesses of $a=b$ as \emph{paths} or \emph{equivalences} between $a$ and $b$ in the space $A$.
-Since there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.
-We will return to this in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
+Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include more information than just the fact that the proposition is true, nothing prevents the type $a=b$ from also including more information.
+Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $a=b$ as \emph{paths} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $a=b$ as the type of \emph{identifications} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
+We will return to the interpretation in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
 
 Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $a=_A b:\UU$ in the same universe.
 The basic way to construct an element of $a=b$ is to know that $a$ and $b$ are the same.
 Thus, we have a dependent function
 \[\refl{} : \prd{a:A} (a =_A a)\]
-called the witness of \define{reflexivity}, which says that every element of $A$ is equal to itself (in a specified way).
+called \define{reflexivity}, which says that every element of $A$ is equal to itself (in a specified way).
 
-In particular, this means that if $a\jdeq b$, i.e.\ $a$ and $b$ are \emph{judgmentally} equal, then we also have an element $\refl{a} : a=_A b$.
+In particular, this means that if $a$ and $b$ are \emph{judgmentally} equal, $a\jdeq b$, then we also have an element $\refl{a} : a=_A b$.
 This is well-typed because $a\jdeq b$ means that also the type $a=_A b$ is judgmentally equal to $a=_A a$, which is the type of $\refl{a}$.
 
 The induction principle for the identity types is one of the subtlest parts of type theory, and crucial to the homotopy interpretation.
-One important aspect of it is the principle that ``equals may be substituted for equals,'' as expressed by Leibniz's principle of \emph{indiscernability of identicals}:
+One important consequence of it is the principle that ``equals may be substituted for equals,'' as expressed by the following:
 \begin{description}
 \item[Indiscernability of identicals:]
-Given a family 
+For every family 
 \[
 C : A \to \UU
 \]
-we can construct a function
+there is a function
 \[
 f : \prd{x,y:A}{p:\id[A] x y} C(x) \to C(y)
 \]
-with the defining equality
+such that
 \[
 f(x,x,\refl{x}) = \idfunc
 \]
 \end{description}
-This says that any construction $C$ represented by a family of types respects equality, in the sense that when $C$ is applied to equal elements of $A$, there is a coercion function between the resulting types. The defining equality states that coercion by reflexivity is the identity function.
+This says that every family of types $C$ respects equality, in the sense that applying $C$ to \emph{equal} elements of $A$ also results in a function between the resulting types. The displayed equality states that the function associated to reflexivity is the identity function (and we shall see that in general it is always an equivalence of types).
 
-Indiscernability of identicals is a recursion principle (recursor) for the identity type, analogous to those given for booleans and natural numbers above.  To fully characterize the identity type, we must generalize this to an induction principle, which not only allows equals to be substituted for equals, but gives information about the evidence for equality $p$.  There are two different, but equivalent, ways to formulate the induction principle.
-
+Indiscernability of identicals can be regarded as a recursion principle for the identity type, analogous to those given for booleans and natural numbers above.  It gives a mapping property of $\id[A] x y$ with respect to certain other reflexive, binary relations on $A$, namely those of the form $C(x) \to C(y)$.  We could also formulate a more general recursion principle with respect to reflexive relations of the more general form $C(x,y)$.  However, 
+in order to fully characterize the identity type, we must generalize it to an induction principle, which not only considers maps out of $\id[A] x y$ but also families over it.   Put differently, we consider not only allowing equals to be substituted for equals, but also take into account the evidence $p$ for the equality.  
+    
 \subsection{Path induction}
 
-Under the homotopy interpretation, a type $A$ corresponds to a space, and the identity type of $A$ corresponds to a space of paths in $A$.  Based on this correspondence, we define the \define{path space} of $A$ to be the type
-\[
-\sm{x:A}{y:A} \id[A]{x}{y}
-\]
-The path space is the type of paths in $A$ packaged together with their endpoints.  The first induction principle for the identity type is called \emph{path induction}, and states that the path space is inductively generated by the elements of the form $(x,x,\refl{x})$:
+The induction principle for the identity type is called \define{path induction} in view of the homotopical interpretation to be explained in  the introduction to \autoref{cha:basics}.  It can be seen as stating that the identity type is freely generated by the elements of the form $(x,x,\refl{x})$:
 
 \begin{description}
 \item[Path induction:] 
   Given a family 
   \[ C : \prd{x,y:A}{p:x =_A y} \UU \]
   and a function
-  \[ c :  \prd{x:A} C(x,x,\refl{x})\]
-  we can construct a function
+  \[ c :  \prd{x:A} C(x,x,\refl{x}),\]
+  there is a function
   \[ f : \prd{x,y:A}{p:x =_A y} C(x,y,p) \]
-  with the defining equality 
-  \[ f(x,x,\refl{x}) \defeq c(x) \]
+  such that 
+  \[ f(x,x,\refl{x}) \defeq c(x). \]
 \end{description}
 
-Formally, we write $C$ as family with three arguments, $x$ and $y$ of type $A$ and $p$ of type $\id[A]{x}{y}$.  However, such a family is equivalent (by currying) to a one-argument family, whose argument is an element the path space ($\sm{x:A}{y:A} \id[A]{x}{y}$). Indeed, our notational convention of writing the application of the ternary family $C$ to three arguments as $C(x,y,p)$ suppresses the distinction.
-
 To understand this principle, consider first the simpler case when $C$ does not depend on $p$.
-Thus we have $C:A\to A\to \UU$, which we may regard as a predicate depending on two elements of $A$.
-We are interested in knowing when the proposition $C(x,y)$ holds for some $x,y:A$.
-In this case, the hypothesis of path induction says that we know $C(x,x)$ holds for all $x:A$, i.e.\ that if we substitute the same element for both variables occurring in $C$, we get a true proposition.
-The conclusion then tells us we can conclude that $C(x,y)$ holds whenever $x=y$.
-That is, if $x=y$, then we can \emph{substitute} the value $y$ for some occurrences of $x$ in the true proposition $C(x,x)$ to obtain another true proposition, $C(x,y)$.
+Then we have $C:A\to A\to \UU$, which we may regard as a predicate depending on two elements of $A$.
+We are interested in knowing when the proposition $C(x,y)$ holds for some pair of elements $x,y:A$.
+In this case, the hypothesis of path induction says that we know $C(x,x)$ holds for all $x:A$, i.e.\ that if we evaluate $C$ at the pair $x, x$, we get a true proposition --- so $C$ is a reflexive relation.
+The conclusion then tells us that $C(x,y)$ holds whenever $x=y$.  This is exactly the more general recursion principle for reflexive relations mentioned above.
 
-The general form of the rule allows $C$ to depend on the witness $p:x=y$ as well.  In the premise, we can not only replace $y$ by $x$, but also simultaneously replace $p$ by reflexivity: to prove a property for all elements $(x,y,p)$ of the path space, it suffices to consider all the cases of the form $(x,x,\refl{x})$.  If we view types as like sets, it is unclear what this buys us, but in \autoref{cha:basics} we will see that it is essential to the homotopy interpretation, because it expresses that the path space of a type is inductively generated by the constant loops at each point.
+The general, inductive form of the rule allows $C$ to also depend on the witness $p:x=y$ to the identity between $x$ and $y$.  In the premise, we not only replace $x, y$ by $x,x$, but also simultaneously replace $p$ by reflexivity: to prove a property for all elements $p : x = y$ of the identity type, it suffices to consider all the cases of the form $\refl{x}: x = x$.  If we were viewing types just as sets, it would be unclear what this buys us, but since there may be many different identifications $p : x = y$ between $x$ and $y$, it makes sense to keep track of them in considering families over the type $x =_A y$.
+In \autoref{cha:basics} we will see that this is very important to the homotopy interpretation.
 
-If we package path induction into a function, it becomes:
+If we package up path induction into a single function, it takes the form:
 \symlabel{defn:induction-ML-id}
 \begin{align*}
-  \indidtwo{A} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
+  \indid{A} :  \dprd{C : \prd{x,y:A}{p:x =_A y} \UU} 
   \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:x =_A y}   C(x,y,p)
 \end{align*}
 with the equality
-\[ \indidtwo{A}(C,c,x,x,\refl{x}) \defeq c(x) \]
-This function is also called $J$.  In \cref{sec:fibrations}, we show that the recursor (indiscernability of identicals) follows from path induction.  
+\[ \indid{A}(C,c,x,x,\refl{x}) \defeq c(x) \]
+The function $ \indid{A}$ is traditionally called $J$.  We leave it as an easy exercise to show that indiscernability of identicals follows from path induction.  
 
 \subsection{Based path induction}
 
 Given a proof $p : \id{a}{b}$, 
-path induction allows you to equate $a$ and $b$ by replacing them \emph{both} with the same unknown element $x$: to prove a family
-$C$ for all \emph{pairs} of elements of $A$, it suffices to prove it for the whole diagonal.
-In some proofs, however, it is simpler to use an equation $p : \id{a}{b}$ by replacing all occurrences of $b$ with $a$ (or vice versa), because it is sometimes easier to do the remainder of the proof for the specific element $a$ mentioned in the equality than for a general unknown $x$.  This motivates a second induction principle for identity types.  As we show below, this second induction principle is equivalent to the first, but it is sometimes a more convenient packaging.
-
-Given a type $A$ with an element $a:A$, we define the \define{based path space} of $A$ at $a$ to be the type
-\[
-\sm{y:A} \id[A]{a}{y}
-\]
-The elements of this type are paths in $A$ packaged together with one endpoint ($y$), but with one endpoint ($a$) fixed.
-From a logical perspective, the based path space can be thought of as a \define{singleton type}: because its elements are the elements of $A$ that are equal to $a$, in a rough sense, it contains only the element $a$. However, it is very important to observe the difference between this singleton type and a singleton set $\{a\}$, which has exactly one element $a$: The singleton type has elements $(b, p)$ where $p : \id[A] a b$.  Because of the homotopy interpretation of equality, the singleton type can have many different elements $b$ that are not strictly equal to $a$, but are only connected to it by a path/propositional equality. Nonetheless, the singleton type behaves like a singleton up to homotopy, in the sense that any two elements of it are identified by a path, i.e., it is contractible.  This follows from the second induction principle for the identity type, which states that the based path space of $A$ at $a$ is inductively generated by the element $(a,\refl{a})$.
+path induction requires you to replace \emph{both} $a$ and $b$ with the same unknown element $x$; thus in order to define an element of a family
+$C$, for all pairs of elements of $A$, it suffices to define it on the  diagonal.
+In some proofs, however, it is simpler to make use of an equation $p : \id{a}{b}$ by replacing all occurrences of $b$ with $a$ (or vice versa), because it is sometimes easier to do the remainder of the proof for the specific element $a$ mentioned in the equality than for a general unknown $x$.  This motivates a second induction principle for identity types.  As we show below, this second principle is equivalent to the first; it is just sometimes a more convenient formulation.
 
 \begin{description}
 \item[Based path induction:] 
@@ -1173,70 +1159,57 @@ From a logical perspective, the based path space can be thought of as a \define{
   \[ c : C(a,\refl{a}). \]
   Then we obtain a function
   \[ f : \prd{x:A}{p:a = x} C(x,p) \]
-  with the defining equality
-  \[ f(a,\refl{a}) \defeq c \]
+  such that
+  \[ f(a,\refl{a}) \defeq c .\]
 \end{description}
 
-Formally, we write $C$ as a binary family, with arguments $y$ of type $A$ and $p$ of type $\id[A]{a}{y}$.  However, as we noted above for the path space, such a family is equivalent (by currying) to a unary family whose one argument is an element the based path space ($\sm{y:A} \id[A]{a}{y}$).
-
-Based path induction says that we may prove a family $C$ for all elements of the based path space at $a$ in $A$ by covering the case for $(a,\refl{a})$.  Logically, this says that given an equality $\id{a}{b}$, we can substitute the occurrences of $b$ chosen by $C$ with $a$.  Homotopically, it expresses the that the space of paths from a chosen point to an arbitrary endpoint is inductively generated by the constant loop.
+Based path induction says that we may define an element of a family $C$ defined on the identity type $a =_A x$, with fixed $a$ in $A$, by considering just the case where $\refl{a} : a = a$.  Logically, this says that the identity type $a =_A x$ is generated by the element  $\refl{a} : a = a$.  Homotopically, it expresses the fact  that the space of paths from a chosen point to an arbitrary endpoint is contractible to the constant loop on the chosen point.
 
 Packaged as a function, based path induction becomes:
 \symlabel{defn:induction-PM-id}
 \begin{align*}
-  \indidone{A} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
+  \indidb{A} :  \dprd{a:A}{C : \prd{x:A}{p : a =_A x} \UU}
   C(a,\refl{a}) \to \dprd{x:A}{p : a =_A x} C(x,p) 
 \end{align*}
 with the equality
-\[ \indidone{A}(a,C,c,a,\refl{a}) \defeq c. \]
+\[ \indidb{A}(a,C,c,a,\refl{a}) \defeq c. \]
 %\[ g(x)(x,\refl{x}) \defeq d(x) \]
 
-Below, we show that path induction and based path induction are equivalent.  Because of this, we will sometimes be sloppy and refer to based path induction simply as ``path induction,'' relying on the reader to infer which principle is meant from the form of the proof.  
-
-\subsection{Double-based path induction?}
-
-One might wonder whether there is a also a ``double-based'' path induction principle, for elements of an identity type with \emph{both} sides fixed. Given a family
-\[
-C : (\id[A]{a}{b}) \to \UU
-\]
-is it possible to prove $C(p)$ for all $p$ by covering specific cases?
-
-In general, it is not even clear what those cases would be, but in the special case where $C : \id{a}{a} \to \UU$, one might expect that to prove $C(p)$ for all $p$, it would suffice to prove $C(\refl{a})$.
-However, this principle is \textbf{not} provable in homotopy type theory.  Indeed, using it, one can easily prove that any $p : \id{a}{a}$ is equal to $\refl{a}$, which is contradictory in the presence of univalence.  Thus, while path induction states that the path space is inductively generated (it is the least reflexive relation), and based path induction says that the based path space is inductively generated (it is the least predicate on $A$ that holds for $a$), there is no principle saying that the type of \emph{loops} is inductively generated.
+Below, we show that path induction and based path induction are equivalent.  Because of this, we will sometimes be sloppy and also refer to based path induction simply as ``path induction,'' relying on the reader to infer which principle is meant from the form of the proof.  
 
 \subsection{Equivalence of path induction and based path induction}
 
-The two above induction principles for the identity type are equivalent.
+The two induction principles for the identity type introduced above are equivalent.
 It is easy to see that path induction follows from based path induction principle.
-Let us assume the premises of path induction:
+Indeed, let us assume the premises of path induction:
 \begin{eqnarray*}
 C & : & \prd{x,y:A}{p:x =_A y} \UU  \\
 c & :  & \prd{x:A} C(x,x,\refl{x}).
 \end{eqnarray*}
-Now, given an element $x:A$, we can instantiate both, obtaining
+Now, given an element $x:A$, we can instantiate both of the above, obtaining
 \begin{eqnarray*}
 C' & : & \prd{y:A}{p:x =_A y} \UU  \\
 C' & \defeq & C(x) \\
 c' & : & C'(x,\refl{x}) \\
-c' & \defeq & c(x)
+c' & \defeq & c(x).
 \end{eqnarray*}
 Clearly, $C'$ and $c'$ match the premises of based path induction and hence we can construct 
 \begin{eqnarray*}
 g : \prd{y:A}{p : x = y} C'(y,p)
 \end{eqnarray*}
 with the defining equality
-\[ g(x,\refl{x}) \defeq c' \]
+\[ g(x,\refl{x}) \defeq c' .\]
 Now we observe that $g$'s codomain is equal to $C(x,y,p)$.
 Thus, discharging our assumption $x:A$, we can derive a function 
 \[ f : \prd{x,y:A}{p : x =_A y} C(x,y,p) \]
-with the required definitional equality.
+with the required judgmental equality $f(x,x,\refl{x}) \judgeq g(x,\refl{x}) \defeq c' \defeq c(x)$.
 
-Another proof of this fact is to observe that any such $f$ can be obtained as an instance of $\indidtwo{A}$,
-so it suffices to define $\indidtwo{A}$ in terms of $\indidone{A}$ as
-\[ \indidtwo{A}(C,c,x,y,p) \defeq \indidone{A}(x,C(x),c(x),y,p). \]
+Another proof of this fact is to observe that any such $f$ can be obtained as an instance of $\indidb{A}$
+so it suffices to define $\indidb{A}$ in terms of $\indid{A}$ as
+\[ \indidb{A}(C,c,x,y,p) \defeq \indid{A}(x,C(x),c(x),y,p). \]
 
-The other direction is a bit trickier: it is not clear how we can use a particular instance of the path induction to derive a particular instance of
-based path induction. What we can do instead is construct one instance of path induction which shows 
+The other direction is a bit trickier; it is not clear how we can use a particular instance of path induction to derive a particular instance of
+based path induction. What we can do instead is to construct one instance of path induction which shows 
 all possible instantiations of based path induction at once.
 Define
 \begin{eqnarray*}
@@ -1256,26 +1229,26 @@ Now given $x:A$ and $p:a =_A x$, we can derive the conclusion of based path indu
 \[ f(a,x,p,C,c) : C(x,p) \]
 Notice that we also obtain the correct definitional equality.
 
-Another proof is to observe that any use of based path induction is an instance of $\indidone{A}$, and to define
-\begin{align*}
-\indidone{A}(a,C,c,x,p) \defeq 
-\indidtwo{A}( & \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),\\
-& \lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x,\\
-& a,x,p,C,c) 
-\end{align*}
+Another proof is to observe that any use of based path induction is an instance of $\indid{A}$  and to define
+\begin{multline}
+\indid{A}(a,C,c,x,p) \defeq \\
+\indidb{A}\big( \lamu{x,y:A}{p:x =_A y} \tprd{C : \prd{z:A}{p : x =_A z} \UU} C(x,\refl{x}) \to C(y,p),
+\lamu{C:\prd{z:A}{p : x =_A z} \UU}\lamu{x:C(x,\refl{x})} x, a, x, p, C, c\big) 
+\end{multline}
+
 
 Note that the construction given above uses universes. That is, if we want to
-model $\indidone{A}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
-to use $\indidtwo{A}$ with 
+model $\indid{A}$ with $C : \prd{x:A}{p : a =_A x} \UU_i$, we need
+to use $\indidb{A}$ with 
 %
 \[ D:\prd{x,y:A}{p:x =_A y} \UU_{i+1} \]
 %
 since $D$ quantifies over all $C$ of the given type. While this is
 compatible with our definition of universes, it is also possible to
-derive $\indidone{A}$ without using universes: we can show that $\indidtwo{A}$ entails \autoref{lem:transport,thm:contr-paths}, and that these two principles imply $\indidone{A}$ directly.
+derive $\indid{A}$ without using universes: we can show that $\indidb{A}$ entails \autoref{lem:transport,thm:contr-paths}, and that these two principles imply $\indid{A}$ directly.
 We leave the details to the reader as \autoref{ex:pm-to-ml}.
 
-We can use either eliminator for equality, $\indidtwo{A}$ or $\indidone{A}$, to establish that equality is an equivalence relation, that every function preserves equality and that every family is stable under equality. We leave the details to the next chapter, where we will derive these principles and explain them in the context of homotopy type theory.
+We can use either of the foregoing formulations of identity types --- which we may call the ``two-sided" or the ``one-sided", respectively --- to establish that equality is an equivalence relation, that every function preserves equality and that every family respects equality. We leave the details to the next chapter, where this will be derived  and explained in the context of homotopy type theory.
 
 \subsection{Inequality}
 
@@ -1289,7 +1262,7 @@ Of course, it makes no sense to negate judgmental equality $\jdeq$, because judg
 %
 Just like negation, inequality plays a less important role here than it does in classical
 mathematics. For example, we cannot prove that two things are equal by proving that they
-are not unequal: that would be an application the classical law of double negation, which is unprovable without additional assumptions (see \autoref{sec:intuitionism}).
+are not unequal: that would be an application the classical law of double negation, see \autoref{sec:intuitionism}.
 Sometimes it is useful to phrase inequality in a positive way. For example,
 in~\autoref{RD-inverse-apart-0} we shall prove that a real number $x$ has an inverse if,
 and only if, its distance from~$0$ is positive, which is a stronger requirement than $x
@@ -1364,7 +1337,7 @@ Show that if we define $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, 
 \end{ex}
 
 \begin{ex}\label{ex:pm-to-ml}
-Give an alternative derivation of $\indidone{A}$ from $\indidtwo{A}$ which avoids the use of universes.
+Give an alternative derivation of $\indid{A}$ from $\indidb{A}$ which avoids the use of universes.
   \emph{(This requires concepts from later chapters.)}
 \end{ex}
 
@@ -1406,6 +1379,18 @@ Define multiplication and exponentiation using $\rec{\nat}$. Formally verify tha
   Why do the induction principles for identity types not allow us to construct a function $f: \prd{x:A}{p:x=x} (p = \refl{x})$ with the defining equation
   \[ f(x,\refl{x}) \defeq \refl{\refl{x}} \quad ?\]
 \end{ex}
+
+\begin{ex}\label{ex:subtFromPathInd}
+  Show that indiscernability of identicals follows from path induction.  
+\end{ex}
+
+\begin{ex}\label{ex:totalpath} Show that path induction is equivalent to saying that for any $$C : (\sm{x,y:A}(x=y)) \to \UU,$$ to define $$f : \prd{q:\sm{x,y:A}(x=y)} C(q)$$ it suffices to give $$g : \prd{x:A} C(x,x,\refl{x}),$$ in which case $$f((x,x,\refl{x})) \jdeq g(x).$$ This expresses the fact that $\sm{x,y:A}(x=y)$ is inductively generated by reflexivity paths.
+\end{ex}
+
+\begin{ex}\label{ex:singlepath} Similar for based path induction. Note that according to propositions-as-types, the type $\sm{y:A}(a=y)$ can be regarded as "the type of all elements of A which are equal to a", a type-theoretic version of the "singleton subset" $\{a\}$.
+\end{ex}
+
+
 
 % Local Variables:
 % TeX-master: "main"

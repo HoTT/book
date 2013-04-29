@@ -241,9 +241,9 @@ These are Martin-L{\"o}f's \emph{W-types}, also known as the types of \emph{well
 W-types are a generalization of such types as natural numbers, lists, and binary trees, which are sufficiently general to encapsulate the ``recursion'' aspect of \emph{any} inductive type.
 
 A particular W-type is specified by giving two parameters $A : \type$ and $B : A \to \type$, in which case the resulting $W$-type is written $\wtype{a:A} B(a)$.
-The type $A$ represents the type of \emph{labels} for $\wtype{a :A} B(a)$, which function as constructors (however, we reserve that word for the actual functions which arise in inductive definitions). For instance, when defining natural numbers as a W-type, the type $A$ would be the type $\bool$ inhabited by the two terms $\btrue$ and $\bfalse$, since there are precisely two ways to obtain a natural number---either it will be zero or a successor of another natural number. 
+The type $A$ represents the type of \emph{labels} for $\wtype{a :A} B(a)$, which function as constructors (however, we reserve that word for the actual functions which arise in inductive definitions). For instance, when defining natural numbers as a W-type, the type $A$ would be the type $\bool$ inhabited by the two elements $\btrue$ and $\bfalse$, since there are precisely two ways to obtain a natural number---either it will be zero or a successor of another natural number. 
 
-The type family $B : A \to \type$ is used to record the arity of labels: a label $a : A$ will take a family of inductive arguments, indexed over $B(a)$. We can therefore think of the ``$B(a)$-many'' arguments of $a$. These arguments are represented by a function $f : B(a) \to \wtype{a :A} B(a)$, with the understanding that for any $b : B(a)$, $f(b)$ is the ``$b$-th'' argument to the label $a$. The W-type $\wtype{a :A} B(a)$ can thus be thought of as the type of well-founded trees, where nodes are labeled by terms of $A$ and each node labeled by $a : A$ has $B(a)$-many branches.
+The type family $B : A \to \type$ is used to record the arity of labels: a label $a : A$ will take a family of inductive arguments, indexed over $B(a)$. We can therefore think of the ``$B(a)$-many'' arguments of $a$. These arguments are represented by a function $f : B(a) \to \wtype{a :A} B(a)$, with the understanding that for any $b : B(a)$, $f(b)$ is the ``$b$-th'' argument to the label $a$. The W-type $\wtype{a :A} B(a)$ can thus be thought of as the type of well-founded trees, where nodes are labeled by elements of $A$ and each node labeled by $a : A$ has $B(a)$-many branches.
 
 In the case of natural numbers, the label $\btrue $ has arity 0, since it constructs the constant zero; the label $\bfalse$ has arity 1, since it constructs the successor of its argument. We can capture this by using simple elimination on $\bool$ to define a function $\rec\bool(\bbU,\emptyt,\unit)$ into a universe of types; this function returns the empty type $\emptyt$ for $\btrue$ and the unit type $\unit$ for $\bfalse$. We can thus define
 \[ \natw \defeq \wtype{b:\bool} \rec\bool(\bbU,\emptyt,\unit) \]
@@ -270,14 +270,14 @@ and so on.
 
 We have the following elimination rule for W types:
 \begin{itemize}
-\item When proving a statement $E : \big(\wtype{x:A} B(x)\big) \to \type$ about \emph{all} terms of the $W$-type $\wtype{x:A} B(x)$, it suffices to prove it for $\supp(a,f)$, assuming it holds for all $f(b)$ with $b : B(a)$. 
+\item When proving a statement $E : \big(\wtype{x:A} B(x)\big) \to \type$ about \emph{all} elements of the $W$-type $\wtype{x:A} B(x)$, it suffices to prove it for $\supp(a,f)$, assuming it holds for all $f(b)$ with $b : B(a)$. 
 In other words, it suffices to give a proof 
 \begin{align*}
 e : & \; \prd{a:A}{f : B(a) \to \wtype{x:A} B(x)}{g : \prd{b : B(a)} E(f(b))} E(\supp(a,f))
 \end{align*}
 \end{itemize}
 
-The variable $g$ represents our inductive hypothesis, namely that all arguments of $a$ satisfy $E$. To state this, we quantify over all terms of type $B(a)$, since each $b : B(a)$ corresponds to one argument $f(b)$ of $a$.
+The variable $g$ represents our inductive hypothesis, namely that all arguments of $a$ satisfy $E$. To state this, we quantify over all elements of type $B(a)$, since each $b : B(a)$ corresponds to one argument $f(b)$ of $a$.
 
 How would we define the function $\dbl$ on natural numbers encoded as a W-type? We would like to use the (simple) elimination on $\natw$ into the type $\natw$ itself. We thus need to construct a suitable function
 \[e : \prd{a : \bool}{f : B(a) \to \natw}{g : B(a) \to \natw} \nat\]
@@ -349,7 +349,7 @@ As a simple example, consider the natural numbers.
 The appropriate sort of ``algebra'' here is a type equipped with the same structure that the constructors of $\nat$ give to it.
 
 \begin{defn}
-A \define{$\nat$-algebra} is a type $C$ with two terms $c_0 : C$, $c_s : C \to C$. Thus,
+A \define{$\nat$-algebra} is a type $C$ with two elements $c_0 : C$, $c_s : C \to C$. Thus,
 \begin{align*}
 \nalg \defeq \sm {C : \type} C \times (C \to C)
 \end{align*}
@@ -485,7 +485,7 @@ PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W}   \ar@/_1pc/[r]_{Pf} \ar@{}[r]|{Pe}
 & PD \ar[d]^{s_D}  \\
 W  \ar@/_1pc/[r]_f  \ar@{}[r]^{s_f} & D }
 \]
-In light of this fact, to prove that there exists a term as in~\eqref{equ:prequired}, it is 
+In light of this fact, to prove that there exists an element as in~\eqref{equ:prequired}, it is 
 sufficient to show that there is an algebra 2-cell 
 \[
 (e,s_e) : (f,s_f) = (g,s_g) \, .
@@ -565,7 +565,7 @@ i.e., there is a witness $\beta(C,c,a,f)$ for the above equality.
 
 Furthermore, we have the following uniqueness rule, saying that any two functions defined by the same recurrence are equal:
 \begin{itemize}
-\item Let $C : \type$ and $c : \prd{a:A} (B(a) \to C) \to C$ be given. Let $g,h : (\wtypeh{x:A} B(x)) \to C$ be two functions which satisfy the recurrence $c$ up to propositional equality, i.e., such that we have terms
+\item Let $C : \type$ and $c : \prd{a:A} (B(a) \to C) \to C$ be given. Let $g,h : (\wtypeh{x:A} B(x)) \to C$ be two functions which satisfy the recurrence $c$ up to propositional equality, i.e., such that we have
 \begin{align*}
   \beta_g : \prd{a,f} \id{g(\supp(a,f))}{c(a,\lamu{b: B(a)} g(f(b)))} \\
   \beta_h : \prd{a,f} \id{h(\supp(a,f))}{c(a,\lamu{b: B(a)} h(f(b)))}
@@ -573,7 +573,7 @@ Furthermore, we have the following uniqueness rule, saying that any two function
 Then $g$ and $h$ are equal, i.e.\ there is an equality $\alpha(C,c,f,g,\beta_g,\beta_h) : g = h$.
 \end{itemize}
 
-We note that in the dependent case the uniqueness rule is derivable from dependent elimination (\autoref{thm:w-uniq}). When the eliminator is simple rather than dependent, this rule is no longer derivable---and in fact, the statement is not even true (exercise). We hence postulate it as an axiom, together with the following coherence law, which tells us how the proof of uniqueness behaves on canonical terms:
+We note that in the dependent case the uniqueness rule is derivable from dependent elimination (\autoref{thm:w-uniq}). When the eliminator is simple rather than dependent, this rule is no longer derivable---and in fact, the statement is not even true (exercise). We hence postulate it as an axiom, together with the following coherence law, which tells us how the proof of uniqueness behaves on canonical elements:
 \begin{itemize}
 \item
 For any $a : A$ and $f : B(a) \to C$, the following diagram commutes propositionally:
@@ -962,7 +962,7 @@ The induction principle for this definition says that given $C:\prd{b:A} (a_0 =_
 This is exactly the one-sided induction principle for identity types.
 
 The view of identity types as inductive types has historically caused some confusion, because of the intuition mentioned in \autoref{sec:bool-nat} that all the elements of an inductive type should be obtained by repeatedly applying its constructors.
-For ordinary inductive types such as \bool and \nat, this is provable: we saw in \autoref{thm:allbool-trueorfalse} that indeed every element of \bool is either $\btrue$ or $\bfalse$, and similarly one can prove that every element of \nat is either $0$ or a successor.
+For ordinary inductive types such as \bool and \nat, this is the case: we saw in \autoref{thm:allbool-trueorfalse} that indeed every element of \bool is either $\btrue$ or $\bfalse$, and similarly one can prove that every element of \nat is either $0$ or a successor.
 
 However, this is \emph{not} true for identity types: there is only one constructor $\refl{}$, but not every path is equal to the constant path.
 More precisely, we cannot prove, using only the induction principle for identity types (either one), that every inhabitant of $a=_A a$ is equal to $\refl a$.

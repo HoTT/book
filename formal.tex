@@ -475,20 +475,30 @@ The fact that the context holds assumptions is expressed by the rule which says 
 The following important principles, called \define{substitution} and
 \define{weakening}, need not be explicitly assumed. Rather, it is possible to
 show, by induction on the structure of all possible derivations, that whenever
-the hypotheses of these rules are provable, their conclusion is also
-provable.\footnote{Such rules are called \define{admissible}.} ($\mathcal{J}$ is
-any judgment $a:A$ or $a\equiv b:A$.)
+the hypotheses of these rules are derivable, their conclusion is also
+derivable.\footnote{Such rules are called \define{admissible}.}
+For the typing judgments these principles are manifested as
 %
 \begin{mathpar}
-  \inferrule*[right=$\Subst$]
-  {\oftp\Gamma{a}{A} \\ \judg{\Gamma,\tmtp xA,\Delta}{\mathcal{J}}}
-  {\judg{\Gamma,\Delta[a/x]}{\mathcal{J}[a/x]}}
+  \inferrule*[right=$\Subst_1$]
+  {\oftp\Gamma{a}{A} \\ \oftp{\Gamma,\tmtp xA,\Delta}{b}{B}}
+  {\oftp{\Gamma,\Delta[a/x]}{b[a/x]}{B[a/x]}}
 \and
-  \inferrule*[right=$\Weak$]
-  {\oftp\Gamma{A}{\UU_i} \\ \judg{\Gamma,\Delta}{\mathcal{J}}}
-  {\judg{\Gamma,\tmtp xA,\Delta}{\mathcal{J}}}
+  \inferrule*[right=$\Weak_1$]
+  {\oftp\Gamma{A}{\UU_i} \\ \oftp{\Gamma,\Delta}{b}{B}}
+  {\oftp{\Gamma,\tmtp xA,\Delta}{b}{B}}
 \end{mathpar}
-
+and for judgmental equalities they become
+\begin{mathpar}
+  \inferrule*[right=$\Subst_2$]
+  {\oftp\Gamma{a}{A} \\ \jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
+  {\jdeqtp{\Gamma,\Delta[a/x]}{b[a/x]}{c[a/x]}{B[a/x]}}
+\and
+  \inferrule*[right=$\Weak_2$]
+  {\oftp\Gamma{A}{\UU_i} \\ \jdeqtp{\Gamma,\Delta}{b}{c}{B}}
+  {\jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
+\end{mathpar}
+%
 In addition to the judgmental equality rules given for each type former, we also
 assume that judgmental equality is an equivalence relation respected by typing.
 \begin{mathparpagebreakable}
@@ -502,7 +512,7 @@ assume that judgmental equality is an equivalence relation respected by typing.
 \and
   \inferrule*{\jdeqtp\Gamma{a}{b}{A} \\ \jdeqtp\Gamma{A}{B}{\UU_i}}{\jdeqtp\Gamma{a}{b}{B}}
 \end{mathparpagebreakable}
-
+%
 Additionally, for all the type formers below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
 \[
   \inferrule*[right=$\Pi$-\intro-eq]
@@ -619,7 +629,7 @@ define the introduction and elimination rules for $\smsym$; as with $\prdsym$, c
      \oftp\Gamma{a'}{A} \\ \oftp\Gamma{b'}{B[a'/x]}}
     {\jdeqtp\Gamma{\ind{\tsm{x:A} B}(y.C,x.y.g,\tup{a'}{b'})}{g[a',b'/x,y]}{C[\tup {a'} {b'}/z]}}
 \end{mathparpagebreakable}
-
+%
 The expression $\tsm{x:A} B$ binds free occurrences of $x$ in $B$. Furthermore, because
 $\ind{\tsm{x:A} B}$ has some arguments with free variables beyond those in $\Gamma$,
 we bind (following the variable names above) $y$ in $C$, and $a$ and $b$ in $g$.
@@ -770,29 +780,29 @@ The presentation here corresponds to the two-sided induction principle for ident
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{A} \\ \oftp\Gamma{p'}{\id[A]ab}}
-  {\oftp\Gamma{\indidtwo{A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
+  {\oftp\Gamma{\indidb{A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
 \and
   \inferrule*[right=$\idsym$-\comp]
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A}}
-  {\jdeqtp\Gamma{\indidtwo{A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a,a,\refl a/x,y,p]}}
+  {\jdeqtp\Gamma{\indidb{A}(x.y.p.C,z.c,a,a,\refl a)}{c[a/z]}{C[a,a,\refl a/x,y,p]}}
 \end{mathparpagebreakable}
 %
-In $\indidtwo{A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
+In $\indidb{A}$, $x$, $y$, and $p$ are bound in $C$, and $z$ is bound in
 $c$.
 
 \subsection{The \texorpdfstring{$\eta$}{η}-conversion rule}
 
 We introduce the $\eta$-conversion rule for functions; see
 \autoref{sec:function-types}; it introduces a judgmental equality.
-
+%
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-$\eta$]
   {\oftp\Gamma{f}{\tprd{x:A} B}}
   {\jdeqtp\Gamma{f}{(\lamu{x:A}f(x))}{\tprd{x:A} B}}
 \end{mathparpagebreakable}
-
+%
 Various theorems in the text of the book, such as \autoref{thm:eta-sigma}, are
 referred to as $\eta$-equivalence rules, but these are derivable propositional
 equalities, and so need not be asserted as part of the type theory.
@@ -843,7 +853,7 @@ We begin by recalling some auxiliary definitions.
 \item In \autoref{lem:map}, we defined the functorial action of $f:A\to B$ on a path
 $p:\id[A] xy$ as
 \[
-\apfunc f(p) \defeq \indidtwo{A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p ).
+\apfunc f(p) \defeq \indidb{A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p ).
 \]
 
 \item In \autoref{ex:composition}, we defined the composition of $g:B\to C$ after
@@ -868,13 +878,13 @@ for the type of equivalences $\sm{f:A\to B} \isequiv(f)$.
 \item In \eqref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
 \[
 \happly_{f,g}(p) \defeq
-  \indidtwo{\tprd{x:A} B} (
+  \indidb{\tprd{x:A} B} (
     f.g.p. {\prd{x:A} \id[B(x)]{f(x)}{g(x)}},
     h. \lamu{x:A} \refl {h(x)},
     f,g,p).
 \]
 \end{itemize}
-
+%
 Finally, we assert:
 
 \begin{defn}[Axiom of function extensionality (\autoref{axiom:funext})]
@@ -894,7 +904,7 @@ to equivalences $\eqv AB$ as
 \begin{multline}
 \idtoeqv_{A,B} \defeq\\
 \lamu{p:\id[\UU_i] A B}
-\indidtwo{\UU_i}(
+\indidb{\UU_i}(
       A.B.p.(\eqv A B),
       A.{\tup {\lamu{x:A} x}
               {\tup {\lamu{x:A} x}
@@ -904,17 +914,17 @@ to equivalences $\eqv AB$ as
       A,B,p).
 \end{multline}
 \end{itemize}
-
+%
 We assert:
 
 \begin{defn}[Univalence axiom (\autoref{axiom:univalence})]
-We introduce a  constant, $\ua$, which asserts that for each $A,B$, the term $\idtoeqv_{A,B}$
-is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$:
+We introduce a  constant, $\univalence$, which asserts that for each $A,B$, the
+term $\idtoeqv_{A,B}$ is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$:
 \begin{mathparpagebreakable}
   \inferrule*[right=$\UU_i$-\textsc{univ}]
   {\oftp\Gamma{A}{\UU_i} \\
    \oftp\Gamma{B}{\UU_i}}
-  {\oftp\Gamma{\ua(A,B)}{\isequiv(\idtoeqv_{A,B})}}
+  {\oftp\Gamma{\univalence(A,B)}{\isequiv(\idtoeqv_{A,B})}}
 \end{mathparpagebreakable}
 \end{defn}
 
@@ -962,7 +972,7 @@ differences are discussed in \autoref{sec:dependent-paths}.
   {\oftp\Gamma{\Sn^1\text{-}\mathsf{loopcomp}}
     {\id {\apd{(\lamu{y:\Sn^1} \ind{\Sn^1}(x.C,b,\ell,y))}{\lloop}} {\ell}}}
 \end{mathparpagebreakable}
-
+%
 In $\ind{\Sn^1}$, $x$ is bound in $C$. The notation ${\dpath C \lloop b b}$ for dependent paths was introduced in \autoref{sec:dependent-paths}.
 
 \section{Basic metatheory}
@@ -1071,15 +1081,11 @@ inductive types, nor are we certain how to correctly formulate their rules
 (e.g., whether the computation rules on higher constructors should be judgmental
 equalities).
 
-It is also unknown precisely which higher inductive types
-% FIXME: This sentence doesn't end.
-
-The consistency of univalence could perhaps be shown by an appropriate normalization
-procedure, but currently the only proof of consistency is via a semantic model in Kan
-complexes due to Voevodsky \cite{klv:ssetmodel}. There are other desirable properties which
-simply cannot be shown by normalization arguments; for example, \cite{ls:hits}
-show that higher inductive types are logically consistent and can be modeled by
-the CW complexes which they resemble. 
+The consistency of Martin-L\"{o}f type theory extended with univalence (resp.,
+HITs) could be shown by an appropriate normalization procedure, but currently
+the only proofs that these systems are consistent are via semantic models---for
+univalence, a model in Kan complexes due to Voevodsky \cite{klv:ssetmodel}, and
+for HITs, a model due to Lumsdaine and Shulman \cite{ls:hits}.
 
 Other metatheoretic issues, and a summary of our current results, are discussed
 in greater length in the ``Constructivity'' and ``Open problems'' sections of

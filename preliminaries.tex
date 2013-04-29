@@ -345,13 +345,19 @@ Given types $A,B:\UU$ we introduce the type $A\times B:\UU$, which we call their
 We also introduce a nullary product type, called the \define{unit type} $\unit : \UU$.
 We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, where $a:A$ and $b:B$, and the only element of $\unit$ to be some particular object $\ttt : \unit$.
 However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.
-Just as we did for the function type, we explain the product type by prescribing what we can do with pairs, how to construct them, and what equalities they satisfy.
+
+There is a general pattern to how we describe types, and since products are our second example following this pattern,\footnote{The way we have   described univeres above does not quite follow this pattern: the   elimination form for universes is essentially the ability to $A : \UU$   in the judgement $a : A$}, it is worth emphasizing the general form. When we specify a type, we say
+\begin{enumerate}
+\item how to construct elements of that type.  These are called the \emph{constructors}.  For example, for functions, the constructor is $\lambda$-abstraction.    
+\item how to use elements of that type.  These are called the   \emph{eliminators}.  For example, for functions, the eliminator is   function application.
+\item equalities relating the constructors and eliminators.  For   example, for functions, we have the rule that $(\lamu{x:A}b)(a)$ is   equal to the substitution of $a$ for $x$ in $b$.
+\end{itemize}
 
 The way to construct pairs is obvious: given $a:A$ and $b:B$, we may form $(a,b):A\times B$.
 Similarly, there is a unique way to construct elements of $\unit$, namely we have $\ttt:\unit$.
 However, we do not assert as a rule of type theory that ``every element of $A\times B$ is a pair'' --- it turns out that we can \emph{prove} that using the principles to be introduced below.
 
-Now, what can we \emph{do} with pairs, i.e.\ how can we define functions out of a product type?
+Now, how can we \emph{use} pairs, i.e.\ how can we define functions out of a product type?
 Let us first consider the definition of a non-dependent function $f : A\times B \to C$.
 Since we intend the only elements of $A\times B$ to be pairs, in order to define such a function, it should be enough to prescribe the result
 when $f$ is applied to a pair $\tup{a}{b}$.  We prescribe these results by
@@ -387,10 +393,9 @@ Then instead of defining functions such as $\fst$ and $\snd$ directly by a defin
 \end{align*}
 We refer to the function $\rec{A\times B}$ as the \define{recursor} for product types.
 We may also speak of the \define{recursion principle} for cartesian products, meaning the fact that we can define a function $f:A\times B\to C$ as above by giving its value on pairs.
-
 The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.
-It comes from a general framework of type definitions, and will make more sense once we consider inductive types, such as
-the natural numbers.  The term ``eliminator'' is often used as well.
+It comes the fact that product types are a degenerate example of a general framework for inductive types, and for types such as
+the natural numbers, the recursor will actually be recursive.  
 
 We leave it as a simple exercise to show that the recursor can be
 derived from the projections and vice versa.

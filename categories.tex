@@ -1,12 +1,37 @@
 \chapter{Category theory}
 \label{cha:category-theory}
 
-In this chapter we will develop some basic category theory.
-Although homotopy type theory is well-adapted for \emph{higher} category theory, here we will restrict ourselves to 1-categories.
-We will see that even in this case, the theory has a slightly different flavor from the classical set-based one (and this same difference carries over to the higher-categorical situation).
+Of the branches of mathematics, category theory is one which perhaps fits the least comfortably in set theoretic foundations.
+One problem is that most of category theory is invariant under weaker notions of ``sameness'' than equality, such as isomorphism in a category or equivalence of categories, in a way which set theory fails to capture.
+But this is the same sort of problem that the univalence axiom solves for types, by identifying equality with equivalence.
+Thus, in univalent foundations it makes sense to consider a notion of ``category'' in which equality of objects is identified with isomorphism in a similar way.
 
-We assume the reader has some basic familiarity with the classical theory, and remind him of the fact that whenever we wrte \type it denotes some universe of types, but perhaps a different one at different times, and everything we say will remain true for any consistent choice of universe levels.
-This matches the ordinary practice of working category theorists.
+Ignoring size issues, in set-based mathematics a category consists of a \emph{set} $A_0$ of objects and, for each $x,y\in A_0$, a \emph{set} $\hom_A(x,y)$ of morphisms.
+Under Univalent Foundations, a ``naive'' definition of category would simply mimic this with a \emph{type} of objects and \emph{types} of morphisms.
+If we allowed these types to contain arbitrary higher homotopy, then we ought to impose higher coherence conditions, leading to some notion of $(\infty,1)$-category, but at present our goal is more modest.
+We consider only 1-categories, and therefore we restrict the types $\hom_A(x,y)$ to be sets, i.e.\ 0-types.
+If we impose no further conditions, we will call this notion a \emph{precategory}.
+
+If we add the requirement that the type $A_0$ of objects is a set, then we end up with a definition that behaves much like the traditional set-theoretic one.
+Following Toby Bartels, we call this notion a \emph{strict category}.
+But we can also require a generalized version of the univalence axiom, identifying $(x=_{A_0} y)$ with the type $\mathsf{iso}(x,y)$ of isomorphisms from $x$ to $y$.
+Since we regard this as usually the ``correct'' definition, we will call it simply a \emph{category}.
+
+A good example of the difference between the three notions of category is provided by the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'', which in classical set-based category theory is equivalent to the axiom of choice.
+\begin{enumerate}
+\item For strict categories, this is still equivalent to to the axiom of choice.
+\item For precategories, there is no consistent axiom of choice which can make it true.
+\item For categories, it is provable \emph{without} any axiom of choice.
+\end{enumerate}
+We will prove the latter statement in this chapter, as well as other pleasant properties of categories, e.g.\ that equivalent categories are equal (as elements of the type of categories).
+We will also describe a universal way of ``saturating'' a precategory $A$ into a category $\widehat A$, which we call its \emph{Rezk completion}, although it could also reasonably be called the \emph{stack completion} (see the Notes).
+
+The Rezk completion also sheds further light on the notion of equivalence of categories.
+For instance, the functor $A \to \widehat{A}$ is always fully faithful and essentially surjective, hence a ``weak equivalence''.
+It follows that a precategory is a category exactly when it ``sees'' all fully faithful and essentially surjective functors as equivalences; thus our notion of ``category'' is already inherent in the notion of ``fully faithful and essentially surjective functor''.
+
+We assume the reader has some basic familiarity with classical category theory.
+Recall also that whenever we write \type it denotes some universe of types, but perhaps a different one at different times; everything we say remains true for any consistent choice of universe levels.
 
 
 \section{Categories and precategories}
@@ -1522,13 +1547,19 @@ Although most of category theory appears to be invariant under isomorphism of ob
 For instance, \autoref{ct:galois} was brought up by Peter May on the categories mailing list in May 2010, as a case where it matters that two categories (defined as usual in set theory) are isomorphic rather than only equivalent.
 The case of $\dagger$-categories was also somewhat confounding to those advocating an isomorphism-invariant version of category theory, since the ``correct'' notion of sameness between objects of a $\dagger$-category is not ordinary isomorphism but \emph{unitary} isomorphism.
 
-The fact that categories satisfying the ``saturation'' or ``univalence'' principle as in \autoref{ct:category} are a good notion of category in univalent foundations occurred independently to Voevodsky, Shulman, and perhaps others around the same time; see e.g.~\cite{aks:rezk}.
+The fact that categories satisfying the ``saturation'' or ``univalence'' principle as in \autoref{ct:category} are a good notion of category in univalent foundations occurred independently to Voevodsky, Shulman, and perhaps others around the same time, and was formalized by Ahrens and Kapulkin~\cite{aks:rezk}.
 This framework puts all the above examples in a unified context: some precategories are categories, others are strict categories, and so on.
 A general theorem that ``isomorphism implies equality'' for a large class of algebraic structures (assuming the univalence axiom) was proven by Coquand and Danielsson; the formulation of the structure identity principle in \autoref{sec:sip} is due to Aczel.
 
 Independently of philosophical considerations about category theory, Rezk~\cite{rezk01css} discovered that when defining a notion of $(\infty,1)$-category, it was very convenient to use not merely a \emph{set} of objects with spaces of morphisms between them, but a \emph{space} of objects incorporating all the equivalences and homotopies between them.
 This yields a very well-behaved sort of model for $(\infty,1)$-categories as particular simplicial spaces, which Rezk called \emph{complete Segal spaces}.
 One especially good aspect of this model is the analogue of \autoref{ct:eqv-levelwise}: a map of complete Segal spaces is an equivalence just when it is a levelwise equivalence of simplicial spaces.
+
+When interpreted in Voevodsky's simplicial set model of univalent foundations, our precategories are similar to a truncated analogue of Rezk's ``Segal spaces'', while our categories correspond to his ``complete Segal spaces''.
+Strict categories correspond instead to (a weakened and truncated version of) what are called ``Segal categories''.
+It is known that Segal categories and complete Segal spaces are equivalent models for $(\infty,1)$-categories (see e.g.~\cite{bergner:infty-one}), so that in the simplicial set model, categories and strict categories yield ``equivalent'' category theories---although as we have seen, the former still have many advantages.
+However, in the more general categorical semantics of a higher topos, a strict category corresponds to an internal category (in the traditional sense) in the corresponding 1-topos of sheaves, while a category corresponds to a \emph{stack}.
+The latter are generally a more appropriate sort of ``category'' relative to a topos.
 
 In Rezk's context, what we have called the ``Rezk completion'' corresponds to fibrant replacement in the model category for complete Segal spaces.
 Since this is built using a transfinite induction argument, it most closely matches our second construction as a higher inductive type.

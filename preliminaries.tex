@@ -412,7 +412,7 @@ because we could have defined such a function directly
 by simply ignoring the argument of type $\unit$.
 
 To be able to define \emph{dependent} functions over the product type, we have
-to generalize the recursor. Given $C: A \times B \to U$, we may
+to generalize the recursor. Given $C: A \times B \to \UU$, we may
 define a function $f : \prd{x : A \times B} C(x)$ by providing a
 function $g : \prd{x:A}\prd{y:B} C(\tup{x}{y})$ and the defining equation
 \[ f(\tup x y) \defeq g(x)(y). \] 
@@ -436,8 +436,8 @@ When we come to inductive types such as the natural numbers, the analogous prope
 Thus, if we do as we did above and apply this principle once in the universal case, we call the resulting function
 \define{induction} for product types: given $A,B : \UU$ we have
 \symlabel{defn:induction-times}
-\[ \ind{A\times B} : \prd{C:A \times B \to \UU} (\prd{x:A}{y:B}
-C(\tup{x}{y})) \to \prd{x:A \times B} C(x) \]
+\[ \ind{A\times B} : \prd{C:A \times B \to \UU}
+\Parens{\prd{x:A}{y:B} C(\tup{x}{y})} \to \prd{x:A \times B} C(x) \]
 with the defining equation 
 \[ \ind{A\times B}(C,g,\tup{a}{b}) \defeq g(a)(b). \]
 Similarly, we may speak of a dependent function defined on pairs being obtained from the \define{induction principle} of the cartesian product.
@@ -1303,32 +1303,59 @@ and only if, its distance from~$0$ is positive, which is a stronger requirement 
 
 \sectionNotes
 
-The type theory presented here is a version of Martin-L\"{o}f's intuitionistic type theory~\cite{martinlof71itt,Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopolis}, which itself is based on and influenced by the foundational work of Brouwer~\cite{beeson}, Heyting~\cite{heyting1966intuitionism}, Scott~\cite{scott70}, de Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1966,Tait-1968}, and Lawvere~\cite{lawvere:adjinfound}.  Three principal variants of Martin-L\"{o}f's type theory underlie the NuPRL~\cite{constable+86nuprl-book}, Coq~\cite{Coq}, and Agda~\cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that have not yet been studied in the homotopical setting.
+The type theory presented here is a version of Martin-L\"{o}f's intuitionistic type 
+theory~\cite{martinlof71itt,Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopolis}, which itself is based on and influenced 
+by the foundational work of Brouwer~\cite{beeson}, Heyting~\cite{heyting1966intuitionism}, Scott~\cite{scott70}, de 
+Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1966,Tait-1968}, and Lawvere~\cite{lawvere:adjinfound}.  Three 
+principal variants of Martin-L\"{o}f's type theory underlie the NuPRL~\cite{constable+86nuprl-book}, \Coq~\cite{Coq}, and 
+\Agda~\cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number 
+of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that 
+have not yet been studied in the homotopical setting.
 
-Most significantly, the type theory described here is derived from the \emph{intensional} version of Martin-L\"{o}f's type theory~\cite{Martin-Lof-1973}, rather than the \emph{extensional} version~\cite{Martin-Lof-1979}.  Whereas the extensional theory makes no distinction between judgmental and propositional equality, the intensional theory regards judgmental equality as purely definitional, and admits a much broader, proof-relevant interpretation of the identity type that is central to the homotopy interpretation.  From the homotopical perspective, extensional type theory confines itself to homotopically discrete sets (see \autoref{sec:basics-sets}), whereas the intensional theory admits types with higher-dimensional structure.  The NuPRL system~\cite{constable+86nuprl-book} is extensional, whereas both Coq~\cite{Coq} and Agda~\cite{norell2007towards} are intensional.  Among intensional type theories, there are a number of variants that differ in the structure of identity proofs.  The most liberal interpretation, on which we rely here, admits a \emph{proof-relevant} interpretation of equality, whereas more restricted variants impose restrictions such as \emph{uniqueness of identity proofs (UIP)}~\cite{StreicherK}, stating that any two proofs of equality are judgmentally equal, and \emph{Axiom K}~\cite{StreicherK}, stating that the only proof of equality is reflexivity (up to judgmental equality).  These additional requirements may be selectively imposed in the Coq and Agda systems.
+Most significantly, the type theory described here is derived from the \emph{intensional} version of Martin-L\"{o}f's type 
+theory~\cite{Martin-Lof-1973}, rather than the \emph{extensional} version~\cite{Martin-Lof-1979}.  Whereas the extensional theory makes no 
+distinction between judgmental and propositional equality, the intensional theory regards judgmental equality as purely definitional, and 
+admits a much broader, proof-relevant interpretation of the identity type that is central to the homotopy interpretation.  From the 
+homotopical perspective, extensional type theory confines itself to homotopically discrete sets (see \autoref{sec:basics-sets}), whereas the 
+intensional theory admits types with higher-dimensional structure.  The NuPRL system~\cite{constable+86nuprl-book} is extensional, whereas 
+both \Coq~\cite{Coq} and \Agda~\cite{norell2007towards} are intensional.  Among intensional type theories, there are a number of variants 
+that differ in the structure of identity proofs.  The most liberal interpretation, on which we rely here, admits a \emph{proof-relevant} 
+interpretation of equality, whereas more restricted variants impose restrictions such as \emph{uniqueness of identity proofs 
+(UIP)}~\cite{StreicherK}, stating that any two proofs of equality are judgmentally equal, and \emph{Axiom K}~\cite{StreicherK}, stating that 
+the only proof of equality is reflexivity (up to judgmental equality).  These additional requirements may be selectively imposed in the Coq 
+and \Agda\ systems.
 
 %(In the terminology of \autoref{cha:hlevels} such a type theory is about $0$-truncated types.)
 
 Another point of variation among intensional theories is the strength of judgmental equality, particularly as regards objects of function type.  Here we include the equation $f \jdeq \lam{x} f(x)$, which is called \emph{$\eta$-conversion}, as a principle of judgmental equality.  This principle is used, for example, in \autoref{sec:univalence-implies-funext}, to show that univalence implies propositional function extensionality.  Other forms of ``$\eta$ equivalences'' are sometimes considered for other types: for instance, the $\eta$-rule for cartesian products would be a judgmental version of surjective pairing, $u \jdeq (\proj1(u),\proj2(u))$.  This and the corresponding version for dependent pairs would be reasonable choices (which we did not make), but we cannot include all such rules because the corresponding ``$\eta$-rule'' for identity types would trivialize all the higher homotopical structure.  So we are \emph{forced} to leave it out, and the question then becomes where to draw the line. With regards to inductive types, we discuss these points further in~\autoref{sec:htpy-inductive}.
 
-It is important for our purposes that (propositional) equality of functions is taken to be \emph{extensional}, as expressed by \autoref{axiom:funext}.  This decision is significant for our purposes, because it specifies that equality of functions is as expected in mathematics.  Although we include \autoref{axiom:funext} as an axiom, it may be derived from Univalence axiom and $\eta$-equivalence (see \autoref{sec:univalence-implies-funext}), as well as from the existence of an interval type (see \autoref{thm:interval-funext}).
+It is important for our purposes that (propositional) equality of functions is taken to be \emph{extensional}, as expressed by \autoref{axiom:funext}.  This decision is significant for our purposes, because it specifies that equality of functions is as expected in mathematics.  Although we include \autoref{axiom:funext} as an axiom, it may be derived from the univalence axiom and $\eta$-equivalence (see \autoref{sec:univalence-implies-funext}), as well as from the existence of an interval type (see \autoref{thm:interval-funext}).
 
 Regarding inductive types such as products, $\Sigma$-types, coproducts, natural numbers, and so on (see \autoref{cha:induction}), there are additional choices regarding how to precisely formulate induction and recursion.
 Formally, one may describe type theory by taking either \emph{pattern matching} or \emph{induction principles} as basic and deriving the other; see \autoref{cha:rules}.
 However, pattern matching in general is not yet well understood from the homotopical perspective (in particular, ``nested'' or ``deep'' pattern-matching is difficult to make general sense of for higher inductive types).
-Moreover, it can be dangerous unless sufficient care is taken: for instance, the form of pattern-matching implemented by default in Agda allows proving Axiom K.
+Moreover, it can be dangerous unless sufficient care is taken: for instance, the form of pattern-matching implemented by default in \Agda\ 
+allows proving Axiom K.
 For these reasons, we have chosen to regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.
 
 In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules}, which specify how to form types of this sort; \emph{introduction rules}  or \emph{constructors}, which specify how to construct elements of such types; \emph{elimination rules} or \emph{eliminators}, which specify how to use elements of such types to construct elements of other types; and \emph{computation rules} or \emph{reduction rules}, which specify what happens when the introduction and elimination rules are combined.
 For inductive types such as products, $\Sigma$s, coproducts, and so on, the introduction rules are the constructors (like pairing or injections), and the elimination rule is the induction principle, for which we have already mentioned the alternative terminology ``eliminator''.
 For function types and $\Pi$-types, the introduction rule is $\lambda$-abstraction, while the elimination rule is application of a function to an argument.
 
-Unlike the type theory of Coq, we do not include a primitive type of propositions.  Instead, as discussed in \autoref{sec:pat}, we embrace the \emph{propositions-as-types (PAT)} principle, identifying propositions with types.
+Unlike the type theory of \Coq, we do not include a primitive type of propositions.  Instead, as discussed in \autoref{sec:pat}, we embrace 
+the \emph{propositions-as-types (PAT)} principle, identifying propositions with types.
 This was suggested originally by de Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1968}, and Martin-L\"{o}f~\cite{Martin-Lof-1972}.
 (Our decision is explained more fully in \autoref{subsec:pat?,subsec:hprops}.)
 
-We do, however, include a full cumulative hierarchy of universes so that the type formation and equality judgments become instances of the membership and equality judgments for a universe.
-As a convenience, we regard objects of a universe as types (``Russell-style universes", in the terminology of \cite{martin-lof:bibliopolis}), rather than as codes for types (``Tarski-style universes", in the terminology of \cite{martin-lof:bibliopolis}), and we treat the universe hierarchy as cumulative in that every type in $\UU_i$ is also in $\UU_j$ for each $j\geq i$.
+We do, however, include a full cumulative hierarchy of universes, so that the type formation and equality judgments become instances of the membership and equality judgments for a universe.
+As a convenience, we regard objects of a universe as types, rather than as codes for types; in the terminology of \cite{martin-lof:bibliopolis}, this means we use ``Russell-style universes'' rather than ``Tarski-style universes''.
+An alternative would be to use Tarski-style universes, with an explicit coercion function required to make an element $A:\UU$ of a universe into a type $\mathsf{El}(A)$, and just say that the coercion is omitted when working informally.
+
+We also treat the universe hierarchy as cumulative, in that every type in $\UU_i$ is also in $\UU_j$ for each $j\geq i$.
+There are different ways to implement cumulativity formally: the simplest is just to include a rule that if $A:\UU_i$ then $A:\UU_j$.
+However, this has the annoying consequence that for a type family $B:A\to \UU_i$ we cannot conclude $B:A\to\UU_j$, although we can conclude $\lam{a} B(a) : A\to\UU_j$.
+A more sophisticated approach that solves this problem is to introduce a judgmental subtyping relation $<:$ generated by $\UU_i<:\UU_j$, but this makes the type theory more complicated to study.
+Another alternative would be to include an explicit coercion function $\uparrow : \UU_i \to \UU_j$, which could be omitted when working informally.
 
 The path induction principle for identity types was formulated by Martin-L\"{o}f~\cite{pml-id}.  The based path induction principle for identity types arose in the NuPRL type theory~\cite{constable+86nuprl-book} to express the concept of ``pointwise functionality'' for hypothetical judgments (Section 8.1 of~\cite{constable+86nuprl-book}.)  The same principle was later formulated by Paulin-Mohring~\cite{cpm-id} as an alternative to Martin-L\"{o}f's rule.  Their equivalence was proved by~\cite{cpm-id}. % ????
 

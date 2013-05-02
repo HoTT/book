@@ -306,14 +306,14 @@ Similarly, the \define{law of double negation} is
   \prd{A:\UU} \Big(\isprop(A) \to (\neg\neg A \to A)\Big).
 \end{equation}
 These formulations avoid the paradoxes of \autoref{thm:not-dneg,thm:not-lem}, since \bool is not a mere proposition.
-In order to distinguish these from the more general Propositions-as-Types formulations, we rename the latter:
+In order to distinguish these from the more general propositions-as-types formulations, we rename the latter:
 \begin{align*}
   \mathsf{LEM}_\infty\;\defeq\;&
   \prd{A:\UU} (A + \neg A)\\
   \mathsf{DN}_\infty\;\defeq\;&
   \prd{A:\UU}(\neg\neg A \to A).
 \end{align*}
-
+For emphasis, the proper versions~\eqref{eq:lem} and~\eqref{eq:ldn} may be denoted $\mathsf{LEM}_{-1}$ and $\mathsf{DN}_{-1}$; see also \autoref{ex:lemnm}.
 
 Although $\mathsf{LEM}$ and $\mathsf{DN}$  are not consequences of the basic type theory described in \autoref{cha:typetheory}, they may be consistently assumed as axioms (unlike their $\infty$ counterparts).
 For instance, we will assume them in \autoref{sec:wellorderings}.
@@ -512,7 +512,7 @@ traditional logical notations to refer only to ``propositionally truncated logic
     \neg P          &\ \defeq \ P \to \emptyt \\
     P \lor Q        &\ \defeq \ \brck{P + Q} \\
     \fall{x : A} P(x) &\ \defeq \ \prd{x : A} P(x) \\
-    \exis{x : A} P(x) &\ \defeq \ \brck{\sm{x : A} P(x)}
+    \exis{x : A} P(x) &\ \defeq \ \Brck{\sm{x : A} P(x)}
   \end{align*}
 \end{defn}
 
@@ -520,7 +520,7 @@ The notations $\land$ and $\lor$ are also used in homotopy theory for the smash 
 This technically creates a potential for conflict, but no confusion will generally arise.
 
 
-\section{The Axiom of Choice}
+\section{The axiom of choice}
 \label{sec:axiom-choice}
 
 We can now properly formulate the axiom of choice in homotopy type theory.
@@ -530,18 +530,18 @@ Assume a type $X$ and type families $A:X\to\type$ and $P:\prd{x:X} A(x)\to\type$
 \item $A(x)$ is a set for all $x:X$, and
 \item $P(x,a)$ is a mere proposition for all $x:X$ and $a:A(x)$.
 \end{itemize}
-The \define{axiom of choice} asserts that under these assumptions,
+The \define{axiom of choice} $\mathsf{AC}$ asserts that under these assumptions,
 \begin{equation}\label{eq:ac}
-  \left(\prd{x:X} \brck{\sm{a:A(x)} P(x,a)}\right)
+  \Parens{\prd{x:X} \Brck{\sm{a:A(x)} P(x,a)}}
   \to
-  \brck{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
+  \Brck{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
 \end{equation}
 Of course, this is a direct translation of~\eqref{eq:english-ac} where we read ``there exists $x:A$ such that $B(x)$'' as $\brck{\sm{x:A}B(x)}$, so we could have written the statement in the familiar logical notation as
 \begin{equation*}
   \textstyle
   \Big(\fall{x:X}\exis{a:A(x)} P(x,a)\Big)
   \Rightarrow
-  \Big(\exis{g : (\prd{x:X} A(x))} \fall{x : X} P(x,g(x))\Big).
+  \Big(\exis{g : \prd{x:X} A(x)} \fall{x : X} P(x,g(x))\Big).
 \end{equation*}
 %
 In particular, note that the propositional truncation appears twice.
@@ -553,9 +553,9 @@ In fact, because of \autoref{thm:ttac}, this axiom can also be expressed in a si
 \begin{lem}\label{thm:ac-epis-split}
   The axiom of choice~\eqref{eq:ac} is equivalent to the statement that for any set $X$ and any $Y:X\to\type$ such that each $Y(x)$ is a set, we have
   \begin{equation}
-    \left(\prd{x:X} \brck{Y(x)}\right)
+    \Parens{\prd{x:X} \Brck{Y(x)}}
     \to
-    \brck{\prd{x:X} Y(x)}.\label{eq:epis-split}
+    \Brck{\prd{x:X} Y(x)}.\label{eq:epis-split}
   \end{equation}
 \end{lem}
 
@@ -563,7 +563,7 @@ This corresponds to a well-known equivalent form of the classical axiom of choic
 
 \begin{proof}
   By \autoref{thm:ttac}, the codomain of~\eqref{eq:ac} is equivalent to
-  \[\brck{\prd{x:X} \sm{a:A(x)} P(x,a)}.\]
+  \[\Brck{\prd{x:X} \sm{a:A(x)} P(x,a)}.\]
   Thus,~\eqref{eq:ac} is equivalent to the instance of~\eqref{eq:epis-split} where $Y(x) \defeq \sm{a:A(x)} P(x,a)$.
   Conversely,~\eqref{eq:epis-split} is equivalent to the instance of~\eqref{eq:ac} where $A(x)\defeq Y(x)$ and $P(x,a)\defeq\unit$.
   Thus, the two are logically equivalent.
@@ -575,14 +575,16 @@ As with LEM and DN, the equivalent forms~\eqref{eq:ac} and~\eqref{eq:epis-split}
 \begin{rmk}
   It is easy to show that the right side of~\eqref{eq:epis-split} always implies the left.
   Since both are mere propositions, by \autoref{lem:equiv-iff-hprop} the axiom of choice is also equivalent to asking for an equivalence
-  \[ \eqv{\left(\prd{x:X} \brck{Y(x)}\right)}{\brck{\prd{x:X} Y(x)}} \]
+  \[ \eqv{\Parens{\prd{x:X} \Brck{Y(x)}}}{\Brck{\prd{x:X} Y(x)}} \]
   This illustrates a common pitfall: although dependent function types preserve mere propositions (\autoref{thm:isprop-forall}), they do not commute with truncation: $\brck{\prd{x:A} P(x)}$ is not generally equivalent to $\prd{x:A} \brck{P(x)}$.
   The axiom of choice, if we assume it, says that this is true \emph{for sets}; as we will see below, it fails in general.
 \end{rmk}
 
 The restriction in the axiom of choice to types that are sets can be relaxed to a certain extent.
 For instance, we may allow $A$ and $P$ in~\eqref{eq:ac}, or $Y$ in~\eqref{eq:epis-split}, to be arbitrary type families; this results in a seemingly stronger statement that is equally consistent.
-We may also replace the propositional truncation by the more general $n$-truncations to be considered in \autoref{cha:hlevels}, obtaining a spectrum of axioms AC$_n$ interpolating between~\eqref{eq:ac}, which we call simply AC, and \autoref{thm:ttac}, which we shall call AC$_\infty$.  However, observe that we cannot relax the requirement that $X$ be a set.  
+We may also replace the propositional truncation by the more general $n$-truncations to be considered in \autoref{cha:hlevels}, obtaining a spectrum of axioms AC$_n$ interpolating between~\eqref{eq:ac}, which we call simply AC (or AC$_{-1}$ for emphasis), and \autoref{thm:ttac}, which we shall call AC$_\infty$.
+See also \autoref{ex:acnm,ex:acconn}.
+However, observe that we cannot relax the requirement that $X$ be a set.  
 
 \begin{lem}\label{thm:no-higher-ac}
   There exists a type $X$ and a family $Y:X\to \type$ such that each $Y(x)$ is a set, but such that~\eqref{eq:epis-split} is false.
@@ -649,15 +651,15 @@ Thus, if $A$ is not a set (such as perhaps a universe $\UU$), there is no consis
 \begin{thm}
   Suppose $P:\nat\to\type$ is such that each $P(n)$ is a mere proposition, and that $\prd{n:\nat} (P(n) + \neg P(n))$ (such a predicate is called \emph{decidable}).
   Then
-  \[ \brck{\sm{n:\nat} P(n)} \;\to\; \sm{n:\nat}P(n).\]
+  \[ \Brck{\sm{n:\nat} P(n)} \;\to\; \sm{n:\nat}P(n).\]
 \end{thm}
 \begin{proof}[Sketch of proof]
   The hypotheses imply that
-  \[ \Big(\sm{n:\nat}P(n)\Big) \;\to\; \sm{n:\nat}\Big(P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)\Big). \]
+  \[ \Parens{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)}. \]
   In words, given $n$ such that $P(n)$, we can find the least such $n$: we test every $m<n$ in turn, using decidability to do a case analysis, until we find the first one that satisfies $P(m)$.
   However, the right-hand side of the above implication is a mere proposition: if both $n$ and $n'$ are least numbers satisfying~$P$ then they must be equal.
   Therefore, we also have
-  \[ \Brck{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Big(P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)\Big) \]
+  \[ \Brck{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)} \]
   from which the claim follows.
 \end{proof}
 
@@ -875,7 +877,8 @@ The fact that it is possible to define sets, mere propositions, and contractible
 In fact, he defined the entire hierarchy of $n$-types by induction, as we will do in \autoref{cha:hlevels}.
 
 \autoref{thm:not-dneg,thm:not-lem} rely in essense on a classical theorem of Hedberg, which we will prove in \autoref{cha:hlevels}.
-The implication that the propositions-as-types form of LEM contradicts univalence was observed by Mart\'\i n Escard\'o on the Agda mailing list.
+The implication that the propositions-as-types form of LEM contradicts univalence was observed by Mart\'\i n Escard\'o on the \Agda\ 
+mailing list.
 The proof we have given of \autoref{thm:not-dneg} is due to Thierry Coquand.
 
 The propositional truncation was introduced in the extensional type theory of
@@ -886,7 +889,7 @@ Rules characterizing the propositional truncation directly, still in extensional
 The intensional version in homotopy type theory was constructed by Voevodsky using an impredicative quantification, and later by Lumsdaine using higher inductive types (see \autoref{sec:hittruncations}).
 
 Voevodsky~\cite{Universe-poly} has proposed resizing rules of the kind considered in \autoref{subsec:prop-subsets}.
-These are clearly related to the notorious \emph{Axiom of Reducibility} proposed by Russell in his and Whitehead's \emph{Principia Mathematica}~\cite{WR:PM}.
+These are clearly related to the notorious \emph{axiom of reducibility} proposed by Russell in his and Whitehead's \emph{Principia Mathematica}~\cite{WR:PM}.
 
 The adverb ``purely'' as used to refer to untruncated logic is a reference to the use of monadic modalities to model effects in programming languages.
 A computation is said to be \emph{pure} if its execution results in no side effects (such as printing a message to the screen, playing music, or sending data over the Internet).
@@ -894,6 +897,12 @@ There exist ``purely functional'' programming languages, such as Haskell, in whi
 For instance, a function of type $\mathsf{Int}\to\mathsf{Int}$ is pure, while a function of type $\mathsf{Int}\to \mathsf{IO}(\mathsf{Int})$ may perform input and output along the way to computing its result.
 Inside of type theory, the propositional truncation $\brck-$ is also a monad, as are the more general modalities one might consider replacing it with; thus it makes sense to call a type \emph{pure} when no such modality is present.
 
+The principle of unique choice fails in the category of so-called setoids in \Coq~\cite{Spiwack}, in logic enriched type 
+theory~\cite{aczel2002collection} and in minimal type theory~\cite{maietti2005toward}. The univalence axiom thus makes our type theory 
+behave more like the internal logic of a topos;~see also \autoref{cha:set-math}.
+
+Martin-L\"of~\cite{martin2006100} provides a discussion on the history of axioms of choice. 
+For background on constructive logic see for instance~\cite{TroelstraI,TroelstraII}.
 
 \sectionExercises
 
@@ -971,7 +980,7 @@ Inside of type theory, the propositional truncation $\brck-$ is also a monad, as
 
 \begin{ex}\label{ex:impred-brck}
   Show that if we assume propositional resizing as in \autoref{subsec:prop-subsets}, then the type
-  \[\prd{P:\prop} \big((A\to P)\to P\big)\]
+  \[\prd{P:\prop} \Parens{(A\to P)\to P}\]
   has the same universal property as $\brck A$.
   Thus, we can also define the propositional truncation in this case.
 \end{ex}
@@ -980,7 +989,7 @@ Inside of type theory, the propositional truncation $\brck-$ is also a monad, as
   Assuming LEM, show that double negation commutes with universal quantification of mere propositions over sets.
   That is, show that if $X$ is a set and each $Y(x)$ is a mere proposition, then LEM implies
   \begin{equation}
-    \eqv{\big(\prd{x:X} \neg\neg Y(x)\big)}{\big(\neg\neg \prd{x:X} Y(x)\big)}.\label{eq:dnshift}
+    \eqv{\Parens{\prd{x:X} \neg\neg Y(x)}}{\Parens{\neg\neg \prd{x:X} Y(x)}}.\label{eq:dnshift}
   \end{equation}
   Observe that if we assume instead that each $Y(x)$ is a set, then~\eqref{eq:dnshift} becomes equivalent to the axiom of choice~\eqref{eq:epis-split}.
 \end{ex}

@@ -18,8 +18,10 @@
 %10pt % for US Trade 6" x 9" book
 %
 11pt % for Letter size book
-]{book}
+]{article}
 \usepackage{etex} % We're running out of registers and dimensions, or some such
+
+\newcounter{chapter}            % So that macros.tex doesn't choke
 
 % PAGE GEOMETRY
 %
@@ -120,7 +122,6 @@
 %%%% Header and footers
 \pagestyle{fancyplain}
 \setlength{\headheight}{15pt}
-\renewcommand{\chaptermark}[1]{\markboth{\textsc{Chapter \thechapter. #1}}{}}
 \renewcommand{\sectionmark}[1]{\markright{\textsc{\thesection\ #1}}}
 
 \lhead[\fancyplain{}{{\thepage}}]%
@@ -138,8 +139,52 @@
 
 \input{main.labels}
 
-\begin{document}
+\title{Solutions to selected exercises}
 
-Here we give a solution for \autoref{ex:basics:concat}.
+\begin{document}
+\maketitle
+
+\section*{Exercises from \autoref{cha:hlevels}}
+
+\subsection*{Solution to \autoref{ex:ntype-from-nconn-const}}
+
+Let $\modal$ be a modality; it remains to show that if all maps into $B$ out of a $\modal$-connected type are constant, then $B$ is $\modal$-modal.
+We show under that hypothesis that $\eta:B\to \modal B$ is an equivalence, by showing that its fibers are contractible.
+
+Since $\eta$ is always $\modal$-connected, its fibers are $\modal$-connected, and thus the inclusion of $\hfib{\eta}{z}$ into $B$ is constant.
+Thus, there is an $a:B$ such that for any $b:B$ and $p:\eta b=z$ we have $q(b,p):a=b$.
+Then $\apfunc{\eta}(q(b,p))\ct p : \eta a=z$ for any $(b,p):\hfib\eta z$, so we have a map $\hfib\eta z \to (\eta a=z)$.
+But $\modal B$ is $\modal$-modal, hence so is $\eta a = z$.
+Thus, by \autoref{thm:nconn-to-ntype-const}, this map is constant; hence we have $r:\eta a=z$ such that $\apfunc{\eta}(q(b,p))\ct p = r$ for all $(b,p)$.
+But using the characterization of paths in fibers, this means exactly that $(b,p)=(a,r)$ for all $(b,p)$; hence $\hfib\eta z$ is contractible with center $(a,r)$.
+
+\subsection*{Solution to \autoref{ex:connectivity-inductively}}
+
+If $A$ is $n$-connected, then since $\trunc{-1}A = \trunc{-1}{\trunc{n}A}$, also $A$ is $(-1)$-connected.
+And since $\trunc{n-1}{\id[A]ab} = (\id[\trunc n A]{\tproj na}{\tproj nb})$ by \autoref{thm:path-truncation} and the path spaces of a contractible type are contractible, each $\id[A]ab$ is $(n-1)$-connected.
+
+Conversely, suppose $A$ is $(-1)$-connected and all its path spaces are $(n-1)$-connected.
+Firstly, we claim $\trunc nA$ is a mere proposition, i.e.\ that for all $x,y:\trunc nA$, the type $x=y$ is contractible.
+Since contractibility of $x=y$ is a mere proposition, it suffices to assume that $x$ and $y$ are of the form $\tproj na$ and $\tproj nb$ respectively.
+But $\id[\trunc n A]{\tproj na}{\tproj nb}$ is contractible by \autoref{thm:path-truncation} and the assumption.
+Thus, $\trunc nA$ is a mere proposition.
+Since it is also $(-1)$-connected by assumption, it is therefore contractible, so $A$ is $n$-connected.
+
+
+\subsection*{Solution to \autoref{ex:lemnm}}
+
+Evidently $\mathsf{LEM}$ is the same as $\mathsf{LEM}_{-1,-1}$, so for the first part it suffices to assume $\mathsf{LEM}$ and prove $\mathsf{LEM}_{n,-1}$ and $\mathsf{LEM}_{-1,m}$ for all $n,m$.
+For the latter, note that if $A$ is a mere proposition, then by \autoref{ex:lem-mereprop} so is $A+\neg A$, and thus $\trunc m{A+\neg A}= A+\neg A$ for any $m\ge -1$.
+For the former, note that assuming LEM, by \autoref{ex:lem-brck} we have $\trunc{-1}{B} = \neg\neg B$ for any $B$, while $\neg\neg(A+\neg A)$ is always true for any type $A$ (\autoref{ex:not-not-lem}).
+
+For the second part, it suffices to derive a contradiction from $\mathsf{LEM}_{0,0}$; but the proof of \autoref{thm:not-lem} already uses an $A$ that is a set (namely $\bool$).
+
+\subsection*{Solution to \autoref{ex:acconn}}
+
+Suppose the $(-1)$-connected AC, and by induction suppose also the $n$-connected AC.
+Let $X$ be a set and $Y:X\to \type$ a family of $(n+1)$-connected types.
+By \autoref{ex:connectivity-inductively}, to show that $\prd{x:X} Y(x)$ is $(n+1)$-connected, it suffices to show that it is $(-1)$-connected and that all its path-types are $n$-connected.
+But also by \autoref{ex:connectivity-inductively}, each $Y(x)$ is $(-1)$-connected and all its path types are $n$-connected.
+Applying function extensionality to characterize the path types of $\prd{x:X} Y(x)$, the claim follows from the $(-1)$-connected and $n$-connected axioms of choice.
 
 \end{document}

@@ -296,54 +296,57 @@ We have seen one other example so far: condition~\ref{item:be3} in \autoref{sec:
 With the notion of mere proposition in hand, we can now give the proper formulation of the \define{law of excluded middle} in homotopy type theory:
 \begin{equation}
   \label{eq:lem}
-  \mathsf{LEM}\;\defeq\;
+  \LEM{}\;\defeq\;
   \prd{A:\UU} \Big(\isprop(A) \to (A + \neg A)\Big).
 \end{equation}
 Similarly, the \define{law of double negation} is
 \begin{equation}
   \label{eq:ldn}
-  \mathsf{DN}\;\defeq\;
+  % \mathsf{DN}\;\defeq\;
   \prd{A:\UU} \Big(\isprop(A) \to (\neg\neg A \to A)\Big).
 \end{equation}
-These formulations avoid the paradoxes of \autoref{thm:not-dneg,thm:not-lem}, since \bool is not a mere proposition.
-In order to distinguish these from the more general propositions-as-types formulations, we rename the latter:
+The two are also easily seen to be equivalent to each other---see \autoref{ex:lem-ldn}---so from now on we will generally speak only of \LEM{}.
+
+This formulation of \LEM{} avoids the paradoxes of \autoref{thm:not-dneg,thm:not-lem}, since \bool is not a mere proposition.
+In order to distinguish it from the more general propositions-as-types formulation, we rename the latter:
 \begin{align*}
-  \mathsf{LEM}_\infty\;\defeq\;&
-  \prd{A:\UU} (A + \neg A)\\
-  \mathsf{DN}_\infty\;\defeq\;&
-  \prd{A:\UU}(\neg\neg A \to A).
+  \LEM\infty\;\defeq\;&
+  \prd{A:\UU} (A + \neg A)
+  % \mathsf{DN}_\infty\;\defeq\;&
+  % \prd{A:\UU}(\neg\neg A \to A).
 \end{align*}
-For emphasis, the proper versions~\eqref{eq:lem} and~\eqref{eq:ldn} may be denoted $\mathsf{LEM}_{-1}$ and $\mathsf{DN}_{-1}$; see also \autoref{ex:lemnm}.
+For emphasis, the proper version~\eqref{eq:lem} % and~\eqref{eq:ldn}
+may be denoted $\LEM{-1}$; % and $\mathsf{DN}_{-1}$;
+see also \autoref{ex:lemnm}.
+Although $\LEM{}$ % and $\mathsf{DN}$
+is not a consequence of the basic type theory described in \autoref{cha:typetheory}, it may be consistently assumed as an axiom (unlike its $\infty$-counterpart).
+For instance, we will assume it in \autoref{sec:wellorderings}.
 
-Although $\mathsf{LEM}$ and $\mathsf{DN}$  are not consequences of the basic type theory described in \autoref{cha:typetheory}, they may be consistently assumed as axioms (unlike their $\infty$ counterparts).
-For instance, we will assume them in \autoref{sec:wellorderings}.
-(The two are also easily seen to be equivalent to each other; see \autoref{ex:lem-ldn}.)
-
-However, it can be surprising how far we can get without using such axioms.
-Quite often, a simple reformulation of a definition or theorem enables us to avoid invoking excluded middle or double negation.
+However, it can be surprising how far we can get without using \LEM{}.
+Quite often, a simple reformulation of a definition or theorem enables us to avoid invoking excluded middle.
 While this takes a little getting used to sometimes, it is often worth the hassle, resulting in more elegant and more general proofs.
 We discussed some of the benefits of this in the introduction.
 
 For instance, in classical mathematics, double negations are frequently used unnecessarily.
 A very simple example is the common assumption that a set $A$ is ``nonempty'', which literally means it is \emph{not} the case that $A$ contains \emph{no} elements.
-Almost always what is really meant is the positive assertion that $A$ \emph{does} contain at least one element, and by removing the double negation we make the statement less dependent on LEM.
+Almost always what is really meant is the positive assertion that $A$ \emph{does} contain at least one element, and by removing the double negation we make the statement less dependent on \LEM{}.
 Thus we say that a type $A$ is \define{inhabited} to mean that we assert $A$ itself as a proposition (i.e.\ we construct an element of $A$, usually unnamed).
 
 Similarly, it is not uncommon in classical mathematics to find unnecessary proofs by contradiction.
-Of course, proof by contradiction proceeds by way of the law of double negation: we assume $\neg A$ and derive a contradiction, thereby deducing $\neg \neg A$, and thus by DN we obtain $A$.
-However, often the derivation of a contradiction from $\neg A$ can be rephrased slightly so as to yield a direct proof of $A$, avoiding the need for DN.
+Of course, proof by contradiction proceeds by way of the law of double negation: we assume $\neg A$ and derive a contradiction, thereby deducing $\neg \neg A$, and thus by double negation we obtain $A$.
+However, often the derivation of a contradiction from $\neg A$ can be rephrased slightly so as to yield a direct proof of $A$, avoiding the need for \LEM{}.
 
-It is also important to note that if the goal is to prove a \emph{negation}, then ``proof by contradiction'' does not involve DN.
+It is also important to note that if the goal is to prove a \emph{negation}, then ``proof by contradiction'' does not involve \LEM{}.
 In fact, since $\neg A$ is by definition the type $A\to\emptyt$, by definition to prove $\neg A$ is to prove a contradiction (\emptyt) under the assumption of $A$.
 Similarly, the law of double negation does hold for negated propositions: $\neg\neg\neg A \to \neg A$.
-With practice, one learns to distinguish more carefully between negated and un-negated propositions and to notice when LEM and DN are being used and when they are not.
+With practice, one learns to distinguish more carefully between negated and un-negated propositions and to notice when \LEM{} is being used and when it is not.
 
 Thus, contrary to how it may appear on the surface, doing mathematics ``constructively'' does not usually involve giving up important theorems, but rather finding the best way to state the definitions so as to make the important theorems constructively provable.
-That is, we may freely use the LEM when first investigating a subject, but once that subject is better understood, we can hope to refine its definitions and proofs so as to avoid that axiom.
-% For instance, the theory of ordinal numbers, which classically makes heavy use of LEM, works quite well constructively once we choose the correct definition of ``ordinal''; see \autoref{sec:ordinals}.
+That is, we may freely use the \LEM{} when first investigating a subject, but once that subject is better understood, we can hope to refine its definitions and proofs so as to avoid that axiom.
+% For instance, the theory of ordinal numbers, which classically makes heavy use of \LEM{}, works quite well constructively once we choose the correct definition of ``ordinal''; see \autoref{sec:ordinals}.
 This sort of observation is even more pronounced in \emph{homotopy} type theory, where the powerful tools of univalence and higher inductive types allow us to constructively attack many problems that traditionally would require classical reasoning.
 We will see several examples of this in \autoref{part:mathematics}.
-% For instance, none of the ``synthetic'' homotopy theory we will develop in \autoref{cha:homotopy} requires LEM or DN --- despite the fact that classical homotopy theory (formulated using topological spaces or simplicial sets) makes heavy use of them (as well as the axiom of choice).
+% For instance, none of the ``synthetic'' homotopy theory we will develop in \autoref{cha:homotopy} requires \LEM{} --- despite the fact that classical homotopy theory (formulated using topological spaces or simplicial sets) makes heavy use of them (as well as the axiom of choice).
 
 It is also worth mentioning that even in constructive mathematics, the law of excluded middle can hold for \emph{some} propositions.
 The name traditionally given to such propositions is \emph{decidable}.
@@ -357,9 +360,9 @@ The name traditionally given to such propositions is \emph{decidable}.
   \end{enumerate}
 \end{defn}
 
-Thus, $\mathsf{LEM}$ is exactly the statement that all mere propositions are decidable, and hence so are all families of mere propositions.
-In particular, $\mathsf{LEM}$ implies that all sets (in the sense of \autoref{sec:basics-sets}) have decidable equality.
-More generally, $\mathsf{LEM}$ implies that all types have \emph{decidable mere equality}, i.e.\ every $A:\UU$ satisfies
+Thus, $\LEM{}$ is exactly the statement that all mere propositions are decidable, and hence so are all families of mere propositions.
+In particular, $\LEM{}$ implies that all sets (in the sense of \autoref{sec:basics-sets}) have decidable equality.
+More generally, $\LEM{}$ implies that all types have \emph{decidable mere equality}, i.e.\ every $A:\UU$ satisfies
 \[ \prd{a,b:A} (\brck{a=b} + \neg\brck{a=b}). \]
 Having decidable equality is much stronger than decidable mere equality; it says that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
 This turns out to imply that the type must be a set; see \autoref{thm:hedberg}.
@@ -426,7 +429,7 @@ That is, we may consider adding to type theory the following axiom.
 \end{axiom}
 
 We refer to this axiom as \define{propositional resizing}, since it means that any mere proposition in the universe $\UU_{i+1}$ can be ``resized'' to an equivalent one in the smaller universe $\UU_i$.
-It follows automatically if $\UU_{i+1}$ satisfies LEM (see \autoref{ex:lem-impred}).
+It follows automatically if $\UU_{i+1}$ satisfies \LEM{} (see \autoref{ex:lem-impred}).
 We will not assume this axiom in general, although in some places we will use it as an explicit hypothesis.
 It is a form of \emph{impredicativity} for mere propositions, and by avoiding its use, the type theory is said to remain \emph{predicative}.
 
@@ -549,7 +552,7 @@ Assume a type $X$ and type families $A:X\to\type$ and $P:\prd{x:X} A(x)\to\type$
 \item $A(x)$ is a set for all $x:X$, and
 \item $P(x,a)$ is a mere proposition for all $x:X$ and $a:A(x)$.
 \end{itemize}
-The \define{axiom of choice} $\mathsf{AC}$ asserts that under these assumptions,
+The \define{axiom of choice} $\choice{}$ asserts that under these assumptions,
 \begin{equation}\label{eq:ac}
   \Parens{\prd{x:X} \Brck{\sm{a:A(x)} P(x,a)}}
   \to
@@ -589,7 +592,7 @@ This corresponds to a well-known equivalent form of the classical axiom of choic
   Since both are mere propositions, by \autoref{lem:equiv-iff-hprop} they are equivalent types.
 \end{proof}
 
-As with LEM and DN, the equivalent forms~\eqref{eq:ac} and~\eqref{eq:epis-split} are not a consequence of our basic type theory, but they may consistently be assumed as axioms.
+As with \LEM{}, the equivalent forms~\eqref{eq:ac} and~\eqref{eq:epis-split} are not a consequence of our basic type theory, but they may consistently be assumed as axioms.
 
 \begin{rmk}
   It is easy to show that the right side of~\eqref{eq:epis-split} always implies the left.
@@ -601,7 +604,7 @@ As with LEM and DN, the equivalent forms~\eqref{eq:ac} and~\eqref{eq:epis-split}
 
 The restriction in the axiom of choice to types that are sets can be relaxed to a certain extent.
 For instance, we may allow $A$ and $P$ in~\eqref{eq:ac}, or $Y$ in~\eqref{eq:epis-split}, to be arbitrary type families; this results in a seemingly stronger statement that is equally consistent.
-We may also replace the propositional truncation by the more general $n$-truncations to be considered in \autoref{cha:hlevels}, obtaining a spectrum of axioms AC$_n$ interpolating between~\eqref{eq:ac}, which we call simply AC (or AC$_{-1}$ for emphasis), and \autoref{thm:ttac}, which we shall call AC$_\infty$.
+We may also replace the propositional truncation by the more general $n$-truncations to be considered in \autoref{cha:hlevels}, obtaining a spectrum of axioms $\choice n$ interpolating between~\eqref{eq:ac}, which we call simply \choice{} (or $\choice{-1}$ for emphasis), and \autoref{thm:ttac}, which we shall call $\choice\infty$.
 See also \autoref{ex:acnm,ex:acconn}.
 However, observe that we cannot relax the requirement that $X$ be a set.  
 
@@ -694,7 +697,7 @@ Untruncated logic in type theory thus captures some common practices of informal
 (This is similar to how the univalence axiom validates the common, but formally unjustified, practice of identifying isomorphic objects.)
 
 On the other hand, sometimes truncated logic is essential.
-We have seen this in the statements of LEM and AC; some other examples will appear later on in the book.
+We have seen this in the statements of \LEM{} and \choice{}; some other examples will appear later on in the book.
 Thus, we are faced with the problem: when writing informal type theory, what should we mean by the words ``or'' and ``there exists'' (along with common synonyms such as ``there is'' and ``we have'')?
 
 A universal consensus may not be possible.
@@ -881,7 +884,7 @@ The fact that it is possible to define sets, mere propositions, and contractible
 In fact, he defined the entire hierarchy of $n$-types by induction, as we will do in \autoref{cha:hlevels}.
 
 \autoref{thm:not-dneg,thm:not-lem} rely in essense on a classical theorem of Hedberg, which we will prove in \autoref{cha:hlevels}.
-The implication that the propositions-as-types form of LEM contradicts univalence was observed by Mart\'\i n Escard\'o on the \Agda\ 
+The implication that the propositions-as-types form of \LEM{} contradicts univalence was observed by Mart\'\i n Escard\'o on the \Agda\ 
 mailing list.
 The proof we have given of \autoref{thm:not-dneg} is due to Thierry Coquand.
 
@@ -948,11 +951,11 @@ For background on constructive logic see for instance~\cite{TroelstraI,Troelstra
 \end{ex}
 
 \begin{ex}
-  Show that if LEM holds, then the type $\prop \defeq \sm{A:\type} \isprop(A)$ is equivalent to \bool.
+  Show that if \LEM{} holds, then the type $\prop \defeq \sm{A:\type} \isprop(A)$ is equivalent to \bool.
 \end{ex}
 
 \begin{ex}\label{ex:lem-impred}
-  Show that if $\UU_{i+1}$ satisfies LEM, then the canonical inclusion $\prop_{\UU_i} \to \prop_{\UU_{i+1}}$ is an equivalence.
+  Show that if $\UU_{i+1}$ satisfies \LEM{}, then the canonical inclusion $\prop_{\UU_i} \to \prop_{\UU_{i+1}}$ is an equivalence.
 \end{ex}
 
 \begin{ex}
@@ -962,20 +965,20 @@ For background on constructive logic see for instance~\cite{TroelstraI,Troelstra
 \end{ex}
 
 \begin{ex}
-  Show that if LEM holds, then for all $A:\type$ we have $\bbrck{(\brck A \to A)}$.
-  (This property is a very simple form of the axiom of choice, which can fail in the absence of LEM; see~\cite{krausgeneralizations}.)
+  Show that if \LEM{} holds, then for all $A:\type$ we have $\bbrck{(\brck A \to A)}$.
+  (This property is a very simple form of the axiom of choice, which can fail in the absence of \LEM{}; see~\cite{krausgeneralizations}.)
 \end{ex}
 
 \begin{ex}
-  We showed in \autoref{thm:not-lem} that the following naive form of LEM is inconsistent with univalence:
+  We showed in \autoref{thm:not-lem} that the following naive form of \LEM{} is inconsistent with univalence:
   \[ \prd{A:\type} (A+(\neg A)) \]
   In the absence of univalence, this axiom is consistent.
   However, show that it implies the axiom of choice~\eqref{eq:ac}.
 \end{ex}
 
 \begin{ex}\label{ex:lem-brck}
-  Show that assuming LEM, the double negation $\neg \neg A$ has the same universal property as the propositional truncation $\brck A$, and is therefore equivalent to it.
-  Thus, under LEM, the propositional truncation can be defined rather than taken as a separate type former.
+  Show that assuming \LEM{}, the double negation $\neg \neg A$ has the same universal property as the propositional truncation $\brck A$, and is therefore equivalent to it.
+  Thus, under \LEM{}, the propositional truncation can be defined rather than taken as a separate type former.
 \end{ex}
 
 \begin{ex}\label{ex:impred-brck}
@@ -986,8 +989,8 @@ For background on constructive logic see for instance~\cite{TroelstraI,Troelstra
 \end{ex}
 
 \begin{ex}
-  Assuming LEM, show that double negation commutes with universal quantification of mere propositions over sets.
-  That is, show that if $X$ is a set and each $Y(x)$ is a mere proposition, then LEM implies
+  Assuming \LEM{}, show that double negation commutes with universal quantification of mere propositions over sets.
+  That is, show that if $X$ is a set and each $Y(x)$ is a mere proposition, then \LEM{} implies
   \begin{equation}
     \eqv{\Parens{\prd{x:X} \neg\neg Y(x)}}{\Parens{\neg\neg \prd{x:X} Y(x)}}.\label{eq:dnshift}
   \end{equation}

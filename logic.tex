@@ -345,6 +345,25 @@ This sort of observation is even more pronounced in \emph{homotopy} type theory,
 We will see several examples of this in \autoref{part:mathematics}.
 % For instance, none of the ``synthetic'' homotopy theory we will develop in \autoref{cha:homotopy} requires LEM or DN --- despite the fact that classical homotopy theory (formulated using topological spaces or simplicial sets) makes heavy use of them (as well as the axiom of choice).
 
+It is also worth mentioning that even in constructive mathematics, the law of excluded middle can hold for \emph{some} propositions.
+The name traditionally given to such propositions is \emph{decidable}.
+
+\begin{defn}\label{defn:decidable-equality}
+  Let $A$ be a type.
+  \begin{enumerate}
+  \item $A$ is called \define{decidable} if $A+\neg A$.
+  \item Similarly, a type family $B:A\to \type$ is \define{decidable} if $\prd{a:A} (B(a)+\neg B(a))$.
+  \item In particular, $A$ has \define{decidable equality} if $\prd{a,b:A} ((a=b) + \neg(a=b))$.
+  \end{enumerate}
+\end{defn}
+
+Thus, $\mathsf{LEM}$ is exactly the statement that all mere propositions are decidable, and hence so are all families of mere propositions.
+In particular, $\mathsf{LEM}$ implies that all sets (in the sense of \autoref{sec:basics-sets}) have decidable equality.
+More generally, $\mathsf{LEM}$ implies that all types have \emph{decidable mere equality}, i.e.\ every $A:\UU$ satisfies
+\[ \prd{a,b:A} (\brck{a=b} + \neg\brck{a=b}). \]
+Having decidable equality is much stronger than decidable mere equality; it says that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
+This turns out to imply that the type must be a set; see \autoref{thm:hedberg}.
+
 
 
 \section{Subsets and propositional resizing}
@@ -647,21 +666,6 @@ One option is of course to refine the argument to unique existence of $b : B$, a
 In homotopy type theory, however, quite apart from any desire to avoid choice, the available forms of choice are simply less applicable, since they require that the domain of choice be a \emph{set}.
 Thus, if $A$ is not a set (such as perhaps a universe $\UU$), there is no consistent form of choice that will allow us to simply pick an element of $B$ for each $a : A$ to use in defining $f(a)$.
 
-
-\begin{thm}
-  Suppose $P:\nat\to\type$ is such that each $P(n)$ is a mere proposition, and that $\prd{n:\nat} (P(n) + \neg P(n))$ (such a predicate is called \emph{decidable}).
-  Then
-  \[ \Brck{\sm{n:\nat} P(n)} \;\to\; \sm{n:\nat}P(n).\]
-\end{thm}
-\begin{proof}[Sketch of proof]
-  The hypotheses imply that
-  \[ \Parens{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)}. \]
-  In words, given $n$ such that $P(n)$, we can find the least such $n$: we test every $m<n$ in turn, using decidability to do a case analysis, until we find the first one that satisfies $P(m)$.
-  However, the right-hand side of the above implication is a mere proposition: if both $n$ and $n'$ are least numbers satisfying~$P$ then they must be equal.
-  Therefore, we also have
-  \[ \Brck{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)} \]
-  from which the claim follows.
-\end{proof}
 
 \section{When are propositions truncated?}
 \label{subsec:when-trunc}
@@ -996,6 +1000,12 @@ For background on constructive logic see for instance~\cite{TroelstraI,Troelstra
 
 \begin{ex}\label{ex:lem-ldn}
   Show that the law of excluded middle~\eqref{eq:lem} and the law of double negation~\eqref{eq:ldn} are logically equivalent.
+\end{ex}
+
+\begin{ex}\label{ex:decidable-choice}
+  Suppose $P:\nat\to\type$ is a decidable family of mere propositions.
+  Prove that
+  \[ \Brck{\sm{n:\nat} P(n)} \;\to\; \sm{n:\nat}P(n).\]
 \end{ex}
 
 \begin{ex}\label{ex:omit-contr2}

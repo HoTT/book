@@ -1222,7 +1222,7 @@ In the other direction, we have
 \begin{lem}\label{prop:nconn_fiber_to_total}
 Let $P,Q:A\to\type$ be dependent types and consider a fiberwise transformation
 \begin{equation*}
-f:\prd{a:A} P(a)\to Q(a)
+f:\prd{a:A} \Parens{P(a)\to Q(a)}
 \end{equation*}
 from $P$ to $Q$. Then the induced map $\total f: \sm{a:A}P(a) \to \sm{a:A} Q(a)$ is $n$-connected if and only if each $f(a)$ is $n$-connected. 
 \end{lem}
@@ -1292,6 +1292,21 @@ so applying $\tprojf{n}$ to both sides of $b$ gives the result.
 One might guess that this fact characterizes the $n$-connected maps, but in fact being $n$-connected is a bit stronger than this.
 For instance, the inclusion $\bfalse:\unit \to\bool$ induces an equivalence on $(-1)$-truncations, but is not surjective (i.e.\ $(-1)$-connected).
 In \autoref{sec:long-exact-sequence-homotopy-groups} we will see that the difference in general is an analogous extra bit of surjectivity.
+
+
+\begin{cor}\label{thm:refl-over-ntype-base}
+  If $A$ is an $n$-type and $P:A\to\type$ is any type family, then
+  \[ \eqv{\Trunc n{\sm{a:A}P(a)}}{\sm{a:A} \trunc n{P(a)}} \]
+\end{cor}
+\begin{proof}
+  Consider the canonical fiberwise transformation $\prd{a:A} (P(a) \to \trunc n{P(a)})$.
+  By \autoref{cor:totrunc-is-connected}, each map $P(a) \to \trunc n{P(a)}$ is $n$-connected, so by \autoref{prop:nconn_fiber_to_total} the induced map
+  \begin{equation*}
+    \Parens{\sm{a:A} P(a)} \to \sm{a:A} \trunc n{P(a)}
+  \end{equation*}
+  is $n$-connected, and thus induces an equivalence between $n$-truncations by \autoref{lem:connected-map-equiv-truncation}.
+  But since $A$ is an $n$-type, so is $\sm{a:A} \trunc n{P(a)}$.
+\end{proof}
 
 
 \section{Orthogonal factorization}
@@ -1389,21 +1404,23 @@ Then there is an equivalence
 E(H,b):\hfib{h_1}b\simeq\hfib{h_2}b
 \end{equation*}
 for any $b:B$, such that for any $a:A$ we have
-\[E(H,h_1 g_1 a)(\pairr{g_1 a,\refl{h_1 g_1 a}}) = \pairr{g_2(a),H(a)^{-1}}.\]
+\[E(H,h_1(g_1(a)))(\pairr{g_1(a),\refl{h_1(g_1(a))}}) = \pairr{g_2(a),H(a)^{-1}}.\]
 \end{lem}
 
 \begin{proof}
 Let $b:B$. Then we have the following equivalences:
 \begin{align*}
 \hfib{h_1}b
-& \simeq \sm{w:\hfib{h_1}b} \trunc n{ \hfib{g_1}{\proj1 w}}\\
-& \simeq \Trunc n{\sm{w:\hfib{h_1}b}\hfib{g_1}{\proj1 w}}\\
+& \simeq \sm{w:\hfib{h_1}b} \trunc n{ \hfib{g_1}{\proj1 w}}
+&& \text{(since $g_1$ is $n$-connected)}\\
+& \simeq \Trunc n{\sm{w:\hfib{h_1}b}\hfib{g_1}{\proj1 w}}
+&& \text{(by \autoref{thm:refl-over-ntype-base}, since $h_1$ is $n$-truncated)}\\
 & \simeq \trunc n{\hfib{h_1\circ g_1}b}
+&& \text{(by \autoref{ex:unstable-octahedron})}
 \end{align*}
-and likewise for $h_2$ and $g_2$. Here, the first equivalence holds because $g_1$ is $n$-connected; the second equivalence
-holds because $h_1$ is $n$-truncated; and the third equivalence holds by \autoref{lem:hfiber_basics}. Also, since we have a
-homotopy $H:h_1\circ g_1\sim h_2\circ g_2$, there is an obvious equivalence $\hfib{h_1\circ g_1}b\simeq\hfib{h_2\circ g_2}b$. Hence we
-obtain
+and likewise for $h_2$ and $g_2$.
+Also, since we have a homotopy $H:h_1\circ g_1\sim h_2\circ g_2$, there is an obvious equivalence $\hfib{h_1\circ g_1}b\simeq\hfib{h_2\circ g_2}b$.
+Hence we obtain
 \begin{equation*}
 \hfib{h_1}b\simeq\hfib{h_2}b
 \end{equation*}
@@ -1411,12 +1428,12 @@ for any $b:B$. By analyzing the underlying functions, we get the following repre
 $\pairr{g_1(a),\refl{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
 \begin{align*}
 \pairr{g_1(a),\refl{h_1(g_1(a))}} & 
-    \mapsto \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \eta( \pairr{a,\refl{g_1(a)}} )}\\
-  & \mapsto \eta( \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \pairr{a,\refl{g_1(a)}} }\\
-  & \mapsto \eta( \pairr{a,\refl{h_1(g_1(a))}})\\
-  & \mapsto \eta( \pairr{a,H(a)^{-1}})\\
-  & \mapsto \eta( \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\refl{g_2(a)}}}\\
-  & \mapsto \pairr{\pairr{g_2(a),H(a)^{-1}}, \eta(\pairr{a,\refl{g_2(a)}}) }\\
+    \mapsto \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \tproj n{ \pairr{a,\refl{g_1(a)}}}}\\
+  & \mapsto \tproj n { \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \pairr{a,\refl{g_1(a)}} }}\\
+  & \mapsto \tproj n { \pairr{a,\refl{h_1(g_1(a))}}}\\
+  & \mapsto \tproj n { \pairr{a,H(a)^{-1}}}\\
+  & \mapsto \tproj n { \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\refl{g_2(a)}}} }\\
+  & \mapsto \pairr{\pairr{g_2(a),H(a)^{-1}}, \tproj n {\pairr{a,\refl{g_2(a)}}} }\\
   & \mapsto \pairr{g_2(a),H(a)^{-1}}\qedhere
 \end{align*}
 \end{proof}

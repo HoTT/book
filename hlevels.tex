@@ -1110,10 +1110,14 @@ For a fixed $f$ and $n\ge -2$, the following are equivalent.
 \begin{proof}
 Suppose that $f$ is $n$-connected and let $P:B\to\ntype{n}$. Then we have the equivalences
 \begin{align*}
-\prd{b:B} P(b) & \simeq \prd{b:B} \trunc n{\hfib{f}b} \to P(b)\\
-& \simeq \prd{b:B} \hfib{f}b\to P(b)\\
-& \simeq \prd{b:B}{a:A}{p:f(a)= b} P(b)\\
-& \simeq \prd{a:A} P(f(a)).
+  \prd{b:B} P(b) & \simeq \prd{b:B} \Parens{\trunc n{\hfib{f}b} \to P(b)}
+  && \text{(since $\trunc n{\hfib{f}b}$ is contractible)}\\
+  & \simeq \prd{b:B} \Parens{\hfib{f}b\to P(b)}
+  && \text{(since $P(b)$ is an $n$-type)}\\
+  & \simeq \prd{b:B}{a:A}{p:f(a)= b} P(b)
+  && \text{(by the left universal property of $\Sigma$-types)}\\
+  & \simeq \prd{a:A} P(f(a))
+  && \text{(by the left universal property of path types)}.
 \end{align*}
 We omit the proof that this equivalence is indeed given by $\lam{s} s\circ f$.
 Thus,~\ref{item:conntest1}$\Rightarrow$\ref{item:conntest2}, and clearly~\ref{item:conntest2}$\Rightarrow$\ref{item:conntest3}.
@@ -1197,10 +1201,10 @@ A useful variation on \autoref{lem:nconnected_postcomp} is:
 
 \begin{lem}\label{lem:nconnected_postcomp_variation}
 Let $f:A\to B$ be a function and $P:A\to\type$ and $Q:B\to\type$ be type families. Suppose that $g:\prd{a:A} P(a)\to Q(f(a))$
-is a fiberwise $n$-connected family of functions, i.e.\ each $g(a)$ is $n$-connected. Then the function
+is a fiberwise $n$-connected family of functions, i.e.\ each function $g_a : P(a) \to Q(f(a))$ is $n$-connected. Then the function
 \begin{align*}
 \varphi &:\Parens{\sm{a:A} P(a)}\to\Parens{\sm{b:B} Q(b)}\\
-\varphi(a,u) &\defeq \pairr{f(a),g(u)}
+\varphi(a,u) &\defeq \pairr{f(a),g_a(u)}
 \end{align*}
 is $n$-connected if and only if $f$ is $n$-connected.
 \end{lem}
@@ -1208,9 +1212,10 @@ is $n$-connected if and only if $f$ is $n$-connected.
 \begin{proof}
 For $b:B$ and $v:Q(b)$ we have
 \begin{align*}
-\trunc n{\hfib{\varphi}{\pairr{b,v}}} & \simeq \Trunc n{\sm{a:A}{u:P(a)}{p:f(a)= b} \trans{f(p)}{g(u)}= v}\\
-& \simeq \Trunc n{\sm{w:\hfib{f}b}{u:P(\proj1(w))} g(u)= \trans{\opp{f(p)}}{v}}\\
-& \simeq \Trunc n{\sm{w:\hfib{f}b} \trunc n{\hfib{g(\proj1 w)}{\trans{\opp{f(p)}}{v}}}}\\
+\trunc n{\hfib{\varphi}{\pairr{b,v}}} & \simeq \Trunc n{\sm{a:A}{u:P(a)}{p:f(a)= b} \trans{\ap f p }{g_a(u)}= v}\\
+& \simeq \Trunc n{\sm{w:\hfib{f}b}{u:P(\proj1(w))} g_{\proj 1 w}(u)= \trans{\opp{\ap f {\proj2 w}}}{v}}\\
+& \simeq \Trunc n{\sm{w:\hfib{f}b} \hfib{g(\proj1 w)}{\trans{\opp{\ap f {\proj 2 w}}}{v}}}\\
+& \simeq \Trunc n{\sm{w:\hfib{f}b} \trunc n{\hfib{g(\proj1 w)}{\trans{\opp{\ap f {\proj 2 w}}}{v}}}}\\
 & \simeq \trunc n{\hfib{f}b}
 \end{align*}
 where the transportations along $f(p)$ and $f(p)^{-1}$ are with respect to $Q$.
@@ -1428,12 +1433,12 @@ for any $b:B$. By analyzing the underlying functions, we get the following repre
 $\pairr{g_1(a),\refl{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
 \begin{align*}
 \pairr{g_1(a),\refl{h_1(g_1(a))}} & 
-    \mapsto \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \tproj n{ \pairr{a,\refl{g_1(a)}}}}\\
+    \mapsto \Pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \tproj n{ \pairr{a,\refl{g_1(a)}}}}\\
   & \mapsto \tproj n { \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \pairr{a,\refl{g_1(a)}} }}\\
   & \mapsto \tproj n { \pairr{a,\refl{h_1(g_1(a))}}}\\
   & \mapsto \tproj n { \pairr{a,H(a)^{-1}}}\\
   & \mapsto \tproj n { \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\refl{g_2(a)}}} }\\
-  & \mapsto \pairr{\pairr{g_2(a),H(a)^{-1}}, \tproj n {\pairr{a,\refl{g_2(a)}}} }\\
+  & \mapsto \Pairr{\pairr{g_2(a),H(a)^{-1}}, \tproj n {\pairr{a,\refl{g_2(a)}}} }\\
   & \mapsto \pairr{g_2(a),H(a)^{-1}}\qedhere
 \end{align*}
 \end{proof}
@@ -1489,16 +1494,16 @@ Of course, we also have the familiar equivalences $X_1\simeq\sm{b:B}\hfib{h_1}b$
 \hfib{h_2}b$. This gives us our equivalence $e(H):X_1\simeq X_2$. The reader may verify that the underlying function
 $\underline{e}(H)$ of $e(H)$ is defined by
 \begin{equation*}
-\underline{e}(H,x)\defeq \proj1\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}})
+\underline{e}(H,x)\defeq \proj1\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc[h_1(x)]})
 \end{equation*}
-\item By \autoref{prop:factor_equiv_fiber} we have $\underline{e}(H,g_1(a))=g_2(a)$. Thus we get $\zeta(a)\defeq \idfunc{g_2(a)}$. 
+\item By \autoref{prop:factor_equiv_fiber} we have $\underline{e}(H,g_1(a))=g_2(a)$. Thus we get $\zeta(a)\defeq \idfunc[g_2(a)]$. 
 \item For every $x:X_1$, we have
 \begin{equation*}
-\proj2\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc{h_1(x)}}):h_2(\underline{e}(H,x))= h_1(x),
+\proj2\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc[h_1(x)]}):h_2(\underline{e}(H,x))= h_1(x),
 \end{equation*}
 giving us a homotopy $\eta:h_2\circ \underline{e}\sim h_1$.
 \item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a))=H(a)^{-1}$ and by {\it ii.} we have
-$h_2(\zeta(a))=\idfunc{h_2(g_2(a))}$. Thus we have
+$h_2(\zeta(a))=\idfunc[h_2(g_2(a))]$. Thus we have
 \begin{align*}
 (H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\ct h_2(\zeta(a))^{-1}\ct \eta(g_1(a))\\
 & = H_1(a)\ct H(a)^{-1}\\

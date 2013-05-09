@@ -1,28 +1,30 @@
 \chapter{Real numbers}
 \label{cha:real-numbers}
 
-Any foundation of mathematics worthy of its name must eventually address the construction
-of real numbers as understood by mathematical analysis, namely as a complete archimedean
-ordered field. Completeness can be understood either in the sense of Cauchy or Dedekind.
-In this chapter we shall look at both, Dedekind's construction of reals as cuts, and
-Cauchy reals as completion of rational numbers by limits of Cauchy sequences.
-The Dedekind reals include the Cauchy real numbers. Without any extra assumptions we cannot hope to 
-show the converse as we will discuss in~\autoref{sec:comp-cauchy-dedek}.
-
-After completing some basic algebraic operations on the real numbers we consider three abstract notion of compactness.
-To show that the unit interval is sequentially compact requires classical logic. However, we can readily prove that 
-the interval is totally bounded and complete. The most interesting property is Heine-Borel compactness.
-It can be show to hold for so-called pointfree coverings.
-
-We close the section by constructing Conway's surreals as a higher inductive type in \autoref{sec:surreals}.
-It is worth pointing out that this construction is much more natural in univalent type theory than in 
-classical set theory.
-
-It is worth pointing out that the total space of the universal cover of the circle, which
+Any foundation of mathematics worthy of its name must eventually address the construction of real numbers as understood by mathematical analysis, namely as a complete archimedean ordered field. 
+The total space of the universal cover of the circle, which
 in \autoref{subsec:pi1s1-homotopy-theory} played a role similar to ``the real numbers'' in
 classical algebraic topology, is \emph{not} the type of reals we are looking for. That
 type is contractible, and thus equivalent to the singleton type, so it cannot be equipped
 with a non-trivial algebraic structure.
+
+There are two notions of completeness. The one by Cauchy requires that the reals be closed under limits of Cauchy sequences, while the stronger one by Dedekind requires closure under Dedekind cuts.
+These lead to two ways of constructing reals, which we study in \autoref{sec:dedekind-reals} and \autoref{sec:cauchy-reals}, respectively.
+In traditional constructive mathematics, real numbers always seem to require certain compromises. For example, the Dedekind reals work better with powersets or some other form of impredicativity, while Cauchy reals work well in the presence of countable choice.
+However, we give a new construction of the Cauchy reals as a higher inductive-inductive type that seems to be a third possibility, which requires neither powersets nor countable choice.
+
+In~\autoref{sec:comp-cauchy-dedek} we compare the two constructions of reals. The Cauchy reals are included in the Dedekind reals. They coincide if excluded middle or countable choice holds, but in general the inclusion might be proper.
+
+In~\autoref{sec:compactness-interval} we consider three notions of compactness of the closed interval~$[0,1]$. We first show that $[0,1]$ is metrically compact in the sense that it is complete and totally bounded, and that uniformly continuous maps on metrically compact spaces behave as expected. In contrast, the Bolzano-Weierstra\ss{} property that every sequence has a convergent subsequence implies the limited principle of omniscience, which is an instance of excluded middle. Finally, we discuss Heine-Borel compactness. A naive formulation of the finite subcover property does not work, but a proof relevant notion of inductive covers does.
+
+The development of real numbers and analysis in homotopy type theory can be easily made compatible with classical mathematics. By assuming excluded middle and the axiom of choice we get the classical picture: the Dedekind and Cauchy reals coincide, foundational questions about the impredicative nature of the Dedekind reals disappear, and the interval is as compact as it could be.
+
+We close the chapter by constructing Conway's surreals as a higher inductive-inductive type in \autoref{sec:surreals}.
+The construction is much more natural in univalent type theory than in  classical set theory.
+
+In addition to the basic theory of \autoref{cha:basics,cha:logic}, as noted above we use ``higher inductive-inductive types'' for the Cauchy reals and the surreals: these combine the ideas of \autoref{cha:hits} with the notion of inductive-inductive type mentioned in \autoref{sec:generalizations}.
+We will also frequently use the traditional logical notation described in \autoref{subsec:prop-trunc}, and the fact (proven in \autoref{sec:piw-pretopos}) that our ``sets'' behave the way we would expect.
+
 
 
 \section{The field of rational numbers}
@@ -591,7 +593,7 @@ There are three common ways out of the conundrum in constructive mathematics:
   Cauchy approximations $\mathcal{C}$ with a coincidence relation attached to it by
   administrative decree. A sequence of reals then simply \emph{is} a sequence of Cauchy
   approximations representing them.
-\item Give in to temptation and accept the Axiom of Countable Choice. After all, the axiom
+\item Give in to temptation and accept the axiom of countable choice. After all, the axiom
   is valid in most models of constructive mathematics based on a computational viewpoint,
   such as realizability models.
 \item Declare the Cauchy reals unworthy and construct the Dedekind reals instead.
@@ -606,7 +608,7 @@ For instance, the elements of the free group on a set $X$ are not just binary pr
 Thus, we might naturally expect the same to be true for Cauchy completion, with the relevant ``operation'' being ``take the limit of a Cauchy sequence''.
 (In this case, the iteration would have to take place transfinitely, since even after infinitely many steps there will be new Cauchy sequences to take the limit of.)
 
-The argument referred to above shows that if excluded middle or Countable Choice hold, then Cauchy completion is very special: when building the completion of a space, it suffices to stop applying the operation after \emph{one step}.
+The argument referred to above shows that if excluded middle or countable choice hold, then Cauchy completion is very special: when building the completion of a space, it suffices to stop applying the operation after \emph{one step}.
 This may be regarded as analogous to the fact that free monoids and free groups can be given explicit descriptions in terms of (reduced) words.
 However, we saw in \autoref{sec:free-algebras} that higher inductive types allow us to construct free gadgets \emph{directly}, whether or not there is also an explicit description available.
 In this section we show that the same is true for the Cauchy reals (a similar technique would construct the Cauchy completion of any metric space).
@@ -1646,11 +1648,11 @@ without further assumptions.
   exists a Cauchy sequence converging to $x$.
 \end{proof}
 
-The lemma implies that either Countable Choice or excluded middle suffice for coincidence
+The lemma implies that either countable choice or excluded middle suffice for coincidence
 of $\RC$ and $\RD$.
 
 \begin{cor} \label{when-reals-coincide}
-  If excluded middle or Countable Choice holds then $\RC$ and $\RD$ are equivalent.
+  If excluded middle or countable choice holds then $\RC$ and $\RD$ are equivalent.
 \end{cor}
 
 \begin{proof}
@@ -1659,8 +1661,8 @@ of $\RC$ and $\RD$.
   y$ because $z \leq x < y$. Therefore, we get~\eqref{eq:untruncated-linearity} so that we
   can apply \autoref{lem:untruncated-linearity-reals-coincide}.
 
-  Suppose Countable Choice holds. The set $S = \setof{ \pairr{q, r} \in \Q \times \Q | q <
-    r }$ is equivalent to $\N$, so we may apply Countable Choice to the statement that $x$
+  Suppose countable choice holds. The set $S = \setof{ \pairr{q, r} \in \Q \times \Q | q <
+    r }$ is equivalent to $\N$, so we may apply countable choice to the statement that $x$
   is located,
   %
   \begin{equation*}
@@ -1879,7 +1881,7 @@ of these improvements rely on the the facts that in a complete totally bounded s
 The first statement follows easily from Heine-Borel compactness, and the second is just
 Bolzano-Weierstra\ss{} compactness. Unfortunately, these are both somewhat problematic. Let
 us first show that Bolzano-Weierstra\ss{} compactness implies an instance of excluded middle
-known as the \define{limited principle of omniscience}: every $\alpha : \N \to
+known as the \define{limited principle of omniscience}: for every $\alpha : \N \to
 \bool$,
 % 
 \begin{equation} \label{eq:lpo}
@@ -2678,36 +2680,20 @@ But most importantly, the potential to model homotopy theory and category theory
 
 \sectionNotes
 
-In traditional constructive mathematics constructions of real numbers always seem to
-require certain compromises. For example, the Dedekind reals do not work well without
-powersets or some other form of impredicativity, while Cauchy reals work well in the
-presence of Countable Choice. It seems that with our construction of Cauchy reals as a
-higher inductive-inductive type we found a third possibility, which requires neither
-powersets nor Countable Choice.
-
-Defining algebraic operations on Dedekind reals, especially multiplication, is somewhat tricky and/or tedious.
-Our definition works, but there are other approaches which may be preferable for technical reasons.
+Defining algebraic operations on Dedekind reals, especially multiplication, is both somewhat tricky and tedious.
+There are several ways to get arithmetic going: each has its own advantages, but they all seem to require some technical work.
 For instance, Richman~\cite{Richman:reals} defines multiplication on the Dedekind reals first on the positive cuts and then extends it algebraically to all Dedekind cuts, while Conway~\cite{conway:onag} has observed that the definition of multiplication for surreal numbers works well for Dedekind reals.
 
-The fact that $\RC$ is the least Cauchy complete archimedean ordered field, as was proved
-in \autoref{RC-initial-Cauchy-complete}, indicates that our Cauchy reals coincide with
-those of~\cite{EscardoSimpson:01}.
+Our construction of the Dedekind reals borrows many ideas from~\cite{BauerTaylor09} where the Dedekind reals are constructed in the context of Abstract Stone Duality. This is a (restricted) form of simply typed $\lambda$-calculus with a distinguished object $\Sigma$ which classifies open sets, and by duality also the closed ones.
 
-% It is constructive folklore that coincidence of Cauchy and Dedekind reals requires
-% \define{Dependent Choice}, which states that, for any set $A$, a total relation $R : A
-% \times A \to \prop$, and $a : A$ there exists $f : \N \to A$ such that $f(0) = a$ and
-% $R(f(n), f(n+1))$ for all $n : \N$. Our \autoref{when-reals-coincide} is a slight
-% improvement because Countable Choice is weaker than Dependent Choice. In any case, none of
-% these observations are new.
+The fact that $\RC$ is the least Cauchy complete archimedean ordered field, as was proved in \autoref{RC-initial-Cauchy-complete}, indicates that our Cauchy reals probably coincide with the Escard{\'o}-Simpson reals~\cite{EscardoSimpson:01}. It would be interesting to check whether this is really the case. The notion of Escard{\'o}-Simpson reals, or more precisely the corresponding closed interval, is interesting because it can be stated in any category with finite products.
+
+It is constructive folklore that coincidence of Cauchy and Dedekind reals requires dependent choice but it is less well known that countable choice suffices. Recall that \define{dependent choice} states that for a total relation $R$ on $A$, by which we mean $\fall{x : A} \exis{y : A} R(x,y)$, and for any $a : A$ there merely exists $f : \N \to A$ such that $f(0) = a$ and $R(f(n), f(n+1))$ for all $n : \N$. Our \autoref{when-reals-coincide} uses the typical trick for converting an application of dependent choice to one using countable choice. Namely, we use countable choice once to make in advance all the choices that could come up, and then use the choice function to avoid the dependent choices.
 
 The intricate relationship between various notions of compactness in a constructive
 setting is discussed in \cite{bridges2002compactness}. Palmgren~\cite{Palmgren:FT} has a 
 good comparison between pointwise analysis and 
 pointfree topology.
-
-
-\dots 
-% (Bauer/Taylor)
 
 The surreal numbers were defined by~\cite{conway:onag}, using a sort of inductive definition but without justifying it explicitly in terms of any foundational system.
 For this reason, some later authors have tended to use sign-expansions or other more explicit presentations which can be coded more obviously into set theory.

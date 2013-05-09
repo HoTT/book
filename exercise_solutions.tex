@@ -1,0 +1,203 @@
+% This is the exercise solution document for the homotopy type theory book.
+
+% This file supports two book sizes:
+% - Letter size (8.5" x 11")
+% - US Trade size (6" x 9")
+%
+% To activate one or the other, uncomment the appropriate font size in
+% the documentclass below, and then one of the two page geometry incantations
+%
+% NOTE: The 6" x 9" format is only experimental. It will break the
+% title page, for example.
+
+\PassOptionsToPackage{table}{xcolor}
+
+% DOCUMENT CLASS
+\documentclass[
+%
+%10pt % for US Trade 6" x 9" book
+%
+11pt % for Letter size book
+]{article}
+\usepackage{etex} % We're running out of registers and dimensions, or some such
+
+\newcounter{chapter}            % So that macros.tex doesn't choke
+
+% PAGE GEOMETRY
+%
+% Uncomment one of these
+
+% We make the page 40pt taller than the standard LaTeX book.
+
+% OPTION 1: Letter
+\usepackage[papersize={8.5in,11in},
+            twoside,
+            includehead,
+            top=1in,
+            bottom=1in,
+            inner=0.75in,
+            outer=1.0in,
+            bindingoffset=0.35in]{geometry}
+
+% OPTION 2: US Trade
+% \usepackage[papersize={6in,9in},
+%             twoside,
+%             includehead,
+%             top=0.75in,
+%             bottom=0.75in,
+%             inner=0.5in,
+%             outer=0.75in,
+%             bindingoffset=0.35in]{geometry}
+
+% HYPERLINKING AND PDF METADATA
+
+\usepackage[pagebackref,
+            colorlinks,
+            citecolor=darkgreen,
+            linkcolor=darkgreen,
+            unicode,
+            pdfauthor={Univalent Foundations Program},
+            pdftitle={Homotopy Type Theory: Univalent Foundations of Mathematics},
+            pdfsubject={Mathematics},
+            pdfkeywords={type theory, homotopy theory, univalence axiom}]{hyperref}
+
+% OTHER PACKAGES
+
+% Use this package and stick \layout somewhere in the text to see
+% page margins, text size and width etc. Useful for debugging page format.
+%\usepackage{layout}
+
+%%% Because Germans have umlauts and Slavs have even stranger ways of mangling letters
+\usepackage[utf8]{inputenc}
+
+%%% For table {tab:theorems}
+\usepackage{pifont}
+
+%%% Multi-Columns for long lists of names
+\usepackage{multicol}
+
+%%% Set the fonts
+\usepackage{mathpazo}
+\usepackage[scaled=0.95]{helvet}
+\usepackage{courier}
+\linespread{1.05} % Palatino looks better with this
+
+\usepackage{graphicx}
+\usepackage{comment}
+
+\usepackage{wallpaper} % For the background image on the cover page
+
+\usepackage{fancyhdr} % To set headers and footers
+
+\usepackage{nextpage} % So we can jump to odd-numbered pages
+
+\usepackage{amssymb,amsmath,amsthm,stmaryrd,mathrsfs,wasysym}
+\usepackage{enumitem,mathtools,xspace}
+\usepackage{xcolor} % For colored cells in tables we need \cellcolor
+\usepackage{booktabs} % For nice tables
+\usepackage{array} % For nice tables
+\usepackage{supertabular} % For index of symbols
+\definecolor{darkgreen}{rgb}{0,0.45,0}
+\usepackage{aliascnt}
+\usepackage[capitalize]{cleveref}
+\usepackage[all,2cell]{xy}
+\UseAllTwocells
+\usepackage{natbib}
+\usepackage{braket} % used for \setof{ ... } macro
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathmorphing}
+
+\usepackage{etoolbox}           % hacking commands for TOC
+
+\usepackage{mathpartir}         % for formal.tex appendix, section 3
+
+\usepackage[numbered]{bookmark} % add chapter/section numbers to the toc in the pdf metadata
+
+\input{macros}
+
+%%%% Indexing
+\usepackage{makeidx}
+\makeindex
+
+%%%% Header and footers
+\pagestyle{fancyplain}
+\setlength{\headheight}{15pt}
+\renewcommand{\sectionmark}[1]{\markright{\textsc{\thesection\ #1}}}
+
+\lhead[\fancyplain{}{{\thepage}}]%
+      {\fancyplain{}{\nouppercase{\rightmark}}}
+\rhead[\fancyplain{}{\nouppercase{\leftmark}}]%
+      {\fancyplain{}{\thepage}}
+\cfoot{\textsc{\scriptsize \textcolor{gray}{[Draft of \today]}}}
+\lfoot[]{}
+\rfoot[]{}
+
+%%%% Chapter & part style
+\usepackage{titlesec}
+\titleformat{\part}[display]{\fontsize{40}{40}\fontseries{m}\fontshape{sc}\selectfont}{\hfil\partname\ \Roman{part}}{20pt}{\fontsize{60}{60}\fontseries{b}\fontshape{sc}\selectfont\hfil}
+\titleformat{\chapter}[display]{\fontsize{23}{25}\fontseries{m}\fontshape{it}\selectfont}{\chaptertitlename\ \thechapter}{20pt}{\fontsize{35}{35}\fontseries{b}\fontshape{n}\selectfont}
+
+\input{main.labels}
+
+\title{Solutions to selected exercises}
+
+\begin{document}
+\maketitle
+
+\section*{Exercises from \autoref{cha:logic}}
+
+\subsection*{Solution to \autoref{ex:decidable-choice}}
+
+The hypotheses imply that
+\[ \Parens{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)}. \]
+In words, given $n$ such that $P(n)$, we can find the least such $n$: we test every $m<n$ in turn, using decidability to do a case analysis, until we find the first one that satisfies $P(m)$.
+However, the right-hand side of the above implication is a mere proposition: if both $n$ and $n'$ are least numbers satisfying~$P$ then they must be equal.
+Therefore, we also have
+\[ \Brck{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)} \]
+from which the claim follows.
+
+
+\section*{Exercises from \autoref{cha:hlevels}}
+
+\subsection*{Solution to \autoref{ex:ntype-from-nconn-const}}
+
+Let $\modal$ be a modality; it remains to show that if all maps into $B$ out of a $\modal$-connected type are constant, then $B$ is $\modal$-modal.
+We show under that hypothesis that $\eta:B\to \modal B$ is an equivalence, by showing that its fibers are contractible.
+
+Since $\eta$ is always $\modal$-connected, its fibers are $\modal$-connected, and thus the inclusion of $\hfib{\eta}{z}$ into $B$ is constant.
+Thus, there is an $a:B$ such that for any $b:B$ and $p:\eta b=z$ we have $q(b,p):a=b$.
+Then $\apfunc{\eta}(q(b,p))\ct p : \eta a=z$ for any $(b,p):\hfib\eta z$, so we have a map $\hfib\eta z \to (\eta a=z)$.
+But $\modal B$ is $\modal$-modal, hence so is $\eta a = z$.
+Thus, by \autoref{thm:nconn-to-ntype-const}, this map is constant; hence we have $r:\eta a=z$ such that $\apfunc{\eta}(q(b,p))\ct p = r$ for all $(b,p)$.
+But using the characterization of paths in fibers, this means exactly that $(b,p)=(a,r)$ for all $(b,p)$; hence $\hfib\eta z$ is contractible with center $(a,r)$.
+
+\subsection*{Solution to \autoref{ex:connectivity-inductively}}
+
+If $A$ is $n$-connected, then since $\trunc{-1}A = \trunc{-1}{\trunc{n}A}$, also $A$ is $(-1)$-connected.
+And since $\trunc{n-1}{\id[A]ab} = (\id[\trunc n A]{\tproj na}{\tproj nb})$ by \autoref{thm:path-truncation} and the path spaces of a contractible type are contractible, each $\id[A]ab$ is $(n-1)$-connected.
+
+Conversely, suppose $A$ is $(-1)$-connected and all its path spaces are $(n-1)$-connected.
+Firstly, we claim $\trunc nA$ is a mere proposition, i.e.\ that for all $x,y:\trunc nA$, the type $x=y$ is contractible.
+Since contractibility of $x=y$ is a mere proposition, it suffices to assume that $x$ and $y$ are of the form $\tproj na$ and $\tproj nb$ respectively.
+But $\id[\trunc n A]{\tproj na}{\tproj nb}$ is contractible by \autoref{thm:path-truncation} and the assumption.
+Thus, $\trunc nA$ is a mere proposition.
+Since it is also $(-1)$-connected by assumption, it is therefore contractible, so $A$ is $n$-connected.
+
+
+\subsection*{Solution to \autoref{ex:lemnm}}
+
+Evidently $\mathsf{LEM}$ is the same as $\mathsf{LEM}_{-1,-1}$, so for the first part it suffices to assume $\mathsf{LEM}$ and prove $\mathsf{LEM}_{n,-1}$ and $\mathsf{LEM}_{-1,m}$ for all $n,m$.
+For the latter, note that if $A$ is a mere proposition, then by \autoref{ex:lem-mereprop} so is $A+\neg A$, and thus $\trunc m{A+\neg A}= A+\neg A$ for any $m\ge -1$.
+For the former, note that assuming LEM, by \autoref{ex:lem-brck} we have $\trunc{-1}{B} = \neg\neg B$ for any $B$, while $\neg\neg(A+\neg A)$ is always true for any type $A$ (\autoref{ex:not-not-lem}).
+
+For the second part, it suffices to derive a contradiction from $\mathsf{LEM}_{0,0}$; but the proof of \autoref{thm:not-lem} already uses an $A$ that is a set (namely $\bool$).
+
+\subsection*{Solution to \autoref{ex:acconn}}
+
+Suppose the $(-1)$-connected AC, and by induction suppose also the $n$-connected AC.
+Let $X$ be a set and $Y:X\to \type$ a family of $(n+1)$-connected types.
+By \autoref{ex:connectivity-inductively}, to show that $\prd{x:X} Y(x)$ is $(n+1)$-connected, it suffices to show that it is $(-1)$-connected and that all its path-types are $n$-connected.
+But also by \autoref{ex:connectivity-inductively}, each $Y(x)$ is $(-1)$-connected and all its path types are $n$-connected.
+Applying function extensionality to characterize the path types of $\prd{x:X} Y(x)$, the claim follows from the $(-1)$-connected and $n$-connected axioms of choice.
+
+\end{document}

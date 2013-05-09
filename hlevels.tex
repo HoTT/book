@@ -148,9 +148,9 @@ We now show that $n$-types are preserved by most type forming operations.
 
 As a special case, if $A$ and $B$ are $n$-types, so is $A\times B$.
 Note also that \autoref{thm:hlevel-cumulative} implies that if $A$ is an $n$-type, then so is $\id[A]xy$ for any $x,y:A$.
-Combining this with \autoref{thm:ntypes-sigma}, we see that for any functions $f:A\to C$ and $g:B\to C$ between $n$-types, the \define{pullback}
+Combining this with \autoref{thm:ntypes-sigma}, we see that for any functions $f:A\to C$ and $g:B\to C$ between $n$-types, their pullback
 \[ A\times_C B \defeq \sm{x:A}{y:B} (f(x)=g(y)) \]
-is also an $n$-type.
+(see \autoref{ex:pullback}) is also an $n$-type.
 More generally, $n$-types are closed under all \emph{limits}.
 
 \begin{thm}\label{thm:hlevel-prod}
@@ -236,8 +236,9 @@ Here is another equivalent characterization, involving Streicher's ``axiom K" \c
   But induction on $q$ reduces this goal precisely to Axiom K.
 \end{proof}
 
-We stress that \emph{we} are not assuming the K principle as an axiom!
-It is simply a property which a particular type may or may not satisfy (which is equivalent to being a set).
+We stress that \emph{we} are not assuming UIP or the K principle as axioms!
+They are simply properties which a particular type may or may not satisfy (which are equivalent to being a set).
+Recall from \autoref{thm:type-is-not-a-set} that \emph{not} all types are sets.
 
 The following theorem is another useful way to show that types are sets.
 
@@ -294,19 +295,10 @@ is a set.
   If a type $X$ has the property that $\neg\neg(x=y)\to(x=y)$ for any $x,y:X$, then $X$ is a set.
 \end{cor}
 
-Another convenient way to show that a type is a set is by way of the following property.
-
-\begin{defn}\label{defn:decidable-equality}
- A type $X$ has \define{decidable equality} if for all $x, y : X$ we have
- \[(x =_X y) + \neg (x =_X y).\]
-\end{defn}
-
-In the propositions-as-types language, we can say that $X$ has decidable equality if for every $x,y:X$, either $x=y$ or $x\neq y$.
-Note that this is a very constructive form of ``or''.
-LEM implies (using \autoref{thm:isprop-forall}) that \emph{any} type $X$ has \emph{decidable mere equality}, meaning
-\[\prd{x,y:X} \big(\brck{x=y} + \brck{x\neq y}\big).\]
-\autoref{defn:decidable-equality} asserts moreover that a path $x=y$ can be chosen, when it exists, continuously (or computably, or
-functorially) in $x$ and $y$.
+Another convenient way to show that a type is a set is the following.
+Recall from \autoref{sec:intuitionism} that a type $X$ is said to have \emph{decidable equality} if for all $x, y : X$ we have
+\[(x =_X y) + \neg (x =_X y).\]
+This is a very strong condition: it says that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
 This turns out to imply that $X$ is a set, by way of \autoref{thm:h-set-refrel-in-paths-sets} and the following lemma.
 
 \begin{lem}
@@ -332,10 +324,11 @@ $x,y:X$. Therefore, Hedberg's theorem follows from
 \end{proof}
 
 There is, of course, a strong connection between this theorem and \autoref{thm:not-lem}.
-The form of LEM denied by \autoref{thm:not-lem} clearly implies that every type has decidable equality, and hence is a set; which we know is
-not the case.
+The statement \LEM{\infty} that is denied by \autoref{thm:not-lem} clearly implies that every type has decidable equality, and hence is a set, which we know is not the case.
+Note that the consistent axiom \LEM{} from \autoref{sec:intuitionism} implies only that every type has \emph{merely decidable equality}, i.e.\ that for any $A$ we have
+\[ \prd{a,b:A} (\brck{a=b} + \neg\brck{a=b}). \]
 
-Recall that in \autoref{thm:nat-set} we observed that $\nat$ is a set, using our characterization of its equality types in
+As an example application of \autoref{thm:hedberg}, recall that in \autoref{thm:nat-set} we observed that $\nat$ is a set, using our characterization of its equality types in
 \autoref{sec:compute-nat}.
 A more traditional proof of this theorem uses only~\eqref{eq:zero-not-succ} and~\eqref{eq:suc-injective}, rather than the full
 characterization of \autoref{thm:path-nat}, with \autoref{thm:hedberg} to fill in the blanks.
@@ -608,7 +601,7 @@ The following observation about reflective subcategories is also standard.
   \idfunc[\trunc nA]\circ\tproj n-$.
   This is again true:
   \[\xymatrix{
-    A \ar^{\tproj n-}[r] \ar_{\idfunc[A]}[rd] &
+    A \ar^-{\tproj n-}[r] \ar_{\idfunc[A]}[rd] &
     \trunc nA \ar^>>>{\ext(\idfunc[A])}[d] \ar@/^40pt/^{\idfunc[\trunc nA]}[dd] \\
     & A \ar_{\tproj n-}[d] \\
     & \trunc nA}\]
@@ -847,7 +840,7 @@ For a general \P, pushouts may or may not exist, but if they do, then they are u
 \end{proof}
 
 \begin{cor}
-  The type of pushouts of $\Ddiag$ in $\P$ is \anhprop. In particular if
+  The type of pushouts of $\Ddiag$ in $\P$ is a mere proposition. In particular if
   pushouts merely exist then they actually exist.
 \end{cor}
 
@@ -1445,10 +1438,9 @@ where $\theta:\proj1\circ\tilde{f}\sim f$ is the canonical homotopy, where $\var
 \autoref{prop:to_image_is_connected}, and where $\psi$ is the obvious proof that $\proj1:\im(f)\to B$ has $n$-truncated fibers.
 \end{thm}
 
-In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker operations. Recall that if we have paths
-$p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whisker operation provides a path $q\ct p=
-q\ct p^\prime$, wich is denoted by $q\leftwhisker s$. Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim
-f^\prime$ is a homotopy, then there is a homotopy $g\leftwhisker H:g\circ f\sim g\circ f^\prime$.
+In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker operations, which were introduced in \autoref{thm:EckmannHilton}.
+Recall that if we have paths $p,p^\prime:x= y$, $s:p= p^\prime$ and $q:y= z$, then left whiskering provides a path $q\ct p=q\ct p^\prime$, which is denoted by $q\leftwhisker s$.
+Likewise, if $f,f^\prime:X\to Y$ and $g:Y\to X$ are functions and if $H:f\sim f^\prime$ is a homotopy, then pointwise whiskering provides a homotopy $g\leftwhisker H:g\circ f\sim g\circ f^\prime$.
 
 \begin{proof}
 By \autoref{prop:to_image_is_connected} we know that there is an element of $\fact_n(f)$, hence it is enough to
@@ -1528,49 +1520,42 @@ We end by showing that images are stable under pullback.
 \begin{lem}\label{lem:hfiber_wrt_pullback}
 Suppose that the square
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & C \\ B & D \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$g$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left] {$f$} (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$h$} (m-2-2);
-\end{tikzpicture}
+  \vcenter{\xymatrix{
+      A\ar[r]\ar[d]_f &
+      C\ar[d]^g\\
+      B\ar[r]_-h &
+      D
+      }}
 \end{equation*}
 is a pullback square and let $b:B$. Then $\hfib{f}b\simeq\hfib{g}{h(b)}$.
 \end{lem}
 
 \begin{proof}
-\note{Do we have pasting of pullbacks anywhere?}
-This follows from pasting of pullbacks, since the type $X$ in the diagram
+This follows from pasting of pullbacks (\autoref{ex:pullback-pasting}), since the type $X$ in the diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {X & A & C \\ \unit & B & D \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- (m-1-3);
-\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
-\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
-\draw[ar] (m-1-1) -- (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$b$} (m-2-2);
-\draw[ar] (m-2-2) -- node[below] {$h$} (m-2-3);
-\end{tikzpicture}
+  \vcenter{\xymatrix{
+      X\ar[r]\ar[d] &
+      A\ar[r]\ar[d]_f &
+      C\ar[d]^g\\
+      \unit\ar[r]_b &
+      B\ar[r]_h &
+      D
+      }}
 \end{equation*}
-is the pullback of the left square if and only if it is the pullback of the outer rectangle: $\hfib{f}b$ is the pullback of the
-square on the left and $\hfib{g}{h(b)}$ is the pullback of the outer rectangle.
+is the pullback of the left square if and only if it is the pullback of the outer rectangle, while $\hfib{f}b$ is the pullback of the square on the left and $\hfib{g}{h(b)}$ is the pullback of the outer rectangle.
 \end{proof}
 
 \begin{thm}\label{thm:stable-images}
 Consider functions $f:A\to B$, $g:C\to D$ and the diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & C \\ \im_n(f) & \im_n(g) \\ B & D \\};
-\draw[ar] (m-1-1) -- (m-1-2);
-\draw[ar] (m-1-2) -- node[right] {$\tilde{g}_n$} (m-2-2);
-\draw[ar] (m-2-2) -- node[right] {$\proj1$} (m-3-2);
-\draw[ar] (m-1-1) -- node[left] {$\tilde{f}_n$} (m-2-1);
-\draw[ar] (m-2-1) -- (m-2-2);
-\draw[ar] (m-2-1) -- node[left] {$\proj1$} (m-3-1);
-\draw[ar] (m-3-1) -- node[below] {$h$} (m-3-2);
-\end{tikzpicture}
+  \vcenter{\xymatrix{
+      A\ar[r]\ar[d]_{\tilde{f}_n} &
+      C\ar[d]^{\tilde{g}_n}\\
+      \im_n(f)\ar[r]\ar[d]_{\proj1} &
+      \im_n(g)\ar[d]^{\proj1}\\
+      B\ar[r]_h &
+      D
+      }}
 \end{equation*}
 Then the outer rectangle is a pullback if and only if the bottom square is a pullback. In either of these equivalent cases, the top square
 is also a pullback. Consequently, images are stable under pullbacks.
@@ -1729,7 +1714,9 @@ A \define{modality} is an operation $\modal:\type\to\type$ for which there are
 \item For any $z,z':\modal(A)$, the function $\mreturn^\modal_{z=z'} : (z=z') \to \modal(z=z')$ is an equivalence.\label{item:modal4}
 \end{enumerate}
 We say that $A$ is \define{modal} for $\modal$ if $\mreturn^\modal_A:A\to\modal(A)$ is an equivalence, and we write
-\[\modaltype\defeq\setof{X:\type | X \text{ is $\modal$-modal} }\]
+\begin{equation}
+  \modaltype\defeq\setof{X:\type | X \text{ is $\modal$-modal} }\label{eq:modaltype}
+\end{equation}
 for the type of modal types.
 \end{defn}
 
@@ -1774,7 +1761,8 @@ Thus, modalities can be identified with reflective subuniverses closed under $\S
 The name \emph{modality} comes, of course, from \emph{modal logic}, which studies logic where we can form statements such as ``possibly $A$'' (usually written $\diamond A$) or ``necessarily $A$'' (usually written $\Box A$).
 The symbol $\modal$ is somewhat common for an arbitrary modal operator. % (rather than a specific one such as $\diamond$ or $\Box$).
 Under the propositions-as-types principle, a modality in the sense of modal logic corresponds to an operation on \emph{types}, and \autoref{defn:modality} seems a reasonable candidate for how such an operation should be defined.
-(More precisely, we should perhaps call these \emph{idempotent, monadic} modalities.)
+(More precisely, we should perhaps call these \emph{idempotent, monadic} modalities; see the Notes.)
+As mentioned in \autoref{subsec:when-trunc}, we may in general use adverbs to speak informally about such modalities, such as ``merely'' for the propositional truncation and ``purely'' for the identity modality (i.e.\ the one defined by $\modal A \defeq A$).
 
 For any modality $\modal$, we define a map $f:A\to B$ to be \define{$\modal$-connected} if $\modal(\hfib f b)$ is contractible for all $b:B$, and to be \define{$\modal$-truncated} if $\hfib f b$ is modal for all $b:B$.
 All of the theory of \autoref{sec:connectivity,sec:image-factorization} which doesn't involve relating $n$-types for different values of $n$ applies verbatim in this generality.
@@ -1800,7 +1788,19 @@ The importance of the resulting factorization system has been emphasized by rece
 In particular, the results of this chapter should be compared with~\cite[\S6.5.1]{lurie:higher-topoi}.
 In \autoref{sec:freudenthal}, the theory of $n$-connected maps will be crucial to our proof of the Freudenthal suspension theorem.
 
-Modal operators in \emph{simple} type theory have been studied extensively; see e.g.~\cite{modalTT}.  In the setting of dependent type theory, \cite{ab:bracket-types} treats the special case of propositional, i.e.~$(-1)$-truncation as a modal operator.  The development presented here greatly extends and generalizes this work, while drawing also on ideas from topos theory.
+Modal operators in \emph{simple} type theory have been studied extensively; see e.g.~\cite{modalTT}.  In the setting of dependent type theory, \cite{ab:bracket-types} treats the special case of propositional truncation ($(-1)$-truncation) as a modal operator.  The development presented here greatly extends and generalizes this work, while drawing also on ideas from topos theory.
+
+Generally, modal operators come in (at least) two flavors: those such as $\diamond$ (``possibly'') for which $A\Rightarrow \diamond A$, and those such as $\Box$ (``necessarily'') for which $\Box A \Rightarrow A$.
+When they are also \emph{idempotent} (i.e.\ $\diamond A = \diamond{\diamond A}$ or $\Box A = \Box{\Box A}$), the former may be identified with reflective subcategories (or equivalently, idempotent monads), and the latter with coreflective subcategories (or idempotent comonads).
+However, in dependent type theory it is trickier to deal with the comonadic sort, since they are more rarely stable under pullback, and thus cannot be interpreted as operations on the universe \UU.
+Sometimes there are ways around this (see e.g.~\cite{QGFTinCHoTT12}), but for simplicity, here we stick to the monadic sort.
+
+On the computational side, monads (and hence modalities) are used to model effects in functional programming~\cite{Moggi89}.
+A computation is said to be \emph{pure} if its execution results in no side effects (such as printing a message to the screen, playing music, or sending data over the Internet).
+There exist ``purely functional'' programming languages, such as Haskell, in which it is technically only possible to write pure functions: side effects are represented by applying ``monads'' to output types.
+For instance, a function of type $\mathsf{Int}\to\mathsf{Int}$ is pure, while a function of type $\mathsf{Int}\to \mathsf{IO}(\mathsf{Int})$ may perform input and output along the way to computing its result; the operation $\mathsf{IO}$ is a monad.
+(This is the origin of our use of the adverb ``purely'' for the identity monad, since it corresponds computationally to pure functions with no side-effects.)
+The modalities we have considered in this chapter are all idempotent, whereas those used in functional programming rarely are, but the ideas are still closely related.
 
 
 \sectionExercises
@@ -1820,37 +1820,42 @@ Modal operators in \emph{simple} type theory have been studied extensively; see 
   Use \autoref{prop:nconn_fiber_to_total} to extend \autoref{thm:connected-pointed} to any section/retraction pair.
 \end{ex}
 
-\begin{ex}
+\begin{ex}\label{ex:ntype-from-nconn-const}
+  Show that \autoref{thm:nconn-to-ntype-const} also works as a characterization in the other direction: $B$ is an $n$-type if and only if every map into $B$ from an $n$-connected type is constant.
+  Ideally, your proof should work for any modality as in \autoref{sec:modalities}.
+\end{ex}
+
+\begin{ex}\label{ex:connectivity-inductively}
   Prove that for $n\ge 0$, a type $A$ is $n$-connected if and only if it is $(-1)$-connnected (i.e.\ merely inhabited) and for all $a,b:A$ the type $\id[A]ab$ is $(n-1)$-connected.
 \end{ex}
 
 \begin{ex}\label{ex:lemnm}
-  For $-1\le n,m \le\infty$, let $\mathsf{LEM}_{n,m}$ denote the statement
+  For $-1\le n,m \le\infty$, let $\LEM{n,m}$ denote the statement
   \[ \prd{A:\ntype{n}} \trunc m{A + \neg A},\]
   where $\ntype{\infty} \defeq \type$ and $\trunc{\infty}{X}\defeq X$.
   Show that:
   \begin{enumerate}
-  \item If $n=-1$ or $m=-1$, then $\mathsf{LEM}_{n,m}$ is equivalent to $\mathsf{LEM}$ from \autoref{sec:intuitionism}.
-  \item If $n\ge 0$ and $m\ge 0$, then $\mathsf{LEM}_{n,m}$ is inconsistent with univalence.
+  \item If $n=-1$ or $m=-1$, then $\LEM{n,m}$ is equivalent to $\LEM{}$ from \autoref{sec:intuitionism}.
+  \item If $n\ge 0$ and $m\ge 0$, then $\LEM{n,m}$ is inconsistent with univalence.
   \end{enumerate}
 \end{ex}
 
 \begin{ex}\label{ex:acnm}
-  For $-1\le n,m\le\infty$, let $\mathsf{AC}_{n,m}$ denote the statement
+  For $-1\le n,m\le\infty$, let $\choice{n,m}$ denote the statement
   \[ \prd{X:\set}{Y:X\to\ntype{n}}
   \Parens{\prd{x:X} \trunc m{Y(x)}}
   \to
   \Trunc m{\prd{x:X} Y(x)},
   \]
   with conventions as in \autoref{ex:lemnm}.
-  Thus $\mathsf{AC}_{0,-1}$ is the axiom of choice from \autoref{sec:axiom-choice}, while $\mathsf{AC}_{\infty,\infty}$ is \autoref{thm:ttac}.
-  It is known that $\mathsf{AC}_{\infty,-1}$ is consistent with univalence, since it holds in Voevodsky's simplicial model.
+  Thus $\choice{0,-1}$ is the axiom of choice from \autoref{sec:axiom-choice}, while $\choice{\infty,\infty}$ is \autoref{thm:ttac}.
+  It is known that $\choice{\infty,-1}$ is consistent with univalence, since it holds in Voevodsky's simplicial model.
   \begin{enumerate}
-  \item Without using univalence, show that $\mathsf{LEM}_{n,\infty}$ implies $\mathsf{AC}_{n,m}$ for all $m$.
-    (On the other hand, in \autoref{subsec:emacinsets} we will show that $\mathsf{AC}=\mathsf{AC}_{0,-1}$ implies $\mathsf{LEM}=\mathsf{LEM}_{-1,-1}$.)
-  \item Of course, $\mathsf{AC}_{n,m}\Rightarrow \mathsf{AC}_{k,m}$ if $k\le n$.
-    Are there any other implications between the principles $\mathsf{AC}_{n,m}$?
-    Is $\mathsf{AC}_{n,m}$ consistent with univalence for any $m\ge -1$?
+  \item Without using univalence, show that $\LEM{n,\infty}$ implies $\choice{n,m}$ for all $m$.
+    (On the other hand, in \autoref{subsec:emacinsets} we will show that $\choice{}=\choice{0,-1}$ implies $\LEM{}=\LEM{-1,-1}$.)
+  \item Of course, $\choice{n,m}\Rightarrow \choice{k,m}$ if $k\le n$.
+    Are there any other implications between the principles $\choice{n,m}$?
+    Is $\choice{n,m}$ consistent with univalence for any $m\ge -1$?
     (These are open questions.)
   \end{enumerate}
 \end{ex}
@@ -1860,10 +1865,10 @@ Modal operators in \emph{simple} type theory have been studied extensively; see 
   \begin{quote}
     If $X$ is a set and $Y:X\to \type$ is a family of types such that each $Y(x)$ is $n$-connected, then $\prd{x:X} Y(x)$ is $n$-connected.
   \end{quote}
-  Note that the $(-1)$-connected axiom of choice is $\mathsf{AC}_{\infty,-1}$ from \autoref{ex:acnm}.
+  Note that the $(-1)$-connected axiom of choice is $\choice{\infty,-1}$ from \autoref{ex:acnm}.
   \begin{enumerate}
-  \item Prove that for every $n\ge -1$, the $n$-connected axiom of choice implies the $(n+1)$-connected axiom of choice.
-  \item Are there any other implications between the $n$-connected axioms of choice and the principles $\mathsf{AC}_{n,m}$?
+  \item Prove that the $(-1)$-connected axiom of choice implies the $n$-connected axiom of choice for all $n\ge -1$.
+  \item Are there any other implications between the $n$-connected axioms of choice and the principles $\choice{n,m}$?
     (This is an open question.)
   \end{enumerate}
 \end{ex}

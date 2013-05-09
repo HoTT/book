@@ -474,27 +474,27 @@ as depicted in the following diagram.
 Composing the upper and lower 1-paths, respectively, we get two paths $p\ct r,\ q\ct s : a = c$, and there is then a ``horizontal composition"
 %
 \begin{equation*}
-  \alpha\star\beta : p\ct r = q\ct s
+  \alpha\hct\beta : p\ct r = q\ct s
 \end{equation*}
 %
 between them, defined as follows: first let $\alpha \rightwhisker r : p\ct r = q\ct r$ be determined by path induction on $r$, then let $q\leftwhisker \beta : q\ct r = q\ct s$ be given by induction on $q$.  Since these paths are composable in the type of 2-paths, we can define the \define{horizontal composition}  by:
 \[
-\alpha\star\beta\ \defeq\ (\alpha\rightwhisker r) \ct (q\leftwhisker \beta)\, .
+\alpha\hct\beta\ \defeq\ (\alpha\rightwhisker r) \ct (q\leftwhisker \beta)\, .
 \]
 Now suppose that $a \jdeq  b \jdeq  c$, so that all the above 1-paths are in $\Omega(A,a)$, and assume moreover that $q \jdeq  \refl{a}\jdeq  r$, so that $\alpha$ and $\beta$ become composable.  In that case, we therefore have
 \[
-\alpha\star\beta\ =\ (\alpha\rightwhisker\refl{a}) \ct (\refl{a}\leftwhisker \beta) = \alpha \ct \beta\, .
+\alpha\hct\beta\ =\ (\alpha\rightwhisker\refl{a}) \ct (\refl{a}\leftwhisker \beta) = \alpha \ct \beta\, .
 \]
 On the other hand, we can define another horizontal composition analogously by
 \[
-\alpha\star'\beta\ \defeq\ (p\leftwhisker \beta)\ct (\alpha\rightwhisker s)\, .
+\alpha\hct'\beta\ \defeq\ (p\leftwhisker \beta)\ct (\alpha\rightwhisker s)\, .
 \]
 and setting $p \jdeq  \refl{a}\jdeq  s$ we learn that in that case 
 \[
-\alpha\star'\beta\ =\ (\refl{a}\leftwhisker \beta)\ct (\alpha\rightwhisker \refl{a}) = \beta\ct\alpha\, .
+\alpha\hct'\beta\ =\ (\refl{a}\leftwhisker \beta)\ct (\alpha\rightwhisker \refl{a}) = \beta\ct\alpha\, .
 \]
-But, in general, the two ways of defining horizontal composition agree, $\alpha\star\beta = \alpha\star'\beta$, as we can see by induction on $\alpha$ and $\beta$.  Thus when $p \jdeq  q \jdeq  \refl{a} \jdeq  r\jdeq  s$ we have
-\[\alpha \ct \beta = \alpha\star\beta = \alpha\star'\beta = \beta\ct\alpha\,.
+But, in general, the two ways of defining horizontal composition agree, $\alpha\hct\beta = \alpha\hct'\beta$, as we can see by induction on $\alpha$ and $\beta$.  Thus when $p \jdeq  q \jdeq  \refl{a} \jdeq  r\jdeq  s$ we have
+\[\alpha \ct \beta = \alpha\hct\beta = \alpha\hct'\beta = \beta\ct\alpha\,.
 \qedhere
 \]
 \end{proof}
@@ -568,6 +568,7 @@ We note that $\apfunc{}$ behaves functorially, in all the ways that one might ex
   \item $\apfunc f(p\ct q) = \apfunc f(p) \ct \apfunc f(q)$.\label{item:apfunctor-ct}
   \item $\apfunc f(\opp p) = \opp{\apfunc f (p)}$.\label{item:apfunctor-opp}
   \item $\apfunc g (\apfunc f(p)) = \apfunc{g\circ f} (p)$.\label{item:apfunctor-compose}
+  \item $\apfunc {\idfunc[A]} (p) = p$.
   \end{enumerate}
 \end{lem}
 \begin{proof}
@@ -842,8 +843,8 @@ The first level of the continuity/naturality of homotopies can be expressed as f
   We may also draw this as a commutative diagram:
   \begin{align*}
     \xymatrix{
-      f(x) \ar[r]^{\ap fp} \ar[d]_{H(x)} & f(y) \ar[d]^{H(y)} \\
-      g(x) \ar[r]_{\ap gp} & g(y)
+      f(x) \ar@{=}[r]^{\ap fp} \ar@{=}[d]_{H(x)} & f(y) \ar@{=}[d]^{H(y)} \\
+      g(x) \ar@{=}[r]_{\ap gp} & g(y)
     }
   \end{align*}
 \end{lem}
@@ -858,11 +859,11 @@ The first level of the continuity/naturality of homotopies can be expressed as f
 Let $H : f \htpy \idfunc[A]$ be a homotopy, with $f : A \to A$. Then for any $x : A$ we have \[ H(f(x)) = \ap f{H(x)}. \] The above path will be denoted by $\com{H}{f}{x}$.
 \end{cor}
 \begin{proof}
-By naturality of $H$, the following diagram commutes:
+By naturality of $H$, the following diagram of paths commutes:
 \begin{align*}
-\xymatrix{
-ffx \ar[r]^{\ap f{Hx}} \ar[d]_{H(fx)} & fx \ar[d]^{Hx} \\
-fx \ar[r]_{Hx} & x
+\xymatrix@C=3pc{
+ffx \ar@{=}[r]^-{\ap f{Hx}} \ar@{=}[d]_{H(fx)} & fx \ar@{=}[d]^{Hx} \\
+fx \ar@{=}[r]_-{Hx} & x
 }
 \end{align*}
 Canceling $H(x)$, we see that $H(f(x)) = f(H(x))$ as desired.
@@ -884,6 +885,7 @@ For this reason, we give~\eqref{eq:qinvtype} the following historically accurate
 $\alpha:f\circ g\htpy \idfunc[B]$ and $\beta:g\circ f\htpy \idfunc[A]$.
 \end{defn}
 
+\symlabel{qinv}
 Thus,~\eqref{eq:qinvtype} is \define{the type of quasi-inverses of $f$}; we may denote it by $\qinv(f)$.
 
 \begin{eg}\label{eg:idequiv}
@@ -935,7 +937,9 @@ In practice, this is the most common approach.
 
 In accord with the proof-relevant philosophy, \emph{an equivalence} from $A$ to $B$ is defined to be a function $f:A\to B$ together with an inhabitant of $\isequiv (f)$, i.e.\ a proof that it is an equivalence.
 We write $(\eqv A B)$ for the type of equivalences from $A$ to $B$, i.e.\ the type
-\[ (\eqv A B) \;\defeq \; \sm{f:A\to B} \isequiv(f). \]
+\begin{equation}
+  (\eqv A B) \;\defeq \; \sm{f:A\to B} \isequiv(f).\label{eq:eqv}
+\end{equation}
 Property~\ref{item:be3} above will ensure that if two equivalences are equal as functions (that is, the underlying elements of $A\to B$ are equal), then they are also equal as equivalences (see \autoref{sec:compute-sigma}).
 
 We conclude by observing:
@@ -1292,7 +1296,7 @@ From a topological perspective, it would say that a path in a function space is 
 And from a categorical perspective, it would say that an isomorphism in a functor category is a natural family of isomorphisms.
 
 Unlike the case in the previous sections, however, the basic type theory presented in \autoref{cha:typetheory} is insufficient to prove~\eqref{eq:path-forall}.
-All we can say is that there is the function
+All we can say is that there is a certain function
 \begin{equation}
   \happly : {(\id{f}{g})}\;\to\; \prd{x:A} (\id[B(x)]{f(x)}{g(x)})\label{eq:happly}
 \end{equation}
@@ -1398,10 +1402,11 @@ As mentioned in the introduction, \emph{univalence} is the identification of $\i
 We perform this identification by way of the following canonical function.
 
 \begin{lem}
-  For types $A,B:\type$, there is the function, as given in the proof,
+  For types $A,B:\type$, there is a certain function,
   \begin{equation}\label{eq:uidtoeqv}
-    \idtoeqv : (\id[\type]AB) \to (\eqv A B).
+    \idtoeqv : (\id[\type]AB) \to (\eqv A B),
   \end{equation}
+  defined in the proof.
 \end{lem}
 \begin{proof}
   We could construct this directly by induction on equality, but the following description is more convenient.
@@ -1609,7 +1614,7 @@ The essential insight is that we can use the elimination property of $A+B$ to \e
   \code(\inr(b)) &\defeq \emptyt
 \end{align*}
 This is a very simple example of a proof technique that is used quite a
-bit in formalizing homotopy theory in HoTT; see
+bit in formalizing homotopy theory in homotopy type theory; see
 e.g.\ \autoref{sec:pi1-s1-intro}.  
 %
 We can now show:
@@ -1649,15 +1654,15 @@ We can now show:
   On the other hand, let $x:A+B$ and $c:\code(x)$; we want to show $\encode(x,\decode(x,c))=c$.
   We may again divide into cases based on $x$.
   If $x\jdeq\inl(a)$, then $c:a_0=a$ and $\decode(x,c)\jdeq \apfunc{\inl}(c)$, so that
-  \begin{align}
+  \begin{align*}
     \encode(x,\decode(x,c))
-    &\jdeq \transfib{\code}{\apfunc{\inl}(c)}{\refl{a_0}} \notag \\
+    &\jdeq \transfib{\code}{\apfunc{\inl}(c)}{\refl{a_0}} \\
     &= \transfib{a\mapsto (a_0=a)}{c}{\refl{a_0}}
-    \tag{by \autoref{thm:transport-compose}}\\
+    &&\text{(by \autoref{thm:transport-compose})}\\
     &= \refl{a_0} \ct c
-    \tag{by \autoref{cor:transport-path-prepost}}\\
-    &= c.\qedhere \notag
-  \end{align}
+    &&\text{(by \autoref{cor:transport-path-prepost})}\\
+    &= c. &&\qedhere
+  \end{align*}
 \end{proof}
 
 \noindent
@@ -1935,7 +1940,7 @@ will not show the details here.
 
 The conclusion is that, thanks to univalence, semigroups are equal
 precisely when they are isomorphic as algebraic structures. The
-conclusion applies more generally: in HoTT, all constructions of
+conclusion applies more generally: in homotopy type theory, all constructions of
 mathematical structures automatically respect isomorphisms, without any
 tedious proofs or abuse of notation.
 
@@ -2046,12 +2051,21 @@ For instance, path induction is the right-to-left direction of an equivalence as
 for any $a:A$ and type family $B:\prd{x:A} (a=x) \to\type$.
 However, inductive types with recursion, such as the natural numbers, have more complicated universal properties; see \autoref{cha:induction}.
 
+Since \autoref{thm:prod-ump} expresses the usual universal property of a cartesian product (in an appropriate homotopy-theoretic sense), the categorically inclined reader may well wonder about other limits and colimits of types.
+In \autoref{ex:coprod-ump} we ask the reader to show that the coproduct type $A+B$ also has the expected universal property, and the nullary cases of $\unit$ (the terminal object) and $\emptyt$ (the initial object) are easy.
+
+For pullbacks, the expected explicit construction works: given $f:A\to C$ and $g:B\to C$, we define
+\begin{equation}
+  A\times_C B \defeq \sm{a:A}{b:B} (f(a)=g(b)).\label{eq:defn-pullback}
+\end{equation}
+In \autoref{ex:pullback} we ask the reader to verify this.
+Some more general homotopy limits can be constructed in a similar way, but for colimits we need a new ingredient; see \autoref{cha:hits}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \sectionNotes
 
-The definition of identity types and the elimination rule $J$ are due to Martin-L\"of \cite{ml:itt}.
+The definition of identity types and the elimination rule $J$ are due to Martin-L\"of \cite{Martin-Lof-1972}.
 As mentioned in the notes to \autoref{cha:typetheory}, our identity types are those that belong to \emph{intensional} type theory, by contrast with those of \emph{extensional} type theory which have an additional ``reflection rule'' saying that if $p:x=y$, then in fact $x\jdeq y$.
 This reflection rule implies that all the higher groupoid structure collapses (see \autoref{ex:equality-reflection}), so for nontrivial homotopy we must use the intensional version. 
 One may argue, however, that homotopy type theory is more ``extensional'' than traditional extensional type theory, because of the function extensionality and univalence rules.  
@@ -2059,7 +2073,7 @@ One may argue, however, that homotopy type theory is more ``extensional'' than t
 The proofs of symmetry (inversion) and transitivity (concatenation) for equalities are well-known in type theory.
 The fact that these make each type into a 1-groupoid (up to homotopy) is also folklore, and was exploited in~\cite{hs:gpd-typethy} to give the first ``homotopy" style semantics for type theory.  
 
-The actual homotopical interpretation, with identity types as path spaces, and dependent types as fibrations, is due to \cite{aw:hiit}, who used the formalism of Quillen model categories.  An interpretation in (strict) $\infty$-groupoids was also given in the thesis \cite{mw:thesis}.
+The actual homotopical interpretation, with identity types as path spaces, and dependent types as fibrations, is due to \cite{AW}, who used the formalism of Quillen model categories.  An interpretation in (strict) $\infty$-groupoids was also given in the thesis \cite{mw:thesis}.
 For a construction of \emph{all} the higher operations and coherences of an $\infty$-groupoid in type theory, see~\cite{pll:wkom-type} and~\cite{bg:type-wkom}.
 
 Operations such as $\transfib{P}{p}{-}$ and $\apfunc{f}$, and one good notion of equivalence, were first studied extensively in type theory by Voevodsky, using the proof assistant Coq.
@@ -2069,7 +2083,7 @@ The ``computational'' interpretation of identity types, transport, and so on des
 They also described a ``1-truncated'' type theory (see \autoref{cha:hlevels}) in which these rules really are computation steps (that is, definitional equalities which a computer can ``evaluate'').
 The possibility of extending this to the full untruncated theory is a subject of current research.
 
-The naive form of function extensionality which says that ``if two functions are pointwise equal, then they are equal'' is a common axiom in type theory.
+The naive form of function extensionality which says that ``if two functions are pointwise equal, then they are equal'' is a common axiom in type theory, going all the way back to \cite{PM2}.
 Some stronger forms of function extensionality were considered in~\cite{garner:depprod}.
 The version we have used, which identifies the identity types of function types up to equivalence, was first studied by Voevodsky, who also proved that it is implied by the naive version (and by univalence; see \autoref{sec:univalence-implies-funext}).
 
@@ -2090,6 +2104,10 @@ The more refined approach we have described, which characterizes the entire iden
 
 The type-theoretic axiom of choice~\eqref{eq:sigma-ump-map} was noticed in William Howard's original paper~\cite{howard:pat} on the propositions-as-types correspondence, and was studied further by Martin-L\"of with the introduction of his dependent type theory.  It is mentioned as a ``distributivity law" in Bourbaki's set theory \cite{Bourbaki}.
 
+For a more comprehensive (and formalized) discussion of pullbacks and more general homotopy limits in homotopy type theory, see~\cite{AKL13}.
+Limits of diagrams over directed graphs are the easiest general sort of limit to formalize; the problem with diagrams over categories (or more generally $(\infty,1)$-categories) is that in general, infinitely many coherence conditions are involved in the notion of (homotopy coherent) diagram.
+Resolving this problem is an important open question in homotopy type theory.
+
 \sectionExercises
 
 \begin{ex}\label{ex:basics:concat}
@@ -2098,9 +2116,9 @@ The type-theoretic axiom of choice~\eqref{eq:sigma-ump-map} was noticed in Willi
 
 \begin{ex}
   Show that the three equalities of proofs constructed in the previous exercise form a commutative triangle.
-  In other words, if the three definitions of concatenation are denoted by $(p \ct_1 q)$, $(p\ct_2 q)$, and $(p\ct_3 q)$, then the concatenated equality
-  \[(p\ct_1 q) = (p\ct_2 q) = (p\ct_3 q)\]
-  is equal to the equality $(p\ct_1 q) = (p\ct_3 q)$.
+  In other words, if the three definitions of concatenation are denoted by $(p \mathbin{\ct_1} q)$, $(p\mathbin{\ct_2} q)$, and $(p\mathbin{\ct_3} q)$, then the concatenated equality
+  \[(p\mathbin{\ct_1} q) = (p\mathbin{\ct_2} q) = (p\mathbin{\ct_3} q)\]
+  is equal to the equality $(p\mathbin{\ct_1} q) = (p\mathbin{\ct_3} q)$.
 \end{ex}
 
 \begin{ex}
@@ -2130,13 +2148,48 @@ The type-theoretic axiom of choice~\eqref{eq:sigma-ump-map} was noticed in Willi
   Can you generalize this to an equivalence involving dependent functions?
 \end{ex}
 
+\begin{ex}\label{ex:pullback}
+  A (homotopy) \define{commutative square}
+  \begin{equation*}
+  \vcenter{\xymatrix{
+      P\ar[r]^h\ar[d]_k &
+      A\ar[d]^f\\
+      B\ar[r]_g &
+      C
+      }}
+  \end{equation*}
+  consists of functions $f$, $g$, $h$, and $k$ as shown, together with a path $f \circ h= g \circ k$.
+  Note that this is exactly an element of the pullback $(P\to A) \times_{P\to C} (P\to B)$ as defined in~\eqref{eq:defn-pullback}.
+  A commutative square is called a (homotopy) \define{pullback square} if for any $X$, the induced map
+  \[ (X\to P) \to (X\to A) \times_{(X\to C)} (X\to B) \]
+  is an equivalence.
+  Prove that the pullback $P \defeq A\times_C B$ defined in~\eqref{eq:defn-pullback} is the corner of a pullback square.
+\end{ex}
+
+\begin{ex}\label{ex:pullback-pasting}
+  Suppose given two commutative squares
+  \begin{equation*}
+    \vcenter{\xymatrix{
+        A\ar[r]\ar[d] &
+        C\ar[r]\ar[d] &
+        E\ar[d]\\
+        B\ar[r] &
+        D\ar[r] &
+        F
+      }}
+  \end{equation*}
+  and suppose that the right-hand square is a pullback square.
+  Prove that the left-hand square is a pullback square if and only if the outer rectangle is a pullback square.
+\end{ex}
+
 \begin{ex}\label{ex:eqvboolbool}
   Show that $\eqv{(\eqv\bool\bool)}{\bool}$.
 \end{ex}
 
 \begin{ex}\label{ex:equality-reflection}
   Suppose we add to type theory the \emph{equality reflection rule} which says that if there is an element $p:x=y$, then in fact $x\jdeq y$.
-  Prove that for any $p:x=x$ we have $p\jdeq \refl{x}$, and hence every type is a set in the sense of \autoref{sec:basics-sets}.
+  Prove that for any $p:x=x$ we have $p\jdeq \refl{x}$.
+  (This implies that every type is a \emph{set} in the sense to be introduced in \autoref{sec:basics-sets}; see \autoref{sec:hedberg}.)
 \end{ex}
 
 % Local Variables:

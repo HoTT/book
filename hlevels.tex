@@ -628,25 +628,36 @@ For instance, the reflector $\trunc n-$ preserves finite products.
   It is straightforward to verify that this equivalence is given by composing with $\tproj n- \times \tproj n-$, as needed.
 \end{proof}
 
-\begin{thm}
+The following related fact about dependent sums is often useful.
+
+\begin{thm}\label{thm:trunc-in-truncated-sigma}
 Let $P:A\to\type$ be a family of types. Then there is an equivalence
 \begin{equation*}
-\eqv{\trunc n{\sm{x:A}\trunc n{P(x)}}}{\trunc n{\sm{x:A}P(x)}}.
+\eqv{\Trunc n{\sm{x:A}\trunc n{P(x)}}}{\Trunc n{\sm{x:A}P(x)}}.
 \end{equation*}
 \end{thm}
 
 \begin{proof}
-We use the universal property of $n$-truncation several times to construct
+We use the induction principle of $n$-truncation several times to construct
 functions
 \begin{align*}
-\varphi & : \trunc n{\sm{x:A}\trunc n{P(x)}}\to\trunc n{\sm{x:A}P(x)}\\
-\psi & : \trunc n{\sm{x:A}P(x)}\to \trunc n{\sm{x:A} \trunc n{P(x)}}
+\varphi & : \Trunc n{\sm{x:A}\trunc n{P(x)}}\to\Trunc n{\sm{x:A}P(x)}\\
+\psi & : \Trunc n{\sm{x:A}P(x)}\to \Trunc n{\sm{x:A} \trunc n{P(x)}}
 \end{align*}
-and the homotopies $H:\varphi\circ\psi\htpy \idfunc$ and $K:\psi\circ\varphi\htpy
-\idfunc$. We define $\varphi$ by setting $\varphi(\tproj n{\pairr{x,\tproj nu}})\defeq\tproj n{\pairr{x,u}}$.
+and homotopies $H:\varphi\circ\psi\htpy \idfunc$ and $K:\psi\circ\varphi\htpy
+\idfunc$ exhibiting them as quasi-inverses.
+We define $\varphi$ by setting $\varphi(\tproj n{\pairr{x,\tproj nu}})\defeq\tproj n{\pairr{x,u}}$.
 We define $\psi$ by setting $\psi(\tproj n{\pairr{x,u}})\defeq\tproj n{\pairr{x,\tproj nu}}$.
 Then we define $H(\tproj n{\pairr{x,u}})\defeq \refl{\tproj n{\pairr{x,u}}}$ and
 $K(\tproj n{\pairr{x,\tproj nu}})\defeq \refl{\tproj n{\pairr{x,\tproj nu}}}$.
+\end{proof}
+
+\begin{cor}\label{thm:refl-over-ntype-base}
+  If $A$ is an $n$-type and $P:A\to\type$ is any type family, then
+  \[ \eqv{\sm{a:A} \trunc n{P(a)}}{\Trunc n{\sm{a:A}P(a)}} \]
+\end{cor}
+\begin{proof}
+  If $A$ is an $n$-type, then the left-hand type above is already an $n$-type, hence equivalent to its $n$-truncation; thus this follows from \autoref{thm:trunc-in-truncated-sigma}.
 \end{proof}
 
 We can characterize the path spaces of a truncation using the same method that we used in \autoref{sec:compute-coprod,sec:compute-nat} for
@@ -1318,21 +1329,6 @@ so applying $\tprojf{n}$ to both sides of $b$ gives the result.
 One might guess that this fact characterizes the $n$-connected maps, but in fact being $n$-connected is a bit stronger than this.
 For instance, the inclusion $\bfalse:\unit \to\bool$ induces an equivalence on $(-1)$-truncations, but is not surjective (i.e.\ $(-1)$-connected).
 In \autoref{sec:long-exact-sequence-homotopy-groups} we will see that the difference in general is an analogous extra bit of surjectivity.
-
-
-\begin{cor}\label{thm:refl-over-ntype-base}
-  If $A$ is an $n$-type and $P:A\to\type$ is any type family, then
-  \[ \eqv{\Trunc n{\sm{a:A}P(a)}}{\sm{a:A} \trunc n{P(a)}} \]
-\end{cor}
-\begin{proof}
-  Consider the canonical fiberwise transformation $\prd{a:A} (P(a) \to \trunc n{P(a)})$.
-  By \autoref{cor:totrunc-is-connected}, each map $P(a) \to \trunc n{P(a)}$ is $n$-connected, so by \autoref{prop:nconn_fiber_to_total} the induced map
-  \begin{equation*}
-    \Parens{\sm{a:A} P(a)} \to \sm{a:A} \trunc n{P(a)}
-  \end{equation*}
-  is $n$-connected, and thus induces an equivalence between $n$-truncations by \autoref{lem:connected-map-equiv-truncation}.
-  But since $A$ is an $n$-type, so is $\sm{a:A} \trunc n{P(a)}$.
-\end{proof}
 
 
 \section{Orthogonal factorization}

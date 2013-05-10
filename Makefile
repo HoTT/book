@@ -12,8 +12,11 @@ main.pdf: *.tex cover.png
 
 main.labels : main.aux front.aux preface.aux introduction.aux preliminaries.aux basics.aux logic.aux equivalences.aux induction.aux hits.aux hlevels.aux homotopy.aux categories.aux setmath.aux reals.aux formal.aux
 	cat $^ | grep ^.newlabel >$@
+
 exercise_solutions.pdf: exercise_solutions.tex main.labels
-	latexmk -pdf exercise_solutions.tex
+	if which latexmk;\
+	then latexmk -pdf $<;\
+	else pdflatex $<; fi
 
 once:; pdflatex main.tex && bibtex main
 

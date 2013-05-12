@@ -370,15 +370,15 @@ function on a product.
 
 In particular, we can derive the \define{projection} functions
 \symlabel{defn:proj}
-\begin{eqnarray*}
-  \fst & : & A \times B \to A \\
-  \snd & : & A \times B \to B
-\end{eqnarray*}
+\begin{align*}
+  \fst & :  A \times B \to A \\
+  \snd & :  A \times B \to B
+\end{align*}
 with the defining equations 
-\begin{eqnarray*}
-  \fst(\tup{a}{b}) & \defeq & a \\
-  \snd(\tup{a}{b}) & \defeq & b
-\end{eqnarray*}
+\begin{align*}
+  \fst(\tup{a}{b}) & \defeq  a \\
+  \snd(\tup{a}{b}) & \defeq  b
+\end{align*}
 %
 \symlabel{defn:recursor-times}%
 Rather than invoking this principle of function definition every time we want to define a function, an alternative approach is to invoke it once, in a universal case, and then simply apply the resulting function in all other cases.
@@ -415,7 +415,11 @@ by simply ignoring the argument of type $\unit$.
 To be able to define \emph{dependent} functions over the product type, we have
 to generalize the recursor. Given $C: A \times B \to \UU$, we may
 define a function $f : \prd{x : A \times B} C(x)$ by providing a
-function $g : \prd{x:A}\prd{y:B} C(\tup{x}{y})$ and the defining equation
+function
+\narrowequation{
+ g : \prd{x:A}\prd{y:B} C(\tup{x}{y})
+}
+with defining equation
 \[ f(\tup x y) \defeq g(x)(y). \] 
 For example, in this way we can prove that every element of $A\times B$ is a pair; this is called the principle of \define{surjective pairing}.
 Specifically, we can construct a function
@@ -500,7 +504,11 @@ by the defining equation
   \fst(\tup{a}{b}) & \defeq & a.
   % \snd(\tup{a}{b}) & \defeq & b
 \end{eqnarray*}
-However, since the type of the second component of a pair $(a,b):\sm{x:A} B(x)$ is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
+However, since the type of the second component of a pair
+\narrowequation{
+  (a,b):\sm{x:A} B(x)
+}
+is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
 \symlabel{defn:dependent-proj2}
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
 Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
@@ -510,7 +518,11 @@ We can then derive a function
 \[ f : \prd{p : \sm{x:A}B(x)} C(p) \]
 with  defining equation
 \[ f(\tup{a}{b}) \defeq g(a)(b).\]
-Applying this with $C(p)\defeq B(\fst(p))$, we can define $\snd : \prd{p:\sm{x : A}B(x)}B(\fst(p))$ with the obvious equation
+Applying this with $C(p)\defeq B(\fst(p))$, we can define
+\narrowequation{
+\snd : \prd{p:\sm{x : A}B(x)}B(\fst(p))
+}
+with the obvious equation
 \[ \snd(\tup{a}{b})  \defeq  b. \]
 To convince ourselves that this is correct, we note that $B (\fst(\tup{a}{b})) \jdeq B(a)$, using the defining equation for $\fst$, and
 indeed $b : B(a)$.
@@ -523,11 +535,12 @@ with the defining equation
 \[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
 and the corresponding induction operator:
 \symlabel{defn:induction-sm}
-\begin{align*}
-  \ind{\sm{x:A}B(x)} : & \dprd{C:(\sm{x:A} B(x)) \to \UU}
+\begin{multline*}
+  \ind{\sm{x:A}B(x)} : \narrowbreak
+    \dprd{C:(\sm{x:A} B(x)) \to \UU}
     \Big(\tprd{a:A}{b:B(x)} C(\tup{a}{b})\Big)
     \to \dprd{p : \sm{x:A}B(x)} C(p)
-\end{align*}
+\end{multline*}
 with the defining equation 
 \[ \ind{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b). \]
 As before, the recursor is the special case of induction
@@ -547,7 +560,7 @@ To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, 
 \lamu{x:A} \fst(g(x)) & : &  A \to  B \\
 \lamu{x:A} \snd(g(x)) & : &  \tprd{x:A} R(a,\fst(g(x))).
 \end{eqnarray*}
-Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the codomain of \ac:
+Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the co\-do\-main of \ac:
 \[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
 \Big(\lamu{f:A\to B} \tprd{x:A} R(x,f(x))\Big)\big(\lamu{x:A} \fst(g(x))\big). \]
 Thus, we have
@@ -612,11 +625,12 @@ This yields $f$ with the defining equations:
 \end{eqnarray*}
 We package this scheme into the induction principle for coproducts:
 \symlabel{defn:induction-plus}
-\begin{align*}
-  \ind{A+B} :  \dprd{C: (A + B) \to \UU}
-  \Big(\tprd{a:A} C(\inl(a))\Big) \to \Big(\tprd{b:B} C(\inr(b))\Big)
-  \to \tprd{x:A+B}C(x) 
-\end{align*}
+\begin{multline*}
+  \ind{A+B} :
+  \dprd{C: (A + B) \to \UU}
+  \Big(\tprd{a:A} C(\inl(a))\Big) \to \narrowbreak
+  \Big(\tprd{b:B} C(\inr(b))\Big) \to \tprd{x:A+B}C(x) 
+\end{multline*}
 As before, the recursor arises in the case that the family $C$ is
 constant. 
 
@@ -663,7 +677,7 @@ with the defining equations
   \rec{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1
 \end{eqnarray*}
 
-Given a family $C : \bool \to \UU$, to derive a dependent function 
+Given $C : \bool \to \UU$, to derive a dependent function 
 $f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which case we can give the defining equations
 \begin{eqnarray*}
   f(\bfalse) & \defeq & c_0 \\
@@ -815,10 +829,11 @@ To derive
 it is sufficient to supply
 \[ \ass_0 :  \prd{j,k:\nat} \id{0 + (j + k)}{(0+ j) + k} \]
 and
-\begin{equation*}
-  \ass_s  : \prd{i:\nat} \left(\prd{j,k:\nat} \id{i + (j + k)}{(i + j) + k}\right) 
+\begin{multline*}
+  \ass_s  : \prd{i:\nat} \left(\prd{j,k:\nat} \id{i + (j + k)}{(i + j) + k}\right)
+   \narrowbreak
    \to \prd{j,k:\nat} \id{\suc(i) + (j + k)}{(\suc(i) + j) + k}.
-\end{equation*}
+\end{multline*}
 To derive $\ass_0$, recall that $0+n \jdeq n$, and hence  $0 + (j + k) \jdeq j+k \jdeq (0+ j) + k$.
 Hence we can just set
 \[ ass_0(j,k) \defeq \refl{j+k} \]
@@ -1148,10 +1163,12 @@ In \autoref{cha:basics} we will see that this is very important to the homotopy 
 
 If we package up path induction into a single function, it takes the form:
 \symlabel{defn:induction-ML-id}
-\begin{align*}
+\begin{multline*}
   \indid{A} :  \dprd{C : \prd{x,y:A}{p:\id[A]{x}{y}} \UU} 
-  \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to  \dprd{x,y:A}{p:\id[A]{x}{y}}   C(x,y,p)
-\end{align*}
+  \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to 
+  \narrowbreak
+  \dprd{x,y:A}{p:\id[A]{x}{y}}   C(x,y,p)
+\end{multline*}
 with the equality
 \[ \indid{A}(C,c,x,x,\refl{x}) \defeq c(x) \]
 The function $ \indid{A}$ is traditionally called $J$.  We leave it as an easy exercise to show that indiscernability of identicals follows from path induction.  
@@ -1262,11 +1279,16 @@ Now given $x:A$ and $p:\id[A]{a}{x}$, we can derive the conclusion of based path
 Notice that we also obtain the correct definitional equality.
 
 Another proof is to observe that any use of based path induction is an instance of $\indid{A}$  and to define
-\begin{multline}
+\begin{multline*}
 \indid{A}(a,C,c,x,p) \defeq \\
-\indidb{A}\big( \lamu{x,y:A}{p:\id[A]{x}{y}} \tprd{C : \prd{z:A}{p : \id[A]{x}{z}} \UU} C(x,\refl{x}) \to C(y,p),
-\lamu{C:\prd{z:A}{p : \id[A]{x}{z}} \UU}\lamu{x:C(x,\refl{x})} x, a, x, p, C, c\big) 
-\end{multline}
+\indidb{A}
+  \begin{aligned}[t]
+    \big(
+    &\big(\lamu{x,y:A}{p:\id[A]{x}{y}} \tprd{C : \prd{z:A}{p : \id[A]{x}{z}} \UU} C(x,\refl{x}) \to C(y,p)\big),\\
+    &(\lamu{C:\prd{z:A}{p:\id[A]{x}{z}} \UU}\lamu{x:C(x,\refl{x})} x),
+     a, x, p, C, c\big) 
+   \end{aligned}
+\end{multline*}
 
 
 Note that the construction given above uses universes. That is, if we want to
@@ -1309,7 +1331,7 @@ theory~\cite{martinlof71itt,Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,mart
 by the foundational work of Brouwer~\cite{beeson}, Heyting~\cite{heyting1966intuitionism}, Scott~\cite{scott70}, de 
 Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1966,Tait-1968}, and Lawvere~\cite{lawvere:adjinfound}.  Three 
 principal variants of Martin-L\"{o}f's type theory underlie the NuPRL~\cite{constable+86nuprl-book}, \Coq~\cite{Coq}, and 
-\Agda~\cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number 
+\Agda \cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number 
 of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that 
 have not yet been studied in the homotopical setting.
 
@@ -1323,7 +1345,7 @@ both \Coq~\cite{Coq} and \Agda~\cite{norell2007towards} are intensional.  Among 
 that differ in the structure of identity proofs.  The most liberal interpretation, on which we rely here, admits a \emph{proof-relevant} 
 interpretation of equality, whereas more restricted variants impose restrictions such as \emph{uniqueness of identity proofs 
 (UIP)}~\cite{StreicherK}, stating that any two proofs of equality are judgmentally equal, and \emph{Axiom K}~\cite{StreicherK}, stating that 
-the only proof of equality is reflexivity (up to judgmental equality).  These additional requirements may be selectively imposed in the Coq 
+the only proof of equality is reflexivity (up to judgmental equality).  These additional requirements may be selectively imposed in the \Coq 
 and \Agda\ systems.
 
 %(In the terminology of \autoref{cha:hlevels} such a type theory is about $0$-truncated types.)

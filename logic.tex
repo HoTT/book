@@ -63,9 +63,24 @@ Most of the type forming operations we have considered so far also preserve sets
 \begin{eg}\label{thm:isset-forall}
   If $A$ is \emph{any} type and $B:A\to \type$ is such that each $B(x)$ is a set, then the type $\prd{x:A} B(x)$ is a set.
   For suppose $f,g:\prd{x:A} B(x)$ and $p,q:f=g$.
-  By function extensionality, we have $p = {\funext (x \mapsto \happly(p,x))}$ and likewise $q = {\funext (x \mapsto \happly(q,x))}$.
-  But for any $x:A$, we have $\happly(p,x):f(x)=g(x)$ and also $\happly(q,x):f(x)=g(x)$, so since $B(x)$ is a set we have $\happly(p,x) = \happly(q,x)$.
-  Now using function extensionality again, the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are $p$ and $q$.
+  By function extensionality, we have
+  %
+  \begin{equation*}
+    p = {\funext (x \mapsto \happly(p,x))}
+    \quad\text{and}\quad
+    q = {\funext (x \mapsto \happly(q,x))}.
+  \end{equation*}
+  %
+  But for any $x:A$, we have
+  %
+  \begin{equation*}
+   \happly(p,x):f(x)=g(x)
+   \qquad\text{and}\qquad
+   \happly(q,x):f(x)=g(x), 
+  \end{equation*}
+  %
+  so since $B(x)$ is a set we have $\happly(p,x) = \happly(q,x)$.
+  Now using function extensionality again, the dependent functions $(x \mapsto \happly(p,x))$ and $(x \mapsto \happly(q,x))$ are equal, and hence (applying $\apfunc{\funext}$) so are~$p$ and~$q$.
 \end{eg}
 
 For more examples, see \autoref{ex:isset-coprod,ex:isset-sigma}.  For a more systematic investigation of the subsystem (category) of all sets in homotopy type theory, see~\autoref{cha:set-math}.
@@ -161,9 +176,13 @@ On the other hand, we can now also show that corresponding statements looking li
   \[\happly(\apd f p,u) : \transfib{A\mapsto (\neg\neg A \to A)}{p}{f(\bool)}(u) = f(\bool)(u).\]
 
   Now by~\eqref{eq:transport-arrow}, transporting $f(\bool):\neg\neg\bool\to\bool$ along $p$ in the type family ${A\mapsto (\neg\neg A \to A)}$ is equal to the function which transports its argument along $\opp p$ in the type family $A\mapsto \neg\neg A$, applies $f(\bool)$, then transports the result along $p$ in the type family $A\mapsto A$:
-  \[ \transfib{A\mapsto (\neg\neg A \to A)}{p}{f(\bool)}(u) =
-  \transfib{A\mapsto A}{p}{f(\bool) (\transfib{A\mapsto \neg\neg A}{\opp{p}}{u})}
-  \]
+  \begin{narrowmultline*}
+    \transfib{A\mapsto (\neg\neg A \to A)}{p}{f(\bool)}(u) =
+    \narrowbreak
+    \transfib{A\mapsto A}{p}{f(\bool) (\transfib{A\mapsto \neg\neg
+        A}{\opp{p}}{u})}
+  \end{narrowmultline*}
+  %
   However, any two points $u,v:\neg\neg\bool$ are equal by function extensionality, since for any $x:\neg\bool$ we have $u(x):\emptyt$ and thus we can derive any conclusion, in particular $u(x)=v(x)$.
   Thus, we have $\transfib{A\mapsto \neg\neg A}{\opp{p}}{u} = u$, and so from $\happly(\apd f p,u)$ we obtain an equality
   \[ \transfib{A\mapsto A}{p}{f(\bool)(u)} = f(\bool)(u).\]
@@ -307,19 +326,17 @@ Similarly, the \define{law of double negation} is
 \end{equation}
 The two are also easily seen to be equivalent to each other---see \autoref{ex:lem-ldn}---so from now on we will generally speak only of \LEM{}.
 
-This formulation of \LEM{} avoids the paradoxes of \autoref{thm:not-dneg,thm:not-lem}, since \bool is not a mere proposition.
+This formulation of \LEM{} avoids the ``paradoxes'' of \autoref{thm:not-dneg,thm:not-lem}, since \bool is not a mere proposition.
 In order to distinguish it from the more general propositions-as-types formulation, we rename the latter:
 \symlabel{lem-infty}
 \begin{align*}
   \LEM\infty\;\defeq\;&
   \prd{A:\UU} (A + \neg A)
-  % \mathsf{DN}_\infty\;\defeq\;&
-  % \prd{A:\UU}(\neg\neg A \to A).
 \end{align*}
-For emphasis, the proper version~\eqref{eq:lem} % and~\eqref{eq:ldn}
-may be denoted $\LEM{-1}$; % and $\mathsf{DN}_{-1}$;
+For emphasis, the proper version~\eqref{eq:lem}
+may be denoted $\LEM{-1}$;
 see also \autoref{ex:lemnm}.
-Although $\LEM{}$ % and $\mathsf{DN}$
+Although $\LEM{}$
 is not a consequence of the basic type theory described in \autoref{cha:typetheory}, it may be consistently assumed as an axiom (unlike its $\infty$-counterpart).
 For instance, we will assume it in \autoref{sec:wellorderings}.
 
@@ -353,11 +370,11 @@ It is also worth mentioning that even in constructive mathematics, the law of ex
 The name traditionally given to such propositions is \emph{decidable}.
 
 \begin{defn}\label{defn:decidable-equality}
-  Let $A$ be a type.
+  \mbox{}
   \begin{enumerate}
-  \item $A$ is called \define{decidable} if $A+\neg A$.
-  \item Similarly, a type family $B:A\to \type$ is \define{decidable} if $\prd{a:A} (B(a)+\neg B(a))$.
-  \item In particular, $A$ has \define{decidable equality} if $\prd{a,b:A} ((a=b) + \neg(a=b))$.
+  \item A type $A$ is called \define{decidable} if $A+\neg A$.
+  \item Similarly, a type family $B:A\to \type$ is \define{decidable} if \narrowequation{\prd{a:A} (B(a)+\neg B(a)).}
+  \item In particular, $A$ has \define{decidable equality} if \narrowequation{\prd{a,b:A} ((a=b) + \neg(a=b)).}
   \end{enumerate}
 \end{defn}
 
@@ -377,7 +394,7 @@ In set theory, whenever we have a predicate on $P$ on a set $A$, we may form the
 In type theory, the obvious analogue is the $\Sigma$-type $\sm{x:A} P(x)$.
 An inhabitant of $\sm{x:A} P(x)$ is, of course, a pair $(x,p)$ where $x:A$ and $p$ is a proof of $P(x)$.
 However, for general $P$, an element $a:A$ might give rise to more than one distinct element of $\sm{x:A} P(x)$, if the proposition $P(a)$ has more than one distinct proof.
-This is counter to the usual intuition of a \emph{subset}.
+This is counter to the usual intuition of a subset.
 But if $P$ is a \emph{mere} proposition, then this cannot happen.
 
 \begin{lem}\label{thm:path-subset}
@@ -397,14 +414,19 @@ It follows that if two equivalences have equal underlying functions, then they a
 
 \label{defn:setof}%
 Henceforth, if $P:A\to \type$ is a family of mere propositions, we may write
-\[\setof{x:A | P(x)}\]
+%
+\begin{equation}
+  \label{eq:subset}
+  \setof{x:A | P(x)}
+\end{equation}
+%
 as an alternative notation for $\sm{x:A} P(x)$.
-If $A$ is a set, we call $\setof{x:A | P(x)}$ a \define{subset} of $A$; for general $A$ we might call it a \define{subtype}.
+If $A$ is a set, we call \eqref{eq:subset} a \define{subset} of $A$; for general $A$ we might call it a \define{subtype}.
 
 As another example, we may define the ``subuniverses'' of sets and of mere propositions in a universe \UU:
 \symlabel{setU}\symlabel{propU}
 \begin{align*}
-  \setU &\defeq \setof{A:\UU | \isset(A) }\\
+  \setU &\defeq \setof{A:\UU | \isset(A) },\\
   \propU &\defeq \setof{A:\UU | \isprop(A) }.
 \end{align*}
 An element of $\setU$ is a type $A:\UU$ together with evidence $s:\isset(A)$, and similarly for $\propU$.
@@ -415,7 +437,7 @@ We may also drop the subscript \UU if there is no need to specify the universe i
 Recall that for any two universes $\UU_i$ and $\UU_{i+1}$, if $A:\UU_i$ then also $A:\UU_{i+1}$.
 Thus, for any $(A,s):\set_{\UU_i}$ we also have $(A,s):\set_{\UU_{i+1}}$, and similarly for $\prop_{\UU_i}$, giving natural maps
 \begin{align}
-  \set_{\UU_i} &\to \set_{\UU_{i+1}}\label{eq:set-up}\\
+  \set_{\UU_i} &\to \set_{\UU_{i+1}}\label{eq:set-up},\\
   \prop_{\UU_i} &\to \prop_{\UU_{i+1}}.\label{eq:prop-up}
 \end{align}
 The map~\eqref{eq:set-up} cannot be an equivalence, since then we could reproduce the paradoxes of Cantorian set theory.
@@ -482,7 +504,7 @@ This is a purely constructive interpretation of ``there exists an $x:A$ such tha
 \section{Propositional truncation}
 \label{subsec:prop-trunc}
 
-The \emph{propositional truncation}, also called the \emph{$(-1)$-truncation}, \emph{bracket type}, or \emph{squash type}, is an additional type former which ``truncates'' or ``squashes'' a type down to a mere proposition, forgetting all information contained in inhabitants of that type other than their existence.
+The \emph{propositional truncation}, also called the \emph{$(-1)$-truncation}, \emph{bracket type}, or \emph{squash type}, is an additional type former which ``squashes'' or ``truncates'' a type down to a mere proposition, forgetting all information contained in inhabitants of that type other than their existence.
 
 More precisely, for any type $A$, there is a type $\brck{A}$.
 It has two constructors:
@@ -523,6 +545,7 @@ traditional logical notations to refer only to ``propositionally truncated logic
 
 \begin{defn} \label{defn:logical-notation}
   We define \define{traditional logical notation} using truncation as follows, where $P$ and $Q$ denote mere propositions (or families thereof):
+  {\allowdisplaybreaks
   \begin{align*}
     \top            &\ \defeq \ \unit \\
     \bot            &\ \defeq \ \emptyt \\
@@ -533,7 +556,7 @@ traditional logical notations to refer only to ``propositionally truncated logic
     P \lor Q        &\ \defeq \ \brck{P + Q} \\
     \fall{x : A} P(x) &\ \defeq \ \prd{x : A} P(x) \\
     \exis{x : A} P(x) &\ \defeq \ \Brck{\sm{x : A} P(x)}
-  \end{align*}
+  \end{align*}}
 \end{defn}
 
 The notations $\land$ and $\lor$ are also used in homotopy theory for the smash product and the wedge of pointed spaces, which we will introduce in \autoref{cha:hits}.
@@ -544,7 +567,15 @@ This technically creates a potential for conflict, but no confusion will general
 \label{sec:axiom-choice}
 
 We can now properly formulate the axiom of choice in homotopy type theory.
-Assume a type $X$ and type families $A:X\to\type$ and $P:\prd{x:X} A(x)\to\type$, and moreover that
+Assume a type $X$ and type families
+%
+\begin{equation*}
+  A:X\to\type
+  \qquad\text{and}\qquad 
+  P:\prd{x:X} A(x)\to\type,
+\end{equation*}
+%
+and moreover that
 \begin{itemize}
 \item $X$ is a set,
 \item $A(x)$ is a set for all $x:X$, and
@@ -557,12 +588,12 @@ The \define{axiom of choice} $\choice{}$ asserts that under these assumptions,
   \Brck{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
 \end{equation}
 Of course, this is a direct translation of~\eqref{eq:english-ac} where we read ``there exists $x:A$ such that $B(x)$'' as $\brck{\sm{x:A}B(x)}$, so we could have written the statement in the familiar logical notation as
-\begin{equation*}
+\begin{narrowmultline*}
   \textstyle
   \Big(\fall{x:X}\exis{a:A(x)} P(x,a)\Big)
-  \Rightarrow
+  \Rightarrow \narrowbreak
   \Big(\exis{g : \prd{x:X} A(x)} \fall{x : X} P(x,g(x))\Big).
-\end{equation*}
+\end{narrowmultline*}
 %
 In particular, note that the propositional truncation appears twice.
 The truncation in the domain means we assume that for every $x$ there exists some $a:A(x)$ such that $P(x,a)$, but that these values are not chosen or specified in any known way.
@@ -584,7 +615,7 @@ This corresponds to a well-known equivalent form of the classical axiom of choic
 \begin{proof}
   By \autoref{thm:ttac}, the codomain of~\eqref{eq:ac} is equivalent to
   \[\Brck{\prd{x:X} \sm{a:A(x)} P(x,a)}.\]
-  Thus,~\eqref{eq:ac} is equivalent to the instance of~\eqref{eq:epis-split} where $Y(x) \defeq \sm{a:A(x)} P(x,a)$.
+  Thus,~\eqref{eq:ac} is equivalent to the instance of~\eqref{eq:epis-split} where \narrowequation{Y(x) \defeq \sm{a:A(x)} P(x,a).}
   Conversely,~\eqref{eq:epis-split} is equivalent to the instance of~\eqref{eq:ac} where $A(x)\defeq Y(x)$ and $P(x,a)\defeq\unit$.
   Thus, the two are logically equivalent.
   Since both are mere propositions, by \autoref{lem:equiv-iff-hprop} they are equivalent types.

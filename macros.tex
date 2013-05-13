@@ -33,10 +33,11 @@
 %     \prod_{(x:A)} \prod_{y:B}
 % in text-math mode.
 \def\prd#1{\@ifnextchar\bgroup{\prd@parens{#1}}{\@ifnextchar\sm{\prd@parens{#1}\@eatsm}{\prd@noparens{#1}}}}
+\def\prd@forceparens#1{\@ifnextchar\bgroup{\prd@parens{#1}}{\@ifnextchar\sm{\prd@parens{#1}\@eatsm}{\prd@parens{#1}}}}
 \def\prd@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}\prd@parens}%
   {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}}}
-\def\@eatsm\sm{\sm@parens}
+\def\@eatsm\sm{\sm@forceparens}
 \def\prd@noparens#1{\mathchoice{\@dprd@noparens{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}}
 % Helper macros for three styles
 \def\lprd#1{\@ifnextchar\bgroup{\@lprd{#1}\lprd}{\@@lprd{#1}}}
@@ -76,10 +77,11 @@
 \def\smsym{\textstyle\sum}
 % Use in the same way as \prd
 \def\sm#1{\@ifnextchar\bgroup{\sm@parens{#1}}{\@ifnextchar\prd{\sm@parens{#1}\@eatprd}{\sm@noparens{#1}}}}
+\def\sm@forceparens#1{\@ifnextchar\bgroup{\sm@parens{#1}}{\@ifnextchar\prd{\sm@parens{#1}\@eatprd}{\sm@parens{#1}}}}
 \def\sm@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}\sm@parens}%
   {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}}}
-\def\@eatprd\prd{\prd@parens}
+\def\@eatprd\prd{\prd@forceparens}
 \def\sm@noparens#1{\mathchoice{\@dsm@noparens{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}}
 \def\lsm#1{\@ifnextchar\bgroup{\@lsm{#1}\lsm}{\@@lsm{#1}}}
 \def\@lsm#1{\mathchoice{{\textstyle\sum}}{\sum}{\sum}{\sum}({\textstyle #1})\;}

@@ -1139,7 +1139,7 @@ The induction principle for the identity type is called \define{path induction} 
 \begin{description}
 \item[Path induction:] 
   Given a family 
-  \[ C : \prd{x,y:A}{p:\id[A]{x}{y}} \UU \]
+  \[ C : \prd{x,y:A} (\id[A]{x}{y}) \to \UU \]
   and a function
   \[ c :  \prd{x:A} C(x,x,\refl{x}),\]
   there is a function
@@ -1165,7 +1165,7 @@ In \autoref{cha:basics} we will see that this is very important to the homotopy 
 If we package up path induction into a single function, it takes the form:
 \symlabel{defn:induction-ML-id}
 \begin{narrowmultline*}
-  \indid{A} :  \dprd{C : \prd{x,y:A}{p:\id[A]{x}{y}} \UU} 
+  \indid{A} :  \dprd{C : \prd{x,y:A} (\id[A]{x}{y}) \to \UU}
   \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to 
   \narrowbreak
   \dprd{x,y:A}{p:\id[A]{x}{y}}   C(x,y,p)
@@ -1184,7 +1184,7 @@ In some proofs, however, it is simpler to make use of an equation $p : \id{a}{b}
 \begin{description}
 \item[Based path induction:] 
   Fix an element $a:A$, and suppose given a family
-  \[ C : \prd{x:A}{p : \id[A]{a}{x}} \UU \]
+  \[ C : \prd{x:A} (\id[A]{a}{x}) \to \UU \]
   and an element
   \[ c : C(a,\refl{a}). \]
   Then we obtain a function
@@ -1199,7 +1199,7 @@ just the case where $x$ is $a$ and $p$ is $\refl{a} : \id{a}{a}$.
 Packaged as a function, based path induction becomes:
 \symlabel{defn:induction-PM-id}
 \begin{align*}
-  \indidb{A} :  \dprd{a:A}{C : \prd{x:A}{p : \id[A]{a}{x}} \UU}
+  \indidb{A} :  \dprd{a:A}{C : \prd{x:A} (\id[A]{a}{x}) \to \UU}
   C(a,\refl{a}) \to \dprd{x:A}{p : \id[A]{a}{x}} C(x,p) 
 \end{align*}
 with the equality
@@ -1233,12 +1233,12 @@ The two induction principles for the identity type introduced above are equivale
 It is easy to see that path induction follows from based path induction principle.
 Indeed, let us assume the premises of path induction:
 \begin{eqnarray*}
-C & : & \prd{x,y:A}{p:\id[A]{x}{y}} \UU  \\
+C & : & \prd{x,y:A}(\id[A]{x}{y}) \to \UU  \\
 c & :  & \prd{x:A} C(x,x,\refl{x}).
 \end{eqnarray*}
 Now, given an element $x:A$, we can instantiate both of the above, obtaining
 \begin{eqnarray*}
-C' & : & \prd{y:A}{p:\id[A]{x}{y}} \UU  \\
+C' & : & \prd{y:A} (\id[A]{x}{y}) \to \UU  \\
 C' & \defeq & C(x) \\
 c' & : & C'(x,\refl{x}) \\
 c' & \defeq & c(x).
@@ -1263,7 +1263,7 @@ based path induction. What we can do instead is to construct one instance of pat
 all possible instantiations of based path induction at once.
 Define
 \begin{eqnarray*}
-D & : & \prd{x,y:A}{p:\id[A]{x}{y}} \UU \\
+D & : & \prd{x,y:A} (\id[A]{x}{y}) \to \UU \\
 D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : \id[A]{x}{z}} \UU} C(x,\refl{x}) \to C(y,p).
 \end{eqnarray*}
 Then we can construct the function
@@ -1285,18 +1285,18 @@ Another proof is to observe that any use of based path induction is an instance 
 \indid{A}
   \begin{aligned}[t]
     \big(
-    &\big(\lamu{x,y:A}{p:\id[A]{x}{y}} \tprd{C : \prd{z:A}{p : \id[A]{x}{z}} \UU} C(x,\refl{x}) \to C(y,p)\big),\\
-    &(\lamu{C:\prd{z:A}{p:\id[A]{x}{z}} \UU}\lamu{x:C(x,\refl{x})} x),
+    &\big(\lamu{x,y:A}{p:\id[A]{x}{y}} \tprd{C : \prd{z:A} (\id[A]{x}{z}) \to \UU} C(x,\refl{x}) \to C(y,p)\big),\\
+    &(\lamu{x:A}{C:\prd{z:A} (\id[A]{x}{z}) \to \UU}{d:C(x,\refl{x})} d),
      a, x, p, C, c\big) 
    \end{aligned}
 \end{narrowmultline*}
 
 
 Note that the construction given above uses universes. That is, if we want to
-model $\indidb{A}$ with $C : \prd{x:A}{p : \id[A]{a}{x}} \UU_i$, we need
+model $\indidb{A}$ with $C : \prd{x:A} (\id[A]{a}{x}) \to \UU_i$, we need
 to use $\indid{A}$ with 
 %
-\[ D:\prd{x,y:A}{p:\id[A]{x}{y}} \UU_{i+1} \]
+\[ D:\prd{x,y:A} (\id[A]{x}{y}) \to \UU_{i+1} \]
 %
 since $D$ quantifies over all $C$ of the given type. While this is
 compatible with our definition of universes, it is also possible to

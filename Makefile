@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: default all clean
 
 # Default top-level LaTeX to generate
 DEFAULTTOPTEX = hott-online.tex

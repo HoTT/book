@@ -48,7 +48,7 @@ default: $(DEFAULTPDF)
 all: $(TOPPDFFILES) exercise_solutions.pdf
 
 # Main targets
-$(TOPPDFFILES) : %.pdf : %.tex cover.png $(TEXFILES)
+$(TOPPDFFILES) : %.pdf : %.tex cover.png $(TEXFILES) references.bib
 	if which latexmk > /dev/null ;\
 	then latexmk -pdf $< ;\
 	else pdflatex $< && \

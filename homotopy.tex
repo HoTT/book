@@ -1743,13 +1743,19 @@ where $r:\merid(x_0) \ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}$, and $r'':
   \end{equation}
   By definition, the right-hand side of this equality is
   \begin{multline*}
-    \Transfib{\hat{\code}}{\pairpath(\merid(x_1) \ct \opp{\merid(x_0)}, \blank)}{\tproj{2n}{(x_0,\blank)}}\\
-    = \Transfib{\hat{\code}}{\pairpath(\opp{\merid(x_0)}, \blank)}
-    {\Transfib{\hat{\code}}{\pairpath(\merid(x_1), \blank)}{\tproj{2n}{(x_0,\blank)}}}\\
+    \Transfib{\hat{\code}}{\pairpath(\merid(x_1) \ct \opp{\merid(x_0)}, \blank)}{\tproj{2n}{(x_0,\blank)}} = \\
+    \transfibf{\hat{\code}}
+    \begin{aligned}[t]
+      \Big(
+      &{\pairpath(\opp{\merid(x_0)}, \blank)},\\
+      &{\Transfib{\hat{\code}}{\pairpath(\merid(x_1), \blank)}{\tproj{2n}{(x_0,\blank)}}}
+      \Big)
+    \end{aligned}
+    \\
     = \Transfib{\hat{\code}}{\pairpath(\opp{\merid(x_0)}, \blank)}{\tproj{2n}{(x_1,\blank)}}
     = \tproj{2n}{(x_1,\blank)}
   \end{multline*}
-  where the blanks $\blank$ denote coherence paths.
+  where the blanks $\blank$ ought to be filled in with suitable coherence paths.
   Here the first step is functoriality of transport, the second invokes~\eqref{eq:freudcompute2}, and the third invokes~\eqref{eq:freudcompute1} (with transport moved to the other side).
   Thus we have the same first component as the left-hand side of~\eqref{eq:freudgoal}.
   We leave it to the reader to verify that the coherence paths all cancel, giving reflexivity in the second component.
@@ -1797,10 +1803,13 @@ equivalences act appropriately on the base points of these spaces:
 \pi_{k+1}(\Sn^{n+1}) &\jdeq \trunc{0}{\Omega^{k+1}(\Sn^{n+1})} \\
                      &\jdeq \trunc{0}{\Omega^k(\Omega(\Sn^{n+1}))} \\
                      &\jdeq \trunc{0}{\Omega^k(\Omega(\susp(\Sn^{n})))} \\
-                     &= \Omega^k(\trunc{k}{(\Omega(\susp(\Sn^{n})))}) &&\text{(by \autoref{thm:path-truncation})}\\
-                     &= \Omega^k(\trunc{k}{\Sn^{n}}) &&\text{(by \eqref{eq:freudenthal-for-spheres})}\\
-                     &= \trunc{0}{\Omega^k(\Sn^{n})} &&\text{(by \autoref{thm:path-truncation})}\\
-                     &\jdeq \pi_k{\Sn^{n}}.  &&\qedhere
+                     &= \Omega^k(\trunc{k}{(\Omega(\susp(\Sn^{n})))})
+                     \tag{by \autoref{thm:path-truncation}}\\
+                     &= \Omega^k(\trunc{k}{\Sn^{n}})
+                     \tag{by \eqref{eq:freudenthal-for-spheres}}\\
+                     &= \trunc{0}{\Omega^k(\Sn^{n})}
+                     \tag{by \autoref{thm:path-truncation}}\\
+                     &\jdeq \pi_k(\Sn^{n}). \qedhere
 \end{align*}
 %
 \end{proof}
@@ -1838,14 +1847,14 @@ In \autoref{sec:pi1-s1-intro} (as well as in \autoref{sec:compute-coprod,sec:com
 In the van Kampen theorem, our goal is only to characterize the fundamental group $\pi_1(W)$, and we do not have any explicit description of the loop spaces or the path spaces to use.
 
 It turns out that we can use the same technique directly for a truncated version of the path fibration, thereby characterizing not only the fundamental \emph{group} $\pi_1(W)$, but also the whole fundamental \emph{groupoid}.
-Specifically, for a type $X$, write $\Pi_1 X: X\to X\to \type$ for the $0$-truncation of its identity type, i.e.\ $\Pi_1 X(x,y) \defeq \trunc0{x=y}$.
+Spe\-cif\-ical\-ly, for a type $X$, write $\Pi_1 X: X\to X\to \type$ for the $0$-truncation of its identity type, i.e.\ $\Pi_1 X(x,y) \defeq \trunc0{x=y}$.
 Note that we have induced groupoid operations
-\begin{gather*}
-  (-\ct-) : \Pi_1X(x,y) \to \Pi_1X(y,z) \to \Pi_1X(x,z)\\
-  \opp{(-)} : \Pi_1X(x,y) \to \Pi_1X(y,x)\\
-  \refl{x} : \Pi_1X(x,x)\\
-  \apfunc{f} : \Pi_1X(x,y) \to \Pi_1Y(fx,fy)
-\end{gather*}
+\begin{align*}
+  (\blank\ct\blank) &\;:\; \Pi_1X(x,y) \to \Pi_1X(y,z) \to \Pi_1X(x,z)\\
+  \opp{(\blank)} &\;:\; \Pi_1X(x,y) \to \Pi_1X(y,x)\\
+  \refl{x} &\;:\; \Pi_1X(x,x)\\
+  \apfunc{f} &\;:\; \Pi_1X(x,y) \to \Pi_1Y(fx,fy)
+\end{align*}
 for which we use the same notation as the corresponding operations on paths.
 
 \subsection{Naive van Kampen}
@@ -1921,21 +1930,21 @@ Define $\code:P\to P\to \type$ by double induction on $P$ as follows.
       \code(ifa,jga')\ar[d]\\
       \code(jga,ifa')\ar[r] &
       \code(jga,jga')
-      }}.
+      }}
   \end{equation}
   This amounts to saying that if we add something to the beginning and then something to the end of a sequence, we might as well have done it in the other order.
 \end{itemize}
 
 \begin{rmk}\label{rmk:naive}
   One might expect to see in the definition of \code some additional generating equations for the set-quotient, such as
-  \begin{alignat*}{2}
+  \begin{align*}
     (\dots, p_{k-1} \ct fw, x_{k}', q_{k}, \dots) &=
     (\dots, p_{k-1}, x_{k}, gw \ct q_{k}, \dots)
-    & \qquad\text{for } w:\Pi_1A(x_{k},x_{k}')\\
+    \tag{for $w:\Pi_1A(x_{k},x_{k}')$}\\
     (\dots, q_k \ct gw, y_k', p_k, \dots) &=
-    (\dots, q_k, y_k, fw \ct p_k, \dots)
-    & \qquad\text{for } w:\Pi_1A(y_k, y_k').
-  \end{alignat*}
+    (\dots, q_k, y_k, fw \ct p_k, \dots).
+    \tag{for $w:\Pi_1A(y_k, y_k')$}
+  \end{align*}
   However, these are not necessary!
   In fact, they follow automatically by path-induction on $w$.
   This is the main difference between the ``naive'' van Kampen theorem and the more refined one we will consider in the next subsection.
@@ -2012,8 +2021,11 @@ Finally, consider the composite
 \[  \code(u,v) \xrightarrow{\decode} \Pi_1P(u,v) \xrightarrow{\encode} \code(u,v). \]
 We proceed by induction on $u,v:P$.
 When $u\jdeq ib$ and $v\jdeq ib'$, this composite is
-\[\begin{aligned}
+%
+\begin{narrowmultline*}
 (b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b')
+\narrowbreak
+\begin{aligned}[t]
   &\mapsto \Big(ip_0\ct hx_1 \ct jq_1 \ct \opp{hy_1} \ct ip_1 \ct \cdots \ct \opp{hy_n}\ct ip_n\Big)_*(rib)\\
   &= (ip_n)_* \cdots(jq_1)_* (hx_1)_*(ip_0)_*(b,\refl{b},b)\\
   &= (ip_n)_* \cdots(jq_1)_* (hx_1)_*(b,p_0,ifx_1)\\
@@ -2021,7 +2033,9 @@ When $u\jdeq ib$ and $v\jdeq ib'$, this composite is
   &= (ip_n)_* \cdots (b,p_0,x_1,q_1,jgy_1)\\
   &= \quad\vdots\\
   &= (b, p_0, x_1, q_1, y_1, p_1, \dots, y_n, p_n, b').
-\end{aligned}\]
+\end{aligned}  
+\end{narrowmultline*}
+%
 i.e., the identity function.
 The other three point cases are analogous, and the path cases are trivial since all the types are sets.
 \end{proof}
@@ -2074,7 +2088,7 @@ For this reason, in the next subsection we consider a better version of the van 
 \subsection{The van Kampen theorem with a set of basepoints}
 \label{sec:better-vankampen}
 
-The improvement of van Kampen we present now is closely analogous to a similar improvement in classical algebraic topology, where $A$ is equipped with a \emph{set $S$ of base points}.
+The improvement of van Kampen we present now is closely analogous to a similar improvement in classical algebraic topology, where $A$ is equip\-ped with a \emph{set $S$ of base points}.
 In fact, it turns out to be unnecessary for our proof to assume that the ``set of basepoints'' is a \emph{set} --- it might just as well be an arbitrary type; the utility of assuming $S$ is a set arises later, when applying the theorem to obtain computations.
 What is important is that $S$ contains at least one point in each connected component of $A$.
 We formalize this in type theory by saying that we have a type $S$ and a function $k:S \to A$ which is \emph{$(-1)$-connected} in the ``fiberwise'' sense, i.e., left orthogonal to $(-1)$-truncated objects.
@@ -2112,7 +2126,7 @@ There is an obvious induced function $\kbar:T\to A$ such that $\kbar \ell = k$, 
 \begin{rmk}
   $T$ can be regarded as the (homotopy) coequalizer of the ``kernel pair'' of $k$.
   If $S$ and $A$ were sets, then the $(-1)$-connectivity of $k$ would imply that $A$ is the $0$-truncation of this coequalizer (see \autoref{cha:set-math}).
-  For general types, higher topos theory suggests that $(-1)$-connectivity of $k$ will imply instead that $A$ is the colimit (a.k.a.\ ``geometric realization'') of the ``simplicial kernel'' of $k$.
+  For general types, higher topos theory suggests that $(-1)$-con\-nec\-tiv\-i\-ty of $k$ will imply instead that $A$ is the colimit (a.k.a.\ ``geometric realization'') of the ``simplicial kernel'' of $k$.
   The type $T$ is the colimit of the ``1-skeleton'' of this simplicial kernel, so it makes sense that it improves the connectivity of $k$ by $1$.
   More generally, we might expect the colimit of the $n$-skeleton to improve connectivity by $n$.
 \end{rmk}

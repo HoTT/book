@@ -35,7 +35,7 @@ We consider successively the levels of structure which \uset possesses.
 
 Since sets are closed under products, the universal property of products in \autoref{thm:prod-ump} shows immediately that \uset has finite products.
 In fact, infinite products follow just as easily from the equivalence
-\[ \left(X\to \prd{a:A} B(a) \right) \simeq \left(\prd{a:A} (X\to B)\right) .\]
+\[ \left(X\to \prd{a:A} B(a) \right) \eqvsym \left(\prd{a:A} (X\to B)\right) .\]
 And we saw in \autoref{ex:pullback} that the pullback of $f:A\to C$ and $g:B\to C$ can be defined as $\sm{a:A}{b:B} f(a)=g(b)$; this is a set if $A,B,C$ are and inherits the correct universal property.
 Thus, \uset is a \emph{complete} category in the obvious sense.
 
@@ -97,8 +97,8 @@ First we observe that categorical monomorphisms and epimorphisms have a slightly
   \begin{enumerate}
   \item $f$ is a \define{monomorphism}: for all $x:A$ and ${g,h:\hom_A(x,a)}$, if $f\circ g = f\circ h$ then $g=h$.\label{item:mono1}
   \item (If $A$ has products) the diagonal map $A\to A\times A$ is an isomorphism.\label{item:mono4}
-  \item For all $x:A$ and $k:\hom_A(x,b)$, the type $\sm{h:\hom_A(x,a)} k = f\circ h$ is a mere proposition.\label{item:mono2}
-  \item For all $x:A$ and ${g:\hom_A(x,a)}$, the type $\sm{h:\hom_A(x,a)} f\circ g = f\circ h$ is contractible.\label{item:mono3}
+  \item For all $x:A$ and $k:\hom_A(x,b)$, the type $\sm{h:\hom_A(x,a)} (k = f\circ h)$ is a mere proposition.\label{item:mono2}
+  \item For all $x:A$ and ${g:\hom_A(x,a)}$, the type $\sm{h:\hom_A(x,a)} (f\circ g = f\circ h)$ is contractible.\label{item:mono3}
   \end{enumerate}
 \end{lem}
 \begin{proof}
@@ -159,25 +159,25 @@ in $\uset$ defining the mapping cone. Then the type $C_f$ is contractible.
 
 \begin{proof}
 Let $f:A\to B$ be a function between sets, and suppose it to be an epimorphism; we show $C_f$ is contractible.
-The basic constructor of $C_f$ corresponding to
-$\unit\to C_f$ gives us an element $t:C_f$. We have to show that
+The constructor $\unit\to C_f$ of $C_f$ gives us an element $t:C_f$.
+We have to show that
 \begin{equation*}
 \prd{x:C_f} x= t.
 \end{equation*}
-Note that $x= t$ is a mere proposition, hence we can use induction on
-$C_f$: it suffices to find
+Note that $x= t$ is a mere proposition, hence we can use induction on $C_f$.
+Of course when $x$ is $t$ we have $\refl{t}:t=t$, so it suffices to find
 \begin{align*}
 I_0 & : \prd{b:B} \iota(b)= t\\
 I_1 & : \prd{a:A} \opp{\alpha_1(a)} \ct I_0(f(a))=\refl{t}.
 \end{align*}
-where $\alpha_1:\prd{a:A} \iota(f(a))= t$ is a basic constructor
+where $\iota:B\to C_f$ and $\alpha_1:\prd{a:A} \iota(f(a))= t$ are the other constructors
 of $C_f$. Note that $\alpha_1$ is a homotopy from $\iota\circ f$ to
 $\mathsf{const}_t\circ f$, so we find the elements
 \begin{equation*}
 \pairr{\iota,\refl{\iota\circ f}},\pairr{\mathsf{const}_t,\alpha_1}:
-\sm{h:B\to C_f} \iota\circ f = h\circ f.
+\sm{h:B\to C_f} \iota\circ f \htpy h\circ f.
 \end{equation*}
-By the dual of \autoref{thm:mono}\ref{item:mono3}, there is a path
+By the dual of \autoref{thm:mono}\ref{item:mono3} (and function extensionality), there is a path
 \begin{equation*}
 \gamma:\pairr{\iota,\refl{\iota\circ f}}=\pairr{\mathsf{const}_t,\alpha_1}
 \end{equation*}
@@ -204,15 +204,17 @@ Thus, $f$ is surjective.
 
 Finally, suppose $f:A\to B$ to be surjective, and consider a set $C$ and two functions
 $g,h:B\to C$ with the property that $g\circ f = h\circ f$. Since $f$ 
-is assumed to be surjective,
-we have an equivalence $B\simeq\im(f)$. We have the following equivalences
+is assumed to be surjective, for all $b:B$ the type $\brck{\hfib f b}$ is contractible.
+Thus we have the following equivalences:
 \begin{align*}
 \prd{b:B} (g(b)= h(b))
-& \simeq \prd{w:\im(f)} g(\proj1 w)= h(\proj1(w))\\
-& \simeq \prd{b:B}{a:A}{p:f(a)= b} g(b)= h(b)\\
-& \simeq \prd{a:A} g(f(a))= h(f(a)).
+& \eqvsym \prd{b:B} \Parens{\brck{\hfib f b} \to (g(b)= h(b))}\\
+& \eqvsym \prd{b:B} \Parens{\hfib f b \to (g(b)= h(b))}\\
+& \eqvsym \prd{b:B}{a:A}{p:f(a)= b} g(b)= h(b)\\
+& \eqvsym \prd{a:A} g(f(a))= h(f(a)).
 \end{align*}
-By assumption, there is an element of the latter type.
+using on the second line the fact that $g(b)=h(b)$ is a mere proposition, since $C$ is a set.
+But by assumption, there is an element of the latter type.
 \end{proof}
 
 % \begin{rem}
@@ -278,7 +280,7 @@ is a pullback.
 \begin{lem}\label{lem:sets_exact}
 Suppose $\pairr{A,R}$ is an equivalence relation. Then there is an equivalence
 \begin{equation*}
-(c_R(x)= c_R(y))\simeq R(x,y)
+(c_R(x)= c_R(y))\eqvsym R(x,y)
 \end{equation*}
 for any $x,y:A$. In other words, equivalence relations are effective.
 \end{lem}
@@ -292,7 +294,7 @@ define $\tilde{R}(c_R(x),c_R(y)) \defeq R(x,y)$. For $r:R(x,x')$ and $s:R(y,y')$
 the transitivity and symmetry 
 of $R$ gives an equivalence from $R(x,y)$ to $R(x',y')$. This completes the
 definition of $\tilde{R}$. To finish the proof of the lemma, we need
-to show that $\tilde{R}(w,w')\simeq w= w'$ for every $w,w':A/R$. We can
+to show that $\tilde{R}(w,w')\eqvsym w= w'$ for every $w,w':A/R$. We can
 do this by showing that the type $\sm{w':A/R} \tilde{R}(w,w')$ is contractible for
 each $w:A/R$. We do this by induction. Let $x:A$. We have the element
 $\pair{c_R(x),\rho(x)}:\sm{w':A/R} \tilde{R}(c_R(x),w')$, where $\rho$ is
@@ -344,21 +346,21 @@ of the two projections
 \end{equation*}
 For any $x,y:A$, we have equivalences
 \begin{align*}
-c_f(x)= c_f(y) & \simeq \sm{p:f(x)= f(y)} p\cdot\tau_1(\pairr{x,\refl{f(x)}})
-=\tau_1(\pairr{y,\refl{f(x)}})\\ & \simeq f(x)= f(y),
+c_f(x)= c_f(y) & \eqvsym \sm{p:f(x)= f(y)} p\cdot\tau_1(\pairr{x,\refl{f(x)}})
+=\tau_1(\pairr{y,\refl{f(x)}})\\ & \eqvsym f(x)= f(y),
 \end{align*}
 where the last equivalence holds because 
 $\brck{\hfiber{f}b}$ is a mere for any $b:B$. 
 Therefore, we get that
 \begin{equation*}
-\sm{x,y:A} c_f(x)= c_f(y)\simeq\sm{x,y:A} f(x)= f(y)
+\sm{x,y:A} c_f(x)= c_f(y)\eqvsym\sm{x,y:A} f(x)= f(y)
 \end{equation*}
 and hence we may conclude that $\ker f$ is an effective relation 
 for any function $f$.
 \end{proof}
 
 \begin{thm}
-Equivalence relations are effective and there is an equivalence $A/R \simeq A\sslash  R $. 
+Equivalence relations are effective and there is an equivalence $A/R \eqvsym A\sslash  R $. 
 \end{thm}
 
 \begin{proof}
@@ -376,8 +378,8 @@ We need to analyze the coequalizer diagram
   }
 \end{equation*}
 By the univalence axiom, the space $R (x)= R (y)$ is equivalent to the space of homotopies from $R (x)$ to $R (y)$, which is
-equivalent to $\prd{z:A} R (x,z)\simeq R (y,z)$. Since $R $ is an equivalence relation, the latter space is equivalent to $R (x,y)$. To
-summarize, we get that $(R (x)= R (y))\simeq R (x,y)$, so $R $ is effective since it is equivalent to an effective relation. Also,
+equivalent to $\prd{z:A} R (x,z)\eqvsym R (y,z)$. Since $R $ is an equivalence relation, the latter space is equivalent to $R (x,y)$. To
+summarize, we get that $(R (x)= R (y))\eqvsym R (x,y)$, so $R $ is effective since it is equivalent to an effective relation. Also,
 the diagram
 \begin{equation*}
   \xymatrix{
@@ -391,7 +393,7 @@ the diagram
     {A \sslash R.}
   }
 \end{equation*}
-is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \simeq A\sslash  R $.
+is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \eqvsym A\sslash  R $.
 \end{proof}
 
 We finish this section by mentioning a possible third construction of the quotient of a set $A$ by an equivalence relation $R$. One
@@ -468,7 +470,7 @@ so we should also have
 But since $A$ is inhabited by $a$, it is equivalent to $\unit$, so we have
 %
 \begin{equation*}
-  P(\north, \north) \simeq P(\north, \south) \simeq P(\south, \north) \simeq P(\south, \south).
+  P(\north, \north) \eqvsym P(\north, \south) \eqvsym P(\south, \north) \eqvsym P(\south, \south).
 \end{equation*}
 %
 The univalence axiom turns these into the desired equalities. Also, $P(x,y)$ is a mere
@@ -633,7 +635,7 @@ It also inherits the structure of a semiring from \set.
   Since \card is a set, the type $\alpha\cdot\beta = \beta\cdot\alpha$ is a mere proposition, and in particular a set.
   Thus, by induction it suffices to assume $\alpha$ and $\beta$ are of the form $\cd{A}$ and $\cd{B}$ respectively, for some $A,B:\set$.
   Now $\cd{A}\cdot \cd{B} \jdeq \cd{A\times B}$ and $\cd{B}\times\cd{A} \jdeq \cd{B\times A}$, so it suffices to show $A\times B = B\times A$.
-  Finally, by univalence, it suffices to give an equivalence $A\times B \simeq B\times A$.
+  Finally, by univalence, it suffices to give an equivalence $A\times B \eqvsym B\times A$.
   But this is easy: take $(a,b) \mapsto (b,a)$ and its obvious inverse.
 \end{proof}
 
@@ -724,7 +726,7 @@ We may likewise show that cardinal inequality is compatible with the semiring op
 \end{cor}
 \begin{proof}
   Since $\alpha=\beta$ is a mere proposition, by induction on truncation we may assume $\alpha$ and $\beta$ are $\cd{A}$ and $\cd{B}$, respectively, and that we have injections $f:A\to B$ and $g:B\to A$.
-  But then the Schroeder--Bernstein theorem gives an isomorphism $A\simeq B$, hence an equality $\cd{A}=\cd{B}$.
+  But then the Schroeder--Bernstein theorem gives an isomorphism $A\eqvsym B$, hence an equality $\cd{A}=\cd{B}$.
 \end{proof}
 
 Finally, we can reproduce Cantor's theorem, showing that for every cardinal there is a greater one.
@@ -1061,8 +1063,8 @@ Similar remarks apply to the next lemma, which could be proved in a less useful 
   For any $X:\type_\bbU$ and $F:X\to \ord_\bbU$, there exists $B:\ord_\bbU$ such that $Fx\le B$ for all $x:X$.
 \end{lem}
 \begin{proof}
-  Let $B$ be the quotient of the equivalence relation on $\sm{x:X} Fx$ defined as follows:
-  \[ (x,y)  = (x',y')
+  Let $B$ be the quotient of the equivalence relation $\eqr$ on $\sm{x:X} Fx$ defined as follows:
+  \[ (x,y) \eqr (x',y')
   \;\defeq\;
   \Big(\ordsl{(Fx)}{y} \cong \ordsl{(Fx')}{y'}\Big).
   \]
@@ -1299,26 +1301,26 @@ Since $V$ lives in the same universe $\UU'$ as does the base universe $\UU$ from
   Define the \define{bisimulation} relation
   %
   \begin{equation*}
-    \sim\ : V\times V \longrightarrow \prop_{\UU}
+    \bisim\ : V\times V \longrightarrow \prop_{\UU}
   \end{equation*}
   %
   by double induction over $V$, where for $\vset(A,f)$ and $\vset(B,g)$ we let:
 \begin{align*}
-\vset(A,f)  \sim \vset(B,g) &\defeq\\
-&\big(\fall{a:A}\exis{b:B} f(a)  \sim g(b)\big) \land \big(\fall{b:B}\exis{a:A} f(a) \sim g(b)\big)
+\vset(A,f)  \bisim \vset(B,g) &\defeq\\
+&\big(\fall{a:A}\exis{b:B} f(a)  \bisim g(b)\big) \land \big(\fall{b:B}\exis{a:A} f(a) \bisim g(b)\big)
 \end{align*}
 \end{defn}
 %
-To verify that the definition is correct, we just need to check that it respects paths $\vset(A, f) = \vset(B, g)$ constructed through~\eqref{eq:V-path}, but this is obvious, and that $\prop_{\UU}$ is a set, which it is.  Note that $u \sim v$ is in $\propU$ by construction.
+To verify that the definition is correct, we just need to check that it respects paths $\vset(A, f) = \vset(B, g)$ constructed through~\eqref{eq:V-path}, but this is obvious, and that $\prop_{\UU}$ is a set, which it is.  Note that $u \bisim v$ is in $\propU$ by construction.
 
 \begin{lem}\label{lem:BisimEqualsId}
-For any $u,v:V$ we have $(u=_V v) = (u \sim v)$.
+For any $u,v:V$ we have $(u=_V v) = (u \bisim v)$.
 \end{lem}
 
 \begin{proof}
-It suffices to show that $(u \sim v)\to (u=_V v)$.
+It suffices to show that $(u \bisim v)\to (u=_V v)$.
 By induction on $u$ and $v$, we may assume they are $\vset(A,f)$ and $\vset(B,g)$ respectively.
-Then by definition, $\vset(A,f)\sim\vset(B,g)$ implies $(\fall{a:A}\exis{b:B}f(a)  \sim g(b))$ and conversely.
+Then by definition, $\vset(A,f)\bisim\vset(B,g)$ implies $(\fall{a:A}\exis{b:B}f(a)  \bisim g(b))$ and conversely.
 But the induction hypothesis then tells us that $(\fall{a:A}\exis{b:B}f(a) = g(b))$ and conversely.
 So by the path-constructor for $V$ we have $\vset(A,f) =_V \vset(B,g)$.
 \end{proof}
@@ -1434,15 +1436,15 @@ If the class $C: V \to \prop$ is $\Delta_0$ in the above sense, then it is separ
 \end{cor}
 
 \begin{proof}
-Recall that we have a $\UU$-small resizing $x \sim y$ of identity $x = y$. Since $x\in y$ is defined in terms of $x=y$, we also have a $\UU$-small resizing of membership
+Recall that we have a $\UU$-small resizing $x \bisim y$ of identity $x = y$. Since $x\in y$ is defined in terms of $x=y$, we also have a $\UU$-small resizing of membership
 %
 \begin{equation*}
-  x\bin\vset(A,f) \defeq \exis{a:A} x \sim f(a).
+  x\bin\vset(A,f) \defeq \exis{a:A} x \bisim f(a).
 \end{equation*}
 %
-Now, let $\Phi$ be a $\Delta_0$ expression for $C$, so that as classes $\Phi = C$ (strictly speaking, we should distinguish expressions from their meanings, but we will blur the difference). Let $\widetilde{\Phi}$ be the result of replacing all occurrences of $=$ and $\in$ by their resized equivalents $\sim$ and $\bin$.  Clearly then $\widetilde{\Phi}$ also expresses $C$, in the sense that for all $x:V$, $\widetilde{\Phi}(x) \Leftrightarrow C(x)$, and hence $\widetilde{\Phi}=C$ by univalence.  It now suffices to show that $\widetilde{\Phi}$ is $\UU$-small, for then it will be separable by the theorem.  
+Now, let $\Phi$ be a $\Delta_0$ expression for $C$, so that as classes $\Phi = C$ (strictly speaking, we should distinguish expressions from their meanings, but we will blur the difference). Let $\widetilde{\Phi}$ be the result of replacing all occurrences of $=$ and $\in$ by their resized equivalents $\bisim$ and $\bin$.  Clearly then $\widetilde{\Phi}$ also expresses $C$, in the sense that for all $x:V$, $\widetilde{\Phi}(x) \Leftrightarrow C(x)$, and hence $\widetilde{\Phi}=C$ by univalence.  It now suffices to show that $\widetilde{\Phi}$ is $\UU$-small, for then it will be separable by the theorem.  
 
-We show that  $\widetilde{\Phi}$ is $\UU$-small by induction on the construction of the expression.  The base cases are $x \sim y$ and $x\bin y$, which have already been resized into $\UU$.  It is also clear that $\UU$ is closed under the mere-propositional operations (and $(-1)$-truncation), so it just remains to check the bounded quantifiers $\exists(x\in a)$ and $\forall(y\in b)$.  By definition,  
+We show that  $\widetilde{\Phi}$ is $\UU$-small by induction on the construction of the expression.  The base cases are $x \bisim y$ and $x\bin y$, which have already been resized into $\UU$.  It is also clear that $\UU$ is closed under the mere-propositional operations (and $(-1)$-truncation), so it just remains to check the bounded quantifiers $\exists(x\in a)$ and $\forall(y\in b)$.  By definition,  
 \begin{align*}
 \exists(x\in a) P(x)\ &\defeq \Brck {\sm{x:V}(x\bin a \land P(x))}\\
 \forall(y\in b) P(x)\ &\defeq  \prd{x:V}(x\bin a \to P(x))

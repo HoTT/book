@@ -730,36 +730,64 @@ In this case we would expect $B$ not to depend on $x,y:\RC$ or $x\close\epsilon 
 But the recursion principle (along with its associated uniqueness principle) is supposed to say that $\RC$ with $\close\epsilon$ is an ``initial object'' in some category, so in this case the dependency structure of $A$ and $B$ should mirror that of $\RC$ and $\close\epsilon$: that is, we should have $B:A\to A\to \Qp \to \type$.
 Combining this observation with the fact that, in the dependent case, $B$ must also depend on $x,y:\RC$ and $x\close\epsilon y$, leads inevitably to the type given above for $B$.
 
-Now, given $A$ and $B$ as above, the hypotheses of the induction principle consist of the following data, one for each constructor of $\RC$ or $\closesym$:
+\symlabel{RC-recursion}
+It is helpful to think of $B$ as an $\epsilon$-indexed family of relations between the types $A(x)$ and $A(y)$.
+With this in mind, we may write $B(x,y,a,b,\epsilon,\xi)$ as $(x,a) \bsim_\epsilon^\xi (y,b)$.
+Since $\xi:x\close\epsilon y$ is unique when it exists, we generally omit it from the notation and write $(x,a) \bsim_\epsilon (y,b)$; this is harmless as long as we keep in mind that this relation is only defined when $x\close\epsilon y$.
+We may also sometimes simplify further and write $a\bsim_\epsilon b$, with $x$ and $y$ inferred from the types of $a$ and $b$, but sometimes it will be necessary to include them for clarity.
+
+Now, given a type family $A:\RC\to\type$ and a family of relations $\bsim$ as above, the hypotheses of the induction principle consist of the following data, one for each constructor of $\RC$ or $\closesym$:
 \begin{itemize}
 \item For any $q : \Q$, an element $f_q:A(\rcrat(q))$.
 \item For any Cauchy approximation $x$, and any $a:\prd{\epsilon:\Qp} A(x_\epsilon)$ such that
   \begin{equation}
-    \fall{\delta, \epsilon : \Qp} B(x_\delta,x_\epsilon,a_\delta,a_\epsilon,\delta+\epsilon,\nameless),\label{eq:depCauchyappx}
+    \fall{\delta, \epsilon : \Qp}
+    (x_\delta,a_\delta) \bsim_{\delta+\epsilon} (x_\epsilon,a_\epsilon),
+    % B(x_\delta,x_\epsilon,a_\delta,a_\epsilon,\delta+\epsilon,\nameless),
+    \label{eq:depCauchyappx}
   \end{equation}
   an element $f_{x,a}:A(\rclim(x))$.
-  (Here $\nameless$ denotes the nameless element of $x_\delta \close{\delta+\epsilon} x_\epsilon$, arising from the assumption that $x$ is a Cauchy approximation.)
+  % (Here $\nameless$ denotes the nameless element of $x_\delta \close{\delta+\epsilon} x_\epsilon$, arising from the assumption that $x$ is a Cauchy approximation.)
   We call such $a$ a \define{dependent Cauchy approximation} over $x$.
-\item For $u, v : \RC$ and $h:\fall{\epsilon : \Qp} u \close\epsilon v$, and $a:A(u)$ and $b:A(v)$ such that $\fall{\epsilon:\Qp} B(u,v,a,b,\epsilon,h(\epsilon))$, a dependent path $\dpath{A}{\rceq(u,v)}{a}{b}$.
-\item For $q,r:\Q$ and $\epsilon:\Qp$, if $-\epsilon < q - r < \epsilon$, an element of \narrowequation{B(\rcrat(q),\rcrat(r),f_q,f_r,\epsilon,\nameless).}
+\item For $u, v : \RC$ such that $h:\fall{\epsilon : \Qp} u \close\epsilon v$, and all $a:A(u)$ and $b:A(v)$ such that
+  $\fall{\epsilon:\Qp} (u,a) \bsim_\epsilon (v,b)$,
+  % $\fall{\epsilon:\Qp} B(u,v,a,b,\epsilon,h(\epsilon))$,
+  a dependent path $\dpath{A}{\rceq(u,v)}{a}{b}$.
+\item For $q,r:\Q$ and $\epsilon:\Qp$, if $-\epsilon < q - r < \epsilon$, we have
+  \narrowequation{(\rcrat(q),f_q) \bsim_\epsilon (\rcrat(r),f_r).}
+  % \narrowequation{B(\rcrat(q),\rcrat(r),f_q,f_r,\epsilon,\nameless).}
 \item For $q:\Q$ and $\delta,\epsilon:\Qp$ and $y$ a Cauchy approximation, and $b$ a dependent Cauchy approximation over $y$, if $\rcrat(q) \close{\epsilon - \delta} y_\delta$, then
-  \[B(\rcrat(q),y_\delta,f_q,b_\delta,\epsilon-\delta,\nameless)
-  \to
-  B(\rcrat(q),\rclim(y),f_q,f_{y,b},\epsilon,\nameless).\]
+  \[(\rcrat(q),f_q) \bsim_{\epsilon-\delta} (y_\delta,b_\delta)
+  \;\Rightarrow\;
+  (\rcrat(q),f_q) \bsim_\epsilon (\rclim(y),f_{y,b}).\]
+  % \[B(\rcrat(q),y_\delta,f_q,b_\delta,\epsilon-\delta,\nameless)
+  % \to
+  % B(\rcrat(q),\rclim(y),f_q,f_{y,b},\epsilon,\nameless).\]
 \item Similarly, for $r:\Q$ and $\delta,\epsilon:\Qp$ and $x$ a Cauchy approximation, and $a$ a dependent Cauchy approximation over $x$, if $x_\delta \close{\epsilon - \delta} \rcrat(r)$, then
-  \[B(x_\delta,\rcrat(r),a_\delta,f_r,\epsilon-\delta,\nameless) \to
-  B(\rclim(y),\rcrat(q),f_{x,a},f_r,\epsilon,\nameless).
+  \[(x_\delta,a_\delta) \bsim_{\epsilon-\delta} (\rcrat(r),f_r)
+  \;\Rightarrow\;
+  (\rclim(x),f_{x,a}) \bsim_\epsilon (\rcrat(q),f_r).
   \]
+  % \[B(x_\delta,\rcrat(r),a_\delta,f_r,\epsilon-\delta,\nameless)
+  % \to
+  % B(\rclim(y),\rcrat(q),f_{x,a},f_r,\epsilon,\nameless).
+  % \]
 \item For $\epsilon,\delta,\eta:\Qp$ and $x,y$ Cauchy approximations, and $a$ and $b$ dependent Cauchy approximations over $x$ and $y$ respectively, if we have $x_\delta \close{\epsilon - \delta - \eta} y_\eta$, then
-  \[ B(x_\delta,y_\eta,a_\delta,b_\eta,{\epsilon - \delta - \eta},\nameless)\to
-  B(\rclim(x),\rclim(y),f_{x,a},f_{y,b},\epsilon,\nameless).\]
-\item For $\epsilon:\Qp$ and $x,y:\RC$ and $\xi,\zeta:x\close{\epsilon} y$, and $a:A(x)$ and $b:A(y)$, any two elements of $B(x,y,a,b,\epsilon,\xi)$ and $B(x,y,a,b,\epsilon,\zeta)$ are dependently equal over $\xi=\zeta$.
-  Note that as usual, this is essentially equivalent to asking that $B$ is a mere relation.
+  \[ (x_\delta,a_\delta) \bsim_{\epsilon - \delta - \eta} (y_\eta,b_\eta)
+  \;\Rightarrow\;
+  (\rclim(x),f_{x,a}) \bsim_\epsilon (\rclim(y),f_{y,b}).\]
+  % \[ B(x_\delta,y_\eta,a_\delta,b_\eta,{\epsilon - \delta - \eta},\nameless)
+  % \to
+  % B(\rclim(x),\rclim(y),f_{x,a},f_{y,b},\epsilon,\nameless).\]
+\item For $\epsilon:\Qp$ and $x,y:\RC$ and $\xi,\zeta:x\close{\epsilon} y$, and $a:A(x)$ and $b:A(y)$, any two elements of $(x,a) \bsim_\epsilon^\xi (y,b)$ and $(x,a) \bsim_\epsilon^\zeta (y,b)$ are dependently equal over $\xi=\zeta$.
+  Note that as usual, this is equivalent to asking that $\bsim$ takes values in mere propositions.
 \end{itemize}
 Under these hypotheses, we deduce functions
 \begin{align*}
   f&:\prd{x:\RC} A(x)\\
-  g&:\prd{x,y:\RC}{\epsilon:\Qp}{\xi:x\close{\epsilon} y} B(x,y,f(x),f(y),\epsilon,\xi)
+  g&:\prd{x,y:\RC}{\epsilon:\Qp}{\xi:x\close{\epsilon} y}
+  (x,f(x)) \bsim_\epsilon^\xi (y,f(y))
+  % B(x,y,f(x),f(y),\epsilon,\xi)
 \end{align*}
 which compute as expected:
 \begin{align*}
@@ -771,12 +799,12 @@ That is, we define $(f,g)[x]_\epsilon \defeq f(x_\epsilon) : A(x_\epsilon)$, and
 
 This induction principle is admittedly quite a mouthful.
 To help make sense of it, we observe that it contains as special cases two separate induction principles for~$\RC$ and for~$\closesym$.
-Firstly, suppose given only a type family $A:\RC\to\type$, and define $B$ to be constant at \unit.
+Firstly, suppose given only a type family $A:\RC\to\type$, and define $\bsim$ to be constant at \unit.
 Then much of the required data becomes trivial, and we are left with:
 \begin{itemize}
 \item for any $q : \Q$, an element $f_q:A(\rcrat(q))$,
 \item for any Cauchy approximation $x$, and any $a:\prd{\epsilon:\Qp} A(x_\epsilon)$, an element $f_{x,a}:A(\rclim(x))$,
-\item for $u, v : \RC$ and $h:\fall{\epsilon : \Qp} u \close\epsilon v$, and $a:A(u)$ and $b:A(v)$, a dependent path $\dpath{A}{\rceq(u,v)}{a}{b}$.
+\item for $u, v : \RC$ and $h:\fall{\epsilon : \Qp} u \close\epsilon v$, and $a:A(u)$ and $b:A(v)$, we have $\dpath{A}{\rceq(u,v)}{a}{b}$.
 \end{itemize}
 Given these data, the induction principle yields a function $f:\prd{x:\RC} A(x)$ such that
 \begin{align*}
@@ -853,21 +881,30 @@ The second constructor of $\RC$ gives a function $\rclim:\CAP\to\RC$.
   But this is exactly the statement of the lemma.
 \end{proof}
 
-For the second special case of the induction principle, suppose instead that we are given only $C:\RC\to\RC\to\Qp\to\prop$, and define $A(\nameless)\defeq\unit$ and $B(u,v,\nameless,\nameless,\epsilon,\nameless)\defeq C(u,v,\epsilon)$.
+For the second special case of the induction principle, suppose instead that we take $A$ to be constant at $\unit$.
+In this case, $\bsim$ is simply an $\epsilon$-indexed family of relations on $\epsilon$-close pairs of real numbers, so we may write $u\bsim_\epsilon v$ instead of $(u,\ttt)\bsim_\epsilon (v,\ttt)$.
 Then the required data reduces to the following, where $q, r$ denote rational numbers, $\epsilon, \delta, \eta$ positive rational numbers, and $x, y$ Cauchy approximations:
 \begin{itemize}
-\item if $-\epsilon < q - r < \epsilon$, then $C(\rcrat(q),\rcrat(r),\epsilon)$,
+\item if $-\epsilon < q - r < \epsilon$, then
+  $\rcrat(q) \bsim_\epsilon \rcrat(r)$,
+  % $C(\rcrat(q),\rcrat(r),\epsilon)$,
 \item if $\rcrat(q) \close{\epsilon - \delta} y_\delta$ and
-  $C(\rcrat(q),y_\delta,\epsilon-\delta)$,
-  then $C(\rcrat(q),\rclim(y),\epsilon)$,
+  $\rcrat(q)\bsim_{\epsilon-\delta} y_\delta$,
+  then $\rcrat(q) \bsim_\epsilon \rclim(y)$,
+  % $C(\rcrat(q),y_\delta,\epsilon-\delta)$,
+  % then $C(\rcrat(q),\rclim(y),\epsilon)$,
 \item if $x_\delta \close{\epsilon - \delta} \rcrat(r)$ and
-  $C(x_\delta,\rcrat(r),\epsilon-\delta)$,
-  then $C(\rclim(y),\rcrat(q),\epsilon)$,
+  $x_\delta \bsim_{\epsilon-\delta} \rcrat(r)$,
+  then $\rclim(y) \bsim_\epsilon \rcrat(q)$,
+  % $C(x_\delta,\rcrat(r),\epsilon-\delta)$,
+  % then $C(\rclim(y),\rcrat(q),\epsilon)$,
 \item if $x_\delta \close{\epsilon - \delta - \eta} y_\eta$ and
-  $C(x_\delta,y_\eta,{\epsilon - \delta - \eta})$,
-  then $C(\rclim(x),\rclim(y),\epsilon)$.
+  $x_\delta\bsim_{\epsilon - \delta - \eta} y_\eta$,
+  then $\rclim(x) \bsim_\epsilon \rclim(y)$.
+  % $C(x_\delta,y_\eta,{\epsilon - \delta - \eta})$,
+  % then $C(\rclim(x),\rclim(y),\epsilon)$.
 \end{itemize}
-The resulting conclusion is $\fall{u,v:\RC}{\epsilon:\Qp} (u\close\epsilon v) \to C(u,v,\epsilon)$.
+The resulting conclusion is $\fall{u,v:\RC}{\epsilon:\Qp} (u\close\epsilon v) \to (u \bsim_\epsilon v)$.
 We call this principle \define{$\closesym$-induction}; it says essentially that if we take $\RC$ as given, then $\close\epsilon$ is inductively generated (as a family of types) by \emph{its} constructors.
 For example, we can use this to show that $\closesym$ is symmetric.
 
@@ -876,7 +913,8 @@ For example, we can use this to show that $\closesym$ is symmetric.
 \end{lem}
 \begin{proof}
   Since both are mere propositions, by symmetry it suffices to show one implication.
-  Thus, let $C(u,v,\epsilon) \defeq (v\close\epsilon u)$.
+  Thus, let $(u\bsim_\epsilon v) \defeq (v\close\epsilon u)$.
+  % Thus, let $C(u,v,\epsilon) \defeq (v\close\epsilon u)$.
   By $\closesym$-induction, we may reduce to the case that $u\close\epsilon v$ is derived from one of the four interesting constructors of $\closesym$.
   In the first case when $u$ and $v$ are both rational, the result is trivial (we can apply the first constructor again).
   In the other three cases, the inductive hypothesis (together with commutativity of addition in $\Q$) yields exactly the input to another of the constructors of $\closesym$ (the second and third constructors switch, while the fourth stays put).
@@ -893,9 +931,10 @@ Ordinary $\RC$-recursion tells us that to define a function $f : \RC \to A$ it s
 \end{enumerate}
 However, it is generally quite difficult to show~\ref{item:rcrec3} without knowing something about how $f$ acts on $\epsilon$-close Cauchy reals.
 The enhanced principle of $(\RC,\closesym)$-recursion remedies this deficiency, allowing us to specify an \emph{arbitrary} ``way in which $f$ acts on $\epsilon$-close Cauchy reals'', which we can then prove to be the case by a simultaneous induction with the definition of $f$.
-This is the family of relations $B:A\to A\to \Qp\to\prop$.
-\symlabel{RC-recursion}
-If we write the mere property $B(a,b,\epsilon)$ as ``$a \bsim_\epsilon b$'', then defining a function $f:\RC\to A$ by $(\RC,\closesym)$-recursion requires the following cases.
+This is the family of relations $\bsim$.
+Since $A$ is independent of $\RC$, we may assume for simplicity that $\bsim$ depends only on $A$ and $\Qp$, and thus there is no ambiguity in writing $a\bsim_\epsilon b$ instead of $(u,a) \bsim_\epsilon (v,b)$.
+% If we write the mere property $B(a,b,\epsilon)$ as ``$a \bsim_\epsilon b$'',
+In this case, defining a function $f:\RC\to A$ by $(\RC,\closesym)$-recursion requires the following cases.
 \begin{itemize}
 \item For every $q : \Q$, construct $f(\rcrat(q)) : A$.
 \item For every Cauchy approximation $x : \Qp \to \RC$, construct $f(x) : A$, assuming inductively that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$ and form a ``Cauchy approximation with respect to $\bsim$'', i.e.\ that $\fall{\epsilon,\delta:\Qp} (f(x_\epsilon) \bsim_{\epsilon+\delta} f(x_\delta))$.

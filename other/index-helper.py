@@ -66,15 +66,16 @@ for fn in files:
     # Delete macros
     #text = re.sub(r'\\[a-zA-Z]+\b', ' ', text)
     # Find words, try to include things like "$(n-2)$-connected"
-    for m in re.finditer(r".{20}[^\\]\b(\$[^$]*\$-)?([a-zA-Z][a-zA-Z-]*)\b.{20}", text):
+    for m in re.finditer(r".{20}[^\\]\b(\$[^$]*\$-)?([a-zA-Z]([a-zA-Z-]|\\-)*)\b.{20}", text):
         key = str(m.group(2)).lower()
+        key = re.sub(r'\\-', '', key) # remove hyphenation hints
         pos = m.start(2)
-        # Drop macros
-        if key.startswith('\\'): continue
-        elif key in words:
-            words[key].append((m.group(0), fn, pos))
+        excerpt = str(m.group(0))
+        excerpt = re.sub(r'\n', ' ', excerpt) # replace newlines with spaces
+        if key in words:
+            words[key].append((excerpt, fn, pos))
         else:
-            words[key] = [(m.group(0), fn, pos)]
+            words[key] = [(excerpt, fn, pos)]
 
 # Macros which appear somewhere but are not in the symbols index, macros.tex,
 # or configuration files.

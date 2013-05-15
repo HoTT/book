@@ -84,7 +84,7 @@ notion captured our third and final judgment
 \[
   \wfctx{(x_1:A_1, x_2:A_2,\dots,x_n:A_n)}
 \]
-expressing that each $A_i$ is a valid type in the context $x_1:A_1,
+expressing that each $A_i$ is a type in the context $x_1:A_1,
 x_2:A_2,\dots,x_{i-1}:A_{i-1}$. Therefore, if $\oftp\Gamma aA$ and
 $\wfctx\Gamma$, then we know that each $A_i$ contains only the variables
 $x_1,\dots,x_{i-1}$, and that $a$ and $A$ contain only the variables
@@ -236,8 +236,8 @@ The following conversion rule allows us to replace a type by one equal to it in 
 
 \subsection{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 
-We introduce a primitive constant $c_\Pi$. An expression of the form
-$c_\Pi(A,\lam{x} B)$ is written as $\tprd{x:A}B$. Judgments concerning
+We introduce a primitive constant $c_\Pi$, but write
+$c_\Pi(A,\lam{x} B)$ as $\tprd{x:A}B$. Judgments concerning
 such expressions and expressions of the form $\lam{x} b$ are introduced by the following rules:
 %
 \begin{itemize}
@@ -288,10 +288,14 @@ with the defining equation
 \[
   f(\tup x y)\defeq d(x,y).
 \]
-
-$C,d,x,y$ may contain extra implicit parameters $x_1,\ldots,x_n$ if they were obtained in some non-empty context; therefore, the fully explicit recursion schema is
-\[ f(x_1,\dots,x_n,\tup{x(x_1,\dots,x_n)}{y(x_1,\dots,x_n)}) \defeq
-d(x_1,\dots,x_n,\tup{x(x_1,\dots,x_n)}{y(x_1,\dots,x_n)}) \]
+%
+Note that $C$, $d$, $x$, and $y$ may contain extra implicit parameters $x_1,\ldots,x_n$ if they were obtained in some non-empty context; therefore, the fully explicit recursion schema is
+%
+\begin{narrowmultline*}
+ f(x_1,\dots,x_n,\tup{x(x_1,\dots,x_n)}{y(x_1,\dots,x_n)}) \defeq
+ \narrowbreak
+ d(x_1,\dots,x_n,\tup{x(x_1,\dots,x_n)}{y(x_1,\dots,x_n)}).
+\end{narrowmultline*}
 
 \subsection{Coproduct types}
 
@@ -305,13 +309,14 @@ $c_\inlsym(a)$, and $\inr(a)$ instead of $c_\inrsym(a)$:
 \end{itemize}
 %
 If we have $A$ and $B$ as above, $C : A+B \rightarrow \UU_m$, 
-$d:\tprd{x:A} C(\inl(x))$, and $d':\tprd{y:B} C(\inr(y))$,
+$d:\tprd{x:A} C(\inl(x))$, and $e:\tprd{y:B} C(\inr(y))$,
 then we can introduce a defined constant $f:\tprd{z:A+B}C(z)$ with the defining equations
 %
-\begin{align*}
-  f(\inl(x)) & \defeq d(x) \\
-  f(\inr(y)) & \defeq d'(y)
-\end{align*}
+\begin{equation*}
+  f(\inl(x)) \defeq d(x)
+  \qquad\text{and}\qquad
+  f(\inr(y)) \defeq e(y).
+\end{equation*}
 
 \subsection{The finite types}
 
@@ -347,10 +352,11 @@ $C : \N \rightarrow \UU_k $ we can introduce a defined constant $f:\tprd{x:\N}C(
 %
 with the defining equations
 %
-\begin{align*}
-  f(0) & \defeq d \\
-  f(\suc (x)) & \defeq e(x,f(x))
-\end{align*}
+\begin{equation*}
+  f(0) \defeq d
+  \qquad\text{and}\qquad
+  f(\suc (x)) \defeq e(x,f(x)).
+\end{equation*}
 
 \subsection{\texorpdfstring{$W$}{W}-types}
 
@@ -460,7 +466,7 @@ The judgment $\wfctx{\Gamma}$ formally expresses the fact that $\Gamma$ is well-
   {\wfctx{(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})}}
 \end{mathpar}
 %
-with a side condition for the second rule: $x_n$ must be distinct from $x_1, \ldots, x_{n-1}$.
+with a side condition for the second rule: the variable $x_n$ must be distinct from variables $x_1, \ldots, x_{n-1}$.
 
 \subsection{Structural rules}
 
@@ -649,7 +655,7 @@ as the \emph{definition} of the cartesian product.
   \inferrule*[right=$+$-\form]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i}}
   {\oftp\Gamma{A+B}{\UU_i}}
-\\\\
+\\
   \inferrule*[right=$+$-\intro${}_1$]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i} \\\\ \oftp\Gamma{a}{A}}
   {\oftp\Gamma{\inl(a)}{A+B}}
@@ -657,7 +663,7 @@ as the \emph{definition} of the cartesian product.
   \inferrule*[right=$+$-\intro${}_2$]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i} \\\\ \oftp\Gamma{b}{B}}
   {\oftp\Gamma{\inr(b)}{A+B}}
-\\\\
+\\
   \inferrule*[right=$+$-\elim]
   {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\\\
    \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
@@ -731,6 +737,7 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
      \oftp{\Gamma,\tmtp x{\N}}{C}{\UU_i} \\
      \oftp\Gamma{c_0}{C[0/x]} \\
      \oftp{\Gamma,\tmtp{x}\N,\tmtp y C}{c_s}{C[\suc(x)/x]}}
+  %
   \inferrule*[right=$\N$-\form]
   {\wfctx\Gamma}
   {\oftp\Gamma{\N}{\UU_i}}
@@ -744,7 +751,7 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
   {\oftp\Gamma{\suc(n)}{\N}}
 \and
   \inferrule*[right=$\N$-\elim]
-  {\premise \\\\ \oftp\Gamma{n}{\N}}
+  {\premise \\ \oftp\Gamma{n}{\N}}
   {\oftp\Gamma{\ind{\N}(x.C,c_0,x.y.c_s,n)}{C[n/x]}}
 \and
   \inferrule*[right=$\N$-\comp${}_1$]
@@ -752,10 +759,12 @@ We give the rules for natural numbers, following \autoref{sec:inductive-types}.
   {\jdeqtp\Gamma{\ind{\N}(x.C,c_0,x.y.c_s,0)}{c_0}{C[0/x]}}
 \and
   \inferrule*[right=$\N$-\comp${}_2$]
-  {\premise \\\\ \oftp\Gamma{n}{\N}}
-  {\Gamma\vdash \ind{\N}(x.C,c_0,x.y.c_s,\suc(n))
-   \hspace{2.3cm}\\ \hspace{2.3cm}\equiv
-   c_s[n,\ind{\N}(x.C,c_0,x.y.c_s,n)/x,y] : C[\suc(n)/x]}
+  {\premise \\ \oftp\Gamma{n}{\N}}
+  {\Gamma\vdash
+    {\begin{aligned}[t]
+      &\ind{\N}(x.C,c_0,x.y.c_s,\suc(n)) \\
+      &\quad \jdeq c_s[n,\ind{\N}(x.C,c_0,x.y.c_s,n)/x,y] : C[\suc(n)/x]
+    \end{aligned}}}
 \end{mathparpagebreakable}
 %
 In $\ind{\N}$, $x$ is bound in $C$, and $x$ and $y$ are bound in $c_s$.
@@ -816,7 +825,12 @@ abbreviations, but the situation is a bit subtler in the formalization.
 
 For example, consider function composition, which we takes $f:A\to B$ and
 $g:B\to C$ to $g\circ f:A\to C$. Somewhat unexpectedly, to make this work formally, $\circ$ must take as arguments not only $f$ and $g$, but also their types $A$, $B$, $C$:
-\[ \circ \defeq \lam{A:\UU_i}{B:\UU_i}{C:\UU_i}{g:B\to C}{f:A\to B}{x:A} g(f(x)) \]
+%
+\begin{narrowmultline*}
+  {\circ} \defeq \lam{A:\UU_i}{B:\UU_i}{C:\UU_i}
+  \narrowbreak
+  \lam{g:B\to C}{f:A\to B}{x:A} g(f(x)).
+\end{narrowmultline*}
 %
 From a practical perspective, we do not want to annotate each application of
 $\circ$ with $A$, $B$ and $C$, as the are usually quite easily guessed from surrounding information. We would like to simply write $g\circ f$.
@@ -837,96 +851,35 @@ In this section we state the additional axioms of homotopy type theory which dis
 univalence axiom, and higher inductive types. We state them in the style
 of the second presentation \autoref{sec:syntax-more-formally}, although the first presentation \autoref{sec:syntax-informally} could be used just as well.
 
-\subsection{Axioms}
+\subsection{Function extensionality and univalence}
 
-There are two basic ways of introducing axioms such as function extensionality,
-univalence, or any other axiom which does not introduce new syntax or new
-judgmental equalities: we could either add a primitive constant to the theory
-which inhabits the axiom, or we could simply prove all theorems in a context
-hypothesizing the presence of a variable that inhabits the axiom, as proposed in \autoref{sec:axioms}.
+There are two basic ways of introducing axioms which do not introduce new syntax or judgmental equalities (function extensionality and univalence are of this form):
+either add a primitive constant to inhabit the axiom, or prove all theorems which depend on the axiom by hypothesizing a variable that inhabits the axiom, cf.\ \autoref{sec:axioms}.
+While these are essentially equivalent, we opt for the former approach because we feel that the axioms of homotopy type theory are an essential part of the core theory.
 
-While these are essentially equivalent, we choose the former approach because these axioms of homotopy type theory are to be part of the core theory, always present. 
-
-We begin by recalling some auxiliary definitions.
-\begin{itemize}
-
-\item In \autoref{lem:map}, we defined the functorial action of $f:A\to B$ on a path
-$p:\id[A] xy$ as
-\[
-\apfunc f(p) \defeq \indidb{A} (x.y.p.\id[B] {f(x)} {f(y)}, \lamu{x:A} \refl {f(x)}, x,y,p ).
-\]
-
-\item In \autoref{ex:composition}, we defined the composition of $g:B\to C$ after
-$f:A\to B$ as
-\[ g \circ f \defeq \lamu{x:A} g(f(x)). \]
-
-\item In \autoref{defn:homotopy}, we said $f,f':A\to B$ are homotopic ($f\htpy f'$) if
-\[ \prd{x:A} \id[B] {f(x)} {g(x)} .\]
-
-\item In \autoref{defn:ishae}, we said $f:A\to B$ is a half-adjoint equivalence
-($\ishae(f)$) when
-\[
-\sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]} \prd{x:A} \apfunc{f}{(\eta x)} = \epsilon(fx).
-\]
-
-\item As in \autoref{sec:concluding-remarks}, we define $\isequiv(f) \defeq
-\ishae(f)$, and we say simply that $f$ is an equivalence. 
-
-\item We write $\eqv AB$
-for the type of equivalences $\sm{f:A\to B} \isequiv(f)$.
-
-\item In \eqref{eq:happly}, we defined $\happly_{f,g} : (\id fg)\to (f\htpy g)$ by
-\[
-\happly_{f,g}(p) \defeq
-  \indidb{\tprd{x:A} B} (
-    f'.g'.p'. {\prd{x:A} \id[B(x)]{f'(x)}{g'(x)}},
-    h'. \lamu{x:A} \refl {h'(x)},
-    f,g,p).
-\]
-\end{itemize}
+\autoref{axiom:funext} is formalized by introduction of a constant $\funext$ which
+asserts that $\happly$ is an equivalence:
 %
-Finally, we assert:
-
-\begin{defn}[Axiom of function extensionality (\autoref{axiom:funext})]
-We introduce a constant, $\funext$, which asserts that for each
-$f,g$, the term $\happly_{f,g}$ is an equivalence $\eqv{(\id fg)}{(f\htpy g)}$:
 \begin{mathparpagebreakable}
   \inferrule*[right=$\Pi$-\textsc{ext}]
   {\oftp\Gamma{f}{\tprd{x:A} B} \\
    \oftp\Gamma{g}{\tprd{x:A} B}}
   {\oftp\Gamma{\funext(f,g)}{\isequiv(\happly_{f,g})}}
 \end{mathparpagebreakable}
-\end{defn}
-
-\begin{itemize}
-\item In \eqref{eq:uidtoeqv}, we defined the conversion from paths $\id[\UU_i] AB$
-to equivalences $\eqv AB$ as
-\begin{multline}
-\idtoeqv_{A,B} \defeq\\
-\lamu{p:\id[\UU_i] A B}
-\indidb{\UU_i}(
-      A'.B'.p'.(\eqv{A'}{B'}),
-      A'.{\tup {\lamu{x:A'} x}
-              {\tup {\lamu{x:A'} x}
-                    {\tup {\lamu{x:A'} \refl x}
-                          {\tup {\lamu{x:A'} \refl x}
-                                {\lamu{x:A'} \refl {\refl x}}}}}},
-      A,B,p).
-\end{multline}
-\end{itemize}
 %
-We assert:
+The definitions of $\happly$ and $\isequiv$ can be found in~\eqref{eq:happly} and
+\autoref{sec:concluding-remarks}, respectively.
 
-\begin{defn}[Univalence axiom (\autoref{axiom:univalence})]
-We introduce a  constant, $\univalence$, which asserts that for each $A,B$, the
-term $\idtoeqv_{A,B}$ is an equivalence $\eqv{(\id[\UU_i] AB)}{(\eqv AB)}$:
+\autoref{axiom:univalence} is formalized in a similar fashion, too:
+%
 \begin{mathparpagebreakable}
   \inferrule*[right=$\UU_i$-\textsc{univ}]
   {\oftp\Gamma{A}{\UU_i} \\
    \oftp\Gamma{B}{\UU_i}}
   {\oftp\Gamma{\univalence(A,B)}{\isequiv(\idtoeqv_{A,B})}}
 \end{mathparpagebreakable}
-\end{defn}
+%
+The definition of $\idtoeqv$ can be found in~\eqref{eq:uidtoeqv}.
 
 \subsection{The circle}
 
@@ -1047,8 +1000,8 @@ can explicitly describe all normal forms:
 Logical consistency (of the system in \autoref{sec:syntax-informally}) follows
 immediately: if we had $a:\emptyt$ in the empty context, then by
 \autoref{thm:conversion-preserves-typing,thm:strong-normalization}, $a$
-simplifies to a normal term $a':\emptyt$. But we can see by
-\autoref{lem:normal-forms} that no such term exists.
+simplifies to a normal term $a':\emptyt$. But by
+\autoref{lem:normal-forms} no such term exists.
 
 \begin{cor}
  The system in \autoref{sec:syntax-informally} is logically consistent.

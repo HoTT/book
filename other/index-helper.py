@@ -90,7 +90,7 @@ def sortkey(word):
 
 def filter_word(w, fs):
     for r in fs:
-        if re.match(r, w, flags = re.IGNORECASE): return True
+        if re.search(r, w, flags = re.IGNORECASE): return True
     return False
 
 for key in sorted(words.keys(), key = sortkey):

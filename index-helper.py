@@ -41,9 +41,14 @@ for fn in sys.argv[1:]:
         else:
             words[key] = set([w[0]])
 
-#for key in sorted(words.keys()):
-#    print (key, words[key])
+# Macros which appear somewhere but are not in the symbols index, macros.tex,
+# or configuration files.
+macros -= antimacros
 
-for macro in sorted(macros - antimacros):
-    print (macro)
+# Uncomment to see the macros.
+#for macro in sorted(macros - antimacros):
+#    print (macro)
+
+for key in sorted(words.keys()):
+    print "%s : %s" % (key, " ".join(words[key]))
 

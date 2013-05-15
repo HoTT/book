@@ -78,8 +78,8 @@ constructions more elegant, and it works constructively as well as classically. 
 % 
 \begin{enumerate}
 \item \emph{inhabited}: there are $q \in L$ and $r \in U$,
-\item \emph{rounded:} $q \in L \Leftrightarrow \exis {r \in \Q} q < r \in L$
-  and $r \in U \Leftrightarrow \exis {q \in \Q} U \ni q < r$,
+\item \emph{rounded:} $q \in L \Leftrightarrow \exis {r \in \Q} q < r \land r \in L$
+  and $r \in U \Leftrightarrow \exis {q \in \Q} q \in U \land q < r$,
 \item \emph{disjoint:} $\lnot (q \in L \land q \in U)$, and
 \item \emph{located:} $q < r \Rightarrow q \in L \lor r \in U$.
 \end{enumerate}
@@ -933,7 +933,7 @@ As a paradigmatic example, $(\RC,\closesym)$-recursion allows us to extend funct
   for all $\epsilon:\Qp$ and $u,v:\RC$..
 \end{defn}
 
-In particular, note that by the first constructor of $\closesym$, if $f:\Q\to\Q$ is Lipschitz in the obvious sense, then so is the composite $\Q\xrightarrow{f} \Q \hookrightarrow \RC$.
+In particular, note that by the first constructor of $\closesym$, if $f:\Q\to\Q$ is Lipschitz in the obvious sense, then so is the composite $\Q\xrightarrow{f} \Q \to \RC$.
 
 \begin{lem}\label{RC-extend-Q-Lipschitz}
   Suppose $f : \Q \to \RC$ is Lipschitz with constant $L : \Qp$.
@@ -1004,7 +1004,7 @@ In order to characterize $\closesym$ more precisely, we will define a family of 
   \end{align}
   Moreover, we have
   \begin{gather}
-    (u \approx_\epsilon v) \leftrightarrow \exis{\theta:\Qp} (u \approx_{\epsilon-\theta} v) \label{RC-sim-rounded}\\
+    (u \approx_\epsilon v) \Leftrightarrow \exis{\theta:\Qp} (u \approx_{\epsilon-\theta} v) \label{RC-sim-rounded}\\
     (u \approx_\epsilon v) \to (v\close\delta w) \to (u\approx_{\epsilon+\delta} w)\label{eq:RC-sim-rtri}\\ 
     (u \close\epsilon v) \to (v\approx_\delta w) \to (u\approx_{\epsilon+\delta} w)\label{eq:RC-sim-ltri}.
   \end{gather}
@@ -1034,7 +1034,7 @@ Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the tr
   \begin{multline*}
     A \defeq\; \Bigg\{ \hapname :\RC\to\Qp\to\prop \;\bigg|\; \\
     \Big(\fall{u:\RC}{\epsilon:\Qp}
-    \big((\hapx_\epsilon u) \leftrightarrow \exis{\theta:\Qp} (\hapx_{\epsilon-\theta} u)\big)\Big)  \\
+    \big((\hapx_\epsilon u) \Leftrightarrow \exis{\theta:\Qp} (\hapx_{\epsilon-\theta} u)\big)\Big)  \\
     \land \Big(\fall{u,v:\RC}{\eta,\epsilon:\Qp} (u\close\epsilon v) \to\\
     \big((\hapx_\eta u) \to (\hapx_{\eta+\epsilon} v) \big) \land \big((\hapx_\eta v) \to (\hapx_{\eta+\epsilon} u) \big)\Big)\Bigg\}
   \end{multline*}
@@ -1049,7 +1049,7 @@ Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the tr
   We observe that these relations are separated.
   For assuming
   \narrowequation{\fall{\epsilon:\Qp} (\hapname \bsim_\epsilon \hapbname),}
-  to show $\hapname = \hapbname$ it suffices to show $(\hapx_\epsilon u) \leftrightarrow (\hapxb_\epsilon u)$ for all $u:\RC$.
+  to show $\hapname = \hapbname$ it suffices to show $(\hapx_\epsilon u) \Leftrightarrow (\hapxb_\epsilon u)$ for all $u:\RC$.
   But $\hapx_\epsilon u$ implies $\hapx_{\epsilon-\theta} u$ for some $\theta$, by roundedness, which together with $\hapname \bsim_\epsilon \hapbname$ implies $\hapxb_\epsilon u$; and the converse is identical.
 
   Now the first two data the recursion principle requires are the following.
@@ -1068,7 +1068,7 @@ Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the tr
   \begin{narrowmultline*}
     C \defeq
     \bigg\{ \tapname :\Qp\to\prop \;\;\Big|\;\; \narrowbreak
-    \fall{\epsilon:\Qp} \Big((\tap\epsilon) \leftrightarrow \exis{\theta:\Qp} (\tap{\epsilon-\theta})\Big)\bigg\}
+    \fall{\epsilon:\Qp} \Big((\tap\epsilon) \Leftrightarrow \exis{\theta:\Qp} (\tap{\epsilon-\theta})\Big)\bigg\}
   \end{narrowmultline*}
   We take the required family of relations to be the remnant of the triangle inequality:
   \begin{narrowmultline*}
@@ -1354,6 +1354,7 @@ We may also apply \autoref{RC-binary-nonexpanding-extension} to the functions $\
 \Q \to \Q$ and $\max : \Q \times \Q \to \Q$, which turns $\RC$ into a lattice. The partial
 order $\leq$ on $\RC$ is defined in terms of $\max$ as
 %
+\symlabel{leq-RC}
 \begin{equation*}
   (u \leq v) \defeq (\max(u, v) = v).
 \end{equation*}
@@ -1365,6 +1366,7 @@ to $\RC$.
 Another function which extends to $\RC$ by the same method is the absolute value $|{-}|$.
 Again, it has the expected properties because they transfer from $\Q$ to $\RC$.
 
+\symlabel{lt-RC}
 From $\leq$ we get the strict order $<$ by
 %
 \begin{equation*}
@@ -1962,6 +1964,8 @@ interval $\setof{ x : \R | q < x < r}$, we may safely use the same notation $(q,
 both. Intersections and inclusions of intervals are expressible in terms of their
 endpoints:
 %
+\symlabel{interval-intersection}
+\symlabel{interval-subset}
 \begin{align*}
   (q, r) \cap (s, t) &\ \defeq\  (\max(q, s), \min(r, t)),\\
   (q, r) \subseteq (s, t) &\ \defeq\ (q < r \Rightarrow s \leq q < r \leq t).
@@ -2514,7 +2518,7 @@ Also as there, we will have to simultaneously prove a couple of essential proper
     \fall{y:\NO} \Big( (\hleb y) \to (\hlt y) \Big)
     %\land \Big( (\hltb y) \to (\hlt y) \Big)
   \end{align*}
-  Note that $\ble$ is antisymmetric, since if $\hlname \ble \hlbname$ and $\hlbname \ble \hlname$, then $(\hleb y) \leftrightarrow (\hle y)$ and $(\hltb y) \leftrightarrow (\hlt y)$ for all $y$, hence $\hlname=\hlbname$ by univalence for mere propositions and function extensionality.
+  Note that $\ble$ is antisymmetric, since if $\hlname \ble \hlbname$ and $\hlbname \ble \hlname$, then $(\hleb y) \Leftrightarrow (\hle y)$ and $(\hltb y) \Leftrightarrow (\hlt y)$ for all $y$, hence $\hlname=\hlbname$ by univalence for mere propositions and function extensionality.
   Moreover, to say that a function $\NO\to A$ preserves inequalities is exactly to say that, when regarded as a pair of binary relations on $\NO$, it satisfies ``transitivity on the left'' (the left column of~\eqref{eq:NO-codes-transitivity}).
 
   Now for the primary clause of the recursion, we assume given $x$ defined by a cut, and relations $(x^L \prec -)$, $(x^R \prec -)$, $(x^L \preceq -)$, and $(x^R \preceq -)$ for all $L$ and $R$, of which the strict ones imply the non-strict ones, which satisfy transitivity on the right, and such that
@@ -2735,7 +2739,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
   %
   Suppose we remove the boundedness condition in \autoref{defn:dedekind-reals}.
   Then we obtain the \define{extended reals} which contain $-\infty \defeq
-  (\emptyset, \Q)$ and $\infty \defeq (\Q, \emptyset)$. Which definitions of arithmetical
+  (\emptyt, \Q)$ and $\infty \defeq (\Q, \emptyt)$. Which definitions of arithmetical
   operations on cuts still make sense for extended reals? What algebraic structure do we
   get?
 \end{ex}

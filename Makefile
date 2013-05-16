@@ -53,6 +53,7 @@ $(TOPPDFFILES) : %.pdf : %.tex cover.png $(TEXFILES) references.bib
 	then latexmk -pdf $< ;\
 	else pdflatex $< && \
 	     bibtex $< && \
+	     makeindex $< && \
 	     pdflatex $< ;\
 	     pdflatex $< ;\
 	     echo "HINT: If you think this took a long time you should install latexmk." ;\

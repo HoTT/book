@@ -49,7 +49,7 @@ all: $(TOPPDFFILES) exercise_solutions.pdf
 
 # Main targets
 $(TOPPDFFILES) : %.pdf : %.tex cover.png $(TEXFILES) references.bib
-	if which latexmk > /dev/null ;\
+	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $< ;\
 	else pdflatex $< && \
 	     bibtex $(patsubst %.tex,%,$<) && \
@@ -67,13 +67,13 @@ main.labels: $(BOOKAUXFILES)
 	cat $^ | grep ^.newlabel >$@
 
 exercise_solutions.pdf: exercise_solutions.tex main.labels
-	if which latexmk > /dev/null;\
+	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi
 
 clean:
 	rm -f *~ *.aux {exercise_solutions,hott-*}.{out,log,pdf,fls,fdb_latexmk,aux,brf,bbl,idx,ilg,ind,toc}
-	if which latexmk > /dev/null; then latexmk -C hott-*.tex; fi
+	if which latexmk > /dev/null 2>&1 ; then latexmk -C hott-*.tex; fi
 
 # list the tex files explicitly because:
 #   - we want to tag them in the same order they appear in the book, so tag search is in logical sequence

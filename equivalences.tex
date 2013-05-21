@@ -32,7 +32,8 @@ Before we examine the different notions of equivalence, however, we give a littl
 \section{Quasi-inverses}
 \label{sec:quasi-inverses}
 
-We have said that $\qinv(f)$ is unsatisfactory because it is not a mere proposition, but we have given no evidence of that.
+We have said that $\qinv(f)$ is unsatisfactory because it is not a mere proposition, whereas we would rather that a given function can ``be an equivalence'' in at most one way.
+However, we have given no evidence that $\qinv(f)$ is not a mere proposition.
 In this section we exhibit a specific counterexample.
 
 \begin{lem}\label{lem:qinv-autohtpy}
@@ -49,9 +50,9 @@ In this section we exhibit a specific counterexample.
   \sm{g:A\to A} \big((g \htpy \idfunc[A]) \times (g \htpy \idfunc[A])\big).
   \]
   By function extensionality, this is equivalent to
-  \[ \sm{g:A\to A} \big((g = \idfunc[A]) \times (g = \idfunc[A])\big)
+  \[ \sm{g:A\to A} \big((g = \idfunc[A]) \times (g = \idfunc[A])\big).
   \]
-  and thus to
+  And by \autoref{ex:sigma-assoc}, this is equivalent to
   \[ \sm{h:\sm{g:A\to A} (g = \idfunc[A])} (\proj1(h) = \idfunc[A])
   \]
   However, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible with center $\idfunc[A]$, therefore by \autoref{thm:omit-contr} this type is equivalent to $\idfunc[A] = \idfunc[A]$.
@@ -82,8 +83,8 @@ This provides some motivation for the following.
 \begin{proof}
   Let $g:\prd{x:A} \brck{a=x}$ be as given by~\ref{item:autohtpy2}.  First we
   observe that each type $\id[A]xy$ is a set.  For since being a set is a mere
-  proposition, we may apply induction on truncation and assume that $g(x)=\bproj
-  p$ and $g(y)=\bproj q$ for $p:a=x$ and $q:a=y$, in which case composing with
+  proposition, we may apply the induction principle of propositional truncation, and assume that $g(x)=\bproj
+  p$ and $g(y)=\bproj q$ for $p:a=x$ and $q:a=y$.  In this case, composing with
   $p$ and $\opp{q}$ yields an equivalence $\eqv{(x=y)}{(a=a)}$.  But $(a=a)$ is
   a set by~\ref{item:autohtpy1}, so $(x=y)$ is also a set.
 
@@ -100,7 +101,7 @@ This provides some motivation for the following.
   truncation and assume that $g(x) = \bproj p$ for some $p:a=x$.
   Now suppose given $(r,h)$ and $(r',h')$ in $B(x)$; then we have
   \[ h(p) \ct \opp{h'(p)} : r = r'. \]
-  It remains to show that $h$ is identified with $h'$ when transported along this equality, which by transport in identity types and function types, reduces to showing
+  It remains to show that $h$ is identified with $h'$ when transported along this equality, which by transport in identity types and function types (\autoref{sec:compute-paths,sec:compute-pi}), reduces to showing
   \[ h(s) = h(p) \ct \opp{h'(p)} \ct h'(s) \]
   for any $s:a=x$.
   But each side of this is an equality between elements of $(x=x)$, so it follows from our above observation that $(x=x)$ is a set.
@@ -119,16 +120,20 @@ This provides some motivation for the following.
 \begin{proof}
   It suffices to exhibit a type $X$ such that $\prd{x:X} (x=x)$ is not a mere proposition.
   Define $X\defeq \sm{A:\type} \brck{\bool=A}$, as in the proof of \autoref{thm:no-higher-ac}.
-  It will suffice to exhibit an $f:\prd{x:X} (x=x)$ which is unequal to the function $x\mapsto \refl{x}$.
+  It will suffice to exhibit an $f:\prd{x:X} (x=x)$ which is unequal to $\lam{x} \refl{x}$.
 
   Let $a \defeq (\bool,\bproj{\refl{\bool}}) : X$, and let $q:a=a$ be the path corresponding to the nonidentity equivalence $e:\eqv\bool\bool$ defined by $e(\btrue)\defeq\bfalse$ and $e(\bfalse)\defeq\btrue$.
   We would like to apply \autoref{lem:autohtpy} to build an $f$.
-  By definition of $X$, equalities in subset types, and univalence, we have $\eqv{(a=a)}{(\eqv{\bool}{\bool})}$, which is a set, so~\ref{item:autohtpy1} holds.
+  By definition of $X$, equalities in subset types (\autoref{subsec:prop-subsets}), and univalence, we have $\eqv{(a=a)}{(\eqv{\bool}{\bool})}$, which is a set, so~\ref{item:autohtpy1} holds.
   Similarly, by definition of $X$ and equalities in subset types we have~\ref{item:autohtpy2}.
   Finally, \autoref{ex:eqvboolbool} implies that every equivalence $\eqv\bool\bool$ is equal to either $\idfunc[\bool]$ or $e$, so we can show~\ref{item:autohtpy3} by a four-way case analysis.
+
+  Thus, we have $f:\prd{x:X} (x=x)$ such that $f(a) = q$.
+  Since $e$ is not equal to $\idfunc[\bool]$, $q$ is not equal to $\refl{a}$, and thus $f$ is not equal to $\lam{x} \refl{x}$.
+  Therefore, $\prd{x:X} (x=x)$ is not a mere proposition.
 \end{proof}
 
-More generally, \autoref{lem:autohtpy} implies that any ``Eilenberg--Mac Lane space'' $K(G,1)$, where $G$ is an abelian group, will provide a counterexample; see \autoref{cha:homotopy}.
+More generally, \autoref{lem:autohtpy} implies that any ``Eilenberg--Mac Lane space'' $K(G,1)$, where $G$ is a nontrivial abelian group, will provide a counterexample; see \autoref{cha:homotopy}.
 The type $X$ we used turns out to be equivalent to $K(\mathbb{Z}_2,1)$.
 In \autoref{cha:hits} we will see that the circle $\Sn^1 = K(\mathbb{Z},1)$ is another easy-to-describe example.
 
@@ -175,7 +180,7 @@ For $f : A \to B$, $g:B\to A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \c
   It suffices to show one direction; the other one is obtained by swapping $A/B$, $f/g$, and $\eta/\epsilon$.
   Let $\tau : \prd{x:A}\;\map{f}{\eta x} = \epsilon(fx)$.
   Fix $y : B$.
-  Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram :
+  Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram of paths:
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix@C=3pc{gfgfgy \ar@{=}^-{gfg(\epsilon y)}[r] \ar@{=}_{g(\epsilon (fgy))}[d] & gfgy \ar@{=}^{g(\epsilon y)}[d] \\ gfgy \ar@{=}_{g(\epsilon y)}[r] & gy
   }\]

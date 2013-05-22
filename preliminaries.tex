@@ -106,8 +106,8 @@ This is perhaps also an appropriate place to mention that the common mathematica
 Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
 For example, we may construct an object $m + n : \nat$ under the assumptions that $m,n : \nat$.
 Another example is that assuming $A$ is a type, $x,y : A$, and $p : \id[A]{x}{y}$, we may construct an element $p^{-1} : \id[A]{y}{x}$.
-The collection of all such assumptions is called the \define{context};
-\indexdef{context}
+The collection of all such assumptions is called the \define{context};%
+\index{context}
 from a topological point of view it may be thought of as a ``parameter space''.
 In fact, technically the context must be an ordered list of assumptions, since later assumptions may depend on previous ones: the assumption $x:A$ can only be made \emph{after} the assumptions of any variables appearing in the type $A$.
 
@@ -122,6 +122,8 @@ Aside from some fairly obvious rules (such as the fact that judgmentally equal t
 Each type former consists of a way to construct types (possibly making use of previously constructed types), together with rules for the construction and behavior of elements of that type.
 In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
 
+\index{axiom!versus rules}%
+\index{rule!versus axioms}%
 An important aspect of the type theory presented in this chapter is that it consists entirely of \emph{rules}, without any \emph{axioms}.
 In the description of deductive systems in terms of judgments, the \emph{rules} are what allow us to conclude one judgment from collection of others, while the \emph{axioms} are the judgments we are given at the outset.
 If we think of a deductive system as a formal game, then the rules are the rules of the game, while the axioms are the starting position.
@@ -141,10 +143,11 @@ In this chapter, however, we confine ourselves to a traditional rule-based type 
 \section{Function types}
 \label{sec:function-types}
 
-Given types $A$ and $B$, we can construct the type $A \to B$ of functions
+Given types $A$ and $B$, we can construct the type $A \to B$ of \define{functions}
 \indexdef{function}%
 \indexsee{map}{function}%
 with domain $A$ and codomain $B$.
+We also sometimes refer to functions as \define{maps}.
 \index{domain!of function}%
 \index{codomain!of function}%
 \index{function!domain of}%
@@ -322,9 +325,11 @@ indices implicit.  Writing universes in this style is referred to as
 
 To model a collection of types varying over a given type $A$, we use functions $B : A \to \UU$  whose
 codomain is a universe. These functions are called
-\define{families of types};
+\define{families of types} (or sometimes \emph{dependent types});
 \indexdef{family!of types}%
 \indexdef{type!family of}%
+\indexdef{type!dependent}%
+\indexdef{dependent!type}%
 they correspond to families of sets as used in
 set theory. An example of a family is the family of finite sets $\Fin
 : \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.
@@ -456,12 +461,11 @@ Then instead of defining functions such as $\fst$ and $\snd$ directly by a defin
   \snd &\defeq \rec{A\times B}(B, \lam{a}{b} b).
 \end{align*}
 We refer to the function $\rec{A\times B}$ as the \define{recursor}
-\indexdef{recursor!for cartesian product}%
-\indexdef{cartesian product!recursor for}%
+\indexsee{recursor}{recursion principle}%
 for product types.
 We may also speak of the \define{recursion principle}
-\indexdef{recursion principle!for cartesian product}%
-\indexdef{cartesian product!recursion principle for}%
+\index{recursion principle!for cartesian product}%
+\index{cartesian product!recursion principle for}%
 for cartesian products, meaning the fact that we can define a function $f:A\times B\to C$ as above by giving its value on pairs.
 The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.
 It comes the fact that product types are a degenerate example of a general framework for inductive types, and for types such as
@@ -490,7 +494,7 @@ function
 with defining equation
 \[ f(\tup x y) \defeq g(x)(y). \] 
 For example, in this way we can prove that every element of $A\times B$ is a pair; this is called the principle of \define{surjective pairing}.
-\indexdef{surjective!pairing}%
+\index{surjective!pairing, principle of}%
 Specifically, we can construct a function
 \[ \spr : \prd{x:A \times B} (\id[A\times B]{\tup{\fst {(x)}}{\snd {(x)}}}{x}). \]
 Here we are using the identity type, which we are going to introduce below in \autoref{sec:identity-types}.
@@ -514,17 +518,15 @@ Thus, if we do as we did above and apply this principle once in the universal ca
 with the defining equation 
 \[ \ind{A\times B}(C,g,\tup{a}{b}) \defeq g(a)(b). \]
 Similarly, we may speak of a dependent function defined on pairs being obtained from the \define{induction principle}
-\indexdef{cartesian product!induction principle for}%
-\indexdef{induction principle!for cartesian product}%
+\index{cartesian product!induction principle for}%
+\index{induction principle!for cartesian product}%
 of the cartesian product.
 It is easy to see that the recursor is just the special case of induction
 in the case that the family $C$ is constant.
 Because induction describes how to use an element of the product type, induction is also called the \define{(dependent) eliminator},
-\indexdef{cartesian product!dependent eliminator for}%
-\indexdef{eliminator!dependent!for cartesian product}%
+\indexsee{eliminator!dependent}{induction principle}%
 and recursion the \define{non-dependent eliminator}.
-\indexdef{cartesian product!non-dependent eliminator for}%
-\indexdef{eliminator!non-dependent!for cartesian product}%
+\indexsee{eliminator!non-dependent}{recursion principle}%
 
 % We can read induction propositionally as saying that a property which
 % is true for all pairs holds for all elements of the product type.
@@ -564,7 +566,9 @@ ordinary cartesian product type:
 \[ (\sm{x:A} B) \jdeq (A \times B).\]
 All the constructions on $\Sigma$-types arise as straightforward generalisations of the ones for product types, with dependent functions often replacing non-dependent ones.
 
-For instance, the recursion principle says that to define a non-dependent function out of a $\Sigma$-type
+For instance, the recursion principle%
+\index{recursion principle!for dependent pair type}
+says that to define a non-dependent function out of a $\Sigma$-type
 $f : (\sm{x:A} B(x)) \to C$, we provide a function 
 $g : \prd{x:A} B(x) \to C$, and then we can define $f$ via the defining
 equation
@@ -587,7 +591,9 @@ However, since the type of the second component of a pair
 is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
 \symlabel{defn:dependent-proj2}
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
-Thus we need the \emph{induction} principle for $\Sigma$-types (the ``dependent eliminator'').
+Thus we need the \emph{induction} principle%
+\index{induction principle!for dependent pair type}
+for $\Sigma$-types (the ``dependent eliminator'').
 This says that to construct a dependent function out of a $\Sigma$-type into a family $C : (\sm{x:A} B(x)) \to \UU$, we need a function
 \[ g : \prd{a:A}{b:B(x)} C(\tup{a}{b}). \]
 We can then derive a function 
@@ -646,7 +652,7 @@ as required.
 If we read $\Pi$ as ``for all'' and $\Sigma$ as ``there exists'', then the type of the function $\ac$ expresses:
 \emph{if for all $x:A$ there is a $y:B$ such that $R(x,y)$, then there is a function $f : A \to B$ such that for all $x:A$ we have $R(x,f(x))$}.
 Since this sounds like a version of the axiom of choice, the function \ac has traditionally been called the \define{type-theoretic axiom of choice}.
-\indexdef{axiom!of choice!type-theoretic}%
+\index{axiom!of choice!type-theoretic}%
 However, no choice is actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness.
 In \autoref{sec:axiom-choice} we will give another formulation of an ``axiom of choice'' which is closer to the usual one.
 
@@ -658,6 +664,7 @@ Given $A,B:\UU$, we introduce their \define{coproduct} type $A+B:\UU$.
 \indexdef{coproduct}%
 \indexdef{type!coproduct of}%
 \indexsee{disjoint sum}{coproduct}%
+\indexsee{disjoint union}{coproduct}%
 This corresponds to the \emph{disjoint union} in set theory, and we may also use that name for it.
 In type theory, as was the case with functions and products, the coproduct must be a fundamental construction, since there is no previously given notion of ``union of types''.
 We also introduce a
@@ -668,6 +675,7 @@ nullary version: the \define{empty type $\emptyt:\UU$}.
 There are two ways to construct elements of $A+B$, either as $\inl(a) : A+B$ for $a:A$, or as
 $\inr(b):A+B$ for $b:B$. There are no ways to construct elements of the empty type. 
 
+\index{recursion principle!for coproduct}
 To construct a non-dependent function $f : A+B \to C$, we need 
 functions $g_0 : A \to C$ and $g_1 : B \to C$. Then $f$ is defined
 via the defining equations
@@ -685,6 +693,7 @@ with the defining equations
 \rec{A+B}(C,g_0,g_1,\inr(b)) & \defeq & g_1(b)
 \end{eqnarray*}
 
+\index{recursion principle!for empty type}
 We can always construct a function $f : \emptyt \to C$ without
 having to give any defining equations, because there are no elements of \emptyt on which to define $f$.
 Thus, the recursor for $\emptyt$ is
@@ -693,6 +702,7 @@ Thus, the recursor for $\emptyt$ is
 which constructs the canonical function from the empty type to any other type.
 Logically, it corresponds to the principle \emph{ex falso quod libet}. 
 
+\index{induction principle!for coproduct}
 To construct a dependent function $f:\prd{x:A+B}C(x)$ out of a coproduct, we assume as given the family 
 $C: (A + B) \to \UU$, and 
 require 
@@ -716,6 +726,7 @@ We package this scheme into the induction principle for coproducts:
 As before, the recursor arises in the case that the family $C$ is
 constant. 
 
+\index{induction principle!for empty type}
 The induction principle for the empty type
 \symlabel{defn:induction-emptyt}
 \[ \ind{\emptyt} : \prd{C:\emptyt \to \UU}{z:\emptyt} C(z) \]
@@ -738,6 +749,7 @@ To construct an element of $\neg A$ is the same thing as to construct a function
 \section{The type of booleans}
 \label{sec:type-booleans}
 
+\index{type!of booleans}
 The type of booleans $\bool:\UU$ is intended to have exactly two elements 
 $\btrue,\bfalse : \bool$. It is clear that we could construct this
 type out of coproduct and unit types as $\unit + \unit$. However,
@@ -745,6 +757,7 @@ since it is used frequently, we give the explicit rules here.
 Indeed, we are going to observe that we can also go the other way
 and derive binary coproducts from $\Sigma$-types and $\bool$.
 
+\index{recursion principle!for type of booleans}
 To derive a function $f : \bool \to C$ we need $c_0,c_1 : C$ and
 add the defining equations
 \begin{eqnarray*}
@@ -761,6 +774,7 @@ with the defining equations
   \rec{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1
 \end{eqnarray*}
 
+\index{induction principle!for type of booleans}
 Given $C : \bool \to \UU$, to derive a dependent function 
 $f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which case we can give the defining equations
 \begin{eqnarray*}
@@ -826,12 +840,15 @@ In particular, the type $A \to \bool$ is not generally the power set of $A$; it 
 \section{The natural numbers}
 \label{sec:inductive-types}
 
+\index{type!of natural numbers}
+\index{natural numbers}
 The rules we have introduced so far do not allow us to construct any infinite types.
 The simplest infinite type we can think of (and which is also, of course, extremely useful) is the type $\nat : \UU$ of natural numbers.
 The elements of $\nat$ are constructed using $0 : \nat$ and the successor operation $\suc : \nat \to \nat$.
 When denoting natural numbers, we adopt the usual decimal notation $1 \defeq \suc(0)$, $2 \defeq \suc(1)$, $3 \defeq \suc(2)$, \dots.
 
 The essential property of the natural numbers is that we can define functions by recursion and perform proofs by induction --- where now the words ``recursion'' and ``induction'' have a more familiar meaning.
+\index{recursion principle!for natural numbers}%
 To construct a non-dependent function $f : \nat \to C$ out of the natural numbers by recursion, it is enough to provide a starting point $c_0 : C$ and a ``next step'' function $c_s : \nat \to C \to C$.
 This gives rise to $f$ with the defining equations
 \begin{eqnarray*}
@@ -900,6 +917,7 @@ Of course, all functions definable only using the primitive recursion principle 
 (The presence of higher function types does, however, mean we can define more than the usual primitive recursive functions; see e.g.~\autoref{ex:ackermann}.)
 This is appropriate in constructive mathematics; in \autoref{sec:intuitionism,sec:axiom-choice} we will see how to augment type theory so that we can define more general mathematical functions.
 
+\index{induction principle!for natural numbers}
 We now follow the same approach as for other types, generalizing primitive recursion to dependent functions to obtain an \emph{induction principle}.
 Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(0)$, and a function $c_s : \prd{n:\nat} C(n) \to C(\suc(n))$; then we can construct $f : \prd{n:\nat} C(n)$ with the defining equations:
 \begin{eqnarray*}
@@ -920,6 +938,7 @@ In particular, a \emph{property} of natural numbers is represented by a family o
 From this point of view, the above induction principle says that if we can prove $P(0)$, and if for any $n$ we can prove $P(\suc(n))$ assuming $P(n)$, then we have $P(n)$ for all $n$.
 This is, of course, exactly the usual principle of proof by induction on natural numbers.
 
+\index{associativity!of addition}
 As an example consider how we might represent an explicit proof that $+$ is associative.
 (We will not actually write out proofs in this style, but it serves as a useful example for understanding how induction is represented formally in type theory.)
 To derive
@@ -990,7 +1009,7 @@ where $c_s'$ is obtained from $c_s$ by replacing all occurrences of ``$f(n)$'' b
 
 This style of defining functions by recursion (or, more generally, dependent functions by induction) is so convenient that we frequently adopt it.
 It is called definition by \define{pattern matching}.
-\indexdef{pattern matching}%
+\index{pattern matching}%
 Of course, it is very similar to how a computer programmer may define a recursive function with a body that literally contains recursive calls to itself.
 However, unlike the programmer, we are restricted in what sort of recursive calls we can make: in order for such a definition to be re-expressible using the recursion principle, the function $f$ being defined can only appear in the body of $f(\suc(n))$ as part of the composite symbol ``$f(n)$''.
 Otherwise, we could write nonsense functions such as
@@ -1010,6 +1029,8 @@ Only then do we introduce an appropriate sort of ``pattern matching'' which can 
 \label{sec:pat}
 
 As mentioned in the introduction, to show that a proposition is true in type theory corresponds to exhibiting an element of the type corresponding to that proposition.
+\index{evidence!of the truth of a proposition}%
+\index{witness!to the truth of a proposition}%
 We regard the elements of this type as \emph{evidence} or \emph{witnesses} that the proposition is true. (They are sometimes even called \emph{proofs}, but this terminology can be misleading, so we generally avoid it.)
 In general, however, we will not construct witnesses explicitly; instead we present the proofs in ordinary mathematical prose, in such a way that \emph{in principle} they could be translated into an element of a type.
 This is no different from reasoning in classical set theory, where we don't expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory.
@@ -1094,17 +1115,17 @@ For example, the rule
 \emph{``If not ($A$ and $B$), then (not $A$) or (not $B$)''} is not valid: we cannot, in general, construct an element of the corresponding type
 \[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt).\]
 This reflects the fact that the ``natural'' logic of type theory is \emph{constructive}, as discussed in the introduction.
-Formally, this means it does not include certain classical principles, such as the law of excluded middle (LEM) or proof by contradiction\footnote{Note that the pattern ``assume $A$ and derive a contradiction'' is perfectly valid in constructive logic as a way (in fact, \emph{the} way) to prove ``not $A$''; indeed, we used it in our example above. The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.},
+Formally, this means it does not include certain classical principles, such as the law of excluded middle (\LEM{}) or proof by contradiction\footnote{Note that the pattern ``assume $A$ and derive a contradiction'' is perfectly valid in constructive logic as a way (in fact, \emph{the} way) to prove ``not $A$''; indeed, we used it in our example above. The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.},
 and others which depend on them.
 
 Philosophically, constructive logic is so-called because it confines itself to constructions that can be carried out \emph{effectively}, which is to say those with a computational meaning.
 Without being too precise, this means there is some sort of algorithm specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true).
-This requires omission of LEM, since there is no \emph{effective} procedure for deciding whether a proposition is true or false.
+This requires omission of \LEM{}, since there is no \emph{effective} procedure for deciding whether a proposition is true or false.
 
 The constructivity of type-theoretic logic means it has an intrinsic computational meaning, which is of interest to computer scientists.
 It also means that type theory provides \emph{axiomatic freedom}.
-For example, while by default there is no construction witnessing LEM, the logic is still compatible with the existence of one (see \autoref{sec:intuitionism}).
-Thus, because type theory does not \emph{deny} LEM, we may consistently add it as an assumption, and work conventionally without restriction.
+For example, while by default there is no construction witnessing \LEM{}, the logic is still compatible with the existence of one (see \autoref{sec:intuitionism}).
+Thus, because type theory does not \emph{deny} \LEM{}, we may consistently add it as an assumption, and work conventionally without restriction.
 In this respect, type theory enriches, rather than constrains, conventional mathematical practice.
 
 We encourage the reader who is unfamiliar with constructive logic to work through some more examples as a means of getting familiar with it.
@@ -1200,6 +1221,8 @@ Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions
 Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
 We will return to the interpretation in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
 
+\indexdef{type!identity}%
+\indexdef{identity!type}%
 Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $\id[A]{a}{b}:\UU$ in the same universe.
 The basic way to construct an element of $\id{a}{b}$ is to know that $a$ and $b$ are the same.
 Thus, we have a dependent function
@@ -1213,6 +1236,7 @@ This is well-typed because $a\jdeq b$ means that also the type $\id[A]{a}{b}$ is
 
 The induction principle for the identity types is one of the most subtle parts of type theory, and crucial to the homotopy interpretation.
 We begin by considering an important consequence of it, the principle that ``equals may be substituted for equals,'' as expressed by the following:
+\index{indiscenability of identicals}
 \begin{description}
 \item[Indiscernability of identicals:]
 For every family 
@@ -1236,8 +1260,8 @@ in order to fully characterize the identity type, we must generalize it to an in
 \subsection{Path induction}
 
 The induction principle for the identity type is called \define{path induction}
-\indexdef{path!induction}%
-\indexdef{induction!for paths}%
+\index{path induction}%
+\index{induction principle!for identity type}%
 in view of the homotopical interpretation to be explained in  the introduction to \autoref{cha:basics}.  It can be seen as stating that the family of identity types is freely generated by the elements of the form $\refl{x}: \id{x}{x}$.
 
 \begin{description}
@@ -1285,6 +1309,8 @@ path induction requires you to replace \emph{both} $a$ and $b$ with the same unk
 $C$, for all pairs of elements of $A$, it suffices to define it on the diagonal.
 In some proofs, however, it is simpler to make use of an equation $p : \id{a}{b}$ by replacing all occurrences of $b$ with $a$ (or vice versa), because it is sometimes easier to do the remainder of the proof for the specific element $a$ mentioned in the equality than for a general unknown $x$.  This motivates a second induction principle for identity types, which says that the family of types $\id[A]{a}{x}$ is generated by the element $\refl{a} : \id{a}{a}$.  As we show below, this second principle is equivalent to the first; it is just sometimes a more convenient formulation.
 
+\index{path induction!based}%
+\index{induction principle!for identity type!based}%
 \begin{description}
 \item[Based path induction:] 
   Fix an element $a:A$, and suppose given a family
@@ -1499,19 +1525,24 @@ The fact that Martin-L\"of's rule implies Paulin-Mohring's was proved by Streich
   \indexdef{composition!of functions}%
   \indexdef{function!composition}%
  $g\circ f:A\to C$.
+  \index{associativity!of function composition}%
   Show that we have $h \circ (g\circ f) \jdeq (h\circ g)\circ f$.
 \end{ex}
 
 \begin{ex}
-Derive the non-dependent eliminator for products $\rec{A\times B} $ using only the projections and verify that the definitional equalities are valid. Do the same for $\Sigma$-types.
+  Derive the recursion principle for products $\rec{A\times B} $ using only the projections, and verify that the definitional equalities are valid.
+  Do the same for $\Sigma$-types.
 \end{ex}
 
 \begin{ex}
-  Derive the dependent eliminator for products $\ind{A\times B}$ using only the projections and $\spr$ and verify that the definitional equalities are valid. Generalize $\spr$ to $\Sigma$-types and do the same for $\Sigma$-types.
+  Derive the induction principle for products $\ind{A\times B}$, using only the projections and the principle $\spr$ of surjective pairing.
+  Verify that the definitional equalities are valid.
+  Generalize $\spr$ to $\Sigma$-types, and do the same for $\Sigma$-types.
   \emph{(This requires concepts from \autoref{cha:basics}.)}
 \end{ex}
 
 \begin{ex}
+\index{iterator!for natural numbers}
 Assuming as given only the \emph{iterator} for natural numbers
 \[\ite : \prd{C:\UU} C \to (C \to C) \to \nat \to C \]
 with the defining equations
@@ -1536,6 +1567,7 @@ Give an alternative derivation of $\indidb{A}$ from $\indid{A}$ which avoids the
 \end{ex}
 
 \begin{ex}
+  \index{multiplication!of natural numbers}%
 Define multiplication and exponentiation using $\rec{\nat}$. Formally verify that $(\nat,+,0,\times,1)$ is a semiring using only $\ind{\nat}$.  
 \end{ex}
 

@@ -49,14 +49,16 @@ This leads us to the following definition.
   \indexdef{precategory}
   $A$ consists of the following.
   \begin{enumerate}
-  \item A type $A_0$ of \define{objects}.
-    \indexdef{object!in a precategory}%
+  \item A type $A_0$ of \define{objects}.%
+    \indexdef{object!in a (pre)category}
     We write $a:A$ for $a:A_0$.
-  \item For each $a,b:A$, a set $\hom_A(a,b)$ of \define{arrows} or \define{morphisms}.
+  \item For each $a,b:A$, a set $\hom_A(a,b)$ of \define{arrows} or \define{morphisms}.%
     \indexsee{arrow}{morphism}%
-    \indexdef{morphism!in a precategory}%
-  \item For each $a:A$, a morphism $1_a:\hom_A(a,a)$.
-  \item For each $a,b,c:A$, a function
+    \indexdef{morphism!in a (pre)category}
+  \item For each $a:A$, a morphism $1_a:\hom_A(a,a)$.%
+    \indexdef{identity!morphism in a (pre)category}
+  \item For each $a,b,c:A$, a function%
+    \indexdef{composition!of morphisms in a (pre)category}
     \[  \hom_A(b,c) \to \hom_A(a,b) \to \hom_A(a,c) \]
     denoted infix by $g\mapsto f\mapsto g\circ f$, or sometimes simply by $gf$.
   \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id f {1_b\circ f}$ and $\id f {f\circ 1_a}$.
@@ -76,7 +78,7 @@ But on the other hand, there is the standard categorical notion of \emph{isomorp
 
 \begin{defn}\label{ct:isomorphism}
   A morphism $f:\hom_A(a,b)$ is an \define{isomorphism}
-  \indexdef{isomorphism}%
+  \indexdef{isomorphism!in a (pre)category}%
   if there is a morphism $g:\hom_A(b,a)$ such that $\id{g\circ f}{1_a}$ and $\id{f\circ g}{1_b}$.
   We write $a\cong b$ for the type of such isomorphisms.
 \end{defn}
@@ -280,6 +282,7 @@ Note that by induction on identity, a functor also preserves \idtoiso.
 \begin{defn}\label{ct:nattrans}
   For functors $F,G:A\to B$, a \define{natural transformation}
   \indexdef{natural transformation}%
+  \indexdef{transformation!natural}%
   $\gamma:F\to G$ consists of
   \begin{enumerate}
   \item For each $a:A$, a morphism $\gamma_a:\hom_B(Fa,Ga)$ (the ``components'').
@@ -294,6 +297,7 @@ In particular, for any $F$ and $G$, the type of natural transformations from $F$
 Similarly, identity of functors is determined by identity of the functions $A_0\to B_0$ and (transported along this) of the corresponding functions on hom-sets.
 
 \begin{defn}\label{ct:functor-precat}
+  \indexdef{precategory!of functors}%
   For precategories $A,B$, there is a precategory $B^A$ defined by
   \begin{itemize}
   \item $(B^A)_0$ is the type of functors from $A$ to $B$.
@@ -325,6 +329,7 @@ We define a natural transformation $\delta:G\to F$ with components $\delta_a$; f
 The following result is fundamental.
 
 \begin{thm}\label{ct:functor-cat}
+  \indexdef{category!of functors}%
   If $A$ is a precategory and $B$ is a category, then $B^A$ is a category.
 \end{thm}
 \begin{proof}
@@ -445,10 +450,15 @@ See \autoref{ct:pre2cat,ct:2cat} for further development of these ideas.
 \section{Adjunctions}
 \label{sec:adjunctions}
 
+The definition of adjoint functors is straightforward; the main interesting aspect arises from proof-relevance.
+
 \begin{defn}
   A functor $F:A\to B$ is a \define{left adjoint}
-  \indexdef{adjoint!left}%
+  \indexdef{adjoint functor}%
   \indexdef{left adjoint}%
+  \indexdef{adjoint!left}%
+  \indexdef{right adjoint}%
+  \indexdef{adjoint!right}%
   \index{functor!adjoint}%
   if there exists
   \begin{itemize}
@@ -459,6 +469,8 @@ See \autoref{ct:pre2cat,ct:2cat} for further development of these ideas.
   \item $\id{(G\epsilon)(\eta G)}{1_G}$.
   \end{itemize}
 \end{defn}
+
+We leave it to the reader to define right adjoints analogously.
 
 \begin{lem}\label{ct:adjprop}
   If $A$ is a category (but $B$ may be only a precategory), then the type ``$F$ is a left adjoint'' is a mere proposition.
@@ -498,10 +510,14 @@ In \autoref{sec:yoneda} we will give another proof of \autoref{ct:adjprop}.
 \section{Equivalences}
 \label{sec:equivalences}
 
+It is usual in category theory to define an \emph{equivalence of categories} to be a functor $F:A\to B$ such that there exists a functor $G:B\to A$ and natural isomorphisms $F G \cong 1_B$ and $G F \cong 1_A$.
+Unlike the property of being an adjunction, however, this would not be a mere proposition without truncating it, for the same reasons that the type of quasi-inverses is ill-behaved (see \autoref{sec:quasi-inverses}).
+And as in \autoref{sec:hae}, we can avoid this by using the usual notion of \emph{adjoint} equivalence.
+\index{adjoint!equivalence of (pre)categories}
+
 \begin{defn}\label{ct:equiv}
   A functor $F:A\to B$ is an \define{equivalence of (pre)categories}
-  \indexdef{equivalence!of categories}%
-  \indexdef{equivalence!of precategories}%
+  \indexdef{equivalence!of (pre)categories}%
   \indexdef{category!equivalence of}%
   \indexdef{precategory!equivalence of}%
   \index{functor!equivalence}%
@@ -600,8 +616,9 @@ This suggests considering as well the following notions.
   \indexdef{essentially surjective functor}%
   if for all $b:B$, there \emph{merely} exists an $a:A$ such that $Fa\cong b$.
   We say $F$ is a \define{weak equivalence}
-  \indexdef{equivalence!weak}%
-  \indexdef{weak equivalence}%
+  \indexdef{equivalence!of (pre)categories!weak}%
+  \indexdef{weak equivalence!of (pre)categories}%
+  \indexdef{functor!weak equivalence}%
   if it is fully faithful and essentially surjective.
 \end{defn}
 
@@ -631,8 +648,7 @@ On the other hand, the following characterization of equivalences of categories 
 
 \begin{defn}\label{ct:isocat}
   A functor $F:A\to B$ is an \define{isomorphism of (pre)cat\-ego\-ries}
-  \indexdef{isomorphism!of precategories}%
-  \indexdef{isomorphism!of categories}%
+  \indexdef{isomorphism!of (pre)categories}%
   \indexdef{category!isomorphism of}%
   \indexdef{precategory!isomorphism of}%
   if $F$ is fully faithful and $F_0:A_0\to B_0$ is an equivalence of types.
@@ -1690,6 +1706,8 @@ However, in higher topos models of homotopy type theory, the Rezk completion cor
 \end{ex}
 
 \begin{ex}
+  \index{adjoint!right}%
+  \index{right adjoint}%
   Prove that a functor is an equivalence of categories if and only if it is a \emph{right} adjoint whose unit and counit are isomorphisms.
 \end{ex}
 

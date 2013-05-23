@@ -9,7 +9,7 @@ max_occurrences = 1000
 filter_re = sys.argv[1:] if len(sys.argv) > 1 else ['.*']
 
 files = [
-    "macros.tex",
+    # "macros.tex",
     "front.tex",
     "preface.tex",
     "introduction.tex",
@@ -40,6 +40,9 @@ antifiles = ['symbols.tex',
              'hott-letter.tex',
              'hott-online.tex']
 
+def matchtospaces(m):
+    return ' ' * len(m.group(0))
+
 for fn in files:
     with open(fn, "r") as f:
         text = f.read()
@@ -52,7 +55,7 @@ for fn in files:
     # Remove quotes
     #text = re.sub(r"['`]", ' ', text)
     # Replace --- with space
-    #text = re.sub(r'---', ' ', text)
+    text = re.sub(r'---', '   ', text)
     # Replace punctuations with space
     #text = re.sub(r'[,.;:?!]', ' ', text)
     # Replace newlines with spaces
@@ -65,12 +68,14 @@ for fn in files:
             macros.add(m)
     # Delete macros
     #text = re.sub(r'\\[a-zA-Z]+\b', ' ', text)
+    # Delete cross-references, labels, citations, urls, math terms, urls, environments, index entries
+    text = re.sub(r'\\(autoref|cref|cite|label|ref|eqref|mathsf|href|url|begin|end|index|indexdef|indexfoot|indexsee){[0-9a-zA-Z-_:,!@$* ]*}', matchtospaces, text)
     # Find words, try to include things like "$(n-2)$-connected"
-    for m in re.finditer(r".{20}[^\\]\b(\$[^$]*\$-)?([a-zA-Z]([a-zA-Z-]|\\-)*)\b.{20}", text):
-        key = str(m.group(2)).lower()
+    for m in re.finditer(r"(?<=(.{20}))[^\\]\b(\$[^$]*\$-)?([a-zA-Z]([a-zA-Z-']|\\-)*[a-zA-Z-])\b(?=(.{20}))", text, re.DOTALL):
+        key = str(m.group(3)).lower()
         key = re.sub(r'\\-', '', key) # remove hyphenation hints
-        pos = m.start(2)
-        excerpt = str(m.group(0))
+        pos = m.start(3)
+        excerpt = str(m.group(1) + m.group(0) + m.group(5))
         excerpt = re.sub(r'\n', ' ', excerpt) # replace newlines with spaces
         if key in words:
             words[key].append((excerpt, fn, pos))

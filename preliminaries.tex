@@ -103,7 +103,9 @@ Thus, for instance, ``$p:\id{x}{y}$'' should be parsed as ``$p:(\id{x}{y})$'', w
 Similarly, ``$A\jdeq \id{x}{y}$'' can only be parsed as ``$A\jdeq(\id{x}{y})$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
 This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, since we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (as is standard practice in type theory; see \autoref{sec:pi-types}).
 
-Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
+Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable
+\indexdef{variable}%
+and $A$ is a type.
 For example, we may construct an object $m + n : \nat$ under the assumptions that $m,n : \nat$.
 Another example is that assuming $A$ is a type, $x,y : A$, and $p : \id[A]{x}{y}$, we may construct an element $p^{-1} : \id[A]{y}{x}$.
 The collection of all such assumptions is called the \define{context};%
@@ -176,7 +178,9 @@ we define $f : A \to B$ by giving an equation
   \label{eq:expldef}
   f(x) \defeq b
 \end{equation}
-where $x$ is a variable and $b$ is an expression which may use $x$.
+where $x$ is a variable
+\index{variable}%
+and $b$ is an expression which may use $x$.
 In order for this to be valid, we have to check that $b : B$ assuming $x:A$.
 
 Now we can compute $f(a)$ by replacing the variable $x$ in $b$ with
@@ -187,15 +191,17 @@ Then $f(2)$ is judgmentally equal to $2+2$.
 If we don't want to introduce a name for the function, we can use
 \define{$\lambda$-abstraction}.%
 \indexdef{lambda abstraction@$\lambda$-abstraction}%
-\indexdef{function!lambda abstraction@$\lambda$-abstraction}%
-\index{abstraction}
+\indexsee{function!lambda abstraction@$\lambda$-abstraction}{$\lambda$-abstraction}%
+\indexsee{abstraction!lambda-@$\lambda$-}{$\lambda$-abstraction}%
 Given an expression $b : B$ which may use $x:A$, as above, we write $\lam{x:A} b$ to indicate the same function defined by~\eqref{eq:expldef}.
 Thus, we have
 \[ (\lamt{x:A}b) : A \to B. \]
 For the example in the previous paragraph, we have the typing judgment
 \[ (\lam{x:\nat}x+x) : \nat \to \nat. \]
 We generally omit the type of the variable $x$ and write $\lam{x}b$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x b$ has type $A\to B$.
-By convention, the ``scope'' of the variable binding ``$\lam{x}$'' is the entire rest of the expression, unless delimited with parentheses.
+By convention, the ``scope''
+\indexdef{variable!scope of}%
+of the variable binding ``$\lam{x}$'' is the entire rest of the expression, unless delimited with parentheses.
 Thus, for instance, $\lam{x} x+x$ should be parsed as $\lam{x} (x+x)$, not as $(\lam{x}x)+x$ (which would, in this case, be ill-typed anyway).
 
 Another equivalent notation is
@@ -245,7 +251,10 @@ Now if we have assumed somewhere that $y : \nat$, then what is $f(y)$? It would 
 Previously, the substituted $y$ was referring to our assumption, but now it is referring to the parameter of the anonymous function. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
 
 But what \emph{is} $f(y)$ in this example? Note that bound (or ``dummy'')
-variables such as $y$ in the expression $\lamu{y:\nat} x + y$
+variables
+\indexdef{variable!bound}%
+\indexdef{variable!dummy}%
+such as $y$ in the expression $\lamu{y:\nat} x + y$
 have only a local meaning, and can be consistently replaced by any
 other variable, preserving the binding structure. Indeed, $\lamu{y:\nat} x + y$ is declared to be judgmentally equal\footnote{Use of this equality is called \define{$\alpha$-conversion.
 \indexfoot{alpha conversion@$\alpha$-conversion}
@@ -279,7 +288,7 @@ involved. Our notation for definitions with explicit parameters extends to
 this situation: we can define a named function $f : A \to B \to C$ by
 giving an equation
 \[ f(x,y) \defeq c\]
-where $c:C$ assuming $x:A$ and $y:B$. Using $\lambda$-abstraction this
+where $c:C$ assuming $x:A$ and $y:B$. Using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction} this
 corresponds to
 \[ f \defeq \lamu{x:A}{y:B} c, \]
 which may also be written as 
@@ -365,12 +374,12 @@ Indeed, all the constructions of $\Pi$-types are generalisations of the correspo
 
 We can introduce dependent functions by explicit definitions: to
 define $f : \prd{x:A}B(x)$, where $f$ is the name of a dependent function to be
-defined, we need an expression $b : B(x)$ involving $x:A$, and we write
+defined, we need an expression $b : B(x)$ involving the variable $x:A$,
+\index{variable}%
+and we write
 \[ f(x) \defeq b \qquad \mbox{for $x:A$}\]
 Alternatively, we can use \define{$\lambda$-abstraction}%
 \indexdef{lambda abstraction@$\lambda$-abstraction}%
-\indexdef{function!lambda abstraction@$\lambda$-abstraction}%
-\index{abstraction}
 \begin{equation}
   \label{eq:lambda-abstraction}
   \lamu{x:A} b \ :\ \prd{x:A} B(x).
@@ -426,7 +435,7 @@ However, unlike in set theory, where we define ordered pairs to be particular se
 There is a general pattern to how one introduces a new primitive concept in type theory, and because products are our second example following this pattern,\footnote{The description of universes above is an   exception.} it is worth emphasizing the general form:
 To specify a type, we say
 \begin{enumerate}
-\item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, $\lambda$-abstraction.
+\item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}.
   \indexdef{constructor}%
 \item how to use elements of that type.  These are called the type's   \emph{eliminators}.
   \indexdef{eliminator}%
@@ -1012,7 +1021,9 @@ Conversely, given any defining equations
   f(\inl(a)) &\defeq c_0\\
   f(\inr(b)) &\defeq c_1
 \end{align*}
-where $c_0$ and $c_1$ are expressions that may involve the variables $a$ and $b$, we can express these equations equivalently in terms of the recursor by using $\lambda$-abstraction:
+where $c_0$ and $c_1$ are expressions that may involve the variables
+\index{variable}%
+$a$ and $b$, we can express these equations equivalently in terms of the recursor by using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}:
 \[ f\defeq \rec{A+B}(C, \lam{a} c_0, \lam{b} c_1).\]
 In the case of the natural numbers, however, the ``defining equations'' of a function such as $\dbl$:
 \begin{align}
@@ -1110,7 +1121,9 @@ so we should be able to translate the above proof into an element of this type.
 
 As an example of how such a translation works, let us describe how a mathematician reading the above English proof might simultaneously construct, in his or her head, an element of~\eqref{eq:tautology2}.
 The introductory phrase ``Suppose not $A$ and not $B$'' translates into defining a function, with an implicit application of the recursion principle for the cartesian product in its domain $(A\to\emptyt)\times (B\to\emptyt)$.
-This introduces unnamed variables (hypotheses) $x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
+This introduces unnamed variables
+\index{variable}%
+(hypotheses) $x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
 \[ f((x,y)) \defeq\; \Box\;:A+B\to\emptyt \]
 with a ``hole'' $\Box$ of type $A+B\to\emptyt$ indicating what remains to be done.
 (We could equivalently write $f \defeq \rec{(A\to\emptyt)\times (B\to\emptyt)}(A+B\to\emptyt,\lam{x}{y} \Box)$, using the recursor instead of pattern matching.)
@@ -1192,8 +1205,10 @@ The first sentence begins defining an implication as a function, by introducing 
 \[ f(p) \defeq \;\Box\; : (\tprd{x:A} P(x)) \times (\tprd{x:A} Q(x)) \]
 At this point there is an implicit use of the pairing constructor to produce an element of a product type, which is somewhat signposted in this example by the words ``first'' and ``second'':
 \[ f(p) \defeq \Big( \;\Box\; : \tprd{x:A} P(x) \;,\; \Box\; : \tprd{x:A}Q(x) \;\Big). \]
-The phrase ``we suppose given $x$ and prove $P(x)$'' now indicates defining a \emph{dependent} function in the usual way, introducing a variable for its input.
-Since this is inside a pairing constructor, it is natural to write it as a $\lambda$-abstraction:
+The phrase ``we suppose given $x$ and prove $P(x)$'' now indicates defining a \emph{dependent} function in the usual way, introducing a variable
+\index{variable}%
+for its input.
+Since this is inside a pairing constructor, it is natural to write it as a $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}:
 \[ f(p) \defeq \Big( \; \lam{x} \;\big(\Box\; : P(x)\big) \;,\; \Box\; : \tprd{x:A}Q(x) \;\Big). \]
 Now ``we have $P(x)$ and $Q(x)$'' invokes the hypothesis, obtaining $p(x) : P(x)\times Q(x)$, and ``hence we have $P(x)$'' implicitly applies the appropriate projection:
 \[ f(p) \defeq \Big( \; \lam{x} \proj1(p(x))  \;,\; \Box\; : \tprd{x:A}Q(x) \;\Big). \]
@@ -1532,7 +1547,7 @@ For these reasons, we have chosen to regard the induction principle as the basic
 
 In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules}, which specify how to form types of this sort; \emph{introduction rules}  or \emph{constructors}, which specify how to construct elements of such types; \emph{elimination rules} or \emph{eliminators}, which specify how to use elements of such types to construct elements of other types; and \emph{computation rules}, which specify what happens when the introduction and elimination rules are combined. The computation rules are also called \emph{reduction rules} or \emph{conversion rules}.
 For inductive types such as products, $\Sigma$s, coproducts, and so on, the introduction rules are the constructors (like pairing or injections), and the elimination rule is the induction principle, for which we have already mentioned the alternative terminology ``eliminator''.
-For function types and $\Pi$-types, the introduction rule is $\lambda$-abstraction, while the elimination rule is application of a function to an argument.
+For function types and $\Pi$-types, the introduction rule is $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}, while the elimination rule is application of a function to an argument.
 
 Unlike the type theory of \Coq, we do not include a primitive type of propositions.  Instead, as discussed in \autoref{sec:pat}, we embrace 
 the \emph{propositions-as-types (PAT)} principle, identifying propositions with types.

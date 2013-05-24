@@ -1,6 +1,6 @@
 ;; HOW TO USE THIS FILE
 
-;; 1. Open this file in Emasc and type `M-x eval-buffer' to evaluate
+;; 1. Open this file in Emacs and type `M-x eval-buffer' to evaluate
 ;; all the Emacs Lisp function definitions and key bindings in it.
 
 ;; 2. Run the script index-helper.pl from the shell and save its
@@ -36,10 +36,14 @@
 
 ;; 6. After doing this for a while, especially if you've been making
 ;; other edits at the same time (as tends to happen), the positions in
-;; the `indexterms.txt` file may become very far off.  When this happens you can:
-;;  a) repeat step 2 to recreate it,
-;;  b) switch to that file in Emacs and type `M-x revert-buffer` to reload the new version,
-;;  c) type `M-x index-clear-offsets` to inform the indexing scripts.
+;; the `indexterms.txt` file may become very far off.  When this
+;; happens you can do the following.
+;;  a) Repeat step 2 to recreate the file.
+;;  b) Switch to that file in Emacs and type `M-x revert-buffer` to
+;;     reload the new version.  Make sure you reposition the cursor
+;;     where it was before.
+;;  c) Type `M-x index-clear-offsets` to inform the indexing scripts.
+;; In place of steps b and c, you can also just quit and restart Emacs.
 
 (defvar index-buffer nil)
 (defvar index-word nil)

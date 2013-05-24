@@ -1,8 +1,9 @@
 \chapter{Real numbers}
 \label{cha:real-numbers}
 
-Any foundation of mathematics worthy of its name must eventually address the construction of real numbers as understood by mathematical analysis, namely as a complete archimedean ordered field. 
-There are two notions of completeness. The one by Cauchy requires that the reals be closed under limits of Cauchy sequences, while the stronger one by Dedekind requires closure under Dedekind cuts.
+Any foundation of mathematics worthy of its name must eventually address the construction of real numbers as understood by mathematical analysis, namely as a complete archimedean ordered field.
+\index{ordered field}%
+There are two notions of completeness. The one by Cauchy requires that the reals be closed under limits of Cauchy sequences\index{Cauchy!sequence}, while the stronger one by Dedekind requires closure under Dedekind cuts.
 These lead to two ways of constructing reals, which we study in \autoref{sec:dedekind-reals} and \autoref{sec:cauchy-reals}, respectively. In \autoref{RD-final-field,RC-initial-Cauchy-complete} we characterize the two constructions in terms of universal properties: the Dedekind reals are the final archimedean ordered field, and the Cauchy reals the initial Cauchy complete archimedean ordered field.
 
 In traditional constructive mathematics, real numbers always seem to require certain compromises. For example, the Dedekind reals work better with powersets or some other form of impredicativity, while Cauchy reals work well in the presence of countable choice.
@@ -37,8 +38,9 @@ with a non-trivial algebraic structure.
 \indexdef{rational numbers}%
 \indexsee{number!rational}{rational numbers}%
 We first construct the rational numbers \Q, as the reals can then be seen as a completion
-of~\Q. An expert will point out that \Q could be replaced by any approximate field, i.e.,
-a subring of \Q in which arbitrarily precise approximate inverses exist. An example is the
+of~\Q. An expert will point out that \Q could be replaced by any approximate field,
+\indexdef{field!approximate}%
+i.e., a subring of \Q in which arbitrarily precise approximate inverses exist. An example is the
 ring of dyadic rationals, which are those of the form $n/2^k$. 
 If we were implementing constructive mathematics on a computer,
 an approximate field would be more suitable, but we leave such finesse for those
@@ -103,7 +105,7 @@ typical Dedekind cut looks like this:
 %
 We might naively translate the informal definition into type theory by saying that a cut
 is a pair of maps $L, U : \Q \to \prop$. But we saw in \autoref{subsec:prop-subsets} that
-$\prop$ is an ambiguous notation for $\prop_{\UU_i}$ where~$\UU_i$ is a universe. Once we
+$\prop$ is an ambiguous\index{typical ambiguity} notation for $\prop_{\UU_i}$ where~$\UU_i$ is a universe. Once we
 use a particular $\UU_i$ to define cuts, the type of reals will reside in the next
 universe $\UU_{i+1}$, a property of reals two levels higher in $\UU_{i+2}$, a property of
 subsets of reals in $\UU_{i+3}$, etc. In principle we should be able to keep track of the
@@ -121,13 +123,16 @@ $\Omega$:
 \item We could identify $\Omega$ with the ambiguous $\prop$ and track all the universes
   that appear in definitions and constructions.
 
-\item We could assume impredicativity of mere propositions, cf.\
-  \autoref{subsec:prop-subsets}, which essentially collapses the $\prop_{\UU_i}$'s to the
+\item We could assume the propositional resizing axiom,
+  \index{propositional resizing}%
+  as in \autoref{subsec:prop-subsets}, which essentially collapses the $\prop_{\UU_i}$'s to the
   lowest level, which we call $\Omega$.
 
 \item A classical mathematician who is not interested in the intricacies of type-theoretic
   universes or computation may simply assume the law of excluded middle~\eqref{eq:lem} for
-  mere propositions so that $\Omega \jdeq \bool$. This not only eradicates questions about
+  mere propositions so that $\Omega \jdeq \bool$.
+  \index{excluded middle}
+  This not only eradicates questions about
   levels of $\prop$, but also turns everything we do into the standard classical
   construction of real numbers.
 
@@ -135,6 +140,7 @@ $\Omega$:
   the constructions work. The condition that a mere predicate be a Dedekind cut is
   expressible using only conjunctions, disjunctions, and existential quantifiers over~\Q, which
   is a countable set. Thus we could take $\Omega$ to be the initial \emph{$\sigma$-frame},
+  \index{.sigma-frame@$\sigma$-frame}%
   i.e., a lattice with countable joins in which binary meets distribute over countable
   joins. (The initial $\sigma$-frame cannot be the two-point lattice $\bool$ because
   $\bool$ is not closed under countable joins, unless we assume excluded middle.) This
@@ -203,6 +209,7 @@ as usual in intuitionistic logic. Rather than dwelling on details we point out t
 differences between the classical and intuitionistic setup. Writing $L_x$ and $U_x$ for
 the lower and upper cut of a real number $x : \RD$, we define addition as%
 %
+\indexdef{addition!of Dedekind reals}%
 \begin{align*}
   L_{x + y}(q) &\defeq \exis{r, s : \Q} L_x(r) \land L_y(s) \land q = r + s, \\
   U_{x + y}(q) &\defeq \exis{r, s : \Q} U_x(r) \land U_y(s) \land q = r + s
@@ -215,9 +222,10 @@ and the additive inverse by
   U_{-x}(q) &\defeq \exis{r : \Q} L_x(r) \land q = - r.
 \end{align*}
 %
-With these operations $(\RD, 0, {+}, {-})$ is an abelian group. Multiplication is a bit
+With these operations $(\RD, 0, {+}, {-})$ is an abelian\index{group!abelian} group. Multiplication is a bit
 more cumbersome:
 %
+\indexdef{multiplication!of Dedekind reals}%
 \begin{align*}
   L_{x \cdot y}(q) &\defeq
   \begin{aligned}[t]
@@ -266,6 +274,7 @@ multiplicative inverses, we must first introduce order. Define $\leq$ and $<$ as
   of the proof is symmetric.
 \end{proof}
 
+\index{partial order}%
 The relation $\leq$ is a partial order, and $<$ is transitive and irreflexive. The
 trichotomy law
 %
@@ -339,6 +348,7 @@ Indeed, if $\lnot (x = y)$ implies $x\apart y$, then a little bit of excluded mi
   $x \apart 0$.
 \end{proof}
 
+\index{ordered field!archimedean}%
 The archimedean principle can be stated in several ways. We find it most illuminating in the
 form which says that $\Q$ is dense in $\RD$.
 
@@ -388,6 +398,7 @@ axiomatization, but rather at a useful amount of structure and properties.
   Every such field has a canonical embedding $\Q \to F$. An ordered field is
   \define{archimedean}
   \indexdef{ordered field!archimedean}%
+  \indexsee{archimedean property}{ordered field, archimedean}%
   when for all $x, y : F$, if $x < y$ then there merely exists $q :
   \Q$ such that $x < q < y$.
 \end{defn}
@@ -404,7 +415,7 @@ axiomatization, but rather at a useful amount of structure and properties.
 \subsection{Dedekind reals are Cauchy complete}
 \label{sec:RD-cauchy-complete}
 
-Recall that $x : \N \to \Q$ is a \emph{Cauchy sequence} when it satisfies
+Recall that $x : \N \to \Q$ is a \emph{Cauchy sequence}\indexdef{Cauchy!sequence} when it satisfies
 %
 \begin{equation} \label{eq:cauchy-sequence}
   \prd{\epsilon : \Qp} \sm{n : \N} \prd{m, k \geq n} |x_m - x_k| < \epsilon.
@@ -422,7 +433,7 @@ approximation functions rather than with Cauchy sequences.
 
 \begin{defn} \label{defn:cauchy-approximation}
   A \define{Cauchy approximation}
-  \index{Cauchy!approximation}%
+  \indexdef{Cauchy!approximation}%
   is a map $x : \Qp \to \RD$ which satisfies
   %
   \begin{equation}
@@ -521,6 +532,7 @@ $\RD$, do we get even more real numbers? The answer is negative. In fact, we sha
 stronger result: $\RD$ is final.
 
 Say that an ordered field~$F$ is \define{admissible for $\Omega$}
+\indexsee{admissible!ordered field}{ordered field, admissible}%
 \indexdef{ordered field!admissible}%
 when the strict order
 $<$ on~$F$ is a map ${<} : F \to F \to \Omega$.
@@ -612,8 +624,8 @@ more lemma.
 \label{sec:cauchy-reals}
 
 \index{completion!Cauchy}%
-\index{Cauchy completion}
-The Cauchy reals are, by intent, the completion of \Q under limits of Cauchy sequences.
+\index{Cauchy!completion}
+The Cauchy reals are, by intent, the completion of \Q under limits of Cauchy sequences.\index{Cauchy!sequence}
 In the classical construction of the Cauchy reals, we consider the set $\mathcal{C}$ of all Cauchy sequences in \Q and then form a suitable quotient $\mathcal{C}/{\approx}$.
 Then, to show that $\mathcal{C}/{\approx}$ is Cauchy complete, we consider a Cauchy sequence $x : \N \to \mathcal{C}/{\approx}$, lift it to a sequence of sequences $\bar{x} : \N \to \mathcal{C}$, and construct the limit of $x$ using $\bar{x}$. However, the lifting of~$x$ to $\bar{x}$ uses
 the axiom of countable choice (the instance of~\eqref{eq:ac} where $X=\N$) or the law of excluded middle, which we may wish to avoid.
@@ -692,7 +704,7 @@ Of course, our Cauchy approximations will now consist of Cauchy reals, rather th
     \end{equation}
     %
     there is a point $\rclim(x) : \RC$. We call $x$ a \define{Cauchy approximation}.
-    \index{Cauchy!approximation}%
+    \indexdef{Cauchy!approximation}%
     \index{limit!of a Cauchy approximation}%
     %
   \item \emph{paths:}
@@ -737,7 +749,7 @@ readily guessed.
 Likewise, the last constructor of $\mathord{\close\epsilon}$ justifies our leaving the other four nameless.
 
 We are immediately able to populate $\RC$ with many real numbers. For suppose $x : \N \to
-\Q$ is a traditional Cauchy sequence of rational numbers, and let $M : \Qp \to \N$ be its
+\Q$ is a traditional Cauchy sequence\index{Cauchy!sequence} of rational numbers, and let $M : \Qp \to \N$ be its
 modulus of convergence. Then $\rcrat \circ x \circ M : \Qp \to \RC$ is a Cauchy
 approximation, using the first constructor of $\closesym$ to produce the necessary witness.
 Thus, $\rclim(\rcrat \circ x \circ m)$ is a real number. Various famous
@@ -784,6 +796,7 @@ Now, given a type family $A:\RC\to\type$ and a family of relations $\bsim$ as ab
   an element $f_{x,a}:A(\rclim(x))$.
   We call such $a$ a \define{dependent Cauchy approximation}
   \indexdef{Cauchy!approximation!dependent}%
+  \indexsee{approximation!Cauchy}{Cauchy approximation}%
   \indexdef{dependent Cauchy approximation}%
   over $x$.
 \item For $u, v : \RC$ such that $h:\fall{\epsilon : \Qp} u \close\epsilon v$, and all $a:A(u)$ and $b:A(v)$ such that
@@ -870,7 +883,8 @@ We can also show that although $\RC$ may not be a quotient of the set of Cauchy 
 (Of course, this is not a valid \emph{definition} of $\RC$, but it is a useful property.)
 We define the type of Cauchy approximations to be
 % 
-\symlabel{cauchy-approximations}
+\symlabel{cauchy-approximations}%
+\index{Cauchy!approximation!type of}%
 \begin{equation*}
   \CAP \defeq
   \setof{ x : \Qp \to \RC |
@@ -1405,11 +1419,15 @@ with Lipschitz factor~$1$. We have to work a bit harder for addition.
 
 We may apply \autoref{RC-binary-nonexpanding-extension} to any bivariate rational function
 which is non-expanding separately in each variable. Addition is such a function, therefore
-we get ${+} : \RC \times \RC \to \RC$. Furthermore, the extension is unique as long as we
+we get ${+} : \RC \times \RC \to \RC$.
+\indexdef{addition!of Cauchy reals}%
+Furthermore, the extension is unique as long as we
 require it to be non-expanding in each variable, and just as in the univariate case,
 identities on rationals extend to identities on reals. Since composition of non-expanding
 maps is again non-expanding, we may conclude that addition satisfies the usual properties,
-such as commutativity and associativity. Therefore, $(\RC, 0, {+}, {-})$ is a commutative
+such as commutativity and associativity.
+\index{associativity!of addition!of Cauchy reals}%
+Therefore, $(\RC, 0, {+}, {-})$ is a commutative
 group.
 
 We may also apply \autoref{RC-binary-nonexpanding-extension} to the functions $\min : \Q \times
@@ -1421,7 +1439,7 @@ order $\leq$ on $\RC$ is defined in terms of $\max$ as
   (u \leq v) \defeq (\max(u, v) = v).
 \end{equation*}
 %
-The relation $\leq$ is a partial order because it is such on $\Q$, and the axioms of
+The relation $\leq$ is a partial order because it is such on $\Q$, and the axioms of a
 partial order are expressible as equations in terms of $\min$ and $\max$, so they transfer
 to $\RC$.
 
@@ -1440,6 +1458,7 @@ That is, $u < v$ holds when there merely exists a pair of rational numbers $q < 
 transitive, and has other properties that are expected for an ordered field.
 The archimedean principle follows directly from the definition of~$<$.
 
+\index{ordered field!archimedean}%
 \begin{thm}[Archimedean principle for $\RC$] \label{RC-archimedean}
   %
   For every $u, v : \RC$ such that $u < v$ there merely exists $q : \Q$ such that $u < q < v$.
@@ -1518,6 +1537,7 @@ We are now able to show that the auxiliary relation $\closesym$ is what we think
   The remaining two cases are entirely analogous.
 \end{proof}
 
+\indexdef{multiplication!of Cauchy reals}%
 Next, we would like to equip $\RC$ with multiplicative structure. For each $q : \Q$ the
 map $r \mapsto q \cdot r$ is Lipschitz with constant\footnote{We defined Lipschitz
   constants as \emph{positive} rational numbers.} $|q| + 1$, and so we can extend it to
@@ -1654,6 +1674,7 @@ An archimedean ordered field in which every Cauchy approximation has a limit is 
 \define{Cauchy complete}.
 \indexdef{Cauchy!completeness}%
 \indexdef{completeness!Cauchy}%
+\index{ordered field}%
 The Cauchy reals are the least such field.
 
 \begin{thm} \label{RC-initial-Cauchy-complete}
@@ -1688,7 +1709,7 @@ The Cauchy reals are the least such field.
 
 Let us also say something about the relationship between the Cauchy and Dedekind reals. By
 \autoref{RC-archimedean-ordered-field}, $\RC$ is an archimedean ordered field. It is also
-admissible for $\Omega$, as can be easily checked. (In case $\Omega$ is the initial
+admissible\index{ordered field!admissible} for $\Omega$, as can be easily checked. (In case $\Omega$ is the initial
 $\sigma$-frame it takes a simple induction, while in other cases it is immediate.)
 Therefore, by \autoref{RD-final-field} there is an embedding of ordered fields
 %
@@ -1715,7 +1736,7 @@ without further assumptions.
   Note that the type in~\eqref{eq:untruncated-linearity} is an untruncated variant
   of~\eqref{eq:RD-linear-order}, which states that~$<$ is an intuitionistic linear order.
   We already know that $\RC$ embeds into $\RD$, so it suffices to show that every Dedekind
-  real merely is the limit of a Cauchy sequence of rational numbers.
+  real merely is the limit of a Cauchy sequence\index{Cauchy!sequence} of rational numbers.
 
   Consider any $x : \RD$. By assumption there merely exists $c$ as in the statement of the
   lemma, and by boundedness of cuts there merely exist $a, b : \Q$ such that $a < x < b$.
@@ -1834,7 +1855,7 @@ definitions.
   %
   \indexdef{metric space!complete}%
   \indexdef{completeness!of a metric space}%
-  A \define{complete metric space} is one in which every Cauchy sequence has a limit.
+  A \define{complete metric space} is one in which every Cauchy approximation has a limit.
 \end{defn}
 
 \begin{defn} \label{defn:totall-bounded-metric-space}
@@ -2023,7 +2044,7 @@ whether infinitely many values of a function are~$\bfalse$.
   \end{equation*}
   %
   If the Bolzano-Weierstra\ss{} property holds, there exists a strictly increasing $f : \N \to
-  \N$ such that $x \circ f$ is a Cauchy sequence. For a sufficiently large $n :
+  \N$ such that $x \circ f$ is a Cauchy sequence\index{Cauchy!sequence}. For a sufficiently large $n :
   \N$ the $n$-th term $x_{f(n)}$ is within $1/6$ of its limit. Either $x_{f(n)} < 2/3$ or
   $x_{f(n)} > 1/3$. If $x_{f(n)} < 2/3$ then~$x_n$ converges to $0$ and so $\prd{n : \N}
   \alpha(n) = \bfalse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
@@ -2325,6 +2346,7 @@ Furthermore, a negative definition of $<$ would make it unacceptable as a hypoth
 Secondly, Conway says that $L$ and $R$ in $\surr L R$ should be ``sets of surreal numbers'', but the naive meaning of this as a predicate $\NO\to\prop$ is not positive, hence cannot be used as input to an inductive constructor.
 However, this would not be a good type-theoretic translation of what Conway means anyway, because in set theory the surreal numbers form a proper class, whereas the sets $L$ and $R$ are true (small) sets, not arbitrary subclasses of \NO.
 In type theory, this means that \NO will be defined relative to a universe \UU, but will itself belong to the next higher universe $\UU'$, like the sets \ord and \card of ordinals and cardinals, the cumulative hierarchy $V$, or even the Dedekind reals in the absence of propositional resizing.
+\index{propositional resizing}%
 We will then require the ``sets'' $L$ and $R$ of surreals to be \UU-small, and so it is natural to represent them by \emph{families} of surreals indexed by some \UU-small type.
 (This is all exactly the same as what we did with the cumulative hierarchy in \autoref{sec:cumulative-hierarchy}.)
 That is, the constructor of surreals will have type
@@ -2557,7 +2579,7 @@ Suppose $A$ is a type equipped with relations $\mathord\ble:A\to A\to\prop$ and 
 Then we can define $f:\NO\to A$ by doing the following.
 \begin{enumerate}
 \item For any $x$ defined by a cut, assuming $f(x^L)$ and $f(x^R)$ to be defined such that $f(x^L)\blt f(x^R)$ for all $L$ and $R$, we must define $f(x)$.  (We call this the \emph{primary clause} of the recursion.)\label{item:NO-rec-primary}
-\item Prove that $\ble$ is \emph{antisymmetric}: if $a\ble b$ and $b\ble a$, then $a=b$.
+\item Prove that $\ble$ is \emph{antisymmetric}\index{relation!antisymmetric}: if $a\ble b$ and $b\ble a$, then $a=b$.
 \item For $x,y$ defined by cuts such that $x^L<y$ for all $L$ and $x<y^R$ for all $R$, and assuming inductively that $f(x^L)\blt f(y)$ for all $L$, $f(x)\blt f(y^R)$ for all $R$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\ble f(y)$.
 \item For $x,y$ defined by cuts and an $L_0$ such that $x\le y^{L_0}$, and assuming inductively that $f(x)\ble f(y^{L_0})$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\blt f(y)$.
 \item For $x,y$ defined by cuts and an $R_0$ such that $x^{R_0}\le y$, and assuming inductively that $f(x^{R_0})\ble f(y)$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\blt f(y)$.\label{item:NO-rec-last}
@@ -2865,7 +2887,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 
 \begin{ex}
  Give an alternative definition of the Dedekind reals by first defining the square and then use \autoref{mult-from-square}.
- Check that one obtains an abelian ring.
+ Check that one obtains a commutative ring.
 \end{ex}
 
 \begin{ex} \label{ex:RD-extended-reals}
@@ -2953,6 +2975,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 \end{ex}
 
 \begin{ex} \label{ex:traditional-archimedean}
+  \index{ordered field!archimedean}%
   Show that in an ordered field $F$, density of $\Q$ and the traditional archimedean axiom
   are equivalent:
   %
@@ -2976,7 +2999,7 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
   Generalize the construction of $\RC$ to construct the Cauchy completion of any metric space. First, think about which notion of real numbers is most natural as the codomain for the distance function of a metric space. Does it matter? Next, work out the details of two constructions:
   %
   \begin{enumerate}
-  \item Follow the construction of Cauchy reals to define the completion of a metric space as an inductive-inductive type closed under limits of Cauchy sequences.
+  \item Follow the construction of Cauchy reals to define the completion of a metric space as an inductive-inductive type closed under limits of Cauchy sequences.\index{Cauchy!sequence}
   \item Use the following construction due to Lawvere~\cite{lawvere:metric-spaces} and Richman~\cite{Richman00thefundamental}, where the completion of a metric space $(M, d)$ is given as the type of \define{locations}.
     \indexdef{location}%
     A location is a function $f : M \to \R$ such that

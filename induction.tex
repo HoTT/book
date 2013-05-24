@@ -193,6 +193,7 @@ Consider, for instance, a simple lemma such as
 \[\prd{n : \natp} \dblp(\sucp(n))=\sucp(\sucp(\dblp(n))).\]
 Inserting the correct $f$s and $g$s is only a little easier than re-proving it by induction on $n:\natp$ directly.
 
+\index{univalence axiom}%
 Here is where the univalence axiom steps in: since $\eqv{\nat}{\natp}$, we also have $\id[\type]{\nat}{\natp}$, i.e.\ $\nat$ and $\natp$ are
 \emph{equal} as types.
 Now the induction principle for identity guarantees that any construction or proof relating to $\nat$ can automatically be transferred to $\natp$ in the same way.
@@ -249,7 +250,7 @@ The type $A$ represents the type of \emph{labels} for $\wtype{a :A} B(a)$, which
 \index{natural numbers!encoded as a W-type}
 the type $A$ would be the type $\bool$ inhabited by the two elements $\btrue$ and $\bfalse$, since there are precisely two ways to obtain a natural number --- either it will be zero or a successor of another natural number. 
 
-The type family $B : A \to \type$ is used to record the arity of labels: a label $a : A$ will take a family of inductive arguments, indexed over $B(a)$. We can therefore think of the ``$B(a)$-many'' arguments of $a$. These arguments are represented by a function $f : B(a) \to \wtype{a :A} B(a)$, with the understanding that for any $b : B(a)$, $f(b)$ is the ``$b$-th'' argument to the label $a$. The W-type $\wtype{a :A} B(a)$ can thus be thought of as the type of well-founded trees, where nodes are labeled by elements of $A$ and each node labeled by $a : A$ has $B(a)$-many branches.
+The type family $B : A \to \type$ is used to record the arity\index{arity} of labels: a label $a : A$ will take a family of inductive arguments, indexed over $B(a)$. We can therefore think of the ``$B(a)$-many'' arguments of $a$. These arguments are represented by a function $f : B(a) \to \wtype{a :A} B(a)$, with the understanding that for any $b : B(a)$, $f(b)$ is the ``$b$-th'' argument to the label $a$. The W-type $\wtype{a :A} B(a)$ can thus be thought of as the type of well-founded trees, where nodes are labeled by elements of $A$ and each node labeled by $a : A$ has $B(a)$-many branches.
 
 In the case of natural numbers, the label $\btrue $ has arity 0, since it constructs the constant zero; the label $\bfalse$ has arity 1, since it constructs the successor of its argument. We can capture this by using simple elimination on $\bool$ to define a function $\rec\bool(\bbU,\emptyt,\unit)$ into a universe of types; this function returns the empty type $\emptyt$ for $\btrue$ and the unit type $\unit$ for $\bfalse$. We can thus define
 \symlabel{natw}
@@ -391,7 +392,7 @@ The appropriate sort of ``algebra'' here is a type equipped with the same struct
 We thus have a category of $\nat$-algebras and $\nat$-homomorphisms, and the claim is that $\nat$ is the initial object of this category.
 A category theorist will immediately recognize this as the definition of a \emph{natural numbers object} in a category.
 
-Of course, since our types behave like $\infty$-groupoids, we actually have an $(\infty,1)$-category of $\nat$-algebras, and we should ask $\nat$ to be initial in the appropriate $(\infty,1)$-categorical sense.
+Of course, since our types behave like $\infty$-groupoids\index{.infinity-groupoid@$\infty$-groupoid}, we actually have an $(\infty,1)$-category\index{.infinity1-category@$(\infty,1)$-category} of $\nat$-algebras, and we should ask $\nat$ to be initial in the appropriate $(\infty,1)$-categorical sense.
 Fortunately, we can formulate this without needing to define $(\infty,1)$-categories.
 
 \begin{defn}
@@ -517,7 +518,7 @@ p :  (f,s_f) = (g,s_g)  \, .
 \end{equation}
 This uses the fact that, in general, a type of the form $(f,s_f) = (g,s_g) $
 is  equivalent to the type of what we call \define{algebra $2$-cells},
-\indexdef{algebra 2-cell}%
+\indexdef{algebra!2-cell}%
 whose canonical
 elements are pairs of the form $(e, s_e)$, where $e : f=g$ and $s_e$ is a higher identity proof between the identity proofs represented by the following pasting diagrams:
 \[
@@ -806,7 +807,9 @@ This is a contradiction: no proposition can be equivalent to its negation.
   In general, an inductive type must live in a universe that already contains all the types going into its definition.
   Thus if in the definition of $D$, the ambiguous notation \prop means $\prop_{\UU}$, then we do not have $D:\UU$ but only $D:\UU'$ for some larger universe $\UU'$ with $\UU:\UU'$.
   In a predicative theory, therefore, the right-hand side of~\eqref{eq:Pinj} lives in $\prop_{\UU'}$, not $\prop_\UU$.
-  So this contradiction does require the resizing rule for mere propositions mentioned in \autoref{subsec:prop-subsets}.
+  So this contradiction does require the propositional resizing axiom
+  \index{propositional resizing}%
+  mentioned in \autoref{subsec:prop-subsets}.
 \end{rmk}
 
 This counterexample suggests that we should ban an inductive type from ever appearing on the left of an arrow in the domain of its constructors, even if that appearance is nested in other arrows so as to eventually become covariant.
@@ -1049,7 +1052,9 @@ In general, the elements of a free structure are obtained by applying not only t
 
 In the case of inductive types, we are talking about freely generated \emph{types} --- so what are the ``operations'' of the structure of a type?
 If types are viewed as like \emph{sets}, as was traditionally the case in type theory, then there are no such operations, and hence we expect there to be no elements in an inductive type other than those resulting from its constructors.
-In homotopy type theory, we view types as like \emph{spaces} or $\infty$-groupoids, in which case there are many operations on the \emph{paths} (concatenation, inversion, etc.) --- this will be important in \autoref{cha:hits} --- but there are still no operations on the \emph{objects} (elements).
+In homotopy type theory, we view types as like \emph{spaces} or $\infty$-groupoids,%
+\index{.infinity-groupoid@$\infty$-groupoid}
+in which case there are many operations on the \emph{paths} (concatenation, inversion, etc.) --- this will be important in \autoref{cha:hits} --- but there are still no operations on the \emph{objects} (elements).
 Thus, it is still true for us that, e.g., every element of \bool is either $\btrue$ or $\bfalse$, and every element of $\nat$ is either $0$ or a successor.
 
 However, as we saw in \autoref{cha:basics}, viewing types as $\infty$-groupoids entails also viewing functions as functors, and this includes type families $B:A\to\type$.
@@ -1150,6 +1155,7 @@ We can deduce a similar result for identity types $=_A$, regarded as a family va
 \end{proof}
 
 One reason this characterization is interesting is that it provides an alternative way to state univalence and function extensionality.
+\index{univalence axiom}%
 The univalence axiom for a universe \UU says exactly that the type family
 \[ (\eqv{\blank}{\blank}) : \UU\to\UU\to\UU \]
 together with $\idfunc : \prd{A:\UU} (\eqv AA)$ satisfies \autoref{thm:ML-identity-systems}\ref{item:MLis4}.

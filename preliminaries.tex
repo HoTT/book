@@ -67,7 +67,7 @@ and we write it as $a\jdeq b$ or $a \jdeq_A b$.
 It is helpful to think of this as meaning ``equal by definition''.
 For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
 It does not make sense to negate or assume an equality-by-definition; we cannot say ``if $x$ is equal to $y$ by definition, then $z$ is not equal to $w$ by definition''.
-Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically decidable.
+Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically\index{algorithm} decidable.
 
 As type theory becomes more complicated, judgmental equality can get more subtle than this, but it is a good intuition to start from.
 Alternatively, if we regard a deductive system as an algebraic theory, then judgmental equality is simply the equality in that theory, analogous to the equality between elements of a group---the only potential for confusion is that there is \emph{also} an object \emph{inside} the deductive system of type theory (namely the type ``$a=b$'') which behaves internally as a notion of ``equality''.
@@ -143,6 +143,8 @@ In this chapter, however, we confine ourselves to a traditional rule-based type 
 \section{Function types}
 \label{sec:function-types}
 
+\indexdef{type!function}%
+\indexsee{function type}{type, function}%
 Given types $A$ and $B$, we can construct the type $A \to B$ of \define{functions}
 \indexdef{function}%
 \indexsee{map}{function}%
@@ -269,7 +271,7 @@ in functional programming.\footnote{The technique is named after the mathematici
 The idea of currying is to represent a function of two inputs $a:A$ and $b:B$ as a function which takes \emph{one} input $a:A$ and returns \emph{another function}, which then takes a second input $b:B$ and returns the result.
 That is, we consider two-variable functions to belong to an iterated function type, $f : A \to (B \to C)$.
 We may also write this without the parentheses, as $f : A \to B \to C$, with
-associativity to the right as the default convention.  Then given $a : A$ and $b : B$,
+associativity\index{associativity!of function types} to the right as the default convention.  Then given $a : A$ and $b : B$,
 we can apply $f$ to $a$ and then apply the result to $b$, obtaining
 $f(a)(b) : C$. To avoid the proliferation of parentheses, we allow ourselves to
 write $f(a)(b)$ as $f(a,b)$ even though there are no products
@@ -340,6 +342,9 @@ set theory. An example of a family is the family of finite sets $\Fin
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:pi-types}
 
+\indexdef{type!dependent function}%
+\indexsee{type!Pi-@$\Pi$-}{type, dependent function}%
+\indexsee{.pi-type@$\Pi$-type}{type, dependent function}%
 In type theory we often use a more general version of function
 types, called a $\Pi$-type or dependent function type. The elements of
 a $\Pi$-type are functions
@@ -370,6 +375,9 @@ Alternatively, we can use \define{$\lambda$-abstraction}%
   \label{eq:lambda-abstraction}
   \lamu{x:A} b \ :\ \prd{x:A} B(x).
 \end{equation}
+\indexdef{application!of dependent function}%
+\indexdef{dependent function!application}%
+As with non-dependent functions, we can \define{apply} a dependent function $f : \prd{x:A}B(x)$ to an argument $a:A$ to obtain an element $f(a):B(a)$.
 The equalities are the same as for the ordinary function type, i.e.\
 given $a:A$ we have $f(a) \jdeq b'$ and  
 $(\lamu{x:A} b)(a) \jdeq b'$, where $b' $ is obtained by replacing all
@@ -405,11 +413,12 @@ as before, we write as $f(a,b) : C(a,b)$.
 \label{sec:finite-product-types}
 
 Given types $A,B:\UU$ we introduce the type $A\times B:\UU$, which we call their \define{cartesian product}.
-\indexdef{cartesian product}%
-\indexdef{type!cartesian product}%
-\indexdef{product!of types}%
+\indexsee{cartesian product}{type, product}%
+\indexsee{type!cartesian product}{type, product}%
+\indexdef{type!product}
+\indexsee{product!of types}{type, product}%
 We also introduce a nullary product type, called the \define{unit type} $\unit : \UU$
-\indexdef{unit type}%
+\indexsee{unit type}{type, unit}%
 \indexdef{type!unit}%
 We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, where $a:A$ and $b:B$, and the only element of $\unit$ to be some particular object $\ttt : \unit$.
 However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.   
@@ -418,8 +427,13 @@ There is a general pattern to how one introduces a new primitive concept in type
 To specify a type, we say
 \begin{enumerate}
 \item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, $\lambda$-abstraction.
-\item how to use elements of that type.  These are called the type's   \emph{eliminators}.  For example, the function type has one   eliminator, function application.
+  \indexdef{constructor}%
+\item how to use elements of that type.  These are called the type's   \emph{eliminators}.
+  \indexdef{eliminator}%
+  For example, the function type has one   eliminator, function application.
 \item equalities relating the constructors and eliminators.  For   example, for functions, we have the rule that $(\lamu{x:A}b)(a)$ is   equal to the substitution of $a$ for $x$ in $b$.
+  These are sometimes called the type's \emph{computation rules}.
+  \indexdef{computation rule}%
 \end{enumerate}
 
 The way to construct pairs is obvious: given $a:A$ and $b:B$, we may form $(a,b):A\times B$.
@@ -528,9 +542,9 @@ of the cartesian product.
 It is easy to see that the recursor is just the special case of induction
 in the case that the family $C$ is constant.
 Because induction describes how to use an element of the product type, induction is also called the \define{(dependent) eliminator},
-\indexsee{eliminator!dependent}{induction principle}%
+\indexsee{eliminator!of inductive type!dependent}{induction principle}%
 and recursion the \define{non-dependent eliminator}.
-\indexsee{eliminator!non-dependent}{recursion principle}%
+\indexsee{eliminator!of inductive type!non-dependent}{recursion principle}%
 
 % We can read induction propositionally as saying that a property which
 % is true for all pairs holds for all elements of the product type.
@@ -558,6 +572,10 @@ component. This is called a $\Sigma$-type, because in set theory it
 corresponds to an indexed sum (in the sense of coproduct or
 disjoint union) over a given type.
 
+\indexdef{type!dependent pair}%
+\indexsee{type!dependent sum}{type, dependent pair}%
+\indexsee{type!Sigma-@$\Sigma$-}{type, dependent pair}%
+\indexsee{.sigma-type@$\Sigma$-type}{type, dependent pair}%
 Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
 pair type is written as $\sm{x:A} B(x) : \UU$.
 Alternative notations are 
@@ -666,15 +684,15 @@ In \autoref{sec:axiom-choice} we will give another formulation of an ``axiom of 
 \label{sec:coproduct-types}
 
 Given $A,B:\UU$, we introduce their \define{coproduct} type $A+B:\UU$.
-\indexdef{coproduct}%
-\indexdef{type!coproduct of}%
-\indexsee{disjoint sum}{coproduct}%
-\indexsee{disjoint union}{coproduct}%
+\indexsee{coproduct}{type, coproduct}%
+\indexdef{type!coproduct}%
+\indexsee{disjoint sum}{type, coproduct}%
+\indexsee{disjoint union}{type, coproduct}%
 This corresponds to the \emph{disjoint union} in set theory, and we may also use that name for it.
 In type theory, as was the case with functions and products, the coproduct must be a fundamental construction, since there is no previously given notion of ``union of types''.
 We also introduce a
 nullary version: the \define{empty type $\emptyt:\UU$}.
-\indexdef{empty type}%
+\indexsee{empty type}{type, empty}%
 \indexdef{type!empty}%
 
 There are two ways to construct elements of $A+B$, either as $\inl(a) : A+B$ for $a:A$, or as
@@ -754,7 +772,7 @@ To construct an element of $\neg A$ is the same thing as to construct a function
 \section{The type of booleans}
 \label{sec:type-booleans}
 
-\index{type!of booleans}
+\indexdef{type!of booleans}
 The type of booleans $\bool:\UU$ is intended to have exactly two elements 
 $\btrue,\bfalse : \bool$. It is clear that we could construct this
 type out of coproduct and unit types as $\unit + \unit$. However,
@@ -845,9 +863,9 @@ In particular, the type $A \to \bool$ is not generally the power set of $A$; it 
 \section{The natural numbers}
 \label{sec:inductive-types}
 
-\indexdef{type!of natural numbers}
-\indexdef{natural numbers}
-\indexdef{number!natural}
+\indexdef{type!of natural numbers}%
+\indexdef{natural numbers}%
+\indexsee{number!natural}{natural numbers}%
 The rules we have introduced so far do not allow us to construct any infinite types.
 The simplest infinite type we can think of (and which is also, of course, extremely useful) is the type $\nat : \UU$ of natural numbers.
 The elements of $\nat$ are constructed using $0 : \nat$ and the successor operation $\suc : \nat \to \nat$.
@@ -945,7 +963,7 @@ In particular, a \emph{property} of natural numbers is represented by a family o
 From this point of view, the above induction principle says that if we can prove $P(0)$, and if for any $n$ we can prove $P(\suc(n))$ assuming $P(n)$, then we have $P(n)$ for all $n$.
 This is, of course, exactly the usual principle of proof by induction on natural numbers.
 
-\index{associativity!of addition}
+\index{associativity!of addition!of natural numbers}
 As an example consider how we might represent an explicit proof that $+$ is associative.
 (We will not actually write out proofs in this style, but it serves as a useful example for understanding how induction is represented formally in type theory.)
 To derive
@@ -1127,11 +1145,11 @@ Formally, this means it does not include certain classical principles, such as t
 and others which depend on them.
 
 Philosophically, constructive logic is so-called because it confines itself to constructions that can be carried out \emph{effectively}, which is to say those with a computational meaning.
-Without being too precise, this means there is some sort of algorithm specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true).
+Without being too precise, this means there is some sort of algorithm\index{algorithm} specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true).
 This requires omission of \LEM{}, since there is no \emph{effective} procedure for deciding whether a proposition is true or false.
 
 The constructivity of type-theoretic logic means it has an intrinsic computational meaning, which is of interest to computer scientists.
-It also means that type theory provides \emph{axiomatic freedom}.
+It also means that type theory provides \emph{axiomatic freedom}.\index{axiomatic freedom}
 For example, while by default there is no construction witnessing \LEM{}, the logic is still compatible with the existence of one (see \autoref{sec:intuitionism}).
 Thus, because type theory does not \emph{deny} \LEM{}, we may consistently add it as an assumption, and work conventionally without restriction.
 In this respect, type theory enriches, rather than constrains, conventional mathematical practice.
@@ -1232,7 +1250,7 @@ Indeed, this is the cornerstone of the homotopical interpretation, where we rega
 We will return to the interpretation in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
 
 \indexdef{type!identity}%
-\indexdef{identity!type}%
+\indexsee{identity!type}{type, identity}%
 Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $\id[A]{a}{b}:\UU$ in the same universe.
 The basic way to construct an element of $\id{a}{b}$ is to know that $a$ and $b$ are the same.
 Thus, we have a dependent function
@@ -1490,7 +1508,9 @@ intensional theory admits types with higher-dimensional structure.  The NuPRL sy
 both \Coq~\cite{Coq} and \Agda~\cite{norell2007towards} are intensional.  Among intensional type theories, there are a number of variants 
 that differ in the structure of identity proofs.  The most liberal interpretation, on which we rely here, admits a \emph{proof-relevant} 
 interpretation of equality, whereas more restricted variants impose restrictions such as \emph{uniqueness of identity proofs 
-(UIP)}~\cite{StreicherK}, stating that any two proofs of equality are judgmentally equal, and \emph{Axiom K}~\cite{StreicherK}, stating that 
+  (UIP)}~\cite{StreicherK}, stating that any two proofs of equality are judgmentally equal, and \emph{Axiom K}~\cite{StreicherK},
+\index{axiom!Streicher's Axiom K}
+stating that 
 the only proof of equality is reflexivity (up to judgmental equality).  These additional requirements may be selectively imposed in the \Coq 
 and \Agda\ systems.
 
@@ -1498,7 +1518,10 @@ and \Agda\ systems.
 
 Another point of variation among intensional theories is the strength of judgmental equality, particularly as regards objects of function type.  Here we include the equation $f \jdeq \lam{x} f(x)$, which is called \emph{$\eta$-conversion}, as a principle of judgmental equality.  This principle is used, for example, in \autoref{sec:univalence-implies-funext}, to show that univalence implies propositional function extensionality.  Other forms of ``$\eta$ equivalences'' are sometimes considered for other types: for instance, the $\eta$-rule for cartesian products would be a judgmental version of surjective pairing, $u \jdeq (\proj1(u),\proj2(u))$.  This and the corresponding version for dependent pairs would be reasonable choices (which we did not make), but we cannot include all such rules because the corresponding ``$\eta$-rule'' for identity types would trivialize all the higher homotopical structure.  So we are \emph{forced} to leave it out, and the question then becomes where to draw the line. With regards to inductive types, we discuss these points further in~\autoref{sec:htpy-inductive}.
 
-It is important for our purposes that (propositional) equality of functions is taken to be \emph{extensional}, as expressed by \autoref{axiom:funext}.  This decision is significant for our purposes, because it specifies that equality of functions is as expected in mathematics.  Although we include \autoref{axiom:funext} as an axiom, it may be derived from the univalence axiom and $\eta$-equivalence (see \autoref{sec:univalence-implies-funext}), as well as from the existence of an interval type (see \autoref{thm:interval-funext}).
+It is important for our purposes that (propositional) equality of functions is taken to be \emph{extensional}.
+This is not a consequence of the rules in this chapter; it will be expressed by \autoref{axiom:funext}.
+\index{function extensionality}%
+This decision is significant for our purposes, because it specifies that equality of functions is as expected in mathematics.  Although we include \autoref{axiom:funext} as an axiom, it may be derived from the univalence axiom and $\eta$-equivalence (see \autoref{sec:univalence-implies-funext}), as well as from the existence of an interval type (see \autoref{thm:interval-funext}).
 
 Regarding inductive types such as products, $\Sigma$-types, coproducts, natural numbers, and so on (see \autoref{cha:induction}), there are additional choices regarding how to precisely formulate induction and recursion.
 Formally, one may describe type theory by taking either \emph{pattern matching} or \emph{induction principles} as basic and deriving the other; see \autoref{cha:rules}.
@@ -1588,6 +1611,8 @@ Define multiplication and exponentiation using $\rec{\nat}$. Formally verify tha
 \end{ex}
 
 \begin{ex}\label{ex:ackermann}
+  \indexdef{function!Ackermann}%
+  \indexdef{Ackermann function}%
   Show that the Ackermann function $\ack : \nat \to \nat \to \nat$ is definable using only $\rec{\nat}$ satisfying the following equations:
   \begin{eqnarray*}
     \ack(0,n) & \jdeq & \suc(n) \\

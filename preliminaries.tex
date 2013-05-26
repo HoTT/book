@@ -120,7 +120,7 @@ However, since we are doing ``proof-relevant'' mathematics, we will frequently r
 In the example above, for instance, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see \autoref{cha:basics}.
 
 In the rest of this chapter, we attempt to give an informal presentation of type theory, sufficient for the purposes of this book; we will give a more formal account in \autoref{cha:rules}.
-Aside from some fairly obvious rules (such as the fact that judgmentally equal things can always be substituted for each other), the rules of type theory can be grouped into \emph{type formers}.
+Aside from some fairly obvious rules (such as the fact that judgmentally equal things can always be substituted\index{substitution} for each other), the rules of type theory can be grouped into \emph{type formers}.
 Each type former consists of a way to construct types (possibly making use of previously constructed types), together with rules for the construction and behavior of elements of that type.
 In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
 
@@ -248,7 +248,7 @@ defined as
 \[ f(x) \defeq \lamu{y:\nat} x + y \] 
 Now if we have assumed somewhere that $y : \nat$, then what is $f(y)$? It would be wrong to just naively replace $x$ by $y$ everywhere in the expression ``$\lam{y}x+y$'' defining $f(x)$, obtaining $\lamu{y:\nat} y + y$, because this means that $y$ gets \define{captured}.
 \indexdef{variable!captured}%
-Previously, the substituted $y$ was referring to our assumption, but now it is referring to the parameter of the anonymous function. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
+Previously, the substituted\index{substitution} $y$ was referring to our assumption, but now it is referring to the parameter of the anonymous function. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
 
 But what \emph{is} $f(y)$ in this example? Note that bound (or ``dummy'')
 variables
@@ -432,7 +432,7 @@ Given types $A,B:\UU$ we introduce the type $A\times B:\UU$, which we call their
 \index{type!product|(defstyle}%
 \indexsee{product!of types}{type, product}%
 We also introduce a nullary product type, called the \define{unit type} $\unit : \UU$
-\indexsee{unit type}{type, unit}%
+\indexsee{unit!type}{type, unit}%
 \index{type!unit|(defstyle}%
 We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, where $a:A$ and $b:B$, and the only element of $\unit$ to be some particular object $\ttt : \unit$.
 However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.   
@@ -797,7 +797,7 @@ To construct an element of $\neg A$ is the same thing as to construct a function
 \index{type!of booleans|(defstyle}%
 The type of booleans $\bool:\UU$ is intended to have exactly two elements 
 $\btrue,\bfalse : \bool$. It is clear that we could construct this
-type out of coproduct and unit types as $\unit + \unit$. However,
+type out of coproduct\index{type!coproduct} and unit\index{type!unit} types as $\unit + \unit$. However,
 since it is used frequently, we give the explicit rules here.
 Indeed, we are going to observe that we can also go the other way
 and derive binary coproducts from $\Sigma$-types and $\bool$.
@@ -852,8 +852,10 @@ We have remarked that $\Sigma$-types can be regarded as analogous to indexed dis
 It is natural to expect that a binary disjoint union $A+B$ could be constructed as an indexed one over the two-element type \bool.
 For this we need a type family $P:\bool\to\type$ such that $P(\bfalse)\jdeq A$ and $P(\btrue)\jdeq B$.
 Indeed, we can obtain such a family precisely by the recursion principle for $\bool$.
+\index{type!family of}%
 (The ability to define \emph{type families} by induction and recursion, using the fact that the universe $\UU$ is itself a type, is one of the most subtle and important aspects of type theory.)
 Thus, we could have defined
+\index{type!coproduct}%
 \[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x) \]
 with
 \begin{eqnarray*}
@@ -1629,10 +1631,12 @@ derive the recursor $\rec{\nat}$.
 \end{ex}
 
 \begin{ex}\label{ex:sum-via-bool}
+\index{type!coproduct}%
 Show that if we define $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x)$, then we can give a definition of $\ind{A+B}$ for which the definitional equalities stated in \autoref{sec:coproduct-types} hold.
 \end{ex}
 
 \begin{ex}\label{ex:prod-via-bool}
+\index{type!product}%
 Show that if we define $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, then we can give a definition of  $\ind{A\times B}$ for which the definitional equalities stated in \autoref{sec:finite-product-types} hold propositionally (i.e.\ using equality types).
 \end{ex}
 

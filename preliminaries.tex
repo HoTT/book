@@ -116,7 +116,9 @@ In fact, technically the context must be an ordered list of assumptions, since l
 If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
 When types are regarded as propositions, we may omit the names of their proofs.
 Thus, in the second example above we may instead say that assuming $\id[A]{x}{y}$, we can prove $\id[A]{y}{x}$.
-However, since we are doing ``proof-relevant'' mathematics, we will frequently refer back to proofs as objects.
+However, since we are doing ``proof-relevant'' mathematics,
+\index{mathematics!proof-relevant}%
+we will frequently refer back to proofs as objects.
 In the example above, for instance, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see \autoref{cha:basics}.
 
 In the rest of this chapter, we attempt to give an informal presentation of type theory, sufficient for the purposes of this book; we will give a more formal account in \autoref{cha:rules}.
@@ -166,7 +168,8 @@ can \define{apply}
 \indexdef{application!of function}%
 \indexdef{function!application}%
 the function to obtain an element of the codomain $B$,
-denoted $f(a)$.
+denoted $f(a)$ and called the \define{value} of $f$ at $a$.
+\indexdef{value!of a function}%
 It is common in type theory to omit the parentheses and denote $f(a)$ simply by $f\,a$, and we will sometimes do this as well.
 
 But how can we construct elements of $A \to B$? There are two equivalent ways:
@@ -223,8 +226,8 @@ Continuing the above example, we have
 %
 Note that from any function $f:A\to B$, we can construct a lambda abstraction function $\lam{x} f(x)$.
 Since this is by definition ``the function which applies $f$ to its argument'' we consider it to be definitionally equal to $f$:\footnote{Use of this equality is often referred to as \define{$\eta$-conversion}
-\indexfoot{eta conversion@$\eta$-conversion}%
-\indexfoot{conversion!eta@$\eta$-}%
+\index{eta conversion@$\eta$-conversion|footstyle}%
+\index{conversion!eta@$\eta$-|footstyle}%
 or \define{$\eta$-expansion.
 \indexfoot{eta expansion@$\eta$-expansion}%
 \indexfoot{expansion!eta@$\eta$-}%
@@ -248,7 +251,7 @@ defined as
 \[ f(x) \defeq \lamu{y:\nat} x + y \] 
 Now if we have assumed somewhere that $y : \nat$, then what is $f(y)$? It would be wrong to just naively replace $x$ by $y$ everywhere in the expression ``$\lam{y}x+y$'' defining $f(x)$, obtaining $\lamu{y:\nat} y + y$, because this means that $y$ gets \define{captured}.
 \indexdef{variable!captured}%
-Previously, the substituted\index{substitution} $y$ was referring to our assumption, but now it is referring to the parameter of the anonymous function. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
+Previously, the substituted\index{substitution} $y$ was referring to our assumption, but now it is referring to the argument of the $\lambda$-abstraction. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
 
 But what \emph{is} $f(y)$ in this example? Note that bound (or ``dummy'')
 variables
@@ -340,10 +343,10 @@ indices implicit.  Writing universes in this style is referred to as
 To model a collection of types varying over a given type $A$, we use functions $B : A \to \UU$  whose
 codomain is a universe. These functions are called
 \define{families of types} (or sometimes \emph{dependent types});
-\indexsee{family!of types}{type!family of}%
+\indexsee{family!of types}{type, family of}%
 \indexdef{type!family of}%
-\indexsee{type!dependent}{type!family of}%
-\indexsee{dependent!type}{type!family of}%
+\indexsee{type!dependent}{type, family of}%
+\indexsee{dependent!type}{type, family of}%
 they correspond to families of sets as used in
 set theory. An example of a family is the family of finite sets $\Fin
 : \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.
@@ -356,7 +359,7 @@ set theory. An example of a family is the family of finite sets $\Fin
 
 \index{type!dependent function|(defstyle}%
 \index{function!dependent|(defstyle}%
-\indexsee{dependent!function}{function,dependent}%
+\indexsee{dependent!function}{function, dependent}%
 \indexsee{type!Pi-@$\Pi$-}{type, dependent function}%
 \indexsee{Pi-type@$\Pi$-type}{type, dependent function}%
 In type theory we often use a more general version of function
@@ -388,7 +391,7 @@ Alternatively, we can use \define{$\lambda$-abstraction}%
   \lamu{x:A} b \ :\ \prd{x:A} B(x).
 \end{equation}
 \indexdef{application!of dependent function}%
-\indexdef{dependent function!application}%
+\indexdef{function!dependent!application}%
 As with non-dependent functions, we can \define{apply} a dependent function $f : \prd{x:A}B(x)$ to an argument $a:A$ to obtain an element $f(a):B(a)$.
 The equalities are the same as for the ordinary function type, i.e.\
 given $a:A$ we have $f(a) \jdeq b'$ and  
@@ -435,6 +438,7 @@ We also introduce a nullary product type, called the \define{unit type} $\unit :
 \indexsee{unit!type}{type, unit}%
 \index{type!unit|(defstyle}%
 We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, where $a:A$ and $b:B$, and the only element of $\unit$ to be some particular object $\ttt : \unit$.
+\indexdef{pair!ordered}%
 However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.   
 
 There is a general pattern to how one introduces a new primitive concept in type theory, and because products are our second example following this pattern,\footnote{The description of universes above is an   exception.} it is worth emphasizing the general form:
@@ -598,6 +602,7 @@ pair type is written as $\sm{x:A} B(x) : \UU$.
 Alternative notations are 
 \[ \tsm{x:A} B(x) \hspace{2cm} \dsm{x:A}B(x) \hspace{2cm} \lsm{x:A} B(x). \]
 \symlabel{defn:dependent-pair}%
+\indexdef{pair!dependent}%
 The way to construct elements of this type is by pairing: we have
 $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
 If $B$ is constant, then the dependent pair type is the
@@ -672,7 +677,9 @@ As a further example, consider the following principle, where $A$ and $B$ are ty
 \[ \ac : \Big(\tprd{x:A} \tsm{y :B} R(x,y)\Big) \to
 \Big(\tsm{f:A\to B} \tprd{x:A} R(x,f(x))\Big)
 \]
-We may regard $R$ as a ``proof-relevant relation'' between $A$ and $B$, with $R(a,b)$ the type of witnesses for relatedness of $a:A$ and $b:B$.
+We may regard $R$ as a ``proof-relevant relation''
+\index{mathematics!proof-relevant}%
+between $A$ and $B$, with $R(a,b)$ the type of witnesses for relatedness of $a:A$ and $b:B$.
 Then $\ac$ says intuitively that if we have a dependent function $g$ assigning to every $a:A$ a dependent pair $(b,r)$ where $b:B$ and $r:R(a,b)$, then we have a function $f:A\to B$ and a dependent function assigning to every $a:A$ a witness that $R(a,f(a))$.
 Our intuition tells us that we can just split up the values of $g$ into their components.
 Indeed, using the projections we have just defined, we can define:
@@ -879,7 +886,9 @@ Moreover, we do not get the same judgmental equalities; see \autoref{ex:prod-via
 This is a recurrent issue when encoding one type as another; we will return to it in \autoref{sec:htpy-inductive}. 
 
 We may occasionally refer to the elements $\btrue$ and $\bfalse$ of $\bool$ as ``true'' and ``false'' respectively.
-However, note that unlike in classical mathematics, we do not use elements of $\bool$ as truth values or as propositions.
+However, note that unlike in classical\index{mathematics!classical} mathematics, we do not use elements of $\bool$ as truth values
+\index{value!truth}%
+or as propositions.
 (Instead we identify propositions with types; see \autoref{sec:pat}.)
 In particular, the type $A \to \bool$ is not generally the power set of $A$; it represents only the ``decidable'' subsets of $A$ (see \autoref{cha:logic}).
 
@@ -1159,7 +1168,10 @@ while if we write it using pattern matching, it would be
   f((x,y))(\inr(b)) &\defeq \;\Box\;:\emptyt
 \end{align*}
 Note that in both cases we now have two ``holes'' of type $\emptyt$ to fill in, corresponding to the two cases where we have to derive a contradiction.
-Finally, the conclusion of a contradiction from $a:A$ and $x:A\to\emptyt$ is simply application of the function $x$ to $a$, and similarly in the other case; thus our eventual definition is
+Finally, the conclusion of a contradiction from $a:A$ and $x:A\to\emptyt$ is simply application of the function $x$ to $a$, and similarly in the other case.
+\index{application!of hypothesis or theorem}%
+(Note the convenient coincidence of the phrase ``applying a function'' with that of ``applying a hypothesis'' or theorem.)
+Thus our eventual definition is
 \begin{align*}
   f((x,y))(\inl(a)) &\defeq x(a)\\
   f((x,y))(\inr(b)) &\defeq y(b).
@@ -1170,7 +1182,7 @@ the converse tautology \emph{``If not ($A$ or $B$), then  (not $A$) and (not $B$
 \[ ((A + B) \to \emptyt) \to (A \to \emptyt) \times (B \to \emptyt), \]
 for any types $A$ and $B$, using the rules we have just introduced.
 
-However, not all classical tautologies hold under this interpretation.
+However, not all classical\index{mathematics!classical} tautologies hold under this interpretation.
 For example, the rule 
 \emph{``If not ($A$ and $B$), then (not $A$) or (not $B$)''} is not valid: we cannot, in general, construct an element of the corresponding type
 \[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt).\]
@@ -1261,7 +1273,9 @@ propositions we are quantifying over; that is
 \[ \Big(\prd{P : A \to \UU_i} P(a) \to P(b)\Big) : \UU_{i+1}. \]
 We will return to this question in \autoref{subsec:prop-subsets}.
 
-We have descibed here a ``proof-relevant'' translation of propositions, where the proofs of disjunctions and existential statements carry some information.
+We have descibed here a ``proof-relevant''
+\index{mathematics!proof-relevant}%
+translation of propositions, where the proofs of disjunctions and existential statements carry some information.
 For instance, if we have an inhabitant of $A+B$, regarded as a witness of ``$A$ or $B$'', then we know whether it came from $A$ or from $B$.
 Similarly, if we have an inhabitant of $\sm{x:A} P(x)$, regarded as a witness of ``there exists $x:A$ such that $P(x)$'', then we know what the element $x$ is (it is the first component of the dependent pair).
 In \autoref{subsec:prop-trunc} we will introduce a modification to this logic that is sometimes appropriate, in which this additional information is discarded.
@@ -1520,7 +1534,7 @@ Of course, it makes no sense to negate judgmental equality $\jdeq$, because judg
   (x \neq_A y) \ \defeq\ \lnot (\id[A]{x}{y}).
 \end{equation*}
 %
-Just like negation, disequality plays a less important role here than it does in classical
+Just like negation, disequality plays a less important role here than it does in classical\index{mathematics!classical}
 mathematics. For example, we cannot prove that two things are equal by proving that they
 are not unequal: that would be an application the classical law of double negation, see \autoref{sec:intuitionism}.
 Sometimes it is useful to phrase disequality in a positive way. For example,

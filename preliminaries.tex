@@ -35,7 +35,7 @@ Note that the judgment ``$A$ has a proof'' exists at a different level from the 
 % In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
 
 The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, ``$a$ is a point of $A$'').
-When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness} to the provability of $A$, or \emph{evidence} of the truth of $A$ (or even a \emph{proof} of $A$, but we will try to avoid this confusing terminology).
+When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness}\index{witness!to the truth of a proposition} to the provability of $A$, or \emph{evidence}\index{evidence!of the truth of a proposition} of the truth of $A$ (or even a \emph{proof}\index{proof} of $A$, but we will try to avoid this confusing terminology).
 In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
 % (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
 
@@ -113,7 +113,9 @@ The collection of all such assumptions is called the \define{context};%
 from a topological point of view it may be thought of as a ``parameter space''.
 In fact, technically the context must be an ordered list of assumptions, since later assumptions may depend on previous ones: the assumption $x:A$ can only be made \emph{after} the assumptions of any variables appearing in the type $A$.
 
-If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
+If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}:
+\indexdef{hypothesis}%
+we assume that the proposition $A$ holds.
 When types are regarded as propositions, we may omit the names of their proofs.
 Thus, in the second example above we may instead say that assuming $\id[A]{x}{y}$, we can prove $\id[A]{y}{x}$.
 However, since we are doing ``proof-relevant'' mathematics,
@@ -216,9 +218,15 @@ For instance, $g(x,\blank)$ is another way to write $\lam{y} g(x,y)$.
 Multiple blanks denote abstraction over multiple variables, e.g.\ $g(\blank,\blank)$ means $\lam{x}{y} g(x,y)$.
 
 Now a $\lambda$-abstraction is a function, so we can apply it to an argument $a:A$.
-We then have the definitional equality\footnote{Use of this equality is often referred to as $\beta$-conversion or $\beta$-reduction.}
+We then have the definitional equality\footnote{Use of this equality is often referred to as $\beta$-conversion%
+\index{beta-conversion@$\beta $-conversion|footstyle}%
+\index{conversion!beta@$\beta $-|footstyle}%
+or $\beta$-reduction.%
+\index{beta-reduction@$\beta $-reduction|footstyle}%
+\index{reduction!beta@$\beta $-|footstyle}%
+}
 \[(\lamu{x:A}b)(a) \jdeq b'\]
- where $b'$ is the
+where $b'$ is the
 expression $b$ in which all occurrences of $x$ have been replaced by $a$.
 Continuing the above example, we have
 %
@@ -226,11 +234,11 @@ Continuing the above example, we have
 %
 Note that from any function $f:A\to B$, we can construct a lambda abstraction function $\lam{x} f(x)$.
 Since this is by definition ``the function which applies $f$ to its argument'' we consider it to be definitionally equal to $f$:\footnote{Use of this equality is often referred to as \define{$\eta$-conversion}
-\index{eta conversion@$\eta$-conversion|footstyle}%
-\index{conversion!eta@$\eta$-|footstyle}%
+\index{eta-conversion@$\eta $-conversion|footstyle}%
+\index{conversion!eta@$\eta $-|footstyle}%
 or \define{$\eta$-expansion.
-\indexfoot{eta expansion@$\eta$-expansion}%
-\indexfoot{expansion!eta@$\eta$-}%
+\index{eta-expansion@$\eta $-expansion|footstyle}%
+\index{expansion!eta@$\eta $-|footstyle}%
 }}
 \[ f \jdeq (\lam{x} f(x)). \]
 
@@ -1020,7 +1028,10 @@ For $\ass_s$, recall that the definition of $+$ gives $\suc(m)+n \jdeq \suc(m+n)
    (\suc(i)+j)+k & \jdeq & \suc((i+j)+k).
 \end{eqnarray*}
 Thus, the output type of $\ass_s$ is equivalently $\id{\suc(i+(j+k))}{\suc((i+j)+k)}$.
-But its input (the ``inductive hypothesis'') yields $\id{i+(j+k)}{(i+j)+k}$, so it suffices to invoke the fact that if two natural numbers are equal, then so are their successors.
+But its input (the ``inductive hypothesis'')
+\index{hypothesis!inductive}%
+\index{inductive hypothesis}%
+yields $\id{i+(j+k)}{(i+j)+k}$, so it suffices to invoke the fact that if two natural numbers are equal, then so are their successors.
 (We will prove this obvious fact formally from the induction principle of identity types in \autoref{lem:map}.)
 We call this latter fact
 $\apfunc{\suc} : %\prd{m,n:\nat}
@@ -1098,6 +1109,7 @@ Only then do we introduce an appropriate sort of ``pattern matching'' which can 
 As mentioned in the introduction, to show that a proposition is true in type theory corresponds to exhibiting an element of the type corresponding to that proposition.
 \index{evidence!of the truth of a proposition}%
 \index{witness!to the truth of a proposition}%
+\index{proof|(}
 We regard the elements of this type as \emph{evidence} or \emph{witnesses} that the proposition is true. (They are sometimes even called \emph{proofs}, but this terminology can be misleading, so we generally avoid it.)
 In general, however, we will not construct witnesses explicitly; instead we present the proofs in ordinary mathematical prose, in such a way that \emph{in principle} they could be translated into an element of a type.
 This is no different from reasoning in classical set theory, where we don't expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory.
@@ -1154,7 +1166,9 @@ As an example of how such a translation works, let us describe how a mathematici
 The introductory phrase ``Suppose not $A$ and not $B$'' translates into defining a function, with an implicit application of the recursion principle for the cartesian product in its domain $(A\to\emptyt)\times (B\to\emptyt)$.
 This introduces unnamed variables
 \index{variable}%
-(hypotheses) $x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
+(hypotheses)
+\index{hypothesis}%
+$x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
 \[ f((x,y)) \defeq\; \Box\;:A+B\to\emptyt \]
 with a ``hole'' $\Box$ of type $A+B\to\emptyt$ indicating what remains to be done.
 (We could equivalently write $f \defeq \rec{(A\to\emptyt)\times (B\to\emptyt)}(A+B\to\emptyt,\lam{x}{y} \Box)$, using the recursor instead of pattern matching.)
@@ -1236,7 +1250,7 @@ An informal proof of this tautology might go as follows:
   Second, we suppose given $x$ and prove $Q(x)$.
   Again by assumption, we have $P(x)$ and $Q(x)$, and hence we have $Q(x)$.
 \end{quote}
-The first sentence begins defining an implication as a function, by introducing a witness for its hypothesis:
+The first sentence begins defining an implication as a function, by introducing a witness for its hypothesis:\index{hypothesis}
 \[ f(p) \defeq \;\Box\; : (\tprd{x:A} P(x)) \times (\tprd{x:A} Q(x)) \]
 At this point there is an implicit use of the pairing constructor to produce an element of a product type, which is somewhat signposted in this example by the words ``first'' and ``second'':
 \[ f(p) \defeq \Big( \;\Box\; : \tprd{x:A} P(x) \;,\; \Box\; : \tprd{x:A}Q(x) \;\Big). \]
@@ -1282,6 +1296,7 @@ For instance, if we have an inhabitant of $A+B$, regarded as a witness of ``$A$ 
 Similarly, if we have an inhabitant of $\sm{x:A} P(x)$, regarded as a witness of ``there exists $x:A$ such that $P(x)$'', then we know what the element $x$ is (it is the first component of the dependent pair).
 In \autoref{subsec:prop-trunc} we will introduce a modification to this logic that is sometimes appropriate, in which this additional information is discarded.
 
+\index{proof|)}%
 \index{proposition!as types|)}%
 
 \section{Identity types}
@@ -1304,7 +1319,7 @@ If we have an element of $\id[A]{a}{b}$, we may say that $a$ and $b$ are \define
 \index{equality!propositional}%
 
 Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include more information than just the fact that the proposition is true, nothing prevents an element of the type $\id{a}{b}$ from also including more information.
-Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
+Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths}\index{path} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications}\indexdef{identification} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
 We will return to the interpretation in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
 
 Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $\id[A]{a}{b}:\UU$ in the same universe.

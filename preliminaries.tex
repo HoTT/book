@@ -797,17 +797,6 @@ empty type. % In the presence of $\eta$-equality it is derivable
 % from the recursor.
 % ex
 
-We define \define{negation}
-\indexdef{negation}%
-of a type $A$ to be
-%
-\begin{equation*}
-  \neg A \ \defeq\ A \to \emptyt.
-\end{equation*}
-%
-To construct an element of $\neg A$ is the same thing as to construct a function $A \to
-\emptyt$, which is done by assuming $x : A$ and deriving an element of~$\emptyt$.
-
 \index{type!coproduct|)}%
 \index{type!empty|)}%
 
@@ -1148,15 +1137,40 @@ The basic observation which makes this identification feasible is that we have t
 
 The point of the correspondence is that in each case, the rules for constructing and using elements of the type on the right correspond to the rules for reasoning about the proposition on the left.
 For instance, the basic way to prove a statement of the form ``$A$ and $B$'' is to prove $A$ and also prove $B$, while the basic way to construct an element of $A\times B$ is as a pair $(a,b)$, where $a$ is an element (or witness) of $A$ and $b$ is an element (or witness) of $B$.
-Similarly, the basic way to prove an implication ``if $A$ then $B$'' is to assume $A$ and prove $B$, while the basic way to construct an element of $A\to B$ is to give an expression which denotes an element (witness) of $B$ which may involve an unspecified variable element (witness) of type $A$.
+And if we want to use ``$A$ and $B$'' to prove something else, we are free to use both $A$ and $B$ in doing so, analogously to how the induction principle for $A\times B$ allows us to construct a function out of it by using elements of $A$ and of $B$.
 
-This gives us a way to translate propositions, and proofs, of them, written in English into types, and elements of them, in type theory.
-For example, suppose we want to prove the tautology
+Similarly, the basic way to prove an implication ``if $A$ then $B$'' is to assume $A$ and prove $B$, while the basic way to construct an element of $A\to B$ is to give an expression which denotes an element (witness) of $B$ which may involve an unspecified variable element (witness) of type $A$.
+And the basic way to use an implication ``if $A$ then $B$'' is deduce $B$ if we know $A$, analogously to how we can apply a function $f:A\to B$ to an element of $A$ to produce an element of $B$.
+We strongly encourage the reader to do the exercise of verifying that the rules governing the other type constructors translate sensibly into logic.
+
+Of special note is that the empty type $\emptyt$ corresponds to falsity.
+When speaking logically, we refer to an inhabitant of $\emptyt$ as a \define{contradiction}:
+\indexdef{contradiction}%
+thus there is no way to prove a contradiction, while from a contradiction anything can be derived.
+We also define the \define{negation}
+\indexdef{negation}%
+of a type $A$ to be
+%
+\begin{equation*}
+  \neg A \ \defeq\ A \to \emptyt.
+\end{equation*}
+%
+Thus, a witness of $\neg A$ is a function $A \to \emptyt$, which we may construct by assuming $x : A$ and deriving an element of~$\emptyt$.
+\index{proof!by contradiction}%
+Note that although the logic we obtain is ``constructive'', as discussed in the introduction, this sort of ``proof by contradiction'' (assume $A$ and derive a contradiction, concluding $\neg A$) is perfectly valid constructively: it is simply invoking the \emph{meaning} of ``negation''.
+The sort of ``proof by contradiction'' which is disallowed is to assume $\neg A$ and derive a contradiction as a way of proving $A$.
+Constructively, such an argument would only allow us to conclude $\neg\neg A$, and the reader can verify that there is no obvious way to get from $\neg\neg A$ (that is, from $(A\to \emptyt)\to\emptyt$) to $A$.
+
+\mentalpause
+
+The above translation of logical connectives into type-forming operations is referred to as \define{propositions as types}: it gives us a way to translate propositions and their proofs, written in English, into types and their elements.
+For example, suppose we want to prove the tautology (one of ``de Morgan's laws''):
+\index{law!de Morgan's|(}%
+\index{de Morgan's laws|(}%
 \begin{equation}\label{eq:tautology1}
   \text{\emph{``If not $A$ and not $B$, then not ($A$ or $B$)''}.}
 \end{equation}
 An ordinary English proof of this fact might go as follows.
-\index{proof!by contradiction|(}%
 \begin{quote}
   Suppose not $A$ and not $B$, and also suppose $A$ or $B$; we will derive a contradiction.
   There are two cases.
@@ -1209,10 +1223,12 @@ However, not all classical\index{mathematics!classical} tautologies hold under t
 For example, the rule 
 \emph{``If not ($A$ and $B$), then (not $A$) or (not $B$)''} is not valid: we cannot, in general, construct an element of the corresponding type
 \[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt).\]
-This reflects the fact that the ``natural'' logic of type theory is \emph{constructive}, as discussed in the introduction.
-Formally, this means it does not include certain classical principles, such as the law of excluded middle (\LEM{}) or proof by contradiction\footnote{Note that the pattern ``assume $A$ and derive a contradiction'' is perfectly valid in constructive logic as a way (in fact, \emph{the} way) to prove ``not $A$''; indeed, we used it in our example above. The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.\indexfoot{proof!by contradiction}},
-and others which depend on them.
-\index{proof!by contradiction|)}%
+This reflects the fact that the ``natural'' propositions-as-types logic of type theory is \emph{constructive}.
+This means that it does not include certain classical principles, such as the law of excluded middle (\LEM{})\index{excluded middle}
+or proof by contradiction,\index{proof!by contradiction}
+and others which depend on them, such as this instance of de Morgan's law.
+\index{law!de Morgan's|)}%
+\index{de Morgan's laws|)}%
 
 Philosophically, constructive logic is so-called because it confines itself to constructions that can be carried out \emph{effectively}, which is to say those with a computational meaning.
 Without being too precise, this means there is some sort of algorithm\index{algorithm} specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true).

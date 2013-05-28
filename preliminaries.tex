@@ -35,6 +35,9 @@ Note that the judgment ``$A$ has a proof'' exists at a different level from the 
 % In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
 
 The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, ``$a$ is a point of $A$'').
+\indexdef{term}%
+\indexdef{element}%
+\indexdef{point!of a type}%
 When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness}\index{witness!to the truth of a proposition} to the provability of $A$, or \emph{evidence}\index{evidence!of the truth of a proposition} of the truth of $A$ (or even a \emph{proof}\index{proof} of $A$, but we will try to avoid this confusing terminology).
 In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
 % (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
@@ -67,7 +70,7 @@ and we write it as $a\jdeq b$ or $a \jdeq_A b$.
 It is helpful to think of this as meaning ``equal by definition''.
 For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
 It does not make sense to negate or assume an equality-by-definition; we cannot say ``if $x$ is equal to $y$ by definition, then $z$ is not equal to $w$ by definition''.
-Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically\index{algorithm} decidable.
+Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically\index{algorithm} decidable.\index{decidable!definitional equality}
 
 As type theory becomes more complicated, judgmental equality can get more subtle than this, but it is a good intuition to start from.
 Alternatively, if we regard a deductive system as an algebraic theory, then judgmental equality is simply the equality in that theory, analogous to the equality between elements of a group---the only potential for confusion is that there is \emph{also} an object \emph{inside} the deductive system of type theory (namely the type ``$a=b$'') which behaves internally as a notion of ``equality''.
@@ -290,6 +293,7 @@ using product types, which is called \define{currying}
 \indexdef{currying}%
 \indexdef{function!currying of}%
 in functional programming.\footnote{The technique is named after the mathematician Haskell Curry}
+\index{programming}%
 
 The idea of currying is to represent a function of two inputs $a:A$ and $b:B$ as a function which takes \emph{one} input $a:A$ and returns \emph{another function}, which then takes a second input $b:B$ and returns the result.
 That is, we consider two-variable functions to belong to an iterated function type, $f : A \to (B \to C)$.
@@ -898,6 +902,7 @@ However, note that unlike in classical\index{mathematics!classical} mathematics,
 or as propositions.
 (Instead we identify propositions with types; see \autoref{sec:pat}.)
 In particular, the type $A \to \bool$ is not generally the power set of $A$; it represents only the ``decidable'' subsets of $A$ (see \autoref{cha:logic}).
+\index{decidable!subset}%
 
 \index{type!of booleans|)}%
 
@@ -922,7 +927,7 @@ This gives rise to $f$ with the defining equations
   f(\suc(n)) & \defeq & c_s(n,f(n)).
 \end{eqnarray*}
 We say that $f$ is defined by \define{primitive recursion}.
-\indexdef{primitive recursion}%
+\indexdef{primitive!recursion}%
 \indexdef{recursion!primitive}%
 
 As an example, we look at how to define a function on natural numbers which doubles its argument.
@@ -1236,7 +1241,7 @@ and others which depend on them, such as this instance of de Morgan's law.
 
 Philosophically, constructive logic is so-called because it confines itself to constructions that can be carried out \emph{effectively}, which is to say those with a computational meaning.
 Without being too precise, this means there is some sort of algorithm\index{algorithm} specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true).
-This requires omission of \LEM{}, since there is no \emph{effective} procedure for deciding whether a proposition is true or false.
+This requires omission of \LEM{}, since there is no \emph{effective}\index{effective!procedure} procedure for deciding whether a proposition is true or false.
 
 The constructivity of type-theoretic logic means it has an intrinsic computational meaning, which is of interest to computer scientists.
 It also means that type theory provides \emph{axiomatic freedom}.\index{axiomatic freedom}
@@ -1250,6 +1255,9 @@ See \autoref{ex:tautologies,ex:not-not-lem} for some suggestions.
 \mentalpause
 
 So far we have discussed only propositional logic.
+\index{quantifier}%
+\index{existential quantifier}%
+\index{universal quantifier}%
 Now we consider \emph{predicate} logic, where in addition to logical connectives like ``and'' and ``or'' we have quantifiers ``there exists'' and ``for all''.
 In this case, types play a dual role: they serve as propositions and also as types in the conventional sense, i.e., domains we quantify over.
 % Indeed, we are going to exploit this duality meaning that we can also quantify over the type of proofs of a proposition.
@@ -1307,6 +1315,7 @@ For strict inequality, there are a couple of natural choices, such as
 or
 \[ (n<m) \defeq (n\le m) \times \neg(\id{n}{m}). \]
 The former is more natural in constructive mathematics, but in this case it is actually equivalent to the latter, since $\nat$ has ``decidable equality'' (see \autoref{sec:intuitionism,prop:nat-is-set}).
+\index{decidable!equality}%
 
 Note that we can use the universes in type theory to represent ``higher order logic'' --- that is, we can quantify over all propositions or over all predicates.
 For example, we can represent the proposition \emph{for all properties $P : A \to \UU$, if $P(a)$ then $P(b)$} as
@@ -1368,7 +1377,7 @@ If we have an element of $\id[A]{a}{b}$, we may say that $a$ and $b$ are \define
 \index{equality!propositional}%
 
 Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include more information than just the fact that the proposition is true, nothing prevents an element of the type $\id{a}{b}$ from also including more information.
-Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths}\index{path} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications}\indexdef{identification} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
+Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths}\indexdef{path} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications}\indexdef{identification} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
 We will return to the interpretation in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
 
 Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $\id[A]{a}{b}:\UU$ in the same universe.
@@ -1655,7 +1664,25 @@ Moreover, it can be dangerous unless sufficient care is taken: for instance, the
 allows proving Axiom K.
 For these reasons, we have chosen to regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.
 
-In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules}, which specify how to form types of this sort; \emph{introduction rules}  or \emph{constructors}, which specify how to construct elements of such types; \emph{elimination rules} or \emph{eliminators}, which specify how to use elements of such types to construct elements of other types; and \emph{computation rules}, which specify what happens when the introduction and elimination rules are combined. The computation rules are also called \emph{reduction rules} or \emph{conversion rules}.
+In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules},
+\index{rule!formation}%
+\index{formation rule}%
+which specify how to form types of this sort; \emph{introduction rules}
+\index{rule!introduction}%
+\index{introduction rule}%
+or \emph{constructors},
+\index{constructor}%
+which specify how to construct elements of such types; \emph{elimination rules}
+\index{rule!elimination}%
+\index{elimination rule}%
+or \emph{eliminators},
+\index{eliminator}%
+which specify how to use elements of such types to construct elements of other types; and \emph{computation rules},
+\index{rule!computation}%
+\index{computation rule}%
+which specify what happens when the introduction and elimination rules are combined. The computation rules are also called \emph{reduction rules} or \emph{conversion rules}.
+\indexsee{reduction!rule}{computation rule}%
+\indexsee{conversion!rule}{computation rule}%
 For inductive types such as products, $\Sigma$s, coproducts, and so on, the introduction rules are the constructors (like pairing or injections), and the elimination rule is the induction principle, for which we have already mentioned the alternative terminology ``eliminator''.
 For function types and $\Pi$-types, the introduction rule is $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}, while the elimination rule is application of a function to an argument.
 

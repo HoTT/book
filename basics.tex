@@ -45,7 +45,7 @@ equivalence classes of loops at some point $x_0$ (where two loops $p$
 and $q$ are equated when there is a \emph{based} homotopy between them,
 which is a homotopy $H$ as above that additionally satisfies $H(0,t) =
 H(1,t) = x_0$ for all $t$) form a group called the \emph{fundamental
-  group}.  This group is an \emph{algebraic invariant} of a space, which
+  group}.\index{fundamental!group}  This group is an \emph{algebraic invariant} of a space, which
 can be used to investigate whether two spaces are \emph{homotopy
   equivalent} (there are continuous maps back and forth whose composites
 are homotopic to the identity), because equivalent spaces have
@@ -179,6 +179,7 @@ $\infty$-groupoids.  It is interesting from a type-theoretic point view, because
 \label{sec:equality}
 
 \index{type!identity|(}%
+\index{path|(}%
 We now derive from this induction principle the beginnings of the structure of a higher groupoid.
 We begin with symmetry of equality, which, in topological language, means that ``paths can be reversed''.
 
@@ -552,13 +553,16 @@ Indeed, as in classical homotopy theory, we can make the following general defin
 
 We will return to iterated loop spaces in \autoref{cha:hlevels,cha:hits,cha:homotopy}.
 \index{type!identity|)}
+\index{path|)}%
 
 \section{Functions are functors}
 \label{sec:functors}
 
 \index{function|(}%
+\index{functoriality@``functoriality''!of functions in type theory}%
 Now we wish to establish that functions $f:A\to B$ behave functorially on paths.
 In traditional type theory, this is equivalently the statement that functions respect equality.
+\index{continuity@``continuity''!of functions in type theory}%
 Topologically, this corresponds to saying that every function is ``continuous'', i.e.\ preserves paths.
 
 \begin{lem}\label{lem:map}
@@ -649,12 +653,16 @@ Then the transportation lemma says that $P$ respects equality, in the sense that
 In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are \emph{equivalent}.
 
 Topologically, the transportation lemma can be viewed as a ``path lifting'' operation in a fibration.
-We think of a type family $P:A\to \type$ as a fibration with base $A$ and total space $\sm{x:A}P(x)$, with $P(x)$ being the fiber over $x$.
+\index{fibration}%
+\indexdef{total space}%
+We think of a type family $P:A\to \type$ as a \emph{fibration} with base space $A$, with $P(x)$ being the fiber over $x$, and with $\sm{x:A}P(x)$ being the \define{total space} of the fibration.
 The defining property of a fibration is that given a path $p:x=y$ in the base space $A$ and a point $u:P(x)$ in the fiber over $x$, we may lift the path $p$ to a path in the total space starting at $u$.
 The point $\trans p u$ can be thought of as the other endpoint of this lifted path.
 We can also define the path itself in type theory:
 
 \begin{lem}[Path lifting property]\label{thm:path-lifting}
+  \indexdef{path!lifting}%
+  \indexdef{lifting!path}%
   Let $P:A\to\type$ be a type family over $A$ and assume we have $u:P(x)$ for some $x:A$.
   Then for any $p:x=y$, we have
   \begin{equation*}
@@ -855,6 +863,8 @@ The following proofs are left to the reader.
 %   \end{enumerate}
 % \end{lem}
 
+\index{functoriality@``functoriality''!of functions in type theory}%
+\index{continuity@``continuity''!of functions in type theory}%
 The first level of the continuity/naturality of homotopies can be expressed as follows:
 
 \begin{lem}\label{lem:htpy-natural}
@@ -894,6 +904,7 @@ Canceling $H(x)$, we see that $H(f(x)) = f(H(x))$ as desired.
 
 \index{equivalence|(}%
 Moving on to types, from a traditional perspective one may say that a function $f:A\to B$ is an \emph{isomorphism} if there is a function $g:B\to A$ such that both composites $f\circ g$ and $g\circ f$ are pointwise equal to the identity, i.e.\ such that $f \circ g \htpy \idfunc[B]$ and $g\circ f \htpy \idfunc[A]$.
+\indexsee{homotopy equivalence}{equivalence}%
 A homotopical perspective suggests that this should be called a \emph{homotopy equivalence}, and from a categorical one, it should be called an \emph{equivalence of (higher) groupoids}.
 However, when doing proof-relevant mathematics,
 \index{mathematics!proof-relevant}%
@@ -1197,6 +1208,8 @@ Recall from the discussion preceeding \autoref{lem:mapdep} that
   \trans{\ap{\proj{1}}{p}}{\proj{2}(w)}=\proj{2}(w')
 }
 can be regarded as the type of paths from $\proj2(w)$ to $\proj2(w')$ which lie over the path $\ap{\proj1}{p}$ in $A$.
+\index{fibration}%
+\index{total space}%
 Thus, we are saying that a path $w=w'$ in the total space determines (and is determined by) a path $p:\proj1(w)=\proj1(w')$ in $A$ together with a path from $\proj2(w)$ to $\proj2(w')$ lying over $p$, which seems sensible.
 
 \begin{rmk}
@@ -1356,7 +1369,9 @@ the type of pointwise paths:
   \eqvspaced{(\id{f}{g})}{\big(\prd{x:A} (\id[B(x)]{f(x)}{g(x)})\big)}\label{eq:path-forall}
 \end{equation}
 From a traditional perspective, this would say that two functions which are equal at each point are equal as functions.
+\index{continuity@``continuity''!of functions in type theory}%
 From a topological perspective, it would say that a path in a function space is the same as a continuous homotopy.
+\index{functoriality@``functoriality''!of functions in type theory}%
 And from a categorical perspective, it would say that an isomorphism in a functor category is a natural family of isomorphisms.
 
 Unlike the case in the previous sections, however, the basic type theory presented in \autoref{cha:typetheory} is insufficient to prove~\eqref{eq:path-forall}.
@@ -1674,8 +1689,9 @@ There are more general equivalences involving the application of functions, akin
 \label{sec:compute-coprod}
 
 \index{type!coproduct|(}%
+\index{encode-decode method|(}%
 So far, most of the type formers we have considered have been what are called \emph{negative}.
-\index{type!negative}\index{negative type}%
+\index{type!negative}\index{negative!type}%
 \index{polarity}%
 Intuitively, this means that their elements are determined by their behavior under the elimination rules: a (dependent) pair is determined by its projections, and a (dependent) function is determined by its values.
 The identity types of negative types can almost always be characterized straightforwardly, along with all of their higher structure, as we have done in \crefrange{sec:compute-cartprod}{sec:compute-pi}.
@@ -1683,7 +1699,7 @@ The universe is not exactly a negative type, but its identity types behave simil
 Identity types themselves, of course, are a special case.
 
 We now consider our first example of a \emph{positive} type former.
-\index{type!positive}\index{positive type}%
+\index{type!positive}\index{positive!type}%
 A positive type is one which is ``presented'' by certain constructors, with the universal property of a presentation\index{presentation!of a positive type by its constructors} being expressed by its elimination rule.
 (Categorically speaking, a positive type has a ``mapping out'' universal property, while a negative type has a ``mapping in'' universal property.)
 Because computing with presentations is, in general, an uncomputable problem, for positive types we cannot always expect a straightforward characterization of the identity type.
@@ -1791,7 +1807,7 @@ In particular, since the two-element type $\bool$ is equivalent to $\unit+\unit$
 \end{rmk}
 
 This proof illustrates a general method for describing path spaces, which we will use often.  To characterize a path space, the first step is to define a comparison fibration $\code$ that provides a more explicit description of the paths.  There are several different methods for proving that such a comparison fibration is equivalent to the paths (we show a few different proofs of the same result in \autoref{sec:pi1-s1-intro}).  The one we have used here is called the \define{encode-decode method}:
-\index{encode-decode method}
+\indexdef{encode-decode method}
 the key idea is to define $\decode$ generally for all instances of the fibration ($\prd{x:A+B}{c:\code(x)} (\inl(a_0)=x)$), so that path induction can be used to analyze $\decode(x,\encode(x,p))$.  
 
 \index{transport!in coproduct types}%
@@ -1804,6 +1820,7 @@ Given a type~$X$, a path $p:\id[X]{x_1}{x_2}$, and type families $A,B:X\to\type$
 where as usual, $A+B$ in the supscript denotes abusively the type family $x\mapsto A(x)+B(x)$.
 The proof is an easy path induction.
 
+\index{encode-decode method|)}%
 \index{type!coproduct|)}%
 
 \section{Natural numbers}
@@ -1811,6 +1828,7 @@ The proof is an easy path induction.
 
 \index{type!of natural numbers|(}%
 \index{natural numbers|(}%
+\index{encode-decode method|(}%
 We use the encode-decode method to characterize the path space of the the natural numbers, which are also a positive type.
 In this case the codes for identities are a type family
 \[\code:\N\to\N\to\type,\]
@@ -1890,10 +1908,12 @@ We also have the composite
   \jdeq \code(m,n) \xrightarrow{\decode} (m=n)
 \end{narrowmultline}
 which shows that the function $\suc$ is injective.
+\index{successor}%
 
 We will study more general positive types in \autoref{cha:induction,cha:hits}.
 In \autoref{cha:homotopy}, we will see that the same technique used here to characterize the identity types of coproducts and \nat can also be used to calculate homotopy groups of spheres.
 
+\index{encode-decode method|)}%
 \index{type!of natural numbers|)}%
 \index{natural numbers|)}%
 
@@ -1903,7 +1923,7 @@ We now consider one example to illustrate the interaction between the groupoid s
 formers.  In the introduction we remarked that one of the
 advantages of univalence is that two isomorphic things are interchangeable,
 in the sense that every property or construction involving one also
-applies to the other.  Common ``abuses of notation'' become formally
+applies to the other.  Common ``abuses of notation''\index{abuse!of notation} become formally
 true.  Univalence itself says that equivalent types are equal, and
 therefore interchangable, which includes e.g.\  the common practice of identifying bijective sets.  Moreover, when we define other
 mathematical objects as sets, or even general types, equipped with structure or properties, we
@@ -1944,6 +1964,7 @@ it easier to work with such semigroups.
 
 \subsection{Lifting equivalences}
 
+\index{lifting!equivalences}%
 When working loosely, one might say that a bijection between sets $A$
 and $B$ ``obviously'' induces an isomorphism between semigroup
 structures on $A$ and semigroup structures on $B$.  With univalence,
@@ -2200,6 +2221,8 @@ However, inductive types with recursion, such as the natural numbers, have more 
 
 \index{type!limit}%
 \index{type!colimit}%
+\index{limit!of types}%
+\index{colimit!of types}%
 Since \autoref{thm:prod-ump} expresses the usual universal property of a cartesian product (in an appropriate homotopy-theoretic sense), the categorically inclined reader may well wonder about other limits and colimits of types.
 In \autoref{ex:coprod-ump} we ask the reader to show that the coproduct type $A+B$ also has the expected universal property, and the nullary cases of $\unit$ (the terminal object) and $\emptyt$ (the initial object) are easy.
 \index{type!empty}%
@@ -2221,6 +2244,9 @@ Some more general homotopy limits can be constructed in a similar way, but for c
 \sectionNotes
 
 The definition of identity types and the elimination rule $J$ are due to Martin-L\"of \cite{Martin-Lof-1972}.
+\index{intensional type theory}%
+\index{extensional type theory}%
+\index{reflection rule}%
 As mentioned in the notes to \autoref{cha:typetheory}, our identity types are those that belong to \emph{intensional} type theory, by contrast with those of \emph{extensional} type theory which have an additional ``reflection rule'' saying that if $p:x=y$, then in fact $x\jdeq y$.
 This reflection rule implies that all the higher groupoid structure collapses (see \autoref{ex:equality-reflection}), so for nontrivial homotopy we must use the intensional version. 
 One may argue, however, that homotopy type theory is more ``extensional'' than traditional extensional type theory, because of the function extensionality and univalence rules.  

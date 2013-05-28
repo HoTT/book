@@ -7,7 +7,7 @@ Homotopy $n$-types are also called \emph{$n$-truncated spaces}.
 We have mentioned this notion already in \autoref{sec:basics-sets}; our first goal in this chapter is to give it a formal definition in homotopy type theory.
 
 A dual notion to truncatedness is connectedness: a space is \emph{$n$-connected} if it has no interesting homotopy in dimensions $n$ and \emph{below}.
-For instance, a space is $0$-connected if it has only one connected component, and $1$-connected (also called ``simply connected'') if it also has no nontrivial loops (though it may have nontrivial higher loops between loops).
+For instance, a space is $0$-connected (also called just ``connected'') if it has only one connected component, and $1$-connected (also called ``simply connected'') if it also has no nontrivial loops (though it may have nontrivial higher loops between loops).
 
 The duality between truncatedness and connectedness is most easily seen by extending both notions to maps.
 We call a map \emph{$n$-truncated} or \emph{$n$-connected} if all its fibers are so.
@@ -46,6 +46,7 @@ As mentioned in \autoref{sec:basics-sets,sec:contractibility}, it turns out to b
 \end{rmk}
 
 \begin{eg}
+  \index{set}
   We saw in \autoref{thm:prop-minusonetype} that $X$ is a $(-1)$-type if and only if it is a mere proposition.
   Therefore, $X$ is a $0$-type if and only if it is a set.
 \end{eg}
@@ -227,6 +228,8 @@ are equivalent to \unit, and hence to each other.
 \section{Uniqueness of identity proofs and Hedberg's theorem}
 \label{sec:hedberg}
 
+\index{set|(}%
+
 In \autoref{sec:basics-sets} we defined a type $X$ to be a \emph{set} if for all $x, y : X$ and $p, q : x =_X y$ we have $p = q$.
 In conventional type theory, this property goes by the name of \define{uniqueness of identity proofs (UIP)}.
 \indexdef{UIP}%
@@ -307,8 +310,12 @@ is a set.
 \end{cor}
 
 Another convenient way to show that a type is a set is the following.
-Recall from \autoref{sec:intuitionism} that a type $X$ is said to have \emph{decidable equality} if for all $x, y : X$ we have
+Recall from \autoref{sec:intuitionism} that a type $X$ is said to have \emph{decidable equality}
+\index{decidable!equality|(}%
+if for all $x, y : X$ we have
 \[(x =_X y) + \neg (x =_X y).\]
+\index{continuity@``continuity''!of functions in type theory}%
+\index{functoriality@``functoriality''!of functions in type theory}%
 This is a very strong condition: it says that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
 This turns out to imply that $X$ is a set, by way of \autoref{thm:h-set-refrel-in-paths-sets} and the following lemma.
 
@@ -338,7 +345,11 @@ There is, of course, a strong connection between this theorem and \autoref{thm:n
 The statement \LEM{\infty} that is denied by \autoref{thm:not-lem} clearly implies that every type has decidable equality, and hence is a set, which we know is not the case.
 \index{excluded middle}%
 Note that the consistent axiom \LEM{} from \autoref{sec:intuitionism} implies only that every type has \emph{merely decidable equality}, i.e.\ that for any $A$ we have
+\indexdef{equality!merely decidable}%
+\indexdef{merely!decidable equality}%
 \[ \prd{a,b:A} (\brck{a=b} + \neg\brck{a=b}). \]
+
+\index{decidable!equality|)}%
 
 As an example application of \autoref{thm:hedberg}, recall that in \autoref{thm:nat-set} we observed that $\nat$ is a set, using our characterization of its equality types in
 \autoref{sec:compute-nat}.
@@ -360,6 +371,8 @@ characterization of \autoref{thm:path-nat}, with \autoref{thm:hedberg} to fill i
   In the first case, if $p:m=n$, then $\ap \suc p:\suc(m)=\suc(n)$.
   And in the second case,~\eqref{eq:suc-injective} yields $\neg(\suc(m)=\suc(n))$.
 \end{proof}
+
+\index{set|)}%
 
 \index{axiom!Streicher's Axiom K!generalization to n-types@generalization to $n$-types}%
 Although Hedberg's theorem appears rather special to sets ($0$-types), ``Axiom K'' generalizes naturally to $n$-types.
@@ -1114,6 +1127,14 @@ At the next level, we have:
 Thus, $n$-connectedness of a function for $n\ge 0$ can be thought of as a strong form of surjectivity.
 Category-theoretically, $(-1)$-connectedness corresponds to essential surjectivity on objects, while $n$-connectedness corresponds to essential surjectivity on $k$-morphisms for $k\le n+1$.
 
+\autoref{thm:minusoneconn-surjective} also implies that a type $A$ is $(-1)$-connected if and only if it is merely inhabited.
+When a type is $0$-connected we may simply say that it is \define{connected},
+\indexdef{connected type}%
+\indexdef{type!connected}%
+and when it is $1$-connected we say it is \define{simply connected}.
+\indexdef{simply connected type}%
+\indexdef{type!simply connected}%
+
 \begin{rmk}\label{rmk:connectedness-indexing}
   While our notion of $n$-connectedness for types agrees with the standard notion in homotopy theory, our notion of $n$-connectedness for \emph{functions} is off by one from a common indexing in classical homotopy theory.
   Whereas we say a function $f$ is $n$-connected if all its fibers are $n$-connected, some classical homotopy theorists would call such a function $(n+1)$-connected.
@@ -1487,7 +1508,7 @@ Hence we obtain
 \begin{equation*}
 \hfib{h_1}b\eqvsym\hfib{h_2}b
 \end{equation*}
-for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the term
+for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the element
 $\pairr{g_1(a),\refl{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
 \begin{align*}
 \pairr{g_1(a),\refl{h_1(g_1(a))}} & 
@@ -1916,7 +1937,9 @@ When they are also \emph{idempotent} (i.e.\ $\diamond A = \diamond{\diamond A}$ 
 However, in dependent type theory it is trickier to deal with the comonadic sort, since they are more rarely stable under pullback, and thus cannot be interpreted as operations on the universe \UU.
 Sometimes there are ways around this (see e.g.~\cite{QGFTinCHoTT12}), but for simplicity, here we stick to the monadic sort.
 
-On the computational side, monads (and hence modalities) are used to model effects in functional programming~\cite{Moggi89}.
+On the computational side, monads (and hence modalities) are used to model effects in functional programming~\cite{Moggi89}.%
+\index{programming}%
+\index{effect}%
 A computation is said to be \emph{pure} if its execution results in no side effects (such as printing a message to the screen, playing music, or sending data over the Internet).
 There exist ``purely functional'' programming languages, such as Haskell, in which it is technically only possible to write pure functions: side effects are represented by applying ``monads'' to output types.
 For instance, a function of type $\mathsf{Int}\to\mathsf{Int}$ is pure, while a function of type $\mathsf{Int}\to \mathsf{IO}(\mathsf{Int})$ may perform input and output along the way to computing its result; the operation $\mathsf{IO}$ is a monad.

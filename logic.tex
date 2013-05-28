@@ -11,17 +11,21 @@ In this chapter we will explain the issues involved, and justify the choices we 
 \section{Sets and \texorpdfstring{$n$}{n}-types}
 \label{sec:basics-sets}
 
+\index{set|(defstyle}%
+
 In order to explain the connection between the logic of type theory and the logic of set theory, it is helpful to have a notion of \emph{set} in type theory.
 While types in general behave like spaces or higher groupoids, there is a subclass of them that behave more like the sets in a traditional set-theoretic system.
 Categorically, we may consider \emph{discrete} groupoids, which are determined by a set of objects and only identity morphisms as higher morphisms; while topologically, we may consider spaces having the discrete topology.
 More generally, we may consider groupoids or spaces that are \emph{equivalent} to ones of this sort; since everything we do in type theory is up to homotopy, we can't expect to tell the difference.
 
 Intuitively, we would expect a type to ``be a set'' in this sense if it has no higher homotopical information: any two parallel paths are equal (up to homotopy), and similarly for parallel higher paths at all dimensions.
-Fortunately, because everything in homotopy type theory is automatically functorial/continuous, it turns out to be sufficient to ask this at the bottom level.
+Fortunately, because everything in homotopy type theory is automatically functorial/continuous,
+\index{continuity@``continuity''!of functions in type theory}%
+\index{functoriality@``functoriality''!of functions in type theory}%
+it turns out to be sufficient to ask this at the bottom level.
 
 \begin{defn}\label{defn:set}
   A type $A$ is a \define{set}
-  \indexdef{set}%
   if for all $x,y:A$ and all $p,q:x=y$, we have $p=q$.
 \end{defn}
 
@@ -125,6 +129,7 @@ Second, this stratification of types by level is not degenerate, in the
 sense that not all types are sets:  
 
 \begin{eg}\label{thm:type-is-not-a-set}
+  \index{type!universe}%
   The universe \type is not a set.
   To prove this, it suffices to exhibit a type $A$ and a path $p:A=A$ which is not equal to $\refl A$.
   Take $A=\bool$, and let $f:A\to A$ be defined by $f(\btrue)\defeq \bfalse$ and $f(\bfalse)\defeq \btrue$.
@@ -146,6 +151,7 @@ That is, a type $A$ is a set just when for any $x,y:A$, any two elements of $\id
 Since sets are equivalently 0-types, it is natural to call a type a \emph{$(-1)$-type} if it has this latter property (any two elements of it are equal).
 Such types may be regarded as \emph{propositions in a narrow sense}, and their study is just what is usually called ``logic''; it will occupy us for the rest of this chapter.
 
+\index{set|)}%
 
 \section{Propositions as types?}
 \label{subsec:pat?}
@@ -173,6 +179,8 @@ On the other hand, we can now also show that corresponding statements looking li
   Thus, in order to prove this statement, it suffices to assume given some $f:\prd{A:\UU} (\neg\neg A \to A)$ and construct an element of \emptyt.
 
   The idea of the following proof is to observe that $f$, like any function in type theory, is ``continuous''.
+  \index{continuity@``continuity''!of functions in type theory}%
+  \index{functoriality@``functoriality''!of functions in type theory}%
   By univalence, this implies that $f$ is \emph{natural} with respect to equivalences of types.
   From this, and a fixed-point-free autoequivalence\index{automorphism!fixed-point-free}, we will be able to extract a contradiction.
 
@@ -414,7 +422,7 @@ The name traditionally given to such propositions is \emph{decidable}.
     if \narrowequation{\prd{a:A} (B(a)+\neg B(a)).}
   \item In particular, $A$ has \define{decidable equality}
     \indexdef{decidable!equality}%
-    \indexdef{equality!decidable}%
+    \indexsee{equality!decidable}{decidable equality}%
     if \narrowequation{\prd{a,b:A} ((a=b) + \neg(a=b)).}
   \end{enumerate}
 \end{defn}
@@ -539,6 +547,7 @@ Of course, this requires knowing that the type-former in question preserves mere
 
   In particular, if $B$ is a mere proposition, then so is $A\to B$ regardless of what $A$ is.
   In even more particular, since \emptyt is a mere proposition, so is $\neg A \jdeq (A\to\emptyt)$.
+  \index{universal quantifier}%
   Thus, the connectives ``implies'' and ``not'' preserve mere propositions, as does the quantifier ``for all''.
 \end{eg}
 
@@ -548,6 +557,7 @@ For instance, \unit is a mere proposition, but $\bool=\unit+\unit$ is not.
 Logically speaking, $A+B$ is a ``purely constructive'' sort of ``or'': a witness of it contains the additional information of \emph{which} disjunct is true.
 Sometimes this is very useful, but if we want a more classical sort of ``or'' that preserves mere propositions, we need a way to ``truncate'' this type into a mere proposition by forgetting this additional information.
 
+\index{existential quantifier}%
 The same issue arises with the $\Sigma$-type $\sm{x:A} P(x)$.
 This is a purely constructive interpretation of ``there exists an $x:A$ such that $P(x)$'' which remembers the witness $x$, and hence is not generally a mere proposition even if each type $P(x)$ is.
 (Recall that we observed in \autoref{subsec:prop-subsets} that $\sm{x:A} P(x)$ can also be regarded as ``the subset of those $x:A$ such that $P(x)$''.)
@@ -600,6 +610,9 @@ traditional logical notations to refer only to ``propositionally truncated logic
   We define \define{traditional logical notation}
   \indexdef{traditional logical notation}%
   \indexdef{logical notation, traditional}%
+  \index{quantifier}%
+  \index{existential quantifier}%
+  \index{universal quantifier}%
   using truncation as follows, where $P$ and $Q$ denote mere propositions (or families thereof):
   {\allowdisplaybreaks
   \begin{align*}
@@ -789,6 +802,7 @@ At first glance, it may seem that the truncated versions of $+$ and $\Sigma$ are
 Certainly, they are closer to the \emph{precise} meaning of ``or'' and ``there exists'' in the first-order logic which underlies formal set theory, since the latter makes no attempt to remember any witnesses to the truth of propositions.
 However, it may come as a surprise to realize that the practice of \emph{informal} mathematics is often more accurately described by the untruncated forms.
 
+\index{prime number}%
 For example, consider a statement like ``every prime number is either $2$ or odd.''
 The working mathematician feels no compunction about using this fact not only to prove \emph{theorems} about prime numbers, but also to perform \emph{constructions} on prime numbers, perhaps doing one thing in the case of $2$ and another in the case of an odd prime.
 The end result of the construction is not merely the truth of some statement, but a piece of data which may depend on the parity of the prime number.
@@ -802,7 +816,7 @@ Moreover, when deriving further properties of this $x$, one may use phrases such
 A very common example is ``$A$ is isomorphic to $B$'', which strictly speaking means only that there exists \emph{some} isomorphism between $A$ and $B$.
 But almost invariably, when proving such a statement, one exhibits a specific isomorphism or proves that some previously known map is an isomorphism, and it often matters later on what particular isomorphism was given.
 
-Set-theoretically trained mathematicians often feel a twinge of guilt at such ``abuses of language''.
+Set-theoretically trained mathematicians often feel a twinge of guilt at such ``abuses of language''.\index{abuse!of language}
 We may attempt to apologize for them, expunge them from final drafts, or weasel out of them with vague words like ``canonical''.
 The problem is exacerbated by the fact that in formalized set theory, there is technically no way to ``construct'' objects at all --- we can only prove that an object with certain properties exists.
 Untruncated logic in type theory thus captures some common practices of informal mathematics that the set theoretic reconstruction obscures.
@@ -846,7 +860,7 @@ We may also use ``purely'' or ``actually'' just to emphasize the absence of trun
 In this book we will continue using untruncated logic as the default convention, for a number of reasons.
 \begin{enumerate}[label=(\arabic*)]
 \item We want to encourage the newcomer to experiment with it, rather than sticking to truncated logic simply because it is more familiar.
-\item Using truncated logic as the default in type theory suffers from the same sort of ``abuse of language'' problems as set-theoretic foundations, which untruncated logic avoids.
+\item Using truncated logic as the default in type theory suffers from the same sort of ``abuse of language''\index{abuse!of language} problems as set-theoretic foundations, which untruncated logic avoids.
   For instance, our definition of ``$\eqv A B$'' as the type of equivalences between $A$ and $B$, rather than its propositional truncation, means that to prove a theorem of the form ``$\eqv A B$'' is literally to construct a particular such equivalence.
   This specific equivalence can then be referred to later on.
 \item We want to emphasize that the notion of ``mere proposition'' is not a fundamental part of type theory.
@@ -889,6 +903,8 @@ Note that under the usual propositions-as-types reading, we can pronounce $\isco
 \begin{rmk}
   We can also pronounce $\iscontr(A)$ more topologically as ``there is a point $a:A$ such that for all $x:A$ there exists a path from $a$ to $x$''.
   Note that to a classical ear, this sounds like a definition of \emph{connectedness} rather than contractibility.
+  \index{continuity@``continuity''!of functions in type theory}%
+  \index{functoriality@``functoriality''!of functions in type theory}%
   The point is that the meaning of ``there exists'' in this sentence is a continuous/natural one.
   A more correct way to express connectedness would be $\sm{a:A}\prd{x:A} \brck{a=x}$; we will come back to this later.
 \end{rmk}

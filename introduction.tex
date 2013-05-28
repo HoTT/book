@@ -28,7 +28,9 @@ The eventual theory will probably not look exactly like the one described in thi
 
 \subsection*{Type theory}
 
-Type theory was originally invented by Bertrand Russell \cite{Russell:1908}, as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. It was later developed as a rigorous formal system in its own right (under the name ``$\lambda$-calculus'') by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory still has numerous applications, especially in computer science and the theory of programming languages \cite{Pierce-TAPL}.   Per Martin-L\"{o}f \cite{Martin-Lof-1972,martinlof71itt,Martin-Lof-1979,martin-lof:bibliopolis}, among others,
+Type theory was originally invented by Bertrand Russell \cite{Russell:1908}, as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. It was later developed as a rigorous formal system in its own right (under the name ``$\lambda$-calculus'') by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory still has numerous applications, especially in computer science and the theory of programming languages~\cite{Pierce-TAPL}.
+\index{programming}%
+Per Martin-L\"{o}f \cite{Martin-Lof-1972,martinlof71itt,Martin-Lof-1979,martin-lof:bibliopolis}, among others,
 developed a ``predicative'' modification of Church's type system, which is now usually called dependent, constructive, intuitionistic, or simply \emph{Martin\--L\"of type theory}. This is the basis of the system that we consider here; it was originally intended as a rigorous framework for the formalization of constructive mathematics.  In what follows, we will often use ``type theory'' to refer specifically to this system and similar ones, although type theory as a subject is much broader (see \cite{somma,kamar} for the history of type theory).
 
 In type theory, unlike set theory, objects are classified using a primitive notion of \emph{type}, similar to the data-types used in programming languages.  These elaborately structured types can be used to express detailed specifications of the objects classified, giving rise to principles of reasoning about these objects.  To take a very simple example, the objects of a product type $A\times B$ are known to be of the form $\pairr{a,b}$, and so one automatically knows how to construct them and how to decompose them. Similarly, an object of function type $A\to B$ can be acquired from an object of type $B$ parametrized by objects of type $A$, and can be evaluated at an argument of type $A$.  This rigidly predictable behavior of all objects (as opposed to set theory's more liberal formation principles, allowing inhomogeneous sets) is one aspect of type theory that has led to its extensive use in verifying the correctness of computer programs.  The clear reasoning principles associated with the construction of types also form the basis of modern \emph{computer proof assistants},%
@@ -39,13 +41,15 @@ which are used for formalizing mathematics and verifying the correctness of form
 One problem in understanding type theory from a mathematical point of view, however, has always been that the basic concept of \emph{type} is unlike that of \emph{set} in ways that have been hard to make precise, especially the notion of equality of elements of a type.  This difficulty, we believe, has now been largely overcome by the idea of regarding types, not as strange sets (perhaps constructed without using classical logic), but as spaces, viewed from the perspective of homotopy theory. 
 
 In homotopy theory one is concerned with spaces and continuous mappings between them, 
-\index{map!continuous}%
+\index{function!continuous!in classical homotopy theory}%
 up to homotopy.  A \emph{homotopy}
 \index{homotopy!topological}%
 between a pair of continuous maps $f : X \to Y$
 and  $g : X\to Y$ is 
 a continuous map $H : X \times [0, 1] \to Y$ satisfying
-$H(x, 0) = f (x)$  and $H(x, 1) = g(x)$. The homotopy $H$ may be thought of as a ``continuous deformation'' of $f$ into $g$. The spaces $X$ and $Y$ are said to be \emph{homotopy equivalent}, $\eqv X Y$, if there are continuous maps going back and forth, the composites of which are homotopical to the respective identity mappings, i.e., if they are isomorphic ``up to homotopy''.  Homotopy equivalent spaces have the same algebraic invariants (e.g., homology, or the fundamental group), and are said to have the same \emph{homotopy type}.
+$H(x, 0) = f (x)$  and $H(x, 1) = g(x)$. The homotopy $H$ may be thought of as a ``continuous deformation'' of $f$ into $g$. The spaces $X$ and $Y$ are said to be \emph{homotopy equivalent},
+\index{homotopy equivalence!topological}%
+$\eqv X Y$, if there are continuous maps going back and forth, the composites of which are homotopical to the respective identity mappings, i.e., if they are isomorphic ``up to homotopy''.  Homotopy equivalent spaces have the same algebraic invariants (e.g., homology, or the fundamental group), and are said to have the same \emph{homotopy type}.
 
 \subsection*{Homotopy type theory}
 
@@ -63,7 +67,8 @@ However, in homotopy type theory we think of it instead as:
 \begin{center}
 ``$a$ is a point of the space $A$.''
 \end{center}
-Similarly, every term $f : A\to B$ in type theory is regarded as a continuous function from the space $A$ to the space $B$.
+\index{continuity@``continuity''!of functions in type theory}%
+Similarly, every function $f : A\to B$ in type theory is regarded as a continuous map from the space $A$ to the space $B$.
 
 We should stress that these ``spaces'' are treated purely homotopically, not topologically.
 For instance, there is no notion of ``open subset'' of a type or of ``convergence'' of a sequence of elements of a type.
@@ -83,6 +88,7 @@ The key new idea of the homotopy interpretation is that the logical notion of id
 This also means that two functions $f, g: A\to B$ can be identified if they are homotopic, since a homotopy is just a (continuous) family of paths $p_x: f(x) \leadsto g(x)$ in $B$, one for each $x:A$.
 In type theory, for every type $A$ there is a (formerly somewhat mysterious) type $\idtypevar{A}$ of identifications of two objects of $A$; in homotopy type theory, this is just the \emph{path space} $A^I$ of all continuous maps $I\to A$ from the unit interval.
 \index{unit!interval}%
+\index{interval!topological unit}%
 \index{path!topological}%
 In this way, a term $p : \idtype[A]{a}{b}$ represents a path $p : a \leadsto b$ in $A$. 
 
@@ -118,7 +124,7 @@ In particular, one may say that ``equivalent types are identical''.
 However, this phrase is somewhat misleading, since it may sound like a sort of ``skeletality'' condition which \emph{collapses} the notion of equivalence to coincide with identity, whereas in fact univalence is about \emph{expanding} the notion of identity so as to coincide with the (unchanged) notion of equivalence.
 
 From the homotopical point of view, univalence implies that spaces of the same homotopy type are connected by a path in the universe $\UU$, in accord with the intuition of a classifying space for (small) spaces.
-From the logical point of view, however, it is a radically new idea: it says that isomorphic things can be identified!  Mathematicians are of course used to identifying isomorphic structures in practice, but they generally do so by ``abuse of notation'', or some other informal device, knowing that the objects involved are not ``really'' identical.  But in this new foundational scheme, such structures can be formally identified, in the logical sense that every property or construction involving one also applies to the other. Indeed, the identification is now made explicit, and properties and constructions can be systematically transported along it.  Moreover, the different ways in which such identifications may be made themselves form a structure that one can (and should!)\ take into account.
+From the logical point of view, however, it is a radically new idea: it says that isomorphic things can be identified!  Mathematicians are of course used to identifying isomorphic structures in practice, but they generally do so by ``abuse of notation''\index{abuse!of notation}, or some other informal device, knowing that the objects involved are not ``really'' identical.  But in this new foundational scheme, such structures can be formally identified, in the logical sense that every property or construction involving one also applies to the other. Indeed, the identification is now made explicit, and properties and constructions can be systematically transported along it.  Moreover, the different ways in which such identifications may be made themselves form a structure that one can (and should!)\ take into account.
 
 Thus in sum, for points $A$ and $B$ of the universe $\UU$ (i.e., small types), the univalence axiom identifies the following three notions:
 \begin{itemize}
@@ -155,6 +161,8 @@ Thus, the combination of univalence and higher inductive types suggests the poss
 
 \subsection*{Sets in univalent foundations}
 
+\index{set|(}%
+
 We have claimed that univalent foundations can eventually serve as a foundation for ``all'' of mathematics, but so far we have discussed 
 only homotopy theory.  Of course, there are many specific examples of the use of type theory without the new homotopy type theory features to formalize 
 mathematics, such as the recent formalization of the  Feit-Thompson odd-order theorem in \Coq~\cite{gonthier}.
@@ -177,6 +185,8 @@ Unsurprisingly, homotopy theory and category theory are two of these, but perhap
 For instance, the univalence axiom allows us to identify isomorphic structures, while higher inductive types allow direct descriptions of objects by their universal properties.
 Thus we can generally avoid resorting to arbitrarily chosen representatives or transfinite iterative constructions.
 In fact, even the objects of study in ZF set theory can be characterized, inside the sets of univalent foundations, by such an inductive universal property.
+
+\index{set|)}%
 
 
 \subsection*{Informal type theory}
@@ -279,6 +289,7 @@ Thus, if we avoid using these principles, the theorems we prove will be valid in
 
 Secondly, one of the additional virtues of type theory is its computable character.
 In addition to being a foundation for mathematics, type theory is a formal theory of computation, and can be treated as a powerful programming language.
+\index{programming}%
 From this perspective, the rules of the system cannot be chosen arbitrarily the way set-theoretic axioms can: there must be a harmony between them which allows all proofs to be ``executed'' as programs.
 We do not yet fully understand the new principles introduced by homotopy type theory, such as univalence and higher inductive types, from
 this point of view, but the basic outlines are emerging; see, for example, \crefrange{sec:computational}{sec:compute-nat} and~\cite{lh:canonicity}.

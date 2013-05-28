@@ -85,8 +85,8 @@ $y$ represents our inductive hypothesis.  As for Booleans, we also have the asso
 \item $\ind\nat(E,e_z,e_s,\suc(n)) \jdeq e_s(n,\rec\nat(E,e_z,e_s,n))$ for any $n : \nat$.
 \end{itemize}
 The dependent function $\ind\nat(E,e_z,e_s)$ can thus be understood as being defined recursively on the argument $x : \nat$, via the recurrences $e_z$ and $e_s$.
-When $x$ is zero, the function simply returns $e_z$.
-When $x$ is the successor of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and substituting the specific predecessor\index{predecessor} $n$ and the recursive call value $\rec\nat(E,e_z,e_s,n)$.
+When $x$ is zero,\index{zero} the function simply returns $e_z$.
+When $x$ is the successor\index{successor} of another natural number $n$, the result is obtained by taking the recurrence $e_s$ and substituting the specific predecessor\index{predecessor} $n$ and the recursive call value $\rec\nat(E,e_z,e_s,n)$.
 
 The induction principles for all the examples mentioned above share this family resemblance.
 In \autoref{sec:strictly-positive} we will discuss a general notion of ``inductive definition'' and how to derive an appropriate \emph{induction principle} for it, but first we investigate various commonalities between inductive definitions.
@@ -161,7 +161,7 @@ But what is the relation between $\nat$ and $\natp$?
 This is not just an academic question, since structures that ``look like'' the natural numbers can be found in many other places.
 \index{type!of lists}%
 For instance, lists over type with one element (this is arguably the oldest appearance, found on walls of caves), in the non-negative integers, as a substructure of the rationals and the reals, and so on.
-And from a programming point of view, the ``unary'' representation of our natural numbers is very inefficient, so we might prefer sometimes to use a binary one instead.
+And from a programming\index{programming} point of view, the ``unary'' representation of our natural numbers is very inefficient, so we might prefer sometimes to use a binary one instead.
 We would like to be able to identify all of these versions of ``the natural numbers'' with each other, in order to transfer constructions and results from one to another.
 
 Of course, if two versions of the natural numbers satisfy identical induction principles, then they have identical induced structure.
@@ -257,7 +257,7 @@ the type $A$ would be the type $\bool$ inhabited by the two elements $\btrue$ an
 
 The type family $B : A \to \type$ is used to record the arity\index{arity} of labels: a label $a : A$ will take a family of inductive arguments, indexed over $B(a)$. We can therefore think of the ``$B(a)$-many'' arguments of $a$. These arguments are represented by a function $f : B(a) \to \wtype{a :A} B(a)$, with the understanding that for any $b : B(a)$, $f(b)$ is the ``$b$-th'' argument to the label $a$. The W-type $\wtype{a :A} B(a)$ can thus be thought of as the type of well-founded trees, where nodes are labeled by elements of $A$ and each node labeled by $a : A$ has $B(a)$-many branches.
 
-In the case of natural numbers, the label $\btrue $ has arity 0, since it constructs the constant zero; the label $\bfalse$ has arity 1, since it constructs the successor of its argument. We can capture this by using simple elimination on $\bool$ to define a function $\rec\bool(\bbU,\emptyt,\unit)$ into a universe of types; this function returns the empty type $\emptyt$ for $\btrue$ and the unit\index{type!unit} type $\unit$ for $\bfalse$. We can thus define
+In the case of natural numbers, the label $\btrue $ has arity 0, since it constructs the constant zero\index{zero}; the label $\bfalse$ has arity 1, since it constructs the successor\index{successor} of its argument. We can capture this by using simple elimination on $\bool$ to define a function $\rec\bool(\bbU,\emptyt,\unit)$ into a universe of types; this function returns the empty type $\emptyt$ for $\btrue$ and the unit\index{type!unit} type $\unit$ for $\bfalse$. We can thus define
 \symlabel{natw}
 \index{type!unit}%
 \index{type!empty}%
@@ -306,10 +306,10 @@ which will represent the recurrence for the $\dbl$ function; for simplicity we d
 Clearly, $e$ will be a function taking $a : \bool$ as its first argument. The next step is to perform case analysis on $a$ and proceed based on whether it is $\btrue$ or $\bfalse$. This suggests the following form
 \[ e \defeq \lamu{a:\bool} \rec\bool(C,e_t,e_f,a) \]
 where \[C \defeq \prd{f : B(a) \to \natw}{g : B(a) \to \natw} \natw\]
-If $a$ is $\btrue$, the type $B(a)$ becomes $\emptyt$. Thus, given $f : \emptyt \to \natw$ and $g : \emptyt \to \natw$, we want to construct an element of $\natw$. Since the label $\btrue$ represents $\emptyt$, it needs zero inductive arguments and the variables $f$ and $g$ are irrelevant. We return $\zerow$ as a result:
+If $a$ is $\btrue$, the type $B(a)$ becomes $\emptyt$. Thus, given $f : \emptyt \to \natw$ and $g : \emptyt \to \natw$, we want to construct an element of $\natw$. Since the label $\btrue$ represents $\emptyt$, it needs zero inductive arguments and the variables $f$ and $g$ are irrelevant. We return $\zerow$\index{zero} as a result:
 \[ e_t \defeq \lamu{f:\emptyt \to \natw}{g:\emptyt \to \natw} \zerow \]
 Analogously, if $a$ is $\bfalse$, the type $B(a)$ becomes $\unit$.
-Since the label $\bfalse$ represents the successor operator, it needs one inductive argument --- the predecessor\index{predecessor} --- which is represented by the variable $f : \unit \to \natw$.
+Since the label $\bfalse$ represents the successor\index{successor} operator, it needs one inductive argument --- the predecessor\index{predecessor} --- which is represented by the variable $f : \unit \to \natw$.
 The value of the recursive call on the predecessor is represented by the variable $g : \unit \to \natw$.
 Thus, taking this value (namely $g(\ttt)$) and applying the successor operator twice thus yields the desired result:
 \begin{equation*}
@@ -829,8 +829,8 @@ This is a contradiction: no proposition can be equivalent to its negation.
 This counterexample suggests that we should ban an inductive type from ever appearing on the left of an arrow in the domain of its constructors, even if that appearance is nested in other arrows so as to eventually become covariant.
 (Similarly, we also forbid it from appearing in the domain of a dependent function type.)
 This restriction is called \define{strict positivity}
-\indexdef{strict positivity}%
-\indexdef{positivity, strict}%
+\indexdef{strict!positivity}%
+\indexsee{positivity, strict}{strict positivity}%
 (ordinary ``positivity'' being essentially covariance), and it turns out to suffice.
 
 \index{type!inductive}%

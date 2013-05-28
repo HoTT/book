@@ -22,9 +22,13 @@ Thus ``$0=1$'' and its negation ``$\neg(0=1)$'' are both propositions, but only 
 Thus, the mathematical activity of \emph{proving a theorem} is identified with a special case of the mathematical activity of \emph{constructing an object}---in this case, an inhabitant of a type that represents a proposition.
 
 This leads us to another difference between type theory and set theory, but to explain it we must say a little about deductive systems in general.
-Informally, a deductive system is a collection of rules for deriving things called \define{judgments}.
+Informally, a deductive system is a collection of \define{rules}
+\indexdef{rule}%
+for deriving things called \define{judgments}.
 \indexdef{judgment}%
-If we think of a deductive system as a formal game, then the judgments are the ``positions'' in the game which we reach by following the game rules.
+If we think of a deductive system as a formal game,
+\index{game!deductive system as}%
+then the judgments are the ``positions'' in the game which we reach by following the game rules.
 We can also think of a deductive system as a sort of algebraic theory, in which case the judgments are the elements (like the elements of a group) and the deductive rules are the operations (like the group multiplication).
 From a logical point of view, the judgments can be considered to be the ``external'' statements, living in the metatheory, as opposed to the ``internal'' statements of the theory itself.
 
@@ -203,11 +207,16 @@ If we don't want to introduce a name for the function, we can use
 \index{lambda abstraction@$\lambda$-abstraction|defstyle}%
 \indexsee{function!lambda abstraction@$\lambda$-abstraction}{$\lambda$-abstraction}%
 \indexsee{abstraction!lambda-@$\lambda$-}{$\lambda$-abstraction}%
-Given an expression $b : B$ which may use $x:A$, as above, we write $\lam{x:A} b$ to indicate the same function defined by~\eqref{eq:expldef}.
+Given an expression $b$ of type $B$ which may use $x:A$, as above, we write $\lam{x:A} b$ to indicate the same function defined by~\eqref{eq:expldef}.
 Thus, we have
 \[ (\lamt{x:A}b) : A \to B. \]
 For the example in the previous paragraph, we have the typing judgment
 \[ (\lam{x:\nat}x+x) : \nat \to \nat. \]
+As another example, for any types $A$ and $B$ and any element $y:B$, we have a \define{constant function}
+\indexdef{constant!function}%
+\indexdef{function!constant}%
+$(\lam{x:A} y): A\to B$.
+
 We generally omit the type of the variable $x$ and write $\lam{x}b$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x b$ has type $A\to B$.
 By convention, the ``scope''
 \indexdef{variable!scope of}%
@@ -367,6 +376,10 @@ they correspond to families of sets as used in
 set theory. An example of a family is the family of finite sets $\Fin
 : \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.
 (We will be able to define this family soon; see \autoref{ex:fin}.)
+A more trivial (but very important) example is the \define{constant} type family
+\indexdef{constant!type family}%
+\indexdef{type!family of!constant}%
+at a type $B:\UU$, which is of course the constant function $(\lam{x:A} B):A\to\UU$.
 
 \index{type!universe|)}%
 
@@ -390,7 +403,7 @@ Given a type $A:\UU$ and a family $B:A \to \UU$, we may construct
 the type of dependent functions $\prd{x:A}B(x) : \UU$.
 There are many alternative notations for this type, such as
 \[ \tprd{x:A} B(x) \qquad \dprd{x:A}B(x) \qquad \lprd{x:A} B(x). \]
-If $B$ is constant, then the dependent product type is the ordinary function type:
+If $B$ is a constant family, then the dependent product type is the ordinary function type:
 \[\tprd{x:A} B \jdeq (A \to B).\]
 Indeed, all the constructions of $\Pi$-types are generalisations of the corresponding constructions on ordinary function types.
 
@@ -459,7 +472,7 @@ We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, whe
 However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.   
 
 There is a general pattern to how one introduces a new primitive concept in type theory, and because products are our second example following this pattern,\footnote{The description of universes above is an   exception.} it is worth emphasizing the general form:
-To specify a type, we say
+To specify a type, we say\index{rule}
 \begin{enumerate}
 \item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}.
   \indexdef{constructor}%
@@ -1126,6 +1139,8 @@ Under this conception, proofs are not just the means by which mathematics is com
 Thus, since types classify the available mathematical objects and govern how they interact, propositions are nothing but special  types --- namely, types whose elements are proofs.
 
 The basic observation which makes this identification feasible is that we have the following natural correspondence between \emph{logical} operations on propositions, expressed in English, and \emph{type-theoretic} operations on their corresponding types of witnesses.
+\index{false}%
+\index{true}%
 \begin{center}
 \medskip
 \begin{tabular}{ll}
@@ -1664,6 +1679,7 @@ Moreover, it can be dangerous unless sufficient care is taken: for instance, the
 allows proving Axiom K.
 For these reasons, we have chosen to regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.
 
+\index{rule}%
 In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules},
 \index{rule!formation}%
 \index{formation rule}%

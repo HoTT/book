@@ -69,7 +69,7 @@ for fn in files:
     # Delete macros
     #text = re.sub(r'\\[a-zA-Z]+\b', ' ', text)
     # Delete cross-references, labels, citations, urls, math terms, urls, environments, index entries
-    text = re.sub(r'\\(autoref|cref|cite|label|ref|eqref|mathsf|href|url|begin|end|index|indexdef|indexfoot|indexsee){[0-9a-zA-Z-_:,!@$* ]*}', matchtospaces, text)
+    text = re.sub(r'\\(autoref|cref|cite|label|ref|eqref|mathsf|href|url|begin|end|index|indexdef|indexfoot|indexsee){[0-9a-zA-Z-_:,!@$* \\]*}', matchtospaces, text)
     # Find words, try to include things like "$(n-2)$-connected"
     for m in re.finditer(r"(?<=(.{20}))[^\\]\b(\$[^$]*\$-)?([a-zA-Z]([a-zA-Z-']|\\-)*[a-zA-Z-])\b(?=(.{20}))", text, re.DOTALL):
         key = str(m.group(3)).lower()
@@ -101,6 +101,8 @@ def filter_word(w, fs):
 for key in sorted(words.keys(), key = sortkey):
     if filter_word(key, filter_re):
         freq = frequency.get_frequency(key)
+        if freq > 1100000:
+            continue
         print("\n\n======== %s [%d]\n\n" % (key, freq))
         for (excerpt, fn, pos) in words[key][:max_occurrences]:
             print ("   ...%s... [%s @ %d]" % (excerpt, fn, pos))

@@ -4,10 +4,10 @@
 One of the basic notions of homotopy theory is that of a \emph{homotopy $n$-type}: a space containing no interesting homotopy above dimension $n$.
 For instance, a homotopy $0$-type is essentially a set, containing no nontrivial paths, while a homotopy $1$-type may contain nontrivial paths, but no nontrivial paths between paths.
 Homotopy $n$-types are also called \emph{$n$-truncated spaces}.
-We have mentioned this notion already in \autoref{sec:basics-sets}; our first goal in this chapter is to give it a formal definition in homotopy type theory.
+We have mentioned this notion already in \autoref{sec:basics-sets}; our first goal in this chapter is to give it a precise definition in homotopy type theory.
 
 A dual notion to truncatedness is connectedness: a space is \emph{$n$-connected} if it has no interesting homotopy in dimensions $n$ and \emph{below}.
-For instance, a space is $0$-connected if it has only one connected component, and $1$-connected (also called ``simply connected'') if it also has no nontrivial loops (though it may have nontrivial higher loops between loops).
+For instance, a space is $0$-connected (also called just ``connected'') if it has only one connected component, and $1$-connected (also called ``simply connected'') if it also has no nontrivial loops (though it may have nontrivial higher loops between loops).
 
 The duality between truncatedness and connectedness is most easily seen by extending both notions to maps.
 We call a map \emph{$n$-truncated} or \emph{$n$-connected} if all its fibers are so.
@@ -46,6 +46,7 @@ As mentioned in \autoref{sec:basics-sets,sec:contractibility}, it turns out to b
 \end{rmk}
 
 \begin{eg}
+  \index{set}
   We saw in \autoref{thm:prop-minusonetype} that $X$ is a $(-1)$-type if and only if it is a mere proposition.
   Therefore, $X$ is a $0$-type if and only if it is a set.
 \end{eg}
@@ -118,7 +119,7 @@ Note that this theorem fails when $n=-2$: the map $\emptyt \to \unit$ is an embe
         $\refl{x} = \contr_x \ct \opp{\contr_x}$, which is trivial.
 
  For the inductive step, we need to show that $\id[X]{x}{y}$ is an $\nplusone$-type, provided
-          that $X$ is an $\nplusone$-type. Applying the induction hypothesis to $\id[X]{x}{y}$
+          that $X$ is an $\nplusone$-type. Applying the inductive hypothesis to $\id[X]{x}{y}$
          yields the desired result.
 \end{proof}
 
@@ -148,7 +149,7 @@ We now show that $n$-types are preserved by most type forming operations.
       \[ \eqvspaced{(\id{(a_1, b_1)}{(a_2,b_2)})}{\sm{p : \id{a_1}{a_2}} (\id[B(a_2)]{\trans{p}{b_1}}{b_2})} \]
    and by preservation of $n$-types under equivalences (\autoref{cor:preservation-hlevels-weq})
    it suffices to prove that the latter is an $n$-type. This follows from the
-   induction hypothesis.
+   inductive hypothesis.
 \end{proof}
 
 As a special case, if $A$ and $B$ are $n$-types, so is $A\times B$.
@@ -193,7 +194,7 @@ To show the conclusion of this implication, we need to show that for any type $X
 \[\prd{x, x' : X}\istype{n}(x = x')\]
 is a mere proposition. By \autoref{thm:hlevel-prod} it suffices to show that for any $x, x' : X$, the type $\istype{n}(x =_X x')$ is a mere
 proposition.
-But this follows from the induction hypothesis applied to the type $(x =_X x')$.
+But this follows from the inductive hypothesis applied to the type $(x =_X x')$.
 \end{proof}
 
 Finally, we show that the type of $n$-types is itself an $\nplusone$-type.
@@ -226,6 +227,8 @@ are equivalent to \unit, and hence to each other.
 
 \section{Uniqueness of identity proofs and Hedberg's theorem}
 \label{sec:hedberg}
+
+\index{set|(}%
 
 In \autoref{sec:basics-sets} we defined a type $X$ to be a \emph{set} if for all $x, y : X$ and $p, q : x =_X y$ we have $p = q$.
 In conventional type theory, this property goes by the name of \define{uniqueness of identity proofs (UIP)}.
@@ -307,8 +310,12 @@ is a set.
 \end{cor}
 
 Another convenient way to show that a type is a set is the following.
-Recall from \autoref{sec:intuitionism} that a type $X$ is said to have \emph{decidable equality} if for all $x, y : X$ we have
+Recall from \autoref{sec:intuitionism} that a type $X$ is said to have \emph{decidable equality}
+\index{decidable!equality|(}%
+if for all $x, y : X$ we have
 \[(x =_X y) + \neg (x =_X y).\]
+\index{continuity@``continuity''!of functions in type theory}%
+\index{functoriality@``functoriality''!of functions in type theory}%
 This is a very strong condition: it says that a path $x=y$ can be chosen, when it exists, continuously (or computably, or functorially) in $x$ and $y$.
 This turns out to imply that $X$ is a set, by way of \autoref{thm:h-set-refrel-in-paths-sets} and the following lemma.
 
@@ -338,7 +345,11 @@ There is, of course, a strong connection between this theorem and \autoref{thm:n
 The statement \LEM{\infty} that is denied by \autoref{thm:not-lem} clearly implies that every type has decidable equality, and hence is a set, which we know is not the case.
 \index{excluded middle}%
 Note that the consistent axiom \LEM{} from \autoref{sec:intuitionism} implies only that every type has \emph{merely decidable equality}, i.e.\ that for any $A$ we have
+\indexdef{equality!merely decidable}%
+\indexdef{merely!decidable equality}%
 \[ \prd{a,b:A} (\brck{a=b} + \neg\brck{a=b}). \]
+
+\index{decidable!equality|)}%
 
 As an example application of \autoref{thm:hedberg}, recall that in \autoref{thm:nat-set} we observed that $\nat$ is a set, using our characterization of its equality types in
 \autoref{sec:compute-nat}.
@@ -356,10 +367,12 @@ characterization of \autoref{thm:path-nat}, with \autoref{thm:hedberg} to fill i
 
   For the inductive step, let $x \jdeq \suc (n)$.
   If $y \jdeq 0$, we use~\eqref{eq:zero-not-succ} again.
-  Finally, if $y \jdeq \suc (m)$, the induction hypothesis gives $(m = n)+\neg(m = n)$.
+  Finally, if $y \jdeq \suc (m)$, the inductive hypothesis gives $(m = n)+\neg(m = n)$.
   In the first case, if $p:m=n$, then $\ap \suc p:\suc(m)=\suc(n)$.
   And in the second case,~\eqref{eq:suc-injective} yields $\neg(\suc(m)=\suc(n))$.
 \end{proof}
+
+\index{set|)}%
 
 \index{axiom!Streicher's Axiom K!generalization to n-types@generalization to $n$-types}%
 Although Hedberg's theorem appears rather special to sets ($0$-types), ``Axiom K'' generalizes naturally to $n$-types.
@@ -464,7 +477,7 @@ By induction and some slightly clever whiskering, we can obtain a generalization
 % H:\prd{f:\Sn^{n+1}\to A}{t:\Sn^{n+1}} (f(t)= f(\north^{n+1})).
 % \end{equation*}
 % We wish to show that $A$ is an $n$-type, which we will do by showing that $x= y$ is an $\nminusone$-type for each $x,y:A$.
-% Suppose that $x,y:A$; then by the induction hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
+% Suppose that $x,y:A$; then by the inductive hypothesis it suffices to show that every function $\Sn^n\to (x= y)$ is null-homotopic.
 % We have that $\Sn^n\to(x= y)$ is equivalent to
 % \[\sm{f:S^{n+1}\to A} (f(\north^{n+1})= x)\times(f(\south^{n+1})= y).\]
 % Suppose that $f:\Sn^n\to A$ is a function and suppose that $\tilde{f}$ corresponds to $f$ via the indicated equivalence. Then $\tilde{f}$ is
@@ -475,6 +488,8 @@ By induction and some slightly clever whiskering, we can obtain a generalization
 
 \section{Truncations}
 \label{sec:truncations}
+
+\index{truncation!n-truncation@$n$-truncation|(defstyle}%
 
 In \autoref{subsec:prop-trunc} we introduced the propositional truncation, which makes the ``best approximation'' of a type that is a mere
 proposition, i.e.\ a $(-1)$-type.
@@ -491,6 +506,7 @@ We might first of all try to define $\trunc nA$ to be generated by a function $\
 $r:\Sn^{n+1} \to \trunc n A$ and each $x:\Sn^{n+1}$, a path $s_r(x):r(x) = r(\base)$.
 %
 But this does not quite work, for the same reason that \autoref{rmk:spokes-no-hub} fails.
+\index{hub and spoke}%
 Instead, we use the full ``hub and spoke'' construction as in \autoref{sec:hubs-spokes}.
 
 Thus, we take $\trunc nA$ to be the higher inductive type generated by:
@@ -572,6 +588,7 @@ This yields the following universal property.
 \end{proof}
 
 In categorical language, this says that the $n$-types form a \emph{reflective subcategory} of the category of types.
+\index{reflective!subcategory}%
 (To state this fully precisely, one ought to use the language of $(\infty,1)$-categories.)
 \index{.infinity1-category@$(\infty,1)$-category}%
 In particular, this implies that the $n$-truncation is functorial:
@@ -787,6 +804,7 @@ well have truncated directly to a $k$-type.
 %   \autoref{reflectPequiv}.
 % \end{proof}
 
+\index{truncation!n-truncation@$n$-truncation|)}%
 
 \section{Colimits of \texorpdfstring{$n$}{n}-types}
 \label{sec:pushouts}
@@ -795,7 +813,7 @@ Recall that in \autoref{sec:colimits}, we used higher inductive types to define 
 In general, a (homotopy) colimit of $n$-types may no longer be an $n$-type (for an extreme counterexample, see \autoref{ex:s2-colim-unit}).
 However, if we $n$-truncate it, we obtain an $n$-type which satisfies the correct universal property with respect to other $n$-types.
 
-In this section we prove this formally for the case of pushouts, which is the most important and nontrivial one.
+In this section we prove this for pushouts, which are the most important and nontrivial case of colimits.
 Recall the following definitions from \autoref{sec:colimits}.
 
 \begin{defn}
@@ -1110,6 +1128,14 @@ At the next level, we have:
 Thus, $n$-connectedness of a function for $n\ge 0$ can be thought of as a strong form of surjectivity.
 Category-theoretically, $(-1)$-connectedness corresponds to essential surjectivity on objects, while $n$-connectedness corresponds to essential surjectivity on $k$-morphisms for $k\le n+1$.
 
+\autoref{thm:minusoneconn-surjective} also implies that a type $A$ is $(-1)$-connected if and only if it is merely inhabited.
+When a type is $0$-connected we may simply say that it is \define{connected},
+\indexdef{connected type}%
+\indexdef{type!connected}%
+and when it is $1$-connected we say it is \define{simply connected}.
+\indexdef{simply connected type}%
+\indexdef{type!simply connected}%
+
 \begin{rmk}\label{rmk:connectedness-indexing}
   While our notion of $n$-connectedness for types agrees with the standard notion in homotopy theory, our notion of $n$-connectedness for \emph{functions} is off by one from a common indexing in classical homotopy theory.
   Whereas we say a function $f$ is $n$-connected if all its fibers are $n$-connected, some classical homotopy theorists would call such a function $(n+1)$-connected.
@@ -1238,6 +1264,7 @@ Thus, $g$ is $n$-connected if and only if it is an equivalence.
 We can also characterize connected pointed types in terms of connectivity of the inclusion of their basepoint.
 
 \begin{lem}\label{thm:connected-pointed}
+  \index{basepoint}%
   Let $A$ be a type and $a_0:\unit\to A$ a basepoint, with $n\ge -1$.
   Then $A$ is $n$-connected if and only if the map $a_0$ is $(n-1)$-connected.
 \end{lem}
@@ -1286,7 +1313,7 @@ Therefore, if either is contractible, so is the other.
 In the other direction, we have
 
 \begin{lem}\label{prop:nconn_fiber_to_total}
-Let $P,Q:A\to\type$ be type families and consider a fiberwise transformation
+Let $P,Q:A\to\type$ be type families and consider a fiberwise transformation\index{fiberwise!transformation}
 \begin{equation*}
 f:\prd{a:A} \Parens{P(a)\to Q(a)}
 \end{equation*}
@@ -1363,6 +1390,7 @@ In \autoref{sec:long-exact-sequence-homotopy-groups} we will see that the differ
 \section{Orthogonal factorization}
 \label{sec:image-factorization}
 
+\index{unique!factorization system|(}%
 In set theory, the surjections and the injections form a unique factorization system: every function factors essentially uniquely as a surjection followed by an injection.
 We have seen that surjections generalize naturally to $n$-connected maps, so it is natural to inquire whether these also participate in a factorization system.
 Here is the corresponding generalization of injections.
@@ -1481,7 +1509,7 @@ Hence we obtain
 \begin{equation*}
 \hfib{h_1}b\eqvsym\hfib{h_2}b
 \end{equation*}
-for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the term
+for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the element
 $\pairr{g_1(a),\refl{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
 \begin{align*}
 \pairr{g_1(a),\refl{h_1(g_1(a))}} & 
@@ -1589,6 +1617,8 @@ By standard arguments, this yields the following orthogonality principle.
   It is straightforward (if a bit tedious) to extract from this that $\hfib\varphi{(h,k,H)}$ is contractible.
 \end{proof}
 
+\index{unique!factorization system|)}%
+
 We end by showing that images are stable under pullback.
 
 \begin{lem}\label{lem:hfiber_wrt_pullback}
@@ -1620,6 +1650,7 @@ is the pullback of the left square if and only if it is the pullback of the oute
 \end{proof}
 
 \begin{thm}\label{thm:stable-images}
+\index{stability!of images under pullback}%
 Consider functions $f:A\to B$, $g:C\to D$ and the diagram
 \begin{equation*}
   \vcenter{\xymatrix{
@@ -1862,7 +1893,10 @@ The symbol $\modal$ is somewhat common for an arbitrary modal operator. % (rathe
 Under the propositions-as-types principle, a modality in the sense of modal logic corresponds to an operation on \emph{types}, and \autoref{defn:modality} seems a reasonable candidate for how such an operation should be defined.
 (More precisely, we should perhaps call these \emph{idempotent, monadic} modalities; see the Notes.)
 \index{idempotent!modality}%
-As mentioned in \autoref{subsec:when-trunc}, we may in general use adverbs\index{adverb} to speak informally about such modalities, such as ``merely'' for the propositional truncation and ``purely'' for the identity modality (i.e.\ the one defined by $\modal A \defeq A$).
+As mentioned in \autoref{subsec:when-trunc}, we may in general use adverbs\index{adverb} to speak informally about such modalities, such as ``merely''\index{merely} for the propositional truncation and ``purely''\index{purely} for the identity modality
+\index{identity!modality}%
+\index{modality!identity}%
+(i.e.\ the one defined by $\modal A \defeq A$).
 
 For any modality $\modal$, we define a map $f:A\to B$ to be \define{$\modal$-connected}
 \indexdef{function!.connected@$\modal$-connected}%
@@ -1904,7 +1938,9 @@ When they are also \emph{idempotent} (i.e.\ $\diamond A = \diamond{\diamond A}$ 
 However, in dependent type theory it is trickier to deal with the comonadic sort, since they are more rarely stable under pullback, and thus cannot be interpreted as operations on the universe \UU.
 Sometimes there are ways around this (see e.g.~\cite{QGFTinCHoTT12}), but for simplicity, here we stick to the monadic sort.
 
-On the computational side, monads (and hence modalities) are used to model effects in functional programming~\cite{Moggi89}.
+On the computational side, monads (and hence modalities) are used to model effects in functional programming~\cite{Moggi89}.%
+\index{programming}%
+\index{effect}%
 A computation is said to be \emph{pure} if its execution results in no side effects (such as printing a message to the screen, playing music, or sending data over the Internet).
 There exist ``purely functional'' programming languages, such as Haskell, in which it is technically only possible to write pure functions: side effects are represented by applying ``monads'' to output types.
 For instance, a function of type $\mathsf{Int}\to\mathsf{Int}$ is pure, while a function of type $\mathsf{Int}\to \mathsf{IO}(\mathsf{Int})$ may perform input and output along the way to computing its result; the operation $\mathsf{IO}$ is a monad.
@@ -1976,7 +2012,7 @@ The modalities we have considered in this chapter are all idempotent, whereas th
   \item Of course, $\choice{n,m}\Rightarrow \choice{k,m}$ if $k\le n$.
     Are there any other implications between the principles $\choice{n,m}$?
     Is $\choice{n,m}$ consistent with univalence for any $m\ge -1$?
-    (These are open questions.)
+    (These are open questions.)\index{open!problem}
   \end{enumerate}
 \end{ex}
 
@@ -1992,7 +2028,7 @@ The modalities we have considered in this chapter are all idempotent, whereas th
   \begin{enumerate}
   \item Prove that the $(-1)$-connected axiom of choice implies the $n$-con\-nect\-ed axiom of choice for all $n\ge -1$.
   \item Are there any other implications between the $n$-connected axioms of choice and the principles $\choice{n,m}$?
-    (This is an open question.)
+    (This is an open question.)\index{open!problem}
   \end{enumerate}
 \end{ex}
 

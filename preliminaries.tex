@@ -22,9 +22,13 @@ Thus ``$0=1$'' and its negation ``$\neg(0=1)$'' are both propositions, but only 
 Thus, the mathematical activity of \emph{proving a theorem} is identified with a special case of the mathematical activity of \emph{constructing an object}---in this case, an inhabitant of a type that represents a proposition.
 
 This leads us to another difference between type theory and set theory, but to explain it we must say a little about deductive systems in general.
-Informally, a deductive system is a collection of rules for deriving things called \define{judgments}.
+Informally, a deductive system is a collection of \define{rules}
+\indexdef{rule}%
+for deriving things called \define{judgments}.
 \indexdef{judgment}%
-If we think of a deductive system as a formal game, then the judgments are the ``positions'' in the game which we reach by following the game rules.
+If we think of a deductive system as a formal game,
+\index{game!deductive system as}%
+then the judgments are the ``positions'' in the game which we reach by following the game rules.
 We can also think of a deductive system as a sort of algebraic theory, in which case the judgments are the elements (like the elements of a group) and the deductive rules are the operations (like the group multiplication).
 From a logical point of view, the judgments can be considered to be the ``external'' statements, living in the metatheory, as opposed to the ``internal'' statements of the theory itself.
 
@@ -35,7 +39,10 @@ Note that the judgment ``$A$ has a proof'' exists at a different level from the 
 % In particular, we cannot manipulate it to construct propositions such as ``if $A$ has a proof, then $B$ does not have a proof''---unless we are using our set-theoretic foundation as a meta-theory with which to talk about some other axiomatic system.
 
 The basic judgment of type theory, analogous to ``$A$ has a proof'', is written ``$a:A$'' and pronounced as ``the term $a$ has type $A$'', or more loosely ``$a$ is an element of $A$'' (or, in homotopy type theory, ``$a$ is a point of $A$'').
-When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness} to the provability of $A$, or \emph{evidence} of the truth of $A$ (or even a \emph{proof} of $A$, but we will try to avoid this confusing terminology).
+\indexdef{term}%
+\indexdef{element}%
+\indexdef{point!of a type}%
+When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness}\index{witness!to the truth of a proposition} to the provability of $A$, or \emph{evidence}\index{evidence!of the truth of a proposition} of the truth of $A$ (or even a \emph{proof}\index{proof} of $A$, but we will try to avoid this confusing terminology).
 In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
 % (Already here type theory has an advantage in that the term $a$ records the essence of the proof of $A$, whereas in first-order logic that information is only available by backtracking through the derivation of ``$A$ has a proof''.)
 
@@ -67,7 +74,7 @@ and we write it as $a\jdeq b$ or $a \jdeq_A b$.
 It is helpful to think of this as meaning ``equal by definition''.
 For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
 It does not make sense to negate or assume an equality-by-definition; we cannot say ``if $x$ is equal to $y$ by definition, then $z$ is not equal to $w$ by definition''.
-Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically\index{algorithm} decidable.
+Whether or not two expressions are equal by definition is just a matter of expanding out the definitions; in particular, it is algorithmically\index{algorithm} decidable.\index{decidable!definitional equality}
 
 As type theory becomes more complicated, judgmental equality can get more subtle than this, but it is a good intuition to start from.
 Alternatively, if we regard a deductive system as an algebraic theory, then judgmental equality is simply the equality in that theory, analogous to the equality between elements of a group---the only potential for confusion is that there is \emph{also} an object \emph{inside} the deductive system of type theory (namely the type ``$a=b$'') which behaves internally as a notion of ``equality''.
@@ -96,29 +103,35 @@ When introducing a definitional equality, i.e., defining one thing to be equal t
 Thus, the above definition of the function $f$ would be written as $f(x)\defeq x^2$.
 
 Because judgments cannot be put together into more complicated statements, the symbols ``$:$'' and ``$\jdeq$'' bind more loosely than anything else.%
-\footnote{In formalized type theory, commas and turnstiles can bind even more loosely.
+\footnote{In formalized\indexfoot{mathematics!formalized} type theory, commas and turnstiles can bind even more loosely.
   For instance, $x:A,y:B\vdash c:C$ is parsed as $((x:A),(y:B))\vdash (c:C)$.
   However, in this book we refrain from such notation until \autoref{cha:rules}.}
 Thus, for instance, ``$p:\id{x}{y}$'' should be parsed as ``$p:(\id{x}{y})$'', which makes sense since ``$\id{x}{y}$'' is a type, and not as ``$\id{(p:x)}{y}$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
 Similarly, ``$A\jdeq \id{x}{y}$'' can only be parsed as ``$A\jdeq(\id{x}{y})$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
 This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, since we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (as is standard practice in type theory; see \autoref{sec:pi-types}).
 
-Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable and $A$ is a type.
+Judgments may depend on assumptions of the form $x:A$, where $x$ is a variable
+\indexdef{variable}%
+and $A$ is a type.
 For example, we may construct an object $m + n : \nat$ under the assumptions that $m,n : \nat$.
 Another example is that assuming $A$ is a type, $x,y : A$, and $p : \id[A]{x}{y}$, we may construct an element $p^{-1} : \id[A]{y}{x}$.
 The collection of all such assumptions is called the \define{context};%
 \index{context}
 from a topological point of view it may be thought of as a ``parameter space''.
-In fact, technically the context must be an ordered list of assumptions, since later assumptions may depend on previous ones: the assumption $x:A$ can only be made \emph{after} the assumptions of any variables appearing in the type $A$.
+In fact, technically the context must be an ordered list of assumptions, since later assumptions may depend on previous ones: the assumption\index{assumption} $x:A$ can only be made \emph{after} the assumptions of any variables appearing in the type $A$.
 
-If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}: we assume that the proposition $A$ holds.
+If the type $A$ in an assumption $x:A$ represents a proposition, then the assumption is a type-theoretic version of a \emph{hypothesis}:
+\indexdef{hypothesis}%
+we assume that the proposition $A$ holds.
 When types are regarded as propositions, we may omit the names of their proofs.
 Thus, in the second example above we may instead say that assuming $\id[A]{x}{y}$, we can prove $\id[A]{y}{x}$.
-However, since we are doing ``proof-relevant'' mathematics, we will frequently refer back to proofs as objects.
+However, since we are doing ``proof-relevant'' mathematics,
+\index{mathematics!proof-relevant}%
+we will frequently refer back to proofs as objects.
 In the example above, for instance, we may want to establish that $p^{-1}$ together with the proofs of transitivity and reflexivity behave like a groupoid; see \autoref{cha:basics}.
 
 In the rest of this chapter, we attempt to give an informal presentation of type theory, sufficient for the purposes of this book; we will give a more formal account in \autoref{cha:rules}.
-Aside from some fairly obvious rules (such as the fact that judgmentally equal things can always be substituted for each other), the rules of type theory can be grouped into \emph{type formers}.
+Aside from some fairly obvious rules (such as the fact that judgmentally equal things can always be substituted\index{substitution} for each other), the rules of type theory can be grouped into \emph{type formers}.
 Each type former consists of a way to construct types (possibly making use of previously constructed types), together with rules for the construction and behavior of elements of that type.
 In most cases, these rules follow a fairly predictable pattern, but we will not attempt to make this precise.
 
@@ -143,15 +156,15 @@ In this chapter, however, we confine ourselves to a traditional rule-based type 
 \section{Function types}
 \label{sec:function-types}
 
-\indexdef{type!function}%
+\index{type!function|(defstyle}%
 \indexsee{function type}{type, function}%
 Given types $A$ and $B$, we can construct the type $A \to B$ of \define{functions}
-\indexdef{function}%
+\index{function|(defstyle}%
 \indexsee{map}{function}%
 with domain $A$ and codomain $B$.
 We also sometimes refer to functions as \define{maps}.
-\index{domain!of function}%
-\index{codomain!of function}%
+\index{domain!of a function}%
+\index{codomain!of a function}%
 \index{function!domain of}%
 \index{function!codomain of}%
 Unlike in set theory, functions are not defined as
@@ -164,19 +177,24 @@ can \define{apply}
 \indexdef{application!of function}%
 \indexdef{function!application}%
 the function to obtain an element of the codomain $B$,
-denoted $f(a)$.
+denoted $f(a)$ and called the \define{value} of $f$ at $a$.
+\indexdef{value!of a function}%
 It is common in type theory to omit the parentheses and denote $f(a)$ simply by $f\,a$, and we will sometimes do this as well.
 
 But how can we construct elements of $A \to B$? There are two equivalent ways:
 either by direct definition or by using
-$\lambda$-abstraction. Introducing a function by definition means that
+$\lambda$-abstraction. Introducing a function by definition
+\indexdef{definition!of function, direct}%
+means that
 we introduce a function by giving it a name --- let's say, $f$ --- and saying
 we define $f : A \to B$ by giving an equation
 \begin{equation}
   \label{eq:expldef}
   f(x) \defeq b
 \end{equation}
-where $x$ is a variable and $b$ is an expression which may use $x$.
+where $x$ is a variable
+\index{variable}%
+and $b$ is an expression which may use $x$.
 In order for this to be valid, we have to check that $b : B$ assuming $x:A$.
 
 Now we can compute $f(a)$ by replacing the variable $x$ in $b$ with
@@ -186,16 +204,24 @@ Then $f(2)$ is judgmentally equal to $2+2$.
 
 If we don't want to introduce a name for the function, we can use
 \define{$\lambda$-abstraction}.%
-\indexdef{lambda abstraction@$\lambda$-abstraction}%
-\indexdef{function!lambda abstraction@$\lambda$-abstraction}%
-\index{abstraction}
-Given an expression $b : B$ which may use $x:A$, as above, we write $\lam{x:A} b$ to indicate the same function defined by~\eqref{eq:expldef}.
+\index{lambda abstraction@$\lambda$-abstraction|defstyle}%
+\indexsee{function!lambda abstraction@$\lambda$-abstraction}{$\lambda$-abstraction}%
+\indexsee{abstraction!lambda-@$\lambda$-}{$\lambda$-abstraction}%
+Given an expression $b$ of type $B$ which may use $x:A$, as above, we write $\lam{x:A} b$ to indicate the same function defined by~\eqref{eq:expldef}.
 Thus, we have
 \[ (\lamt{x:A}b) : A \to B. \]
 For the example in the previous paragraph, we have the typing judgment
 \[ (\lam{x:\nat}x+x) : \nat \to \nat. \]
+As another example, for any types $A$ and $B$ and any element $y:B$, we have a \define{constant function}
+\indexdef{constant!function}%
+\indexdef{function!constant}%
+$(\lam{x:A} y): A\to B$.
+
 We generally omit the type of the variable $x$ and write $\lam{x}b$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x b$ has type $A\to B$.
-By convention, the ``scope'' of the variable binding ``$\lam{x}$'' is the entire rest of the expression, unless delimited with parentheses.
+By convention, the ``scope''
+\indexdef{variable!scope of}%
+\indexdef{scope}%
+of the variable binding ``$\lam{x}$'' is the entire rest of the expression, unless delimited with parentheses.
 Thus, for instance, $\lam{x} x+x$ should be parsed as $\lam{x} (x+x)$, not as $(\lam{x}x)+x$ (which would, in this case, be ill-typed anyway).
 
 Another equivalent notation is
@@ -207,9 +233,15 @@ For instance, $g(x,\blank)$ is another way to write $\lam{y} g(x,y)$.
 Multiple blanks denote abstraction over multiple variables, e.g.\ $g(\blank,\blank)$ means $\lam{x}{y} g(x,y)$.
 
 Now a $\lambda$-abstraction is a function, so we can apply it to an argument $a:A$.
-We then have the definitional equality\footnote{Use of this equality is often referred to as $\beta$-conversion or $\beta$-reduction.}
+We then have the definitional equality\footnote{Use of this equality is often referred to as \define{$\beta$-conversion}
+\index{beta-conversion@$\beta $-conversion|footstyle}%
+\index{conversion!beta@$\beta $-|footstyle}%
+or \define{$\beta$-reduction}.%
+\index{beta-reduction@$\beta $-reduction|footstyle}%
+\index{reduction!beta@$\beta $-|footstyle}%
+}
 \[(\lamu{x:A}b)(a) \jdeq b'\]
- where $b'$ is the
+where $b'$ is the
 expression $b$ in which all occurrences of $x$ have been replaced by $a$.
 Continuing the above example, we have
 %
@@ -217,11 +249,11 @@ Continuing the above example, we have
 %
 Note that from any function $f:A\to B$, we can construct a lambda abstraction function $\lam{x} f(x)$.
 Since this is by definition ``the function which applies $f$ to its argument'' we consider it to be definitionally equal to $f$:\footnote{Use of this equality is often referred to as \define{$\eta$-conversion}
-\indexfoot{eta conversion@$\eta$-conversion}%
-\indexfoot{conversion!eta@$\eta$-}%
+\index{eta-conversion@$\eta $-conversion|footstyle}%
+\index{conversion!eta@$\eta $-|footstyle}%
 or \define{$\eta$-expansion.
-\indexfoot{eta expansion@$\eta$-expansion}%
-\indexfoot{expansion!eta@$\eta$-}%
+\index{eta-expansion@$\eta $-expansion|footstyle}%
+\index{expansion!eta@$\eta $-|footstyle}%
 }}
 \[ f \jdeq (\lam{x} f(x)). \]
 
@@ -235,22 +267,22 @@ as
 When doing calculations involving variables, we have to be 
 careful when replacing a variable with an expression that also involves
 variables, because we want to preserve the binding structure of
-expressions. By the \emph{binding structure} we mean the
-invisible link generated by binders
-\index{variable!bound}%
-\indexsee{bound variable}{variable!bound}%
-such as $\lambda$, $\Pi$ and
+expressions. By the \emph{binding structure}\indexdef{binding structure} we mean the
+invisible link generated by binders such as $\lambda$, $\Pi$ and
 $\Sigma$ (the latter we are going to meet soon) between the place where the variable is introduced and where it is used. As an example, consider $f : \nat \to (\nat \to \nat)$
 defined as 
 \[ f(x) \defeq \lamu{y:\nat} x + y \] 
 Now if we have assumed somewhere that $y : \nat$, then what is $f(y)$? It would be wrong to just naively replace $x$ by $y$ everywhere in the expression ``$\lam{y}x+y$'' defining $f(x)$, obtaining $\lamu{y:\nat} y + y$, because this means that $y$ gets \define{captured}.
 \indexdef{variable!captured}%
-Previously, the substituted $y$ was referring to our assumption, but now it is referring to the parameter of the anonymous function. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
+Previously, the substituted\index{substitution} $y$ was referring to our assumption, but now it is referring to the argument of the $\lambda$-abstraction. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
 
 But what \emph{is} $f(y)$ in this example? Note that bound (or ``dummy'')
-variables such as $y$ in the expression $\lamu{y:\nat} x + y$
+variables
+\indexdef{variable!bound}%
+\indexdef{variable!dummy}%
+such as $y$ in the expression $\lamu{y:\nat} x + y$
 have only a local meaning, and can be consistently replaced by any
-other variable, preserving the binding structure. Indeed, $\lamu{y:\nat} x + y$ is declared to be judgmentally equal\footnote{Use of this equality is called \define{$\alpha$-conversion.
+other variable, preserving the binding structure. Indeed, $\lamu{y:\nat} x + y$ is declared to be judgmentally equal\footnote{Use of this equality is often referred to as \define{$\alpha$-conversion.
 \indexfoot{alpha conversion@$\alpha$-conversion}
 \indexfoot{conversion!alpha@$\alpha$-}
 }} to
@@ -270,6 +302,7 @@ using product types, which is called \define{currying}
 \indexdef{currying}%
 \indexdef{function!currying of}%
 in functional programming.\footnote{The technique is named after the mathematician Haskell Curry}
+\index{programming}%
 
 The idea of currying is to represent a function of two inputs $a:A$ and $b:B$ as a function which takes \emph{one} input $a:A$ and returns \emph{another function}, which then takes a second input $b:B$ and returns the result.
 That is, we consider two-variable functions to belong to an iterated function type, $f : A \to (B \to C)$.
@@ -282,21 +315,24 @@ involved. Our notation for definitions with explicit parameters extends to
 this situation: we can define a named function $f : A \to B \to C$ by
 giving an equation
 \[ f(x,y) \defeq c\]
-where $c:C$ assuming $x:A$ and $y:B$. Using $\lambda$-abstraction this
+where $c:C$ assuming $x:A$ and $y:B$. Using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction} this
 corresponds to
 \[ f \defeq \lamu{x:A}{y:B} c, \]
 which may also be written as 
 \[ f \defeq x \mapsto y \mapsto c. \] 
 Currying a function of three or more arguments is a straightforward extension of what we have just described.
  
+\index{type!function|)}%
+\index{function|)}%
+
 
 \section{Universes and families}
 \label{sec:universes}
 
 So far, we have been using the expression ``$A$ is a type'' informally. We
 are going to make this more precise by introducing \define{universes}.
-\indexdef{type!universe}%
-\indexdef{universe}%
+\index{type!universe|(defstyle}%
+\indexsee{universe}{type, universe}%
 A universe is a type whose elements are types. As in naive set theory,
 we might wish for a universe of all types $\UU_\infty$ including itself
 (that is, with $\UU_\infty : \UU_\infty$).
@@ -328,31 +364,39 @@ $\UU:\UU$, which can be read as $\UU_i:\UU_{i+1}$, having left the
 indices implicit.  Writing universes in this style is referred to as
 \define{typical ambiguity}.
 \indexdef{typical ambiguity}%
+When some universe \UU is assumed, we may refer to types belonging to \UU as \define{small types}.
+\indexdef{small!type}%
+\indexdef{type!small}%
 
 To model a collection of types varying over a given type $A$, we use functions $B : A \to \UU$  whose
 codomain is a universe. These functions are called
 \define{families of types} (or sometimes \emph{dependent types});
-\indexdef{family!of types}%
+\indexsee{family!of types}{type, family of}%
 \indexdef{type!family of}%
-\indexdef{type!dependent}%
-\indexdef{dependent!type}%
+\indexsee{type!dependent}{type, family of}%
+\indexsee{dependent!type}{type, family of}%
 they correspond to families of sets as used in
 set theory. An example of a family is the family of finite sets $\Fin
 : \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.
 (We will be able to define this family soon; see \autoref{ex:fin}.)
+A more trivial (but very important) example is the \define{constant} type family
+\indexdef{constant!type family}%
+\indexdef{type!family of!constant}%
+at a type $B:\UU$, which is of course the constant function $(\lam{x:A} B):A\to\UU$.
 
+\index{type!universe|)}%
 
 \section{Dependent function types (\texorpdfstring{$\Pi$}{Π}-types)}
 \label{sec:pi-types}
 
-\indexdef{type!dependent function}%
+\index{type!dependent function|(defstyle}%
+\index{function!dependent|(defstyle}%
+\indexsee{dependent!function}{function, dependent}%
 \indexsee{type!Pi-@$\Pi$-}{type, dependent function}%
-\indexsee{.pi-type@$\Pi$-type}{type, dependent function}%
+\indexsee{Pi-type@$\Pi$-type}{type, dependent function}%
 In type theory we often use a more general version of function
 types, called a $\Pi$-type or dependent function type. The elements of
 a $\Pi$-type are functions
-\index{function!dependent}%
-\index{dependent!function}%
 whose codomain type can vary depending on the
 element of the domain to which the function is applied. The name ``$\Pi$-type''
 is used because this type can also be regarded as the infinite cartesian
@@ -362,24 +406,25 @@ Given a type $A:\UU$ and a family $B:A \to \UU$, we may construct
 the type of dependent functions $\prd{x:A}B(x) : \UU$.
 There are many alternative notations for this type, such as
 \[ \tprd{x:A} B(x) \qquad \dprd{x:A}B(x) \qquad \lprd{x:A} B(x). \]
-If $B$ is constant, then the dependent product type is the ordinary function type:
+If $B$ is a constant family, then the dependent product type is the ordinary function type:
 \[\tprd{x:A} B \jdeq (A \to B).\]
 Indeed, all the constructions of $\Pi$-types are generalisations of the corresponding constructions on ordinary function types.
 
+\indexdef{definition!of function, direct}%
 We can introduce dependent functions by explicit definitions: to
 define $f : \prd{x:A}B(x)$, where $f$ is the name of a dependent function to be
-defined, we need an expression $b : B(x)$ involving $x:A$, and we write
+defined, we need an expression $b : B(x)$ involving the variable $x:A$,
+\index{variable}%
+and we write
 \[ f(x) \defeq b \qquad \mbox{for $x:A$}\]
 Alternatively, we can use \define{$\lambda$-abstraction}%
-\indexdef{lambda abstraction@$\lambda$-abstraction}%
-\indexdef{function!lambda abstraction@$\lambda$-abstraction}%
-\index{abstraction}
+\index{lambda abstraction@$\lambda$-abstraction|defstyle}%
 \begin{equation}
   \label{eq:lambda-abstraction}
   \lamu{x:A} b \ :\ \prd{x:A} B(x).
 \end{equation}
 \indexdef{application!of dependent function}%
-\indexdef{dependent function!application}%
+\indexdef{function!dependent!application}%
 As with non-dependent functions, we can \define{apply} a dependent function $f : \prd{x:A}B(x)$ to an argument $a:A$ to obtain an element $f(a):B(a)$.
 The equalities are the same as for the ordinary function type, i.e.\
 given $a:A$ we have $f(a) \jdeq b'$ and  
@@ -396,8 +441,8 @@ Another important class of dependent function types are functions which are \def
 over a given universe.
 A polymorphic function is one which takes a type as one of its arguments, and then acts on elements of that type (or other types constructed from it).
 \symlabel{idfunc}
-\index{function!identity}%
-\index{identity!function}%
+\indexdef{function!identity}%
+\indexdef{identity!function}%
 An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
 
 As for ordinary functions, we use currying to define dependent functions with
@@ -406,10 +451,12 @@ depend on the first one, and the codomain may depend on both. That is,
 given $A:U$ and type families $B : A \to U$ and $C : \prd{x:A}B(x) \to \UU$, we may construct
 the type $\prd{x:A}{y : B(x)} C(x,y)$ of functions with two
 arguments.
-(Like $\lambda$-abstractions, $\Pi$s automatically scope over the rest of the expression unless delimited; thus $C : \prd{x:A}B(x) \to \UU$ means $C : \prd{x:A}(B(x) \to \UU)$.)
+(Like $\lambda$-abstractions, $\Pi$s automatically scope\index{scope} over the rest of the expression unless delimited; thus $C : \prd{x:A}B(x) \to \UU$ means $C : \prd{x:A}(B(x) \to \UU)$.)
 Likewise, given $f:\prd{x:A}{y : B(x)} C(x,y)$ and arguments $a:A$ and $b:B(a)$, we have $f(a)(b) : C(a,b)$, which,
 as before, we write as $f(a,b) : C(a,b)$.
 
+\index{type!dependent function|)}%
+\index{function!dependent|)}%
 
 
 \section{Product types}
@@ -418,18 +465,19 @@ as before, we write as $f(a,b) : C(a,b)$.
 Given types $A,B:\UU$ we introduce the type $A\times B:\UU$, which we call their \define{cartesian product}.
 \indexsee{cartesian product}{type, product}%
 \indexsee{type!cartesian product}{type, product}%
-\indexdef{type!product}
+\index{type!product|(defstyle}%
 \indexsee{product!of types}{type, product}%
 We also introduce a nullary product type, called the \define{unit type} $\unit : \UU$
-\indexsee{unit type}{type, unit}%
-\indexdef{type!unit}%
+\indexsee{unit!type}{type, unit}%
+\index{type!unit|(defstyle}%
 We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, where $a:A$ and $b:B$, and the only element of $\unit$ to be some particular object $\ttt : \unit$.
+\indexdef{pair!ordered}%
 However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.   
 
 There is a general pattern to how one introduces a new primitive concept in type theory, and because products are our second example following this pattern,\footnote{The description of universes above is an   exception.} it is worth emphasizing the general form:
-To specify a type, we say
+To specify a type, we say\index{rule}
 \begin{enumerate}
-\item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, $\lambda$-abstraction.
+\item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}.
   \indexdef{constructor}%
 \item how to use elements of that type.  These are called the type's   \emph{eliminators}.
   \indexdef{eliminator}%
@@ -566,6 +614,9 @@ by using the defining equations
 or equivalently by using induction:
 \[\un \defeq \ind{\unit}(\lamu{x:\unit} \id{x}{\ttt},\refl{\ttt}). \]
 
+\index{type!product|)}%
+\index{type!unit|)}%
+
 \section{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:sigma-types}
 
@@ -575,16 +626,20 @@ component. This is called a $\Sigma$-type, because in set theory it
 corresponds to an indexed sum (in the sense of coproduct or
 disjoint union) over a given type.
 
-\indexdef{type!dependent pair}%
+\index{type!dependent pair|(defstyle}%
 \indexsee{type!dependent sum}{type, dependent pair}%
 \indexsee{type!Sigma-@$\Sigma$-}{type, dependent pair}%
-\indexsee{.sigma-type@$\Sigma$-type}{type, dependent pair}%
+\indexsee{Sigma-type@$\Sigma$-type}{type, dependent pair}%
+\indexsee{sum!dependent}{type, dependent pair}%
 Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
 pair type is written as $\sm{x:A} B(x) : \UU$.
 Alternative notations are 
 \[ \tsm{x:A} B(x) \hspace{2cm} \dsm{x:A}B(x) \hspace{2cm} \lsm{x:A} B(x). \]
+Like other binding constructs such as $\lambda$-abstractions and $\Pi$s, $\Sigma$s automatically scope\index{scope} over the rest of the expression unless delimited, so e.g.\ $\sm{x:A} B(x) \times C(x)$ means $\sm{x:A} (B(x) \times C(x))$.
+
 \symlabel{defn:dependent-pair}%
-The way to construct elements of this type is by pairing: we have
+\indexdef{pair!dependent}%
+The way to construct elements of a dependent pair type is by pairing: we have
 $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
 If $B$ is constant, then the dependent pair type is the
 ordinary cartesian product type:
@@ -658,7 +713,9 @@ As a further example, consider the following principle, where $A$ and $B$ are ty
 \[ \ac : \Big(\tprd{x:A} \tsm{y :B} R(x,y)\Big) \to
 \Big(\tsm{f:A\to B} \tprd{x:A} R(x,f(x))\Big)
 \]
-We may regard $R$ as a ``proof-relevant relation'' between $A$ and $B$, with $R(a,b)$ the type of witnesses for relatedness of $a:A$ and $b:B$.
+We may regard $R$ as a ``proof-relevant relation''
+\index{mathematics!proof-relevant}%
+between $A$ and $B$, with $R(a,b)$ the type of witnesses for relatedness of $a:A$ and $b:B$.
 Then $\ac$ says intuitively that if we have a dependent function $g$ assigning to every $a:A$ a dependent pair $(b,r)$ where $b:B$ and $r:R(a,b)$, then we have a function $f:A\to B$ and a dependent function assigning to every $a:A$ a witness that $R(a,f(a))$.
 Our intuition tells us that we can just split up the values of $g$ into their components.
 Indeed, using the projections we have just defined, we can define:
@@ -682,21 +739,24 @@ Since this sounds like a version of the axiom of choice, the function \ac has tr
 However, no choice is actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness.
 In \autoref{sec:axiom-choice} we will give another formulation of an ``axiom of choice'' which is closer to the usual one.
 
+\index{type!dependent pair|)}%
 
 \section{Coproduct types}
 \label{sec:coproduct-types}
 
 Given $A,B:\UU$, we introduce their \define{coproduct} type $A+B:\UU$.
 \indexsee{coproduct}{type, coproduct}%
-\indexdef{type!coproduct}%
+\index{type!coproduct|(defstyle}%
 \indexsee{disjoint sum}{type, coproduct}%
 \indexsee{disjoint union}{type, coproduct}%
+\indexsee{sum!disjoint}{type, coproduct}%
+\indexsee{union!disjoint}{type, coproduct}%
 This corresponds to the \emph{disjoint union} in set theory, and we may also use that name for it.
 In type theory, as was the case with functions and products, the coproduct must be a fundamental construction, since there is no previously given notion of ``union of types''.
 We also introduce a
 nullary version: the \define{empty type $\emptyt:\UU$}.
 \indexsee{empty type}{type, empty}%
-\indexdef{type!empty}%
+\index{type!empty|(defstyle}%
 
 There are two ways to construct elements of $A+B$, either as $\inl(a) : A+B$ for $a:A$, or as
 $\inr(b):A+B$ for $b:B$. There are no ways to construct elements of the empty type. 
@@ -709,9 +769,10 @@ via the defining equations
   f(\inl(a)) & \defeq & g_0(a) \\
   f(\inl(b)) & \defeq & g_1(b).
 \end{eqnarray*}
-That is, the function $f$ is defined by cases. As before, we can
-derive the recursor:
-\symlabel{defn:recursor-plus}
+That is, the function $f$ is defined by \define{case analysis}.
+\indexdef{case analysis}%
+As before, we can derive the recursor:
+\symlabel{defn:recursor-plus}%
 \[ \rec{A+B} : \dprd{C:\UU}(A \to C) \to (B\to C) \to A+B \to C\]
 with the defining equations
 \begin{eqnarray*}
@@ -761,24 +822,17 @@ empty type. % In the presence of $\eta$-equality it is derivable
 % from the recursor.
 % ex
 
-We define \define{negation}
-\indexdef{negation}%
-of a type $A$ to be
-%
-\begin{equation*}
-  \neg A \ \defeq\ A \to \emptyt.
-\end{equation*}
-%
-To construct an element of $\neg A$ is the same thing as to construct a function $A \to
-\emptyt$, which is done by assuming $x : A$ and deriving an element of~$\emptyt$.
+\index{type!coproduct|)}%
+\index{type!empty|)}%
+
 
 \section{The type of booleans}
 \label{sec:type-booleans}
 
-\indexdef{type!of booleans}
+\index{type!of booleans|(defstyle}%
 The type of booleans $\bool:\UU$ is intended to have exactly two elements 
 $\btrue,\bfalse : \bool$. It is clear that we could construct this
-type out of coproduct and unit types as $\unit + \unit$. However,
+type out of coproduct\index{type!coproduct} and unit\index{type!unit} types as $\unit + \unit$. However,
 since it is used frequently, we give the explicit rules here.
 Indeed, we are going to observe that we can also go the other way
 and derive binary coproducts from $\Sigma$-types and $\bool$.
@@ -818,7 +872,7 @@ with the defining equations
 \end{eqnarray*}
 
 As an example, using the induction principle we can prove that, as we expect, every element of $\bool$ is either $\btrue$ or $\bfalse$.
-As before, we use the equality types which we have not yet introduced formally, but we need only the fact that everything is equal to itself by $\refl{x}:x=x$.
+As before, we use the equality types which we have not yet introduced, but we need only the fact that everything is equal to itself by $\refl{x}:x=x$.
 
 \begin{thm}\label{thm:allbool-trueorfalse}
   We have
@@ -833,8 +887,10 @@ We have remarked that $\Sigma$-types can be regarded as analogous to indexed dis
 It is natural to expect that a binary disjoint union $A+B$ could be constructed as an indexed one over the two-element type \bool.
 For this we need a type family $P:\bool\to\type$ such that $P(\bfalse)\jdeq A$ and $P(\btrue)\jdeq B$.
 Indeed, we can obtain such a family precisely by the recursion principle for $\bool$.
+\index{type!family of}%
 (The ability to define \emph{type families} by induction and recursion, using the fact that the universe $\UU$ is itself a type, is one of the most subtle and important aspects of type theory.)
 Thus, we could have defined
+\index{type!coproduct}%
 \[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x) \]
 with
 \begin{eqnarray*}
@@ -858,20 +914,25 @@ Moreover, we do not get the same judgmental equalities; see \autoref{ex:prod-via
 This is a recurrent issue when encoding one type as another; we will return to it in \autoref{sec:htpy-inductive}. 
 
 We may occasionally refer to the elements $\btrue$ and $\bfalse$ of $\bool$ as ``true'' and ``false'' respectively.
-However, note that unlike in classical mathematics, we do not use elements of $\bool$ as truth values or as propositions.
+However, note that unlike in classical\index{mathematics!classical} mathematics, we do not use elements of $\bool$ as truth values
+\index{value!truth}%
+or as propositions.
 (Instead we identify propositions with types; see \autoref{sec:pat}.)
-In particular, the type $A \to \bool$ is not generally the power set of $A$; it represents only the ``decidable'' subsets of $A$ (see \autoref{cha:logic}).
+In particular, the type $A \to \bool$ is not generally the power set\index{power set} of $A$; it represents only the ``decidable'' subsets of $A$ (see \autoref{cha:logic}).
+\index{decidable!subset}%
+
+\index{type!of booleans|)}%
 
 
 \section{The natural numbers}
 \label{sec:inductive-types}
 
-\indexdef{type!of natural numbers}%
-\indexdef{natural numbers}%
+\index{type!of natural numbers|(defstyle}%
+\index{natural numbers|(defstyle}%
 \indexsee{number!natural}{natural numbers}%
 The rules we have introduced so far do not allow us to construct any infinite types.
 The simplest infinite type we can think of (and which is also, of course, extremely useful) is the type $\nat : \UU$ of natural numbers.
-The elements of $\nat$ are constructed using $0 : \nat$ and the successor operation $\suc : \nat \to \nat$.
+The elements of $\nat$ are constructed using $0 : \nat$\indexdef{zero} and the successor\indexdef{successor} operation $\suc : \nat \to \nat$.
 When denoting natural numbers, we adopt the usual decimal notation $1 \defeq \suc(0)$, $2 \defeq \suc(1)$, $3 \defeq \suc(2)$, \dots.
 
 The essential property of the natural numbers is that we can define functions by recursion and perform proofs by induction --- where now the words ``recursion'' and ``induction'' have a more familiar meaning.
@@ -883,7 +944,7 @@ This gives rise to $f$ with the defining equations
   f(\suc(n)) & \defeq & c_s(n,f(n)).
 \end{eqnarray*}
 We say that $f$ is defined by \define{primitive recursion}.
-\indexdef{primitive recursion}%
+\indexdef{primitive!recursion}%
 \indexdef{recursion!primitive}%
 
 As an example, we look at how to define a function on natural numbers which doubles its argument.
@@ -943,7 +1004,9 @@ Using $\rec{\nat}$ we can present $\dbl$ and $\add$ as follows:
 \end{align}
 Of course, all functions definable only using the primitive recursion principle will be \emph{computable}.
 (The presence of higher function types does, however, mean we can define more than the usual primitive recursive functions; see e.g.~\autoref{ex:ackermann}.)
-This is appropriate in constructive mathematics; in \autoref{sec:intuitionism,sec:axiom-choice} we will see how to augment type theory so that we can define more general mathematical functions.
+This is appropriate in constructive mathematics;
+\index{mathematics!constructive}%
+in \autoref{sec:intuitionism,sec:axiom-choice} we will see how to augment type theory so that we can define more general mathematical functions.
 
 \index{induction principle!for natural numbers}
 We now follow the same approach as for other types, generalizing primitive recursion to dependent functions to obtain an \emph{induction principle}.
@@ -988,8 +1051,11 @@ For $\ass_s$, recall that the definition of $+$ gives $\suc(m)+n \jdeq \suc(m+n)
    (\suc(i)+j)+k & \jdeq & \suc((i+j)+k).
 \end{eqnarray*}
 Thus, the output type of $\ass_s$ is equivalently $\id{\suc(i+(j+k))}{\suc((i+j)+k)}$.
-But its input (the ``inductive hypothesis'') yields $\id{i+(j+k)}{(i+j)+k}$, so it suffices to invoke the fact that if two natural numbers are equal, then so are their successors.
-(We will prove this obvious fact formally from the induction principle of identity types in \autoref{lem:map}.)
+But its input (the ``inductive hypothesis'')
+\index{hypothesis!inductive}%
+\index{inductive hypothesis}%
+yields $\id{i+(j+k)}{(i+j)+k}$, so it suffices to invoke the fact that if two natural numbers are equal, then so are their successors.
+(We will prove this obvious fact in \autoref{lem:map}, using the induction principle of identity types.)
 We call this latter fact
 $\apfunc{\suc} : %\prd{m,n:\nat}
 (\id[\nat]{m}{n}) \to (\id[\nat]{\suc(m)}{\suc(n)})$, so we can define
@@ -997,10 +1063,15 @@ $\apfunc{\suc} : %\prd{m,n:\nat}
 h(j,k)). \]
 Putting these together with $\ind{\nat}$, we obtain a proof of associativity.
 
+\index{type!of natural numbers|)}%
+\index{natural numbers|)}%
+
 
 \section{Pattern matching and recursion}
 \label{sec:pattern-matching}
 
+\index{pattern matching|(defstyle}%
+\index{definition!by pattern matching|(}%
 The natural numbers introduce an additional subtlety over the types considered up until now.
 In the case of coproducts, for instance, we could define a function $f:A+B\to C$ either with the recursor:
 \[ f \defeq \rec{A+B}(C, g_0, g_1) \]
@@ -1015,7 +1086,9 @@ Conversely, given any defining equations
   f(\inl(a)) &\defeq c_0\\
   f(\inr(b)) &\defeq c_1
 \end{align*}
-where $c_0$ and $c_1$ are expressions that may involve the variables $a$ and $b$, we can express these equations equivalently in terms of the recursor by using $\lambda$-abstraction:
+where $c_0$ and $c_1$ are expressions that may involve the variables
+\index{variable}%
+$a$ and $b$, we can express these equations equivalently in terms of the recursor by using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}:
 \[ f\defeq \rec{A+B}(C, \lam{a} c_0, \lam{b} c_1).\]
 In the case of the natural numbers, however, the ``defining equations'' of a function such as $\dbl$:
 \begin{align}
@@ -1037,7 +1110,6 @@ where $c_s'$ is obtained from $c_s$ by replacing all occurrences of ``$f(n)$'' b
 
 This style of defining functions by recursion (or, more generally, dependent functions by induction) is so convenient that we frequently adopt it.
 It is called definition by \define{pattern matching}.
-\index{pattern matching}%
 Of course, it is very similar to how a computer programmer may define a recursive function with a body that literally contains recursive calls to itself.
 However, unlike the programmer, we are restricted in what sort of recursive calls we can make: in order for such a definition to be re-expressible using the recursion principle, the function $f$ being defined can only appear in the body of $f(\suc(n))$ as part of the composite symbol ``$f(n)$''.
 Otherwise, we could write nonsense functions such as
@@ -1052,24 +1124,30 @@ This point will be even more important when we introduce more complicated induct
 Whenever we introduce a new kind of inductive definition, we always begin by deriving its induction principle.
 Only then do we introduce an appropriate sort of ``pattern matching'' which can be justified as a shorthand for the induction principle.
 
+\index{pattern matching|)}%
+\index{definition!by pattern matching|)}%
 
 \section{Propositions as types}
 \label{sec:pat}
 
+\index{proposition!as types|(defstyle}%
+\index{logic!propositions as types|(}%
 As mentioned in the introduction, to show that a proposition is true in type theory corresponds to exhibiting an element of the type corresponding to that proposition.
 \index{evidence!of the truth of a proposition}%
 \index{witness!to the truth of a proposition}%
+\index{proof|(}
 We regard the elements of this type as \emph{evidence} or \emph{witnesses} that the proposition is true. (They are sometimes even called \emph{proofs}, but this terminology can be misleading, so we generally avoid it.)
 In general, however, we will not construct witnesses explicitly; instead we present the proofs in ordinary mathematical prose, in such a way that \emph{in principle} they could be translated into an element of a type.
 This is no different from reasoning in classical set theory, where we don't expect to see an explicit derivation using the rules of predicate logic and the axioms of set theory.
 
 However, the type-theoretic perspective on proofs is nevertheless different in important ways.
-The basic principle of the logic of type theory is that a proposition is not merely true or false, but rather can be seen as classifying all possible witnesses of its truth.
+The basic principle of the logic of type theory is that a proposition is not merely true or false, but rather can be seen as the collection of all possible witnesses of its truth.
 Under this conception, proofs are not just the means by which mathematics is communicated, but rather are mathematical objects in their own right, on a par with more familiar objects such as numbers, mappings, groups, and so on.
-Thus, since types classify the available mathematical objects and govern how they interact, propositions are nothing but special  types --- namely, types that classify proofs.
-\index{proposition!as types}
+Thus, since types classify the available mathematical objects and govern how they interact, propositions are nothing but special  types --- namely, types whose elements are proofs.
 
 The basic observation which makes this identification feasible is that we have the following natural correspondence between \emph{logical} operations on propositions, expressed in English, and \emph{type-theoretic} operations on their corresponding types of witnesses.
+\index{false}%
+\index{true}%
 \begin{center}
 \medskip
 \begin{tabular}{ll}
@@ -1090,10 +1168,37 @@ The basic observation which makes this identification feasible is that we have t
 
 The point of the correspondence is that in each case, the rules for constructing and using elements of the type on the right correspond to the rules for reasoning about the proposition on the left.
 For instance, the basic way to prove a statement of the form ``$A$ and $B$'' is to prove $A$ and also prove $B$, while the basic way to construct an element of $A\times B$ is as a pair $(a,b)$, where $a$ is an element (or witness) of $A$ and $b$ is an element (or witness) of $B$.
-Similarly, the basic way to prove an implication ``if $A$ then $B$'' is to assume $A$ and prove $B$, while the basic way to construct an element of $A\to B$ is to give an expression which denotes an element (witness) of $B$ which may involve an unspecified variable element (witness) of type $A$.
+And if we want to use ``$A$ and $B$'' to prove something else, we are free to use both $A$ and $B$ in doing so, analogously to how the induction principle for $A\times B$ allows us to construct a function out of it by using elements of $A$ and of $B$.
 
-This gives us a way to translate propositions, and proofs, of them, written in English into types, and elements of them, in type theory.
-For example, suppose we want to prove the tautology
+Similarly, the basic way to prove an implication ``if $A$ then $B$'' is to assume $A$ and prove $B$, while the basic way to construct an element of $A\to B$ is to give an expression which denotes an element (witness) of $B$ which may involve an unspecified variable element (witness) of type $A$.
+And the basic way to use an implication ``if $A$ then $B$'' is deduce $B$ if we know $A$, analogously to how we can apply a function $f:A\to B$ to an element of $A$ to produce an element of $B$.
+We strongly encourage the reader to do the exercise of verifying that the rules governing the other type constructors translate sensibly into logic.
+
+Of special note is that the empty type $\emptyt$ corresponds to falsity.
+When speaking logically, we refer to an inhabitant of $\emptyt$ as a \define{contradiction}:
+\indexdef{contradiction}%
+thus there is no way to prove a contradiction, while from a contradiction anything can be derived.
+We also define the \define{negation}
+\indexdef{negation}%
+of a type $A$ to be
+%
+\begin{equation*}
+  \neg A \ \defeq\ A \to \emptyt.
+\end{equation*}
+%
+Thus, a witness of $\neg A$ is a function $A \to \emptyt$, which we may construct by assuming $x : A$ and deriving an element of~$\emptyt$.
+\index{proof!by contradiction}%
+\index{logic!constructive vs classical}
+Note that although the logic we obtain is ``constructive'', as discussed in the introduction, this sort of ``proof by contradiction'' (assume $A$ and derive a contradiction, concluding $\neg A$) is perfectly valid constructively: it is simply invoking the \emph{meaning} of ``negation''.
+The sort of ``proof by contradiction'' which is disallowed is to assume $\neg A$ and derive a contradiction as a way of proving $A$.
+Constructively, such an argument would only allow us to conclude $\neg\neg A$, and the reader can verify that there is no obvious way to get from $\neg\neg A$ (that is, from $(A\to \emptyt)\to\emptyt$) to $A$.
+
+\mentalpause
+
+The above translation of logical connectives into type-forming operations is referred to as \define{propositions as types}: it gives us a way to translate propositions and their proofs, written in English, into types and their elements.
+For example, suppose we want to prove the tautology (one of ``de Morgan's laws''):
+\index{law!de Morgan's|(}%
+\index{de Morgan's laws|(}%
 \begin{equation}\label{eq:tautology1}
   \text{\emph{``If not $A$ and not $B$, then not ($A$ or $B$)''}.}
 \end{equation}
@@ -1113,7 +1218,11 @@ so we should be able to translate the above proof into an element of this type.
 
 As an example of how such a translation works, let us describe how a mathematician reading the above English proof might simultaneously construct, in his or her head, an element of~\eqref{eq:tautology2}.
 The introductory phrase ``Suppose not $A$ and not $B$'' translates into defining a function, with an implicit application of the recursion principle for the cartesian product in its domain $(A\to\emptyt)\times (B\to\emptyt)$.
-This introduces unnamed variables (hypotheses) $x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
+This introduces unnamed variables
+\index{variable}%
+(hypotheses)
+\index{hypothesis}%
+$x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
 \[ f((x,y)) \defeq\; \Box\;:A+B\to\emptyt \]
 with a ``hole'' $\Box$ of type $A+B\to\emptyt$ indicating what remains to be done.
 (We could equivalently write $f \defeq \rec{(A\to\emptyt)\times (B\to\emptyt)}(A+B\to\emptyt,\lam{x}{y} \Box)$, using the recursor instead of pattern matching.)
@@ -1128,7 +1237,10 @@ while if we write it using pattern matching, it would be
   f((x,y))(\inr(b)) &\defeq \;\Box\;:\emptyt
 \end{align*}
 Note that in both cases we now have two ``holes'' of type $\emptyt$ to fill in, corresponding to the two cases where we have to derive a contradiction.
-Finally, the conclusion of a contradiction from $a:A$ and $x:A\to\emptyt$ is simply application of the function $x$ to $a$, and similarly in the other case; thus our eventual definition is
+Finally, the conclusion of a contradiction from $a:A$ and $x:A\to\emptyt$ is simply application of the function $x$ to $a$, and similarly in the other case.
+\index{application!of hypothesis or theorem}%
+(Note the convenient coincidence of the phrase ``applying a function'' with that of ``applying a hypothesis'' or theorem.)
+Thus our eventual definition is
 \begin{align*}
   f((x,y))(\inl(a)) &\defeq x(a)\\
   f((x,y))(\inr(b)) &\defeq y(b).
@@ -1139,17 +1251,21 @@ the converse tautology \emph{``If not ($A$ or $B$), then  (not $A$) and (not $B$
 \[ ((A + B) \to \emptyt) \to (A \to \emptyt) \times (B \to \emptyt), \]
 for any types $A$ and $B$, using the rules we have just introduced.
 
-However, not all classical tautologies hold under this interpretation.
+\index{logic!classical vs constructive|(}
+However, not all classical\index{mathematics!classical} tautologies hold under this interpretation.
 For example, the rule 
 \emph{``If not ($A$ and $B$), then (not $A$) or (not $B$)''} is not valid: we cannot, in general, construct an element of the corresponding type
 \[ ((A \times B) \to \emptyt) \to (A \to \emptyt) + (B \to \emptyt).\]
-This reflects the fact that the ``natural'' logic of type theory is \emph{constructive}, as discussed in the introduction.
-Formally, this means it does not include certain classical principles, such as the law of excluded middle (\LEM{}) or proof by contradiction\footnote{Note that the pattern ``assume $A$ and derive a contradiction'' is perfectly valid in constructive logic as a way (in fact, \emph{the} way) to prove ``not $A$''; indeed, we used it in our example above. The form of ``proof by contradiction'' which is disallowed is ``assume not $A$ and derive a contradiction'' as a way of proving $A$.},
-and others which depend on them.
+This reflects the fact that the ``natural'' propositions-as-types logic of type theory is \emph{constructive}.
+This means that it does not include certain classical principles, such as the law of excluded middle (\LEM{})\index{excluded middle}
+or proof by contradiction,\index{proof!by contradiction}
+and others which depend on them, such as this instance of de Morgan's law.
+\index{law!de Morgan's|)}%
+\index{de Morgan's laws|)}%
 
 Philosophically, constructive logic is so-called because it confines itself to constructions that can be carried out \emph{effectively}, which is to say those with a computational meaning.
 Without being too precise, this means there is some sort of algorithm\index{algorithm} specifying, step-by-step, how to build an object (and, as a special case, how to see that a theorem is true).
-This requires omission of \LEM{}, since there is no \emph{effective} procedure for deciding whether a proposition is true or false.
+This requires omission of \LEM{}, since there is no \emph{effective}\index{effective!procedure} procedure for deciding whether a proposition is true or false.
 
 The constructivity of type-theoretic logic means it has an intrinsic computational meaning, which is of interest to computer scientists.
 It also means that type theory provides \emph{axiomatic freedom}.\index{axiomatic freedom}
@@ -1159,10 +1275,14 @@ In this respect, type theory enriches, rather than constrains, conventional math
 
 We encourage the reader who is unfamiliar with constructive logic to work through some more examples as a means of getting familiar with it.
 See \autoref{ex:tautologies,ex:not-not-lem} for some suggestions.
+\index{logic!classical vs constructive|)}
 
 \mentalpause
 
 So far we have discussed only propositional logic.
+\index{quantifier}%
+\index{existential quantifier}%
+\index{universal quantifier}%
 Now we consider \emph{predicate} logic, where in addition to logical connectives like ``and'' and ``or'' we have quantifiers ``there exists'' and ``for all''.
 In this case, types play a dual role: they serve as propositions and also as types in the conventional sense, i.e., domains we quantify over.
 % Indeed, we are going to exploit this duality meaning that we can also quantify over the type of proofs of a proposition.
@@ -1191,12 +1311,14 @@ An informal proof of this tautology might go as follows:
   Second, we suppose given $x$ and prove $Q(x)$.
   Again by assumption, we have $P(x)$ and $Q(x)$, and hence we have $Q(x)$.
 \end{quote}
-The first sentence begins defining an implication as a function, by introducing a witness for its hypothesis:
+The first sentence begins defining an implication as a function, by introducing a witness for its hypothesis:\index{hypothesis}
 \[ f(p) \defeq \;\Box\; : (\tprd{x:A} P(x)) \times (\tprd{x:A} Q(x)) \]
 At this point there is an implicit use of the pairing constructor to produce an element of a product type, which is somewhat signposted in this example by the words ``first'' and ``second'':
 \[ f(p) \defeq \Big( \;\Box\; : \tprd{x:A} P(x) \;,\; \Box\; : \tprd{x:A}Q(x) \;\Big). \]
-The phrase ``we suppose given $x$ and prove $P(x)$'' now indicates defining a \emph{dependent} function in the usual way, introducing a variable for its input.
-Since this is inside a pairing constructor, it is natural to write it as a $\lambda$-abstraction:
+The phrase ``we suppose given $x$ and prove $P(x)$'' now indicates defining a \emph{dependent} function in the usual way, introducing a variable
+\index{variable}%
+for its input.
+Since this is inside a pairing constructor, it is natural to write it as a $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}:
 \[ f(p) \defeq \Big( \; \lam{x} \;\big(\Box\; : P(x)\big) \;,\; \Box\; : \tprd{x:A}Q(x) \;\Big). \]
 Now ``we have $P(x)$ and $Q(x)$'' invokes the hypothesis, obtaining $p(x) : P(x)\times Q(x)$, and ``hence we have $P(x)$'' implicitly applies the appropriate projection:
 \[ f(p) \defeq \Big( \; \lam{x} \proj1(p(x))  \;,\; \Box\; : \tprd{x:A}Q(x) \;\Big). \]
@@ -1218,6 +1340,7 @@ For strict inequality, there are a couple of natural choices, such as
 or
 \[ (n<m) \defeq (n\le m) \times \neg(\id{n}{m}). \]
 The former is more natural in constructive mathematics, but in this case it is actually equivalent to the latter, since $\nat$ has ``decidable equality'' (see \autoref{sec:intuitionism,prop:nat-is-set}).
+\index{decidable!equality}%
 
 Note that we can use the universes in type theory to represent ``higher order logic'' --- that is, we can quantify over all propositions or over all predicates.
 For example, we can represent the proposition \emph{for all properties $P : A \to \UU$, if $P(a)$ then $P(b)$} as
@@ -1228,14 +1351,45 @@ propositions we are quantifying over; that is
 \[ \Big(\prd{P : A \to \UU_i} P(a) \to P(b)\Big) : \UU_{i+1}. \]
 We will return to this question in \autoref{subsec:prop-subsets}.
 
-We have descibed here a ``proof-relevant'' translation of propositions, where the proofs of disjunctions and existential statements carry some information.
+\mentalpause
+
+We have descibed here a ``proof-relevant''
+\index{mathematics!proof-relevant}%
+translation of propositions, where the proofs of disjunctions and existential statements carry some information.
 For instance, if we have an inhabitant of $A+B$, regarded as a witness of ``$A$ or $B$'', then we know whether it came from $A$ or from $B$.
 Similarly, if we have an inhabitant of $\sm{x:A} P(x)$, regarded as a witness of ``there exists $x:A$ such that $P(x)$'', then we know what the element $x$ is (it is the first component of the dependent pair).
-In \autoref{subsec:prop-trunc} we will introduce a modification to this logic that is sometimes appropriate, in which this additional information is discarded.
+
+As a consequence of the proof-relevant nature of this logic, we may have ``$A$ if and only if $B$'' (which, recall, means $(A\to B)\times (B\to A)$), and yet the types $A$ and $B$ exhibit different behavior.
+For instance, it is easy to verify that ``$\mathbb{N}$ if and only if $\unit$'', and yet clearly $\mathbb{N}$ and $\unit$ differ in important ways.
+The statement ``$\mathbb{N}$ if and only if $\unit$'' tells us only that \emph{when regarded as a proposition}, the type $\mathbb{N}$ represents the same proposition as $\unit$ (in this case, the true proposition).
+We sometimes express ``$A$ if and only if $B$'' by saying that $A$ and $B$ are \define{logically equivalent}.
+\indexdef{logical equivalence}%
+\indexdef{equivalence!logical}%
+This is to be distinguished from the stronger notion of \emph{equivalence of types} to be introduced in \autoref{sec:basics-equivalences,cha:equivalences}:
+although $\mathbb{N}$ and $\unit$ are logically equivalent, they are not equivalent.
+
+In \autoref{cha:logic} we will introduce a class of types called ``mere propositions'' for which equivalence and logical equivalence coincide.
+Using these types, we will introduce a modification to the above-described logic that is sometimes appropriate, in which the additional information contained in disjunctions and existentials is discarded.
+
+Finally, we note that the propositions-as-types correspondence can be viewed in reverse, allowing us to regard any type $A$ as a proposition, which we prove by exhibiting an element of $A$.
+Sometimes we will state this proposition as ``$A$ is \define{inhabited}.''
+\indexdef{inhabited type}%
+\indexsee{type!inhabited}{inhabited type}%
+That is, when we say that $A$ is inhabited, we mean that we have given a (particular) element of $A$, but that we are choosing not to give a name to that element.
+Similarly, to say that $A$ is \emph{not inhabited} is the same as to give an element of $\neg A$.
+In particular, the empty type $\emptyt$ is obviously not inhabited, since $\neg \emptyt \jdeq (\emptyt \to \emptyt)$ is inhabited by $\idfunc[\emptyt]$.\footnote{This should not be confused with the statement that type theory is consistent, which is the \emph{meta-theoretic} claim that it is not possible to obtain an element of $\emptyt$ by following the rules of type theory.\indexfoot{consistency}}
+
+\index{proof|)}%
+\index{proposition!as types|)}%
+\index{logic!propositions as types|)}%
 
 \section{Identity types}
 \label{sec:identity-types}
 
+\index{type!identity|(defstyle}%
+\indexsee{identity!type}{type, identity}%
+\indexsee{type!equality}{type, identity}%
+\indexsee{equality!type}{type, identity}%
 While the previous constructions can be seen as generalisations of
 standard set theoretic constructions, our way of handling identity  seems to be
 a particular feature of type theory.
@@ -1249,11 +1403,9 @@ If we have an element of $\id[A]{a}{b}$, we may say that $a$ and $b$ are \define
 \index{equality!propositional}%
 
 Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include more information than just the fact that the proposition is true, nothing prevents an element of the type $\id{a}{b}$ from also including more information.
-Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
+Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths}\indexdef{path} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications}\indexdef{identification} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
 We will return to the interpretation in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
 
-\indexdef{type!identity}%
-\indexsee{identity!type}{type, identity}%
 Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $\id[A]{a}{b}:\UU$ in the same universe.
 The basic way to construct an element of $\id{a}{b}$ is to know that $a$ and $b$ are the same.
 Thus, we have a dependent function
@@ -1267,7 +1419,8 @@ This is well-typed because $a\jdeq b$ means that also the type $\id[A]{a}{b}$ is
 
 The induction principle for the identity types is one of the most subtle parts of type theory, and crucial to the homotopy interpretation.
 We begin by considering an important consequence of it, the principle that ``equals may be substituted for equals,'' as expressed by the following:
-\index{indiscenability of identicals}
+\index{indiscenability of identicals}%
+\index{equals may be substituted for equals}%
 \begin{description}
 \item[Indiscernability of identicals:]
 For every family 
@@ -1481,8 +1634,11 @@ Of course, it makes no sense to negate judgmental equality $\jdeq$, because judg
 \begin{equation*}
   (x \neq_A y) \ \defeq\ \lnot (\id[A]{x}{y}).
 \end{equation*}
+If $x\neq y$, we say that $x$ and $y$ are \define{unequal}
+\indexdef{unequal}%
+or \define{not equal}.
 %
-Just like negation, disequality plays a less important role here than it does in classical
+Just like negation, disequality plays a less important role here than it does in classical\index{mathematics!classical}
 mathematics. For example, we cannot prove that two things are equal by proving that they
 are not unequal: that would be an application the classical law of double negation, see \autoref{sec:intuitionism}.
 Sometimes it is useful to phrase disequality in a positive way. For example,
@@ -1490,14 +1646,16 @@ in~\autoref{RD-inverse-apart-0} we shall prove that a real number $x$ has an inv
 and only if, its distance from~$0$ is positive, which is a stronger requirement than $x
 \neq 0$.
 
+\index{type!identity|)}%
 
 \sectionNotes
 
 The type theory presented here is a version of Martin-L\"{o}f's intuitionistic type 
 theory~\cite{martinlof71itt,Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopolis}, which itself is based on and influenced 
 by the foundational work of Brouwer~\cite{beeson}, Heyting~\cite{heyting1966intuitionism}, Scott~\cite{scott70}, de 
-Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1966,Tait-1968}, and Lawvere~\cite{lawvere:adjinfound}.  Three 
-principal variants of Martin-L\"{o}f's type theory underlie the NuPRL~\cite{constable+86nuprl-book}, \Coq~\cite{Coq}, and 
+Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1966,Tait-1968}, and Lawvere~\cite{lawvere:adjinfound}.
+\index{proof assistant}%
+Three principal variants of Martin-L\"{o}f's type theory underlie the NuPRL~\cite{constable+86nuprl-book}, \Coq~\cite{Coq}, and 
 \Agda \cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number 
 of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that 
 have not yet been studied in the homotopical setting.
@@ -1527,16 +1685,39 @@ This is not a consequence of the rules in this chapter; it will be expressed by 
 This decision is significant for our purposes, because it specifies that equality of functions is as expected in mathematics.  Although we include \autoref{axiom:funext} as an axiom, it may be derived from the univalence axiom and $\eta$-equivalence (see \autoref{sec:univalence-implies-funext}), as well as from the existence of an interval type (see \autoref{thm:interval-funext}).
 
 Regarding inductive types such as products, $\Sigma$-types, coproducts, natural numbers, and so on (see \autoref{cha:induction}), there are additional choices regarding how to precisely formulate induction and recursion.
+\index{pattern matching}%
 Formally, one may describe type theory by taking either \emph{pattern matching} or \emph{induction principles} as basic and deriving the other; see \autoref{cha:rules}.
 However, pattern matching in general is not yet well understood from the homotopical perspective (in particular, ``nested'' or ``deep'' pattern-matching is difficult to make general sense of for higher inductive types).
-Moreover, it can be dangerous unless sufficient care is taken: for instance, the form of pattern-matching implemented by default in \Agda\ 
+Moreover, it can be dangerous unless sufficient care is taken: for instance, the form of pattern-matching implemented by default in \Agda
+\index{proof assistant!Agda@\textsc{Agda}}%
 allows proving Axiom K.
+\index{axiom!Streicher's Axiom K}%
 For these reasons, we have chosen to regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.
 
-In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules}, which specify how to form types of this sort; \emph{introduction rules}  or \emph{constructors}, which specify how to construct elements of such types; \emph{elimination rules} or \emph{eliminators}, which specify how to use elements of such types to construct elements of other types; and \emph{computation rules}, which specify what happens when the introduction and elimination rules are combined. The computation rules are also called \emph{reduction rules} or \emph{conversion rules}.
+\index{rule}%
+In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules},
+\index{rule!formation}%
+\index{formation rule}%
+which specify how to form types of this sort; \emph{introduction rules}
+\index{rule!introduction}%
+\index{introduction rule}%
+or \emph{constructors},
+\index{constructor}%
+which specify how to construct elements of such types; \emph{elimination rules}
+\index{rule!elimination}%
+\index{elimination rule}%
+or \emph{eliminators},
+\index{eliminator}%
+which specify how to use elements of such types to construct elements of other types; and \emph{computation rules},
+\index{rule!computation}%
+\index{computation rule}%
+which specify what happens when the introduction and elimination rules are combined. The computation rules are also called \emph{reduction rules} or \emph{conversion rules}.
+\indexsee{reduction!rule}{computation rule}%
+\indexsee{conversion!rule}{computation rule}%
 For inductive types such as products, $\Sigma$s, coproducts, and so on, the introduction rules are the constructors (like pairing or injections), and the elimination rule is the induction principle, for which we have already mentioned the alternative terminology ``eliminator''.
-For function types and $\Pi$-types, the introduction rule is $\lambda$-abstraction, while the elimination rule is application of a function to an argument.
+For function types and $\Pi$-types, the introduction rule is $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}, while the elimination rule is application of a function to an argument.
 
+\index{proof assistant!Coq@\textsc{Coq}}%
 Unlike the type theory of \Coq, we do not include a primitive type of propositions.  Instead, as discussed in \autoref{sec:pat}, we embrace 
 the \emph{propositions-as-types (PAT)} principle, identifying propositions with types.
 This was suggested originally by de Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1968}, and Martin-L\"{o}f~\cite{Martin-Lof-1972}.
@@ -1592,10 +1773,12 @@ derive the recursor $\rec{\nat}$.
 \end{ex}
 
 \begin{ex}\label{ex:sum-via-bool}
+\index{type!coproduct}%
 Show that if we define $A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x)$, then we can give a definition of $\ind{A+B}$ for which the definitional equalities stated in \autoref{sec:coproduct-types} hold.
 \end{ex}
 
 \begin{ex}\label{ex:prod-via-bool}
+\index{type!product}%
 Show that if we define $A \times B \defeq \prd{x:\bool}\rec{\bool}(\UU,A,B,x)$, then we can give a definition of  $\ind{A\times B}$ for which the definitional equalities stated in \autoref{sec:finite-product-types} hold propositionally (i.e.\ using equality types).
 \end{ex}
 
@@ -1606,7 +1789,8 @@ Give an alternative derivation of $\indidb{A}$ from $\indid{A}$ which avoids the
 
 \begin{ex}
   \index{multiplication!of natural numbers}%
-Define multiplication and exponentiation using $\rec{\nat}$. Formally verify that $(\nat,+,0,\times,1)$ is a semiring using only $\ind{\nat}$.  
+  Define multiplication and exponentiation using $\rec{\nat}$.
+  Verify that $(\nat,+,0,\times,1)$ is a semiring using only $\ind{\nat}$.  
 \end{ex}
 
 \begin{ex}\label{ex:fin}
@@ -1629,7 +1813,7 @@ Define multiplication and exponentiation using $\rec{\nat}$. Formally verify tha
 \end{ex}
 
 \begin{ex}\label{ex:tautologies}
-  Using the propositions as types interpretation, formally derive the following tautologies.
+  Using the propositions as types interpretation, derive the following tautologies.
   \begin{enumerate}
   \item If $A$, then (if $B$ then $A$).
   \item If $A$, then not (not $A$).

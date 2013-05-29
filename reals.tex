@@ -1,39 +1,47 @@
 \chapter{Real numbers}
 \label{cha:real-numbers}
 
-Any foundation of mathematics worthy of its name must eventually address the construction of real numbers as understood by mathematical analysis, namely as a complete archimedean ordered field. 
-The total space of the universal cover of the circle, which
+Any foundation of mathematics worthy of its name must eventually address the construction of real numbers as understood by mathematical analysis, namely as a complete archimedean ordered field.
+\index{ordered field}%
+There are two notions of completeness. The one by Cauchy requires that the reals be closed under limits of Cauchy sequences\index{Cauchy!sequence}, while the stronger one by Dedekind requires closure under Dedekind cuts.
+These lead to two ways of constructing reals, which we study in \autoref{sec:dedekind-reals} and \autoref{sec:cauchy-reals}, respectively. In \autoref{RD-final-field,RC-initial-Cauchy-complete} we characterize the two constructions in terms of universal properties: the Dedekind reals are the final archimedean ordered field, and the Cauchy reals the initial Cauchy complete archimedean ordered field.
+
+In traditional constructive mathematics,
+\index{mathematics!constructive}%
+real numbers always seem to require certain compromises. For example, the Dedekind reals work better with power sets or some other form of impredicativity, while Cauchy reals work well in the presence of countable choice.
+\index{axiom!of choice!countable}%
+However, we give a new construction of the Cauchy reals as a higher inductive-inductive type that seems to be a third possibility, which requires neither power sets nor countable choice.
+
+In~\autoref{sec:comp-cauchy-dedek} we compare the two constructions of reals. The Cauchy reals are included in the Dedekind reals. They coincide if excluded middle or countable choice holds, but in general the inclusion might be proper.
+
+In~\autoref{sec:compactness-interval} we consider three notions of compactness of the closed interval~$[0,1]$. We first show that $[0,1]$ is metrically compact in the sense that it is complete and totally bounded, and that uniformly continuous maps on metrically compact spaces behave as expected. In contrast, the Bolzano--Weierstra\ss{} property that every sequence has a convergent subsequence implies the limited principle of omniscience, which is an instance of excluded middle. Finally, we discuss Heine-Borel compactness. A naive formulation of the finite subcover property does not work, but a proof relevant notion of inductive covers does.
+This section is basically standard constructive analysis.
+
+The development of real numbers and analysis in homotopy type theory can be easily made compatible with classical mathematics. By assuming excluded middle and the axiom of choice we get the standard classical analysis:\index{mathematics!classical}\index{classical!analysis} the Dedekind and Cauchy reals coincide, foundational questions about the impredicative nature of the Dedekind reals disappear, and the interval is as compact as it could be.
+
+We close the chapter by constructing Conway's surreals as a higher inductive-inductive type in \autoref{sec:surreals};
+the construction is more natural in univalent type theory than in  classical set theory.
+
+In addition to the basic theory of \autoref{cha:basics,cha:logic}, as noted above we use ``higher inductive-inductive types'' for the Cauchy reals and the surreals: these combine the ideas of \autoref{cha:hits} with the notion of inductive-inductive type mentioned in \autoref{sec:generalizations}.
+We will also frequently use the traditional logical notation described in \autoref{subsec:prop-trunc}, and the fact (proven in \autoref{sec:piw-pretopos}) that our ``sets'' behave the way we would expect.
+
+Note that the total space of the universal cover of the circle, which
 in \autoref{subsec:pi1s1-homotopy-theory} played a role similar to ``the real numbers'' in
 classical algebraic topology, is \emph{not} the type of reals we are looking for. That
 type is contractible, and thus equivalent to the singleton type, so it cannot be equipped
 with a non-trivial algebraic structure.
 
-There are two notions of completeness. The one by Cauchy requires that the reals be closed under limits of Cauchy sequences, while the stronger one by Dedekind requires closure under Dedekind cuts.
-These lead to two ways of constructing reals, which we study in \autoref{sec:dedekind-reals} and \autoref{sec:cauchy-reals}, respectively.
-In traditional constructive mathematics, real numbers always seem to require certain compromises. For example, the Dedekind reals work better with powersets or some other form of impredicativity, while Cauchy reals work well in the presence of countable choice.
-However, we give a new construction of the Cauchy reals as a higher inductive-inductive type that seems to be a third possibility, which requires neither powersets nor countable choice.
-
-In~\autoref{sec:comp-cauchy-dedek} we compare the two constructions of reals. The Cauchy reals are included in the Dedekind reals. They coincide if excluded middle or countable choice holds, but in general the inclusion might be proper.
-
-In~\autoref{sec:compactness-interval} we consider three notions of compactness of the closed interval~$[0,1]$. We first show that $[0,1]$ is metrically compact in the sense that it is complete and totally bounded, and that uniformly continuous maps on metrically compact spaces behave as expected. In contrast, the Bolzano-Weierstra\ss{} property that every sequence has a convergent subsequence implies the limited principle of omniscience, which is an instance of excluded middle. Finally, we discuss Heine-Borel compactness. A naive formulation of the finite subcover property does not work, but a proof relevant notion of inductive covers does.
-
-The development of real numbers and analysis in homotopy type theory can be easily made compatible with classical mathematics. By assuming excluded middle and the axiom of choice we get the classical picture: the Dedekind and Cauchy reals coincide, foundational questions about the impredicative nature of the Dedekind reals disappear, and the interval is as compact as it could be.
-
-We close the chapter by constructing Conway's surreals as a higher inductive-inductive type in \autoref{sec:surreals}.
-The construction is much more natural in univalent type theory than in  classical set theory.
-
-In addition to the basic theory of \autoref{cha:basics,cha:logic}, as noted above we use ``higher inductive-inductive types'' for the Cauchy reals and the surreals: these combine the ideas of \autoref{cha:hits} with the notion of inductive-inductive type mentioned in \autoref{sec:generalizations}.
-We will also frequently use the traditional logical notation described in \autoref{subsec:prop-trunc}, and the fact (proven in \autoref{sec:piw-pretopos}) that our ``sets'' behave the way we would expect.
-
 
 
 \section{The field of rational numbers}
 \label{sec:field-rati-numb}
-\index{rational numbers}
 
+\indexdef{rational numbers}%
+\indexsee{number!rational}{rational numbers}%
 We first construct the rational numbers \Q, as the reals can then be seen as a completion
-of~\Q. An expert will point out that \Q could be replaced by any approximate field, i.e.,
-a subring of \Q in which arbitrarily precise approximate inverses exist. An example is the
+of~\Q. An expert will point out that \Q could be replaced by any approximate field,
+\indexdef{field!approximate}%
+i.e., a subring of \Q in which arbitrarily precise approximate inverses exist. An example is the
 ring of dyadic rationals, which are those of the form $n/2^k$. 
 If we were implementing constructive mathematics on a computer,
 an approximate field would be more suitable, but we leave such finesse for those
@@ -42,7 +50,7 @@ who care about the digits of~$\pi$.
 We constructed the integers \Z in \autoref{sec:set-quotients} as a quotient of $\N\times
 \N$, and observed that this quotient is generated by an idempotent. In
 \autoref{sec:free-algebras} we saw that \Z is the free group on \unit; we could similarly
-show that it is the free commutative ring on \emptyt. The field of rationals \Q is
+show that it is the free commutative ring\index{ring} on \emptyt. The field of rationals \Q is
 constructed along the same lines as well, namely as the quotient
 %
 \[ \Q \defeq (\Z \times \N)/{\approx} \]
@@ -55,13 +63,18 @@ no division by zero because we cunningly added one to the denominator~$a$. Here 
 have a canonical choice of representatives, namely fractions in lowest terms. Thus we may
 apply \autoref{lem:quotient-when-canonical-representatives} to obtain a set \Q, which
 again has a decidable equality.
+\index{decidable!equality}%
 
 We do not bother to write down the arithmetical operations on \Q as we trust our readers
 know how to compute with fractions even in the case when one is added to the denominator.
 Let us just record the conclusion that there is an entirely unproblematic construction of
 the ordered field of rational numbers \Q, with a decidable equality and decidable order.
 It can also be characterized as the initial ordered field.
+\index{initial!ordered field}%
 
+\symlabel{positive-rationals}
+\indexdef{rational numbers!positive}%
+\indexdef{positive!rational numbers}%
 Let $\Qp = \setof{ q : \Q | q > 0 }$ be the type of positive rational numbers.
 
 \section{Dedekind reals}
@@ -69,34 +82,38 @@ Let $\Qp = \setof{ q : \Q | q > 0 }$ be the type of positive rational numbers.
 
 Let us first recall the basic idea of Dedekind's construction. We use two-sided Dedekind
 cuts, as opposed to an often used one-sided version, because the symmetry makes
-constructions more elegant, and it works constructively as well as classically. A
-\emph{Dedekind cut} consists of a pair $(L, U)$ of subsets $L, U \subseteq \Q$, called the
+constructions more elegant, and it works constructively as well as classically.
+\index{mathematics!constructive}%
+A \emph{Dedekind cut}\index{cut!Dedekind} consists of a pair $(L, U)$ of subsets $L, U \subseteq \Q$, called the
 \emph{lower} and \emph{upper cut} respectively, which are:
 % 
 \begin{enumerate}
-\item \emph{inhabited}: there are $q \in L$ and $r \in U$,
-\item \emph{rounded:} $q \in L \Leftrightarrow \exis {r \in \Q} q < r \in L$
-  and $r \in U \Leftrightarrow \exis {q \in \Q} U \ni q < r$,
+\item \emph{inhabited:} there are $q \in L$ and $r \in U$,
+\item \emph{rounded:} $q \in L \Leftrightarrow \exis {r \in \Q} q < r \land r \in L$
+  and $r \in U \Leftrightarrow \exis {q \in \Q} q \in U \land q < r$,
+  \index{rounded!Dedekind cut}
 \item \emph{disjoint:} $\lnot (q \in L \land q \in U)$, and
 \item \emph{located:} $q < r \Rightarrow q \in L \lor r \in U$.
+  \index{locatedness}%
 \end{enumerate}
 %
 Reading the roundedness condition from left to right tells us that cuts are \emph{open},
+\index{open!cut}%
 and from right to left that they are \emph{lower}, respectively \emph{upper}, sets. The
 locatedness condition states that there is no large gap between $L$ and $U$. Because cuts
 are always open, they never include the ``point in between'', even when it is rational. A
 typical Dedekind cut looks like this:
 %
 \begin{center}
-  \begin{tikzpicture}
-    \draw[<-),line width=0.75pt] (0,0) -- (3.99,0) node[anchor=south east]{$L\ $};
-    \draw[(->,line width=0.75pt] (4.01, 0) node[anchor=south west]{$\ U$} -- (14, 0) ;
+  \begin{tikzpicture}[x=\textwidth]
+    \draw[<-),line width=0.75pt] (0,0) -- (0.297,0) node[anchor=south east]{$L\ $};
+    \draw[(->,line width=0.75pt] (0.300, 0) node[anchor=south west]{$\ U$} -- (0.9, 0) ;
   \end{tikzpicture}
 \end{center}
 %
 We might naively translate the informal definition into type theory by saying that a cut
 is a pair of maps $L, U : \Q \to \prop$. But we saw in \autoref{subsec:prop-subsets} that
-$\prop$ is an ambiguous notation for $\prop_{\UU_i}$ where~$\UU_i$ is a universe. Once we
+$\prop$ is an ambiguous\index{typical ambiguity} notation for $\prop_{\UU_i}$ where~$\UU_i$ is a universe. Once we
 use a particular $\UU_i$ to define cuts, the type of reals will reside in the next
 universe $\UU_{i+1}$, a property of reals two levels higher in $\UU_{i+2}$, a property of
 subsets of reals in $\UU_{i+3}$, etc. In principle we should be able to keep track of the
@@ -114,21 +131,25 @@ $\Omega$:
 \item We could identify $\Omega$ with the ambiguous $\prop$ and track all the universes
   that appear in definitions and constructions.
 
-\item We could assume impredicativity of mere propositions, cf.\
-  \autoref{subsec:prop-subsets}, which essentially collapses the $\prop_{\UU_i}$'s to the
+\item We could assume the propositional resizing axiom,
+  \index{propositional resizing}%
+  as in \autoref{subsec:prop-subsets}, which essentially collapses the $\prop_{\UU_i}$'s to the
   lowest level, which we call $\Omega$.
 
 \item A classical mathematician who is not interested in the intricacies of type-theoretic
   universes or computation may simply assume the law of excluded middle~\eqref{eq:lem} for
-  mere propositions so that $\Omega \jdeq \bool$. This not only eradicates questions about
-  levels of $\prop$, but also turns everything we do into the standard classical
-  construction of real numbers. We demonstrate this point further in
-  \autoref{sec:compactness-interval}.
+  mere propositions so that $\Omega \jdeq \bool$.
+  \index{excluded middle}
+  This not only eradicates questions about
+  levels of $\prop$, but also turns everything we do into the standard classical\index{mathematics!classical}
+  construction of real numbers.
 
 \item On the other end of the spectrum one might ask for a minimal requirement that makes
   the constructions work. The condition that a mere predicate be a Dedekind cut is
   expressible using only conjunctions, disjunctions, and existential quantifiers over~\Q, which
   is a countable set. Thus we could take $\Omega$ to be the initial \emph{$\sigma$-frame},
+  \index{initial!sigma-frame@$\sigma$-frame}%
+  \index{sigma-frame@$\sigma$-frame!initial|defstyle}%
   i.e., a lattice with countable joins in which binary meets distribute over countable
   joins. (The initial $\sigma$-frame cannot be the two-point lattice $\bool$ because
   $\bool$ is not closed under countable joins, unless we assume excluded middle.) This
@@ -143,24 +164,31 @@ Throughout this chapter, we use the
 logical notation from \autoref{defn:logical-notation}.
 
 \begin{defn} \label{defn:dedekind-reals}
-  A \define{Dedekind cut} is a pair $(L, U)$ of mere predicates $L : \Q \to \Omega$ and $U
+  A \define{Dedekind cut}
+  \indexsee{Dedekind!cut}{cut, Dedekind}%
+  \indexdef{cut!Dedekind}%
+  is a pair $(L, U)$ of mere predicates $L : \Q \to \Omega$ and $U
   : \Q \to \Omega$ which is:
   %
   \begin{enumerate}
-  \item \emph{inhabited}: $\exis{q : \Q} L(q)$ and $\exis{r : Q} U(r)$,
+  \item \emph{inhabited:} $\exis{q : \Q} L(q)$ and $\exis{r : Q} U(r)$,
   \item \emph{rounded:} for all $q, r : \Q$,
+    \index{rounded!Dedekind cut}
     %
-    \begin{equation*}
-      L(q) \Leftrightarrow \exis{r : \Q} (q < r) \land L(r)
-      \quad\text{and}\quad
-      U(r) \Leftrightarrow \exis{q : \Q} (q < r) \land U(q),
-    \end{equation*}
+    \begin{align*}
+      L(q) &\Leftrightarrow \exis{r : \Q} (q < r) \land L(r)
+      \qquad\text{and}\\
+      U(r) &\Leftrightarrow \exis{q : \Q} (q < r) \land U(q),
+    \end{align*}
   \item \emph{disjoint:} $\lnot (L(q) \land U(q))$ for all $q : \Q$,
   \item \emph{located:} $(q < r) \Rightarrow L(q) \lor U(r)$ for all $q, r : \Q$.
+  \index{locatedness}%
   \end{enumerate}
   %
   We let $\dcut(L, U)$ denote the conjunction of these conditions. The type of
   \define{Dedekind reals} is
+  \indexsee{Dedekind!real numbers}{real numbers, Dedekind}%
+  \indexdef{real numbers!Dedekind}%
   %
   \begin{equation*}
     \RD \defeq \setof{ (L, U) : (\Q \to \Omega) \times (\Q \to \Omega) | \dcut(L,U)}.
@@ -189,9 +217,10 @@ We shall simply write $q$ for the cut $(L_q, U_q)$ associated with a rational nu
 
 The construction of the algebraic and order-theoretic structure of Dedekind reals proceeds
 as usual in intuitionistic logic. Rather than dwelling on details we point out the
-differences between the classical and intuitionistic setup. Writing $L_x$ and $U_x$ for
+differences between the classical\index{mathematics!classical} and intuitionistic setup. Writing $L_x$ and $U_x$ for
 the lower and upper cut of a real number $x : \RD$, we define addition as%
 %
+\indexdef{addition!of Dedekind reals}%
 \begin{align*}
   L_{x + y}(q) &\defeq \exis{r, s : \Q} L_x(r) \land L_y(s) \land q = r + s, \\
   U_{x + y}(q) &\defeq \exis{r, s : \Q} U_x(r) \land U_y(s) \land q = r + s
@@ -204,9 +233,10 @@ and the additive inverse by
   U_{-x}(q) &\defeq \exis{r : \Q} L_x(r) \land q = - r.
 \end{align*}
 %
-With these operations $(\RD, 0, {+}, {-})$ is an abelian group. Multiplication is a bit
+With these operations $(\RD, 0, {+}, {-})$ is an abelian\index{group!abelian} group. Multiplication is a bit
 more cumbersome:
 %
+\indexdef{multiplication!of Dedekind reals}%
 \begin{align*}
   L_{x \cdot y}(q) &\defeq
   \begin{aligned}[t]
@@ -220,6 +250,7 @@ more cumbersome:
   \end{aligned}
 \end{align*}
 %
+\index{interval!arithmetic}%
 These formulas are related to multiplication of intervals in interval arithmetic, where
 intervals $[a,b]$ and $[c,d]$ with rational endpoints multiply to the interval
 %
@@ -234,7 +265,9 @@ that $q$ is to the left of $[a,b] \cdot [c,d]$. It is generally useful to think 
 interval $[a,b]$ such that $L_x(a)$ and $U_x(b)$ as an approximation of~$x$, see
 \autoref{ex:RD-interval-arithmetic}.
 
-We now have a commutative ring with unit $(\RD, 0, 1, {+}, {-}, {\cdot})$. To treat
+We now have a commutative ring\index{ring} with unit
+\index{unit!of a ring}%
+$(\RD, 0, 1, {+}, {-}, {\cdot})$. To treat
 multiplicative inverses, we must first introduce order. Define $\leq$ and $<$ as
 %
 \begin{align*}
@@ -254,6 +287,7 @@ multiplicative inverses, we must first introduce order. Define $\leq$ and $<$ as
   of the proof is symmetric.
 \end{proof}
 
+\index{partial order}%
 The relation $\leq$ is a partial order, and $<$ is transitive and irreflexive. The
 trichotomy law
 %
@@ -284,14 +318,18 @@ that we can decide~$<$ only up to whatever finite precision we have computed.
 
 Classically, multiplicative inverses exist for all numbers which are different from zero.
 However, without excluded middle, a stronger condition is required. Say that $x, y : \RD$
-are \define{apart} from each other, written $x \apart y$, when $(x < y) \lor (y < x)$:
+are \define{apart}
+\indexdef{apartness}%
+from each other, written $x \apart y$, when $(x < y) \lor (y < x)$:
 %
+\symlabel{apart}
 \begin{equation*}
   (x \apart y) \defeq (x < y) \lor (y < x).
 \end{equation*}
 %
 If $x \apart y$, then $\lnot (x = y)$.
 The converse is true if we assume excluded middle, but is not provable constructively.
+\index{mathematics!constructive}%
 Indeed, if $\lnot (x = y)$ implies $x\apart y$, then a little bit of excluded middle follows; see \autoref{ex:reals-apart-neq-MP}.
 
 \begin{thm} \label{RD-inverse-apart-0}
@@ -300,7 +338,7 @@ Indeed, if $\lnot (x = y)$ implies $x\apart y$, then a little bit of excluded mi
 
 \begin{rmk}
   We observe that a real is invertible if, and only if, it is merely
-  invertible.  Indeed, the same is true in any ring, since a ring is a set, and
+  invertible.  Indeed, the same is true in any ring,\index{ring} since a ring is a set, and
   multiplicative inverses are unique if they exist.  See the discussion
   following \autoref{cor:UC}.
 \end{rmk}
@@ -320,10 +358,12 @@ Indeed, if $\lnot (x = y)$ implies $x\apart y$, then a little bit of excluded mi
     \exis{r : \Q} L_x(r) \land ((0 < r \land q r > 1) \lor (r < 0 \land 1 > q r))
   \end{align*}
   %
-  defines the desired inverse. Indeed, $L_{x^{-1}}$ and $U_{x^{-1}}$ are bounded because
+  defines the desired inverse. Indeed, $L_{x^{-1}}$ and $U_{x^{-1}}$ are inhabited because
   $x \apart 0$.
 \end{proof}
 
+\index{ordered field!archimedean}%
+\index{dense}%
 The archimedean principle can be stated in several ways. We find it most illuminating in the
 form which says that $\Q$ is dense in $\RD$.
 
@@ -341,16 +381,23 @@ Before tackling completeness of Dedekind reals, let us state precisely what alge
 structure they possess. In the following definition we are not aiming at a minimal
 axiomatization, but rather at a useful amount of structure and properties.
 
-\begin{defn} \label{ordered-field} An \define{ordered field} is a set $F$ together with
+\begin{defn} \label{ordered-field} An \define{ordered field}
+  \indexdef{ordered field}%
+  \indexsee{field!ordered}{ordered field}%
+  is a set $F$ together with
   constants $0$, $1$, operations $+$, $-$, $\cdot$, $\min$, $\max$, and mere relations
   $\leq$, $<$, $\apart$ such that:
   %
   \begin{enumerate}
   \item $(F, 0, 1, {+}, {-}, {\cdot})$ is a commutative ring with unit;
+    \index{unit!of a ring}%
+    \index{ring}%
   \item $x : F$ is invertible if, and only if $x \apart 0$;
   \item $(F, {\leq}, {\min}, {\max})$ is a lattice;
   \item the strict order $<$ is transitive, irreflexive, and linear ($x < y \Rightarrow x < z \lor z < y$);
-  \item apartness $\apart$ is reflexive, symmetric and cotransitive ($x \apart y \Rightarrow x \apart z \lor y \apart z$);
+    \index{strict!order}%
+    \index{order!strict}%
+  \item apartness $\apart$ is irreflexive, symmetric and cotransitive ($x \apart y \Rightarrow x \apart z \lor y \apart z$);
   \item for all $x, y, z : F$:
     %
     \begin{align*}
@@ -361,14 +408,17 @@ axiomatization, but rather at a useful amount of structure and properties.
       x \leq y &\Leftrightarrow x + z \leq y + z, &
       x \leq y \land 0 \leq z &\Rightarrow x z \leq y z, \\
       x < y &\Leftrightarrow x + z < y + z, &
-      0 < z &\Rightarrow (x < y \Leftrightarrow x z < y z), \\
+      0 < z \Rightarrow (x < y &\Leftrightarrow x z < y z), \\
       0 < x + y &\Rightarrow 0 < x \lor 0 < y, &
       0 &< 1.
     \end{align*}
   \end{enumerate}
   %
   Every such field has a canonical embedding $\Q \to F$. An ordered field is
-  \define{archimedean} when for all $x, y : F$, if $x < y$ then there merely exists $q :
+  \define{archimedean}
+  \indexdef{ordered field!archimedean}%
+  \indexsee{archimedean property}{ordered field, archimedean}%
+  when for all $x, y : F$, if $x < y$ then there merely exists $q :
   \Q$ such that $x < q < y$.
 \end{defn}
 
@@ -384,7 +434,7 @@ axiomatization, but rather at a useful amount of structure and properties.
 \subsection{Dedekind reals are Cauchy complete}
 \label{sec:RD-cauchy-complete}
 
-Recall that $x : \N \to \Q$ is a \emph{Cauchy sequence} when it satisfies
+Recall that $x : \N \to \Q$ is a \emph{Cauchy sequence}\indexdef{Cauchy!sequence} when it satisfies
 %
 \begin{equation} \label{eq:cauchy-sequence}
   \prd{\epsilon : \Qp} \sm{n : \N} \prd{m, k \geq n} |x_m - x_k| < \epsilon.
@@ -401,14 +451,18 @@ original Cauchy condition~\eqref{eq:cauchy-sequence}. We shall work with these
 approximation functions rather than with Cauchy sequences.
 
 \begin{defn} \label{defn:cauchy-approximation}
-  A \define{Cauchy approximation} is a map $x : \Qp \to \RD$ which satisfies
+  A \define{Cauchy approximation}
+  \indexdef{Cauchy!approximation}%
+  is a map $x : \Qp \to \RD$ which satisfies
   %
   \begin{equation}
     \label{eq:cauchy-approx}
     \fall{\delta, \epsilon :\Qp} |x_\delta - x_\epsilon| < \delta + \epsilon.
   \end{equation}
   %
-  The \define{limit} of a Cauchy approximation $x : \Qp \to \RD$ is a number $\ell : \RD$ such
+  The \define{limit}
+  \index{limit!of a Cauchy approximation}%
+  of a Cauchy approximation $x : \Qp \to \RD$ is a number $\ell : \RD$ such
   that
   % 
   \begin{equation*}
@@ -429,7 +483,7 @@ approximation functions rather than with Cauchy sequences.
     U_y(q) &\defeq \exis{\epsilon, \theta : \Qp} U_{x_\epsilon}(q - \epsilon - \theta).
   \end{align*}
   %
-  It is clear that $L_y$ and $U_y$ are bounded, rounded, and disjoint. To establish
+  It is clear that $L_y$ and $U_y$ are inhabited, rounded, and disjoint. To establish
   locatedness, consider any $q, r : \Q$ such that $q < r$. There is $\epsilon : \Qp$ such
   that $5 \epsilon < r - q$. Since $q + 2 \epsilon < r - 2 \epsilon$ merely
   $L_{x_\epsilon}(q + 2 \epsilon)$ or $U_{x_\epsilon}(r - 2 \epsilon)$. In the first case
@@ -438,11 +492,11 @@ approximation functions rather than with Cauchy sequences.
   To show that $y$ is the limit of $x$, consider any $\epsilon, \theta : \Qp$. Because
   $\Q$ is dense in $\RD$ there merely exist $q, r : \Q$ such that
   %
-  \begin{equation*}
+  \begin{narrowmultline*}
     x_\epsilon - \epsilon - \theta/2 < q < x_\epsilon - \epsilon - \theta/4
-    < x_\epsilon <
+    < x_\epsilon < \\
     x_\epsilon + \epsilon + \theta/4 < r < x_\epsilon + \epsilon + \theta/2,
-  \end{equation*}
+  \end{narrowmultline*}
   % 
   and thus $q < y < r$. Now either $y < x_\epsilon + \theta/2$ or $x_\epsilon - \theta/2 < y$.
   In the first case we have
@@ -477,24 +531,29 @@ For sake of completeness we record the classic formulation as well.
   \autoref{RD-cauchy-complete}. Given any $\epsilon : \Qp$, let $n \defeq M(\epsilon/4)$
   and observe that, for any $m \geq n$,
   %
-  \begin{equation*}
+  \begin{narrowmultline*}
     |x_m - y| \leq |x_m - x_n| + |x_n - y| =
-    |x_m - x_n| + |\bar{x}(\epsilon/2) - y| <
+    |x_m - x_n| + |\bar{x}(\epsilon/2) - y| < \narrowbreak
     \epsilon/4 + \epsilon/2 + \epsilon/4 = \epsilon.\qedhere
-  \end{equation*}
+  \end{narrowmultline*}
 \end{proof}
 
 \subsection{Dedekind reals are Dedekind complete}
 \label{sec:RD-dedekind-complete}
 
 We obtained $\RD$ as the type of Dedekind cuts on $\Q$. But we could have instead started
-with any archimedean ordered field $F$ and constructed Dedekind cuts on $F$. These would
-again form an archimedean ordered field $\bar{F}$, the \define{Dedekind completion of
-  $F$}, with $F$ contained as a subfield. What happens if we apply this construction to
+with any archimedean ordered field $F$ and constructed Dedekind cuts\index{cut!Dedekind} on $F$. These would
+again form an archimedean ordered field $\bar{F}$, the \define{Dedekind completion of $F$},%
+\index{completion!Dedekind}%
+\indexsee{Dedekind!completion}{completion!Dedekind}
+with $F$ contained as a subfield. What happens if we apply this construction to
 $\RD$, do we get even more real numbers? The answer is negative. In fact, we shall prove a
 stronger result: $\RD$ is final.
 
-Say that an ordered field~$F$ is \define{admissible for $\Omega$} when the strict order
+Say that an ordered field~$F$ is \define{admissible for $\Omega$}
+\indexsee{admissible!ordered field}{ordered field, admissible}%
+\indexdef{ordered field!admissible}%
+when the strict order
 $<$ on~$F$ is a map ${<} : F \to F \to \Omega$.
 
 \begin{thm} \label{RD-final-field}
@@ -512,7 +571,7 @@ $<$ on~$F$ is a map ${<} : F \to F \to \Omega$.
   \end{equation*}
   %
   (We have just used the assumption that $F$ is admissible for $\Omega$.)
-  Then $(L_x, U_x)$ is a Dedekind cut. Indeed, the cuts are inhabited and rounded because
+  Then $(L_x, U_x)$ is a Dedekind cut.\index{cut!Dedekind} Indeed, the cuts are inhabited and rounded because
   $F$ is archimedean and $<$ is transitive, disjoint because $<$ is irreflexive, and
   located because $<$ is a linear order. Let $e : F \to \RD$ be the map $e(x) \defeq (L_x,
   U_x)$.
@@ -521,12 +580,12 @@ $<$ on~$F$ is a map ${<} : F \to F \to \Omega$.
   all, notice that $e(q) = q$ for a rational number $q$. Next we have the equivalences,
   for all $x, y : F$,
   %
-  \begin{equation*}
+  \begin{narrowmultline*}
     x < y \Leftrightarrow
-    (\exis{q : \Q} x < q < y) \Leftrightarrow
+    (\exis{q : \Q} x < q < y) \Leftrightarrow \narrowbreak
     (\exis{q : \Q} U_x(q) \land L_y(q)) \Leftrightarrow
     e(x) < e(y),
-  \end{equation*}
+  \end{narrowmultline*}
   %
   so $e$ indeed preserves and reflects the order. That $e(x + y) = e(x) + e(y)$ holds
   because, for all $q : \Q$,
@@ -547,6 +606,7 @@ more lemma.
 
 \begin{lem} \label{lem:cuts-preserve-admissibility}
   If $F$ is admissible for $\Omega$ then so is its Dedekind completion.
+  \index{completion!Dedekind}%
 \end{lem}
 
 \begin{proof}
@@ -564,6 +624,8 @@ more lemma.
 
 \begin{cor} \label{RD-dedekind-complete}
   %
+  \indexdef{complete!ordered field, Dedekind}%
+  \indexdef{Dedekind!completeness}%
   The Dedekind reals are Dedekind complete: for every real-valued Dedekind cut $(L, U)$
   there is a unique $x : \RD$ such that $L(y) = (y < x)$ and $U(y) = (x < y)$ for all $y :
   \RD$.
@@ -581,18 +643,22 @@ more lemma.
 \section{Cauchy reals}
 \label{sec:cauchy-reals}
 
-The Cauchy reals are, by intent, the completion of \Q under limits of Cauchy sequences.
+\index{completion!Cauchy|(}%
+\indexsee{Cauchy!completion}{completion, Cauchy}%
+The Cauchy reals are, by intent, the completion of \Q under limits of Cauchy sequences.\index{Cauchy!sequence}
 In the classical construction of the Cauchy reals, we consider the set $\mathcal{C}$ of all Cauchy sequences in \Q and then form a suitable quotient $\mathcal{C}/{\approx}$.
 Then, to show that $\mathcal{C}/{\approx}$ is Cauchy complete, we consider a Cauchy sequence $x : \N \to \mathcal{C}/{\approx}$, lift it to a sequence of sequences $\bar{x} : \N \to \mathcal{C}$, and construct the limit of $x$ using $\bar{x}$. However, the lifting of~$x$ to $\bar{x}$ uses
 the axiom of countable choice (the instance of~\eqref{eq:ac} where $X=\N$) or the law of excluded middle, which we may wish to avoid.
+\indexdef{axiom!of choice!countable}%
 Every construction of reals whose last step is a quotient suffers from this deficiency.
 There are three common ways out of the conundrum in constructive mathematics:
+\index{mathematics!constructive}%
 %
 \begin{enumerate}
 \item Pretend that the reals are a setoid $(\mathcal{C}, {\approx})$, i.e., the type of
-  Cauchy approximations $\mathcal{C}$ with a coincidence relation attached to it by
+  Cauchy sequences $\mathcal{C}$ with a coincidence\index{coincidence!of Cauchy approximations} relation attached to it by
   administrative decree. A sequence of reals then simply \emph{is} a sequence of Cauchy
-  approximations representing them.
+  sequences representing them.
 \item Give in to temptation and accept the axiom of countable choice. After all, the axiom
   is valid in most models of constructive mathematics based on a computational viewpoint,
   such as realizability models.
@@ -602,7 +668,7 @@ There are three common ways out of the conundrum in constructive mathematics:
 \end{enumerate}
 
 Using higher inductive types, however, there is a fourth solution, which we believe to be preferable to any of the above, and interesting even to a classical mathematician.
-The idea is that the Cauchy real numbers should be the \emph{free complete metric space} generated by~\Q.
+The idea is that the Cauchy real numbers should be the \emph{free complete metric space}\index{free!complete metric space} generated by~\Q.
 In general, the construction of a free gadget of any sort requires applying the gadget operations repeatedly many times to the generators.
 For instance, the elements of the free group on a set $X$ are not just binary products and inverses of elements of $X$, but words obtained by iterating the product and inverse constructions.
 Thus, we might naturally expect the same to be true for Cauchy completion, with the relevant ``operation'' being ``take the limit of a Cauchy sequence''.
@@ -611,8 +677,9 @@ Thus, we might naturally expect the same to be true for Cauchy completion, with 
 The argument referred to above shows that if excluded middle or countable choice hold, then Cauchy completion is very special: when building the completion of a space, it suffices to stop applying the operation after \emph{one step}.
 This may be regarded as analogous to the fact that free monoids and free groups can be given explicit descriptions in terms of (reduced) words.
 However, we saw in \autoref{sec:free-algebras} that higher inductive types allow us to construct free gadgets \emph{directly}, whether or not there is also an explicit description available.
-In this section we show that the same is true for the Cauchy reals (a similar technique would construct the Cauchy completion of any metric space).
+In this section we show that the same is true for the Cauchy reals (a similar technique would construct the Cauchy completion of any metric space; see \autoref{ex:metric-completion}).
 Specifically, higher inductive types allow us to \emph{simultaneously} add limits of Cauchy sequences and quotient by the coincidence relation, so that we can avoid the problem of lifting a sequence of reals to a sequence of representatives.
+\index{completion!Cauchy|)}%
 
 
 \subsection{Construction of Cauchy reals}
@@ -622,56 +689,65 @@ The construction of the Cauchy reals $\RC$ as a higher inductive type is a bit m
 We intend to include a ``take the limit'' constructor whose input is a Cauchy sequence of reals, but the notion of ``Cauchy sequence of reals'' depends on having some way to measure the ``distance'' between real numbers.
 In general, of course, the distance between two real numbers will be another real number, leading to a potentially problematic circularity.
 
-However, what we actually need for the notion of Cauchy sequence (or Cauchy approximation) of reals is not the general notion of ``distance'', but a way to say that ``the distance between two real numbers is less than $\epsilon$'' for any $\epsilon:\Qp$.
-This can be represented by a family of binary relations, which we will denote $\mathord{\sim_\epsilon} : \RC\to\RC\to \prop$.
-The intended meaning of $x \sim_\epsilon y$ is $|x - y| < \epsilon$, but since we do not have notions of subtraction, absolute value, or inequality available yet (we are only just defining $\RC$, after all), we will have to define these relations $\sim_\epsilon$ at the same time as we define $\RC$ itself.
-And since $\sim_\epsilon$ is a type family indexed by two copies of $\RC$, we cannot do this with an ordinary mutual (higher) inductive definition; instead we have to use a \emph{higher inductive-inductive definition}.
+However, what we actually need for the notion of Cauchy sequence of reals is not the general notion of ``distance'', but a way to say that ``the distance\index{distance} between two real numbers is less than $\epsilon$'' for any $\epsilon:\Qp$.
+This can be represented by a family of binary relations, which we will denote $\mathord{\close\epsilon} : \RC\to\RC\to \prop$.
+The intended meaning of $x \close\epsilon y$ is $|x - y| < \epsilon$, but since we do not have notions of subtraction, absolute value, or inequality available yet (we are only just defining $\RC$, after all), we will have to define these relations $\close\epsilon$ at the same time as we define $\RC$ itself.
+And since $\close\epsilon$ is a type family indexed by two copies of $\RC$, we cannot do this with an ordinary mutual (higher) inductive definition; instead we have to use a \emph{higher inductive-inductive definition}.
 
 Recall from \autoref{sec:generalizations} that the ordinary notion of inductive-inductive definition allows us to define a type and a type family indexed by it by simultaneous induction.
 Of course, the ``higher'' version of this allows both the type and the family to have path-constructors as well as point-constructors.
-We will not attempt to formulate any general theory of higher inductive-inductive definitions, but hopefully the description we will give of $\RC$ and $\sim_\epsilon$ will make the idea transparent.
+We will not attempt to formulate any general theory of higher inductive-inductive definitions, but hopefully the description we will give of $\RC$ and $\close\epsilon$ will make the idea transparent.
 
 \begin{rmk}
-  We might also consider a \emph{higher inductive-recursive definition}, in which $\sim_\epsilon$ is defined using the \emph{recursion} principle of $\RC$, simultaneously with the \emph{inductive} definition of $\RC$.
+  We might also consider a \emph{higher inductive-recursive definition}, in which $\close\epsilon$ is defined using the \emph{recursion} principle of $\RC$, simultaneously with the \emph{inductive} definition of $\RC$.
   We choose the inductive-inductive route instead for two reasons.
-  Firstly, higher inductive-recursive definitions seem to be more difficult to justify in homotopical semantics.
+  Firstly, higher inductive-re\-cur\-sive definitions seem to be more difficult to justify in homotopical semantics.
   Secondly, and more importantly, the inductive-inductive definition yields a more powerful induction principle, which we will need in order to develop even the basic theory of Cauchy reals.
 \end{rmk}
 
+Finally, as we did for the discussion of Cauchy completeness of the Dedekind reals in \autoref{sec:RD-cauchy-complete}, we will work with \emph{Cauchy approximations} (\autoref{defn:cauchy-approximation}) instead of Cauchy sequences.
+Of course, our Cauchy approximations will now consist of Cauchy reals, rather than Dedekind reals or rational numbers.
+
 \begin{defn}\label{defn:cauchy-reals}
-  Let $\RC$ and the relation $\mathord\sim:\Qp \times \RC \times \RC \to \type$ be the following higher inductive-inductive type family.
-  The type $\RC$ of \define{Cauchy reals} is generated by the following constructors:
+  Let $\RC$ and the relation $\closesym:\Qp \times \RC \times \RC \to \type$ be the following higher inductive-inductive type family.
+  The type $\RC$ of \define{Cauchy reals}
+  \indexdef{real numbers!Cauchy}%
+  \indexsee{Cauchy!real numbers}{real numbers, Cauchy}%
+  is generated by the following constructors:
   \begin{itemize}
   \item \emph{rational points:} 
     for any $q : \Q$ there is a real $\rcrat(q)$.
+    \index{rational numbers!as Cauchy real numbers}%
   \item \emph{limit points}:
     for any $x : \Qp \to \RC$ such that
     %
     \begin{equation}
       \label{eq:RC-cauchy}
-      \fall{\delta, \epsilon : \Qp} x_\delta \sim_{\delta + \epsilon} x_\epsilon
+      \fall{\delta, \epsilon : \Qp} x_\delta \close{\delta + \epsilon} x_\epsilon
     \end{equation}
     %
     there is a point $\rclim(x) : \RC$. We call $x$ a \define{Cauchy approximation}.
+    \indexdef{Cauchy!approximation}%
+    \index{limit!of a Cauchy approximation}%
     %
   \item \emph{paths:}
     for $u, v : \RC$ such that
     %
     \begin{equation}
       \label{eq:RC-path}
-      \fall{\epsilon : \Qp} u \sim_\epsilon v
+      \fall{\epsilon : \Qp} u \close\epsilon v
     \end{equation}
     %
     then there is a path $\rceq(u, v) : \id[\RC]{u}{v}$.
   \end{itemize}
-  Simultaneously, the type family $\mathord\sim:\RC\to\RC\to\Qp \to\type$ is generated by the following constructors.
+  Simultaneously, the type family $\closesym:\RC\to\RC\to\Qp \to\type$ is generated by the following constructors.
   Here $q$ and $r$ denote rational numbers; $\delta$, $\epsilon$, and $\eta$ denote positive rationals; $u$ and $v$ denote Cauchy reals; and $x$ and $y$ denote Cauchy approximations:
   \begin{itemize}
-  \item if $-\epsilon < q - r < \epsilon$, then $\rcrat(q) \sim_\epsilon \rcrat(r)$,
-  \item if $\rcrat(q) \sim_{\epsilon - \delta} y_\delta$, then $\rcrat(q) \sim_{\epsilon} \rclim(y)$,
-  \item if $x_\delta \sim_{\epsilon - \delta} \rcrat(r)$, then $\rclim(x) \sim_\epsilon \rcrat(r)$,
-  \item if $x_\delta \sim_{\epsilon - \delta - \eta} y_\eta$, then $\rclim(x) \sim_\epsilon \rclim(y)$,
-  \item if $\xi,\zeta : u \sim_{\epsilon} v$ then $\xi=\zeta$ (propositional truncation).
+  \item for any $q,r,\epsilon$, if $-\epsilon < q - r < \epsilon$, then $\rcrat(q) \close\epsilon \rcrat(r)$,
+  \item for any $q,y,\epsilon,\delta$, if $\rcrat(q) \close{\epsilon - \delta} y_\delta$, then $\rcrat(q) \close{\epsilon} \rclim(y)$,
+  \item for any $x,r,\epsilon,\delta$, if $x_\delta \close{\epsilon - \delta} \rcrat(r)$, then $\rclim(x) \close\epsilon \rcrat(r)$,
+  \item for any $x,y,\epsilon,\delta,\eta$, if $x_\delta \close{\epsilon - \delta - \eta} y_\eta$, then $\rclim(x) \close\epsilon \rclim(y)$,
+  \item for any $u,v,\epsilon$, if $\xi,\zeta : u \close{\epsilon} v$, then $\xi=\zeta$ (propositional truncation).
   \end{itemize}
 \end{defn}
 
@@ -680,10 +756,12 @@ We will not attempt to formulate any general theory of higher inductive-inductiv
 The first constructor of $\RC$ says that any rational number can be regarded as a real number.
 The second says that from any Cauchy approximation to a real number, we can obtain a new real number called its ``limit''.
 And the third expresses the idea that if two Cauchy approximations coincide, then their limits are equal.
-(Note that the notion of ``coincidence'' is \emph{simpler} than that of \autoref{defn:cauchy-approximation}, since we are free to use the relation~$\sim$ between Cauchy reals themselves.
+(Note that the notion of ``coincidence''
+\index{coincidence!of Cauchy approximations}%
+is \emph{simpler} than that of \autoref{defn:cauchy-approximation}, since we are free to use the relation~$\closesym$ between Cauchy reals themselves.
 Moreover, it also handles equalities between limits and rational points.)
 
-The first four constructors of $\sim$ specify when two rational numbers are close, when a rational is close to a limit, and when two limits are close.
+The first four constructors of $\closesym$ specify when two rational numbers are close, when a rational is close to a limit, and when two limits are close.
 In the case of two rational numbers, this is just the usual notion of $\epsilon$-closeness for rational numbers, whereas the other cases can be derived by noting that each approximant $x_\delta$ is supposed to be within $\delta$ of the limit $\rclim(x)$.
 
 We remind ourselves of proof-relevance: a real number obtained from $\rclim$ is represented not
@@ -693,12 +771,12 @@ A similar observation also applies to $\rceq$ and~\eqref{eq:RC-path}, but we sha
 $\rceq : u = v$ instead of $\rceq(u, v, p) : u = v$. These abuses of notation are
 mitigated by the fact that we are omitting mere propositions and information that is
 readily guessed.
-Likewise, the last constructor of $\mathord{\sim_\epsilon}$ justifies our leaving the other four nameless.
+Likewise, the last constructor of $\mathord{\close\epsilon}$ justifies our leaving the other four nameless.
 
 We are immediately able to populate $\RC$ with many real numbers. For suppose $x : \N \to
-\Q$ is a traditional Cauchy sequence of rational numbers, and let $M : \Qp \to \N$ be its
+\Q$ is a traditional Cauchy sequence\index{Cauchy!sequence} of rational numbers, and let $M : \Qp \to \N$ be its
 modulus of convergence. Then $\rcrat \circ x \circ M : \Qp \to \RC$ is a Cauchy
-approximation, using the first constructor of $\sim$ to produce the necessary witness.
+approximation, using the first constructor of $\closesym$ to produce the necessary witness.
 Thus, $\rclim(\rcrat \circ x \circ m)$ is a real number. Various famous
 real numbers $\sqrt{2}$, $\pi$, $e$, \dots{} are all limits of such Cauchy sequences of
 rationals.
@@ -707,97 +785,122 @@ rationals.
 \label{sec:induct-recurs-cauchy}
 
 In order to do anything useful with $\RC$, of course, we need to give its induction principle.
-As is the case whenever we inductively define two or more objects at once, the basic induction principle for $\RC$ and $\mathord\sim$ requires a simultaneous induction over both at once.
-Thus, we should expect it to say that assuming two type families over $\RC$ and $\sim$, respectively, together with data corresponding to each constructor, there exist sections of both of these families.
-However, since $\sim$ is indexed on two copies of $\RC$, the precise dependencies of these families is a bit subtle.
+As is the case whenever we inductively define two or more objects at once, the basic induction principle for $\RC$ and $\closesym$ requires a simultaneous induction over both at once.
+Thus, we should expect it to say that assuming two type families over $\RC$ and $\closesym$, respectively, together with data corresponding to each constructor, there exist sections of both of these families.
+However, since $\closesym$ is indexed on two copies of $\RC$, the precise dependencies of these families is a bit subtle.
 The induction principle will apply to any pair of type families:
 \begin{align*}
 A&:\RC\to\type\\
-B&:\prd{x,y:\RC} A(x) \to A(y) \to \prd{\epsilon:\Qp} (x\sim_\epsilon y) \to \type.
+B&:\prd{x,y:\RC} A(x) \to A(y) \to \prd{\epsilon:\Qp} (x\close\epsilon y) \to \type.
 \end{align*}
 The type of $A$ is obvious, but the type of $B$ requires a little thought.
-Since $B$ must depend on $\sim$, but $\sim$ in turn depends on two copies of $\RC$ and one copy of $\Qp$, it is fairly obvious that $B$ must also depend on the variables $x,y:\RC$ and $\epsilon:\Qp$ as well as an element of $(x\sim_\epsilon y)$.
+Since $B$ must depend on $\closesym$, but $\closesym$ in turn depends on two copies of $\RC$ and one copy of $\Qp$, it is fairly obvious that $B$ must also depend on the variables $x,y:\RC$ and $\epsilon:\Qp$ as well as an element of $(x\close\epsilon y)$.
 What is slightly less obvious is that $B$ must also depend on $A(x)$ and $A(y)$.
 
-This may be more evident if we consider the non-dependent case (the recursion principle), where $A$ is a simple type.
-In this case we would expect $B$ not to depend on $x,y:\RC$ or $x\sim_\epsilon y$.
-But the recursion principle (along with its associated uniqueness principle) is supposed to say that $\RC$ with $\sim_\epsilon$ is an ``initial object'' in some category, so in this case the dependency structure of $A$ and $B$ should mirror that of $\RC$ and $\sim_\epsilon$: that is, we should have $B:A\to A\to \Qp \to \type$.
-Combining this observation with the fact that, in the dependent case, $B$ must also depend on $x,y:\RC$ and $x\sim_\epsilon y$, leads inevitably to the type given above for $B$.
+This may be more evident if we consider the non-dependent case (the recursion principle), where $A$ is a simple type (rather than a type family).
+In this case we would expect $B$ not to depend on $x,y:\RC$ or $x\close\epsilon y$.
+But the recursion principle (along with its associated uniqueness principle) is supposed to say that $\RC$ with $\close\epsilon$ is an ``initial object'' in some category, so in this case the dependency structure of $A$ and $B$ should mirror that of $\RC$ and $\close\epsilon$: that is, we should have $B:A\to A\to \Qp \to \type$.
+Combining this observation with the fact that, in the dependent case, $B$ must also depend on $x,y:\RC$ and $x\close\epsilon y$, leads inevitably to the type given above for $B$.
 
-Now, given $A$ and $B$ as above, the hypotheses of the induction principle consist of the following data, one for each constructor of $\RC$ or $\sim$:
+\symlabel{RC-recursion}
+It is helpful to think of $B$ as an $\epsilon$-indexed family of relations between the types $A(x)$ and $A(y)$.
+With this in mind, we may write $B(x,y,a,b,\epsilon,\xi)$ as $(x,a) \bsim_\epsilon^\xi (y,b)$.
+Since $\xi:x\close\epsilon y$ is unique when it exists, we generally omit it from the notation and write $(x,a) \bsim_\epsilon (y,b)$; this is harmless as long as we keep in mind that this relation is only defined when $x\close\epsilon y$.
+We may also sometimes simplify further and write $a\bsim_\epsilon b$, with $x$ and $y$ inferred from the types of $a$ and $b$, but sometimes it will be necessary to include them for clarity.
+
+\index{induction principle!for Cauchy reals}%
+Now, given a type family $A:\RC\to\type$ and a family of relations $\bsim$ as above, the hypotheses of the induction principle consist of the following data, one for each constructor of $\RC$ or $\closesym$:
 \begin{itemize}
 \item For any $q : \Q$, an element $f_q:A(\rcrat(q))$.
 \item For any Cauchy approximation $x$, and any $a:\prd{\epsilon:\Qp} A(x_\epsilon)$ such that
   \begin{equation}
-    \fall{\delta, \epsilon : \Qp} B(x_\delta,x_\epsilon,a_\delta,a_\epsilon,\delta+\epsilon,\blank),\label{eq:depCauchyappx}
+    \fall{\delta, \epsilon : \Qp}
+    (x_\delta,a_\delta) \bsim_{\delta+\epsilon} (x_\epsilon,a_\epsilon),
+    \label{eq:depCauchyappx}
   \end{equation}
-  an element $f_{x,a}:A(\rclim(x))$.  We call such $a$ a \define{dependent Cauchy approximation} over $x$.
-\item For $u, v : \RC$ and $h:\fall{\epsilon : \Qp} u \sim_\epsilon v$, and $a:A(u)$ and $b:A(v)$ such that $\fall{\epsilon:\Qp} B(u,v,a,b,\epsilon,h(\epsilon))$, a dependent path $\dpath{A}{\rceq(u,v)}{a}{b}$.
-\item For $q,r:\Q$ and $\epsilon:\Qp$, if $-\epsilon < q - r < \epsilon$, an element of $B(\rcrat(q),\rcrat(r),f_q,f_r,\epsilon,\blank)$.
-\item For $q:\Q$ and $\delta,\epsilon:\Qp$ and $y$ a Cauchy approximation, and $b$ a dependent Cauchy approximation over $y$, if $\rcrat(q) \sim_{\epsilon - \delta} y_\delta$, then
-  \[B(\rcrat(q),y_\delta,f_q,b_\delta,\epsilon-\delta,\blank)
-  \to
-  B(\rcrat(q),\rclim(y),f_q,f_{y,b},\epsilon,\blank).\]
-\item Similarly, for $r:\Q$ and $\delta,\epsilon:\Qp$ and $x$ a Cauchy approximation, and $a$ a dependent Cauchy approximation over $x$, if $x_\delta \sim_{\epsilon - \delta} \rcrat(r)$, then
-  \[B(x_\delta,\rcrat(r),a_\delta,f_r,\epsilon-\delta,\blank) \to
-  B(\rclim(y),\rcrat(q),f_{x,a},f_r,\epsilon,\blank).
+  an element $f_{x,a}:A(\rclim(x))$.
+  We call such $a$ a \define{dependent Cauchy approximation}
+  \indexdef{Cauchy!approximation!dependent}%
+  \indexsee{approximation!Cauchy}{Cauchy approximation}%
+  \indexdef{dependent!Cauchy approximation}%
+  over $x$.
+\item For $u, v : \RC$ such that $h:\fall{\epsilon : \Qp} u \close\epsilon v$, and all $a:A(u)$ and $b:A(v)$ such that
+  $\fall{\epsilon:\Qp} (u,a) \bsim_\epsilon (v,b)$,
+  a dependent path $\dpath{A}{\rceq(u,v)}{a}{b}$.
+\item For $q,r:\Q$ and $\epsilon:\Qp$, if $-\epsilon < q - r < \epsilon$, we have
+  \narrowequation{(\rcrat(q),f_q) \bsim_\epsilon (\rcrat(r),f_r).}
+\item For $q:\Q$ and $\delta,\epsilon:\Qp$ and $y$ a Cauchy approximation, and $b$ a dependent Cauchy approximation over $y$, if $\rcrat(q) \close{\epsilon - \delta} y_\delta$, then
+  \[(\rcrat(q),f_q) \bsim_{\epsilon-\delta} (y_\delta,b_\delta)
+  \;\Rightarrow\;
+  (\rcrat(q),f_q) \bsim_\epsilon (\rclim(y),f_{y,b}).\]
+\item Similarly, for $r:\Q$ and $\delta,\epsilon:\Qp$ and $x$ a Cauchy approximation, and $a$ a dependent Cauchy approximation over $x$, if $x_\delta \close{\epsilon - \delta} \rcrat(r)$, then
+  \[(x_\delta,a_\delta) \bsim_{\epsilon-\delta} (\rcrat(r),f_r)
+  \;\Rightarrow\;
+  (\rclim(x),f_{x,a}) \bsim_\epsilon (\rcrat(q),f_r).
   \]
-\item For $\epsilon,\delta,\eta:\Qp$ and $x,y$ Cauchy approximations, and $a$ and $b$ dependent Cauchy approximations over $x$ and $y$ respectively, if $x_\delta \sim_{\epsilon - \delta - \eta} y_\eta$, then
-  \[ B(x_\delta,y_\eta,a_\delta,b_\eta,{\epsilon - \delta - \eta},\blank)\to
-  B(\rclim(x),\rclim(y),f_{x,a},f_{y,b},\epsilon,\blank).\]
-\item For $\epsilon:\Qp$ and $x,y:\RC$ and $\xi,\zeta:x\sim_{\epsilon} y$, and $a:A(x)$ and $b:A(y)$, any two elements of $B(x,y,a,b,\epsilon,\xi)$ and $B(x,y,a,b,\epsilon,\zeta)$ are dependently equal over $\xi=\zeta$.
-  Note that as usual, this is essentially equivalent to asking that $B$ is a mere relation.
+\item For $\epsilon,\delta,\eta:\Qp$ and $x,y$ Cauchy approximations, and $a$ and $b$ dependent Cauchy approximations over $x$ and $y$ respectively, if we have $x_\delta \close{\epsilon - \delta - \eta} y_\eta$, then
+  \[ (x_\delta,a_\delta) \bsim_{\epsilon - \delta - \eta} (y_\eta,b_\eta)
+  \;\Rightarrow\;
+  (\rclim(x),f_{x,a}) \bsim_\epsilon (\rclim(y),f_{y,b}).\]
+\item For $\epsilon:\Qp$ and $x,y:\RC$ and $\xi,\zeta:x\close{\epsilon} y$, and $a:A(x)$ and $b:A(y)$, any two elements of $(x,a) \bsim_\epsilon^\xi (y,b)$ and $(x,a) \bsim_\epsilon^\zeta (y,b)$ are dependently equal over $\xi=\zeta$.
+  Note that as usual, this is equivalent to asking that $\bsim$ takes values in mere propositions.
 \end{itemize}
 Under these hypotheses, we deduce functions
 \begin{align*}
   f&:\prd{x:\RC} A(x)\\
-  g&:\prd{x,y:\RC}{\epsilon:\Qp}{\xi:x\sim_{\epsilon} y} B(x,y,f(x),f(y),\epsilon,\xi)
+  g&:\prd{x,y:\RC}{\epsilon:\Qp}{\xi:x\close{\epsilon} y}
+  (x,f(x)) \bsim_\epsilon^\xi (y,f(y))
 \end{align*}
 which compute as expected:
-\begin{align*}
-  f(\rcrat(q)) &\defeq f_q\\
-  f(\rclim(x)) &\defeq f_{x,(f,g)[x]}
-\end{align*}
+\begin{align}
+  f(\rcrat(q)) &\defeq f_q, \label{eq:rcsimind1}\\
+  f(\rclim(x)) &\defeq f_{x,(f,g)[x]}. \label{eq:rcsimind2}
+\end{align}
 Here $(f,g)[x]$ denotes the result of applying $f$ and $g$ to a Cauchy approximation $x$ to obtain a dependent Cauchy approximation over $x$.
-That is, we define $(f,g)[x]_\epsilon \defeq f(x_\epsilon) : A(x_\epsilon)$, and then for any $\epsilon,\delta:\Qp$ we have $g(x_\epsilon,x_\delta,\epsilon+\delta,\blank)$ to witness the fact that $(f,g)[x]$ is a dependent Cauchy approximation.
+That is, we define $(f,g)[x]_\epsilon \defeq f(x_\epsilon) : A(x_\epsilon)$, and then for any $\epsilon,\delta:\Qp$ we have $g(x_\epsilon,x_\delta,\epsilon+\delta,\xi)$ to witness the fact that $(f,g)[x]$ is a dependent Cauchy approximation, where $\xi: x_\epsilon \close{\epsilon+\delta} x_\delta$ arises from the assumption that $x$ is a Cauchy approximation.
 
-This induction principle is admittedly quite a mouthful.
-To help make sense of it, we observe that it contains as special cases two separate induction principles for~$\RC$ and for~$\sim$.
-Firstly, suppose given only a type family $A:\RC\to\type$, and define $B$ to be constant at \unit.
+We will never use this notation again, so don't worry about remembering it.
+Generally we use the pattern-matching convention, where $f$ is defined by equations such as~\eqref{eq:rcsimind1} and~\eqref{eq:rcsimind2} in which the right-hand side of~\eqref{eq:rcsimind2} may involve the symbols $f(x_\epsilon)$ and an assumption that they form a dependent Cauchy approximation.
+
+However, this induction principle is admittedly still quite a mouthful.
+To help make sense of it, we observe that it contains as special cases two separate induction principles for~$\RC$ and for~$\closesym$.
+Firstly, suppose given only a type family $A:\RC\to\type$, and define $\bsim$ to be constant at \unit.
 Then much of the required data becomes trivial, and we are left with:
 \begin{itemize}
 \item for any $q : \Q$, an element $f_q:A(\rcrat(q))$,
 \item for any Cauchy approximation $x$, and any $a:\prd{\epsilon:\Qp} A(x_\epsilon)$, an element $f_{x,a}:A(\rclim(x))$,
-\item for $u, v : \RC$ and $h:\fall{\epsilon : \Qp} u \sim_\epsilon v$, and $a:A(u)$ and $b:A(v)$, a dependent path $\dpath{A}{\rceq(u,v)}{a}{b}$.
+\item for $u, v : \RC$ and $h:\fall{\epsilon : \Qp} u \close\epsilon v$, and $a:A(u)$ and $b:A(v)$, we have $\dpath{A}{\rceq(u,v)}{a}{b}$.
 \end{itemize}
 Given these data, the induction principle yields a function $f:\prd{x:\RC} A(x)$ such that
 \begin{align*}
-  f(\rcrat(q)) &\defeq f_q\\
+  f(\rcrat(q)) &\defeq f_q,\\
   f(\rclim(x)) &\defeq f_{x,f(x)}.
 \end{align*}
-We call this principle \define{$\RC$-induction}; it says essentially that if we take $\sim_\epsilon$ as given, then $\RC$ is inductively generated by its constructors.
+We call this principle \define{$\RC$-induction}; it says essentially that if we take $\close\epsilon$ as given, then $\RC$ is inductively generated by its constructors.
 
 In particular, if $A$ is a mere property, the third hypothesis in $\RC$-induction is trivial.
 Thus, we may prove mere properties of real numbers by simply proving them for rationals and for limits of Cauchy approximations.
 Here is an example.
 
 \begin{lem}
-  For any $u:\RC$ and $\epsilon:\Qp$, we have $u\sim_\epsilon u$.
+  For any $u:\RC$ and $\epsilon:\Qp$, we have $u\close\epsilon u$.
 \end{lem}
 \begin{proof}
-  Define $A(u) \defeq \fall{\epsilon:\Qp} (u\sim_\epsilon u)$.
-  Since this is a mere proposition (by the last constructor of $\sim$), by $\RC$-induction, it suffices to prove it when $u$ is $\rcrat(q)$ and when $u$ is $\rclim(x)$.
-  In the first case, we obviously have $|q-q|<\epsilon$ for any $\epsilon$, hence $\rcrat(q) \sim_\epsilon \rcrat(q)$ by the first constructor of $\sim$.
+  Define $A(u) \defeq \fall{\epsilon:\Qp} (u\close\epsilon u)$.
+  Since this is a mere proposition (by the last constructor of $\closesym$), by $\RC$-induction, it suffices to prove it when $u$ is $\rcrat(q)$ and when $u$ is $\rclim(x)$.
+  In the first case, we obviously have $|q-q|<\epsilon$ for any $\epsilon$, hence $\rcrat(q) \close\epsilon \rcrat(q)$ by the first constructor of $\closesym$.
   %
-  And in the second case, we may assume inductively that $x_\delta \sim_\epsilon x_\delta$ for all $\delta,\epsilon:\Qp$.
-  Then in particular, we have $x_{\epsilon/3} \sim_{\epsilon/3} x_{\epsilon/3}$, whence $\rclim(x) \sim_{\epsilon} \rclim(x)$ by the fourth constructor of $\sim$.
+  And in the second case, we may assume inductively that $x_\delta \close\epsilon x_\delta$ for all $\delta,\epsilon:\Qp$.
+  Then in particular, we have $x_{\epsilon/3} \close{\epsilon/3} x_{\epsilon/3}$, whence $\rclim(x) \close{\epsilon} \rclim(x)$ by the fourth constructor of $\closesym$.
 \end{proof}
 
 \begin{thm}\label{thm:Cauchy-reals-are-a-set}
   $\RC$ is a set.
 \end{thm}
 \begin{proof}
-  We have just shown that the mere relation $P(u,v) \defeq \fall{\epsilon:\Qp} (u\sim_\epsilon v)$ is reflexive.
+  We have just shown that the mere relation
+  \narrowequation{P(u,v) \defeq \fall{\epsilon:\Qp} (u\close\epsilon v)}
+  is reflexive.
   Since it implies identity, by the path-constructor of $\RC$, the result follows from \autoref{thm:h-set-refrel-in-paths-sets}.
 \end{proof}
 
@@ -805,10 +908,12 @@ We can also show that although $\RC$ may not be a quotient of the set of Cauchy 
 (Of course, this is not a valid \emph{definition} of $\RC$, but it is a useful property.)
 We define the type of Cauchy approximations to be
 % 
+\symlabel{cauchy-approximations}%
+\index{Cauchy!approximation!type of}%
 \begin{equation*}
   \CAP \defeq
   \setof{ x : \Qp \to \RC |
-    \fall{\epsilon, \delta : \Qp} x_\delta \sim_{\delta + \epsilon} x_\epsilon
+    \fall{\epsilon, \delta : \Qp} x_\delta \close{\delta + \epsilon} x_\epsilon
   }.
 \end{equation*}
 The second constructor of $\RC$ gives a function $\rclim:\CAP\to\RC$.
@@ -820,16 +925,16 @@ The second constructor of $\RC$ gives a function $\rclim:\CAP\to\RC$.
 \begin{proof}
   By $\RC$-induction, we may divide into cases on $u$.
   Of course, if $u$ is a limit $\rclim(x)$, the statement is trivial.
-  So suppose $u$ is a rational point $\rcrat(q)$; we claim $u$ is equal to $\rclim(\lam{\blank} \rcrat(q))$.
-  By the path-constructor of $\RC$, it suffices to show $\rcrat(q) \sim_\epsilon \rclim(\lam{\blank} \rcrat(q))$ for all $\epsilon:\Qp$.
-  And by the second constructor of $\sim$, for this it suffices to find $\delta:\Qp$ such that $\rcrat(q)\sim_{\epsilon-\delta} \rcrat(q)$.
-  But by the first constructor of $\sim$, we may take any $\delta:\Qp$ with $\delta<\epsilon$.
+  So suppose $u$ is a rational point $\rcrat(q)$; we claim $u$ is equal to $\rclim(\lam{\epsilon} \rcrat(q))$.
+  By the path-constructor of $\RC$, it suffices to show $\rcrat(q) \close\epsilon \rclim(\lam{\epsilon} \rcrat(q))$ for all $\epsilon:\Qp$.
+  And by the second constructor of $\closesym$, for this it suffices to find $\delta:\Qp$ such that $\rcrat(q)\close{\epsilon-\delta} \rcrat(q)$.
+  But by the first constructor of $\closesym$, we may take any $\delta:\Qp$ with $\delta<\epsilon$.
 \end{proof}
 
 % 
 
 \begin{lem} \label{RC-lim-factor}
-  If $A$ is a set and $f : \CAP \to A$ respects coincidence of Cauchy approximations, in the sense that
+  If $A$ is a set and $f : \CAP \to A$ respects coincidence\index{coincidence!of Cauchy approximations} of Cauchy approximations, in the sense that
   %
   \begin{equation*}
     \fall{x, y : \CAP} \rclim(x) = \rclim(y) \Rightarrow f(x) = f(y),
@@ -842,80 +947,97 @@ The second constructor of $\RC$ gives a function $\rclim:\CAP\to\RC$.
   But this is exactly the statement of the lemma.
 \end{proof}
 
-For the second special case of the induction principle, suppose instead that we are given only $C:\RC\to\RC\to\Qp\to\prop$, and define $A(\blank)\defeq\unit$ and $B(u,v,\blank,\blank,\epsilon,\blank)\defeq C(u,v,\epsilon)$.
+For the second special case of the induction principle, suppose instead that we take $A$ to be constant at $\unit$.
+In this case, $\bsim$ is simply an $\epsilon$-indexed family of relations on $\epsilon$-close pairs of real numbers, so we may write $u\bsim_\epsilon v$ instead of $(u,\ttt)\bsim_\epsilon (v,\ttt)$.
 Then the required data reduces to the following, where $q, r$ denote rational numbers, $\epsilon, \delta, \eta$ positive rational numbers, and $x, y$ Cauchy approximations:
 \begin{itemize}
-\item if $-\epsilon < q - r < \epsilon$, then $C(\rcrat(q),\rcrat(r),\epsilon)$,
-\item if $\rcrat(q) \sim_{\epsilon - \delta} y_\delta$ and
-  $C(\rcrat(q),y_\delta,\epsilon-\delta)$,
-  then $C(\rcrat(q),\rclim(y),\epsilon)$,
-\item similarly, if $x_\delta \sim_{\epsilon - \delta} \rcrat(r)$ and
-  $C(x_\delta,\rcrat(r),\epsilon-\delta)$,
-  then $C(\rclim(y),\rcrat(q),\epsilon)$,
-\item if $x_\delta \sim_{\epsilon - \delta - \eta} y_\eta$ and
-  $C(x_\delta,y_\eta,{\epsilon - \delta - \eta})$,
-  then $C(\rclim(x),\rclim(y),\epsilon)$.
+\item if $-\epsilon < q - r < \epsilon$, then
+  $\rcrat(q) \bsim_\epsilon \rcrat(r)$,
+\item if $\rcrat(q) \close{\epsilon - \delta} y_\delta$ and
+  $\rcrat(q)\bsim_{\epsilon-\delta} y_\delta$,
+  then $\rcrat(q) \bsim_\epsilon \rclim(y)$,
+\item if $x_\delta \close{\epsilon - \delta} \rcrat(r)$ and
+  $x_\delta \bsim_{\epsilon-\delta} \rcrat(r)$,
+  then $\rclim(y) \bsim_\epsilon \rcrat(q)$,
+\item if $x_\delta \close{\epsilon - \delta - \eta} y_\eta$ and
+  $x_\delta\bsim_{\epsilon - \delta - \eta} y_\eta$,
+  then $\rclim(x) \bsim_\epsilon \rclim(y)$.
 \end{itemize}
-The resulting conclusion is $\fall{u,v:\RC}{\epsilon:\Qp} (u\sim_\epsilon v) \to C(u,v,\epsilon)$.
-We call this principle \define{$\sim$-induction}; it says essentially that if we take $\RC$ as given, then $\sim_\epsilon$ is inductively generated (as a family of types) by \emph{its} constructors.
-For example, we can use this to show that $\sim$ is symmetric.
+The resulting conclusion is $\fall{u,v:\RC}{\epsilon:\Qp} (u\close\epsilon v) \to (u \bsim_\epsilon v)$.
+We call this principle \define{$\closesym$-induction}; it says essentially that if we take $\RC$ as given, then $\close\epsilon$ is inductively generated (as a family of types) by \emph{its} constructors.
+For example, we can use this to show that $\closesym$ is symmetric.
 
 \begin{lem}\label{thm:RCsim-symmetric}
-  For any $u,v:\RC$ and $\epsilon:\Qp$, we have $(u\sim_\epsilon v) = (v\sim_\epsilon u)$.
+  For any $u,v:\RC$ and $\epsilon:\Qp$, we have $(u\close\epsilon v) = (v\close\epsilon u)$.
 \end{lem}
 \begin{proof}
   Since both are mere propositions, by symmetry it suffices to show one implication.
-  Thus, let $C(u,v,\epsilon) \defeq (v\sim_\epsilon u)$.
-  By $\sim$-induction, we may reduce to the case that $u\sim_\epsilon v$ is derived from one of the four interesting constructors of $\sim$.
+  Thus, let $(u\bsim_\epsilon v) \defeq (v\close\epsilon u)$.
+  By $\closesym$-induction, we may reduce to the case that $u\close\epsilon v$ is derived from one of the four interesting constructors of $\closesym$.
   In the first case when $u$ and $v$ are both rational, the result is trivial (we can apply the first constructor again).
-  In the other three cases, the inductive hypothesis (together with commutativity of addition in $\Q$) yields exactly the input to another of the constructors of $\sim$ (the second and third constructors switch, while the fourth stays put).
+  In the other three cases, the inductive hypothesis (together with commutativity of addition in $\Q$) yields exactly the input to another of the constructors of $\closesym$ (the second and third constructors switch, while the fourth stays put).
 \end{proof}
 
-The general induction principle, which we may call \define{$(\RC,\sim)$-induction}, is therefore a sort of joint $\RC$-induction and $\sim$-induction.
-Consider, for instance, its non-dependent version, which we call \define{$(\RC,\sim)$-recursion}, which is the one that we will have the most use for.
+The general induction principle, which we may call \define{$(\RC,\closesym)$-induction}, is therefore a sort of joint $\RC$-induction and $\closesym$-induction.
+Consider, for instance, its non-dependent version, which we call \define{$(\RC,\closesym)$-recursion}, which is the one that we will have the most use for.
+\index{recursion principle!for Cauchy reals}%
 Ordinary $\RC$-recursion tells us that to define a function $f : \RC \to A$ it suffices to:
 \begin{enumerate}
 \item for every $q : \Q$ construct $f(\rcrat(q)) : A$,
 \item for every Cauchy approximation $x : \Qp \to \RC$, construct $f(x) : A$,
   assuming that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$,
-\item prove $f(u) = f(v)$ for all $u, v : \RC$ satisfying $\fall{\epsilon:\Qp} u\sim_\epsilon v$.\label{item:rcrec3}
+\item prove $f(u) = f(v)$ for all $u, v : \RC$ satisfying $\fall{\epsilon:\Qp} u\close\epsilon v$.\label{item:rcrec3}
 \end{enumerate}
 However, it is generally quite difficult to show~\ref{item:rcrec3} without knowing something about how $f$ acts on $\epsilon$-close Cauchy reals.
-The enhanced principle of $(\RC,\sim)$-recursion remedies this deficiency, allowing us to specify an \emph{arbitrary} ``way in which $f$ acts on $\epsilon$-close Cauchy reals'', which we can then prove to be the case by a simultaneous induction with the definition of $f$.
-This is the family of relations $B:A\to A\to \Qp\to\prop$.
-If we write the mere property $B(a,b,\epsilon)$ as ``$a \bsim_\epsilon b$'', then defining a function $f:\RC\to A$ by $(\RC,\sim)$-recursion requires the following cases.
+The enhanced principle of $(\RC,\closesym)$-recursion remedies this deficiency, allowing us to specify an \emph{arbitrary} ``way in which $f$ acts on $\epsilon$-close Cauchy reals'', which we can then prove to be the case by a simultaneous induction with the definition of $f$.
+This is the family of relations $\bsim$.
+Since $A$ is independent of $\RC$, we may assume for simplicity that $\bsim$ depends only on $A$ and $\Qp$, and thus there is no ambiguity in writing $a\bsim_\epsilon b$ instead of $(u,a) \bsim_\epsilon (v,b)$.
+In this case, defining a function $f:\RC\to A$ by $(\RC,\closesym)$-recursion requires the following cases (which we now write using the pattern-matching convention).
 \begin{itemize}
 \item For every $q : \Q$, construct $f(\rcrat(q)) : A$.
 \item For every Cauchy approximation $x : \Qp \to \RC$, construct $f(x) : A$, assuming inductively that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$ and form a ``Cauchy approximation with respect to $\bsim$'', i.e.\ that $\fall{\epsilon,\delta:\Qp} (f(x_\epsilon) \bsim_{\epsilon+\delta} f(x_\delta))$.
-\item Prove that the relations $\bsim$ are \emph{separated}, i.e.\ that $(\fall{\epsilon:\Qp} a\bsim_\epsilon b) \to (a=b)$ for any $a,b:A$.
+\item Prove that the relations $\bsim$ are \emph{separated}, i.e.\ that, for any $a,b:A$,
+  \indexdef{relation!separated}%
+\narrowequation{(\fall{\epsilon:\Qp} a\bsim_\epsilon b) \Rightarrow (a=b).}
 \item Prove that if $-\epsilon< q-r <\epsilon$ for $q,r:\Q$, then $f(\rcrat(q))\bsim_\epsilon f(\rcrat(r))$.
-\item For any $q:\Q$ and any Cauchy approximation $y$, prove that $f(\rcrat(q)) \bsim_\epsilon f(\rclim(y))$, assuming inductively that $\rcrat(q)\sim_{\epsilon-\delta} y_\delta$ and $f(\rcrat(q)) \bsim_{\epsilon-\delta} f(y_\delta)$ for some $\delta:\Qp$, and that $\eta \mapsto f(x_\eta)$ is a Cauchy approximation with respect to $\bsim$.
-\item For any Cauchy approximation $x$ and any $r:\Q$, prove that $f(\rclim(x)) \bsim_\epsilon f(\rcrat(r))$, assuming inductively that $x_\delta \sim_{\epsilon-\delta} \rcrat(r)$ and $f(x_\delta) \bsim_{\epsilon-\delta} f(\rcrat(r))$ for some $\delta:\Qp$, and that $\eta\mapsto f(x_\eta)$ is a Cauchy approximation with respect to $\bsim$.
-\item For any Cauchy approximations $x,y$, prove that $f(\rclim(x)) \bsim_\epsilon f(\rclim(y))$, assuming inductively that $x_\delta \sim_{\epsilon-\delta-\eta} y_\eta$ and $f(x_\delta) \bsim_{\epsilon-\delta-\eta} f(y_\eta)$ for some $\delta,\eta:\Qp$, and that $\theta\mapsto f(x_\theta)$ and $\theta\mapsto f(y_\theta)$ are Cauchy approximations with respect to $\bsim$.
+\item For any $q:\Q$ and any Cauchy approximation $y$, prove that
+\narrowequation{f(\rcrat(q)) \bsim_\epsilon f(\rclim(y)),} assuming inductively that $\rcrat(q)\close{\epsilon-\delta} y_\delta$ and $f(\rcrat(q)) \bsim_{\epsilon-\delta} f(y_\delta)$ for some $\delta:\Qp$, and that $\eta \mapsto f(x_\eta)$ is a Cauchy approximation with respect to $\bsim$.
+\item For any Cauchy approximation $x$ and any $r:\Q$, prove that
+\narrowequation{f(\rclim(x)) \bsim_\epsilon f(\rcrat(r)),}
+assuming inductively that $x_\delta \close{\epsilon-\delta} \rcrat(r)$ and $f(x_\delta) \bsim_{\epsilon-\delta} f(\rcrat(r))$ for some $\delta:\Qp$, and that $\eta\mapsto f(x_\eta)$ is a Cauchy approximation with respect to $\bsim$.
+\item For any Cauchy approximations $x,y$, prove that
+\narrowequation{f(\rclim(x)) \bsim_\epsilon f(\rclim(y)),}
+assuming inductively that $x_\delta \close{\epsilon-\delta-\eta} y_\eta$ and $f(x_\delta) \bsim_{\epsilon-\delta-\eta} f(y_\eta)$ for some $\delta,\eta:\Qp$, and that $\theta\mapsto f(x_\theta)$ and $\theta\mapsto f(y_\theta)$ are Cauchy approximations with respect to $\bsim$.
 \end{itemize}
 Note that in the last four proofs, we are free to use the specific definitions of $f(\rcrat(q))$ and $f(\rclim(x))$ given in the first two data.
 However, the proof of separatedness must apply to \emph{any} two elements of $A$, without any relation to $f$: it is a sort of ``admissibility'' condition on the family of relations $\bsim$.
 Thus, we often verify it first, immediately after defining $\bsim$, before going on to define $f(\rcrat(q))$ and $f(\rclim(x))$.
 
-Under the above hypotheses, $(\RC,\sim)$-recursion yields a function $f:\RC\to A$ such that $f(\rcrat(q))$ and $f(\rclim(x))$ are judgmentally equal to the definitions given for them in the first two clauses.
+Under the above hypotheses, $(\RC,\closesym)$-recursion yields a function $f:\RC\to A$ such that $f(\rcrat(q))$ and $f(\rclim(x))$ are judgmentally equal to the definitions given for them in the first two clauses.
 Moreover, we may also conclude
 \begin{equation}
-  \fall{u,v:\RC}{\epsilon:\Qp} (u\sim_\epsilon v) \to (f(u) \bsim_\epsilon f(v)).\label{eq:RC-sim-recursion-extra}
+  \fall{u,v:\RC}{\epsilon:\Qp} (u\close\epsilon v) \to (f(u) \bsim_\epsilon f(v)).\label{eq:RC-sim-recursion-extra}
 \end{equation}
 
-As a paradigmatic example, $(\RC,\sim)$-recursion allows us to extend functions defined on $\Q$ to all of $\RC$, as long as they are sufficiently continuous.
+As a paradigmatic example, $(\RC,\closesym)$-recursion allows us to extend functions defined on $\Q$ to all of $\RC$, as long as they are sufficiently continuous.
+\index{function!continuous}%
 
 \begin{defn}\label{defn:lipschitz}
-  A function $f:\Q\to\RC$ is \define{Lipschitz} if there exists $L:\Qp$ (the \define{Lipschitz constant}) such that
-  \[ |q - r|<\epsilon \Rightarrow (f(q) \sim_{L\epsilon} f(r)) \]
+  A function $f:\Q\to\RC$ is \define{Lipschitz}
+  \indexdef{function!Lipschitz}%
+  \indexdef{Lipschitz!function}%
+  \indexdef{Lipschitz!constant}%
+  \indexdef{constant!Lipschitz}%
+  if there exists $L:\Qp$ (the \define{Lipschitz constant}) such that
+  \[ |q - r|<\epsilon \Rightarrow (f(q) \close{L\epsilon} f(r)) \]
   for all $\epsilon:\Qp$ and $q,r:\Q$.
   %
   Similarly, $g:\RC\to\RC$ is \define{Lipschitz} if there exists $L:\Qp$ such that
-  \[ (u\sim_\epsilon v) \Rightarrow (g(u) \sim_{L\epsilon} g(v)) \]
+  \[ (u\close\epsilon v) \Rightarrow (g(u) \close{L\epsilon} g(v)) \]
   for all $\epsilon:\Qp$ and $u,v:\RC$..
 \end{defn}
 
-In particular, note that by the first constructor of $\sim$, if $f:\Q\to\Q$ is Lipschitz in the obvious sense, then so is the composite $\Q\xrightarrow{f} \Q \hookrightarrow \RC$.
+In particular, note that by the first constructor of $\closesym$, if $f:\Q\to\Q$ is Lipschitz in the obvious sense, then so is the composite $\Q\xrightarrow{f} \Q \to \RC$.
 
 \begin{lem}\label{RC-extend-Q-Lipschitz}
   Suppose $f : \Q \to \RC$ is Lipschitz with constant $L : \Qp$.
@@ -924,10 +1046,10 @@ In particular, note that by the first constructor of $\sim$, if $f:\Q\to\Q$ is L
 
 \begin{proof}
   % Uniqueness follows directly from \autoref{RC-continuous-eq}.
-  We define $\bar{f}$ by $(\RC,\sim)$-recursion, with codomain $A\defeq \RC$.
+  We define $\bar{f}$ by $(\RC,\closesym)$-recursion, with codomain $A\defeq \RC$.
   We define the relation $\mathord{\bsim}: \RC \to \RC \to \Qp \to \prop$ to be
   \begin{align*}
-    (u \bsim_\epsilon v) &\defeq (u \sim_{L\epsilon} v).
+    (u \bsim_\epsilon v) &\defeq (u \close{L\epsilon} v).
   \end{align*}
   For $q : \Q$, we define
   %
@@ -942,39 +1064,35 @@ In particular, note that by the first constructor of $\sim$, if $f:\Q\to\Q$ is L
   \end{equation*}
   %
   For this to make sense, we must verify that $y \defeq \lamu{\epsilon : \Qp} \bar{f}(x_{\epsilon/L})$ is a Cauchy approximation.
-  However, the inductive hypothesis for this step is that for any $\delta,\epsilon:\Qp$ we have $\bar{f}(x_\delta) \bsim_{\delta+\epsilon} \bar{f}(x_\epsilon)$, i.e.\ $\bar{f}(x_\delta) \sim_{L\delta+L\epsilon} \bar{f}(x_\epsilon)$.
+  However, the inductive hypothesis for this step is that for any $\delta,\epsilon:\Qp$ we have $\bar{f}(x_\delta) \bsim_{\delta+\epsilon} \bar{f}(x_\epsilon)$, i.e.\ $\bar{f}(x_\delta) \close{L\delta+L\epsilon} \bar{f}(x_\epsilon)$.
   Thus we have
-  \[y_\delta \jdeq f(x_{\delta/L}) \sim_{\delta + \epsilon} f(x_{\epsilon/L})   \jdeq y_\epsilon. \]
+  \[y_\delta \jdeq f(x_{\delta/L}) \close{\delta + \epsilon} f(x_{\epsilon/L})   \jdeq y_\epsilon. \]
   
-  For the proof of separatedness, we simply observe that $\fall{\epsilon:\Qp} a\bsim_\epsilon b$ means $\fall{\epsilon:\Qp} a\sim_{L\epsilon} b$, which implies $\fall{\epsilon:\Qp}a\sim_\epsilon b$ and thus $a=b$.
+  For proving separatedness, we simply observe that $\fall{\epsilon:\Qp} a\bsim_\epsilon b$ means $\fall{\epsilon:\Qp} a\close{L\epsilon} b$, which implies $\fall{\epsilon:\Qp}a\close\epsilon b$ and thus $a=b$.
 
-  To complete the $(\RC,\sim)$-recursion, it remains to verify the four conditions on $\bsim$.
-  This basically amounts to proving that $\bar f$ is Lipschitz for all the four constructors of $\sim$.
+  To complete the $(\RC,\closesym)$-recursion, it remains to verify the four conditions on $\bsim$.
+  This basically amounts to proving that $\bar f$ is Lipschitz for all the four constructors of $\closesym$.
   \begin{enumerate}
-  \item When $u$ is $\rcrat(q)$ and $v$ is $\rcrat(r)$ with $-\epsilon < |q-r| <\epsilon$, the assumption that $f$ is Lipschitz yields $f(q) \sim_{L\epsilon} f(r)$, hence $\bar{f}(\rcrat(q)) \bsim_\epsilon \bar{f}(\rcrat(r))$ by definition.
-  \item When $u$ is $\rclim(x)$ and $v$ is $\rcrat(q)$ with $x_\eta \sim_{\epsilon - \eta} \rcrat(q)$, then the
-      induction hypothesis is $\bar{f}(x_\eta) \sim_{L \epsilon - L \eta} \rcrat(f(q))$, which proves $\bar{f}(\rclim(x)) \sim_{L \epsilon}
-      \bar{f}(\rcrat(q))$ by the third constructor of $\sim$.
+  \item When $u$ is $\rcrat(q)$ and $v$ is $\rcrat(r)$ with $-\epsilon < |q-r| <\epsilon$, the assumption that $f$ is Lipschitz yields $f(q) \close{L\epsilon} f(r)$, hence $\bar{f}(\rcrat(q)) \bsim_\epsilon \bar{f}(\rcrat(r))$ by definition.
+  \item When $u$ is $\rclim(x)$ and $v$ is $\rcrat(q)$ with $x_\eta \close{\epsilon - \eta} \rcrat(q)$, then the
+      inductive hypothesis is $\bar{f}(x_\eta) \close{L \epsilon - L \eta} \rcrat(f(q))$, which proves
+      \narrowequation{\bar{f}(\rclim(x)) \close{L \epsilon} \bar{f}(\rcrat(q))}
+      by the third constructor of $\closesym$.
   \item The symmetric case when $u$ is rational and $v$ is a limit is essentially identical.
-  \item When $u$ is $\rclim(x)$ and $v$ is $\rclim(y)$, with $\delta, \eta : \Qp$ such that $x_\delta \sim_{\epsilon - \delta - \eta} y_\eta$,
-      the induction hypothesis is $\bar{f}(x_\delta) \sim_{L \epsilon - L \delta - L \eta} \bar{f}(y_\eta)$, which proves $\bar{f}(\rclim(x)) \sim_{L
-        \epsilon} \bar{f}(\rclim(y))$ by the fourth constructor of $\sim$.
+  \item When $u$ is $\rclim(x)$ and $v$ is $\rclim(y)$, with $\delta, \eta : \Qp$ such that $x_\delta \close{\epsilon - \delta - \eta} y_\eta$,
+      the inductive hypothesis is $\bar{f}(x_\delta) \close{L \epsilon - L \delta - L \eta} \bar{f}(y_\eta)$, which proves $\bar{f}(\rclim(x)) \close{L
+        \epsilon} \bar{f}(\rclim(y))$ by the fourth constructor of $\closesym$.
   \end{enumerate}
-  This completes the $(\RC,\sim)$-recursion, and hence the construction of $\bar f$.
-  The desired equality $\bar f(\rcrat(q))\jdeq f(q)$ is exactly the first computation rule for $(\RC,\sim)$-recursion, and the additional condition~\eqref{eq:RC-sim-recursion-extra} says exactly that $\bar f$ is Lipschitz with constant $L$.
+  This completes the $(\RC,\closesym)$-recursion, and hence the construction of $\bar f$.
+  The desired equality $\bar f(\rcrat(q))\jdeq f(q)$ is exactly the first computation rule for $(\RC,\closesym)$-recursion, and the additional condition~\eqref{eq:RC-sim-recursion-extra} says exactly that $\bar f$ is Lipschitz with constant $L$.
 \end{proof}
 
-At this point we have gone about as far as we can without a better characterization of $\sim$.
-We have specified, in the constructors of $\sim$, the conditions under which we want Cauchy reals of the two different forms to be $\epsilon$-close.
+At this point we have gone about as far as we can without a better characterization of $\closesym$.
+We have specified, in the constructors of $\closesym$, the conditions under which we want Cauchy reals of the two different forms to be $\epsilon$-close.
 However, how do we know that in the resulting inductive-inductive type family, these are the \emph{only} witnesses to this fact?
 We have seen that inductive type families (such as identity types, see \autoref{sec:identity-systems}) and higher inductive types have a tendency to contain ``more than was put into them'', so this is not an idle question.
 
-In order to characterize $\sim$ more precisely, we will define a family of relations $\approx_\epsilon$ on $\RC$ \emph{recursively}, so that they will compute on constructors, and prove that this family is equivalent to $\sim_\epsilon$.
-
-% More specifically, we will define $\mathord\approx:\RC\to\RC\to\Qp\to\prop$, together with some of its basic properties, by double $(\RC,\sim)$-recursion.
-% Roughly, the $\RC$-part of the definition will be the family of relations $\approx_\epsilon$, together with the fact that they are \emph{rounded}.
-% The $\sim$-part of the definition will be that these relations satisfy the ``triangle inequality'' with respect to $\sim_\epsilon$.
-% These two facts will be what enable us to show that $\approx_\epsilon$ respects the path constructor of $\RC$, allowing the recursion to go through.
+In order to characterize $\closesym$ more precisely, we will define a family of relations $\approx_\epsilon$ on $\RC$ \emph{recursively}, so that they will compute on constructors, and prove that this family is equivalent to $\close\epsilon$.
 
 \begin{thm}\label{defn:RC-approx}
   There is a family of mere relations $\mathord\approx:\RC\to\RC\to\Qp\to\prop$ such that
@@ -990,77 +1108,90 @@ In order to characterize $\sim$ more precisely, we will define a family of relat
   \end{align}
   Moreover, we have
   \begin{gather}
-    (u \approx_\epsilon v) \leftrightarrow \exis{\theta:\Qp} (u \approx_{\epsilon-\theta} v) \label{RC-sim-rounded}\\
-    (u \approx_\epsilon v) \to (v\sim_\delta w) \to (u\approx_{\epsilon+\delta} w)\label{eq:RC-sim-rtri}\\ 
-    (u \sim_\epsilon v) \to (v\approx_\delta w) \to (u\approx_{\epsilon+\delta} w)\label{eq:RC-sim-ltri}.
+    (u \approx_\epsilon v) \Leftrightarrow \exis{\theta:\Qp} (u \approx_{\epsilon-\theta} v) \label{RC-sim-rounded}\\
+    (u \approx_\epsilon v) \to (v\close\delta w) \to (u\approx_{\epsilon+\delta} w)\label{eq:RC-sim-rtri}\\ 
+    (u \close\epsilon v) \to (v\approx_\delta w) \to (u\approx_{\epsilon+\delta} w)\label{eq:RC-sim-ltri}.
   \end{gather}
 \end{thm}
 
 The additional conditions~\eqref{RC-sim-rounded}--\eqref{eq:RC-sim-ltri} turn out to be required in order to make the inductive definition go through.
 Condition~\eqref{RC-sim-rounded} is called being \define{rounded}.
+\indexsee{relation!rounded}{rounded relation}%
+\indexdef{rounded!relation}%
 Reading it from right to left gives \define{monotonicity} of $\approx$,
+\index{monotonicity}%
+\index{relation!monotonic}%
 %
 \begin{equation*}
   (\delta < \epsilon) \land (u \approx_\delta v) \Rightarrow (u \approx_\epsilon v)
 \end{equation*}
 %
 while reading it left to right to \define{openness} of $\approx$,
+\index{open!relation}%
+\index{relation!open}%
 %
 \begin{equation*}
   (u \approx_\epsilon v) \Rightarrow \exis{\epsilon : \Qp} (\delta < \epsilon) \land (u \approx_\delta v).
 \end{equation*}
 %
-Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the triangle inequality, which say that $\approx$ is a ``module'' over $\sim$ on both sides.
+Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the triangle inequality, which say that $\approx$ is a ``module'' over $\closesym$ on both sides.
 
 \begin{proof}
-  We will define $\mathord\approx:\RC\to\RC\to\Qp\to\prop$ by double $(\RC,\sim)$-recursion.
-  First we will apply $(\RC,\sim)$-recursion with codomain the subset of $\RC\to\Qp\to\prop$ consisting of those families of predicates which are rounded and satisfy the one appropriate form of the triangle inequality.
+  We will define $\mathord\approx:\RC\to\RC\to\Qp\to\prop$ by double $(\RC,\closesym)$-recursion.
+  First we will apply $(\RC,\closesym)$-recursion with codomain the subset of $\RC\to\Qp\to\prop$ consisting of those families of predicates which are rounded and satisfy the one appropriate form of the triangle inequality.
   Thinking of these predicates as half of a binary relation, we will write them as $(u,\epsilon) \mapsto (\hapx_\epsilon u)$, with the symbol $\hapname$ referring to the whole relation.
   Now we can write $A$ precisely as
   \begin{multline*}
     A \defeq\; \Bigg\{ \hapname :\RC\to\Qp\to\prop \;\bigg|\; \\
     \Big(\fall{u:\RC}{\epsilon:\Qp}
-    \big((\hapx_\epsilon u) \leftrightarrow \exis{\theta:\Qp} (\hapx_{\epsilon-\theta} u)\big)\Big)  \\
-    \land \Big(\fall{u,v:\RC}{\eta,\epsilon:\Qp} (u\sim_\epsilon v) \to\\
+    \big((\hapx_\epsilon u) \Leftrightarrow \exis{\theta:\Qp} (\hapx_{\epsilon-\theta} u)\big)\Big)  \\
+    \land \Big(\fall{u,v:\RC}{\eta,\epsilon:\Qp} (u\close\epsilon v) \to\\
     \big((\hapx_\eta u) \to (\hapx_{\eta+\epsilon} v) \big) \land \big((\hapx_\eta v) \to (\hapx_{\eta+\epsilon} u) \big)\Big)\Bigg\}
   \end{multline*}
   As usual with subsets, we will use the same notation for an inhabitant of $A$ and its first component $\hapname$.
-  As the family of relations required for $(\RC,\sim)$-recursion, we consider the following, which will ensure the other form of the triangle inequality:
-  \begin{equation*}
-    (\hapname \bsim_\epsilon \hapbname )
-    \defeq \fall{u:\RC}{\eta:\Qp} ((\hapx_\eta u) \to (\hapxb_{\epsilon+\eta} u)) \land ((\hapxb_\eta u) \to (\hapx_{\epsilon+\eta} u)).
-  \end{equation*}
+  As the family of relations required for $(\RC,\closesym)$-recursion, we consider the following, which will ensure the other form of the triangle inequality:
+  \begin{narrowmultline*}
+    (\hapname \bsim_\epsilon \hapbname ) \defeq \narrowbreak
+    \fall{u:\RC}{\eta:\Qp} ((\hapx_\eta u) \to (\hapxb_{\epsilon+\eta} u))
+    \land \narrowbreak
+    ((\hapxb_\eta u) \to (\hapx_{\epsilon+\eta} u)).
+  \end{narrowmultline*}
   We observe that these relations are separated.
-  For assuming $\fall{\epsilon:\Qp} (\hapname \bsim_\epsilon \hapbname)$, to show $\hapname = \hapbname$ it suffices to show $(\hapx_\epsilon u) \leftrightarrow (\hapxb_\epsilon u)$ for all $u:\RC$.
+  For assuming
+  \narrowequation{\fall{\epsilon:\Qp} (\hapname \bsim_\epsilon \hapbname),}
+  to show $\hapname = \hapbname$ it suffices to show $(\hapx_\epsilon u) \Leftrightarrow (\hapxb_\epsilon u)$ for all $u:\RC$.
   But $\hapx_\epsilon u$ implies $\hapx_{\epsilon-\theta} u$ for some $\theta$, by roundedness, which together with $\hapname \bsim_\epsilon \hapbname$ implies $\hapxb_\epsilon u$; and the converse is identical.
 
   Now the first two data the recursion principle requires are the following.
   \begin{itemize}
   \item For any $q:\Q$, we must give an element of $A$, which we denote $(\rcrat(q)\approx_{(-)} -)$.
   \item For any Cauchy approximation $x$, if we assume defined a function $\Qp \to A$, which we will denote by $\epsilon \mapsto (x_\epsilon \approx_{(-)} -)$, with the property that 
-    % \[ \fall{u,v:\RC}{\delta,\epsilon,\eta:\Qp} (x_\delta \approx_\eta u) \to (u\sim_{\delta+\epsilon} v) \to (x_\epsilon \approx_{\eta+\delta+\epsilon} v) \]
+    % \[ \fall{u,v:\RC}{\delta,\epsilon,\eta:\Qp} (x_\delta \approx_\eta u) \to (u\close{\delta+\epsilon} v) \to (x_\epsilon \approx_{\eta+\delta+\epsilon} v) \]
     \begin{equation}
       \fall{u:\RC}{\delta,\epsilon,\eta:\Qp} (x_\delta \approx_\eta u) \to (x_\epsilon \approx_{\eta+\delta+\epsilon} u),\label{eq:appxrec2}
     \end{equation}
-    we must give an element of $A$, which we will denote $(\rclim(x)\approx_{(-)} -)$.
+    we must give an element of $A$, which we write as $(\rclim(x)\approx_{\blank} \blank)$.
   \end{itemize}
-  In both cases, we give the required definition by using a nested $(\RC,\sim)$-recursion, with codomain the subset of $\Qp\to\prop$ consisting of rounded families of mere propositions.
+  In both cases, we give the required definition by using a nested $(\RC,\closesym)$-recursion, with codomain the subset of $\Qp\to\prop$ consisting of rounded families of mere propositions.
   Thinking of these propositions as zero halves of a binary relation, we will write them as $\epsilon \mapsto (\tap{\epsilon})$, with the symbol $\tapname$ referring to the whole family.
   Now we can write the codomain of these inner recursions precisely as
-  \begin{equation*}
-    C \defeq \bigg\{ \tapname :\Qp\to\prop \;\;\Big|\;\;
-    \fall{\epsilon:\Qp} \Big((\tap\epsilon) \leftrightarrow \exis{\theta:\Qp} (\tap{\epsilon-\theta})\Big)\bigg\}
-  \end{equation*}
+  \begin{narrowmultline*}
+    C \defeq
+    \bigg\{ \tapname :\Qp\to\prop \;\;\Big|\;\; \narrowbreak
+    \fall{\epsilon:\Qp} \Big((\tap\epsilon) \Leftrightarrow \exis{\theta:\Qp} (\tap{\epsilon-\theta})\Big)\bigg\}
+  \end{narrowmultline*}
   We take the required family of relations to be the remnant of the triangle inequality:
-  \begin{equation*}
+  \begin{narrowmultline*}
     (\tapname \bbsim_\epsilon \tapbname) \defeq
-    \fall{\eta:\Qp} ((\tap\eta) \to (\tapb{\epsilon+\eta})) \land ((\tapb\eta) \to (\tap{\epsilon+\eta})).
-  \end{equation*}
+    \fall{\eta:\Qp} ((\tap\eta) \to (\tapb{\epsilon+\eta})) \land
+    \narrowbreak
+    ((\tapb\eta) \to (\tap{\epsilon+\eta})).
+  \end{narrowmultline*}
   These relations are separated by the same argument as for $\bsim$, using roundedness of all elements of $C$.
 
   Note that if such an inner recursion succeeds, it will yield a family of predicates $\hapname : \RC\to\Qp\to \prop$ which are rounded
 (since their image in $\Qp\to\prop$ lies in $C$) and satisfy
-  \[ \fall{u,v:\RC}{\epsilon:\Qp} (u\sim_\epsilon v) \to \big((\hapx_{(-)} u) \bbsim_\epsilon (\hapx_{(-)} u)\big). \]
+  \[ \fall{u,v:\RC}{\epsilon:\Qp} (u\close\epsilon v) \to \big((\hapx_{(-)} u) \bbsim_\epsilon (\hapx_{(-)} u)\big). \]
   Expanding out the definition of $\bbsim$, this yields precisely the third condition for $\hapname$ to belong to $A$; thus it is exactly what we need.
 
   It is at this point that we can give the definitions~\eqref{eq:RCappx1}--\eqref{eq:RCappx4}, as the first two clauses of each of the two inner recursions, corresponding to rational points and limits.
@@ -1068,13 +1199,13 @@ Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the tr
   In the rational-rational case~\eqref{eq:RCappx1} this is clear, while in the other cases it follows from an inductive hypothesis.
   (In~\eqref{eq:RCappx2} the relevant inductive hypothesis is that $(\rcrat(q) \approx_{(-)} y_\delta) : C$, while in~\eqref{eq:RCappx3} and~\eqref{eq:RCappx4} it is that $(x_\delta \approx_{(-)} -) : A$.)
 
-  The remaining data of the sub-recursions consist of showing that~\eqref{eq:RCappx1}--\eqref{eq:RCappx4} satisfy the triangle inequality on the right with respect to the constructors of $\sim$.
+  The remaining data of the sub-recursions consist of showing that \eqref{eq:RCappx1}--\eqref{eq:RCappx4} satisfy the triangle inequality on the right with respect to the constructors of $\closesym$.
   There are eight cases --- four in each sub-recursion --- corresponding to the eight possible ways that $u$, $v$, and $w$ in~\eqref{eq:RC-sim-rtri} can be chosen to be rational points or limits.
   First we consider the cases when $u$ is $\rcrat(q)$.
   \begin{enumerate}
   \item Assuming $\rcrat(q)\approx_\phi \rcrat(r)$ and $-\epsilon<|r-s|<\epsilon$, we must show $\rcrat(q)\approx_{\phi+\epsilon} \rcrat(s)$.
     But by definition of $\approx$, this reduces to the triangle inequality for rational numbers.
-  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rcrat(q)\approx_\phi \rcrat(r)$ and $\rcrat(r) \sim_{\epsilon-\delta} y_\delta$, and inductively that
+  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rcrat(q)\approx_\phi \rcrat(r)$ and $\rcrat(r) \close{\epsilon-\delta} y_\delta$, and inductively that
     \begin{equation}
       \fall{\psi:\Qp}(\rcrat(q) \approx_{\psi} \rcrat(r)) \to (\rcrat(q) \approx_{\psi+\epsilon-\delta} y_\delta).\label{eq:RCappx-rtri-rrl1}
     \end{equation}
@@ -1082,17 +1213,16 @@ Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the tr
     \begin{equation}
       \fall{\psi,\xi,\zeta:\Qp} (\rcrat(q) \approx_{\psi} y_\xi) \to (\rcrat(q) \approx_{\psi+\xi+\zeta} y_\zeta),\label{eq:RCappx-rtri-rrl2}
     \end{equation}
-    although we will not need this assumption in this case.
-    Indeed,~\eqref{eq:RCappx-rtri-rrl1} with $\psi\defeq \phi$ yields immediately $\rcrat(q) \approx_{\phi+\epsilon-\delta} y_\delta$, and hence $\rcrat(q) \approx_{\phi+\epsilon} \rclim(y)$ by definition of $\approx$.
-  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rcrat(q)\approx_\phi \rclim(y)$ and $y_\delta \sim_{\epsilon-\delta} \rcrat(r)$, and inductively that
+    although we do not need this assumption in this case.
+    Indeed, \eqref{eq:RCappx-rtri-rrl1} with $\psi\defeq \phi$ yields immediately $\rcrat(q) \approx_{\phi+\epsilon-\delta} y_\delta$, and hence $\rcrat(q) \approx_{\phi+\epsilon} \rclim(y)$ by definition of $\approx$.
+  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rcrat(q)\approx_\phi \rclim(y)$ and $y_\delta \close{\epsilon-\delta} \rcrat(r)$, and inductively that
     \begin{gather}
       \fall{\psi:\Qp}(\rcrat(q) \approx_{\psi} y_\delta) \to (\rcrat(q) \approx_{\psi+\epsilon-\delta} \rcrat(r)).\label{eq:RCappx-rtri-rlr1}\\
       \fall{\psi,\xi,\zeta:\Qp} (\rcrat(q) \approx_{\psi} y_\xi) \to (\rcrat(q) \approx_{\psi+\xi+\zeta} y_\zeta).\label{eq:RCappx-rtri-rlr2}
     \end{gather}
-    Now by definition, $\rcrat(q)\approx_\phi \rclim(y)$ means we have $\theta:\Qp$ with $\rcrat(q) \approx_{\phi-\theta} y_\theta$.
-    By assumption~\eqref{eq:RCappx-rtri-rlr2}, therefore, we have also $\rcrat(q) \approx_{\phi+\delta} y_\delta$.
-    But now by assumption~\eqref{eq:RCappx-rtri-rlr1}, we have $\rcrat(q) \approx_{\phi+\epsilon} \rcrat(r)$, as desired.
-  \item We assume $\phi,\epsilon,\delta,\eta:\Qp$ such that $\rcrat(q)\approx_\phi \rclim(y)$ and $y_\delta \sim_{\epsilon-\delta-\eta} z_\eta$, and inductively that 
+    By definition, $\rcrat(q)\approx_\phi \rclim(y)$ means that we have $\theta:\Qp$ with $\rcrat(q) \approx_{\phi-\theta} y_\theta$.
+    By assumption~\eqref{eq:RCappx-rtri-rlr2}, therefore, we have also $\rcrat(q) \approx_{\phi+\delta} y_\delta$, and then by~\eqref{eq:RCappx-rtri-rlr1} it follows that $\rcrat(q) \approx_{\phi+\epsilon} \rcrat(r)$, as desired.
+  \item We assume $\phi,\epsilon,\delta,\eta:\Qp$ such that $\rcrat(q)\approx_\phi \rclim(y)$ and $y_\delta \close{\epsilon-\delta-\eta} z_\eta$, and inductively that 
     \begin{gather}
       \fall{\psi:\Qp}(\rcrat(q) \approx_{\psi} y_\delta) \to (\rcrat(q) \approx_{\psi+\epsilon-\delta-\eta} z_\eta)\label{eq:RCappx-rtri-rll1}\\
       \fall{\psi,\xi,\zeta:\Qp} (\rcrat(q) \approx_{\psi} y_\xi) \to (\rcrat(q) \approx_{\psi+\xi+\zeta} y_\zeta)\label{eq:RCappx-rtri-rll2}\\
@@ -1102,33 +1232,29 @@ Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the tr
     But by definition of $\approx$, this implies $\rcrat(q) \approx_{\phi+\epsilon} \rclim(z)$ as desired.
   \end{enumerate}
   Now we move on to the cases when $u$ is $\rclim(x)$, with $x$ a Cauchy approximation.
-  In this case, the ambient induction hypothesis of the definition of $(\rclim(x) \approx_{(-)} -) : A$ is that we have $(x_\delta \approx_{(-)} -): A$, so that in addition to being rounded they satisfy the triangle inequality on the right.
+  In this case, the ambient inductive hypothesis of the definition of $(\rclim(x) \approx_{(-)} {-}) : A$ is that we have ${(x_\delta \approx_{(-)} {-})}: A$, so that in addition to being rounded they satisfy the triangle inequality on the right.
   \begin{enumerate}\setcounter{enumi}{4}
   \item Assuming $\rclim(x)\approx_\phi \rcrat(r)$ and $-\epsilon<|r-s|<\epsilon$, we must show $\rclim(x)\approx_{\phi+\epsilon} \rcrat(s)$.
-    But by definition of $\approx$, the former means $x_\delta \approx_{\phi-\delta} \rcrat(r)$, so that above-mentioned triangle inequality implies $x_\delta \approx_{\epsilon+\phi-\delta} \rcrat(s)$, hence $\rclim(x)\approx_{\phi+\epsilon} \rcrat(s)$ as desired.
-  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rclim(x)\approx_\phi \rcrat(r)$ and $\rcrat(r) \sim_{\epsilon-\delta} y_\delta$, and two unneeded inductive hypotheses.
+    By definition of $\approx$, the former means $x_\delta \approx_{\phi-\delta} \rcrat(r)$, so that above triangle inequality implies $x_\delta \approx_{\epsilon+\phi-\delta} \rcrat(s)$, hence $\rclim(x)\approx_{\phi+\epsilon} \rcrat(s)$ as desired.
+  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rclim(x)\approx_\phi \rcrat(r)$ and $\rcrat(r) \close{\epsilon-\delta} y_\delta$, and two unneeded inductive hypotheses.
     % \begin{gather}
     %   \fall{\psi:\Qp}(\rclim(x) \approx_{\psi} \rcrat(r)) \to (\rclim(x) \approx_{\psi+\epsilon-\delta-\theta} y_\delta)\label{eq:RCappx-rtri-lrl1}\\
     %   \fall{\psi,\xi,\zeta:\Qp} (\rclim(x) \approx_{\psi} y_\xi) \to (\rclim(x) \approx_{\psi+\xi+\zeta} y_\zeta).\label{eq:RCappx-rtri-lrl2}
     % \end{gather}
     By definition, we have $\eta:\Qp$ such that $x_\eta \approx_{\phi-\eta} \rcrat(r)$, so the inductive triangle inequality gives $x_\eta \approx_{\phi+\epsilon-\eta-\delta} y_\delta$.
     The definition of $\approx$ then immediately yields $\rclim(x) \approx_{\phi+\epsilon} \rclim(y)$.
-  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rclim(x)\approx_\phi \rclim(y)$ and $y_\delta \sim_{\epsilon-\delta} \rcrat(r)$, and two unneeded inductive hypotheses.
-    % \begin{gather}
-    %   \fall{\psi:\Qp}(\rclim(x) \approx_{\psi} \rcrat(r)) \to (\rclim(x) \approx_{\psi+\epsilon-\delta-\theta} y_\delta)\label{eq:RCappx-rtri-llr1}\\
-    %   \fall{\psi,\xi,\zeta:\Qp} (\rclim(x) \approx_{\psi} y_\xi) \to (\rclim(x) \approx_{\psi+\xi+\zeta} y_\zeta).\label{eq:RCappx-rtri-llr2}
-    % \end{gather}
-    By definition, then, we have $\xi,\theta:\Qp$ such that $x_\xi \approx_{\phi-\xi-\theta} y_\theta$.
-    Since $y$ is a Cauchy approximation, we have $y_\theta \sim_{\theta+\delta} y_\delta$, so the inductive triangle inequality gives $x_\xi \approx_{\phi+\delta-\xi} y_\delta$ and then $x_\xi \sim_{\phi+\epsilon-\xi} \rcrat(r)$.
+  \item We assume $\phi,\epsilon,\delta:\Qp$ such that $\rclim(x)\approx_\phi \rclim(y)$ and $y_\delta \close{\epsilon-\delta} \rcrat(r)$, and two unneeded inductive hypotheses.
+    By definition we have $\xi,\theta:\Qp$ such that $x_\xi \approx_{\phi-\xi-\theta} y_\theta$.
+    Since $y$ is a Cauchy approximation, we have $y_\theta \close{\theta+\delta} y_\delta$, so the inductive triangle inequality gives $x_\xi \approx_{\phi+\delta-\xi} y_\delta$ and then $x_\xi \close{\phi+\epsilon-\xi} \rcrat(r)$.
     The definition of $\approx$ then gives $\rclim(x) \approx_{\phi+\epsilon}\rcrat(r)$, as desired.
-  \item Finally, we assume $\phi,\epsilon,\delta,\eta:\Qp$ such that $\rclim(x)\approx_\phi \rclim(y)$ and $y_\delta \sim_{\epsilon-\delta-\eta} z_\eta$.
+  \item Finally, we assume $\phi,\epsilon,\delta,\eta:\Qp$ such that $\rclim(x)\approx_\phi \rclim(y)$ and $y_\delta \close{\epsilon-\delta-\eta} z_\eta$.
     Then as before we have $\xi,\theta:\Qp$ with $x_\xi \approx_{\phi-\xi-\theta} y_\theta$, and two applications of the triangle inequality suffices as before.
   \end{enumerate}
 
   This completes the two inner recursions, and thus the definitions of the families of relations $(\rcrat(q)\approx_{(-)}-)$ and $(\rclim(x)\approx_{(-)}-)$.
-  Since all are elements of $A$, they are rounded and satisfy the triangle inequality on the right with respect to $\sim$.
+  Since all are elements of $A$, they are rounded and satisfy the triangle inequality on the right with respect to $\closesym$.
 % , and satisfy~\eqref{eq:appxrec2}.
-  What remains is to verify the conditions relating to $\bsim$, which is to say that these relations satisfy the triangle inequality on the \emph{left} with respect to the constructors of $\sim$.
+  What remains is to verify the conditions relating to $\bsim$, which is to say that these relations satisfy the triangle inequality on the \emph{left} with respect to the constructors of $\closesym$.
   The four cases correspond to the four choices of rational or limit points for $u$ and $v$ in~\eqref{eq:RC-sim-ltri}, and since they are all mere propositions, we may apply $\RC$-induction and assume that $w$ is also either rational or a limit.
   This yields another eight cases, whose proofs are essentially identical to those just given; so we will not subject the reader to them.
 \end{proof}
@@ -1136,76 +1262,77 @@ Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the tr
 We can now prove:
 
 \begin{thm}\label{thm:RC-sim-characterization}
-  For any $u,v:\RC$ and $\epsilon:\Qp$ we have $(u\sim_\epsilon v) = (u\approx_\epsilon v)$.
+  For any $u,v:\RC$ and $\epsilon:\Qp$ we have $(u\close\epsilon v) = (u\approx_\epsilon v)$.
 \end{thm}
 \begin{proof}
   Since both are mere propositions, it suffices to prove bidirectional implication.
-  For the left-to-right direction, we use $\sim$-induction with $C(u,v,\epsilon)\defeq (u\approx_\epsilon v)$.
-  Thus, it suffices to consider the four constructors of $\sim$.
+  For the left-to-right direction, we use $\closesym$-induction applied to $C(u,v,\epsilon)\defeq (u\approx_\epsilon v)$.
+  Thus, it suffices to consider the four constructors of $\closesym$.
   In each case, $u$ and $v$ are specialized to either rational points or limits, so that the definition of $\approx$ evaluates, and the inductive hypothesis always applies.
 
   For the right-to-left direction, we use $\RC$-induction to assume that $u$ and $v$ are rational points or limits, allowing $\approx$ to evaluate.
-  But now the definitions of $\approx$, and the inductive hypotheses, supply exactly the data required for the relevant constructors of $\sim$.
+  But now the definitions of $\approx$, and the inductive hypotheses, supply exactly the data required for the relevant constructors of $\closesym$.
 \end{proof}
 
-Stretching a point, one might call $\approx$ a fibration of ``codes'' for $\sim$, with the two directions of the above proof being \encode and \decode respectively.
+\index{encode-decode method|(}%
+Stretching a point, one might call $\approx$ a fibration of ``codes'' for $\closesym$, with the two directions of the above proof being \encode and \decode respectively.
 By the definition of $\approx$, from \autoref{thm:RC-sim-characterization} we get equivalences
 \begin{align*}
-  (\rcrat(q) \sim_\epsilon \rcrat(r))  &=
+  (\rcrat(q) \close\epsilon \rcrat(r))  &=
   (-\epsilon < q - r < \epsilon)\\
-  (\rcrat(q) \sim_\epsilon \rclim(y)) &=
-  \exis{\delta : \Qp} \rcrat(q) \sim_{\epsilon - \delta} y_\delta\\
-  (\rclim(x) \sim_\epsilon \rcrat(r)) &=
-  \exis{\delta : \Qp} x_\delta \sim_{\epsilon - \delta} \rcrat(r)\\
-  (\rclim(x) \sim_\epsilon \rclim(y)) &=
-  \exis{\delta, \eta : \Qp} x_\delta \sim_{\epsilon - \delta - \eta} y_\eta.
+  (\rcrat(q) \close\epsilon \rclim(y)) &=
+  \exis{\delta : \Qp} \rcrat(q) \close{\epsilon - \delta} y_\delta\\
+  (\rclim(x) \close\epsilon \rcrat(r)) &=
+  \exis{\delta : \Qp} x_\delta \close{\epsilon - \delta} \rcrat(r)\\
+  (\rclim(x) \close\epsilon \rclim(y)) &=
+  \exis{\delta, \eta : \Qp} x_\delta \close{\epsilon - \delta - \eta} y_\eta.
 \end{align*}
 Our proof also provides the following additional information.
 
 \begin{cor}
-  $\sim$ is rounded and satisfies the triangle inequality:
+  $\closesym$ is rounded\index{rounded!relation} and satisfies the triangle inequality:
     \begin{gather}
       \eqvspaced{
-        (u \sim_\epsilon v)
+        (u \close\epsilon v)
       }{
-        \exis{\theta : \Qp} u \sim_{\epsilon - \theta} v
+        \exis{\theta : \Qp} u \close{\epsilon - \theta} v
       }\\
-      (u\sim_\epsilon v) \to (v\sim_\delta w) \to (u\sim_{\epsilon+\delta} w)\label{item:RC-sim-triangle}
+      (u\close\epsilon v) \to (v\close\delta w) \to (u\close{\epsilon+\delta} w)\label{item:RC-sim-triangle}
     \end{gather}
 \end{cor}
 % \begin{proof}
 %   The construction of $\approx$ showed simultaneously that it is rounded, and satisfies ``triangle inequalities'' such as
-%   \[ (u\approx_\epsilon v) \to (v\sim_\delta w) \to (u\approx_{\epsilon+\delta} w). \]
+%   \[ (u\approx_\epsilon v) \to (v\close\delta w) \to (u\approx_{\epsilon+\delta} w). \]
 %   Thus, both properties follow from \autoref{thm:RC-sim-characterization}.
 % \end{proof}
 
 With the triangle inequality in hand, we can show that ``limits'' of Cauchy approximations actually behave like limits.
 
 \begin{lem}\label{thm:RC-sim-lim}
-  For any $u:\RC$, Cauchy approximation $y$, and $\epsilon,\delta:\Qp$, if $u\sim_\epsilon y_\delta$ then $u\sim_{\epsilon+\delta} \rclim(y)$.
+  For any $u:\RC$, Cauchy approximation $y$, and $\epsilon,\delta:\Qp$, if $u\close\epsilon y_\delta$ then $u\close{\epsilon+\delta} \rclim(y)$.
 \end{lem}
 \begin{proof}
   We use $\RC$-induction on $u$.
-  If $u$ is $\rcrat(q)$, then this is exactly the second constructor of $\sim$.
-  Now suppose $u$ is $\rclim(x)$, and that each $x_\eta$ has the property that for any $y,\epsilon,\delta$, if $x_\eta\sim_\epsilon y_\delta$ then $x_\eta \sim_{\epsilon+\delta} \rclim(y)$.
-  In particular, taking $y\defeq x$ and $\delta\defeq\eta$ in this assumption, we conclude that $x_\eta \sim_{\eta+\theta} \rclim(x)$ for any $\eta,\theta:\Qp$.
+  If $u$ is $\rcrat(q)$, then this is exactly the second constructor of $\closesym$.
+  Now suppose $u$ is $\rclim(x)$, and that each $x_\eta$ has the property that for any $y,\epsilon,\delta$, if $x_\eta\close\epsilon y_\delta$ then $x_\eta \close{\epsilon+\delta} \rclim(y)$.
+  In particular, taking $y\defeq x$ and $\delta\defeq\eta$ in this assumption, we conclude that $x_\eta \close{\eta+\theta} \rclim(x)$ for any $\eta,\theta:\Qp$.
 
-  Now let $y,\epsilon,\delta$ be arbitrary and assume $\rclim(x) \sim_\epsilon y_\delta$.
-  By roundedness, there is a $\theta$ such that $\rclim(x) \sim_{\epsilon-\theta} y_\delta$.
-  Then by the above observation, for any $\eta$ we have $x_\eta \sim_{\eta+\theta/2} \rclim(x)$, and hence $x_\eta \sim_{\epsilon+\eta-\theta/2} y_\delta$ by the triangle inequality.
-  Hence, the fourth constructor of $\sim$ yields $\rclim(x) \sim_{\epsilon+2\eta+\delta-\theta/2} \rclim(y)$.
+  Now let $y,\epsilon,\delta$ be arbitrary and assume $\rclim(x) \close\epsilon y_\delta$.
+  By roundedness, there is a $\theta$ such that $\rclim(x) \close{\epsilon-\theta} y_\delta$.
+  Then by the above observation, for any $\eta$ we have $x_\eta \close{\eta+\theta/2} \rclim(x)$, and hence $x_\eta \close{\epsilon+\eta-\theta/2} y_\delta$ by the triangle inequality.
+  Hence, the fourth constructor of $\closesym$ yields $\rclim(x) \close{\epsilon+2\eta+\delta-\theta/2} \rclim(y)$.
   Thus, if we choose $\eta \defeq \theta/4$, the result follows.
 \end{proof}
 
 \begin{lem}\label{thm:RC-sim-lim-term}
-  For any Cauchy approximation $y$ and any $\delta,\eta:\Qp$ we have $y_\delta \sim_{\delta+\eta} \rclim(y)$.
+  For any Cauchy approximation $y$ and any $\delta,\eta:\Qp$ we have $y_\delta \close{\delta+\eta} \rclim(y)$.
 \end{lem}
 \begin{proof}
   Take $u\defeq y_\delta$ and $\epsilon\defeq \eta$ in the previous lemma.
 \end{proof}
 
 \begin{rmk}
-  We might have expected to have $y_\delta \sim_{\delta} \rclim(y)$, but this fails in examples.
+  We might have expected to have $y_\delta \close{\delta} \rclim(y)$, but this fails in examples.
   For instance, consider $x$ defined by $x_\epsilon \defeq \epsilon$.
   Its limit is clearly $0$, but we do not have $|\epsilon - 0 |<\epsilon$, only $\le$.
 \end{rmk}
@@ -1213,8 +1340,9 @@ With the triangle inequality in hand, we can show that ``limits'' of Cauchy appr
 As an application, \autoref{thm:RC-sim-lim-term} enables us to show that the extensions of Lipschitz functions from \autoref{RC-extend-Q-Lipschitz} are unique.
 
 \begin{lem}\label{RC-continuous-eq}
+  \index{function!continuous}%
   Let $f,g:\RC\to\RC$ be continuous, in the sense that
-  \[ \fall{u:\RC}{\epsilon:\Qp}\exis{\delta:\Qp}\fall{v:\RC} (u\sim_\delta v) \to (f(u) \sim_\epsilon f(v)) \]
+  \[ \fall{u:\RC}{\epsilon:\Qp}\exis{\delta:\Qp}\fall{v:\RC} (u\close\delta v) \to (f(u) \close\epsilon f(v)) \]
   and analogously for $g$.
   If $f(\rcrat(q))=g(\rcrat(q))$ for all $q:\Q$, then $f=g$.
 \end{lem}
@@ -1222,26 +1350,26 @@ As an application, \autoref{thm:RC-sim-lim-term} enables us to show that the ext
   We prove $f(u)=g(u)$ for all $u$ by $\RC$-induction.
   The rational case is just the hypothesis.
   Thus, suppose $f(x_\delta)=g(x_\delta)$ for all $\delta$.
-  We will show that $f(\rclim(x))\sim_\epsilon g(\rclim(x))$ for all $\epsilon$, so that the path-constructor of $\RC$ applies.
+  We will show that $f(\rclim(x))\close\epsilon g(\rclim(x))$ for all $\epsilon$, so that the path-constructor of $\RC$ applies.
 
   Since $f$ and $g$ are continuous, there exist $\theta,\eta$ such that for all $v$, we have
   \begin{align*}
-    (\rclim(x)\sim_\theta v) &\to (f(\rclim(x)) \sim_{\epsilon/2} f(v))\\
-    (\rclim(x)\sim_\eta v) &\to (g(\rclim(x)) \sim_{\epsilon/2} g(v)).
+    (\rclim(x)\close\theta v) &\to (f(\rclim(x)) \close{\epsilon/2} f(v))\\
+    (\rclim(x)\close\eta v) &\to (g(\rclim(x)) \close{\epsilon/2} g(v)).
   \end{align*}
-  Choosing $\delta < \min(\theta,\eta)$, by \autoref{thm:RC-sim-lim-term} we have both $\rclim(x)\sim_\theta y_\delta$ and $\rclim(x)\sim_\eta y_\delta$.
+  Choosing $\delta < \min(\theta,\eta)$, by \autoref{thm:RC-sim-lim-term} we have both $\rclim(x)\close\theta y_\delta$ and $\rclim(x)\close\eta y_\delta$.
   Hence
-  \[ f(\rclim(x)) \sim_{\epsilon/2} f(y_\delta) = g(y_\delta) \sim_{\epsilon/2} g(\rclim(x))\]
-  and thus $f(\rclim(x))\sim_\epsilon g(\rclim(x))$ by the triangle inequality.
+  \[ f(\rclim(x)) \close{\epsilon/2} f(y_\delta) = g(y_\delta) \close{\epsilon/2} g(\rclim(x))\]
+  and thus $f(\rclim(x))\close\epsilon g(\rclim(x))$ by the triangle inequality.
 \end{proof}
 
 \subsection{The algebraic structure of Cauchy reals}
 \label{sec:algebr-struct-cauchy}
 
-We first define the additive structure $(\RC, 0, {+}, {-})$. Clearly, the neutral element
+We first define the additive structure $(\RC, 0, {+}, {-})$. Clearly, the additive unit element
 $0$ is just $\rcrat(0)$, while the additive inverse ${-} : \RC \to \RC$ is obtained as the
 extension of the additive inverse ${-} : \Q \to \Q$, using \autoref{RC-extend-Q-Lipschitz}
-with Lipschitz factor~$1$. We have to work a bit harder for addition.
+with Lipschitz constant~$1$. We have to work a bit harder for addition.
 
 \begin{lem} \label{RC-binary-nonexpanding-extension}
   Suppose $f : \Q \times \Q \to \Q$ satisfies, for all $q, r, s : \Q$,
@@ -1257,14 +1385,14 @@ with Lipschitz factor~$1$. We have to work a bit harder for addition.
   for all $u, v, w : \RC$ and $q : \Qp$,
   %
   \begin{equation*}
-    u \sim_\epsilon v \Rightarrow \bar{f}(u,w) \sim_\epsilon \bar{f}(v,w)
+    u \close\epsilon v \Rightarrow \bar{f}(u,w) \close\epsilon \bar{f}(v,w)
     \quad\text{and}\quad
-    v \sim_\epsilon w \Rightarrow \bar{f}(u,v) \sim_\epsilon \bar{f}(u,w).
+    v \close\epsilon w \Rightarrow \bar{f}(u,v) \close\epsilon \bar{f}(u,w).
   \end{equation*}
 \end{lem}
 
 \begin{proof}
-  We use $(\RC, {\sim})$-recursion to construct the curried form of $\bar{f}$ as a map
+  We use $(\RC, {\closesym})$-recursion to construct the curried form of $\bar{f}$ as a map
   $\RC \to A$ where $A$ is the space of non-expanding real-valued
   functions:
   % 
@@ -1272,14 +1400,14 @@ with Lipschitz factor~$1$. We have to work a bit harder for addition.
     A \defeq
     \setof{ h : \RC \to \RC |
       \fall{\epsilon : \Qp} \fall{u, v : \RC}
-      u \sim_\epsilon v \Rightarrow h(u) \sim_\epsilon h(v)
+      u \close\epsilon v \Rightarrow h(u) \close\epsilon h(v)
     }.
   \end{equation*}
   %
   We shall also need a suitable $\bsim_\epsilon$ on $A$, which we define as
   %
   \begin{equation*}
-    (h \bsim_\epsilon k) \defeq \fall{u : \RC} h(u) \sim_\epsilon k(u).
+    (h \bsim_\epsilon k) \defeq \fall{u : \RC} h(u) \close\epsilon k(u).
   \end{equation*}
   %
   Clearly, if $\fall{\epsilon : \Qp} h \bsim_\epsilon k$ then $h(u) = k(u)$ for all $u :
@@ -1297,59 +1425,64 @@ with Lipschitz factor~$1$. We have to work a bit harder for addition.
   For this to be a valid definition, $\lam{\epsilon} \bar{f}(x_\epsilon)(v)$ should be a
   Cauchy approximation, so consider any $\delta, \epsilon : \Q$. Then by assumption
   $\bar{f}(x_\delta) \bsim_{\delta + \epsilon} \bar{f}(x_\epsilon)$, hence
-  $\bar{f}(x_\delta)(v) \sim_{\delta + \epsilon} \bar{f}(x_\epsilon)(v)$. Furthermore,
+  $\bar{f}(x_\delta)(v) \close{\delta + \epsilon} \bar{f}(x_\epsilon)(v)$. Furthermore,
   $\bar{f}(\rclim(x))$ is non-expanding because $\bar{f}(x_\epsilon)$ is such by induction
-  hypothesis. Indeed, if $u \sim_\epsilon v$ then, for all $\epsilon : \Q$,
+  hypothesis. Indeed, if $u \close\epsilon v$ then, for all $\epsilon : \Q$,
   %
   \begin{equation*}
-    \bar{f}(x_{\epsilon/3})(u) \sim_{\epsilon/3} \bar{f}(x_{\epsilon/3})(v),
+    \bar{f}(x_{\epsilon/3})(u) \close{\epsilon/3} \bar{f}(x_{\epsilon/3})(v),
   \end{equation*}
   %
-  therefore $\bar{f}(\rclim(x))(u) \sim_\epsilon \bar{f}(\rclim(x))(v)$.
+  therefore $\bar{f}(\rclim(x))(u) \close\epsilon \bar{f}(\rclim(x))(v)$ by the fourth constructor of $\closesym$.
 
   We still have to check four more conditions, let us illustrate just one. Suppose
-  $\epsilon : \Qp$ and for some $\delta : \Qp$ we have $\rcrat(q) \sim_{\epsilon - \delta}
+  $\epsilon : \Qp$ and for some $\delta : \Qp$ we have $\rcrat(q) \close{\epsilon - \delta}
   y_\delta$ and $\bar{f}(\rcrat(q)) \bsim_{\epsilon - \delta} \bar{f}(y_\delta)$. To show
-  $\bar{f}(\rcrat(q)) \bsim_\epsilon \bar{f}(y)$, consider any $v : \RC$ and observe that
+  $\bar{f}(\rcrat(q)) \bsim_\epsilon \bar{f}(\rclim(y))$, consider any $v : \RC$ and observe that
   %
   \begin{equation*}
-    \bar{f}(q)(v) \sim_{\epsilon - \delta} \bar{f}(y_\delta)(v)
+    \bar{f}(\rcrat(q))(v) \close{\epsilon - \delta} \bar{f}(y_\delta)(v).
   \end{equation*}
   %
-  and because $y_\delta \sim y$ also
-  %
-  \begin{equation*}
-    \bar{f}(y_\delta)(v) \sim_\delta \bar{f}(y)(v),
-  \end{equation*}
-  %
-  therefore $\bar{f}(q)(v) \sim_\epsilon \bar{f}(y)(v)$, as required.
+  Therefore, by the second constructor of $\closesym$, we have $\bar{f}(\rcrat(q))(v) \close\epsilon \bar{f}(\rclim(y))(v)$ as required.
 \end{proof}
 
 We may apply \autoref{RC-binary-nonexpanding-extension} to any bivariate rational function
 which is non-expanding separately in each variable. Addition is such a function, therefore
-we get ${+} : \RC \times \RC \to \RC$. Furthermore, the extension is unique as long as we
+we get ${+} : \RC \times \RC \to \RC$.
+\indexdef{addition!of Cauchy reals}%
+Furthermore, the extension is unique as long as we
 require it to be non-expanding in each variable, and just as in the univariate case,
 identities on rationals extend to identities on reals. Since composition of non-expanding
 maps is again non-expanding, we may conclude that addition satisfies the usual properties,
-such as commutativity and associativity. Therefore, $(\RC, 0, {+}, {-})$ is a commutative
+such as commutativity and associativity.
+\index{associativity!of addition!of Cauchy reals}%
+Therefore, $(\RC, 0, {+}, {-})$ is a commutative
 group.
 
 We may also apply \autoref{RC-binary-nonexpanding-extension} to the functions $\min : \Q \times
 \Q \to \Q$ and $\max : \Q \times \Q \to \Q$, which turns $\RC$ into a lattice. The partial
 order $\leq$ on $\RC$ is defined in terms of $\max$ as
 %
+\symlabel{leq-RC}
+\index{order!non-strict}%
+\index{non-strict!order}%
 \begin{equation*}
   (u \leq v) \defeq (\max(u, v) = v).
 \end{equation*}
 %
-The relation $\leq$ is a partial order because it is such on $\Q$, and the axioms of
+The relation $\leq$ is a partial order because it is such on $\Q$, and the axioms of a
 partial order are expressible as equations in terms of $\min$ and $\max$, so they transfer
 to $\RC$.
 
-Another function which extends to $\RC$ by the same method is the absolute value $|{-}|$.
+\index{absolute value}%
+Another function which extends to $\RC$ by the same method is the absolute value $|{\blank}|$.
 Again, it has the expected properties because they transfer from $\Q$ to $\RC$.
 
+\symlabel{lt-RC}
 From $\leq$ we get the strict order $<$ by
+\index{strict!order}%
+\index{order!strict}%
 %
 \begin{equation*}
   (u < v) \defeq \exis{q, r : \Qp} (u \leq q) \land (q < r) \land (r \leq v).
@@ -1360,6 +1493,7 @@ That is, $u < v$ holds when there merely exists a pair of rational numbers $q < 
 transitive, and has other properties that are expected for an ordered field.
 The archimedean principle follows directly from the definition of~$<$.
 
+\index{ordered field!archimedean}%
 \begin{thm}[Archimedean principle for $\RC$] \label{RC-archimedean}
   %
   For every $u, v : \RC$ such that $u < v$ there merely exists $q : \Q$ such that $u < q < v$.
@@ -1370,19 +1504,19 @@ The archimedean principle follows directly from the definition of~$<$.
   \defeq (r + s) / 2$.
 \end{proof}
 
-We now have enough structure on $\RC$ to express $u \sim_\epsilon v$ with standard concepts.
+We now have enough structure on $\RC$ to express $u \close\epsilon v$ with standard concepts.
 
 \begin{lem}\label{thm:RC-le-grow}
-  If $q:\Q$ and $u:\RC$ satisfy $u\le \rcrat(q)$, then for any $v:\RC$ and $\epsilon:\Qp$, if $u\sim_\epsilon v$ then $v\le \rcrat(q+\epsilon)$.
+  If $q:\Q$ and $u:\RC$ satisfy $u\le \rcrat(q)$, then for any $v:\RC$ and $\epsilon:\Qp$, if $u\close\epsilon v$ then $v\le \rcrat(q+\epsilon)$.
 \end{lem}
 \begin{proof}
   Note that the function $\max(\rcrat(q),-):\RC\to\RC$ is Lipschitz with constant $1$.
   First consider the case when $u=\rcrat(r)$ is rational.
   For this we use induction on $v$.
   If $v$ is rational, then the statement is obvious.
-  If $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $\rcrat(r)\sim_\epsilon y_\delta$ then $y_\delta \le \rcrat(q+\epsilon)$, i.e.\ $\max(\rcrat(q+\epsilon),y_\delta)=\rcrat(q+\epsilon)$.
+  If $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $\rcrat(r)\close\epsilon y_\delta$ then $y_\delta \le \rcrat(q+\epsilon)$, i.e.\ $\max(\rcrat(q+\epsilon),y_\delta)=\rcrat(q+\epsilon)$.
 
-  Now assuming $\epsilon$ and $\rcrat(r)\sim_\epsilon \rclim(y)$, we have $\theta$ such that $\rcrat(r)\sim_{\epsilon-\theta} \rclim(y)$, hence $\rcrat(r)\sim_\epsilon y_\delta$ whenever $\delta<\theta$.
+  Now assuming $\epsilon$ and $\rcrat(r)\close\epsilon \rclim(y)$, we have $\theta$ such that $\rcrat(r)\close{\epsilon-\theta} \rclim(y)$, hence $\rcrat(r)\close\epsilon y_\delta$ whenever $\delta<\theta$.
   Thus, the inductive hypothesis gives $\max(\rcrat(q+\epsilon),y_\delta)=\rcrat(q+\epsilon)$ for such $\delta$.
   But by definition,
   \[\max(\rcrat(q+\epsilon),\rclim(y)) \jdeq \rclim(\lam{\delta} \max(\rcrat(q+\epsilon),y_\delta)).\]
@@ -1390,58 +1524,60 @@ We now have enough structure on $\RC$ to express $u \sim_\epsilon v$ with standa
   \[\max(\rcrat(q+\epsilon),\rclim(y)) = \rcrat(q+\epsilon),\] hence $\rclim(y)\le \rcrat(q+\epsilon)$.
   
   Now consider a general $u:\RC$.
-  Since $u\le \rcrat(q)$ means $\max(\rcrat(q),u)=\rcrat(q)$, the assumption $u\sim_\epsilon v$ and the Lipschitz property of $\max(\rcrat(q),-)$ imply $\max(\rcrat(q),v) \sim_\epsilon \rcrat(q)$.
+  Since $u\le \rcrat(q)$ means $\max(\rcrat(q),u)=\rcrat(q)$, the assumption $u\close\epsilon v$ and the Lipschitz property of $\max(\rcrat(q),-)$ imply $\max(\rcrat(q),v) \close\epsilon \rcrat(q)$.
   Thus, since $\rcrat(q)\le \rcrat(q)$, the first case implies $\max(\rcrat(q),v) \le \rcrat(q+\epsilon)$, and hence $v\le \rcrat(q+\epsilon)$ by transitivity of $\le$.
 \end{proof}
 
 \begin{lem}\label{thm:RC-lt-open}
   Suppose $q:\Q$ and $u:\RC$ satisfy $u<\rcrat(q)$.  Then:
   \begin{enumerate}
-  \item For any $v:\RC$ and $\epsilon:\Qp$, if $u\sim_\epsilon v$ then $v< \rcrat(q+\epsilon)$.\label{item:RCltopen1}
-  \item There exists $\epsilon:\Qp$ such that for any $v:\RC$, if $u\sim_\epsilon v$ we have $v<\rcrat(q)$.\label{item:RCltopen2}
+  \item For any $v:\RC$ and $\epsilon:\Qp$, if $u\close\epsilon v$ then $v< \rcrat(q+\epsilon)$.\label{item:RCltopen1}
+  \item There exists $\epsilon:\Qp$ such that for any $v:\RC$, if $u\close\epsilon v$ we have $v<\rcrat(q)$.\label{item:RCltopen2}
   \end{enumerate}
 \end{lem}
 \begin{proof}
   By definition, $u<\rcrat(q)$ means there is $r:\Q$ with $r<q$ and $u\le \rcrat(r)$.
-  Then by \autoref{thm:RC-le-grow}, for any $\epsilon$, if $u\sim_\epsilon v$ then $v\le \rcrat(r+\epsilon)$.
+  Then by \autoref{thm:RC-le-grow}, for any $\epsilon$, if $u\close\epsilon v$ then $v\le \rcrat(r+\epsilon)$.
   Conclusion~\ref{item:RCltopen1} follows immediately since $r+\epsilon<q+\epsilon$, while for~\ref{item:RCltopen2} we can take any $\epsilon <q-r$.
 \end{proof}
 
-We are now able to show that the auxiliary relation $\sim$ is what we think it is.
+We are now able to show that the auxiliary relation $\closesym$ is what we think it is.
 
 \begin{thm} \label{RC-sim-eqv-le}
-  $\eqv{(u \sim_\epsilon v)}{(|u - v| < \rcrat(\epsilon))}$
+  \index{distance}%
+  $\eqv{(u \close\epsilon v)}{(|u - v| < \rcrat(\epsilon))}$
   for all $u, v : \RC$ and $\epsilon : \Qp$.
 \end{thm}
 \begin{proof}
-  The Lipschitz properties of subtraction and absolute value imply that if $u\sim_\epsilon v$, then $|u-v| \sim_\epsilon |u-u| = 0$.
-  Thus, for the left-to-right direction, it will suffice to show that if $u\sim_\epsilon 0$, then $|u|<\rcrat(\epsilon)$.
+  The Lipschitz properties of subtraction and absolute value imply that if $u\close\epsilon v$, then $|u-v| \close\epsilon |u-u| = 0$.
+  Thus, for the left-to-right direction, it will suffice to show that if $u\close\epsilon 0$, then $|u|<\rcrat(\epsilon)$.
   We proceed by $\RC$-induction on $u$.
 
   If $u$ is rational, the statement follows immediately since absolute value and order extend the standard ones on $\Qp$.
-  If $u$ is $\rclim(x)$, then by roundedness we have $\theta:\Qp$ with $\rclim(x)\sim_{\epsilon-\theta} 0$.
-  By the triangle inequality, therefore, we have $x_{\theta/3} \sim_{\epsilon-2\theta/3} 0$, so the inductive hypothesis yields $|x_{\theta/3}|<\rcrat(\epsilon-2\theta/3)$.
-  But $x_{\theta/3} \sim_{2\theta/3} \rclim(x)$, hence $|x_{\theta/3}| \sim_{2\theta/3} |\rclim(x)|$ by the Lipschitz property, so \autoref{thm:RC-lt-open}\ref{item:RCltopen1} implies $|\rclim(x)|<\rcrat(\epsilon)$.
+  If $u$ is $\rclim(x)$, then by roundedness we have $\theta:\Qp$ with $\rclim(x)\close{\epsilon-\theta} 0$.
+  By the triangle inequality, therefore, we have $x_{\theta/3} \close{\epsilon-2\theta/3} 0$, so the inductive hypothesis yields $|x_{\theta/3}|<\rcrat(\epsilon-2\theta/3)$.
+  But $x_{\theta/3} \close{2\theta/3} \rclim(x)$, hence $|x_{\theta/3}| \close{2\theta/3} |\rclim(x)|$ by the Lipschitz property, so \autoref{thm:RC-lt-open}\ref{item:RCltopen1} implies $|\rclim(x)|<\rcrat(\epsilon)$.
 
   In the other direction, we use $\RC$-induction on $u$ and $v$.
-  If both are rational, this is the first constructor of $\sim$.
+  If both are rational, this is the first constructor of $\closesym$.
 
-  If $u$ is $\rcrat(q)$ and $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $|\rcrat(q)-y_\delta|<\rcrat(\epsilon)$ then $\rcrat(q) \sim_{\epsilon} y_\delta$.
+  If $u$ is $\rcrat(q)$ and $v$ is $\rclim(y)$, we assume inductively that for any $\epsilon,\delta$, if $|\rcrat(q)-y_\delta|<\rcrat(\epsilon)$ then $\rcrat(q) \close{\epsilon} y_\delta$.
   Fix an $\epsilon$ such that $|\rcrat(q) - \rclim(y)|<\rcrat(\epsilon)$.
   Since $\Q$ is order-dense in $\RC$, there exists $\theta<\epsilon$ with $|\rcrat(q) - \rclim(y)|<\rcrat(\theta)$.
-  Now for any $\delta,\eta$ we have $\rclim(y)\sim_{2\delta} y_\delta$, hence by the Lipschitz property
-  \[ |\rcrat(q) - \rclim(y)| \sim_{\delta+\eta} |\rcrat(q) - y_\delta|. \]
+  Now for any $\delta,\eta$ we have $\rclim(y)\close{2\delta} y_\delta$, hence by the Lipschitz property
+  \[ |\rcrat(q) - \rclim(y)| \close{\delta+\eta} |\rcrat(q) - y_\delta|. \]
   Thus, by \autoref{thm:RC-lt-open}\ref{item:RCltopen1}, we have $|\rcrat(q) - y_\delta| < \rcrat(\theta+2\delta)$.
-  So by the inductive hypothesis, $\rcrat(q) \sim_{\theta+2\delta} y_\delta$, and thus $\rcrat(q)\sim_{\theta+4\delta} \rclim(y)$ by the triangle inequality.
+  So by the inductive hypothesis, $\rcrat(q) \close{\theta+2\delta} y_\delta$, and thus $\rcrat(q)\close{\theta+4\delta} \rclim(y)$ by the triangle inequality.
   Thus, it suffices to choose $\delta \defeq (\epsilon-\theta)/4$.
 
   The remaining two cases are entirely analogous.
 \end{proof}
 
+\indexdef{multiplication!of Cauchy reals}%
 Next, we would like to equip $\RC$ with multiplicative structure. For each $q : \Q$ the
 map $r \mapsto q \cdot r$ is Lipschitz with constant\footnote{We defined Lipschitz
   constants as \emph{positive} rational numbers.} $|q| + 1$, and so we can extend it to
-multiplication by $q$ on the real numbers. Therefore $\RC$ is a vector space over $\Q$.
+multiplication by $q$ on the real numbers. Therefore $\RC$ is a vector space\index{vector!space} over $\Q$.
 In general, we can define multiplication of real numbers as
 %
 \begin{equation}
@@ -1453,11 +1589,17 @@ so we just need squaring $u \mapsto u^2$ as a map $\RC \to \RC$. Squaring is not
 Lipschitz map, but it is Lipschitz on every bounded domain, which allows us to patch it
 together. Define the open and closed intervals
 %
+\indexdef{interval!open and closed}%
+\indexdef{open!interval}%
+\indexdef{closed!interval}%
 \begin{equation*}
   [u,v] \defeq \setof{ x : \RC | u \leq x \leq v }
   \qquad\text{and}\qquad
   (u,v) \defeq \setof{ x : \RC | u < x < v }.
 \end{equation*}
+%
+Although technically an element of $[u,v]$ or $(u,v)$ is a Cauchy real number together with a proof, since the latter inhabits a mere proposition it is uninteresting.
+Thus, as is common with subset types, we generally write simply $x:[u,v]$ whenever $x:\RC$ is such that $u\leq x \leq v$, and similarly.
 
 \begin{thm} \label{RC-squaring}
   %
@@ -1476,9 +1618,9 @@ together. Define the open and closed intervals
   \leq u \leq n$, see \autoref{ex:traditional-archimedean}, so the map
   %
   \begin{equation*}
-    e : \left(\sm{n : \N} [-n, n]\right) \to \RC
+    e : \Parens{\sm{n : \N} [-n, n]} \to \RC
     \qquad\text{defined by}\qquad
-    e(n, \pairr{x, \blank}) \defeq x
+    e(n, x) \defeq x
   \end{equation*}
   % 
   is surjective. Next, for each $n : \N$, the squaring map
@@ -1486,7 +1628,7 @@ together. Define the open and closed intervals
   \begin{equation*}
     s_n : \setof{ q : \Q | -n \leq q \leq n } \to \Q
     \qquad\text{defined by}\qquad
-    s_n(q, \blank) \defeq q^2
+    s_n(q) \defeq q^2
   \end{equation*}
   %
   is Lipschitz with constant $2 n$, so we can use \autoref{RC-extend-Q-Lipschitz} to
@@ -1497,9 +1639,9 @@ together. Define the open and closed intervals
   of~\autoref{RC-continuous-eq}. Therefore, by \autoref{lem:images_are_coequalizers} the map
   %
   \begin{equation*}
-    \left(\sm{n : \N} [-n, n]\right) \to \RC,
+    \Parens{\sm{n : \N} [-n, n]} \to \RC,
     \qquad\text{given by}\qquad
-    (n, \pairr{x, \blank}) \mapsto s_n(x)
+    (n, x) \mapsto s_n(x)
   \end{equation*}
   %
   factors uniquely through $\RC$ to give us the desired function.
@@ -1509,6 +1651,7 @@ At this point we have the ring structure of the reals and the archimedean order.
 establish $\RC$ as an archimedean ordered field, we still need inverses.
 
 \begin{thm}
+  \index{apartness}%
   A Cauchy real is invertible if, and only if, it is apart from zero.
 \end{thm}
 
@@ -1565,16 +1708,21 @@ $\rclim(x)$ is its limit, where the notion of limit is defined as in
 \end{thm}
 
 An archimedean ordered field in which every Cauchy approximation has a limit is called
-\define{Cauchy complete}. The Cauchy reals are the least such field.
+\define{Cauchy complete}.
+\indexdef{Cauchy!completeness}%
+\indexdef{complete!ordered field, Cauchy}%
+\index{ordered field}%
+The Cauchy reals are the least such field.
 
 \begin{thm} \label{RC-initial-Cauchy-complete}
   The Cauchy reals embed into every Cauchy complete archimedean ordered field.
 \end{thm}
 
 \begin{proof}
+  \index{limit!of a Cauchy approximation}%
   Suppose $F$ is a Cauchy complete archimedean ordered field. Because limits are unique,
   there is an operator $\lim$ which takes Cauchy approximations in $F$ to their limits. We
-  define the embedding $e : \RC \to F$ by $(\RC, {\sim})$-recursion as
+  define the embedding $e : \RC \to F$ by $(\RC, {\closesym})$-recursion as
   %
   \begin{equation*}
     e(\rcrat(q)) \defeq q
@@ -1589,7 +1737,7 @@ An archimedean ordered field in which every Cauchy approximation has a limit is 
   \end{equation*}
   %
   This is a separated relation because $F$ is archimedean. The rest of the clauses for
-  $(\RC, {\sim})$-recursion are easily checked. One would also have to check that $e$ is
+  $(\RC, {\closesym})$-recursion are easily checked. One would also have to check that $e$ is
   an embedding of ordered fields which fixes the rationals.
 \end{proof}
 
@@ -1599,8 +1747,11 @@ An archimedean ordered field in which every Cauchy approximation has a limit is 
 
 Let us also say something about the relationship between the Cauchy and Dedekind reals. By
 \autoref{RC-archimedean-ordered-field}, $\RC$ is an archimedean ordered field. It is also
-admissible for $\Omega$, as can be easily checked. (In case $\Omega$ is the initial
-$\sigma$-frame it takes a simple induction, while in other cases it is immediate.)
+admissible\index{ordered field!admissible} for $\Omega$, as can be easily checked. (In case $\Omega$ is the initial
+$\sigma$-frame
+\index{initial!sigma-frame@$\sigma$-frame}%
+\index{sigma-frame@$\sigma$-frame!initial}%
+it takes a simple induction, while in other cases it is immediate.)
 Therefore, by \autoref{RD-final-field} there is an embedding of ordered fields
 %
 \begin{equation*}
@@ -1616,7 +1767,7 @@ without further assumptions.
   %
   \begin{equation}
     \label{eq:untruncated-linearity}
-    c : \prd{x : \RD} \prd{q, r : \Q} (q < r) \to (q < x) + (x < r)
+    c : \prd{y : \RD} \prd{q, r : \Q} (q < r) \to (q < x) + (y < r)
   \end{equation}
   %
   then the Cauchy and Dedekind reals coincide.
@@ -1626,11 +1777,11 @@ without further assumptions.
   Note that the type in~\eqref{eq:untruncated-linearity} is an untruncated variant
   of~\eqref{eq:RD-linear-order}, which states that~$<$ is an intuitionistic linear order.
   We already know that $\RC$ embeds into $\RD$, so it suffices to show that every Dedekind
-  real merely is the limit of a Cauchy sequence of rational numbers.
+  real merely is the limit of a Cauchy sequence\index{Cauchy!sequence} of rational numbers.
 
   Consider any $x : \RD$. By assumption there merely exists $c$ as in the statement of the
-  lemma, and by boundedness of cuts there merely exist $a, b : \Q$ such that $a < x < b$.
-  We construct a sequence $f : \N \to \setof{ \pairr{q, r} \in \Q \times \Q | q < r }$ by
+  lemma, and by inhabitation of cuts\index{cut!Dedekind} there merely exist $a, b : \Q$ such that $a < x < b$.
+  We construct a sequence\index{sequence} $f : \N \to \setof{ \pairr{q, r} \in \Q \times \Q | q < r }$ by
   recursion:
   %
   \begin{enumerate}
@@ -1652,6 +1803,8 @@ The lemma implies that either countable choice or excluded middle suffice for co
 of $\RC$ and $\RD$.
 
 \begin{cor} \label{when-reals-coincide}
+  \index{axiom!of choice!countable}%
+  \index{excluded middle}%
   If excluded middle or countable choice holds then $\RC$ and $\RD$ are equivalent.
 \end{cor}
 
@@ -1678,11 +1831,16 @@ of $\RC$ and $\RD$.
 \section{Compactness of the interval}
 \label{sec:compactness-interval}
 
+\index{mathematics!classical|(}%
+\index{mathematics!constructive|(}%
+
 We already pointed out that our constructions of reals are entirely compatible with
 classical logic. Thus, by assuming the law of excluded middle~\eqref{eq:lem} and the axiom
-of choice~\eqref{eq:ac} we could develop classical analysis, which would essentially
+of choice~\eqref{eq:ac} we could develop classical analysis,\index{classical!analysis}\index{analysis!classical} which would essentially
 amount to copying any standard book on analysis.
 
+\index{analysis!constructive}%
+\index{constructive!analysis}%
 Nevertheless, anyone interested in computation, for example a numerical analyst, ought to
 be curious about developing analysis in a computationally meaningful setting. That
 analysis in a constructive setting is even possible was demonstrated by~\cite{Bishop1967}.
@@ -1694,10 +1852,15 @@ Compactness is no exception to the common phenomenon in constructive mathematics
 classically equivalent notions bifurcate. The three most frequently used notions of
 compactness are:
 %
+\indexdef{compactness}%
 \begin{enumerate}
 \item \define{metric compact:} ``Cauchy complete and totally bounded'',
+  \index{compactness!metric}%
 \item \define{Bolzano-Weierstra\ss{} compact:} ``every sequence has a convergent subsequence'',
+  \index{compactness!Bolzano-Weierstra\ss{}}%
+  \index{sequence}%
 \item \define{Heine-Borel compact:} ``every open cover has a finite subcover''.
+  \index{compactness!Heine-Borel}%
 \end{enumerate}
 %
 These are all equivalent in classical mathematics.
@@ -1706,7 +1869,9 @@ Cauchy reals, so we shall denote the reals just as~$\R$. We first recall several
 definitions.
 
 \begin{defn} \label{defn:metric-space}
-  A \define{metric space $(M, d)$} is a set $M$ with a map $d : M \times M \to \R$
+  A \define{metric space}
+  \indexdef{metric space}%
+  $(M, d)$ is a set $M$ with a map $d : M \times M \to \R$
   satisfying, for all $x, y, z : M$,
   %
   \begin{align*}
@@ -1719,12 +1884,15 @@ definitions.
 \end{defn}
 
 \begin{defn} \label{defn:complete-metric-space}
-  A \define{Cauchy approximation} in $M$ is a sequence $x : \Qp \to M$ satisfying
+  A \define{Cauchy approximation}
+  \index{Cauchy!approximation}%
+  in $M$ is a sequence $x : \Qp \to M$ satisfying
   %
   \begin{equation*}
     \fall{\delta, \epsilon} d(x_\delta, x_\epsilon) < \delta + \epsilon.
   \end{equation*}
   %
+  \index{limit!of a Cauchy approximation}%
   The \define{limit} of a Cauchy approximation $x : \Qp \to M$ is a point $\ell : M$
   satisfying
   %
@@ -1732,11 +1900,15 @@ definitions.
     \fall{\epsilon, \theta : \Qp} d(x_\epsilon, \ell) < \epsilon + \theta.
   \end{equation*}
   %
-  A \define{complete metric space} is one in which every Cauchy sequence has a limit.
+  \indexdef{metric space!complete}%
+  \indexdef{complete!metric space}%
+  A \define{complete metric space} is one in which every Cauchy approximation has a limit.
 \end{defn}
 
 \begin{defn} \label{defn:totall-bounded-metric-space}
-  For a positive rational $\epsilon$, an \define{$\epsilon$-net} in a metric space $(M,
+  For a positive rational $\epsilon$, an \define{$\epsilon$-net}
+  \indexdef{enet@$\epsilon$-net}%
+  in a metric space $(M,
   d)$ is an element of
   %
   \begin{equation*}
@@ -1747,7 +1919,10 @@ definitions.
   In words, this is a finite sequence of points $x_1, \ldots, x_n$ such that every point
   in $M$ merely is within $\epsilon$ of some~$x_k$.
 
-  A metric space $(M, d)$ is \define{totally bounded} when it has $\epsilon$-nets of all
+  A metric space $(M, d)$ is \define{totally bounded}
+  \indexdef{totally bounded metric space}%
+  \indexdef{metric space!totally bounded}%
+  when it has $\epsilon$-nets of all
   sizes:
   %
   \begin{equation*}
@@ -1758,9 +1933,8 @@ definitions.
 \end{defn}
 
 \begin{rmk}
-  In the definition of total boundedness we wrote $\sm{n : \N}{x_1, \ldots, x_n : M}$,
-  which is sloppy notation. Formally, we should have written $\sm{x : \lst{M}}$ instead,
-  where $\lst{M}$ is the inductive type of finite lists from \autoref{sec:bool-nat}.
+  In the definition of total boundedness we used sloppy notation $\sm{n : \N}{x_1, \ldots, x_n : M}$. Formally, we should have written $\sm{x : \lst{M}}$ instead,
+  where $\lst{M}$ is the inductive type of finite lists\index{type!of lists} from \autoref{sec:bool-nat}.
   However, that would make the rest of the statement a bit more cumbersome to express.
 \end{rmk}
 
@@ -1773,7 +1947,10 @@ asking for a non-constant map from $\R$ to $\Q$ or $\N$. For instance, here is t
 ``correct'' definition of uniform continuity.
 
 \begin{defn} \label{defn:uniformly-continuous}
-  A map $f : M \to \R$ on a metric space is \define{uniformly continuous} when
+  A map $f : M \to \R$ on a metric space is \define{uniformly continuous}
+  \indexdef{function!uniformly continuous}%
+  \indexdef{uniformly continuous function}%
+  when
   %
   \begin{equation*}
     \prd{\epsilon : \Qp}
@@ -1789,6 +1966,8 @@ asking for a non-constant map from $\R$ to $\Q$ or $\N$. For instance, here is t
 Let us show that $[0,1]$ is compact in the first sense.
 
 \begin{thm} \label{analysis-interval-ctb}
+  \index{compactness!metric}%
+  \index{interval!open and closed}%
   The closed interval $[0,1]$ is complete and totally bounded.
 \end{thm}
 
@@ -1817,10 +1996,14 @@ Let us show that $[0,1]$ is compact in the first sense.
 We thus have at least one good notion of compactness in homotopy type theory.
 Unfortunately, it is limited to metric spaces because total boundedness is a metric
 notion. We shall consider the other two notions shortly, but first we prove that a
-uniformly continuous map on a totally bounded space has a supremum.
+uniformly continuous map on a totally bounded space has a \define{supremum},
+\indexdef{supremum}%
+\indexsee{least upper bound}{supremum}%
+i.e.\ an upper bound which is less than or equal to all other upper bounds.
 
 \begin{thm} \label{ctb-uniformly-continuous-sup}
   %
+  \index{supremum!of uniformly continuous function}%
   A uniformly continuous map $f : M \to \R$ on a totally bounded metric space
   $(M, d)$ has a supremum $m : \R$. For every $\epsilon : \Qp$ there exists $u : M$ such
   that $|m - f(u)| < \epsilon$.
@@ -1828,7 +2011,7 @@ uniformly continuous map on a totally bounded space has a supremum.
 
 \begin{proof}
   Let $h : \Qp \to \Qp$ be the modulus of uniform continuity of~$f$.
-  We define a sequence $x : \Qp \to \R$ as follows: for any $\epsilon : \Q$ total
+  We define an approximation $x : \Qp \to \R$ as follows: for any $\epsilon : \Q$ total
   boundedness of $M$ gives a $h(\epsilon)$-net $y_0, \ldots, y_n$. Define
   %
   \begin{equation*}
@@ -1879,14 +2062,18 @@ of these improvements rely on the the facts that in a complete totally bounded s
 \end{enumerate}
 %
 The first statement follows easily from Heine-Borel compactness, and the second is just
-Bolzano-Weierstra\ss{} compactness. Unfortunately, these are both somewhat problematic. Let
-us first show that Bolzano-Weierstra\ss{} compactness implies an instance of excluded middle
-known as the \define{limited principle of omniscience}: for every $\alpha : \N \to
-\bool$,
+Bolzano--Weierstra\ss{} compactness.
+\index{compactness!Bolzano--Wierstrass@Bolzano--Weierstra\ss{}}%
+Unfortunately, these are both somewhat problematic. Let
+us first show that Bolzano--Weierstra\ss{} compactness implies an instance of excluded middle
+known as the \define{limited principle of omniscience}:
+\indexdef{axiom!limited principle of omniscience}%
+\indexdef{limited principle of omniscience}%
+for every $\alpha : \N \to \bool$,
 % 
 \begin{equation} \label{eq:lpo}
-  \left(\sm{n : \N} \alpha(n) = \btrue\right) +
-  \left(\prd{n : \N} \alpha(n) = \bfalse\right).
+  \Parens{\sm{n : \N} \alpha(n) = \btrue} +
+  \Parens{\prd{n : \N} \alpha(n) = \bfalse}.
 \end{equation}
 %
 Computationally speaking, we would not expect this principle to hold, because it asks us to decide
@@ -1894,11 +2081,12 @@ whether infinitely many values of a function are~$\bfalse$.
   
 \begin{thm} \label{analysis-bw-lpo}
   %
-  Bolzano-Weirstra\ss{} compactness of $[0,1]$ implies the limited principle of omniscience.
+  Bolzano--Weirstra\ss{} compactness of $[0,1]$ implies the limited principle of omniscience.
+  \index{compactness!Bolzano--Weierstrass@Bolzano--Weierstra\ss{}}%
 \end{thm}
 
 \begin{proof}
-  Given any $\alpha : \N \to \bool$, define the sequence $x : \N \to [0,1]$ by
+  Given any $\alpha : \N \to \bool$, define the sequence\index{sequence} $x : \N \to [0,1]$ by
   %
   \begin{equation*}
     x_n \defeq
@@ -1908,16 +2096,16 @@ whether infinitely many values of a function are~$\bfalse$.
     \end{cases}
   \end{equation*}
   %
-  If the Bolzano-Weierstra\ss{} property holds, there exists a strictly increasing $f : \N \to
-  \N$ such that $x \circ f$ is a Cauchy sequence. For a sufficiently large $n :
+  If the Bolzano--Weierstra\ss{} property holds, there exists a strictly increasing $f : \N \to
+  \N$ such that $x \circ f$ is a Cauchy sequence\index{Cauchy!sequence}. For a sufficiently large $n :
   \N$ the $n$-th term $x_{f(n)}$ is within $1/6$ of its limit. Either $x_{f(n)} < 2/3$ or
   $x_{f(n)} > 1/3$. If $x_{f(n)} < 2/3$ then~$x_n$ converges to $0$ and so $\prd{n : \N}
   \alpha(n) = \bfalse$. If $x_{f(n)} > 1/3$ then $x_{f(n)} = 1$, therefore $\sm{n : \N}
   \alpha(n) = \btrue$.
 \end{proof}
 
-While we might not mourn Bolzano-Weierstra\ss{} compactness too much, it seems harder to live
-without Heine-Borel compactness, as attested by the fact that both classical mathematics
+While we might not mourn Bolzano--Weierstra\ss{} compactness too much, it seems harder to live
+without Heine--Borel compactness, as attested by the fact that both classical mathematics
 and Brouwer's Intuitionism accepted it. As we do not want to wade too deeply into general
 topology, we shall work with basic open sets. In the case of $\R$ these are the open
 intervals with rational endpoints. A family of such intervals, indexed by a type~$I$,
@@ -1927,9 +2115,12 @@ would be a map
   I \to \sm{q, r : \Q} (q < r) \to \setof{ x : \R | q < x < r},
 \end{equation*}
 %
-but since the pair $(q, r)$ already determines the open interval $\setof{ x : \R | q < x <
+but since the pair $(q, r)$ determines $\setof{ x : \R | q < x <
   r}$, and no harm is done if we throw in empty intervals, we might as well take a
-\define{family of basic intervals} to be a map
+\define{family of basic intervals}
+\indexdef{family!of basic intervals}%
+\indexdef{interval!family of basic}%
+to be a map
 %
 \begin{equation*}
   \mathcal{F} : I \to \Q \times \Q.
@@ -1937,7 +2128,7 @@ but since the pair $(q, r)$ already determines the open interval $\setof{ x : \R
 %
 To be quite precise, a family is a dependent pair $(I, \mathcal{F})$, not just
 $\mathcal{F}$. A \define{finite family of basic intervals} is one indexed by $\setof{ m :
-  \N | m < n}$ for some $n : \N$. We usually presented it by a finite list $[(q_0, r_0), \ldots,
+  \N | m < n}$ for some $n : \N$. We usually present it by a finite list $[(q_0, r_0), \ldots,
 (q_{n-1}, r_{n-1})]$. Finally, a \define{finite subfamily} of $(I, \mathcal{F})$ is given
 by a list of indices $[i_1, \ldots, i_n]$ which then determine the finite family
 $[\mathcal{F}(i_1), \ldots, \mathcal{F}(i_n)]$.
@@ -1947,21 +2138,29 @@ interval $\setof{ x : \R | q < x < r}$, we may safely use the same notation $(q,
 both. Intersections and inclusions of intervals are expressible in terms of their
 endpoints:
 %
+\symlabel{interval-intersection}
+\symlabel{interval-subset}
 \begin{align*}
   (q, r) \cap (s, t) &\ \defeq\  (\max(q, s), \min(r, t)),\\
   (q, r) \subseteq (s, t) &\ \defeq\ (q < r \Rightarrow s \leq q < r \leq t).
 \end{align*}
 %
-We say that $\intfam{i}{I}{(q_i, r_i)}$ \define{(pointwise) covers $[a,b]$} when
+We say that $\intfam{i}{I}{(q_i, r_i)}$ \define{(pointwise) covers $[a,b]$}
+\indexdef{interval!pointwise cover}%
+\indexdef{cover!pointwise}%
+when
 %
 \begin{equation} \label{eq:cover-pointwise-truncated}
   \fall{x : [a,b]} \exis{i : I} q_i < x < r_i.
 \end{equation}
 %
-The \define{Heine-Borel compactness for $[0,1]$} states that every covering family of $[0,1]$
+The \define{Heine-Borel compactness for $[0,1]$}
+\indexdef{compactness!Heine-Borel}%
+states that every covering family of $[0,1]$
 merely has a finite subfamily which still covers $[0,1]$.
 
 \begin{thm} \label{classical-Heine-Borel}
+  \index{excluded middle}%
   If excluded middle holds then $[0,1]$ is Heine-Borel compact.
 \end{thm}
 
@@ -2001,12 +2200,21 @@ merely extracting a finite subcover. By removing the truncation we get
 which might help, were it not too demanding of covers. With this definition we
 could not even show that $(0,3)$ and $(2,5)$ cover $[1,4]$ because that would amount
 to exhibiting a non-constant map $[1,4] \to \bool$, see
-\autoref{ex:reals-non-constant-into-Z}. We take a lesson from pointfree topology:
+\autoref{ex:reals-non-constant-into-Z}.  Here we can take a lesson from ``pointfree topology''
+\index{pointfree topology}%
+(i.e.\ locale theory):
+\index{locale}%
 the notion of cover ought to be expressed in terms of open sets, without
 reference to points. Such a ``holistic'' view of space will then allow us to analyze the
-notion of cover, and we shall be able to recover Heine-Borel compactness. Since locale
-theory uses powersets, which we do not have, we steal ideas from its predicative cousin,
-formal topology.
+notion of cover, and we shall be able to recover Heine-Borel compactness.  Locale
+theory uses power sets,
+\index{power set}%
+which we could obtain by assuming propositional resizing;
+\index{propositional resizing}%
+but instead we can steal ideas from the predicative cousin of locale theory,
+\index{mathematics!predicative}%
+which is called ``formal topology''.
+\index{formal!topology}%
 
 Suppose that we have a family $\pairr{I, \mathcal{F}}$ and an interval $(a, b)$. How might
 we express the fact that $(a,b)$ is covered by the family, without referring to points?
@@ -2019,7 +2227,10 @@ good rules and turn them into an inductive definition.
 
 \begin{defn} \label{defn:inductive-cover}
   %
-  The \define{inductive cover $\cover$} is a mere relation
+  The \define{inductive cover $\cover$}
+  \indexdef{inductive!cover}%
+  \indexdef{cover!inductive}%
+  is a mere relation
   %
   \begin{equation*}
     {\cover} : (\Q \times \Q) \to (\sm{I : \type} (I \to \Q \times \Q)) \to \prop
@@ -2086,8 +2297,8 @@ evidence that they are a reasonable notion.
     just two. If $(a,b) \cover \pairr{I, \mathcal{F}}$ by reflexivity, then there merely
     is some $i : I$ such that $(a,b) = (q_i, r_i)$ and so $q_i < x < r_i$. If $(a,b)
     \cover \pairr{I, \mathcal{F}}$ by transitivity via $\intfam{j}{J}{(s_j, t_j)}$ then by
-    induction hypothesis there merely is $j : J$ such that $s_j < x < t_j$, and then since
-    $(s_j, t_j) \cover \pairr{I, \mathcal{F}}$ again by induction hypothesis there merely
+    the inductive hypothesis there merely is $j : J$ such that $s_j < x < t_j$, and then since
+    $(s_j, t_j) \cover \pairr{I, \mathcal{F}}$ again by the inductive hypothesis there merely
     exists $i : I$ such that $q_i < x < r_i$. Other cases are just as exciting.
 
   \item 
@@ -2096,8 +2307,7 @@ evidence that they are a reasonable notion.
     already pointwise covers $(0, 1)$. Let $\epsilon : \Qp$ be a Lebesgue number for
     $(q_{i_1}, r_{i_1}), \ldots, (q_{i_n}, r_{i_n})$ as in
     \autoref{ex:finite-cover-lebesgue-number}. There is a positive $k : \N$ such that $2/k <
-    \min(1, \epsilon)$. The intervals $(i/k, (i+2)/k)$, where $i$ ranges over $0, \ldots,
-    k-2$, inductively cover $(0,1)$ by repeated use of transitivity
+    \min(1, \epsilon)$. The intervals $(i/k, (i+2)/k)$, where $0 \leq i \leq k - 2$, inductively cover $(0,1)$ by repeated use of transitivity
     and~\autoref{defn:inductive-cover-interval-1} in \autoref{defn:inductive-cover}.
     Because each of them is contained in some $(q_i, r_i)$ we may use transitivity and
     monotonicity to conclude that $\intfam{i}{I}{(q_i, r_i)}$ inductively cover $(0, 1)$.
@@ -2129,20 +2339,20 @@ property.
 
   \item Transitivity:
     suppose $(q, r) \cover \pairr{J, \mathcal{G}}$ and $\fall{j}{J} \mathcal{G}(j) \cover
-    \pairr{I, \mathcal{F}}$. By induction hypothesis there merely exists a finite
-    subfamily $[\mathcal{G}(j_1), \ldots, \mathcal{G}(j_n)]$ which covers $(s, t)$.
-    Again by induction hypothesis, each of $\mathcal{G}(j_k)$ is covered by a finite
+    \pairr{I, \mathcal{F}}$. By the inductive hypothesis there merely exists
+    $[\mathcal{G}(j_1), \ldots, \mathcal{G}(j_n)]$ which covers $(s, t)$.
+    Again by the inductive hypothesis, each of $\mathcal{G}(j_k)$ is covered by a finite
     subfamily of $\pairr{I, \mathcal{F}}$, and we can collect these into a finite
     subfamily which covers $(s, t)$.
 
   \item Monotonicity:
     if $(q, r) \subseteq (u, v)$ and $(u, v) \cover \pairr{I, \mathcal{F}}$ then we may
-    apply the induction hypothesis to $(u, v) \cover \pairr{I, \mathcal{F}}$ because $u <
+    apply the inductive hypothesis to $(u, v) \cover \pairr{I, \mathcal{F}}$ because $u <
     s < t < v$.
 
   \item Localization:
     suppose $(q', r') \cover \pairr{I, \mathcal{F}}$ and $(q, r) = (q', r') \cap (a, b)$.
-    Because $q' < s < t < r'$, by induction hypothesis there is a finite subcover
+    Because $q' < s < t < r'$, by the inductive hypothesis there is a finite subcover
     $[\mathcal{F}(i_1), \ldots, \mathcal{F}(i_n)]$ of $(s, t)$. We also know that $a < s <
     t < b$, therefore $(s, t) = (s, t) \cap (a, b)$ is covered by
     $[\mathcal{F}(i_1) \cap (a,b), \ldots, \mathcal{F}(i_n) \cap (a,b)]$, which is a
@@ -2162,6 +2372,8 @@ respect to inductive covers. Say that \define{$\pairr{I, \mathcal{F}}$ inductive
 \epsilon) \cover \pairr{I, \mathcal{F}}$.
 
 \begin{cor} \label{interval-Heine-Borel}
+  \index{compactness!Heine-Borel}%
+  \index{interval!open and closed}%
   A closed interval is Heine-Borel compact for inductive covers.
 \end{cor}
 
@@ -2177,31 +2389,36 @@ have provided ample justification for the claim that analysis can be developed i
 type theory. The curious reader should consult \autoref{ex:mean-value-theorem} for
 constructive versions of the mean value theorem.
 
+\index{mathematics!classical|)}%
+\index{mathematics!constructive|)}%
+
 \section{The surreal numbers}
 \label{sec:surreals}
 
-In this section we consider another example of a higher inductive-inductive type, which draws together many of our threads: Conway's field \NO of \emph{surreal numbers}~\cite{conway:onag}.
+In this section we consider another example of a higher inductive-in\-duc\-tive type, which draws together many of our threads: Conway's field \NO of \emph{surreal numbers}~\cite{conway:onag}.
 The surreal numbers are the natural common generalization of the (Dedekind) real numbers (\autoref{sec:dedekind-reals}) and the ordinal numbers (\autoref{sec:ordinals}).
-Conway, working in classical mathematics with excluded middle and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
+Conway, working in classical\index{mathematics!classical} mathematics with excluded middle and Choice, defines a surreal number to be a pair of \emph{sets} of surreal numbers, written $\surr L R$, such that every element of $L$ is strictly less than every element of $R$.
 This obviously looks like an inductive definition, but there are three issues with regarding it as such.
 
 Firstly, the definition requires the relation of (strict) inequality between surreals, so that relation must be defined simultaneously with the type \NO of surreals.
-(Conway avoids this issue by first defining \emph{games}, which are like surreals but omit the compatibility condition on $L$ and $R$.)
-As with the relation $\sim$ for the Cauchy reals, this simultaneous definition could \emph{a priori} be either inductive-inductive or inductive-recursive.
-We will choose to make it inductive-inductive, for the same reasons we made that choice for $\sim$.
+(Conway avoids this issue by first defining \emph{games}\index{game!Conway}, which are like surreals but omit the compatibility condition on $L$ and $R$.)
+As with the relation $\closesym$ for the Cauchy reals, this simultaneous definition could \emph{a priori} be either inductive-inductive or inductive-recursive.
+We will choose to make it inductive-inductive, for the same reasons we made that choice for $\closesym$.
 
 Moreover, we will define strict inequality $<$ and non-strict inequality $\le$ for surreals separately (and mutually inductively).
 Conway defines $<$ in terms of $\le$, in a way which is sensible classically but not constructively.
+\index{mathematics!constructive}%
 Furthermore, a negative definition of $<$ would make it unacceptable as a hypothesis of the constructor of a higher inductive type (see \autoref{sec:strictly-positive}).
 
 Secondly, Conway says that $L$ and $R$ in $\surr L R$ should be ``sets of surreal numbers'', but the naive meaning of this as a predicate $\NO\to\prop$ is not positive, hence cannot be used as input to an inductive constructor.
 However, this would not be a good type-theoretic translation of what Conway means anyway, because in set theory the surreal numbers form a proper class, whereas the sets $L$ and $R$ are true (small) sets, not arbitrary subclasses of \NO.
 In type theory, this means that \NO will be defined relative to a universe \UU, but will itself belong to the next higher universe $\UU'$, like the sets \ord and \card of ordinals and cardinals, the cumulative hierarchy $V$, or even the Dedekind reals in the absence of propositional resizing.
+\index{propositional resizing}%
 We will then require the ``sets'' $L$ and $R$ of surreals to be \UU-small, and so it is natural to represent them by \emph{families} of surreals indexed by some \UU-small type.
 (This is all exactly the same as what we did with the cumulative hierarchy in \autoref{sec:cumulative-hierarchy}.)
 That is, the constructor of surreals will have type
 \[ \prd{\LL,\RR:\UU} (\LL\to\NO) \to (\RR\to \NO) \to (\text{some condition}) \to \NO \]
-which is indeed strictly positive.
+which is indeed strictly positive.\index{strict!positivity}
 
 Finally, after giving the mutual definitions of \NO and its ordering, Conway declares two surreal numbers $x$ and $y$ to be \emph{equal} if $x\le y$ and $y\le x$.
 This is naturally read as passing to a quotient of the set of ``pre-surreals'' by an equivalence relation.
@@ -2209,14 +2426,18 @@ This is naturally read as passing to a quotient of the set of ``pre-surreals'' b
 However, in the absence of the axiom of choice, such a quotient presents the same problem as the quotient in the usual construction of Cauchy reals: it will no longer be the case that a pair of families \emph{of surreals} yield a new surreal $\surr L R$, since we cannot necessarily ``lift'' $L$ and $R$ to families of pre-surreals.
 Of course, we can solve this problem in the same way we did for Cauchy reals, by using a \emph{higher} inductive-inductive definition.
 
-\begin{defn}
-  The type \NO of \define{surreal numbers}, along with the relations $\mathord<:\NO\to\NO\to\type$ and $\mathord\le:\NO\to\NO\to\type$, are defined higher inductive-inductively as follows.
+\begin{defn}\label{defn:surreals}
+  The type \NO of \define{surreal numbers},
+  \indexdef{surreal numbers}%
+  \indexsee{number!surreal}{surreal numbers}%
+  along with the relations $\mathord<:\NO\to\NO\to\type$ and $\mathord\le:\NO\to\NO\to\type$, are defined higher inductive-inductively as follows.
   The type \NO has the following constructors.
   \begin{itemize}
   \item For any $\LL,\RR:\UU$ and functions $\LL\to \NO$ and $\RR\to \NO$, whose values we write as $x^L$ and $x^R$ for $L:\LL$ and $R:\RR$ respectively, if $\fall{L:\LL}{R:\RR} x^L<x^R$, then there is a surreal number $x$.
-  \item For any $x,y:\NO$ such that $x\le y$ and $y\le x$, we have $x=y$.
+  \item For any $x,y:\NO$ such that $x\le y$ and $y\le x$, we have $\noeq(x,y):x=y$.
   \end{itemize}
-  We will refer to the inputs of the first constructor as a \emph{cut}.
+  We will refer to the inputs of the first constructor as a \define{cut}.
+  \indexdef{cut!of surreal numbers}%
   If $x$ is the surreal number constructed from a cut, then the notation $x^L$ will implicitly assume $L:\LL$, and similarly $x^R$ will assume $R:\RR$.
   In this way we can usually avoid naming the indexing types $\LL$ and $\RR$, which is convenient when there are many different cuts under discussion.
   Following Conway, we call $x^L$ a \emph{left option} of $x$ and $x^R$ a \emph{right option}.
@@ -2226,12 +2447,16 @@ Of course, we can solve this problem in the same way we did for Cauchy reals, by
   Thus in what follows we will say, for instance, ``given a cut defining a surreal number $x$'' in contrast to ``given a surreal number $x$''.
 
   The relation $\le$ has the following constructors.
+  \index{non-strict!order}%
+  \index{order!non-strict}%
   \begin{itemize}
   \item Given cuts defining two surreal numbers $x$ and $y$, if $x^L<y$ for all $L$, and $x<y^R$ for all $R$, then $x\le y$.
-  \item Propositional truncation:\footnote{This constructor may not be necessary ($\le$ might turn out to be a mere relation automatically), but we include it for convenience.}
+  \item Propositional truncation:
     for any $x,y:\NO$, if $p,q:x\le y$, then $p=q$.
   \end{itemize}
   And the relation $<$ has the following constructors.
+  \index{strict!order}%
+  \index{order!strict}%
   \begin{itemize}
     % Don't technically need x in the first one and y in the second one to be defined by cuts?
   \item Given cuts defining two surreal numbers $x$ and $y$, if there is an $L$ such that $x\le y^L$, then $x<y$.
@@ -2249,12 +2474,13 @@ We compare this with Conway's definitions:
 \item[-] $x=y$ iff ($x \ge y$ and $y\ge x$).
 \item[-] $x>y$ iff ($x\ge y$ and $y\not\ge x$).
 \end{itemize}
-The inclusion of $x\ge y$ in the definition of $x>y$ is unnecessary if all objects are [surreal] numbers rather than ``games''.
+The inclusion of $x\ge y$ in the definition of $x>y$ is unnecessary if all objects are [surreal] numbers rather than ``games''\index{game!Conway}.
 Thus, Conway's $<$ is just the negation of his $\le$, so that his condition for $\surr L R$ to be a surreal is the same as ours.
 Negating Conway's $\le$ and canceling double negations, we arrive at our definition of $<$, and we can then reformulate his $\le$ in terms of $<$ without negations.
 
 We can immediately populate $\NO$ with many surreal numbers.
 Like Conway, we write
+\symlabel{surreal-cut}
 \[\surr{x,y,z,\dots}{u,v,w,\dots}\]
 for the surreal number defined by a cut where $\LL\to\NO$ and $\RR\to\NO$ are families described by $x,y,z,\dots$ and $u,v,w,\dots$.
 Of course, if $\LL$ or $\RR$ are $\emptyt$, we leave the corresponding part of the notation empty.
@@ -2268,12 +2494,14 @@ There is an unfortunate clash with the standard notation $\setof{x:A | P(x)}$ fo
   That is, $\iota_\nat(0)$ is defined by the cut consisting of $\emptyt\to\NO$ and $\emptyt\to\NO$.
   Similarly, $\iota_\nat(\suc(n))$ is defined by $\unit\to\NO$ (picking out $\iota_\nat(n)$) and $\emptyt\to\NO$.
 \item Similarly, we define $\iota_{\Z}:\Z\to\NO$ using the sign-case recursion principle:
-  \begin{alignat*}{2}
-    \iota_{\Z}(0) &\defeq \surr{}{}\\
-    \iota_\Z(n+1) &\defeq \surr{\iota_\Z(n)}{} &&\quad n\ge 0\\
-    \iota_\Z(n-1) &\defeq \surr{}{\iota_\Z(n)} &&\quad n\le 0
-  \end{alignat*}
-\item By a \emph{dyadic rational} we mean a pair $(a,n)$ where $a:\Z$ and $n:\nat$, and such that if $n>0$ then $a$ is odd.
+  \begin{align*}
+    \iota_{\Z}(0) &\defeq \surr{}{},\\
+    \iota_\Z(n+1) &\defeq \surr{\iota_\Z(n)}{} & &\text{$n\ge 0$,}\\
+    \iota_\Z(n-1) &\defeq \surr{}{\iota_\Z(n)} & &\text{$n\le 0$.}
+  \end{align*}
+\item By a \define{dyadic rational}
+  \indexdef{rational numbers!dyadic}%
+  we mean a pair $(a,n)$ where $a:\Z$ and $n:\nat$, and such that if $n>0$ then $a$ is odd.
   We will write it as $a/2^n$, and identify it with the corresponding rational number.
   If $\Q_D$ denotes the set of dyadic rationals, we define $\iota_{\Q_D}:\Q_D\to\NO$ by induction on $n$:
   \begin{align*}
@@ -2308,6 +2536,8 @@ There is an unfortunate clash with the standard notation $\setof{x:A | P(x)}$ fo
 In identifying surreal numbers presented by different cuts, the following simple observation is useful.
 
 \begin{thm}[Conway's simplicity theorem]\label{thm:NO-simplicity}
+  \index{simplicity theorem}%
+  \index{theorem!Conway's simplicity}%
   Suppose $x$ and $z$ are surreal numbers defined by cuts, and that the following hold.
   \begin{itemize}
   \item $x^L < z < x^R$ for all $L$ and $R$.
@@ -2330,32 +2560,47 @@ The mutual induction principle for $(\NO,\le,<)$ applies to three families of ty
   B &: \prd{x,y:\NO}{a:A(x)}{b:A(y)} (x\le y) \to \type\\
   C &: \prd{x,y:\NO}{a:A(x)}{b:A(y)} (x<y) \to \type.
 \end{align*}
-It requires the following hypotheses:
+As with the induction principle for Cauchy reals, it is helpful to think of $B$ and $C$ as families of relations between the types $A(x)$ and $A(y)$.
+\symlabel{NO-recursion}
+Thus we write $B(x,y,a,b,\xi)$ as $(x,a) \ble^\xi (y,b)$ and $C(x,y,a,b,\xi)$ as $(x,a) \blt^\xi (y,b)$.
+Similarly, we usually omit the $\xi$ since it inhabits a mere proposition and so is uninteresting, and we may often omit $x$ and $y$ as well, writing simply $a\ble b$ or $a\blt b$.
+With these notations, the hypotheses of the induction principle are the following.
 \begin{itemize}
 \item For any cut defining a surreal number $x$, together with
   \begin{enumerate}
   \item for each $L$, an element $a^L:A(x^L)$, and
   \item for each $R$, an element $a^R:A(x^R)$, such that
-  \item for all $L$ and $R$ we have $C(x^L,x^R,a^L,a^R,\blank)$
+  \item for all $L$ and $R$ we have $(x^L,a^L) \blt (x^R,a^R)$
   \end{enumerate}
   there is a specified element $f_a:A(x)$.
-  We call such data a \emph{dependent cut} over the cut defining~$x$.
-\item For any $x,y:\NO$ with $a:A(x)$ and $b:A(y)$, if $x\le y$ and $y\le x$ and also $B(x,y,a,b,\blank)$ and $B(y,x,b,a,\blank)$, then $\dpath{A}{\blank}{a}{b}$.
-\item Given cuts defining two surreal numbers $x$ and $y$, and dependent cuts $a$ over $x$ and $b$ over $y$, such that for all $L$ we have $x^L<y$ and $C(x^L,y,a^L,b,\blank)$, and for all $R$ we have $x<y^R$ and $C(x,y^R,a,b^R,\blank)$, then $B(x,y,a,b,\blank)$.
-\item $B$ is a family of mere propositions.
-\item Given cuts defining two surreal numbers $x$ and $y$, dependent cuts $a$ over $x$ and $b$ over $y$, and an $L_0$ such that $x\le y^{L_0}$ and $B(x,y^{L_0},a,b^{L_0},\blank)$, we have $C(x,y,a,b,\blank)$.
-\item Given cuts defining two surreal numbers $x$ and $y$, dependent cuts $a$ over $x$ and $b$ over $y$, and an ${R_0}$ such that $x^{R_0}\le y$ and $B(x^{R_0},y,a^{R_0},b,\blank)$, we have $C(x,y,a,b,\blank)$.
-\item $C$ is a family of mere propositions.
+  We call such data a \define{dependent cut}
+  \indexdef{cut!of surreal numbers!dependent}%
+  \indexdef{dependent!cut}%
+  over the cut defining~$x$.
+\item For any $x,y:\NO$ with $a:A(x)$ and $b:A(y)$, if $x\le y$ and $y\le x$ and also $(x,a) \ble (y,b)$
+  and $(y,b) \ble (x,a)$,
+  then $\dpath{A}{\noeq}{a}{b}$.
+\item Given cuts defining two surreal numbers $x$ and $y$, and dependent cuts $a$ over $x$ and $b$ over $y$, such that for all $L$ we have $x^L<y$ and $(x^L,a^L)\blt (y,f_b)$,
+  and for all $R$ we have $x<y^R$ and $(x,f_a) \blt (y^R,b^R)$,
+  then $(x,f_a) \ble (y,f_b)$.
+\item $\ble$ takes values in mere propositions.
+\item Given cuts defining two surreal numbers $x$ and $y$, dependent cuts $a$ over $x$ and $b$ over $y$, and an $L_0$ such that $x\le y^{L_0}$ and $(x,f_a) \ble (y^{L_0},b^{L_0})$,
+  we have $(x,f_a) \blt (y,f_b)$.
+\item Given cuts defining two surreal numbers $x$ and $y$, dependent cuts $a$ over $x$ and $b$ over $y$, and an ${R_0}$ such that $x^{R_0}\le y$ together with $(x^{R_0},a^{R_0}),\ble (y,f_b)$,
+  we have $(x,f_a) \blt (y,f_b)$.
+\item $\blt$ takes values in mere propositions.
 \end{itemize}
 Under these hypotheses we deduce a function $f:\prd{x:\NO} A(x)$ such that
-\begin{align*}
-  (x\le y) &\to B(x,y,f(x),f(y),\blank)\\
-  (x< y) &\to C(x,y,f(x),f(y),\blank).
-\end{align*}
-Its computation rule on the point-constructor can be written as $f(x) \jdeq f_{f[x]}$, where $x$ is a surreal number defined by a cut, and $f[x]$ denotes the dependent cut over $x$ defined by applying $f$ (and using the fact that $f$ takes $<$ to $C$).
+\begin{align}
+  f(x) &\;\jdeq\; f_{f[x]} \label{eq:noind1}\\
+  (x\le y) &\;\Rightarrow\; (x,f(x)) \ble (y,f(y)) \notag\\
+  (x< y) &\;\Rightarrow\; (x,f(x)) \blt (y,f(y)). \notag
+\end{align}
+In the computation rule~\eqref{eq:noind1} for the point-constructor, $x$ is a surreal number defined by a cut, and $f[x]$ denotes the dependent cut over $x$ defined by applying $f$ (and using the fact that $f$ takes $<$ to $\blt$).
+As usual, we will generally use pattern-matching notation, where the definition of $f$ on a cut $\surr{x^L}{x^R}$ may use the symbols $f(x^L)$ and $f(x^R)$ and the assumption that they form a dependent cut.
 
-As with the Cauchy reals, we have special cases resulting from trivializing some of $A$, $B$, and~$C$.
-Taking $B$ and $C$ to be constant at \unit, we have \emph{\NO-induction}, which for simplicity we state only for mere properties:
+As with the Cauchy reals, we have special cases resulting from trivializing some of $A$, $\ble$, and~$\blt$.
+Taking $\ble$ and $\blt$ to be constant at \unit, we have \emph{\NO-induction}, which for simplicity we state only for mere properties:
 \begin{itemize}
 \item Given $P:\NO\to\prop$, if $P(x)$ holds whenever $x$ is a surreal number defined by a cut such that $P(x^L)$ and $P(x^R)$ hold for all
 $L$ and $R$, then $P(x)$ holds for all $x:\NO$.
@@ -2368,6 +2613,7 @@ This should be compared with Conway's remark:
 With $\NO$-induction, we can prove
 
 \begin{thm}[Conway's Theorem 0]\label{thm:NO-refl-opt}\ 
+  \index{theorem!Conway's 0}%
   \begin{enumerate}
   \item For any $x:\NO$, we have $x\le x$.\label{item:NO-le-refl}
   \item For any $x:\NO$ defined by a cut, we have $x^L <x$ and $x<x^R$ for all $L$ and $R$.\label{item:NO-lt-opt}
@@ -2407,7 +2653,7 @@ Suppose $A$ is a type equipped with relations $\mathord\ble:A\to A\to\prop$ and 
 Then we can define $f:\NO\to A$ by doing the following.
 \begin{enumerate}
 \item For any $x$ defined by a cut, assuming $f(x^L)$ and $f(x^R)$ to be defined such that $f(x^L)\blt f(x^R)$ for all $L$ and $R$, we must define $f(x)$.  (We call this the \emph{primary clause} of the recursion.)\label{item:NO-rec-primary}
-\item Prove that $\ble$ is \emph{antisymmetric}: if $a\ble b$ and $b\ble a$, then $a=b$.
+\item Prove that $\ble$ is \emph{antisymmetric}\index{relation!antisymmetric}: if $a\ble b$ and $b\ble a$, then $a=b$.
 \item For $x,y$ defined by cuts such that $x^L<y$ for all $L$ and $x<y^R$ for all $R$, and assuming inductively that $f(x^L)\blt f(y)$ for all $L$, $f(x)\blt f(y^R)$ for all $R$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\ble f(y)$.
 \item For $x,y$ defined by cuts and an $L_0$ such that $x\le y^{L_0}$, and assuming inductively that $f(x)\ble f(y^{L_0})$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\blt f(y)$.
 \item For $x,y$ defined by cuts and an $R_0$ such that $x^{R_0}\le y$, and assuming inductively that $f(x^{R_0})\ble f(y)$, and also that $f(x^L)\blt f(x^R)$ and $f(y^L)\blt f(y^R)$ for all $L$ and $R$, we must prove $f(x)\blt f(y)$.\label{item:NO-rec-last}
@@ -2417,8 +2663,14 @@ We will refer to these properties by saying that \emph{$f$ preserves inequalitie
 Moreover, in proving that $f$ preserves inequalities, we may assume the particular instance of $\le$ or $<$ to be obtained from one of its constructors, and we may also use inductive hypotheses that $f$ preserves all inequalities appearing in the input to that constructor.
 
 If we succeed at~\ref{item:NO-rec-primary}--\ref{item:NO-rec-last} above, then we obtain $f:\NO\to A$, which computes on cuts as specified by~\ref{item:NO-rec-primary}, and which preserves all inequalities:
-\[ \fall{x,y:\NO}\Big((x\le y) \to (f(x)\ble f(y))\Big) \land\Big((x< y) \to (f(x)\blt f(y))\Big).\]
-Like $(\RC,\sim)$-recursion for the Cauchy reals, this recursion principle is essential for defining functions on $\NO$, since we cannot first define a function on ``pre-surreals'' and only later prove that it respects the notion of equality.
+%
+\begin{narrowmultline*}
+  \fall{x,y:\NO}\Big((x\le y) \to (f(x)\ble f(y))\Big) \land
+  \narrowbreak
+  \Big((x< y) \to (f(x)\blt f(y))\Big).  
+\end{narrowmultline*}
+%
+Like $(\RC,\closesym)$-recursion for the Cauchy reals, this recursion principle is essential for defining functions on $\NO$, since we cannot first define a function on ``pre-surreals'' and only later prove that it respects the notion of equality.
 
 \begin{eg}
   Let us define the \emph{negation} function $\NO\to\NO$.
@@ -2434,7 +2686,7 @@ Like $(\RC,\sim)$-recursion for the Cauchy reals, this recursion principle is es
   \item For $x\le y$, we may assume $x^L<y$ for all $L$ and $x < y^R$ for all $R$, and show $-y\le -x$.
     But inductively, we may assume $-y <-x^L$ and $-y^R<-x$, which gives the desired result, by definition of $-y$, $-x$, and the constructor of $\le$.
   \item For $x<y$, in the first case when it arises from some $x\le y^{L_0}$, we may inductively assume $-y^{L_0} \le -x$, in which case $-y<-x$ follows by the constructor of $<$.
-  \item Similarly, if $x<y$ arises from $x^{R_0}\le y$, the induction hypothesis is $-y \le -x^R$, yielding $-y<-x$ again.
+  \item Similarly, if $x<y$ arises from $x^{R_0}\le y$, the inductive hypothesis is $-y \le -x^R$, yielding $-y<-x$ again.
   \end{itemize}
 \end{eg}
 
@@ -2453,7 +2705,7 @@ Also as there, we will have to simultaneously prove a couple of essential proper
   \begin{equation}\label{eq:NO-codes-unstrict}
     (x\prec y) \to (x\preceq y)
   \end{equation}
-  and all the reasonable transitivity properties making $\prec$ and $\preceq$ into a ``bimodule'' over $\le$ and $<$:
+  and all the reasonable transitivity properties making $\prec$ and $\preceq$ into a ``bimodule''\index{bimodule} over $\le$ and $<$:
   \begin{equation}\label{eq:NO-codes-transitivity}
     \begin{array}{c@{\hspace{1cm}}c}
       (x \le y) \to (y\preceq z) \to (x\preceq z) &
@@ -2492,7 +2744,7 @@ Also as there, we will have to simultaneously prove a couple of essential proper
     \fall{y:\NO} \Big( (\hleb y) \to (\hlt y) \Big)
     %\land \Big( (\hltb y) \to (\hlt y) \Big)
   \end{align*}
-  Note that $\ble$ is antisymmetric, since if $\hlname \ble \hlbname$ and $\hlbname \ble \hlname$, then $(\hleb y) \leftrightarrow (\hle y)$ and $(\hltb y) \leftrightarrow (\hlt y)$ for all $y$, hence $\hlname=\hlbname$ by univalence for mere propositions and function extensionality.
+  Note that $\ble$ is antisymmetric, since if $\hlname \ble \hlbname$ and $\hlbname \ble \hlname$, then $(\hleb y) \Leftrightarrow (\hle y)$ and $(\hltb y) \Leftrightarrow (\hlt y)$ for all $y$, hence $\hlname=\hlbname$ by univalence for mere propositions and function extensionality.
   Moreover, to say that a function $\NO\to A$ preserves inequalities is exactly to say that, when regarded as a pair of binary relations on $\NO$, it satisfies ``transitivity on the left'' (the left column of~\eqref{eq:NO-codes-transitivity}).
 
   Now for the primary clause of the recursion, we assume given $x$ defined by a cut, and relations $(x^L \prec -)$, $(x^R \prec -)$, $(x^L \preceq -)$, and $(x^R \preceq -)$ for all $L$ and $R$, of which the strict ones imply the non-strict ones, which satisfy transitivity on the right, and such that
@@ -2508,14 +2760,14 @@ Also as there, we will have to simultaneously prove a couple of essential proper
     \fall{L} (\tle y)\to (x^L\prec y) \label{eq:NO-prec-IHL}\\
     \fall{R} (x^R \preceq y) \to (\tlt y) \label{eq:NO-prec-IHR}.
   \end{gather}
-  Using notation analogous to $\ble$ and $\blt$ for recursion, we equip $A'$ with the two relations defined for $\tlname:A'(y)$ and $\tlbname:A'(z)$ by
+  Using notation analogous to $\ble$ and $\blt$, we equip $A'$ with the two relations defined for $\tlname:A'(y)$ and $\tlbname:A'(z)$ by
   \begin{align*}
     (\tlname \bble \tlbname) &\defeq
     \Big((\tle y) \to (\tleb z)\Big) \land \Big((\tlt y) \to (\tltb z)\Big)\\
     (\tlname \bblt \tlbname) &\defeq
     \Big((\tle y) \to (\tltb z)\Big). % \land \Big(\tlt \to \tltb\Big).
   \end{align*}
-  (These are the type families $B$ and $C$ in the general induction principle.)
+  % (These are the type families $B$ and $C$ in the general induction principle.)
   Again, $\bble$ is evidently antisymmetric in the appropriate sense.
   Moreover, a function $\prd{y:\NO} A'(y)$ which preserves inequalities is precisely a pair of predicates of which one implies the other, which satisfy transitivity on the right, and transitivity on the left with respect to the inequalities $x^L<x$ and $x<x^R$.
   Thus, this inner induction will provide what we need to complete the primary clause of the outer recursion.
@@ -2612,6 +2864,7 @@ Also as there, we will have to simultaneously prove a couple of essential proper
 As with the Cauchy reals, the joint $(\NO,\le,<)$-recursion principle remains essential when defining all operations on $\NO$.
 
 \begin{eg}
+\index{addition!of surreal numbers}%
 We define $\mathord+:\NO\to\NO\to\NO$ by a double recursion.
 For the outer recursion, we take the codomain to be the subset of $\NO\to\NO$ consisting of functions $g$ such that $(x<y) \to (g(x)<g(x))$ and $(x\le y) \to (g(x)\le g(y))$ for all $x,y$.
 For such $g,h$ we define $(g\ble h)\defeq \fall{x:\NO} g(x)\le h(x)$ and $(g\blt h)\defeq \fall{x:\NO} g(x)< h(x)$.
@@ -2635,6 +2888,7 @@ For the outer recursion, we have to verify that $+$ preserves inequality on the 
 After an $\NO$-induction, this proceeds in exactly the same way.
 \end{eg}
 
+\index{mathematics!formalized}%
 In the Appendix to Part Zero of~\cite{conway:onag}, Conway discusses how the surreal numbers may be formalized in ZFC set theory: by iterating along the ordinals and passing to sets of representatives of lowest rank for each equivalence class, or by representing numbers with ``sign-expansions''.
 He then remarks that
 \begin{quote}\footnotesize
@@ -2684,11 +2938,16 @@ Defining algebraic operations on Dedekind reals, especially multiplication, is b
 There are several ways to get arithmetic going: each has its own advantages, but they all seem to require some technical work.
 For instance, Richman~\cite{Richman:reals} defines multiplication on the Dedekind reals first on the positive cuts and then extends it algebraically to all Dedekind cuts, while Conway~\cite{conway:onag} has observed that the definition of multiplication for surreal numbers works well for Dedekind reals.
 
-Our construction of the Dedekind reals borrows many ideas from~\cite{BauerTaylor09} where the Dedekind reals are constructed in the context of Abstract Stone Duality. This is a (restricted) form of simply typed $\lambda$-calculus with a distinguished object $\Sigma$ which classifies open sets, and by duality also the closed ones.
+Our treatment of the Dedekind reals borrows many ideas from~\cite{BauerTaylor09} where the Dedekind reals are constructed in the context of Abstract Stone Duality.
+\index{Abstract Stone Duality}%
+This is a (restricted) form of simply typed $\lambda$-calculus with a distinguished object $\Sigma$ which classifies open sets, and by duality also the closed ones. In~\cite{BauerTaylor09} you can also find detailed proofs of the basic properties of arithmetical operations.
 
 The fact that $\RC$ is the least Cauchy complete archimedean ordered field, as was proved in \autoref{RC-initial-Cauchy-complete}, indicates that our Cauchy reals probably coincide with the Escard{\'o}-Simpson reals~\cite{EscardoSimpson:01}. It would be interesting to check whether this is really the case. The notion of Escard{\'o}-Simpson reals, or more precisely the corresponding closed interval, is interesting because it can be stated in any category with finite products.
 
-It is constructive folklore that coincidence of Cauchy and Dedekind reals requires dependent choice but it is less well known that countable choice suffices. Recall that \define{dependent choice} states that for a total relation $R$ on $A$, by which we mean $\fall{x : A} \exis{y : A} R(x,y)$, and for any $a : A$ there merely exists $f : \N \to A$ such that $f(0) = a$ and $R(f(n), f(n+1))$ for all $n : \N$. Our \autoref{when-reals-coincide} uses the typical trick for converting an application of dependent choice to one using countable choice. Namely, we use countable choice once to make in advance all the choices that could come up, and then use the choice function to avoid the dependent choices.
+It is constructive folklore that coincidence of Cauchy and Dedekind reals requires dependent choice but it is less well known that countable choice suffices. Recall that \define{dependent choice}
+\indexdef{axiom!of choice!dependent}%
+\index{axiom!of choice!countable}%
+states that for a total relation $R$ on $A$, by which we mean $\fall{x : A} \exis{y : A} R(x,y)$, and for any $a : A$ there merely exists $f : \N \to A$ such that $f(0) = a$ and $R(f(n), f(n+1))$ for all $n : \N$. Our \autoref{when-reals-coincide} uses the typical trick for converting an application of dependent choice to one using countable choice. Namely, we use countable choice once to make in advance all the choices that could come up, and then use the choice function to avoid the dependent choices.
 
 The intricate relationship between various notions of compactness in a constructive
 setting is discussed in \cite{bridges2002compactness}. Palmgren~\cite{Palmgren:FT} has a 
@@ -2706,14 +2965,17 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 
 \begin{ex}
  Give an alternative definition of the Dedekind reals by first defining the square and then use \autoref{mult-from-square}.
- Check that one obtains an abelian ring.
+ Check that one obtains a commutative ring.
 \end{ex}
 
 \begin{ex} \label{ex:RD-extended-reals}
   %
   Suppose we remove the boundedness condition in \autoref{defn:dedekind-reals}.
-  Then we obtain the \define{extended reals} which contain $-\infty \defeq
-  (\emptyset, \Q)$ and $\infty \defeq (\Q, \emptyset)$. Which definitions of arithmetical
+  Then we obtain the \define{extended reals}
+  \indexdef{real numbers!extended}%
+  \indexdef{extended real numbers}%
+  which contain $-\infty \defeq
+  (\emptyt, \Q)$ and $\infty \defeq (\Q, \emptyt)$. Which definitions of arithmetical
   operations on cuts still make sense for extended reals? What algebraic structure do we
   get?
 \end{ex}
@@ -2721,12 +2983,18 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 \begin{ex} \label{ex:RD-lower-cuts}
   %
   By considering one-sided cuts we obtain \define{lower} and \define{upper} Dedekind reals,
+  \indexdef{real numbers!Dedekind!upper}%
+  \indexdef{real numbers!Dedekind!lower}%
+  \indexdef{lower Dedekind reals}%
+  \indexdef{upper Dedekind reals}%
+  \index{cut!Dedekind}%
   respectively. For example, a lower real is given by a predicate $L : \Q \to \Omega$
   which is
   %
   \begin{enumerate}
-  \item \emph{bounded:} $\exis{q : \Q} L(q)$ and
+  \item \emph{inhabited:} $\exis{q : \Q} L(q)$ and
   \item \emph{rounded:} $L(q) = \exis{r : \Q} q < r \land L(r)$.
+    \index{rounded!Dedekind cut}
   \end{enumerate}
   %
   (We could also require $\exis{r : \Q} \lnot L(r)$ to exclude the cut $\infty \defeq
@@ -2736,17 +3004,20 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 
 \begin{ex} \label{ex:RD-interval-arithmetic}
   %
+  \index{interval!arithmetic}%
   Suppose we remove the locatedness condition in \autoref{defn:dedekind-reals}.
-  Then we obtain the \define{interval domain} $\mathbb{I}$ because cuts are allowed
+  Then we obtain the \define{interval domain}
+  \indexdef{interval!domain}%
+  $\mathbb{I}$ because cuts are allowed
   to have ``gaps'', which are just intervals. Define the partial order $\sqsubseteq$ on
   $\mathbb{I}$ by
   %
-  \begin{equation*}
+  \begin{narrowmultline*}
     ((L, U) \sqsubseteq (L', U'))
-    \defeq
+    \defeq \narrowbreak
     (\fall{q : \Q} L(q) \Rightarrow L'(q)) \land
     (\fall{q : \Q} U(q) \Rightarrow U'(q)).
-  \end{equation*}
+  \end{narrowmultline*}
   %
   What are the maximal elements of $\mathbb{I}$ with respect to $\mathbb{I}$? Define the
   ``endpoint'' operations which assign to an element of the interval domain its lower and
@@ -2780,11 +3051,14 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
   \item 
     Suppose $f : \RD \to \Z$ is a map such that $f(0) = 0$ and $f(x) \neq 0$ for all $x >
     0$. Derive from this the limited principle of omniscience~\eqref{eq:lpo}.
+\index{axiom!limited principle of omniscience}%
+\index{limited principle of omniscience}%
   \end{enumerate}
 \end{ex}
 
 \begin{ex} \label{ex:traditional-archimedean}
-  Show that in an ordered field $F$ density of $\Q$ and the traditional archimedean axiom
+  \index{ordered field!archimedean}%
+  Show that in an ordered field $F$, density of $\Q$ and the traditional archimedean axiom
   are equivalent:
   %
   \begin{equation*}
@@ -2802,8 +3076,35 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
   \autoref{RC-extend-Q-Lipschitz} to $f \circ r$.
 \end{ex}
 
+\begin{ex} \label{ex:metric-completion}
+  \index{completion!of a metric space}%
+  Generalize the construction of $\RC$ to construct the Cauchy completion of any metric space. First, think about which notion of real numbers is most natural as the codomain for the distance\index{distance} function of a metric space. Does it matter? Next, work out the details of two constructions:
+  %
+  \begin{enumerate}
+  \item Follow the construction of Cauchy reals to define the completion of a metric space as an inductive-inductive type closed under limits of Cauchy sequences.\index{Cauchy!sequence}
+  \item Use the following construction due to Lawvere~\cite{lawvere:metric-spaces} and Richman~\cite{Richman00thefundamental}, where the completion of a metric space $(M, d)$ is given as the type of \define{locations}.
+    \indexdef{location}%
+    A location is a function $f : M \to \R$ such that
+    %
+    \begin{enumerate}
+    \item $f(x) \geq |f(y) - d(x,y)|$ for all $x, y : M$, and
+    \item $\inf_{x \in M} f(x) = 0$, by which we mean $\fall{\epsilon : \Qp} \exis{x : M} |f(x)| < \epsilon$ and $\fall{x : M} f(x) \geq 0$.
+    \end{enumerate}
+    %
+    The idea is that $f$ looks like it is measuring the distance from a point.
+  \end{enumerate}
+  %
+  Finally, prove the following universal property of metric completions: a locally uniformly continuous map from a metric space to a Cauchy complete metric space extends uniquely to a locally uniformly continuous map on the completion. (We say that a map is \define{locally uniformly continuous}
+  \indexdef{function!locally uniformly continuous}%
+  \indexdef{locally uniformly continuous map}%
+  if it is uniformly continuous on open balls.)
+\end{ex}
+
 \begin{ex} \label{ex:reals-apart-neq-MP}
-  \define{Markov principle} says that for all $f : \nat \to \bool$,
+  \define{Markov's principle}
+  \indexdef{axiom!Markov's principle}%
+  \indexdef{Markov's principle}%
+  says that for all $f : \nat \to \bool$,
   %
   \begin{equation*}
     (\lnot \lnot \exis{n : \nat} f(n) = \btrue)
@@ -2812,11 +3113,12 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
   \end{equation*}
   %
   This is a particular instance of the law of double negation~\eqref{eq:ldn}. Show that
-  $\fall{x, y: \RD} x \neq y \Rightarrow x \apart y$ implies Markov principle. Does the
-  converse holds as well?
+  $\fall{x, y: \RD} x \neq y \Rightarrow x \apart y$ implies Markov's principle. Does the
+  converse hold as well?
 \end{ex}
 
 \begin{ex} \label{ex:reals-apart-zero-divisors}
+  \index{apartness}%
   Verify that the following ``no zero divisors'' property holds for the real numbers:
   $x y \apart 0 \Leftrightarrow x \apart 0 \land y \apart 0$.
 \end{ex}
@@ -2826,7 +3128,9 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
   Suppose $(q_1, r_1), \ldots, (q_n, r_n)$ pointwise cover $(a, b)$. Then there is
   $\epsilon : \Qp$ such that whenever $a < x < y < b$ and $|x - y| < \epsilon$
   then there merely exists $i$ such that $q_i < x < r_i$ and $q_i < y < r_i$. Such an
-  $\epsilon$ is called a \define{Lebesgue number} for the given cover.
+  $\epsilon$ is called a \define{Lebesgue number}
+  \indexdef{Lebesgue number}%
+  for the given cover.
 \end{ex}
 
 \begin{ex} \label{ex:mean-value-theorem}
@@ -2854,5 +3158,5 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 
 %%% Local Variables: 
 %%% mode: latex
-%%% TeX-master: "main"
+%%% TeX-master: "hott-online"
 %%% End: 

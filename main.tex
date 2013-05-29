@@ -1,59 +1,30 @@
-% This is the main LaTeX file for the homotopy type theory book.
+% THIS IS NOT THE FILE YOU SHOULD PROCESS. IT IS THE "MAIN" FILE,
+% BUT IT GETS INCLUDED BY ONE OF THE hott-xxx.tex FILES. THOSE ARE
+% THE MAIN ONES.
 
-% This file supports two book sizes:
-% - Letter size (8.5" x 11")
-% - US Trade size (6" x 9")
-%
-% To activate one or the other, uncomment the appropriate font size in
-% the documentclass below, and then one of the two page geometry incantations
-%
-% NOTE: The 6" x 9" format is only experimental. It will break the
-% title page, for example.
+% DOCUMENT CLASS
+\documentclass[\OPTfontsize]{book}
 
 \PassOptionsToPackage{table}{xcolor}
 
-% DOCUMENT CLASS
-\documentclass[
-%
-%10pt % for US Trade 6" x 9" book
-%
-11pt % for Letter size book
-]{book}
 \usepackage{etex} % We're running out of registers and dimensions, or some such
 
 % PAGE GEOMETRY
-%
-% Uncomment one of these
-
-% We make the page 40pt taller than the standard LaTeX book.
-
-% OPTION 1: Letter
-\usepackage[papersize={8.5in,11in},
+\usepackage[papersize={\OPTpagesize},
             twoside,
             includehead,
-            top=1in,
-            bottom=1in,
-            inner=0.75in,
-            outer=1.0in,
-            bindingoffset=0.35in]{geometry}
+            top=\OPTtopmargin,
+            bottom=\OPTbottommargin,
+            inner=\OPTinnermargin,
+            outer=\OPToutermargin,
+            bindingoffset=\OPTbindingoffset]{geometry}
 
-% OPTION 2: US Trade
-% \usepackage[papersize={6in,9in},
-%             twoside,
-%             includehead,
-%             top=0.75in,
-%             bottom=0.75in,
-%             inner=0.5in,
-%             outer=0.75in,
-%             bindingoffset=0.35in]{geometry}
-%
 % HYPERLINKING AND PDF METADATA
-
-\usepackage[pagebackref,
+\usepackage[pagebackref=\OPTpagebackref,
             colorlinks,
-            citecolor=darkgreen,
-            linkcolor=darkgreen,
-            urlcolor=darkgreen,
+            citecolor=linkcolor,
+            linkcolor=linkcolor,
+            urlcolor=linkcolor,
             unicode,
             pdfauthor={Univalent Foundations Program},
             pdftitle={Homotopy Type Theory: Univalent Foundations of Mathematics},
@@ -96,15 +67,16 @@
 \usepackage{booktabs} % For nice tables
 \usepackage{array} % For nice tables
 \usepackage{supertabular} % For index of symbols
-\definecolor{darkgreen}{rgb}{0,0.45,0}
+\definecolor{linkcolor}{rgb}{\OPTlinkcolor}
 \usepackage{aliascnt}
 \usepackage[capitalize]{cleveref}
-\usepackage[all,2cell]{xy}
+\usepackage[all,2cell,cmtip]{xy}
 \UseAllTwocells
-\usepackage{natbib}
+%\usepackage{natbib}
 \usepackage{braket} % used for \setof{ ... } macro
+
 \usepackage{tikz}
-\usetikzlibrary{decorations.pathmorphing}
+\usetikzlibrary{decorations.pathmorphing,arrows}
 
 \usepackage{etoolbox}           % hacking commands for TOC
 
@@ -117,6 +89,36 @@
 %%%% Indexing
 \usepackage{makeidx}
 \makeindex
+
+%% Global cross-references for index
+\indexsee{principle}{axiom}
+\indexsee{number!real}{real numbers}
+\indexsee{abelian group}{group, abelian}
+\indexsee{sequence!Cauchy}{Cauchy sequence}
+\indexsee{adjunction}{adjoint functor}
+\indexsee{higher topos}{$(\infty,1)$-topos}
+\indexsee{topos!higher}{$(\infty,1)$-topos}
+\indexsee{source!of a function}{domain}
+\indexsee{target!of a function}{codomain}
+\indexsee{type!truncation of}{truncation}
+\indexsee{propositional truncation}{truncation}
+\indexsee{proof-relevant mathematics}{mathematics, proof-relevant}
+\indexsee{classical!mathematics}{mathematics, classical}
+\indexsee{classical!logic}{logic}
+\indexsee{constructive!mathematics}{mathematics, constructive}
+\indexsee{constructive!logic}{logic}
+\indexsee{intuitionistic logic}{logic}
+\indexsee{definition!inductive}{type, inductive}
+\indexsee{bounded!totally}{totally bounded}
+\indexsee{sum!of numbers}{addition}
+\indexsee{continuous map}{function, continuous}
+\indexsee{function!continuity of@``continuity'' of}{``continuity''}
+\indexsee{function!functoriality of@``functoriality'' of}{``functoriality''}
+\indexsee{codes}{encode-decode method}
+\indexsee{inequality}{order}
+\indexsee{Coq@\Coq}{proof assistant}
+\indexsee{Agda@\Agda}{proof assistant}
+\indexsee{nuPRL}{proof assistant}
 
 %%%% Header and footers
 \pagestyle{fancyplain}
@@ -133,14 +135,14 @@
 \rfoot[]{}
 
 %%%% Chapter & part style
-\usepackage{titlesec}
-\titleformat{\part}[display]{\fontsize{40}{40}\fontseries{m}\fontshape{sc}\selectfont}{\hfil\partname\ \Roman{part}}{20pt}{\fontsize{60}{60}\fontseries{b}\fontshape{sc}\selectfont\hfil}
-\titleformat{\chapter}[display]{\fontsize{23}{25}\fontseries{m}\fontshape{it}\selectfont}{\chaptertitlename\ \thechapter}{20pt}{\fontsize{35}{35}\fontseries{b}\fontshape{n}\selectfont}
+\usepackage[raggedright]{titlesec}
+\titleformat{\part}[display]{\fontsize{\OPTpartfont}{\OPTpartfont}\fontseries{m}\fontshape{sc}\selectfont}{\hfil\partname\ \Roman{part}}{\OPTpartskip}{\fontsize{\OPTparttitlefont}{\OPTparttitlefont}\fontseries{b}\fontshape{sc}\selectfont\hfil}
+\titleformat{\chapter}[display]{\fontsize{\OPTchapterfont}{\OPTchapterfont}\fontseries{m}\fontshape{it}\selectfont}{\chaptertitlename\ \thechapter}{\OPTchapterskip}{\fontsize{\OPTchaptertitlefont}{\OPTchaptertitlefont}\fontseries{b}\fontshape{n}\selectfont}
 
 % To avoid compiling stuff other than what you're working on right
 % now, uncomment the following command and give your file as its
 % argument.
-% \includeonly{}
+%\includeonly{}
 
 \begin{document}
 
@@ -229,12 +231,12 @@
 \include{formal}
 
 %%%% Bibliography
+\bibliographystyle{halpha}
 \phantomsection % black magic to get TOC to point to correct page
 \addcontentsline{toc}{part}{\bibname}
-\bibliographystyle{alpha}
 \markboth{}{\textsc{Bibliography}}
-\renewcommand{\markboth}[2]{}
-\bibliography{references}
+{\renewcommand{\markboth}[2]{} % Prevent bibliography from resetting the header to something silly
+\bibliography{references}}
 
 \cleartooddpage
 
@@ -247,17 +249,18 @@
 %%%%% Index of terms
 % tell the index to get itself into the table of contents
 \phantomsection % black magic to get TOC to point to correct page
+\addcontentsline{toc}{part}{Index}
 \markboth{}{\textsc{Index}}
 \renewcommand{\markboth}[2]{}
-\addcontentsline{toc}{part}{Index}
-\printindex
+{\small
+\printindex}
 
 % The back cover
-% \include{back} NOT READY DO NOT INCLUDE
+\include{back}
 
 \end{document}
 
 %%% Local Variables: 
 %%% mode: latex
-%%% TeX-master: t
+%%% TeX-master: "hott-online"
 %%% End: 

@@ -35,7 +35,9 @@
 \def\prd#1{\@ifnextchar\bgroup{\prd@parens{#1}}{\@ifnextchar\sm{\prd@parens{#1}\@eatsm}{\prd@noparens{#1}}}}
 \def\prd@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}\prd@parens}%
-  {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}}}
+  {\@ifnextchar\sm%
+    {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}\@eatsm}%
+    {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}}}}
 \def\@eatsm\sm{\sm@parens}
 \def\prd@noparens#1{\mathchoice{\@dprd@noparens{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}}
 % Helper macros for three styles
@@ -78,7 +80,9 @@
 \def\sm#1{\@ifnextchar\bgroup{\sm@parens{#1}}{\@ifnextchar\prd{\sm@parens{#1}\@eatprd}{\sm@noparens{#1}}}}
 \def\sm@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}\sm@parens}%
-  {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}}}
+  {\@ifnextchar\prd%
+    {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}\@eatprd}%
+    {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}}}}
 \def\@eatprd\prd{\prd@parens}
 \def\sm@noparens#1{\mathchoice{\@dsm@noparens{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}}
 \def\lsm#1{\@ifnextchar\bgroup{\@lsm{#1}\lsm}{\@@lsm{#1}}}
@@ -146,17 +150,9 @@
 
 %%% For quotients %%%
 %\newcommand{\pairr}[1]{{\langle #1\rangle}}
-\newcommand{\pairr}[1]{{(#1)}}
-\usepackage{tikz}
-% \usetikzlibrary{external}
-\usetikzlibrary{matrix,arrows,decorations.pathmorphing,trees}
-\tikzset{fib/.style={->>,font=\scriptsize}}
-\tikzset{cof/.style={right hook->,font=\scriptsize}}
-\tikzset{ar/.style={->,font=\scriptsize}}
-\tikzset{arr/.style={->>,font=\scriptsize}}
-\tikzset{std/.style={matrix of math nodes, row sep=3em, column sep=4em, text height=1.5ex, text depth=0.25ex}}
-\tikzset{description/.style={fill=white,inner sep=2pt}}
-\tikzset{patharrow/.style={=,decorate,decoration={amplitude=.2mm,segment length=2mm,post length=1mm},font=\scriptsize}}
+\newcommand{\pairr}[1]{{\mathopen{}(#1)\mathclose{}}}
+\newcommand{\Pairr}[1]{{\mathopen{}\left(#1\right)\mathclose{}}}
+
 % \newcommand{\type}{\ensuremath{\mathsf{Type}}} % this command is overridden below, so it's commented out
 \newcommand{\im}{\ensuremath{\mathsf{im}}} % the image
 
@@ -178,10 +174,10 @@
 % \newcommand{\Mcirc}{\ensuremath{\mathsf{M}_\modal}}
 \newcommand{\mreturn}{\ensuremath{\eta}}
 \let\project\mreturn
-\newcommand{\mbind}[1]{\ensuremath{\hat{#1}}}
+%\newcommand{\mbind}[1]{\ensuremath{\hat{#1}}}
 \newcommand{\ext}{\mathsf{ext}}
-\newcommand{\mmap}[1]{\ensuremath{\bar{#1}}}
-\newcommand{\mjoin}{\ensuremath{\mreturn^{-1}}}
+%\newcommand{\mmap}[1]{\ensuremath{\bar{#1}}}
+%\newcommand{\mjoin}{\ensuremath{\mreturn^{-1}}}
 % Subuniverse
 \renewcommand{\P}{\ensuremath{\type_{P}}\xspace}
 
@@ -225,13 +221,13 @@
 \let\Trans\trans
 %\newcommand{\Trans}[2]{\ensuremath{{#1}_{*}\left({#2}\right)}\xspace}
 \newcommand{\transf}[1]{\ensuremath{{#1}_{*}}\xspace} % Without argument
-\newcommand{\transport}[2]{\ensuremath{\mathsf{transport}_{*} \: {#2}\xspace}}
+%\newcommand{\transport}[2]{\ensuremath{\mathsf{transport}_{*} \: {#2}\xspace}}
 \newcommand{\transfib}[3]{\ensuremath{\mathsf{transport}^{#1}(#2,#3)\xspace}}
 \newcommand{\Transfib}[3]{\ensuremath{\mathsf{transport}^{#1}\Big(#2,\, #3\Big)\xspace}}
 \newcommand{\transfibf}[1]{\ensuremath{\mathsf{transport}^{#1}\xspace}}
 
 %%% 2D transport
-\newcommand{\transtwo}[2]{\ensuremath{{#1}_{**}\mathopen{}\left({#2}\right)\mathclose{}}\xspace}
+\newcommand{\transtwo}[2]{\ensuremath{\mathsf{transport}^2\mathopen{}\left({#1},{#2}\right)\mathclose{}}\xspace}
 
 %%% Constant transport
 \newcommand{\transconst}[3]{\ensuremath{\mathsf{transportconst}}^{#1}_{#2}(#3)\xspace}
@@ -252,7 +248,7 @@
 
 %%% 2D map on paths
 \newcommand{\aptwofunc}[1]{\ensuremath{\mathsf{ap}^2_{#1}}\xspace}
-\newcommand{\aptwo}[2]{\ensuremath{{#1}\mathopen{}\left({#2}\right)\mathclose{}}\xspace}
+\newcommand{\aptwo}[2]{\ensuremath{\aptwofunc{#1}\mathopen{}\left({#2}\right)\mathclose{}}\xspace}
 \newcommand{\apdtwofunc}[1]{\ensuremath{\mathsf{apd}^2_{#1}}\xspace}
 \newcommand{\apdtwo}[2]{\ensuremath{\apdtwofunc{#1}\mathopen{}\left(#2\right)\mathclose{}}\xspace}
 
@@ -262,9 +258,14 @@
 %%% Homotopies (written infix) %%%
 \newcommand{\htpy}{\sim}
 
+%%% Other meanings of \sim
+\newcommand{\bisim}{\sim}       % bisimulation
+\newcommand{\eqr}{\sim}         % an equivalence relation
+
 %%% Equivalence types %%%
 \newcommand{\eqv}[2]{\ensuremath{#1 \simeq #2}\xspace}
 \newcommand{\eqvspaced}[2]{\ensuremath{#1 \;\simeq\; #2}\xspace}
+\newcommand{\eqvsym}{\simeq}    % infix symbol
 \newcommand{\texteqv}[2]{\ensuremath{\mathsf{Equiv}(#1,#2)}\xspace}
 \newcommand{\isequiv}{\ensuremath{\mathsf{isequiv}}}
 \newcommand{\qinv}{\ensuremath{\mathsf{qinv}}}
@@ -333,9 +334,9 @@
 \newcommand{\trunc}[2]{\mathopen{}\left\Vert #2\right\Vert_{#1}\mathclose{}}
 \newcommand{\ttrunc}[2]{\bigl\Vert #2\bigr\Vert_{#1}}
 \newcommand{\Trunc}[2]{\Bigl\Vert #2\Bigr\Vert_{#1}}
-\newcommand{\truncf}[1]{\Vert -\Vert_{#1}}
+\newcommand{\truncf}[1]{\Vert \blank \Vert_{#1}}
 \newcommand{\tproj}[3][]{\mathopen{}\left|#3\right|_{#2}^{#1}\mathclose{}}
-\newcommand{\tprojf}[1]{|-|_{#1}}
+\newcommand{\tprojf}[1]{|\blank|_{#1}}
 \def\pizero{\trunc0}
 %\newcommand{\brck}[1]{\trunc{-1}{#1}}
 %\newcommand{\Brck}[1]{\Trunc{-1}{#1}}
@@ -352,7 +353,7 @@
 \newcommand{\Parens}[1]{\Bigl(#1\Bigr)}
 
 % Projection and extension for truncations
-\newcommand{\extendsmb}{\mathsf{ext}}
+\let\extendsmb\ext
 \newcommand{\extend}[1]{\extendsmb(#1)}
 
 %
@@ -396,14 +397,15 @@
 \newcommand{\south}{\mathsf{S}}
 \newcommand{\merid}{\mathsf{merid}}
 
-%%% Blanks (i.e. anonymous lambdas)
-\newcommand{\blank}{\mathord{\underline{\hspace{1ex}}}}
-%\newcommand{\blank}{(-)}
-%\newcommand{\blank}{(?)}
+%%% Blanks (shorthand for lambda abstractions)
+\newcommand{\blank}{\mathord{\hspace{1pt}\text{--}\hspace{1pt}}}
+
+%%% Nameless objects
+\newcommand{\nameless}{\mathord{\hspace{1pt}\underline{\hspace{1ex}}\hspace{1pt}}}
 
 %%% Some decorations
 %\newcommand{\bbU}{\ensuremath{\mathbb{U}}\xspace}
-\newcommand{\bbB}{\ensuremath{\mathbb{B}}\xspace}
+% \newcommand{\bbB}{\ensuremath{\mathbb{B}}\xspace}
 \newcommand{\bbP}{\ensuremath{\mathbb{P}}\xspace}
 
 %%% Some categories
@@ -426,6 +428,8 @@
 \newcommand{\y}{\ensuremath{\mathbf{y}}\xspace}
 \newcommand{\dgr}[1]{{#1}^{\dagger}}
 \newcommand{\unitaryiso}{\mathrel{\cong^\dagger}}
+\newcommand{\cteqv}[2]{\ensuremath{#1 \simeq #2}\xspace}
+\newcommand{\cteqvsym}{\simeq}     % Symbol for equivalence of categories
 
 %%% Natural numbers
 \newcommand{\N}{\ensuremath{\mathbb{N}}\xspace}
@@ -477,8 +481,8 @@
       \longrightarrow & #2 \\ #3 & \longmapsto & #4 \end{array}\right.}
 
 %%% Cones and cocones
-\newcommand{\cone}[2]{\mathrm{cone}_{#1}(#2)}
-\newcommand{\cocone}[2]{\mathrm{cocone}_{#1}(#2)}
+\newcommand{\cone}[2]{\mathsf{cone}_{#1}(#2)}
+\newcommand{\cocone}[2]{\mathsf{cocone}_{#1}(#2)}
 % Apply a function to a cocone
 \newcommand{\composecocone}[2]{#1\circ#2}
 \newcommand{\composecone}[2]{#2\circ#1}
@@ -559,6 +563,8 @@
 \newcommand{\R}{\ensuremath{\mathbb{R}}\xspace}           % Either 
 \newcommand{\barRD}{\ensuremath{\bar{\mathbb{R}}_\mathsf{d}}\xspace} % Dedekind completion of Dedekind
 
+\newcommand{\close}[1]{\sim_{#1}} % Relation of closeness
+\newcommand{\closesym}{\mathord\sim}
 \newcommand{\rclim}{\mathsf{lim}} % HIT constructor for Cauchy reals
 \newcommand{\rcrat}{\mathsf{rat}} % Embedding of rationals into Cauchy reals
 \newcommand{\rceq}{\mathsf{eq}_{\RC}} % HIT path constructor
@@ -587,6 +593,7 @@
 \newcommand{\surr}[2]{\{\,#1\,\big|\,#2\,\}}
 \newcommand{\LL}{\mathcal{L}}
 \newcommand{\RR}{\mathcal{R}}
+\newcommand{\noeq}{\mathsf{eq}_{\NO}} % HIT path constructor
 
 \newcommand{\ble}{\trianglelefteqslant}
 \newcommand{\blt}{\vartriangleleft}
@@ -728,12 +735,21 @@
 \gdef\notesoff{\gdef\note##1{\null}}
 \noteson
 
-\newcommand{\Coq}{\textsc{Coq}}
-\newcommand{\Agda}{\textsc{Agda}}
+\newcommand{\Coq}{\textsc{Coq}\xspace}
+\newcommand{\Agda}{\textsc{Agda}\xspace}
 
 %%%% CITATIONS %%%%
 
-\let \cite \citep
+% \let \cite \citep
+
+%%%% INDEX %%%%
+
+\newcommand{\footstyle}[1]{{\hyperpage{#1}}n} % If you index something that is in a footnote
+\newcommand{\defstyle}[1]{\textbf{\hyperpage{#1}}}  % Style for pageref to a definition
+
+\newcommand{\indexdef}[1]{\index{#1|defstyle}}   % Index a definition
+\newcommand{\indexfoot}[1]{\index{#1|footstyle}} % Index a term in a footnote
+\newcommand{\indexsee}[2]{\index{#1|see{#2}}}    % Index "see also"
 
 
 %%%% Standard phrasing or spelling of common phrases %%%%
@@ -754,5 +770,5 @@
 
 % Local Variables:
 % mode: latex
-% TeX-master: "main"
+% TeX-master: "hott-online"
 % End:

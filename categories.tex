@@ -8,23 +8,31 @@ Thus, in univalent foundations it makes sense to consider a notion of ``category
 
 Ignoring size issues, in set-based mathematics a category consists of a \emph{set} $A_0$ of objects and, for each $x,y\in A_0$, a \emph{set} $\hom_A(x,y)$ of morphisms.
 Under Univalent Foundations, a ``naive'' definition of category would simply mimic this with a \emph{type} of objects and \emph{types} of morphisms.
-If we allowed these types to contain arbitrary higher homotopy, then we ought to impose higher coherence conditions, leading to some notion of $(\infty,1)$-category, but at present our goal is more modest.
+If we allowed these types to contain arbitrary higher homotopy, then we ought to impose higher coherence conditions, leading to some notion of $(\infty,1)$-category,
+\index{.infinity1-category@$(\infty,1)$-category}%
+but at present our goal is more modest.
 We consider only 1-categories, and therefore we restrict the types $\hom_A(x,y)$ to be sets, i.e.\ 0-types.
 If we impose no further conditions, we will call this notion a \emph{precategory}.
 
 If we add the requirement that the type $A_0$ of objects is a set, then we end up with a definition that behaves much like the traditional set-theoretic one.
 Following Toby Bartels, we call this notion a \emph{strict category}.
+\index{strict!category}%
 But we can also require a generalized version of the univalence axiom, identifying $(x=_{A_0} y)$ with the type $\mathsf{iso}(x,y)$ of isomorphisms from $x$ to $y$.
 Since we regard this as usually the ``correct'' definition, we will call it simply a \emph{category}.
 
 A good example of the difference between the three notions of category is provided by the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'', which in classical set-based category theory is equivalent to the axiom of choice.
+\index{mathematics!classical}%
+\index{axiom!of choice}%
+\index{classical!category theory}%
 \begin{enumerate}
 \item For strict categories, this is still equivalent to to the axiom of choice.
 \item For precategories, there is no consistent axiom of choice which can make it true.
 \item For categories, it is provable \emph{without} any axiom of choice.
 \end{enumerate}
 We will prove the latter statement in this chapter, as well as other pleasant properties of categories, e.g.\ that equivalent categories are equal (as elements of the type of categories).
-We will also describe a universal way of ``saturating'' a precategory $A$ into a category $\widehat A$, which we call its \emph{Rezk completion}, although it could also reasonably be called the \emph{stack completion} (see the Notes).
+We will also describe a universal way of ``saturating'' a precategory $A$ into a category $\widehat A$, which we call its \emph{Rezk completion},
+\index{completion!Rezk}%
+although it could also reasonably be called the \emph{stack completion} (see the Notes).
 
 The Rezk completion also sheds further light on the notion of equivalence of categories.
 For instance, the functor $A \to \widehat{A}$ is always fully faithful and essentially surjective, hence a ``weak equivalence''.
@@ -40,21 +48,35 @@ We will use the basic notions of homotopy type theory from \autoref{cha:typetheo
 
 In classical mathematics, there are many equivalent definitions of a category.
 In our case, since we have dependent types, it is natural to choose the arrows to be a type family indexed by the objects.
-This matches the way hom-types are always used in category theory: we never even consider comparing two arrows unless we know their sources and targets agree.
+This matches the way hom-types are always used in category theory: we never even consider comparing two arrows unless we know their domains and codomains agree.
 Furthermore, it seems clear that for a theory of 1-categories, the hom-types should all be sets.
 This leads us to the following definition.
 
 \begin{defn}\label{ct:precategory}
-  A \define{precategory} $A$ consists of the following.
+  A \define{precategory}
+  \indexdef{precategory}
+  $A$ consists of the following.
   \begin{enumerate}
-  \item A type $A_0$ of \define{objects}.  We write $a:A$ for $a:A_0$.
-  \item For each $a,b:A$, a set $\hom_A(a,b)$ of \define{arrows} or \define{morphisms}.
-  \item For each $a:A$, a morphism $1_a:\hom_A(a,a)$.
-  \item For each $a,b,c:A$, a function
+  \item A type $A_0$ of \define{objects}.%
+    \indexdef{object!in a (pre)category}
+    We write $a:A$ for $a:A_0$.
+  \item For each $a,b:A$, a set $\hom_A(a,b)$ of \define{arrows} or \define{morphisms}.%
+    \indexsee{arrow}{morphism}%
+    \indexdef{morphism!in a (pre)category}
+  \item For each $a:A$, a morphism $1_a:\hom_A(a,a)$.%
+    \indexdef{identity!morphism in a (pre)category}
+  \item For each $a,b,c:A$, a function%
+    \indexdef{composition!of morphisms in a (pre)category}
     \[  \hom_A(b,c) \to \hom_A(a,b) \to \hom_A(a,c) \]
     denoted infix by $g\mapsto f\mapsto g\circ f$, or sometimes simply by $gf$.
   \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id f {1_b\circ f}$ and $\id f {f\circ 1_a}$.
-  \item For each $a,b,c,d:A$ and $f:\hom_A(a,b)$, $g:\hom_A(b,c)$, $h:\hom_A(c,d)$, we have $\id {h\circ (g\circ f)}{(h\circ g)\circ f}$.
+  \item For each $a,b,c,d:A$ and 
+    \begin{equation*}
+      f:\hom_A(a,b), \qquad
+      g:\hom_A(b,c), \qquad
+      h:\hom_A(c,d),
+    \end{equation*}
+    we have $\id {h\circ (g\circ f)}{(h\circ g)\circ f}$.
   \end{enumerate}
 \end{defn}
 
@@ -63,7 +85,9 @@ On the one hand, we have $\id[A_0]{a}{b}$.
 But on the other hand, there is the standard categorical notion of \emph{isomorphism}.
 
 \begin{defn}\label{ct:isomorphism}
-  A morphism $f:\hom_A(a,b)$ is an \define{isomorphism} if there is a morphism $g:\hom_A(b,a)$ such that $\id{g\circ f}{1_a}$ and $\id{f\circ g}{1_b}$.
+  A morphism $f:\hom_A(a,b)$ is an \define{isomorphism}
+  \indexdef{isomorphism!in a (pre)category}%
+  if there is a morphism $g:\hom_A(b,a)$ such that $\id{g\circ f}{1_a}$ and $\id{f\circ g}{1_b}$.
   We write $a\cong b$ for the type of such isomorphisms.
 \end{defn}
 
@@ -80,6 +104,7 @@ We must show $\id{(g,\eta,\epsilon)}{(g',\eta',\epsilon')}$.
   using $\eta$ and $\epsilon'$.
 \end{proof}
 
+\symlabel{ct:inv}
 If $f:a\cong b$, then we write $\inv f$ for its inverse, which by \autoref{ct:isoprop} is uniquely determined.
 
 The only relationship between these two notions of sameness that we have in a precategory is the following.
@@ -97,20 +122,28 @@ Evidently, this situation is analogous to the issue that motivated us to introdu
 In fact, we have the following:
 
 \begin{eg}\label{ct:precatset}
+  \index{set}%
   There is a precategory \uset, whose type of objects is \set, and with $\hom_{\uset}(A,B) \defeq (A\to B)$.
   The identity morphisms are identity functions and the composition is function composition.
   For this precategory, \autoref{ct:idtoiso} is equal to (the restriction to sets of) the identity-to-equivalence map from the chapter on univalence.
+
+  Of course, to be more precise we should call this category $\uset_\UU$, since its objects are only the \emph{small sets}
+  \index{small!set}%
+  relative to a universe \UU.
 \end{eg}
 
 Thus, it is natural to make the following definition.
 
 \begin{defn}\label{ct:category}
-  A \define{category} is a precategory such that for all $a,b:A$, the function $\idtoiso_{a,b}$ from \autoref{ct:idtoiso} is an equivalence.
+  A \define{category}
+  \indexdef{category}
+  is a precategory such that for all $a,b:A$, the function $\idtoiso_{a,b}$ from \autoref{ct:idtoiso} is an equivalence.
 \end{defn}
 
 In particular, in a category, if $a\cong b$, then $a=b$.
 
 \begin{eg}\label{ct:eg:set}
+  \index{univalence axiom}%
   The univalence axiom implies immediately that \uset is a category.
   One can also show, using univalence, that any precategory of set-level structures such as groups, rings, topological spaces, etc.\ is a category.
 \end{eg}
@@ -125,6 +158,7 @@ We also note the following.
   But $\id a b$ is equivalent to $a \cong b$, which is a set.
 \end{proof}
 
+\symlabel{isotoid}
 We write $\isotoid$ for the inverse $(a\cong b) \to (\id a b)$ of the map $\idtoiso$ from \autoref{ct:idtoiso}.
 The following relationship between the two is important.
 
@@ -152,25 +186,35 @@ and so on.
 \begin{eg}\label{ct:orders}
   A precategory in which each set $\hom_A(a,b)$ is a mere proposition is equivalently a type $A_0$ equipped with a mere relation ``$\le$'' that is reflexive ($a\le a$) and transitive (if $a\le b$ and $b\le c$, then $a\le c$).
   We call this a \define{preorder}.
+  \indexdef{preorder}
 
-  In a preorder, a proof $f\colon a\le b$ is an isomorphism just when there exists some proof $g\colon b\le a$.
+  In a preorder, a proof $f: a\le b$ is an isomorphism just when there exists some proof $g: b\le a$.
   Thus, $a\cong b$ is the mere proposition that $a\le b$ and $b\le a$.
   Therefore, a preorder $A$ is a category just when (1) each type $a=b$ is a mere proposition, and (2) for any $a,b:A_0$ there exists a function $(a\cong b) \to (a=b)$.
-  In other words, $A_0$ must be a set, and $\le$ must be antisymmetric (if $a\le b$ and $b\le a$, then $a=b$).
+  In other words, $A_0$ must be a set, and $\le$ must be antisymmetric\index{relation!antisymmetric} (if $a\le b$ and $b\le a$, then $a=b$).
   We call this a \define{(partial) order} or a \define{poset}.
+  \indexdef{partial order}%
+  \indexdef{poset}%
 \end{eg}
 
 \begin{eg}\label{ct:gaunt}
   If $A$ is a category, then $A_0$ is a set if and only if for any $a,b:A_0$, the type $a\cong b$ is a mere proposition.
-  This is equivalent to saying that every isomorphism in $A$ is an identity; thus it is rather stronger than the classical notion of ``skeletal'' category.
+  This is equivalent to saying that every isomorphism in $A$ is an identity; thus it is rather stronger than the classical\index{mathematics!classical} notion of ``skeletal'' category.
   Categories of this sort are sometimes called \define{gaunt}~\cite{bsp12infncats}.
+  \indexdef{category!gaunt}%
+  \indexdef{gaunt category}%
   There is not really any notion of ``skeletality'' for our categories, unless one considers \autoref{ct:category} itself to be such.
 \end{eg}
 
 \begin{eg}\label{ct:discrete}
   For any 1-type $X$, there is a category with $X$ as its type of objects and with $\hom(x,y) \defeq (x=y)$.
-  If $X$ is a set, we call this the \define{discrete} category on $X$.
-  In general, we call it a \define{groupoid} (see \autoref{ct:groupoids}).
+  If $X$ is a set, we call this the \define{discrete}
+  \indexdef{category!discrete}%
+  \indexdef{discrete!category}%
+  category on $X$.
+  In general, we call it a \define{groupoid}
+  \indexdef{groupoid}
+  (see \autoref{ct:groupoids}).
 \end{eg}
 
 \begin{eg}\label{ct:fundgpd}
@@ -178,13 +222,17 @@ and so on.
   The composition operation
   \[ \pizero{y=z} \to \pizero{x=y} \to \pizero{x=z} \]
   is defined by induction on truncation from concatenation $(y=z)\to(x=y)\to(x=z)$.
-  We call this the \define{fundamental pregroupoid} of $X$.
+  We call this the \define{fundamental pregroupoid}
+  \indexdef{fundamental!pregroupoid}%
+  \indexsee{pregroupoid!fundamental}{fundamental pregroupoid}%
+  of $X$.
   (In fact, we have met it already in \autoref{sec:van-kampen}; see also \autoref{ex:rezk-vankampen}.)
 \end{eg}
 
 \begin{eg}\label{ct:hoprecat}
   There is a precategory whose type of objects is \type and with $\hom(X,Y) \defeq \pizero{X\to Y}$, and composition defined by induction on truncation from ordinary composition $(Y\to Z) \to (X\to Y) \to (X\to Z)$.
   We call this the \define{homotopy precategory of types}.
+  \indexdef{precategory!of types}%
 \end{eg}
 
 \begin{eg}\label{ct:rel}
@@ -218,8 +266,8 @@ and so on.
   With a little more work, we conclude that \urel is a category.
 \end{eg}
 
-In a textbook on category theory written for readers who had grown up with informal homotopy type theory, we would probably say very little about precategories from now on, restricting ourselves to the case of categories.
-However, since this book has a somewhat different purpose and audience, we will develop many concepts for precategories as well as categories, in order to emphasize how much better-behaved categories are, as compared both to precategories and to ordinary categories in classical mathematics.
+We might now restrict ourselves to considering categories rather than precategories.
+Instead, we will develop many concepts for precategories as well as categories, in order to emphasize how much better-behaved categories are, as compared both to precategories and to ordinary categories in classical\index{mathematics!classical} mathematics.
 
 We will also see in \crefrange{sec:strict-categories}{sec:dagger-categories} that in slightly more exotic contexts, there are uses for certain kinds of precategories other than categories, each of which ``fixes'' the equality of objects in different ways.
 This emphasizes the ``pre''-ness of precategories: they are the raw material out of which multiple important categorical structures can be defined.
@@ -232,7 +280,9 @@ The following definitions are fairly obvious, and need no modification.
 
 \begin{defn}\label{ct:functor}
   Let $A$ and $B$ be precategories.
-  A \define{functor} $F:A\to B$ consists of
+  A \define{functor}
+  \indexdef{functor}%
+  $F:A\to B$ consists of
   \begin{enumerate}
   \item A function $F_0:A_0\to B_0$, generally also denoted $F$.
   \item For each $a,b:A$, a function $F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)$, generally also denoted $F$.
@@ -245,7 +295,10 @@ The following definitions are fairly obvious, and need no modification.
 Note that by induction on identity, a functor also preserves \idtoiso.
 
 \begin{defn}\label{ct:nattrans}
-  For functors $F,G:A\to B$, a \define{natural transformation} $\gamma:F\to G$ consists of
+  For functors $F,G:A\to B$, a \define{natural transformation}
+  \indexdef{natural!transformation}%
+  \indexsee{transformation!natural}{natural transformation}%
+  $\gamma:F\to G$ consists of
   \begin{enumerate}
   \item For each $a:A$, a morphism $\gamma_a:\hom_B(Fa,Ga)$ (the ``components'').
   \item For each $a,b:A$ and $f:\hom_A(a,b)$, we have $\id{Gf\circ \gamma_a}{\gamma_b\circ Ff}$ (the ``naturality axiom'').
@@ -259,6 +312,7 @@ In particular, for any $F$ and $G$, the type of natural transformations from $F$
 Similarly, identity of functors is determined by identity of the functions $A_0\to B_0$ and (transported along this) of the corresponding functions on hom-sets.
 
 \begin{defn}\label{ct:functor-precat}
+  \indexdef{precategory!of functors}%
   For precategories $A,B$, there is a precategory $B^A$ defined by
   \begin{itemize}
   \item $(B^A)_0$ is the type of functors from $A$ to $B$.
@@ -274,6 +328,8 @@ Similarly, identity of functors is determined by identity of the functions $A_0\
 \end{proof}
 
 \begin{lem}\label{ct:natiso}
+  \index{natural!isomorphism}%
+  \index{isomorphism!natural}%
   A natural transformation $\gamma:F\to G$ is an isomorphism in $B^A$ if and only if each $\gamma_a$ is an isomorphism in $B$.
 \end{lem}
 \begin{proof}
@@ -290,6 +346,7 @@ We define a natural transformation $\delta:G\to F$ with components $\delta_a$; f
 The following result is fundamental.
 
 \begin{thm}\label{ct:functor-cat}
+  \indexdef{category!of functors}%
   If $A$ is a precategory and $B$ is a category, then $B^A$ is a category.
 \end{thm}
 \begin{proof}
@@ -360,17 +417,20 @@ We now define all the usual ways to compose functors and natural transformations
     ((\delta G)(H\gamma))_a
     &\jdeq (\delta G)_{a}(H\gamma)_a\\
     &\jdeq \delta_{Ga}\circ H(\gamma_a)\\
-    &= K(\gamma_a) \circ \delta_{Fa} \hspace{2cm}\text{(by naturality of $\delta$)}\\
+    &= K(\gamma_a) \circ \delta_{Fa} \tag{by naturality of $\delta$}\\
     &\jdeq (K \gamma)_a\circ (\delta F)_a\\
     &\jdeq ((K \gamma)(\delta F))_a.\qedhere
   \end{align*}
 \end{proof}
 
+\index{horizontal composition!of natural transformations}%
+\index{classical!category theory}%
 Classically, one defines the ``horizontal composite'' of $\gamma:F\to G$ and $\delta:H\to K$ to be the common value of ${(\delta G)(H\gamma)}$ and ${(K\gamma)(\delta F)}$.
 We will refrain from doing this, because while equal, these two transformations are not \emph{definitionally} equal.
 This also has the consequence that we can use the symbol $\circ$ (or juxtaposition) for all kinds of composition unambiguously: there is only one way to compose two natural transformations (as opposed to composing a natural transformation with a functor on either side).
 
 \begin{lem}\label{ct:functor-assoc}
+  \index{associativity!of functor composition}
   Composition of functors is associative: $\id{H(GF)}{(HG)F}$.
 \end{lem}
 \begin{proof}
@@ -382,6 +442,7 @@ The equality in \autoref{ct:functor-assoc} is likewise not definitional.
 (Composition of functions is definitionally associative, but the axioms that go into a functor must also be composed, and this breaks definitional associativity.)  For this reason, we need also to know about \emph{coherence} for associativity.
 
 \begin{lem}\label{ct:pentagon}
+  \index{associativity!of functor composition!coherence of}%
   \autoref{ct:functor-assoc} is coherent, i.e.\ the following pentagon of equalities commutes:
   \[ \xymatrix{ & K(H(GF)) \ar@{=}[dl] \ar@{=}[dr]\\
     (KH)(GF) \ar@{=}[d] && K((HG)F) \ar@{=}[d]\\
@@ -410,22 +471,32 @@ See \autoref{ct:pre2cat,ct:2cat} for further development of these ideas.
 \section{Adjunctions}
 \label{sec:adjunctions}
 
+The definition of adjoint functors is straightforward; the main interesting aspect arises from proof-relevance.
+
 \begin{defn}
-  A functor $F:A\to B$ is a \define{left adjoint} if there exists
+  A functor $F:A\to B$ is a \define{left adjoint}
+  \indexdef{left!adjoint}%
+  \indexdef{adjoint!functor}%
+  \indexdef{right!adjoint}%
+  \indexdef{adjoint!functor}%
+  \index{functor!adjoint}%
+  if there exists
   \begin{itemize}
   \item A functor $G:B\to A$.
-  \item A natural transformation $\eta:1_A \to GF$.
-  \item A natural transformation $\epsilon:FG\to 1_B$.
+  \item A natural transformation $\eta:1_A \to GF$ (the \define{unit}\indexdef{unit!of an adjunction}).
+  \item A natural transformation $\epsilon:FG\to 1_B$ (the \define{counit}\indexdef{counit!of an adjunction}).
   \item $\id{(\epsilon F)(F\eta)}{1_F}$.
   \item $\id{(G\epsilon)(\eta G)}{1_G}$.
   \end{itemize}
 \end{defn}
 
+We leave it to the reader to define right adjoints analogously.
+
 \begin{lem}\label{ct:adjprop}
   If $A$ is a category (but $B$ may be only a precategory), then the type ``$F$ is a left adjoint'' is a mere proposition.
 \end{lem}
 \begin{proof}
-  Suppose given $(G,\eta,\epsilon)$ with the triangle identities and also $(G',\eta',\epsilon')$.
+  Suppose we are given $(G,\eta,\epsilon)$ with the triangle identities and also $(G',\eta',\epsilon')$.
   Define $\gamma:G\to G'$ to be $(G'\epsilon)(\eta' G)$, and $\delta:G'\to G$ to be $(G\epsilon')(\eta G')$.
   Then
   \begin{align*}
@@ -459,9 +530,19 @@ In \autoref{sec:yoneda} we will give another proof of \autoref{ct:adjprop}.
 \section{Equivalences}
 \label{sec:equivalences}
 
-\begin{defn}
-  A functor $F:A\to B$ is an \define{equivalence of (pre)categories} if it is a left adjoint for which $\eta$ and $\epsilon$ are isomorphisms.
-  We write $A\simeq B$ for the type of equivalences of categories from $A$ to $B$.
+It is usual in category theory to define an \emph{equivalence of categories} to be a functor $F:A\to B$ such that there exists a functor $G:B\to A$ and natural isomorphisms $F G \cong 1_B$ and $G F \cong 1_A$.
+Unlike the property of being an adjunction, however, this would not be a mere proposition without truncating it, for the same reasons that the type of quasi-inverses is ill-behaved (see \autoref{sec:quasi-inverses}).
+And as in \autoref{sec:hae}, we can avoid this by using the usual notion of \emph{adjoint} equivalence.
+\indexdef{adjoint!equivalence!of (pre)categories}
+
+\begin{defn}\label{ct:equiv}
+  A functor $F:A\to B$ is an \define{equivalence of (pre)categories}
+  \indexdef{equivalence!of (pre)categories}%
+  \indexdef{category!equivalence of}%
+  \indexdef{precategory!equivalence of}%
+  \index{functor!equivalence}%
+  if it is a left adjoint for which $\eta$ and $\epsilon$ are isomorphisms.
+  We write $\cteqv A B$ for the type of equivalences of categories from $A$ to $B$.
 \end{defn}
 
 By \autoref{ct:adjprop,ct:isoprop}, if $A$ is a category, then the type ``$F$ is an equivalence of precategories'' is a mere proposition.
@@ -474,14 +555,25 @@ By \autoref{ct:adjprop,ct:isoprop}, if $A$ is a category, then the type ``$F$ is
 \end{proof}
 
 \begin{defn}
-  We say a functor $F:A\to B$ is \define{faithful} if for all $a,b:A$, the function
+  We say a functor $F:A\to B$ is \define{faithful}
+  \indexdef{functor!faithful}%
+  \index{faithful functor}%a
+  if for all $a,b:A$, the function
   \[F_{a,b}:\hom_A(a,b) \to \hom_B(Fa,Fb)\]
-  is injective, and \define{full} if for all $a,b:A$ this function is surjective.
+  is injective, and \define{full}
+  \indexdef{functor!full}%
+  \indexdef{full functor}%
+  if for all $a,b:A$ this function is surjective.
   If it is both (hence each $F_{a,b}$ is an equivalence) we say $F$ is \define{fully faithful}.
+  \indexdef{functor!fully faithful}%
+  \indexdef{fully faithful functor}%
 \end{defn}
 
 \begin{defn}
-  We say a functor $F:A\to B$ is \define{split essentially surjective} if for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.
+  We say a functor $F:A\to B$ is \define{split essentially surjective}
+  \indexdef{functor!split essentially surjective}%
+  \indexdef{split!esssentially surjective functor}%
+  if for all $b:B$ there exists an $a:A$ such that $Fa\cong b$.
 \end{defn}
 
 \begin{lem}\label{ct:ffeso}
@@ -539,8 +631,15 @@ However, if $B$ is not a category, then neither type in \autoref{ct:ffeso} may n
 This suggests considering as well the following notions.
 
 \begin{defn}
-  A functor $F:A\to B$ is \define{essentially surjective} if for all $b:B$, there \emph{merely} exists an $a:A$ such that $Fa\cong b$.
-  We say $F$ is a \define{weak equivalence} if it is fully faithful and essentially surjective.
+  A functor $F:A\to B$ is \define{essentially surjective}
+  \indexdef{functor!essentially surjective}%
+  \indexdef{essentially surjective functor}%
+  if for all $b:B$, there \emph{merely} exists an $a:A$ such that $Fa\cong b$.
+  We say $F$ is a \define{weak equivalence}
+  \indexsee{equivalence!of (pre)categories!weak}{weak equivalence}%
+  \indexdef{weak equivalence!of precategories}%
+  \indexsee{functor!weak equivalence}{weak equivalence}%
+  if it is fully faithful and essentially surjective.
 \end{defn}
 
 Being a weak equivalence is \emph{always} a mere proposition.
@@ -555,20 +654,24 @@ For categories, however, there is no difference between equivalences and weak on
   Then $\inv{f'}\circ f$ is an isomorphism $Fa \cong Fa'$.
   Since $F$ is fully faithful, we have $g:a\cong a'$ with $Fg = \inv{f'}\circ f$.
   And since $A$ is a category, we have $p:a=a'$ with $\idtoiso(p)=g$.
-  Now $Fg = \inv{f'}\circ f$ implies $\trans{(\map{(F_0)}{p})}{f} = f'$, hence (by the characterization of equalities in dependent sums) $(a,f)=(a',f')$.
+  Now $Fg = \inv{f'}\circ f$ implies $\trans{(\map{(F_0)}{p})}{f} = f'$, hence (by the characterization of equalities in dependent pair types) $(a,f)=(a',f')$.
 
   Thus, for fully faithful functors whose domain is a category, essential surjectivity is equivalent to split essential surjectivity, and so being a weak equivalence is equivalent to being an equivalence.
 \end{proof}
 
 This is an important advantage of our category theory over set-based approaches.
-With a purely set-based definition of category, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the mere axiom of choice (that is, the strong one, not the trivial one).
-Here we have it for free, as a category-theoretic version of the function comprehension principle.
+With a purely set-based definition of category, the statement ``every fully faithful and essentially surjective functor is an equivalence of categories'' is equivalent to the axiom of choice \choice{}.
+Here we have it for free, as a category-theoretic version of the principle of unique choice (\autoref{sec:unique-choice}).
 (In fact, this property characterizes categories among precategories; see \autoref{sec:rezk}.)
 
 On the other hand, the following characterization of equivalences of categories is perhaps even more useful.
 
 \begin{defn}\label{ct:isocat}
-  A functor $F:A\to B$ is an \define{isomorphism of (pre)categories} if $F$ is fully faithful and $F_0:A_0\to B_0$ is an equivalence of types.
+  A functor $F:A\to B$ is an \define{isomorphism of (pre)cat\-ego\-ries}
+  \indexdef{isomorphism!of (pre)categories}%
+  \indexdef{category!isomorphism of}%
+  \indexdef{precategory!isomorphism of}%
+  if $F$ is fully faithful and $F_0:A_0\to B_0$ is an equivalence of types.
 \end{defn}
 
 Note that being an isomorphism of precategories is always a mere property.
@@ -657,7 +760,7 @@ Note that if $B_0$ is not a 1-type, then~\eqref{eq:ct:isoprecattri} may not be a
     \circ g\\
     &= g.
   \end{align*}
-  (There are lemmas needed here regarding the compatibility between \idtoiso and whiskering, which we leave it to the reader to state and prove.)
+  (There are lemmas needed here regarding the compatibility of \idtoiso and whiskering, which we leave it to the reader to state and prove.)
   Thus, $F_{a,a'}$ is an equivalence, so $F$ is fully faithful; i.e.~\ref{item:ct:ipc1} holds.
 
   Now the composite~\ref{item:ct:ipc1}$\to$\ref{item:ct:ipc2}$\to$\ref{item:ct:ipc1} is equal to the identity since~\ref{item:ct:ipc1} is a mere proposition.
@@ -672,7 +775,7 @@ Note that if $B_0$ is not a 1-type, then~\eqref{eq:ct:isoprecattri} may not be a
   where $\overline{G}$ is defined by~\eqref{eq:ct:gbar}.
   However, this follows from functoriality of $G$ and the \emph{other} triangle identity, which we have seen in \autoref{cha:equivalences} is equivalent to~\eqref{eq:ct:ipctri}.
 
-  Now since~\ref{item:ct:ipc1} is a mere proposition, so is~\ref{item:ct:ipc2}, so it suffices to show they are co-inhabited with~\ref{item:ct:ipc3}.
+  Now since~\ref{item:ct:ipc1} is a mere proposition, so is~\ref{item:ct:ipc2}, so it suffices to show they are logically equivalent to~\ref{item:ct:ipc3}.
   Of course,~\ref{item:ct:ipc2}$\to$\ref{item:ct:ipc3}, so let us assume~\ref{item:ct:ipc3}.
   Since~\ref{item:ct:ipc1} is a mere proposition, we may assume given $G$, $\eta$, and $\epsilon$.
   Then $G_0$ along with $\eta$ and $\epsilon$ imply that $F_0$ is an equivalence.
@@ -697,7 +800,7 @@ However, for categories, the two notions coincide.
   For categories $A$ and $B$, a functor $F:A\to B$ is an equivalence of categories if and only if it is an isomorphism of categories.
 \end{lem}
 \begin{proof}
-  Since both are mere properties, it suffices to show they are co-inhabited.
+  Since both are mere properties, it suffices to show they are logically equivalent.
   So first suppose $F$ is an equivalence of categories, with $(G,\eta,\epsilon)$ given.
   We have already seen that $F$ is fully faithful.
   By \autoref{ct:functor-cat}, the natural isomorphisms $\eta$ and $\epsilon$ yield identities $\id{1_A}{GF}$ and $\id{FG}{1_B}$, hence in particular identities $\id{\idfunc[A]}{G_0\circ F_0}$ and $\id{F_0\circ G_0}{\idfunc[B]}$.
@@ -722,7 +825,8 @@ However, the univalence axiom implies that it coincides with isomorphism.
   \item an identity $P_0:\id{A_0}{B_0}$,
   \item for each $a,b:A_0$, an identity
     \[P_{a,b}:\id{\hom_A(a,b)}{\hom_B(\trans {P_0} a,\trans {P_0} b)},\]
-  \item identities $\id{\trans {(P_{a,a})} {1_a}}{1_{\trans {P_0} a}}$ and $\id{\trans {(P_{a,c})} {gf}}{\trans {(P_{b,c})} g \circ \trans {(P_{a,b})} f}$.
+  \item identities $\id{\trans {(P_{a,a})} {1_a}}{1_{\trans {P_0} a}}$ and
+    \narrowequation{\id{\trans {(P_{a,c})} {gf}}{\trans {(P_{b,c})} g \circ \trans {(P_{a,b})} f}.}
   \end{itemize}
   (Again, we use the fact that the identity types of hom-sets are mere propositions.)
   However, by univalence, this is equivalent to giving
@@ -741,7 +845,7 @@ We can interpret this as saying that categories, functors, and natural transform
 
 \begin{thm}\label{ct:cat-2cat}
   If $A$ and $B$ are categories, then the function
-  \[(\id A B) \to (A\simeq B)\]
+  \[(\id A B) \to (\cteqv A B)\]
   (defined by induction from the identity functor) is an equivalence of types.
 \end{thm}
 \begin{proof}
@@ -749,7 +853,7 @@ We can interpret this as saying that categories, functors, and natural transform
 \end{proof}
 
 As a consequence, the type of categories is a 2-type.
-For since $A\simeq B$ is a subtype of the type of functors from $A$ to $B$, which are the objects of a category, it is a 1-type; hence the identity types $\id A B$ are also 1-types.
+For since $\cteqv A B$ is a subtype of the type of functors from $A$ to $B$, which are the objects of a category, it is a 1-type; hence the identity types $\id A B$ are also 1-types.
 
 
 \section{The Yoneda lemma}
@@ -759,14 +863,23 @@ Recall that we have a category \uset whose objects are sets and whose morphisms 
 We now show that every precategory has a \uset-valued hom-functor.
 First we need to define opposites and products of (pre)categories.
 
-\begin{defn}
-  For a precategory $A$, its \define{opposite} $A\op$ is a precategory with the same type of objects, with $\hom_{A\op}(a,b) \defeq \hom_A(b,a)$, and with identities and composition inherited from $A$.
+\begin{defn}\label{ct:opposite-category}
+  For a precategory $A$, its \define{opposite}
+  \indexdef{opposite!of a (pre)category}%
+  \indexdef{precategory!opposite}%
+  \indexdef{category!opposite}%
+  $A\op$ is a precategory with the same type of objects, with $\hom_{A\op}(a,b) \defeq \hom_A(b,a)$, and with identities and composition inherited from $A$.
 \end{defn}
 
 \begin{defn}
-  For precategories $A$ and $B$, their \define{product} $A\times B$ is a precategory with $(A\times B)_0 \defeq A_0 \times B_0$ and
+  For precategories $A$ and $B$, their \define{product}
+  \index{precategory!product of}%
+  \index{category!product of}%
+  \index{product!of (pre)categories}%
+  $A\times B$ is a precategory with $(A\times B)_0 \defeq A_0 \times B_0$ and
   \[\hom_{A\times B}((a,b),(a',b')) \defeq \hom_A(a,a') \times \hom_B(b,b').\]
-  Identities are defined by $1_{(a,b)}\defeq (1_a,1_b)$ and composition by $(g,g')(f,f') \defeq ((gf),(g'f'))$.
+  Identities are defined by $1_{(a,b)}\defeq (1_a,1_b)$ and composition by
+  \narrowequation{(g,g')(f,f') \defeq ((gf),(g'f')).}
 \end{defn}
 
 \begin{lem}\label{ct:functorexpadj}
@@ -807,8 +920,11 @@ For a morphism $(f,f') : \hom_{A\op\times A}((a,b),(a',b'))$, by definition we h
 Functoriality is easy to check.
 
 By \autoref{ct:functorexpadj}, therefore, we have an induced functor $\y:A\to \uset^{A\op}$, which we call the \define{Yoneda embedding}.
+\indexdef{Yoneda!embedding}%
+\indexdef{embedding!Yoneda}%
 
 \begin{thm}[The Yoneda lemma]\label{ct:yoneda}
+  \index{Yoneda!lemma}
   For any precategory $A$, any $a:A$, and any functor $F:\uset^{A\op}$, we have an isomorphism
   \begin{equation}\label{eq:yoneda}
     \hom_{\uset^{A\op}}(\y a, F) \cong Fa.
@@ -858,7 +974,10 @@ By \autoref{ct:functorexpadj}, therefore, we have an induced functor $\y:A\to \u
 \end{proof}
 
 \begin{defn}\label{ct:representable}
-  A functor $F:\uset^{A\op}$ is said to be \define{representable} if there exists $a:A$ and an isomorphism $\y a \cong F$.
+  A functor $F:\uset^{A\op}$ is said to be \define{representable}
+  \indexdef{functor!representable}%
+  \indexdef{representable functor}%
+  if there exists $a:A$ and an isomorphism $\y a \cong F$.
 \end{defn}
 
 \begin{thm}\label{ct:representable-prop}
@@ -876,7 +995,7 @@ First we give a characterization of adjunctions in terms of representability.
 \begin{lem}\label{ct:adj-repr}
   For any precategories $A$ and $B$ and a functor $F:A\to B$, the following types are equivalent.
   \begin{enumerate}
-  \item $F$ is a left adjoint.\label{item:ct:ar1}
+  \item $F$ is a left adjoint\index{adjoint!functor}.\label{item:ct:ar1}
   \item For each $b:B$, the functor $(a \mapsto \hom_B(Fa,b))$ from $A\op$ to \uset is representable.\label{item:ct:ar2}
   \end{enumerate}
 \end{lem}
@@ -964,11 +1083,16 @@ First we give a characterization of adjunctions in terms of representability.
 \label{sec:strict-categories}
 
 \begin{defn}
-  A \define{strict category} is a precategory whose type of objects is a set.
+  A \define{strict category}
+  \indexdef{category!strict}%
+  \indexdef{strict!category}%
+  is a precategory whose type of objects is a set.
 \end{defn}
 
 In accordance with the mathematical red herring principle, a strict category is not necessarily a category.
 In fact, a category is a strict category precisely when it is gaunt (\autoref{ct:gaunt}).
+\index{gaunt category}%
+\index{category!gaunt}%
 Most of the time, category theory is about categories, not strict ones, but sometimes one wants to consider strict categories.
 The main advantage of this is that strict categories have a stricter notion of ``sameness'' than equivalence, namely isomorphism (or equivalently, by \autoref{ct:cat-eq-iso}, equality).
 
@@ -978,6 +1102,7 @@ Here is one origin of strict categories.
   Let $A$ be a precategory and $x:A$ an object.
   Then there is a precategory $\mathsf{mono}(A,x)$ as follows:
   \begin{itemize}
+    \index{monomorphism}%
   \item Its objects consist of an object $y:A$ and a monomorphism $m:\hom_A(y,x)$.
     (As usual, $m:\hom_A(y,x)$ is a monomorphism if $(m\circ f = m\circ g) \Rightarrow (f=g)$.)
   \item Its morphisms from $(y,m)$ to $(z,n)$ are arbitrary morphisms from $y$ to $z$ in $A$ (not necessarily respecting $m$ and $n$).
@@ -992,10 +1117,15 @@ This example can be dualized, and generalized in various ways.
 Here is an interesting application of strict categories.
 
 \begin{eg}\label{ct:galois}
-  Let $E/F$ be a finite Galois extension of fields, and $G$ its Galois group.
+  Let $E/F$ be a finite Galois extension
+  \index{Galois!extension}%
+  of fields, and $G$ its Galois group.
+  \index{Galois!group}%
   Then there is a strict category whose objects are intermediate fields $F\subseteq K\subseteq E$, and whose morphisms are field homomorphisms which fix $F$ pointwise (but need not commute with the inclusions into $E$).
   There is another strict category whose objects are subgroups $H\subseteq G$, and whose morphisms are morphisms of $G$-sets $G/H \to G/K$.
-  The fundamental theorem of Galois theory says that these two precategories are isomorphic (not merely equivalent).
+  The fundamental theorem of Galois theory
+  \index{fundamental!theorem of Galois theory}%
+  says that these two precategories are isomorphic (not merely equivalent).
 \end{eg}
 
 
@@ -1005,7 +1135,9 @@ Here is an interesting application of strict categories.
 It is also worth mentioning a useful kind of precategory whose type of objects is not a set, but which is not a category either.
 
 \begin{defn}
-  A \define{$\dagger$-precategory} is a precategory $A$ together with the following.
+  A \define{$\dagger$-precategory}
+  \indexdef{.dagger-precategory@$\dagger$-precategory}%
+  is a precategory $A$ together with the following.
   \begin{enumerate}
   \item For each $x,y:A$, a function $\dgr{(-)}:\hom_A(x,y) \to \hom_A(y,x)$.
   \item For all $x:A$, we have $\dgr{(1_x)} = 1_x$.
@@ -1014,8 +1146,12 @@ It is also worth mentioning a useful kind of precategory whose type of objects i
   \end{enumerate}
 \end{defn}
 
-\begin{defn}
-  A morphism $f:\hom_A(x,y)$ in a $\dagger$-precategory is \define{unitary} if $\dgr f \circ f = 1_x$ and $f\circ \dgr f = 1_y$.
+\begin{defn}\label{ct:unitary}
+  A morphism $f:\hom_A(x,y)$ in a $\dagger$-precategory is \define{unitary}
+  \indexdef{.dagger-precategory@$\dagger$-precategory!unitary morphism in}%
+  \indexdef{unitary morphism}%
+  \indexdef{morphism!unitary}%
+  if $\dgr f \circ f = 1_x$ and $f\circ \dgr f = 1_y$.
 \end{defn}
 
 Of course, every unitary morphism is an isomorphism, and being unitary is a mere proposition.
@@ -1030,13 +1166,15 @@ Thus for each $x,y:A$ we have a set of unitary isomorphisms from $x$ to $y$, whi
 \end{proof}
 
 \begin{defn}
-  A \define{$\dagger$-category} is a $\dagger$-precategory such that for all $x,y:A$, the function
+  A \define{$\dagger$-category}
+  \indexdef{.dagger-category@$\dagger$-category}%
+  is a $\dagger$-precategory such that for all $x,y:A$, the function
   \[ (x=y) \to (x \unitaryiso y) \]
   from \autoref{ct:idtounitary} is an equivalence.
 \end{defn}
 
 \begin{eg}
-  The category \urel from \autoref{ct:rel} becomes a $\dagger$-precategory if we define $(\dgr R)(y,x) \defeq R(x,y)$.
+  The category \urel from \autoref{ct:rel} becomes a $\dagger$-pre\-cat\-e\-go\-ry if we define $(\dgr R)(y,x) \defeq R(x,y)$.
   The proof that \urel is a category actually shows that every isomorphism is unitary; hence \urel is also a $\dagger$-category.
 \end{eg}
 
@@ -1047,17 +1185,19 @@ Thus for each $x,y:A$ we have a set of unitary isomorphisms from $x$ to $y$, whi
 \begin{eg}\label{ct:hilb}
   Let \uhilb be the following precategory.
   \begin{itemize}
-  \item Its objects are finite-dimensional vector spaces equipped with an inner product $\langle -,-\rangle$.
+  \item Its objects are finite-dimensional vector spaces\index{vector!space} equipped with an inner product $\langle -,-\rangle$.
   \item Its morphisms are arbitrary linear maps.
+    \index{function!linear}%
+    \indexsee{linear map}{function!linear}%
   \end{itemize}
   By standard linear algebra, any linear map $f:V\to W$ between finite
-  dimensional inner product spaces has a uniquely defined adjoint $\dgr f:W\to V$, characterized by $\langle f v,w\rangle = \langle v,\dgr f w\rangle$.
+  dimensional inner product spaces has a uniquely defined adjoint\index{adjoint!linear map} $\dgr f:W\to V$, characterized by $\langle f v,w\rangle = \langle v,\dgr f w\rangle$.
   In this way, \uhilb becomes a $\dagger$-precategory.
   Moreover, a linear isomorphism is unitary precisely when it is an \emph{isometry}, i.e.\ $\langle fv,fw\rangle = \langle v,w\rangle$.
   It follows from this that \uhilb is a $\dagger$-category, though it is not a category (not every linear isomorphism is unitary).
 \end{eg}
 
-There has been a good deal of general theory developed for $\dagger$-categories under classical foundations.
+There has been a good deal of general theory developed for $\dagger$-cat\-e\-gor\-ies under classical\index{mathematics!classical}\index{classical!category theory} foundations.
 It was observed early on that the unitary isomorphisms, not arbitrary isomorphisms, are the correct notion of ``sameness'' for objects of a $\dagger$-category, which has caused some consternation among category theorists.
 Homotopy type theory resolves this issue by identifying $\dagger$-categories, like strict categories, as simply a different kind of precategory.
 
@@ -1074,20 +1214,28 @@ dependently-sorted, infinitary, or even higher order.
 The simplest kind of single-sorted structure consists of a type with
 no additional structure.  The univalence axiom expresses the structure identity principle for that
 notion of structure in a strong form: for types $A,B$, the
-canonical function $(A=B)\to (A\simeq B)$ is an equivalence.
+canonical function $(A=B)\to (\eqv A B)$ is an equivalence.
 
 We start with a precategory $X$.  In our application to
 single-sorted first order structures, $X$ will be the category %\uset%
 of $\bbU$-small sets, where $\bbU$ is a univalent type universe.
 
 \begin{defn}\label{ct:sig}
-  A \define{notion of structure} $(P,H)$ over $X$ consists of the following.
+  A \define{notion of structure} 
+  \indexdef{structure!notion of}%
+  $(P,H)$ over $X$ consists of the following.
   \begin{enumerate}
   \item A function $P:X_0 \to \type$.
-    For each $x:X_0$ the elements of $Px$ are called \define{$(P,H)$-structures} on $x$.
+    For each $x:X_0$ the elements of $Px$ are called \define{$(P,H)$-structures}
+    \indexsee{PH-structure@$(P,H)$-structure}{structure}%
+    \indexdef{structure!PH@$(P,H)$-}%
+    on $x$.
   \item For $x,y:X_0$ and $\alpha:Px$, $\;\beta:Py$, to each $f:\hom_X(x,y)$ a mere proposition 
   \[ H_{\alpha\beta}(f).\]
-    If $H_{\alpha\beta}(f)$ is true, we say that $f$ is a \define{$(P,H)$-homomorphism} from $\alpha$ to $\beta$.
+    If $H_{\alpha\beta}(f)$ is true, we say that $f$ is a \define{$(P,H)$-homomorphism}
+    \indexdef{homomorphism!of structures}%
+    \indexdef{structure!homomorphism of}%
+    from $\alpha$ to $\beta$.
   \item For $x:X_0$ and $\alpha:Px$, we have $H_{\alpha\alpha}(1_x)$.\label{item:sigid}
   \item For $x,y,z:X_0$ and $\alpha:Px$, $\;\beta:Py$, $\;\gamma:Pz$, 
 if $f:\hom_X(x,y)$, we have 
@@ -1096,24 +1244,30 @@ if $f:\hom_X(x,y)$, we have
   When $(P,H)$ is a notion of structure, for $\alpha,\beta:Px$ we define
   \[ \alpha\leq_x\beta \defeq H_{\alpha\beta}(1_x).\]
   By~\ref{item:sigid} and~\ref{item:sigcmp}, this is a preorder (\autoref{ct:orders}) with $Px$ its type of objects.
-  We say that $(P,H)$ is a \define{standard notion of structure} if this preorder is in fact a partial order, for all $x:X$.
+  We say that $(P,H)$ is a \define{standard notion of structure}
+  \indexdef{structure!standard notion of}%
+  if this preorder is in fact a partial order, for all $x:X$.
 \end{defn}
 
 Note that for a standard notion of structure, each type $Px$ must actually be a set.
-We now define, for any notion of structure $(P,H)$, a precategory of \define{$(P,H)$-structures}, $A = \mathsf{Str}_{(P,H)}(X)$.
+We now define, for any notion of structure $(P,H)$, a \define{precategory of $(P,H)$-structures},
+\indexdef{precategory!of PH-structures@of $(P,H)$-structures}%
+\indexdef{structure!precategory of PH@precategory of $(P,H)$-}%
+$A = \mathsf{Str}_{(P,H)}(X)$.
 \begin{itemize}
 \item The type of objects of $A$ is the type $A_0 \defeq \sm{x:X} Px$.
   If $a\jdeq (x,\alpha):A_0$, we may write $|a| \defeq x$.
 \item For $(x,\alpha):A_0$ and $(y,\beta):A_0$, we define
   \[\hom_A((x,\alpha),(y,\beta)) \defeq \setof{ f:x \to y | H_{\alpha\beta}(f)}.\]
 \end{itemize}
-The composition and identities are inherited from $X$; conditions~\ref{item:sigid} and~\ref{item:sigcmp} ensure that these lift to $A$.
+The composition and identities are inherited from $X$; conditions~\ref{item:sigid} and \ref{item:sigcmp} ensure that these lift to $A$.
 
 \begin{thm}[Structure identity principle]\label{thm:sip}
+  \index{structure identity principle}%
   If $X$ is a category and $(P,H)$ is a standard notion of structure over $X$, then the precategory $\mathsf{Str}_{(P,H)}(X)$ is a category.
 \end{thm}
 \begin{proof}
-  By the definition of equality in sum types, to give an equality $(x,\alpha)=(y,\beta)$ consists of
+  By the definition of equality in dependent pair types, to give an equality $(x,\alpha)=(y,\beta)$ consists of
   \begin{itemize}
   \item An equality $p:x=y$, and
   \item An equality $\trans{p}{\alpha}=\beta$.
@@ -1148,7 +1302,7 @@ As an example, this methodology gives an alternative way to express the proof of
 
   Now we define a notion of structure on $B^{A_0}$ for which $P(F_0)$ is the type of operations $F:\prd{a,a':A_0} \hom_A(a,a') \to \hom_B(F_0 a,F_0 a')$ which extend $F_0$ to a functor (i.e.\ preserve composition and identities).
   This is a set since each $\hom_B(-,-)$ is so.
-  Given such $F$ and $G$, we define $\gamma:\hom_{B^{A_0}}(F_0, G_0)$ to be a homomorphism if it forms a natural transformation.
+  Given such $F$ and $G$, we define $\gamma:\hom_{B^{A_0}}(F_0, G_0)$ to be a homomorphism if it forms a natural transformation.\index{natural!transformation}
   In \autoref{ct:functor-precat} we essentially verified that this is a notion of structure.
   Moreover, if $F$ and $F'$ are both structures on $F_0$ and the identity is a natural transformation from $F$ to $F'$, then for any $f:\hom_A(a,a')$ we have $F'f = F'f \circ 1_{F_0 a} = 1_{F_0 a}\circ F f = F f$.
   Applying function extensionality, we conclude $F = F'$.
@@ -1156,9 +1310,18 @@ As an example, this methodology gives an alternative way to express the proof of
 \end{eg}
 
 As another example, we consider categories of structures for a first-order signature.
-We define a \define{first order signature}, $\Omega$, to consist of sets $\Omega_0$ and $\Omega_1$ of function symbols, $\omega:\Omega_0$, and relation symbols, $\omega:\Omega_1$, each having an arity $|\omega|$ that is a set.
-An \define{$\Omega$-structure} $a$ consists of a set $|a|$ together with an assignment of an $|\omega|$-ary function $\omega^a:|a|^{|\omega|}\to |a|$ on $|a|$ to each function symbol, $\omega$, and an assignment of an $|\omega|$-ary relation $\omega^a$ on $|a|$, assigning a mere proposition $\omega^ax$ to each $x:|a|^{|\omega|}$, to each relation symbol.
-And given $\Omega$-structures $a,b$, a function $f:|a|\to |b|$ is a \define{homomorphism $a\to b$} if it preserves the structure; i.e.\ if for each symbol $\omega$ of the signature and each $x:|a|^{|\omega|}$,
+We define a \define{first-order signature},
+\indexdef{first-order signature}%
+\indexdef{signature!first-order}%
+$\Omega$, to consist of sets $\Omega_0$ and $\Omega_1$ of function symbols, $\omega:\Omega_0$, and relation symbols, $\omega:\Omega_1$, each having an arity\index{arity} $|\omega|$ that is a set.
+An \define{$\Omega$-structure}
+\indexdef{structure!Omega@$\Omega$-}%
+\indexsee{omega-structure@$\Omega$-structure}{structure}%
+$a$ consists of a set $|a|$ together with an assignment of an $|\omega|$-ary function $\omega^a:|a|^{|\omega|}\to |a|$ on $|a|$ to each function symbol, $\omega$, and an assignment of an $|\omega|$-ary relation $\omega^a$ on $|a|$, assigning a mere proposition $\omega^ax$ to each $x:|a|^{|\omega|}$, to each relation symbol.
+And given $\Omega$-structures $a,b$, a function $f:|a|\to |b|$ is a \define{homomorphism $a\to b$}
+\indexdef{homomorphism!of Omega-structures@of $\Omega$-structures}%
+\indexdef{structure!homomorphism of Omega@homomorphism of $\Omega$-}%
+if it preserves the structure; i.e.\ if for each symbol $\omega$ of the signature and each $x:|a|^{|\omega|}$,
 \begin{enumerate}
 \item $f(\omega^ax) = \omega^b(f\circ x)$ if $\omega:\Omega_0$, and
 \item $\omega^ax\to\omega^b(f\circ x)$ if $\omega:\Omega_1$.
@@ -1170,13 +1333,6 @@ We form the precategory $\uset_\bbU$ of $\bbU$-small sets, which is a category b
 
 We use the first order signature $\Omega$ to give us a standard notion of structure $(P,H)$ over $\uset_\bbU$.  
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%We assume given a function $fsymbol :|\Omega|\to\bbB$, where $\bbB$ is the %type of boolean values, having canonical elements $\bbt,\bbf$, so that if %$\omega :\Omega$ then we take
-% \begin{center}
-% ($\omega$ is a function symbol) 
-% \end{center}
-% to be the proposition $(fsymbol(x)=\bbt)$.  
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{defn}\label{defn:fo-notion-of-structure}
 \mbox{}
 \begin{enumerate}
@@ -1215,7 +1371,7 @@ In fact, we will give two.
 Both rely on the fact that ``categories see weak equivalences as equivalences''.
 
 To prove this, we begin with a couple of lemmas which are completely standard category theory, phrased carefully so as to make sure we are using the eliminator for $\truncf{-1}$ correctly.
-One would have to be similarly careful in classical category theory if one wanted to avoid the axiom of choice: any time we want to define a function, we need to characterize its values uniquely somehow.
+One would have to be similarly careful in classical\index{mathematics!classical}\index{classical!category theory} category theory if one wanted to avoid the axiom of choice: any time we want to define a function, we need to characterize its values uniquely somehow.
 
 \begin{lem}
   If $A,B,C$ are precategories and $H:A\to B$ is an essentially surjective functor, then $(-\circ H):C^B \to C^A$ is faithful.
@@ -1231,7 +1387,7 @@ One would have to be similarly careful in classical category theory if one wante
   \]
 \end{proof}
 
-\begin{lem}
+\begin{lem}\label{ct:esofull-precomp-ff}
   If $A,B,C$ are precategories and $H:A\to B$ is essentially surjective and full, then $(-\circ H):C^B \to C^A$ is fully faithful.
 \end{lem}
 \begin{proof}
@@ -1284,8 +1440,10 @@ One would have to be similarly careful in classical category theory if one wante
 
 The rest of the theorem follows almost exactly the same lines, with the category-ness of $C$ inserted in one crucial step, which we have bolded below for emphasis.
 This is the point at which we are trying to define a function into \emph{objects} without using choice, and so we must be careful about what it means for an object to be ``uniquely specified''.
-In classical category theory, all one can say is that this object is specified up to unique isomorphism, but in set-theoretic foundations this is not a sufficient amount of uniqueness to give us a function without invoking \choice{}.
+In classical\index{mathematics!classical}\index{classical!category theory} category theory, all one can say is that this object is specified up to unique isomorphism, but in set-theoretic foundations this is not a sufficient amount of uniqueness to give us a function without invoking \choice{}.
 In univalent foundations, however, if $C$ is a category, then isomorphism is equality, and we have the appropriate sort of uniqueness (namely, living in a contractible space).
+
+\index{weak equivalence!of precategories|(}%
 
 \begin{thm}\label{ct:cat-weq-eq}
   If $A,B$ are precategories, $C$ is a category, and $H:A\to B$ is a weak equivalence, then $(-\circ H):C^B \to C^A$ is an isomorphism.
@@ -1354,7 +1512,7 @@ In univalent foundations, however, if $C$ is a category, then isomorphism is equ
     &= k_{a_0',h_0'} \circ \inv{(Fm')} \circ F\ell\\
     &= k_{a',h'}\circ F\ell.
   \end{align*}
-  Whew!  We've shown that $Y_f$ is inhabited.
+  This completes the proof that $Y_f$ is inhabited.
   To show it is contractible, since hom-sets are sets, it thankfully suffices to take another $g_1:\hom_C(Gb,Gb')$ satisfying~\ref{item:eqvprop5} and show $g_0=g_1$.
   However, we still have our specified $a_0,h_0,a_0',h_0',\ell_0$ around, and~\ref{item:eqvprop5} implies both $g_0$ and $g_1$ must be equal to $k_{a_0',h_0'} \circ F \ell_0 \circ \inv{(k_{a_0,h_0})}$.
 
@@ -1370,6 +1528,9 @@ In univalent foundations, however, if $C$ is a category, then isomorphism is equ
 
 Therefore, if a precategory $A$ admits a weak equivalence functor $A\to \hat{A}$, then that is its ``reflection'' into categories: any functor from $A$ into a category will factor essentially uniquely through $\widehat{A}$.
 We now give two constructions of such a weak equivalence.
+
+\indexsee{Rezk completion}{completion, Rezk}%
+\index{completion!Rezk|(defstyle}%
 
 \begin{thm}
   For any precategory $A$, there is a category $\widehat A$ and a weak equivalence $A\to\widehat{A}$.
@@ -1434,11 +1595,11 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
     \hom_A(a,b) = \hom_A(a,b') = \hom_A(a',b')
   \end{gather*}
   are identical.
-  This follows from associativity: $(f\circ -)\circ \inv e = f\circ (-\circ \inv e)$.
+  This follows from associativity: $(f\circ \blank)\circ \inv e = f\circ (\blank\circ \inv e)$.
   The rest of the constructors for $y$ are trivial, since they are 2-fold equalities in sets.
 
   For the last three constructors of $x$, all but the first constructor for $y$ is likewise trivial.
-  When $x$ varies along the equality $\id{j(\idtoiso(p))}{\map i p}$ for $p:a=a'$ and $y$ is $ib$, we require $(-\circ \idtoiso(p) = \map{\hom_A(-,b)}{p}$, which follows by induction on $p$.
+  When $x$ varies along the equality $\id{j(\idtoiso(p))}{\map i p}$ for $p:a=a'$ and $y$ is $ib$, we require $(\blank\circ \idtoiso(p)) = \map{\hom_A(\blank,b)}{p}$, which follows by induction on $p$.
   Finally, when $x$ varies along $j(1_a)=\refl{ia}$, we use the identity axiom again, and when $x$ varies along $\id{j(g\circ f)}{j(g)\ct j(f)}$, we use associativity again.
   This completes the construction of $\hom_{\widehat A}:\widehat A_0 \to \widehat A_0 \to \set$.
 
@@ -1488,6 +1649,7 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
   However, for any $p$ we have $\idtoiso(p) = \trans{p}{1}$, so in particular $\idtoiso (j(g)) = \trans{j(g)}{1_{ia}}$.
   And by definition of $\hom_{\widehat A}$ on equalities, this is given by composing $1_{ia}$ with the equivalence $g$, hence is equal to $g$.
 
+  \index{encode-decode method}%
   Note the similarity of this step to the \encode/\decode arguments used in \autoref{sec:compute-coprod,sec:compute-nat,cha:homotopy}.
   Once again we are characterizing the identity types of a higher inductive type (here, $\widehat A_0$) by defining recursively a family of codes (here, $(x,y)\mapsto (x\cong y)$) and encoding and decoding functions by induction on $\widehat A_0$ and on paths.
 
@@ -1502,13 +1664,21 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
   (Note that if we were trying to prove $I$ to be \emph{split} essentially surjective, we would be stuck, because we know nothing about equalities in $A_0$ and thus have no way to deal with any further constructors.)
 \end{proof}
 
-We call the construction $A\mapsto \widehat A$ the \define{Rezk completion}, although there is also an argument (coming from higher topos semantics) for calling it the \define{stack completion}.
+We call the construction $A\mapsto \widehat A$ the \define{Rezk completion},
+although there is also an argument (coming from higher topos semantics)
+\index{.infinity1-topos@$(\infty,1)$-topos}%
+for calling it the \define{stack completion}.
+\index{stack}%
+\index{completion!Rezk|)}%
 
 We have seen that most precategories arising in practice are categories, since they are constructed from \uset, which is a category by the univalence axiom.
 However, there are a few cases in which the Rezk completion is necessary to obtain a category.
 
 \begin{eg}\label{ct:rezk-fundgpd-trunc1}
   Recall from \autoref{ct:fundgpd} that for any type $X$ there is a pregroupoid with $X$ as its type of objects and $\hom(x,y) \defeq \pizero{x=y}$.
+  \indexdef{fundamental!groupoid}%
+  \index{fundamental!pregroupoid}%
+  \indexsee{groupoid!fundamental}{fundamental groupoid}%
   Its Rezk completion is the \emph{fundamental groupoid} of $X$.
   Recalling that groupoids are equivalent to 1-types, it is not hard to identify this groupoid with $\trunc1X$.
 \end{eg}
@@ -1516,6 +1686,7 @@ However, there are a few cases in which the Rezk completion is necessary to obta
 \begin{eg}\label{ct:hocat}
   Recall from \autoref{ct:hoprecat} that there is a precategory whose type of objects is \type and with $\hom(X,Y) \defeq \pizero{X\to Y}$.
   Its Rezk completion may be called the \define{homotopy category of types}.
+  \index{category!of types}
   Its type of objects can be identified with $\trunc1\type$ (see \autoref{ct:ex:hocat}).
 \end{eg}
 
@@ -1534,6 +1705,8 @@ Thus, insofar as the latter is inevitable, so is the former.
   But then since $\widehat A$ is a category, so is $A$.
 \end{proof}
 
+\index{weak equivalence!of precategories|)}%
+
 
 \newpage
 
@@ -1551,25 +1724,34 @@ The fact that categories satisfying the ``saturation'' or ``univalence'' princip
 This framework puts all the above examples in a unified context: some precategories are categories, others are strict categories, and so on.
 A general theorem that ``isomorphism implies equality'' for a large class of algebraic structures (assuming the univalence axiom) was proven by Coquand and Danielsson; the formulation of the structure identity principle in \autoref{sec:sip} is due to Aczel.
 
-Independently of philosophical considerations about category theory, Rezk~\cite{rezk01css} discovered that when defining a notion of $(\infty,1)$-category, it was very convenient to use not merely a \emph{set} of objects with spaces of morphisms between them, but a \emph{space} of objects incorporating all the equivalences and homotopies between them.
+Independently of philosophical considerations about category theory, Rezk~\cite{rezk01css} discovered that when defining a notion of $(\infty,1)$-cat\-e\-go\-ry,
+\index{.infinity1-category@$(\infty,1)$-category}%
+it was very convenient to use not merely a \emph{set} of objects with spaces of morphisms between them, but a \emph{space} of objects incorporating all the equivalences and homotopies between them.
 This yields a very well-behaved sort of model for $(\infty,1)$-categories as particular simplicial spaces, which Rezk called \emph{complete Segal spaces}.
+\index{complete!Segal space}%
 One especially good aspect of this model is the analogue of \autoref{ct:eqv-levelwise}: a map of complete Segal spaces is an equivalence just when it is a levelwise equivalence of simplicial spaces.
 
 When interpreted in Voevodsky's simplicial set model of univalent foundations, our precategories are similar to a truncated analogue of Rezk's ``Segal spaces'', while our categories correspond to his ``complete Segal spaces''.
 Strict categories correspond instead to (a weakened and truncated version of) what are called ``Segal categories''.
 It is known that Segal categories and complete Segal spaces are equivalent models for $(\infty,1)$-categories (see e.g.~\cite{bergner:infty-one}), so that in the simplicial set model, categories and strict categories yield ``equivalent'' category theories---although as we have seen, the former still have many advantages.
-However, in the more general categorical semantics of a higher topos, a strict category corresponds to an internal category (in the traditional sense) in the corresponding 1-topos of sheaves, while a category corresponds to a \emph{stack}.
+However, in the more general categorical semantics of a higher topos,
+\index{.infinity1-topos@$(\infty,1)$-topos}%
+a strict category corresponds to an internal category (in the traditional sense) in the corresponding 1-topos of sheaves, while a category corresponds to a \emph{stack}.
+\index{stack}%
 The latter are generally a more appropriate sort of ``category'' relative to a topos.
 
 In Rezk's context, what we have called the ``Rezk completion'' corresponds to fibrant replacement in the model category for complete Segal spaces.
 Since this is built using a transfinite induction argument, it most closely matches our second construction as a higher inductive type.
-However, in higher topos models of homotopy type theory, the Rezk completion corresponds to \emph{stack completion}, which can be constructed either with a transfinite induction~\cite{jt:strong-stacks} or using a Yoneda embedding~\cite{bunge:stacks-morita-internal}.
+However, in higher topos models of homotopy type theory, the Rezk completion corresponds to \emph{stack completion}, which can be constructed either with a transfinite induction~\cite{jt:strong-stacks} or using a Yoneda embedding \cite{bunge:stacks-morita-internal}.
 
 \sectionExercises
 
 \begin{ex}
   For a precategory $A$ and $a:A$, define the \define{slice precategory} $A/a$.
+  \indexsee{precategory!slice}{category!slice}%
+  \indexsee{slice (pre)category}{category!slice}%
   Show that if $A$ is a category, so is $A/a$.
+  \indexdef{category!slice}%
 \end{ex}
 
 \begin{ex}
@@ -1577,17 +1759,25 @@ However, in higher topos models of homotopy type theory, the Rezk completion cor
 \end{ex}
 
 \begin{ex}
+  \index{adjoint!functor}%
+  \index{adjoint!equivalence}%
   Prove that a functor is an equivalence of categories if and only if it is a \emph{right} adjoint whose unit and counit are isomorphisms.
 \end{ex}
 
 \begin{ex}\label{ct:pre2cat}
-  Define a \define{pre-2-category} to consist of the structure formed by precategories, functors, and natural transformations in \autoref{sec:transfors}.
-  Similarly, define a \define{pre-bicategory} by replacing the equalities in \autoref{ct:functor-assoc,ct:units} with natural isomorphisms satisfying analogous coherence conditions.
+  Define a \define{pre-2-category}
+  \indexdef{pre-2-category}%
+  to consist of the structure formed by precategories, functors, and natural transformations in \autoref{sec:transfors}.
+  Similarly, define a \define{pre-bicategory}
+  \indexdef{pre-bicategory}%
+  by replacing the equalities in \autoref{ct:functor-assoc,ct:units} with natural isomorphisms satisfying analogous coherence conditions.
   Define a function from pre-2-categories to pre-bicategories, and show that it becomes an equivalence when restricted and corestricted to those whose hom-precategories are categories.
 \end{ex}
 
 \begin{ex}\label{ct:2cat}
-  Define a \define{2-category} to be a pre-2-category satisfying a condition analogous to that of \autoref{ct:category}.
+  Define a \define{2-category}
+  \indexdef{2-category}%
+  to be a pre-2-category satisfying a condition analogous to that of \autoref{ct:category}.
   Verify that the pre-2-category of categories \ucat is a 2-category.
   How much of this chapter can be done internally to an arbitrary 2-category?
 \end{ex}
@@ -1598,7 +1788,8 @@ However, in higher topos models of homotopy type theory, the Rezk completion cor
 \end{ex}
 
 \begin{ex}
-  Recall that a \define{strict category} is a precategory whose type of objects is a set.
+  \index{strict!category}%
+  Recall that a \emph{strict category} is a precategory whose type of objects is a set.
   Prove that the pre-2-category of strict categories is equivalent to the following pre-2-category.
   \begin{itemize}
   \item Its objects are categories $A$ equipped with a surjection
@@ -1610,7 +1801,7 @@ However, in higher topos models of homotopy type theory, the Rezk completion cor
 \end{ex}
 
 \begin{ex}
-  Define the pre-2-category of $\dagger$-categories, which has $\dagger$-structures on its hom-precategories.
+  Define the pre-2-category of $\dagger$-categories, which has $\dagger$-struc\-tures on its hom-precategories.
   Show that two $\dagger$-categories are equal precisely when they are ``unitarily equivalent'' in a suitable sense.
 \end{ex}
 
@@ -1624,10 +1815,32 @@ However, in higher topos models of homotopy type theory, the Rezk completion cor
 \end{ex}
 
 \begin{ex}\label{ex:rezk-vankampen}
-  Using fundamental pregroupoids (\autoref{ct:fundgpd,ct:rezk-fundgpd-trunc1}) and the Rezk completion (\autoref{sec:rezk}), give a different proof of van Kampen's theorem (\autoref{sec:van-kampen}).
+  \index{van Kampen theorem}%
+  \index{theorem!van Kampen}%
+  \index{fundamental!groupoid}%
+  \index{fundamental!pregroupoid}%
+  Using fundamental (pre)groupoids from \autoref{ct:fundgpd,ct:rezk-fundgpd-trunc1} and the Rezk completion from \autoref{sec:rezk}, give a different proof of van Kampen's theorem (\autoref{sec:van-kampen}).
+\end{ex}
+
+\begin{ex}\label{ex:stack}
+  Let $X$ and $Y$ be sets and $p:Y\to X$ a surjection.
+  \begin{enumerate}
+  \item Define, for any precategory $A$, the category $\mathrm{Desc}(A,p)$ of \define{descent data}
+    \indexdef{descent data}%
+    in $A$ relative to $p$.
+  \item Show that any precategory $A$ is a \define{prestack}
+    \indexdef{prestack}%
+    for $p$, i.e.\ the canonical functor $A^X \to \mathrm{Desc}(A,p)$ is fully faithful.
+  \item Show that if $A$ is a category, then it is a \emph{stack}
+    \indexdef{stack}%
+    for $p$, i.e.\ $A^X \to \mathrm{Desc}(A,p)$ is an equivalence.
+  \item Show that the statement ``every strict category is a stack for every surjection of sets'' is equivalent to the axiom of choice.
+    \index{axiom!of choice}%
+    \index{strict!category}%
+  \end{enumerate}
 \end{ex}
 
 % Local Variables:
-% TeX-master: "main"
+% TeX-master: "hott-online"
 % End:
 

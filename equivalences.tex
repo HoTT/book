@@ -20,7 +20,9 @@ By function extensionality, it follows that $\qinv(f)$ is equivalent to the type
 We will define three different types having properties~\ref{item:beb1}--\ref{item:beb3}, which we call
 \begin{itemize}
 \item half adjoint equivalences,
-\item bi-invertible maps, and
+\item bi-invertible maps,
+  \index{function!bi-invertible}
+  and
 \item contractible functions.
 \end{itemize}
 We will also show that all these types are equivalent.
@@ -32,7 +34,9 @@ Before we examine the different notions of equivalence, however, we give a littl
 \section{Quasi-inverses}
 \label{sec:quasi-inverses}
 
-We have said that $\qinv(f)$ is unsatisfactory because it is not a mere proposition, but we have given no evidence of that.
+\index{quasi-inverse|(}%
+We have said that $\qinv(f)$ is unsatisfactory because it is not a mere proposition, whereas we would rather that a given function can ``be an equivalence'' in at most one way.
+However, we have given no evidence that $\qinv(f)$ is not a mere proposition.
 In this section we exhibit a specific counterexample.
 
 \begin{lem}\label{lem:qinv-autohtpy}
@@ -49,19 +53,24 @@ In this section we exhibit a specific counterexample.
   \sm{g:A\to A} \big((g \htpy \idfunc[A]) \times (g \htpy \idfunc[A])\big).
   \]
   By function extensionality, this is equivalent to
-  \[ \sm{g:A\to A} \big((g = \idfunc[A]) \times (g = \idfunc[A])\big)
+  \[ \sm{g:A\to A} \big((g = \idfunc[A]) \times (g = \idfunc[A])\big).
   \]
-  and thus to
+  And by \autoref{ex:sigma-assoc}, this is equivalent to
   \[ \sm{h:\sm{g:A\to A} (g = \idfunc[A])} (\proj1(h) = \idfunc[A])
   \]
-  However, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible with center $\idfunc[A]$, so by \autoref{thm:omit-contr} this type is equivalent to $(\idfunc[A] = \idfunc[A])$.
-  And by function extensionality, $(\idfunc[A] = \idfunc[A])$ is equivalent to $\prd{x:A}(x=x)$.
+  However, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible with center $\idfunc[A]$, therefore by \autoref{thm:omit-contr} this type is equivalent to $\idfunc[A] = \idfunc[A]$.
+  And by function extensionality, $\idfunc[A] = \idfunc[A]$ is equivalent to $\prd{x:A} x=x$.
 \end{proof}
-We remark that the use of univalence in this proof is nonessential (see exercises).
+
+\noindent
+We remark that \autoref{ex:qinv-autohtpy-no-univalence} asks for a proof of the above lemma which avoids univalence.
 
 Thus, what we need is some $A$ which admits a nontrivial element of $\prd{x:A}(x=x)$.
-Thinking of $A$ as a higher groupoid, an inhabitant of $\prd{x:A}(x=x)$ is a natural transformation from the identity functor of $A$ to itself.
-Such transformations are said to form the \define{center} of a category, since the naturality axiom requires that they commute with all morphisms.
+Thinking of $A$ as a higher groupoid, an inhabitant of $\prd{x:A}(x=x)$ is a natural transformation\index{natural!transformation} from the identity functor of $A$ to itself.
+Such transformations are said to form the \define{center of a category},
+\index{center!of a category}%
+\index{category!center of}%
+since the naturality axiom requires that they commute with all morphisms.
 Classically, if $A$ is simply a group regarded as a one-object groupoid, then this yields precisely its center in the usual group-theoretic sense.
 This provides some motivation for the following.
 
@@ -77,8 +86,8 @@ This provides some motivation for the following.
 \begin{proof}
   Let $g:\prd{x:A} \brck{a=x}$ be as given by~\ref{item:autohtpy2}.  First we
   observe that each type $\id[A]xy$ is a set.  For since being a set is a mere
-  proposition, we may apply induction on truncation and assume that $g(x)=\bproj
-  p$ and $g(y)=\bproj q$ for $p:a=x$ and $q:a=y$, in which case composing with
+  proposition, we may apply the induction principle of propositional truncation, and assume that $g(x)=\bproj
+  p$ and $g(y)=\bproj q$ for $p:a=x$ and $q:a=y$.  In this case, composing with
   $p$ and $\opp{q}$ yields an equivalence $\eqv{(x=y)}{(a=a)}$.  But $(a=a)$ is
   a set by~\ref{item:autohtpy1}, so $(x=y)$ is also a set.
 
@@ -95,7 +104,7 @@ This provides some motivation for the following.
   truncation and assume that $g(x) = \bproj p$ for some $p:a=x$.
   Now suppose given $(r,h)$ and $(r',h')$ in $B(x)$; then we have
   \[ h(p) \ct \opp{h'(p)} : r = r'. \]
-  It remains to show that $h$ is identified with $h'$ when transported along this equality, which by transport in identity types and function types, reduces to showing
+  It remains to show that $h$ is identified with $h'$ when transported along this equality, which by transport in identity types and function types (\autoref{sec:compute-paths,sec:compute-pi}), reduces to showing
   \[ h(s) = h(p) \ct \opp{h'(p)} \ct h'(s) \]
   for any $s:a=x$.
   But each side of this is an equality between elements of $(x=x)$, so it follows from our above observation that $(x=x)$ is a set.
@@ -114,26 +123,35 @@ This provides some motivation for the following.
 \begin{proof}
   It suffices to exhibit a type $X$ such that $\prd{x:X} (x=x)$ is not a mere proposition.
   Define $X\defeq \sm{A:\type} \brck{\bool=A}$, as in the proof of \autoref{thm:no-higher-ac}.
-  It will suffice to exhibit an $f:\prd{x:X} (x=x)$ which is unequal to the function $x\mapsto \refl{x}$.
+  It will suffice to exhibit an $f:\prd{x:X} (x=x)$ which is unequal to $\lam{x} \refl{x}$.
 
   Let $a \defeq (\bool,\bproj{\refl{\bool}}) : X$, and let $q:a=a$ be the path corresponding to the nonidentity equivalence $e:\eqv\bool\bool$ defined by $e(\btrue)\defeq\bfalse$ and $e(\bfalse)\defeq\btrue$.
   We would like to apply \autoref{lem:autohtpy} to build an $f$.
-  By definition of $X$, equalities in subset types, and univalence, we have $\eqv{(a=a)}{(\eqv{\bool}{\bool})}$, which is a set, so~\ref{item:autohtpy1} holds.
+  By definition of $X$, equalities in subset types (\autoref{subsec:prop-subsets}), and univalence, we have $\eqv{(a=a)}{(\eqv{\bool}{\bool})}$, which is a set, so~\ref{item:autohtpy1} holds.
   Similarly, by definition of $X$ and equalities in subset types we have~\ref{item:autohtpy2}.
   Finally, \autoref{ex:eqvboolbool} implies that every equivalence $\eqv\bool\bool$ is equal to either $\idfunc[\bool]$ or $e$, so we can show~\ref{item:autohtpy3} by a four-way case analysis.
+
+  Thus, we have $f:\prd{x:X} (x=x)$ such that $f(a) = q$.
+  Since $e$ is not equal to $\idfunc[\bool]$, $q$ is not equal to $\refl{a}$, and thus $f$ is not equal to $\lam{x} \refl{x}$.
+  Therefore, $\prd{x:X} (x=x)$ is not a mere proposition.
 \end{proof}
 
-More generally, \autoref{lem:autohtpy} implies that any ``Eilenberg--Mac Lane space'' $K(G,1)$, where $G$ is an abelian group, will provide a counterexample; see \autoref{cha:homotopy}.
-The type $X$ we used turns out to be equivalent to $K(\mathbb{Z}/2,1)$.
+More generally, \autoref{lem:autohtpy} implies that any ``Eilenberg--Mac Lane space'' $K(G,1)$, where $G$ is a nontrivial abelian\index{group!abelian} group, will provide a counterexample; see \autoref{cha:homotopy}.
+The type $X$ we used turns out to be equivalent to $K(\mathbb{Z}_2,1)$.
 In \autoref{cha:hits} we will see that the circle $\Sn^1 = K(\mathbb{Z},1)$ is another easy-to-describe example.
 
 We now move on to describing better notions of equivalence.
 
+\index{quasi-inverse|)}%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Half adjoint equivalences}
 \label{sec:hae}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\index{equivalence!half adjoint|(defstyle}%
+\index{half adjoint equivalence|(defstyle}%
+\index{adjoint!equivalence!of types, half|(defstyle}%
 
 In \autoref{sec:quasi-inverses} we concluded that $\qinv(f)$ is equivalent to $\prd{x:A} (x=x)$ by discarding a contractible type.
 Roughly, the type $\qinv(f)$ contains three data $g$, $\eta$, and $\epsilon$, of which two ($g$ and $\eta$) could together be seen to be contractible when $f$ is an equivalence.
@@ -141,13 +159,14 @@ The problem is that removing these data left one remaining ($\epsilon$).
 In order to solve this problem, the idea is to add one \emph{additional} datum which, together with $\epsilon$, forms a contractible type.
 
 \begin{defn}\label{defn:ishae}
-  A function $f:A\to B$ is a \define{half adjoint equivalence} if there are $g:B\to A$ and homotopies $\eta: g \circ f \sim \idfunc[A]$ and $\epsilon:f \circ g \sim \idfunc[B]$ such that there exists a path
+  A function $f:A\to B$ is a \define{half adjoint equivalence}%
+  if there are $g:B\to A$ and homotopies $\eta: g \circ f \htpy \idfunc[A]$ and $\epsilon:f \circ g \htpy \idfunc[B]$ such that there exists a path
   \[\tau : \prd{x:A} \map{f}{\eta x} = \epsilon(fx)\]
 \end{defn}
 
 Thus we have a type $\ishae(f)$, defined to be
 \begin{equation*}
-  \sm{g:B\to A}{\eta: g \circ f \sim \idfunc[A]}{\epsilon:f \circ g \sim \idfunc[B]} \prd{x:A} \map{f}{\eta x} = \epsilon(fx).
+  \sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]} \prd{x:A} \map{f}{\eta x} = \epsilon(fx).
 \end{equation*}
 Note that in the above definition, the coherence condition relating $\eta$ and $\epsilon$ only involves $f$.
 We might consider instead an analogous coherence condition involving $g$:
@@ -167,7 +186,7 @@ For $f : A \to B$, $g:B\to A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \c
   It suffices to show one direction; the other one is obtained by swapping $A/B$, $f/g$, and $\eta/\epsilon$.
   Let $\tau : \prd{x:A}\;\map{f}{\eta x} = \epsilon(fx)$.
   Fix $y : B$.
-  Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram :
+  Using naturality of $\epsilon$ and applying $g$, we get the following commuting diagram of paths:
 \[\uppercurveobject{{ }}\lowercurveobject{{ }}\twocellhead{{ }}
   \xymatrix@C=3pc{gfgfgy \ar@{=}^-{gfg(\epsilon y)}[r] \ar@{=}_{g(\epsilon (fgy))}[d] & gfgy \ar@{=}^{g(\epsilon y)}[d] \\ gfgy \ar@{=}_{g(\epsilon y)}[r] & gy
   }\]
@@ -197,27 +216,27 @@ The other direction is a version of a standard argument from homotopy theory and
   For any $f:A\to B$ we have $\qinv(f)\to\ishae(f)$.
 \end{thm}
 \begin{proof}
-Suppose that $(g,\eta,\varepsilon)$ is a quasi-inverse for $f$. We have to provide
-a quadruple $(g',\eta',\varepsilon',\tau)$ witnessing that $f$ is a half adjoint equivalence. To
+Suppose that $(g,\eta,\epsilon)$ is a quasi-inverse for $f$. We have to provide
+a quadruple $(g',\eta',\epsilon',\tau)$ witnessing that $f$ is a half adjoint equivalence. To
 define $g'$ and $\eta'$, we can just make the obvious choice by setting $g'
-\defeq g$ and $\eta'\defeq \eta$. However, in the definition of $\varepsilon'$ we
+\defeq g$ and $\eta'\defeq \eta$. However, in the definition of $\epsilon'$ we
 need start worrying about the construction of $\tau$, so we cannot just follow our nose
-and take $\varepsilon'$ to be $\varepsilon$. Instead, we take
+and take $\epsilon'$ to be $\epsilon$. Instead, we take
 \begin{equation*}
-\varepsilon'(b) \defeq (\varepsilon(b)\ct \ap{f}{\eta(g(b))})\ct \opp{\varepsilon(f(g(b)))}
+\epsilon'(b) \defeq (\epsilon(b)\ct \ap{f}{\eta(g(b))})\ct \opp{\epsilon(f(g(b)))}
 \end{equation*}
 Now we need to find
 \begin{equation*}
-\tau(a):(\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))})\ct \opp{\varepsilon(f(g(f(a))))}=\ap{f}{\eta(a)}
+\tau(a):(\epsilon(f(a))\ct \ap{f}{\eta(g(f(a)))})\ct \opp{\epsilon(f(g(f(a))))}=\ap{f}{\eta(a)}
 \end{equation*}
 Note first that by \autoref{cor:hom-fg}, we have 
 %$\eta(g(f(a)))\ct\eta(a)=\ap{g}{\ap{f}{\eta(a)}}\ct\eta(a)$ and hence it follows that
 $\eta(g(f(a)))=\ap{g}{\ap{f}{\eta(a)}}$. Therefore, we can apply
 \autoref{lem:htpy-natural} to compute
 \begin{align*}
-\varepsilon(f(a))\ct \ap{f}{\eta(g(f(a)))}
-& = \varepsilon(f(a))\ct \ap{f}{\ap{g}{\ap{f}{\eta(a)}}}\\
-& = \ap{f}{\eta(a)}\ct\varepsilon(f(g(f(a))))
+\epsilon(f(a))\ct \ap{f}{\eta(g(f(a)))}
+& = \epsilon(f(a))\ct \ap{f}{\ap{g}{\ap{f}{\eta(a)}}}\\
+& = \ap{f}{\eta(a)}\ct\epsilon(f(g(f(a))))
 \end{align*}
 from which we get the desired path $\tau(a)$.
 \end{proof}
@@ -228,7 +247,10 @@ It remains to show that $\ishae(f)$ is a mere proposition.
 For this, we will need to know that the fibers of an equivalence are contractible.
 
 \begin{defn}\label{defn:homotopy-fiber}
-  The \define{fiber} of a map $f:A\to B$ over a point $y:B$ is
+  The \define{fiber}
+  \indexdef{fiber}%
+  \indexdef{function!fiber of}%
+  of a map $f:A\to B$ over a point $y:B$ is
   \[ \hfib f y \defeq \setof{x:A | f(x) = y}.\]
 \end{defn}
 
@@ -237,7 +259,7 @@ The path lemmas in \autoref{sec:computational} yield the following characterizat
 
 \begin{lem}\label{lem:hfib}
   For any $f : A \to B$, $y : B$, and $(x,p),(x',p') : \hfib{f}{y}$, we have
-  \[ \big((x,p) = (x',p')\big) \simeq \sm{\gamma : x = x'} f(\gamma) \ct p' = p \qedhere\]
+  \[ \big((x,p) = (x',p')\big) \eqvsym \sm{\gamma : x = x'} f(\gamma) \ct p' = p \qedhere\]
 \end{lem}
 
 \begin{thm}\label{thm:contr-hae}
@@ -261,7 +283,7 @@ The path lemmas in \autoref{sec:computational} yield the following characterizat
 We now define the types which encapsulate contractible pairs of data.
 The following types put together the quasi-inverse $g$ with one of the homotopies.
 
-\begin{defn}
+\begin{defn}\label{defn:linv-rinv}
   Let $f:A\to B$.
   \begin{itemize}
   \item Given a function $g:B\to A$, we define the types 
@@ -269,8 +291,20 @@ The following types put together the quasi-inverse $g$ with one of the homotopie
       \linv(f) &\defeq \sm{g:B\to A} (g\circ f\htpy \idfunc[A])\\
       \rinv(f) &\defeq \sm{g:B\to A} (f\circ g\htpy \idfunc[B])
     \end{align*}
-  of \define{left inverses} and \define{right inverses} to $f$, respectively.
-  We call $f$ \define{left invertible} if $\linv(f)$ is inhabited, and similarly \define{right invertible} if $\rinv(f)$ is inhabited.
+  of \define{left inverses}
+  \indexdef{left!inverse}%
+  \indexdef{inverse!left}%
+  and \define{right inverses}
+  \indexdef{right!inverse}%
+  \indexdef{inverse!right}%
+  to $f$, respectively.
+  We call $f$ \define{left invertible}
+  \indexdef{function!left invertible}%
+  \indexdef{function!right invertible}%
+  if $\linv(f)$ is inhabited, and similarly \define{right invertible}
+  \indexdef{left!invertible function}%
+  \indexdef{right!invertible function}%
+  if $\rinv(f)$ is inhabited.
   \end{itemize}
 \end{defn}
 
@@ -298,7 +332,7 @@ The following types put together the quasi-inverse $g$ with one of the homotopie
 
 Next we define the types which put together the other homotopy with the additional coherence datum.
 
-\begin{defn}
+\begin{defn}\label{defn:lcoh-rcoh}
 For $f : A \to B$, a left inverse $(g,\eta) : \linv(f)$, and a right inverse $(g,\epsilon) : \rinv(f)$, we denote
 \begin{align*}
 \lcoh{f}{g}{\eta} & \defeq \sm{\epsilon : f\circ g \htpy \idfunc[B]} \prd{y:B} g(\epsilon y) = \eta (gy) \\
@@ -309,8 +343,8 @@ For $f : A \to B$, a left inverse $(g,\eta) : \linv(f)$, and a right inverse $(g
 \begin{lem}\label{lem:coh-hfib}
 For any $f,g,\epsilon,\eta$, we have
 \begin{align*}
-\rcoh{f}{g}{\eta} & \simeq {\prd{y:B} \id[\hfib{g}{gy}]{(fgy,\eta(gy))}{(y,\refl{gy})}} \\
-\lcoh{f}{g}{\epsilon} & \simeq {\prd{x:A} \id[\hfib{f}{fx}]{(gfx,\epsilon(fx))}{(x,\refl{fx})}}
+\rcoh{f}{g}{\eta} & \eqvsym {\prd{y:B} \id[\hfib{g}{gy}]{(fgy,\eta(gy))}{(y,\refl{gy})}} \\
+\lcoh{f}{g}{\epsilon} & \eqvsym {\prd{x:A} \id[\hfib{f}{fx}]{(gfx,\epsilon(fx))}{(x,\refl{fx})}}
 \end{align*}
 \end{lem}
 \begin{proof}
@@ -330,21 +364,30 @@ Using \autoref{lem:hfib}.
 \end{thm}
 \begin{proof}
   By \autoref{thm:contr-unit} it suffices to assume $f$ to be a half adjoint equivalence and show that $\ishae(f)$ is contractible.
-  Now by rearranging $\Sigma$s, the type $\ishae(f)$ is equivalent to $\sm{u : \rinv(f)} \rcoh{f}{\proj{1}(u)}{\proj{2}(u)}$.
+  Now by rearranging $\Sigma$s, the type $\ishae(f)$ is equivalent to
+  \[\sm{u : \rinv(f)} \rcoh{f}{\proj{1}(u)}{\proj{2}(u)}.\]
   But by \cref{lem:inv-hprop,lem:coh-hprop} and the fact that $\Sigma$ preserves contractibility, the latter type is also contractible.
 \end{proof}
 
 Thus, we have shown that $\ishae(f)$ has all three desiderata for the type $\isequiv(f)$.
 In the next two sections we consider a couple of other possibilities.
 
+\index{equivalence!half adjoint|)}%
+\index{half adjoint equivalence|)}%
+\index{adjoint!equivalence!of types, half|)}%
 
 \section{Bi-invertible maps}
 \label{sec:biinv}
 
+\index{function!bi-invertible|(defstyle}%
+\index{bi-invertible function|(defstyle}%
+\index{equivalence!as bi-invertible function|(defstyle}%
+
 Using the language introduced in \autoref{sec:hae}, we can restate the definition proposed in \autoref{sec:basics-equivalences} as follows.
 
-\begin{defn}
-  We say $f:A\to B$ is \define{bi-invertible} if it has both a left inverse and a right inverse:
+\begin{defn}\label{defn:biinv}
+  We say $f:A\to B$ is \define{bi-invertible}
+  if it has both a left inverse and a right inverse:
   \[ \biinv (f) \defeq \linv(f) \times \rinv(f). \]
 \end{defn}
 
@@ -371,15 +414,23 @@ The difference is that instead of adding a \emph{higher} datum (a 2-dimensional 
   Since both $\iscontr(f)$ and $\biinv(f)$ are mere propositions, the equivalence follows from \autoref{lem:equiv-iff-hprop}.
 \end{proof}
 
+\index{function!bi-invertible|)}%
+\index{bi-invertible function|)}%
+\index{equivalence!as bi-invertible function|)}%
 
 \section{Contractible fibers}
 \label{sec:contrf}
+
+\index{function!contractible|(defstyle}%
+\index{contractible!function|(defstyle}%
+\index{equivalence!as contractible function|(defstyle}%
 
 Note that our proofs about $\ishae(f)$ and $\biinv(f)$ made essential use of the fact that the fibers of an equivalence are contractible.
 In fact, it turns out that this property is itself a sufficient definition of equivalence.
 
 \begin{defn}[Contractible maps] \label{defn:equivalence}
-  A map $f:A\to B$ is \define{contractible} if for all $y:B$, the fiber $\hfib f y$ is contractible.
+  A map $f:A\to B$ is \define{contractible}
+  if for all $y:B$, the fiber $\hfib f y$ is contractible.
 \end{defn}
 
 Thus, the type $\iscontr(f)$ is defined to be
@@ -402,7 +453,7 @@ For any $f:A\to B$ we have ${\iscontr(f)} \to {\ishae(f)}$.
 \begin{proof}
 Let $P : \iscontr(f)$. We define an inverse mapping $g : B \to A$ by sending each $y : B$ to the center of contraction of the h-fiber at $y$:
 \[ g(y) \defeq \proj{1}(\proj{1}(Py)) \]
-We can thus define the transformation $\epsilon$ by mapping $y$ to the witness that $g(y)$ indeed belongs to the h-fiber at $y$:
+We can thus define the homotopy $\epsilon$ by mapping $y$ to the witness that $g(y)$ indeed belongs to the h-fiber at $y$:
 \[ \epsilon(y) \defeq \proj{2}(\proj{1}(P y)) \]
 It remains to define $\eta$ and $\tau$. This of course amounts to giving an element of $\lcoh{f}{g}{\epsilon}$. By \autoref{lem:coh-hfib}, this is the same as giving for each $x:A$ a path from $(x,\refl{fx})$ to $(gfx,\epsilon(fx))$ in the fiber at $fx$. But this is easy: for any $x : A$, the type $\hfib{f}{fx}$ 
 is contractible by assumption, hence such a path must exist. We can construct it explicitly as
@@ -423,7 +474,7 @@ It is also easy to see:
   For any $f:A\to B$ we have $\eqv{\iscontr(f)}{\ishae(f)}$.
 \end{thm}
 \begin{proof}
-  We have already established a logical equivalence ${\iscontr(f)} \leftrightarrow {\ishae(f)}$, and both are mere propositions (\cref{thm:contr-hprop,thm:hae-hprop}).
+  We have already established a logical equivalence ${\iscontr(f)} \Leftrightarrow {\ishae(f)}$, and both are mere propositions (\cref{thm:contr-hprop,thm:hae-hprop}).
   Thus, \autoref{lem:equiv-iff-hprop} applies.
 \end{proof}
 
@@ -438,17 +489,22 @@ For instance, it implies that when proving a function to be an equivalence, we a
   But if $e:B\to \isequiv(f)$, then given any such $y$ we have $e(y):\isequiv(f)$, so that $f$ is an equivalence and hence $\hfib f y$ is contractible, as desired.
 \end{proof}
 
+\index{function!contractible|)}%
+\index{contractible!function|)}%
+\index{equivalence!as contractible function|)}%
 
 \section{On the definition of equivalences}
 \label{sec:concluding-remarks}
 
+\indexdef{equivalence}
 We have shown that all three definitions of equivalence satisfy the three desirable properties and are pairwise equivalent:
-\[ \iscontr(f) \simeq \ishae(f) \simeq \biinv(f) . \]
+\[ \iscontr(f) \eqvsym \ishae(f) \eqvsym \biinv(f) . \]
 (There are yet more possible definitions of equivalence, but we will stop with these three.
 See \autoref{ex:brck-qinv} and the exercises in this chapter for some more.)
 Thus, we may choose any one of them as ``the'' definition of $\isequiv (f)$.
 For definiteness, we choose to define
 \[ \isequiv(f) \defeq \ishae(f).\]
+\index{mathematics!formalized}%
 This choice is advantageous for formalization, since $\ishae(f)$ contains the most directly useful data.
 On the other hand, for other purposes, $\biinv(f)$ is ofter easier to deal with, since it contains no 2-dimensional paths and its two symmetrical halves can be treated independently.
 However, for purposes of this book, the specific choice will make little difference.
@@ -459,7 +515,12 @@ In the rest of this chapter, we study some other properties and characterization
 \section{Surjections and embeddings}
 \label{sec:mono-surj}
 
-When $A$ and $B$ are sets and $f:A\to B$ is an equivalence, we also call it as \define{isomorphism} or a \define{bijection}.
+\index{set}
+When $A$ and $B$ are sets and $f:A\to B$ is an equivalence, we also call it as \define{isomorphism}
+\indexdef{isomorphism!of sets}%
+or a \define{bijection}.
+\indexdef{bijection}%
+\indexsee{function!bijective}{bijection}%
 (We avoid these words for types that are not sets, since in homotopy theory and higher category theory they often denote a stricter notion of ``sameness'' than homotopy equivalence.)
 In set theory, a function is a bijection just when it is both injective and surjective.
 The same is true in type theory, if we formulate these conditions appropriately.
@@ -468,17 +529,33 @@ For clarity, when dealing with types that are not sets, we will speak of \emph{e
 \begin{defn}
   Let $f:A\to B$.
   \begin{enumerate}
-  \item We say $f$ is \define{surjective} if for every $b:B$ we have $\brck{\hfib f b}$.
-    In other words, every fiber of $f$ is merely inhabited.
-  \item We say $f$ is a \define{embedding} if for every $x,y:A$ the function $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence.
+  \item We say $f$ is \define{surjective}
+    \indexdef{surjective!function}%
+    \indexdef{function!surjective}%
+    (or a \define{surjection})
+    \indexdef{surjection}%
+    if for every $b:B$ we have $\brck{\hfib f b}$.
+  \item We say $f$ is a \define{embedding}
+    \indexdef{embedding}%
+    if for every $x,y:A$ the function $\apfunc f : (\id[A]xy) \to (\id[B]{f(x)}{f(y)})$ is an equivalence.
   \end{enumerate}
 \end{defn}
 
-Note that if $A$ and $B$ are sets, then by \autoref{lem:equiv-iff-hprop}, $f$ is an embedding just when
+In other words, $f$ is surjective if every fiber of $f$ is merely inhabited, or equivalently if for all $b:B$ there merely exists an $a:A$ such that $f(a)=b$.
+In traditional logical notation, $f$ is surjective if $\fall{b:B}\exis{a:A} (f(a)=b)$.
+This must be distinguished from the stronger assertion that $\prd{b:B}\sm{a:A} (f(a)=b)$; if this holds we say that $f$ is a \define{split surjection}.
+\indexdef{split!surjection}%
+\indexdef{surjection!split}%
+\indexdef{surjective!function!split}%
+\indexdef{function!split surjective}%
+
+If $A$ and $B$ are sets, then by \autoref{lem:equiv-iff-hprop}, $f$ is an embedding just when
 \begin{equation}
   \prd{x,y:A} (\id[B]{f(x)}{f(y)}) \to (\id[A]xy).\label{eq:injective}
 \end{equation}
 In this case we say that $f$ is \define{injective}.
+\indexdef{injective function}%
+\indexdef{function!injective}%
 We avoid that word for types that are not sets, because it might be interpreted as~\eqref{eq:injective}, which is an ill-behaved notion for non-sets.
 It is also true that any function between sets is surjective if and only if it is an \emph{epimorphism} in a suitable sense, but this also fails for more general types, and surjectivity is generally the more important notion.
 
@@ -501,7 +578,7 @@ It is also true that any function between sets is surjective if and only if it i
 
 \begin{cor}
   For any $f:A\to B$ we have
-  \[ \isequiv(f) \simeq (\mathsf{isEmbedding}(f) \times \mathsf{isSurjective}(f)).\]
+  \[ \isequiv(f) \eqvsym (\mathsf{isEmbedding}(f) \times \mathsf{isSurjective}(f)).\]
 \end{cor}
 \begin{proof}
   Being a surjection and an embedding are both mere propositions; now apply \autoref{lem:equiv-iff-hprop}.
@@ -522,6 +599,7 @@ We have already seen in \autoref{thm:equiv-eqrel} that equivalences are closed u
 Furthermore, we have:
 
 \begin{thm}[The 2-out-of-3 property]\label{thm:two-out-of-three}
+  \index{2-out-of-3 property}%
   Suppose $f:A\to B$ and $g:B\to C$.
   If any two of $f$, $g$, and $g\circ f$ are equivalences, so is the third.
 \end{thm}
@@ -534,34 +612,41 @@ This is a standard closure condition on equivalences from homotopy theory.
 Also well-known is that they are closed under retracts, in the following sense.
 
 \begin{defn}\label{defn:retract}
-A function $g:A\to B$ is said to be a \define{retract} of a function $f:X\to Y$ if there is a diagram
+A function $g:A\to B$ is said to be a \define{retract}
+\indexdef{retract!of a function}
+of a function $f:X\to Y$ if there is a diagram
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {A & X & A \\ B & Y & B \\};
-\draw[ar] (m-1-1) -- node[above] {$s$} (m-1-2);
-\draw[ar] (m-1-2) -- node[above] {$r$} (m-1-3);
-\draw[ar] (m-1-3) -- node[right] {$g$} (m-2-3);
-\draw[ar] (m-1-2) -- node[left] {$f$} (m-2-2);
-\draw[ar] (m-1-1) -- node[left] {$g$} (m-2-1);
-\draw[ar] (m-2-1) -- node[below] {$s^\prime$} (m-2-2);
-\draw[ar] (m-2-2) -- node[below] {$r^\prime$} (m-2-3);
-\end{tikzpicture}
+  \xymatrix{
+    {A} \ar[r]^{s} \ar[d]_{g}
+    &
+    {X} \ar[r]^{r} \ar[d]_{f}
+    &
+    {A} \ar[d]^{g}
+    \\
+    {B} \ar[r]_{s'}
+    &
+    {Y} \ar[r]_{r'}
+    &
+    {B}
+  }
 \end{equation*}
 for which there are
 \begin{enumerate}
 \item a homotopy $R:r\circ s \htpy \idfunc[A]$.
-\item a homotopy $R^\prime:r^\prime\circ s^\prime \htpy\idfunc[B]$.
+\item a homotopy $R':r'\circ s' \htpy\idfunc[B]$.
 \item a homotopy $L:f\circ s\htpy s'\circ g$.
 \item a homotopy $K:g\circ r\htpy r'\circ f$.
 \item for every $a:A$, a path $H(a)$ witnessing the commutativity of the square
 \begin{equation*}
-\begin{tikzpicture}
-\matrix (m) [std] {g(r(s(a))) & r^\prime(f(s(a))) \\ g(a) & r^\prime(s^\prime(g(a))) \\};
-\draw[patharrow] (m-1-1) -- node[left] {$g(R(a)))$} (m-2-1);
-\draw[patharrow] (m-1-1) -- node[above] {$K(s(a))$} (m-1-2);
-\draw[patharrow] (m-2-2) -- node[below] {$R^\prime(g(a))$} (m-2-1);
-\draw[patharrow] (m-1-2) -- node[right] {$r^\prime(L(a))$} (m-2-2);
-\end{tikzpicture}
+  \xymatrix@C=3pc{
+    {g(r(s(a)))} \ar@{=}[r]^-{K(s(a))} \ar@{=}[d]_{\ap g{R(a)}}
+    &
+    {r'(f(s(a)))} \ar@{=}[d]^{\ap{r'}{L(a)}}
+    \\
+    {g(a)} \ar@{=}[r]_-{\opp{R'(g(a))}}
+    &
+    {r'(s'(g(a)))}
+  }
 \end{equation*}
 \end{enumerate}
 \end{defn}
@@ -571,19 +656,19 @@ This is a special case of the above definition where $B$ and $Y$ are $\unit$.
 Conversely, just as with contractibility, retractions of maps induce retractions of their fibers.
 
 \begin{lem}\label{lem:func_retract_to_fiber_retract}
-If a function $g:A\to B$ is a retract of a function $f:X\to Y$, then $\hfib{g}b$ is a retract of $\hfib{f}{s^\prime(b)}$
+If a function $g:A\to B$ is a retract of a function $f:X\to Y$, then $\hfib{g}b$ is a retract of $\hfib{f}{s'(b)}$
 for every $b:B$, where $s':B\to Y$ is as in \autoref{defn:retract}.
 \end{lem}
 
 \begin{proof}
 Suppose that $g:A\to B$ is a retract of $f:X\to Y$. Then for any $b:B$ we have the functions
 \begin{align*}
-\varphi_b &:\hfiber{g}b\to\hfib{f}{s^\prime(b)}\\
-\varphi_b(a,p) & \defeq \pairr{s(a),s^\prime(p)\ct L(a)}\\
-\psi_b &:\hfib{f}{s^\prime(b)}\to\hfib{g}b\\
-\psi_b(x,q) &\defeq \pairr{r(x),R^\prime(b)\ct r^\prime(q)\ct K(x)}
+\varphi_b &:\hfiber{g}b\to\hfib{f}{s'(b)}, &
+\varphi_b(a,p) & \defeq \pairr{s(a),s'(p)\ct L(a)},\\
+\psi_b &:\hfib{f}{s'(b)}\to\hfib{g}b, &
+\psi_b(x,q) &\defeq \pairr{r(x),R'(b)\ct r'(q)\ct K(x)}.
 \end{align*}
-Then we have $\psi_b(\varphi_b({a,p}))\equiv\pairr{r(s(a)),R^\prime(b)\ct r^\prime(s^\prime(p)\ct L(a))\ct K(s(a))}$.
+Then we have $\psi_b(\varphi_b({a,p}))\equiv\pairr{r(s(a)),R'(b)\ct r'(s'(p)\ct L(a))\ct K(s(a))}$.
 We claim $\psi_b$ is a retraction with section $\varphi_b$ for all $b:B$, which is to say that for all $(a,p):\hfib g b$ we have $\psi_b(\varphi_b({a,p}))= \pairr{a,p}$.
 In other words, we want to show
 \begin{equation*}
@@ -595,9 +680,9 @@ By reordering the first two $\Pi$s and applying a version of \autoref{thm:omit-c
 \end{equation*}
 By assumption, we have $R(a):r(s(a))= a$. So it is left to show that there is a path
 \begin{equation*}
-\trans{R(a)}{R^\prime(g(a))\ct r^\prime(L(a))\ct K(s(a))} = \refl{g(a)}.
+\trans{R(a)}{R'(g(a))\ct r'(L(a))\ct K(s(a))} = \refl{g(a)}.
 \end{equation*}
-But this transportation computes as $R^\prime(g(a))\ct r^\prime(L(a))\ct K(s(a))\ct g(R(a))$, so the required path is given by $H(a)$.
+But this transportation computes as $R'(g(a))\ct r'(L(a))\ct K(s(a))\ct g(R(a))$, so the required path is given by $H(a)$.
 \end{proof}
 
 \begin{thm}\label{thm:retract-equiv}
@@ -608,12 +693,19 @@ But this transportation computes as $R^\prime(g(a))\ct r^\prime(L(a))\ct K(s(a))
   Thus, by \autoref{thm:retract-contr}, if the latter are all contractible, so are the former.
 \end{proof}
 
+\index{fibration}%
+\index{total space}%
 Finally, we show that fiberwise equivalences can be characterized in terms of equivalences of total spaces.
 To explain the terminology, recall from \autoref{sec:fibrations} that a type family $P:A\to\type$ can be viewed as a fibration over $A$ with total space $\sm{x:A} P(x)$, the fibration being is the projection $\proj1:\sm{x:A} P(x) \to A$.
-From this point of view, given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A} (P(x)\to Q(x))$ as a \emph{fiberwise map} or a \emph{fiberwise transformation}.
+From this point of view, given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A} (P(x)\to Q(x))$ as a \define{fiberwise map} or a \define{fiberwise transformation}.
+\indexsee{transformation!fiberwise}{fiberwise transformation}%
+\indexsee{function!fiberwise}{fiberwise transformation}%
+\index{fiberwise!transformation|(defstyle}%
+\indexsee{fiberwise!map}{fiberwise transformation}%
+\indexsee{map!fiberwise}{fiberwise transformation}
 Such a map induces a function on total spaces:
 
-\begin{defn}
+\begin{defn}\label{defn:total-map}
   Given type families $P,Q:A\to\type$ and a map $f:\prd{x:A} P(x)\to Q(x)$, we define
   \begin{equation*}
     \total f  \defeq \lam{w}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)} : \sm{x:A}P(x)\to\sm{x:A}Q(x).
@@ -629,24 +721,31 @@ $Q$ over a type $A$ and let $x:A$ and $v:Q(x)$. Then we have an equivalence
 \end{thm}
 \begin{proof}
   We calculate:
-\begin{alignat*}{2}
-\hfib{\total{f}}{\pairr{x,v}} 
-& \jdeq \sm{w:\sm{x:A}P(x)}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)}=\pairr{x,v}\\
-& \eqv{}{} \sm{a:A}{u:P(a)}\pairr{a,f(a,u)}=\pairr{x,v}
-&&\quad\text{by~\eqref{eq:sigma-lump}}\\
-& \eqv{}{} \sm{a:A}{u:P(a)}{p:a=x}\trans{p}{f(a,u)}=v
-&&\quad\text{by \autoref{thm:path-sigma}}\\
-& \eqv{}{} \sm{a:A}{p:a=x}{u:P(a)}\trans{p}{f(a,u)}=v\\
-& \eqv{}{} \sm{u:P(x)}f(x,u)=v
-&&\quad\text{by~\eqref{eq:path-lump}}\\
-& \jdeq \hfib{f(x)}{v} && \qedhere
-\end{alignat*}
+\begin{align}
+  \hfib{\total{f}}{\pairr{x,v}} 
+  & \jdeq \sm{w:\sm{x:A}P(x)}\pairr{\proj{1}w,f(\proj{1}w,\proj{2}w)}=\pairr{x,v}
+  \notag \\
+  & \eqv{}{} \sm{a:A}{u:P(a)}\pairr{a,f(a,u)}=\pairr{x,v}
+  \tag{by~\eqref{eq:sigma-lump}} \\
+  & \eqv{}{} \sm{a:A}{u:P(a)}{p:a=x}\trans{p}{f(a,u)}=v
+  \tag{by \autoref{thm:path-sigma}} \\
+  & \eqv{}{} \sm{a:A}{p:a=x}{u:P(a)}\trans{p}{f(a,u)}=v
+  \notag \\
+  & \eqv{}{} \sm{u:P(x)}f(x,u)=v
+  \tag{by~\eqref{eq:path-lump}}\\
+  & \jdeq \hfib{f(x)}{v}. \qedhere
+\end{align}
 \end{proof}
+
+We say that a fiberwise transformation $f:\prd{x:A} P(x)\to Q(x)$ is a \define{fiberwise equivalence}%
+\indexdef{fiberwise!equivalence}%
+\indexdef{equivalence!fiberwise}
+if each $f(x):P(x) \to Q(x)$ is an equivalence.
 
 \begin{thm}\label{thm:total-fiber-equiv}
 Suppose that $f$ is a fiberwise transformation between families
-$P$ and $Q$ over a type $A$. Then $\total{f}$ is an equivalence if and only
-if each $f(x):P(x)\to Q(x)$ is an equivalence.
+$P$ and $Q$ over a type $A$.
+Then $f$ is a fiberwise equivalence if and only if $\total{f}$ is an equivalence.
 \end{thm}
 
 \begin{proof}
@@ -657,6 +756,8 @@ $\hfib{\total{f}}{\pairr{x,v}}$ is contractible if and only if
 $\hfib{f(x)}{v}$ is contractible.
 Thus, $\hfib{\total{f}}{w}$ is contractible for all $w:\sm{x:A}Q(x)$ if and only if $\hfib{f(x)}{v}$ is contractible for all $x:A$ and $v:Q(x)$.
 \end{proof}
+
+\index{fiberwise!transformation|)}%
 
 
 \section{The object classifier}
@@ -675,9 +776,9 @@ With univalence at our disposal, we can prove the same thing in type theory.
   We have
   \begin{align*}
     \hfib{\proj1}{a} &\defeq \sm{u:\sm{x:A} B(x)} \proj1(u)=a\\
-    &\simeq \sm{x:A}{b:B(x)} (x=a)\\
-    &\simeq \sm{x:A}{p:x=a} B(x)\\
-    &\simeq B(a)
+    &\eqvsym \sm{x:A}{b:B(x)} (x=a)\\
+    &\eqvsym \sm{x:A}{p:x=a} B(x)\\
+    &\eqvsym B(a)
   \end{align*}
   using the left universal property of identity types.
 \end{proof}
@@ -689,8 +790,8 @@ With univalence at our disposal, we can prove the same thing in type theory.
   We have
   \begin{align*}
     \sm{b:B}\hfib{f}{b} &\defeq \sm{b:B}{a:A} (f(a)=b)\\
-    &\simeq \sm{a:A}{b:B} (f(a)=b)\\
-    &\simeq A
+    &\eqvsym \sm{a:A}{b:B} (f(a)=b)\\
+    &\eqvsym A
   \end{align*}
   using the fact that $\sm{b:B} (f(a)=b)$ is contractible.
 \end{proof}
@@ -698,28 +799,28 @@ With univalence at our disposal, we can prove the same thing in type theory.
 \begin{thm}\label{thm:nobject-classifier-appetizer}
 For any type $B$ there is an equivalence
 \begin{equation*}
-\chi:\left(\sm{A:\type} (A\to B)\right)\simeq (B\to\type).
+\chi:\Parens{\sm{A:\type} (A\to B)}\eqvsym (B\to\type).
 \end{equation*}
 \end{thm}
 \begin{proof}
 We have to construct quasi-inverses
 \begin{align*}
-\chi & : \big(\sm{A:\type} (A\to B)\big)\to B\to\type\\
-\psi & : (B\to\type)\to\big(\sm{A:\type} (A\to B)\big).
+\chi & : \Parens{\sm{A:\type} (A\to B)}\to B\to\type\\
+\psi & : (B\to\type)\to\Parens{\sm{A:\type} (A\to B)}.
 \end{align*}
-We define $\chi$ by $\chi(f,b)\defeq\hfiber{f}b$, and $\psi$ by $\psi(P)\defeq\pairr{(\sm{b:B} P(b)),\proj1}$.
-Now we have to verify that $\chi\circ\psi\sim\idfunc{}$ and that $\psi\circ\chi \sim\idfunc{}$.
+We define $\chi$ by $\chi(f,b)\defeq\hfiber{f}b$, and $\psi$ by $\psi(P)\defeq\Pairr{(\sm{b:B} P(b)),\proj1}$.
+Now we have to verify that $\chi\circ\psi\htpy\idfunc{}$ and that $\psi\circ\chi \htpy\idfunc{}$.
 \begin{enumerate}
 \item Let $P:B\to\type$.
   By \autoref{thm:fiber-of-a-fibration},
-$\hfiber{\proj1}{b}\simeq P(b)$ for any $b:B$, so it follows immediately
-that $P\sim\chi(\psi(P))$.
+$\hfiber{\proj1}{b}\eqvsym P(b)$ for any $b:B$, so it follows immediately
+that $P\htpy\chi(\psi(P))$.
 \item Let $f:A\to B$ be a function. We have to find a path
 \begin{equation*}
-\pairr{\tsm{b:B} \hfiber{f}b,\,\proj1}=\pairr{A,f}
+\Pairr{\tsm{b:B} \hfiber{f}b,\,\proj1}=\pairr{A,f}
 \end{equation*}
 First note that by \autoref{thm:total-space-of-the-fibers}, we have
-$e:\sm{b:B} \hfiber{f}b\simeq A$ with $e(b,a,p)\defeq a$ and $e^{-1}(a)
+$e:\sm{b:B} \hfiber{f}b\eqvsym A$ with $e(b,a,p)\defeq a$ and $e^{-1}(a)
 \defeq(f(a),a,\refl{f(a)})$. It also follows that
 $e\cdot\proj1=\proj1\circ e^{-1}$. From this, we immediately read off
 that $(e\cdot\proj1)(a)= f(a)$ for each $a:A$.\qedhere
@@ -727,15 +828,11 @@ that $(e\cdot\proj1)(a)= f(a)$ for each $a:A$.\qedhere
 \end{proof}
 
 \noindent
+\indexdef{object!classifier}%
+\indexdef{classifier!object}%
+\index{.infinity1-topos@$(\infty,1)$-topos}%
 In particular, this implies that we have an \emph{object classifier} in the sense of higher topos theory.
-
-\begin{defn}
-Define
-\begin{equation*}
-\pointed{\type}\defeq\sm{A:\type} A
-\end{equation*}
-Thus, $\pointed{\type}$ stands for the \emph{pointed types}.
-\end{defn}
+Recall from \autoref{def:pointedtype} that $\pointed\type$ denotes the type $\sm{A:\type} A$ of pointed types.
 
 \begin{thm}\label{thm:object-classifier}
 Let $f:A\to B$ be a function. Then the diagram
@@ -756,19 +853,20 @@ Here the function $\vartheta_f$ is defined by
 \begin{proof}
 Note that we have the equivalences
 \begin{align*}
-A & \simeq \sm{b:B} \hfiber{f}b\\
-& \simeq \sm{b:B}{X:\type}{p:\hfiber{f}b= X} X\\
-& \simeq \sm{b:B}{X:\type}{x:X} \hfiber{f}b= X\\
-& \equiv B\times_{\type}\pointed{\type}.
+A & \eqvsym \sm{b:B} \hfiber{f}b\\
+& \eqvsym \sm{b:B}{X:\type}{p:\hfiber{f}b= X} X\\
+& \eqvsym \sm{b:B}{X:\type}{x:X} \hfiber{f}b= X\\
+& \eqvsym \sm{b:B}{Y:\pointed{\type}} \hfiber{f}b = \proj1 Y\\
+& \jdeq B\times_{\type}\pointed{\type}.
 \end{align*}
-which gives us a composite equivalence $e:A\simeq B\times_\type\pointed{\type}$. 
+which gives us a composite equivalence $e:A\eqvsym B\times_\type\pointed{\type}$. 
 We may display the action of this composite equivalence step by step by
 \begin{align*}
-a & \mapsto \pairr{f(a),\pairr{a,\refl{f(a)}}}\\
-& \mapsto \pairr{f(a),\hfiber{f}{f(a)},\refl{\hfiber{f}{f(a)}},\pairr{a,\refl{f(a)}}}\\
-& \mapsto \pairr{f(a),\hfiber{f}{f(a)},\pairr{a,\refl{f(a)}},\refl{\hfiber{f}{f(a)}}}
+a & \mapsto \pairr{f(a),\; \pairr{a,\refl{f(a)}}}\\
+& \mapsto \pairr{f(a), \; \hfiber{f}{f(a)}, \; \refl{\hfiber{f}{f(a)}}, \; \pairr{a,\refl{f(a)}}}\\
+& \mapsto \pairr{f(a), \; \hfiber{f}{f(a)}, \; \pairr{a,\refl{f(a)}}, \; \refl{\hfiber{f}{f(a)}}}
 \end{align*}
-Therefore, we get homotopies $f\sim\proj1\circ e$ and $\vartheta_f\sim \proj2\circ e$. 
+Therefore, we get homotopies $f\htpy\proj1\circ e$ and $\vartheta_f\htpy \proj2\circ e$. 
 \end{proof}
 
 
@@ -776,6 +874,7 @@ Therefore, we get homotopies $f\sim\proj1\circ e$ and $\vartheta_f\sim \proj2\ci
 \section{Univalence implies function extensionality}
 \label{sec:univalence-implies-funext}
 
+\index{function extensionality!proof from univalence}%
 In the last section of this chapter we include a proof that the univalence axiom implies function
 extensionality. Thus, in this section we work \emph{without} either the univalence axiom
 or function extensionality. The proof consists of two steps. First we show
@@ -784,14 +883,16 @@ axiom implies a weak form of function extensionality, defined in \autoref{weakfu
 principle of weak function extensionality in turn implies the usual function extensionality,
 and it does so without the univalence axiom (\autoref{wfetofe}).
 
+\index{univalence axiom}%
 In this section, we assume that $\type$ is a universe.
 We will explicitly indicate where we assume that it is univalent.
 
 \begin{defn}\label{weakfunext}
-The \define{weak function extensionality principle} asserts that there is a function
+The \define{weak function extensionality principle}
+\indexdef{function extensionality!weak}%
+asserts that there is a function
 \begin{equation*}
-\left(\tprd{x:A}\iscontr(P(x))\right)
-  \to\iscontr\left(\tprd{x:A}P(x)\right)
+\Parens{\prd{x:A}\iscontr(P(x))} \to\iscontr\Parens{\prd{x:A}P(x)}
 \end{equation*}
 for any family $P:A\to\type$ of types over any type $A$.
 \end{defn}
@@ -812,16 +913,15 @@ of which the underlying map is given by postcomposition with the underlying func
 \end{proof}
 
 \begin{cor}\label{contrfamtotalpostcompequiv}
-Let $P:A\to\type$ be a family of contractible types, i.e.\ $\prd{x:A}\iscontr(P(x))$.
+Let $P:A\to\type$ be a family of contractible types, i.e.\ \narrowequation{\prd{x:A}\iscontr(P(x)).}
 Then the projection $\proj{1}:(\sm{x:A}P(x))\to A$ is an equivalence. Assuming $\type$ is univalent, it follows immediately that precomposition with $\proj{1}$ gives an equivalence
 \begin{equation*}
-\alpha : \eqv{\left(A\to\tsm{x:A}P(x)\right)}{(A\to A)}.
+\alpha : \eqv{\Parens{A\to\sm{x:A}P(x)}}{(A\to A)}.
 \end{equation*}
 \end{cor}
 
 \begin{proof}
-  In \autoref{ex:projoftotaloffamcontrisequiv} it is asked to show 
-  that for $\proj{1}:\sm{x:A}P(X)\to A$ and $x:A$ we have an equivalence
+  By \autoref{ex:projoftotaloffamcontrisequiv}, for $\proj{1}:\sm{x:A}P(X)\to A$ and $x:A$ we have an equivalence
   \begin{equation*}
     \eqv{\hfiber{\proj{1}}{x}}{P(x)}.
   \end{equation*}
@@ -854,6 +954,7 @@ converts equality of functions to homotopy. In the proof that follows, the univa
 axiom is not used.
 
 \begin{thm}\label{wfetofe}
+  \index{function extensionality}%
 Weak function extensionality implies the function extensionality \autoref{axiom:funext}.
 \end{thm}
 
@@ -864,7 +965,7 @@ We want to show that
 \end{equation*}
 Since a fiberwise map induces an equivalence on total spaces if and only if it is fiberwise an equivalence by \autoref{thm:total-fiber-equiv}, it suffices to show that the function of type
 \begin{equation*}
-\left(\sm{g:\prd{x:A}P(x)}(f= g)\right) \to \sm{g:\prd{x:A}P(x)}(f\htpy g)
+\Parens{\sm{g:\prd{x:A}P(x)}(f= g)} \to \sm{g:\prd{x:A}P(x)}(f\htpy g)
 \end{equation*}
 induced by $\lam{g:\prd{x:A}P(x)} \happly (f,g)$ is an equivalence.
 Since the type on the left is contractible by \autoref{thm:contr-paths}, it suffices to show that the type on the right:
@@ -889,14 +990,19 @@ In type theory, this would correspond most closely to $\sm{f:A\to B} \brck{\qinv
 
 The first definition of equivalence given in homotopy type theory was the one that we have called $\iscontr(f)$, which was due to Voevodsky.
 The possibility of the other definitions was subsequently observed by various people.
-The basic theorems about adjoint equivalences such as \autoref{lem:coh-equiv,thm:equiv-iso-adj} are adaptations of standard facts in higher category theory and homotopy theory.
+The basic theorems about adjoint equivalences\index{adjoint!equivalence} such as \autoref{lem:coh-equiv,thm:equiv-iso-adj} are adaptations of standard facts in higher category theory and homotopy theory.
 Using bi-invertibility as a definition of equivalences was suggested by Andr\'e Joyal.
 
 The properties of equivalences discussed in \autoref{sec:mono-surj,sec:equiv-closures} are well-known in homotopy theory.
 Most of them were first proven in type theory by Voevodsky.
 
 The fact that every function is equivalent to a fibration is a standard fact in homotopy theory.
-The notion of object classifier in $(\infty,1)$-category theory (the categorical analogue of \autoref{thm:nobject-classifier-appetizer}) is due to Rezk (see~\cite{Rezk05,lurie:higher-topoi}).
+The notion of object classifier
+\index{object!classifier}%
+\index{classifier!object}%
+in $(\infty,1)$-category
+\index{.infinity1-category@$(\infty,1)$-category}%
+theory (the categorical analogue of \autoref{thm:nobject-classifier-appetizer}) is due to Rezk (see~\cite{Rezk05,lurie:higher-topoi}).
 
 Finally, the fact that univalence implies function extensionality (\autoref{sec:univalence-implies-funext}) is due to Voevodsky.
 Our proof is a simplification of his.
@@ -904,12 +1010,13 @@ Our proof is a simplification of his.
 \sectionExercises
 
 \begin{ex}
-  Consider the type of ``two-sided adjoint equivalence data'' for $f:A\to B$,
-  \begin{equation*}
-    \sm{g:B\to A}{\eta: g \circ f \sim \idfunc[A]}{\epsilon:f \circ g \sim \idfunc[B]}
-    \Big(\prd{x:A} \map{f}{\eta x} = \epsilon(fx)\Big) \times
-    \Big(\prd{y:B} \map{g}{\epsilon y} = \eta(gy) \Big).
-  \end{equation*}
+  Consider the type of ``two-sided adjoint equivalence\index{adjoint!equivalence} data'' for $f:A\to B$,
+  \begin{narrowmultline*}
+    \sm{g:B\to A}{\eta: g \circ f \htpy \idfunc[A]}{\epsilon:f \circ g \htpy \idfunc[B]}
+    \narrowbreak
+    \Parens{\prd{x:A} \map{f}{\eta x} = \epsilon(fx)} \times
+    \Parens{\prd{y:B} \map{g}{\epsilon y} = \eta(gy) }.
+  \end{narrowmultline*}
   By \autoref{lem:coh-equiv}, we know that if $f$ is an equivalence, then this type is inhabited.
   Give a characterization of this type analogous to \autoref{lem:qinv-autohtpy}.
 
@@ -921,13 +1028,22 @@ Our proof is a simplification of his.
   Show that for any $f:A\to B$, the following type also satisfies the three desiderata of $\isequiv(f)$:
   \begin{equation*}
     \sm{R:A\to B\to \type}
-    \Big(\prd{a:A} \iscontr\big(\sm{b:B} R(a,b)\big)\Big) \times
-    \Big(\prd{b:B} \iscontr\big(\sm{a:A} R(a,b)\big)\Big).
+    \Parens{\prd{a:A} \iscontr\big(\sm{b:B} R(a,b)\big)} \times
+    \Parens{\prd{b:B} \iscontr\big(\sm{a:A} R(a,b)\big)}.
   \end{equation*}
 \end{ex}
 
-\begin{ex}
+\begin{ex} \label{ex:qinv-autohtpy-no-univalence}
   Reformulate the proof of \autoref{lem:qinv-autohtpy} without using univalence.
+\end{ex}
+
+\begin{ex}[The unstable octahedral axiom]\label{ex:unstable-octahedron}
+  \index{axiom!unstable octahedral}%
+  Suppose $f:A\to B$ and $g:B\to C$ and $b:B$.
+  \begin{enumerate}
+  \item Show that there is a natural map $\hfib{g\circ f}{g(b)} \to \hfib{g}{g(b)}$ whose fiber over $(b,\refl{g(b)})$ is equivalent to $\hfib f b$.
+  \item Show that $\eqv{\hfib{g\circ f}{g(b)}}{\sm{w:\hfib{g}{g(b)}} \hfib f {\proj1 w}}$.
+  \end{enumerate}
 \end{ex}
 
 \begin{ex}\label{ex:projoftotaloffamcontrisequiv}
@@ -941,9 +1057,10 @@ Our proof is a simplification of his.
 \end{ex}
 
 \begin{ex}
+  \index{2-out-of-6 property}%
   Prove that equivalences satisfy the \emph{2-out-of-6 property}: given $f:A\to B$ and $g:B\to C$ and $h:C\to D$, if $g\circ f$ and $h\circ g$ are equivalences, so are $f$, $g$, $h$, and $h\circ g\circ f$.
 \end{ex}
 
 % Local Variables:
-% TeX-master: "main"
+% TeX-master: "hott-online"
 % End:

@@ -352,7 +352,8 @@ To specify a type, we say
 \begin{enumerate}
 \item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, $\lambda$-abstraction.
 \item how to use elements of that type.  These are called the type's   \emph{eliminators}.  For example, the function type has one   eliminator, function application.
-\item equalities relating the constructors and eliminators.  For   example, for functions, we have the rule that $(\lamu{x:A}b)(a)$ is   equal to the substitution of $a$ for $x$ in $b$.
+\item equalities relating the constructors and eliminators. One kind of equality is \emph{$\beta$-reduction}, which expresses how an   eliminator acts on a constructor.  For example, for functions, the $\beta$-reduction equality states that $(\lamu{x:A}b)(a)$ is equal to the  substitution of $a$ for $x$ in $b$.  Another kind of equality is   \emph{$\eta$-expansion}, which expresses a uniqueness property of constructors or eliminators.  For example, for functions, 
+the $\eta$-expansion rule says that any function $f$ is equal to the ``expanded'' function $\lamu{x} f(x)$, which starts with a constructor.  
 \end{enumerate}
 
 The way to construct pairs is obvious: given $a:A$ and $b:B$, we may form $(a,b):A\times B$.
@@ -363,10 +364,10 @@ Now, how can we \emph{use} pairs, i.e.\ how can we define functions out of a pro
 Let us first consider the definition of a non-dependent function $f : A\times B \to C$.
 Since we intend the only elements of $A\times B$ to be pairs, in order to define such a function, it should be enough to prescribe the result
 when $f$ is applied to a pair $\tup{a}{b}$.  We prescribe these results by
-providing a function $g : A \to B \to C$ and defining
+providing a function $g : A \to B \to C$ and defining 
 \[ f(\tup{a}{b}) \defeq g(a)(b). \]
 We avoid writing $g(a,b)$ here, in order to emphasize that $g$ is not a
-function on a product. 
+function on a product.  This defining equation is the $\beta$-reduction equation for product types.
 
 In particular, we can derive the \define{projection} functions
 \symlabel{defn:proj}
@@ -393,11 +394,12 @@ Then instead of defining functions such as $\fst$ and $\snd$ directly by a defin
   \fst &\defeq \rec{A\times B}(A, \lam{a}{b} a)\\
   \snd &\defeq \rec{A\times B}(B, \lam{a}{b} b).
 \end{align*}
-We refer to the function $\rec{A\times B}$ as the \define{recursor} for product types.
+We refer to the function $\rec{A\times B}$ as the \define{recursor} for product types.  The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.  It comes the fact that product types are a degenerate example of a general framework for inductive types, and for types such as the natural numbers, the recursor will actually be recursive.  The fact that any function $(A \times B) \to C$ is equal to an application of the recursor is the $\eta$-expansion equality for product types:
+\[
+(f : (A\times B) \to C) \jdeq \rec{A \times B}(\lamu{x}{y}f(x,y))
+\]
+This expresses a uniqueness property for maps out of a product type; there is also a uniqueness property called \emph{surjective pairing} for maps into a product type, which is discussed below.  
 We may also speak of the \define{recursion principle} for cartesian products, meaning the fact that we can define a function $f:A\times B\to C$ as above by giving its value on pairs.
-The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.
-It comes the fact that product types are a degenerate example of a general framework for inductive types, and for types such as
-the natural numbers, the recursor will actually be recursive.  
 
 We leave it as a simple exercise to show that the recursor can be
 derived from the projections and vice versa.

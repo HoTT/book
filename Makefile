@@ -81,5 +81,22 @@ clean:
 TAGS: $(TEXFILES) exercise_solutions.tex
 	etags $^ >TAGS
 
-indexterms.txt:always; other/index-helper.py >$@
-always:
+indexterms.txt:					\
+	other/index-helper.py			\
+	front.tex				\
+	preface.tex				\
+	introduction.tex			\
+	preliminaries.tex			\
+	basics.tex				\
+	logic.tex				\
+	equivalences.tex			\
+	induction.tex				\
+	hits.tex				\
+	hlevels.tex				\
+	homotopy.tex				\
+	categories.tex				\
+	setmath.tex				\
+	reals.tex				\
+	formal.tex
+		other/index-helper.py >$@
+

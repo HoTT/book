@@ -80,3 +80,6 @@ clean:
 #   - there are many *.tex garbage files in this directory
 TAGS: $(TEXFILES) exercise_solutions.tex
 	etags $^ >TAGS
+
+indexterms.txt:always; other/index-helper.py >$@
+always:

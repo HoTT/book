@@ -745,6 +745,21 @@ Since this sounds like a version of the axiom of choice, the function \ac has tr
 However, no choice is actually involved, since the choices have already been given to us in the premise: all we have to do is take it apart into two functions: one representing the choice and the other its correctness.
 In \autoref{sec:axiom-choice} we will give another formulation of an ``axiom of choice'' which is closer to the usual one.
 
+Dependent pair types are often used to define types of mathematical structures, which commonly consist of several dependent pieces of data.
+To take a simple example, suppose we want to define a \define{magma}\indexdef{magma} to be a type $A$ together with a binary operation $m:A\to A\to A$.
+The precise meaning of the phrase ``together with''\index{together with} (and the synonymous ``equipped with''\index{equipped with}) is that ``a magma'' is a \emph{pair} $(A,m)$ consisting of a type $A:\UU$ and an operation $m:A\to A\to A$.
+Since the type $A\to A\to A$ of the second component $m$ of this pair depends on its first component $A$, such pairs belong to a dependent pair type.
+Thus, the definition ``a magma is a type $A$ together with a binary operation $m:A\to A\to A$'' should be read as defining \emph{the type of magmas} to be
+\[ \mathsf{Magma} \defeq \sm{A:\UU} (A\to A\to A). \]
+Given a magma, we extract its underlying type (its ``carrier''\index{carrier}) with the first projection $\proj1$, and its operation with the second projection $\proj2$.
+Of course, structures built from more that two data require iterated pair types, which may be only partially dependent; for instance the type of pointed magmas (magmas $(A,m)$ equipped with a basepoint $e:A$) is
+\[ \mathsf{PointedMagma} \defeq \sm{A:\UU} (A\to A\to A) \times A. \]
+We generally also want to impose axioms on such a structure, e.g.\ to make a pointed magma into a monoid or a group.
+This can also be done using $\Sigma$-types; see \autoref{sec:pat}.
+
+In the rest of the book, we will sometimes make definitions of this sort explicit, but eventually we trust the reader to translate them from English into $\Sigma$-types.
+We also generally follow the common mathematical practice of using the same letter for a structure of this sort and for its carrier (which amounts to leaving the appropriate projection function implicit in the notation): that is, we will speak of a magma $A$ with its operation $m:A\to A\to A$.
+
 \index{type!dependent pair|)}%
 
 \section{Coproduct types}
@@ -1348,7 +1363,14 @@ or
 The former is more natural in constructive mathematics, but in this case it is actually equivalent to the latter, since $\nat$ has ``decidable equality'' (see \autoref{sec:intuitionism,prop:nat-is-set}).
 \index{decidable!equality}%
 
-Note that we can use the universes in type theory to represent ``higher order logic'' --- that is, we can quantify over all propositions or over all predicates.
+The representation of propositions as types also allows us to incorporate axioms into the definition of types as mathematical structures using $\Sigma$-types, as discussed in \autoref{sec:sigma-types}.
+For example, suppose we want to define a \define{semigroup}\index{semigroup} to be a type $A$ equipped with a binary operation $m:A\to A\to A$ (that is, a magma\index{magma}) and such that for all $x,y,z:A$ we have $m(x,m(y,z)) = m(m(x,y),z)$.
+This latter proposition is represented by the type $\prd{x,y,z:A} m(x,m(y,z)) = m(m(x,y),z)$, so the type of semigroups is
+\[ \semigroup \defeq \sm{A:\UU}{m:A\to A\to A} \prd{x,y,z:A} m(x,m(y,z)) = m(m(x,y),z). \]
+From an inhabitant of this type we can extract the carrier $A$, the operation $m$, and a witness of the axiom, by applying appropriate projections.
+We will return to this example in \autoref{sec:equality-of-structures}.
+
+Note also that we can use the universes in type theory to represent ``higher order logic'' --- that is, we can quantify over all propositions or over all predicates.
 For example, we can represent the proposition \emph{for all properties $P : A \to \UU$, if $P(a)$ then $P(b)$} as
 \[ \prd{P : A \to \UU} P(a) \to P(b) \]
 where $A : \UU$ and $a,b : A$.

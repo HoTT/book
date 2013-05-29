@@ -83,7 +83,7 @@ Thus in~\ref{item:reg3} the pullback of a coequalizer is required to again be a 
 
 \index{set-coequalizer}%
 \index{image}
-The obvious candidate for the coequalizer of the kernel pair of $f:A\to B$ is its \emph{image}, as defined in \autoref{sec:image-factorization}.
+The obvious candidate for the coequalizer of the kernel pair of $f:A\to B$ is the \emph{image} of $f$, as defined in \autoref{sec:image-factorization}.
 Recall that we defined $\im(f)\defeq \sm{b:B} \brck{\hfib f b}$, with functions 
 $\tilde{f}:A\to\im(f)$ and $i_f:\im(f)\to B$ defined by
 \begin{align*}
@@ -111,7 +111,7 @@ fitting into a diagram:
 Recall that a function $f:A\to B$ is called \emph{surjective} if
 \narrowequation{\fall{b:B}\brck{\hfib f b},}
 or equivalently $\fall{b:B} \exis{a:A} f(a)=b$.
-A function $f:A\to B$ between sets is called \emph{injective} if $\fall{a,a':A} f(a) = f(a') \Rightarrow a=a'$, or equivalently if each of its fibers is a mere proposition.
+We have also said that a function $f:A\to B$ between sets is called \emph{injective} if $\fall{a,a':A} (f(a) = f(a')) \Rightarrow (a=a')$, or equivalently if each of its fibers is a mere proposition.
 Since these are the $(-1)$-connected and $(-1)$-truncated maps in the sense of \autoref{cha:hlevels}, the general theory there implies that $\tilde f$ above is surjective and $i_f$ is injective, and that this factorization is stable under pullback.
 
 We now identify surjectivity and injectivity with the appropriate cat\-e\-go\-ry-theoretic notions.
@@ -277,6 +277,15 @@ Pullbacks of regular epis in \uset are regular epis.
   We showed in \autoref{thm:stable-images} that pullbacks of $n$-connected functions are $n$-connected.
   By \autoref{lem:images_are_coequalizers}, it suffices to apply this when $n=-1$.
 \end{proof}
+
+\indexdef{image!of a subset}
+One of the consequences of \uset being a regular category is that we have an ``image'' operation on subsets.
+That is, given $f:A\to B$, any subset $P:\power A$ (i.e.\ a predicate $P:A\to \prop$) has an \define{image} which is a subset of $B$.
+This can be defined directly as $\setof{ y:B | \exis{x:A} f(x)=y \land P(x)}$, or indirectly as the image (in the previous sense) of the composite function
+\[ \setof{ x:A | P(x) } \to A \xrightarrow{f} B .\]
+\symlabel{subset-image}
+We will also sometimes use the common notation $\setof{f(x) | P(x)}$ for the image of $P$.
+
 
 \subsection{Quotients}\label{subsec:quotients}
 Now that we know that $\uset$ is regular, to show that $\uset$ is exact, we need to show that every
@@ -928,15 +937,18 @@ It may seem that such an inductive definition can never get off the ground, but 
 \end{eg}
 
 Well-foundedness allows us to define functions by recursion and prove statements by induction, such as for instance the following.
+Recall from \autoref{subsec:prop-subsets} that $\power B$ denotes the \emph{power set}\index{power set} $\power B \defeq (B\to\prop)$.
 
 \begin{lem}\label{thm:wfrec}
   Suppose $B$ is a set and we have a function
-  \[ g : \mathcal{P}B \to B \]
+  \[ g : \power B \to B \]
   Then if $<$ is a well-founded relation on $A$, there is a function $f:A\to B$ such that for all $a:A$ we have
   \begin{equation*}
     f(a) = g\Big(\setof{ f(a') | a'<a }\Big).
   \end{equation*}
 \end{lem}
+\noindent
+(We are using the notation for images of subsets from \autoref{sec:image}.)
 \begin{proof}
   We first define, for every $a:A$ and $s:\acc(a)$, an element $\bar f(a,s):B$.
   By induction, it suffices to assume that $s$ is a function assigning to each $a'<a$ a proof $s(a'):\acc(a')$, and that moreover for each such $a'$ we have an element $\bar f(a',s(a')):B$.
@@ -950,10 +962,12 @@ Well-foundedness allows us to define functions by recursion and prove statements
 \end{proof}
 
 In classical\index{mathematics!classical} logic, well-foundedness has a more well-known reformulation.
+In the following, we say that a subset $B: \power A$ is \define{nonempty}\indexdef{nonempty!subset} if it is unequal to the empty subset $(\lam{x}\bot) : \power X$.
+We leave it to the reader to verify that assuming excluded middle, this is equivalent to mere inhabitation, i.e.\ to the condition $\exis{x:A} x\in B$.
 
 \begin{lem}\label{thm:wfmin}
   \index{excluded middle}%
-  Assuming excluded middle, $<$ is well-founded if and only if every nonempty subset $B\subseteq A$ merely has a minimal element.
+  Assuming excluded middle, $<$ is well-founded if and only if every nonempty subset $B: \power A$ merely has a minimal element.
 \end{lem}
 \begin{proof}
   Suppose first $<$ is well-founded, and suppose $B\subseteq A$ is a subset with no minimal element.
@@ -978,7 +992,7 @@ In classical\index{mathematics!classical} logic, well-foundedness has a more wel
   \indexdef{relation!extensional}%
   \indexdef{extensional!relation}%
   if for any $a,b:A$, we have
-  \[ \Big(\prd{c:A} (c<a) \Leftrightarrow (c<b)\Big) \to (a=b). \]
+  \[ \Parens{\fall{c:A} (c<a) \Leftrightarrow (c<b)} \to (a=b). \]
 \end{defn}
 
 Note that since $A$ is a set, extensionality is a mere proposition.
@@ -996,7 +1010,7 @@ Rather, it is a ``local'' counterpart of the axiom of extensionality in classica
   The inductive hypothesis is that for all $a'<a$, we have $f(a')=a'$.
 
   Now since $A$ is extensional, to conclude $f(a)=a$ it is sufficient to show
-  \[\prd{c:A}(c<f(a)) \Leftrightarrow (c<a).\]
+  \[\fall{c:A}(c<f(a)) \Leftrightarrow (c<a).\]
   However, since $f$ is an automorphism, we have $(c<a) \Leftrightarrow (f(c)<f(a))$.
   But $c<a$ implies $f(c)=c$ by the inductive hypothesis, so $(c<a) \to (c<f(a))$.
   On the other hand, if $c<f(a)$, then $f^{-1}(c)<a$, and so $c = f(f^{-1}(c)) = f^{-1}(c)$ by the inductive hypothesis again; thus $c<a$.
@@ -1039,7 +1053,7 @@ In particular, this implies that in \autoref{def:simulation}\ref{item:sim2} the 
   Since $f$ is injective, $\sm{a:A} (f(a)=b)$ is a mere proposition.
 \end{proof}
 
-We say that a subset $C :\mathcal{P}B$ is an \define{initial segment}
+We say that a subset $C :\power B$ is an \define{initial segment}
 \indexdef{initial!segment}%
 \indexsee{segment, initial}{initial segment}%
 if $c\in C$ and $b<c$ imply $b\in C$.
@@ -1055,7 +1069,7 @@ Thus, by univalence, every simulation $A\to B$ is \emph{equal} to the inclusion 
   We leave it to the reader to verify that identities are simulations, and that composites of simulations are simulations.
   Thus, we have a notion of structure.
   For standardness, we must show that if $<$ and $\prec$ are two extensional well-founded relations on $A$, and $\idfunc[A]$ is a simulation in both directions, then $<$ and $\prec$ are equal.
-  Since extensionality and well-foundedness are mere propositions, for this it suffices to have $\prd{a,b:A} (a<b) \Leftrightarrow (a\prec b)$.
+  Since extensionality and well-foundedness are mere propositions, for this it suffices to have $\fall{a,b:A} (a<b) \Leftrightarrow (a\prec b)$.
   But this follows from \autoref{def:simulation}\ref{item:sim1} for $\idfunc[A]$.
 \end{proof}
 
@@ -1070,9 +1084,9 @@ In fact, this category is a poset.
 \end{lem}
 \begin{proof}
   Suppose $f,g:A\to B$ are simulations.
-  Since being a simulation is a mere property, it suffices to show $\prd{a:A}(f(a)=g(a))$.
+  Since being a simulation is a mere property, it suffices to show $\fall{a:A}(f(a)=g(a))$.
   By induction on $<$, we may suppose $f(a')=g(a')$ for all $a'<a$.
-  And by extensionality of $B$, to have $f(a)=g(a)$ it suffices to have $\prd{b:B}(b<f(a)) \Leftrightarrow (b<g(a))$.
+  And by extensionality of $B$, to have $f(a)=g(a)$ it suffices to have $\fall{b:B}(b<f(a)) \Leftrightarrow (b<g(a))$.
 
   But since $f$ is a simulation, if $b<f(a)$, then we have $a'<a$ with $f(a')=b$.
   By the inductive hypothesis, we have also $g(a')=b$, hence $b<g(a)$.
@@ -1086,7 +1100,7 @@ Thus, if $A$ and $B$ are equipped with extensional and well-founded relations, w
   An \define{ordinal}
   \indexdef{ordinal}%
   \indexsee{number!ordinal}{ordinal}%
-  is a set $A$ with an extensional well-founded relation which is \emph{transitive}, i.e.\ $\prd{a,b,c:A}(a<b)\to (b<c) \to (a<c)$.
+  is a set $A$ with an extensional well-founded relation which is \emph{transitive}, i.e.\ satisfies $\fall{a,b,c:A}(a<b)\to (b<c) \to (a<c)$.
 \end{defn}
 
 \begin{eg}
@@ -1123,9 +1137,8 @@ Since simulations are unique, $A<B$ is also a mere proposition.
   $(\ord,<)$ is an ordinal.
 \end{thm}
 
-\begin{rmk}
-  If universe levels were made explicit, this theorem would state that the set of ordinals in one universe is an ordinal in the next higher universe.
-\end{rmk}
+\noindent
+More precisely, this theorem says that the type $\ord_{\UU_i}$ of ordinals in one universe is itself an ordinal in the next higher universe, i.e.\ $(\ord_{\UU_i},<):\ord_{\UU_{i+1}}$.
 
 \begin{proof}
   Let $A$ be an ordinal; we first show that $\ordsl A a$ is accessible (in \ord) for all $a:A$.
@@ -1201,7 +1214,7 @@ We now show the equivalence of our ordinals with the more familiar classical\ind
   Assuming excluded middle, every ordinal is trichotomous:
   \index{trichotomy!for ordinals}%
   \index{ordinal!trichotomy of}%
-  \[ \prd{a,b:A} (a<b) \vee (a=b) \vee (b<a). \]
+  \[ \fall{a,b:A} (a<b) \vee (a=b) \vee (b<a). \]
 \end{lem}
 \begin{proof}
   By induction on $a$, we may assume that for every $a'<a$ and every $b':A$, we have $(a'<b') \vee (a'=b') \vee (b'<a')$.
@@ -1210,16 +1223,16 @@ We now show the equivalence of our ordinals with the more familiar classical\ind
   By excluded middle, either there merely exists a $b'<b$ such that $a<b'$, or there merely exists a $b'<b$ such that $a=b'$, or for every $b'<b$ we have $b'<a$.
   In the first case, merely $a<b$ by transitivity, hence $a<b$ as it is a mere proposition.
   Similarly, in the second case, $a<b$ by transport.
-  Thus, suppose $\prd{b':A}(b'<b)\to (b'<a)$.
+  Thus, suppose $\fall{b':A}(b'<b)\to (b'<a)$.
 
   Now analogously, either there merely exists $a'<a$ such that $b<a'$, or there merely exists $a'<a$ such that $a'=b$, or for every $a'<a$ we have $a'<b$.
-  In the first and second cases, $b<a$, so we may suppose $\prd{a':A}(a'<a)\to (a'<b)$.
+  In the first and second cases, $b<a$, so we may suppose $\fall{a':A}(a'<a)\to (a'<b)$.
   However, by extensionality, our two suppositions now imply $a=b$.
 \end{proof}
 
 \begin{lem}
   A well-founded relation contains no cycles, i.e.\
-  \[ \prd{n:\mathbb{N}}{a:\mathbb{N}_n\to A} \neg\Big((a_0<a_1) \wedge \dots \wedge (a_{n-1}<a_n)\wedge (a_n<a_0)\Big). \]
+  \[ \fall{n:\mathbb{N}}{a:\mathbb{N}_n\to A} \neg\Big((a_0<a_1) \wedge \dots \wedge (a_{n-1}<a_n)\wedge (a_n<a_0)\Big). \]
 \end{lem}
 \begin{proof}
   We prove by induction on $a:A$ that there is no cycle containing $a$.
@@ -1247,6 +1260,10 @@ In classical\index{mathematics!classical} mathematics, the characterization of \
 In our context, the structure identity principle means that there is no need to look for such representatives: any well-ordering is as good as any other.
 
 We now move on to consider consequences of the axiom of choice.
+For any set $X$, let $\powerp X$ denote the type of merely inhabited subsets of $X$:
+\symlabel{inhabited-powerset}
+\[ \powerp X \defeq \setof{ Y : \power X | \exis{x:X} x\in Y}. \]
+Assuming excluded middle, this is equivalently the type of \emph{nonempty}\index{nonempty!subset} subsets of $X$, and we have $\power X \eqvsym (\powerp X) + \unit$.
 
 \begin{thm}\label{thm:wop}
   \index{axiom!of choice}%
@@ -1254,13 +1271,14 @@ We now move on to consider consequences of the axiom of choice.
   Assuming excluded middle, the following are equivalent.
   \begin{enumerate}
   \item For every set $X$, there merely exists a function
-    $ f: \mathcal{P}_+X \to X $
-    such that $f(Y)\in Y$ for all $Y:\mathcal{P}X$.\label{item:wop1}
+    $ f: \powerp X \to X $
+    such that $f(Y)\in Y$ for all $Y:\power X$.\label{item:wop1}
   \item Every set merely admits the structure of an ordinal.\label{item:wop2}
   \end{enumerate}
 \end{thm}
 
-Of course,~\ref{item:wop1} is a standard classical\index{mathematics!classical} version of the axiom of choice.
+\noindent
+Of course,~\ref{item:wop1} is a standard classical\index{mathematics!classical} version of the axiom of choice; see \autoref{ex:choice-function}.
 
 \begin{proof}
   One direction is easy: suppose~\ref{item:wop2}.
@@ -1270,7 +1288,7 @@ Of course,~\ref{item:wop1} is a standard classical\index{mathematics!classical} 
   Now suppose~\ref{item:wop1}.
   As before, since~\ref{item:wop2} is a mere proposition, we may assume given such an $f$.
   We extend $f$ to a function
-  \[ \bar f:\mathcal{P}X \cong (\mathcal{P}_+ X) + \unit \longrightarrow X+\unit
+  \[ \bar f:\power X \eqvsym (\powerp X) + \unit \longrightarrow X+\unit
   \]
   in the obvious way.
   Now for any ordinal $A$, we can define $g_A:A\to X+\unit$ by well-founded recursion:
@@ -1397,7 +1415,7 @@ $x\in v$ on $V$ by setting:
 %
 % Note: "membership" rather than "elementhood", because "element" is taken.
 %
-\symlabel{membership}
+\symlabel{V-membership}
 \begin{equation*}
   (x \in \vset(A,f)) \defeq \exis{a : A} x = f(a).
 \end{equation*}
@@ -1638,7 +1656,7 @@ In type theory with $\choice{}$ and a universe $\UU$, the cumulative hierarchy $
 \end{thm}
 
 \begin{proof}
-We have all the axioms listed in \autoref{thm:VisCST}, plus full separation, so we just need to show that there are power sets\index{power set} $\mathcal{P}(a):V$ for all $a:V$.  But since we have $\LEM{}$ these are simply function types $\mathcal{P}(a) = (a\to\bool)$.  Thus $V$ is a model of Zermelo--Fraenkel set theory ZF. We leave the verification of the set-theoretic axiom of choice from $\choice{}$ as an easy exercise. 
+We have all the axioms listed in \autoref{thm:VisCST}, plus full separation, so we just need to show that there are power sets\index{power set} $\power a:V$ for all $a:V$.  But since we have $\LEM{}$ these are simply function types $\power a = (a\to\bool)$.  Thus $V$ is a model of Zermelo--Fraenkel set theory ZF. We leave the verification of the set-theoretic axiom of choice from $\choice{}$ as an easy exercise. 
 \end{proof}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1742,7 +1760,7 @@ The idea of algebraic set theory, which informs our development in \autoref{sec:
   where $\le$ denotes the obvious partial order on $\bool$, with $\bfalse\le\btrue$.
   \begin{enumerate}
   \item Define a relation $<$ on $\nat_\infty$ which makes it into an ordinal.
-  \item Show that $\id[\ord]{\omega+1}{\nat_\infty}$ if and only if the limited principle of omniscience~\eqref{eq:lpo} holds.
+  \item Show that $\id[\ord]{\omega+1}{\nat_\infty}$ if and only if the limited principle of omniscience~\eqref{eq:lpo} holds.%
     \index{axiom!limited principle of omniscience}%
     \index{limited principle of omniscience}%
   \end{enumerate}
@@ -1750,6 +1768,10 @@ The idea of algebraic set theory, which informs our development in \autoref{sec:
 
 \begin{ex}
   Show that if $(A,<)$ is well-founded and extensional and $A:\UU$, then there is a simulation $A\to V$, where $(V,\in)$ is the cumulative hierarchy from \autoref{sec:cumulative-hierarchy} built from the universe~\UU.
+\end{ex}
+
+\begin{ex}\label{ex:choice-function}
+  Show that \autoref{thm:wop}\ref{item:wop1} is equivalent to the axiom of choice~\eqref{eq:ac}.
 \end{ex}
 
 \begin{ex}\label{ex:cumhierhit}

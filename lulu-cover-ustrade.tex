@@ -31,8 +31,12 @@
 
 % SANITY CHECK: \totalwidth = 2 * \coverwidth + \spinewidth
 
-\usepackage[papersize={\totalwidth,\coverheight},margin=0pt]{geometry}
-
+\usepackage[margin=0pt,
+            papersize={\totalwidth,\coverheight},
+            noheadfoot,
+            textwidth=\totalwidth,
+            textheight=\coverheight]{geometry}
+%\usepackage{layout}
 \newcommand{\coverpage}[1]{\hbox to \coverwidth{\vbox to \coverheight {#1}}}
 \newcommand{\spine}[1]{\hbox to \spinewidth{\vbox to \coverheight{#1}}}
 
@@ -40,34 +44,26 @@
 \parskip=0pt
 
 \newcommand{\frontpage}{
-\begin{minipage}{\coverwidth}
-\hbox{}
-\par
-\vspace{80pt}
-{\centering
+\begin{minipage}[c][\coverheight][c]{\coverwidth}
+\centering
 {\fontsize{\OPTcovertitlefont}{\OPTcovertitlefont}\fontseries{b}\selectfont%
 Homotopy Type Theory}\par
 \vspace*{\OPTcovertitleskip}
 {\fontsize{\OPTcoversubtitlefont}{\OPTcoversubtitlefont}\fontseries{b}\fontshape{sc}\selectfont%
-Univalent Foundations of Mathematics}\par
-\vfil
-\begin{center}
-\includegraphics[width=\coverwidth]{cover}
-\end{center}
-\par
+Univalent Foundations of Mathematics}
+\includegraphics[width=0.99\coverwidth]{cover}
 {\fontsize{\OPTcoverauthorfont}{\OPTcoverauthorfont}\fontshape{n}\selectfont%
 The Univalent Foundations Program\par
 \vspace*{\OPTcoverauthorskip}
-Institute for Advanced Study\par
-}}
+Institute for Advanced Study\par}
 \end{minipage}}
 
 \newcommand{\spinetext}{
-\begin{minipage}{\spinewidth}
+\begin{minipage}[c][\coverheight][t]{\spinewidth}
 \begin{center}
   \begin{rotate}{270}
+    \hspace{90pt}
     \begin{minipage}{\coverheight}
-      \hspace{80pt}
       {\fontsize{\OPTcovertitlefont}{\OPTcovertitlefont}\fontseries{b}\selectfont%
         Homotopy Type Theory}
     \end{minipage}
@@ -77,10 +73,10 @@ Institute for Advanced Study\par
 }
 
 \newcommand{\backpage}{
-\begin{minipage}{\coverwidth}
-\vspace{80pt}
+\begin{minipage}[c][\coverheight][c]{\coverwidth}
+%\vspace{80pt}
 \begin{center}
-\begin{parbox}{0.7\coverwidth}
+\begin{minipage}[t]{0.7\coverwidth}
 {\raggedright
 \parindent=0pt
 \parskip=\baselineskip
@@ -109,11 +105,12 @@ We believe that univalent foundations could eventually replace set theory as the
   \emph{Get a free copy of the book at homotopytypetheory.org.}
 \end{center}
 }
-\end{parbox}
+\end{minipage}
 \end{center}
 \end{minipage}
 }
 
 \begin{document}
+%\layout
 \hbox{\coverpage{\backpage}\spine{\spinetext}\coverpage{\frontpage}}
 \end{document}

@@ -79,7 +79,8 @@ clean:
 #   - we want to tag them in the same order they appear in the book, so tag search is in logical sequence
 #   - there are many *.tex garbage files in this directory
 TAGS: $(TEXFILES) exercise_solutions.tex
-	etags $^ >TAGS
+	etags $^ -o $@.tmp
+	mv $@.tmp $@
 
 indexterms.txt:					\
 	other/index-helper.py			\

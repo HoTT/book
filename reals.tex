@@ -41,7 +41,9 @@ with a non-trivial algebraic structure.
 We first construct the rational numbers \Q, as the reals can then be seen as a completion
 of~\Q. An expert will point out that \Q could be replaced by any approximate field,
 \indexdef{field!approximate}%
-i.e., a subring of \Q in which arbitrarily precise approximate inverses exist. An example is the
+i.e., a subring of \Q in which arbitrarily precise approximate inverses
+\index{inverse!approximate}%
+exist. An example is the
 ring of dyadic rationals, which are those of the form $n/2^k$. 
 If we were implementing constructive mathematics on a computer,
 an approximate field would be more suitable, but we leave such finesse for those
@@ -150,7 +152,7 @@ $\Omega$:
   is a countable set. Thus we could take $\Omega$ to be the initial \emph{$\sigma$-frame},
   \index{initial!sigma-frame@$\sigma$-frame}%
   \index{sigma-frame@$\sigma$-frame!initial|defstyle}%
-  i.e., a lattice\index{lattice} with countable joins in which binary meets distribute over countable
+  i.e., a lattice\index{lattice} with countable joins\index{join!in a lattice} in which binary meets distribute over countable
   joins. (The initial $\sigma$-frame cannot be the two-point lattice $\bool$ because
   $\bool$ is not closed under countable joins, unless we assume excluded middle.) This
   would lead to a construction of~$\Omega$ as a higher inductive-inductive type, but one
@@ -290,6 +292,8 @@ multiplicative inverses, we must first introduce order. Define $\leq$ and $<$ as
 \index{partial order}%
 \index{transitivity!of . for reals@of $<$ for reals}
 \index{transitivity!of . for reals@of $\leq$ for reals}
+\index{relation!irreflexive}
+\index{irreflexivity!of . for reals@of $<$ for reals}
 The relation $\leq$ is a partial order, and $<$ is transitive and irreflexive. Linearity
 \index{order!linear}%
 \index{linear order}%
@@ -399,12 +403,19 @@ axiomatization, but rather at a useful amount of structure and properties.
     \index{ring}%
   \item $x : F$ is invertible if, and only if $x \apart 0$;
   \item $(F, {\leq}, {\min}, {\max})$ is a lattice;
-  \item the strict order $<$ is transitive, irreflexive, and linear ($x < y \Rightarrow x < z \lor z < y$);\index{transitivity!of . in a field@of $<$ in a field}
+  \item the strict order $<$ is transitive, irreflexive,
+    \index{relation!irreflexive}
+    \index{irreflexivity!of . in a field@of $<$ in a field}%
+    and linear ($x < y \Rightarrow x < z \lor z < y$);\index{transitivity!of . in a field@of $<$ in a field}
     %% the condition $x < y \Rightarrow x < z \lor z < y$ doesn't look like ``linearity''
     %% since it applies to any set where x<y is always false.  So I'm not indexing it yet.
     \index{strict!order}%
     \index{order!strict}%
   \item apartness $\apart$ is irreflexive, symmetric and cotransitive ($x \apart y \Rightarrow x \apart z \lor y \apart z$);
+    \index{relation!irreflexive}
+    \index{irreflexivity!of apartness}%
+    \indexdef{relation!cotransitive}%
+    \index{cotransitivity!of apartness}%
   \item for all $x, y, z : F$:
     %
     \begin{align*}
@@ -661,6 +672,7 @@ Every construction of reals whose last step is a quotient suffers from this defi
 There are three common ways out of the conundrum in constructive mathematics:
 \index{mathematics!constructive}%
 %
+\index{bargaining}%
 \begin{enumerate}
 \item Pretend that the reals are a setoid $(\mathcal{C}, {\approx})$, i.e., the type of
   Cauchy sequences $\mathcal{C}$ with a coincidence\index{coincidence!of Cauchy approximations} relation attached to it by
@@ -700,6 +712,7 @@ However, what we actually need for the notion of Cauchy sequence of reals is not
 This can be represented by a family of binary relations, which we will denote $\mathord{\close\epsilon} : \RC\to\RC\to \prop$.
 The intended meaning of $x \close\epsilon y$ is $|x - y| < \epsilon$, but since we do not have notions of subtraction, absolute value, or inequality available yet (we are only just defining $\RC$, after all), we will have to define these relations $\close\epsilon$ at the same time as we define $\RC$ itself.
 And since $\close\epsilon$ is a type family indexed by two copies of $\RC$, we cannot do this with an ordinary mutual (higher) inductive definition; instead we have to use a \emph{higher inductive-inductive definition}.
+\index{inductive-inductive type!higher}
 
 Recall from \autoref{sec:generalizations} that the ordinary notion of inductive-inductive definition allows us to define a type and a type family indexed by it by simultaneous induction.
 Of course, the ``higher'' version of this allows both the type and the family to have path-constructors as well as point-constructors.
@@ -950,7 +963,7 @@ The second constructor of $\RC$ gives a function $\rclim:\CAP\to\RC$.
   then $f$ factors uniquely through $\rclim : \CAP \to \RC$.
 \end{lem}
 \begin{proof}
-  Since $\rclim$ is surjective, by \autoref{lem:images_are_coequalizers}, $\RC$ is the quotient of $\CAP$ by the kernel of $\rclim$.
+  Since $\rclim$ is surjective, by \autoref{lem:images_are_coequalizers}, $\RC$ is the quotient of $\CAP$ by the kernel pair\index{kernel!pair} of $\rclim$.
   But this is exactly the statement of the lemma.
 \end{proof}
 
@@ -1298,6 +1311,7 @@ Our proof also provides the following additional information.
 
 \begin{cor}
   \index{triangle!inequality for R@inequality for $\RC$}%
+  \indexsee{inequality!triangle}{triangle inequality}%
   $\closesym$ is rounded\index{rounded!relation} and satisfies the triangle inequality:
     \begin{gather}
       \eqvspaced{
@@ -1753,6 +1767,8 @@ The Cauchy reals are the least such field.
 \section{Comparison of Cauchy and Dedekind reals}
 \label{sec:comp-cauchy-dedek}
 
+\index{depression|(}
+
 Let us also say something about the relationship between the Cauchy and Dedekind reals. By
 \autoref{RC-archimedean-ordered-field}, $\RC$ is an archimedean ordered field. It is also
 admissible\index{ordered field!admissible} for $\Omega$, as can be easily checked. (In case $\Omega$ is the initial
@@ -1835,6 +1851,8 @@ of $\RC$ and $\RD$.
   the choice function is then precisely~\eqref{eq:untruncated-linearity} so that
   \autoref{lem:untruncated-linearity-reals-coincide} is applicable again.
 \end{proof}
+
+\index{depression|)}
 
 \section{Compactness of the interval}
 \label{sec:compactness-interval}
@@ -2145,7 +2163,7 @@ $[\mathcal{F}(i_1), \ldots, \mathcal{F}(i_n)]$.
 
 As long as we are aware of the distinction between a pair $(q, r)$ and the corresponding
 interval $\setof{ x : \R | q < x < r}$, we may safely use the same notation $(q, r)$ for
-both. Intersections and inclusions of intervals are expressible in terms of their
+both. Intersections\indexdef{intersection!of intervals} and inclusions\indexdef{inclusion!of intervals}\indexdef{containment!of intervals} of intervals are expressible in terms of their
 endpoints:
 %
 \symlabel{interval-intersection}
@@ -2169,6 +2187,7 @@ The \define{Heine-Borel compactness for $[0,1]$}
 states that every covering family of $[0,1]$
 merely has a finite subfamily which still covers $[0,1]$.
 
+\index{depression}
 \begin{thm} \label{classical-Heine-Borel}
   \index{excluded middle}%
   If excluded middle holds then $[0,1]$ is Heine-Borel compact.
@@ -2226,6 +2245,8 @@ but instead we can steal ideas from the predicative cousin of locale theory,
 \index{mathematics!predicative}%
 which is called ``formal topology''.
 \index{formal!topology}%
+
+\index{acceptance|(}
 
 Suppose that we have a family $\pairr{I, \mathcal{F}}$ and an interval $(a, b)$. How might
 we express the fact that $(a,b)$ is covered by the family, without referring to points?
@@ -2406,6 +2427,8 @@ have provided ample justification for the claim that analysis can be developed i
 type theory. The curious reader should consult \autoref{ex:mean-value-theorem} for
 constructive versions of the mean value theorem.
 
+\index{acceptance|)}
+
 \index{mathematics!classical|)}%
 \index{mathematics!constructive|)}%
 
@@ -2570,6 +2593,7 @@ In identifying surreal numbers presented by different cuts, the following simple
   Thus $x\le z$; the proof of $z\le x$ is symmetric.
 \end{proof}
 
+\index{induction principle!for surreal numbers}
 In order to say much more about surreal numbers, however, we need their induction principle.
 The mutual induction principle for $(\NO,\le,<)$ applies to three families of types:
 \begin{align*}
@@ -2907,6 +2931,7 @@ For the outer recursion, we have to verify that $+$ preserves inequality on the 
 After an $\NO$-induction, this proceeds in exactly the same way.
 \end{eg}
 
+\index{acceptance|(}%
 \index{mathematics!formalized}%
 In the Appendix to Part Zero of~\cite{conway:onag}, Conway discusses how the surreal numbers may be formalized in ZFC set theory: by iterating along the ordinals and passing to sets of representatives of lowest rank for each equivalence class, or by representing numbers with ``sign-expansions''.
 He then remarks that
@@ -2949,7 +2974,7 @@ Conway's metatheorem would then correspond to the fact we have referred to sever
 However, Univalent Foundations is so rich and powerful in its own right that it would be foolish to relegate it to only a metatheory in which to construct set-like theories.
 We have seen that even at the level of sets (0-types), the higher inductive types in Univalent Foundations yield direct constructions of objects by their universal properties (\autoref{sec:free-algebras}), such as a constructive theory of Cauchy completion (\autoref{sec:cauchy-reals}).
 But most importantly, the potential to model homotopy theory and category theory directly in the foundational system (\autoref{cha:homotopy,cha:category-theory}) gives Univalent Foundations an advantage which no set-theoretic foundation can match.
-
+\index{acceptance|)}%
 
 \sectionNotes
 

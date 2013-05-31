@@ -724,29 +724,29 @@ This is, of course, exactly the usual principle of proof by induction on natural
 As an example consider how we might represent an explicit proof that $+$ is associative.
 (We will not actually write out proofs in this style, but it serves as a useful example for understanding how induction is represented formally in type theory.)
 To derive
-\[\ass : \prd{i,j,k:\nat} i + (j + k) = (i + j) + k, \]
+\[\assoc : \prd{i,j,k:\nat} i + (j + k) = (i + j) + k, \]
 it is sufficient to supply
-\[ \ass_0 :  \prd{j,k:\nat} 0 + (j + k) = (0+ j) + n \]
+\[ \assoc_0 :  \prd{j,k:\nat} 0 + (j + k) = (0+ j) + n \]
 and
 \begin{multline*}
-  \ass_s  : \prd{n:\nat} \big(\prd{j,k:\nat} i + (j + k) = (i + j) + n\big) \\
+  \assoc_s  : \prd{n:\nat} \big(\prd{j,k:\nat} i + (j + k) = (i + j) + n\big) \\
    \to \prd{j,k:\nat} \suc(n) + (j + k) = (\suc(n) + j) + n.
 \end{multline*}
-To derive $\ass_0$, recall that $0+n \jdeq n$, and hence  $0 + (j + k) \jdeq j+k \jdeq (0+ j) + k$.
+To derive $\assoc_0$, recall that $0+n \jdeq n$, and hence  $0 + (j + k) \jdeq j+k \jdeq (0+ j) + k$.
 Hence we can just set
-\[ ass_0(j,k) \defeq \refl{j+k} \]
-For $\ass_s$, recall that the definition of $+$ gives $\suc(m)+n \jdeq \suc(m+n)$, and hence 
+\[ assoc_0(j,k) \defeq \refl{j+k} \]
+For $\assoc_s$, recall that the definition of $+$ gives $\suc(m)+n \jdeq \suc(m+n)$, and hence 
 \begin{eqnarray*}
    \suc(n) + (j + k)  & \jdeq & \suc(n+(j+k)) \\
    (\suc(n)+j)+k & \jdeq & \suc((n+j)+k.
 \end{eqnarray*}
-Thus, the output type of $\ass_s$ is equivalently $\suc(n+(j+k)) = \suc((n+j)+k)$.
+Thus, the output type of $\assoc_s$ is equivalently $\suc(n+(j+k)) = \suc((n+j)+k)$.
 But its input (the ``inductive hypothesis'') yields $n+(j+k)=(n+j)+k$, so it suffices to invoke the fact that if two natural numbers are equal, then so are their successors.
 (We will prove this obvious fact formally from the induction principle of identity types in \autoref{lem:map}.)
 We call this latter fact
 $\apfunc{\suc} : %\prd{m,n:\nat}
 (m =_\nat n) \to (\suc(m) =_\nat \suc(n))$, so we can define
-\[\ass_s(n,h,j,k) \defeq \apfunc{\suc}( %n+(j+k),(n+j)+k,
+\[\assoc_s(n,h,j,k) \defeq \apfunc{\suc}( %n+(j+k),(n+j)+k,
 h(j,k)). \]
 Putting these together with $\ind{\nat}$, we obtain a proof of associativity.
 

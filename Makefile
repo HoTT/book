@@ -59,6 +59,13 @@ $(TOPPDFFILES) : %.pdf : %.tex cover.png $(TEXFILES) references.bib
 	     echo "HINT: If you think this took a long time you should install latexmk." ;\
 	fi
 
+all default: log-check
+log-check:
+	: check for indexing errors
+	! grep -n "!! Input index error" hott-online.ilg /dev/null
+	: check for indexing warnings
+	- ! grep -n "## Warning" hott-online.ilg /dev/null
+
 $(BOOKAUXFILES) : %.aux : %.tex
 	echo "WARNING: assuming $> is up-to-date"
 

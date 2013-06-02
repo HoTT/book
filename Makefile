@@ -63,6 +63,9 @@ all default: log-check
 log-check:
 	: check for indexing errors
 	! grep -n "!! Input index error" hott-online.ilg /dev/null
+
+# these warnings are mostly spurious, and could have been prevented by a better makeindex algorithm
+log-check-for-warnings:
 	: check for indexing warnings
 	- ! grep -n "## Warning" hott-online.ilg /dev/null
 

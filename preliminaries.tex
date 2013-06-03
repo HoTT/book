@@ -489,15 +489,28 @@ We intend the elements of $A\times B$ to be pairs $\tup{a}{b} : A \times B$, whe
 However, unlike in set theory, where we define ordered pairs to be particular sets and then collect them all together into the cartesian product, in type theory, ordered pairs are a primitive concept, as are functions.   
 
 \begin{rmk}\label{rmk:introducing-new-concepts}
-  There is a general pattern for introduction of a new primitive concept in type theory, and because products are our second example following this pattern,\footnote{The description of universes above is an   exception.} it is worth emphasizing the general form:
-  To specify a type, we specify
+  There is a general pattern for introduction of a new kind of type in type theory, and because products are our second example following this pattern,\footnote{The description of universes above is an exception.} it is worth emphasizing the general form:
+  To specify a type, we specify:
   \begin{enumerate}
-  \item how to construct elements of that type.  These are called the   type's \emph{constructors}.  For example, the function type has one   constructor, \emph{$\lambda$-abstraction}.\index{lambda abstraction@$\lambda$-abstraction}
-    (Recall that a direct definition like $f(x)\defeq 2x$ can equivalently be phrased as a $\lambda$-abstraction $f\defeq \lam{x} 2x$.)
+  \item how to form new types of this kind, via \define{formation rules}.
+    \indexdef{formation rules}%
+    \index{rule!formation}%
+  \item how to construct elements of that type.  
+    These are called the type's \define{constructors} or \define{introduction rules}.
     \indexdef{constructor}%
+    \indexdef{rule!introduction}%
+    \indexdef{introduction rule}%
+    (For example, a function type has one constructor, $\lambda$-abstraction.
+    Recall that a direct definition like $f(x)\defeq 2x$ can equivalently be phrased
+    as a $\lambda$-abstraction $f\defeq \lam{x} 2x$.)
 
-  \item how to use elements of that type.  These are called the type's   \emph{eliminators}.  For example, the function type has one   eliminator, function application.
+  \item how to use elements of that type.  
+    These are called the type's \define{eliminators} or \define{elimination rules}.
+    \index{rule!elimination}%
+    \indexdef{elimination rule}%
     \indexdef{eliminator}%
+    (For example, the function type has one eliminator, function application, and
+    for inductive types, such as $\Sigma$-types the elimination rule is the induction principle.)
 
   \item 
     a \define{computation rule}\indexdef{computation rule}\footnote{also referred to as \define{$\beta$-reduction}\indexdef{$\beta$-reduction}}, which expresses how an eliminator acts on a constructor.
@@ -512,7 +525,7 @@ However, unlike in set theory, where we define ordered pairs to be particular se
     \indexdef{uniqueness!principle, propositional}%
     \indexsee{propositional!uniqueness principle}{uniqueness principle, propositional}%
   \end{enumerate}
-See also \autoref{sec:more-formal-pi}.
+The inference rules in \autoref{sec:syntax-more-formally} are organized and named accordingly; see, for example, \autoref{sec:more-formal-pi}, where each possibility is realized.
 \end{rmk}
 
 The way to construct pairs is obvious: given $a:A$ and $b:B$, we may form $(a,b):A\times B$.
@@ -1772,29 +1785,6 @@ Moreover, it can be dangerous unless sufficient care is taken: for instance, the
 allows proving Axiom K.
 \index{axiom!Streicher's Axiom K}%
 For these reasons, we have chosen to regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.
-
-\index{rule}%
-As mentioned in \autoref{sec:finite-product-types}, in general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules},
-\index{rule!formation}%
-\index{formation rule}%
-which specify how to form types of this sort; \emph{introduction rules}
-\index{rule!introduction}%
-\index{introduction rule}%
-or \emph{constructors},
-\index{constructor}%
-which specify how to construct elements of such types; \emph{elimination rules}
-\index{rule!elimination}%
-\index{elimination rule}%
-or \emph{eliminators},
-\index{eliminator}%
-which specify how to use elements of such types to construct elements of other types; and \emph{conversion rules},
-\index{rule!computation}%
-\index{computation rule}%
-which specify what happens when the introduction and elimination rules are combined. The computation rules include both what we have called \emph{computation rules} (also called \emph{reduction rules} or \emph{$\beta$-conversion rules}) and what we have called \emph{uniqueness principles} (also called \emph{$\eta$-conversion rules}).
-\indexsee{reduction!rule}{computation rule}%
-\indexsee{conversion!rule}{computation rule}%
-For inductive types such as products, $\Sigma$s, coproducts, and so on, the introduction rules are the constructors (like pairing or injections), and the elimination rule is the induction principle, for which we have already mentioned the alternative terminology ``eliminator''.
-For function types and $\Pi$-types, the introduction rule is $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}, while the elimination rule is application of a function to an argument.
 
 \index{proof assistant!Coq@\textsc{Coq}}%
 Unlike the type theory of \Coq, we do not include a primitive type of propositions.  Instead, as discussed in \autoref{sec:pat}, we embrace 

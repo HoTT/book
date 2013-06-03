@@ -193,14 +193,14 @@ we introduce a function by giving it a name --- let's say, $f$ --- and saying
 we define $f : A \to B$ by giving an equation
 \begin{equation}
   \label{eq:expldef}
-  f(x) \defeq b
+  f(x) \defeq \Phi
 \end{equation}
 where $x$ is a variable
 \index{variable}%
-and $b$ is an expression which may use $x$.
-In order for this to be valid, we have to check that $b : B$ assuming $x:A$.
+and $\Phi$ is an expression which may use $x$.
+In order for this to be valid, we have to check that $\Phi : B$ assuming $x:A$.
 
-Now we can compute $f(a)$ by replacing the variable $x$ in $b$ with
+Now we can compute $f(a)$ by replacing the variable $x$ in $\Phi$ with
 $a$. As an example, consider the function $f : \nat \to \nat$ which is
 defined by $f(x) \defeq x+x$.  (We will define $\nat$ and $+$ in \autoref{sec:inductive-types}.)
 Then $f(2)$ is judgmentally equal to $2+2$.
@@ -210,9 +210,9 @@ If we don't want to introduce a name for the function, we can use
 \index{lambda abstraction@$\lambda$-abstraction|defstyle}%
 \indexsee{function!lambda abstraction@$\lambda$-abstraction}{$\lambda$-abstraction}%
 \indexsee{abstraction!lambda-@$\lambda$-}{$\lambda$-abstraction}%
-Given an expression $b$ of type $B$ which may use $x:A$, as above, we write $\lam{x:A} b$ to indicate the same function defined by~\eqref{eq:expldef}.
+Given an expression $\Phi$ of type $B$ which may use $x:A$, as above, we write $\lam{x:A} \Phi$ to indicate the same function defined by~\eqref{eq:expldef}.
 Thus, we have
-\[ (\lamt{x:A}b) : A \to B. \]
+\[ (\lamt{x:A}\Phi) : A \to B. \]
 For the example in the previous paragraph, we have the typing judgment
 \[ (\lam{x:\nat}x+x) : \nat \to \nat. \]
 As another example, for any types $A$ and $B$ and any element $y:B$, we have a \define{constant function}
@@ -220,7 +220,7 @@ As another example, for any types $A$ and $B$ and any element $y:B$, we have a \
 \indexdef{function!constant}%
 $(\lam{x:A} y): A\to B$.
 
-We generally omit the type of the variable $x$ in a $\lambda$-abstraction and write $\lam{x}b$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x b$ has type $A\to B$.
+We generally omit the type of the variable $x$ in a $\lambda$-abstraction and write $\lam{x}\Phi$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x \Phi$ has type $A\to B$.
 By convention, the ``scope''
 \indexdef{variable!scope of}%
 \indexdef{scope}%
@@ -229,9 +229,9 @@ Thus, for instance, $\lam{x} x+x$ should be parsed as $\lam{x} (x+x)$, not as $(
 
 Another equivalent notation is
 \symlabel{mapsto}
-\[ (x \mapsto b) : A \to B. \]
+\[ (x \mapsto \Phi) : A \to B. \]
 \symlabel{blank}
-We may also sometimes use a blank ``$\blank$'' in the expression $b$ in place of a variable, to denote an implicit $\lambda$-abstraction.
+We may also sometimes use a blank ``$\blank$'' in the expression $\Phi$ in place of a variable, to denote an implicit $\lambda$-abstraction.
 For instance, $g(x,\blank)$ is another way to write $\lam{y} g(x,y)$.
 
 Now a $\lambda$-abstraction is a function, so we can apply it to an argument $a:A$.
@@ -242,9 +242,9 @@ or \define{$\beta$-reduction}.%
 \index{beta-reduction@$\beta $-reduction|footstyle}%
 \index{reduction!beta@$\beta $-|footstyle}%
 }, which is a definitional equality:
-\[(\lamu{x:A}b)(a) \jdeq b'\]
-where $b'$ is the
-expression $b$ in which all occurrences of $x$ have been replaced by $a$.
+\[(\lamu{x:A}\Phi)(a) \jdeq \Phi'\]
+where $\Phi'$ is the
+expression $\Phi$ in which all occurrences of $x$ have been replaced by $a$.
 Continuing the above example, we have
 %
 \[ (\lamu{x:\nat}x+x)(2) \jdeq 2+2. \]
@@ -263,9 +263,9 @@ This equality is the \define{uniqueness principle for function types}\indexdef{u
 The introduction of functions by definitions with explicit parameters can be reduced
 to simple definitions by using $\lambda$-abstraction: i.e., we can read 
 a definition of $f: A\to B$ by
-\[ f(x) \defeq b \]
+\[ f(x) \defeq \Phi \]
 as 
-\[ f \defeq \lamu{x:A}b.\]
+\[ f \defeq \lamu{x:A}\Phi.\]
 
 When doing calculations involving variables, we have to be 
 careful when replacing a variable with an expression that also involves
@@ -320,12 +320,12 @@ When omitting parentheses around function arguments entirely, we write $f\,a\,b$
 Our notation for definitions with explicit parameters extends to
 this situation: we can define a named function $f : A \to B \to C$ by
 giving an equation
-\[ f(x,y) \defeq c\]
-where $c:C$ assuming $x:A$ and $y:B$. Using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction} this
+\[ f(x,y) \defeq \Phi\]
+where $\Phi:C$ assuming $x:A$ and $y:B$. Using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction} this
 corresponds to
-\[ f \defeq \lamu{x:A}{y:B} c, \]
+\[ f \defeq \lamu{x:A}{y:B} \Phi, \]
 which may also be written as 
-\[ f \defeq x \mapsto y \mapsto c. \] 
+\[ f \defeq x \mapsto y \mapsto \Phi. \] 
 We can also implicitly abstract over multiple variables by writing multiple blanks, e.g.\ $g(\blank,\blank)$ means $\lam{x}{y} g(x,y)$.
 Currying a function of three or more arguments is a straightforward extension of what we have just described.
  
@@ -426,24 +426,26 @@ Indeed, all the constructions of $\Pi$-types are generalisations of the correspo
 \indexdef{definition!of function, direct}%
 We can introduce dependent functions by explicit definitions: to
 define $f : \prd{x:A}B(x)$, where $f$ is the name of a dependent function to be
-defined, we need an expression $b : B(x)$ involving the variable $x:A$,
+defined, we need an expression $\Phi : B(x)$ involving the variable $x:A$,
 \index{variable}%
 and we write
-\[ f(x) \defeq b \qquad \mbox{for $x:A$}\]
+\[ f(x) \defeq \Phi \qquad \mbox{for $x:A$}\]
 Alternatively, we can use \define{$\lambda$-abstraction}%
 \index{lambda abstraction@$\lambda$-abstraction|defstyle}%
 \begin{equation}
   \label{eq:lambda-abstraction}
-  \lamu{x:A} b \ :\ \prd{x:A} B(x).
+  \lamu{x:A} \Phi \ :\ \prd{x:A} B(x).
 \end{equation}
 \indexdef{application!of dependent function}%
 \indexdef{function!dependent!application}%
 As with non-dependent functions, we can \define{apply} a dependent function $f : \prd{x:A}B(x)$ to an argument $a:A$ to obtain an element $f(a):B(a)$.
-The equalities are the same as for the ordinary function type, i.e.\
-given $a:A$ we have $f(a) \jdeq b'$ and  
-$(\lamu{x:A} b)(a) \jdeq b'$, where $b' $ is obtained by replacing all
-occurrences of $x$ in $b$ by $a$ (avoiding variable capture, as always).
-Similarly, we have $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
+The equalities are the same as for the ordinary function type, i.e.\ we have the computation rule
+\index{computation rule!for dependent function types}%
+given $a:A$ we have $f(a) \jdeq \Phi'$ and  
+$(\lamu{x:A} \Phi)(a) \jdeq \Phi'$, where $\Phi' $ is obtained by replacing all
+occurrences of $x$ in $\Phi$ by $a$ (avoiding variable capture, as always).
+Similarly, we have the uniqueness principle $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
+\index{uniqueness principle!for dependent function types}%
 
 An example of a dependent function is $\fmax : \prd{n:\nat} \Fin(n+1)$
 which returns the largest element in a nonempty finite type, $\fmax(n) \defeq
@@ -1142,13 +1144,13 @@ or by giving the defining equations:
 To go from the former expression of $f$ to the latter, we simply use the computation rules for the recursor.
 Conversely, given any defining equations
 \begin{align*}
-  f(\inl(a)) &\defeq c_0\\
-  f(\inr(b)) &\defeq c_1
+  f(\inl(a)) &\defeq \Phi_0\\
+  f(\inr(b)) &\defeq \Phi_1
 \end{align*}
-where $c_0$ and $c_1$ are expressions that may involve the variables
+where $\Phi_0$ and $\Phi_1$ are expressions that may involve the variables
 \index{variable}%
 $a$ and $b$, we can express these equations equivalently in terms of the recursor by using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}:
-\[ f\defeq \rec{A+B}(C, \lam{a} c_0, \lam{b} c_1).\]
+\[ f\defeq \rec{A+B}(C, \lam{a} \Phi_0, \lam{b} \Phi_1).\]
 In the case of the natural numbers, however, the ``defining equations'' of a function such as $\dbl$:
 \begin{align}
   \dbl(0) &\defeq 0 \label{eq:dbl0}\\
@@ -1160,12 +1162,12 @@ The solution is to read the expression ``$\dbl(n)$'' on the right-hand side of~\
 
 More generally, if we have a ``definition'' of a function $f:\nat\to C$ such as
 \begin{align*}
-  f(0) &\defeq c_0\\
-  f(\suc(n)) &\defeq c_s
+  f(0) &\defeq \Phi_0\\
+  f(\suc(n)) &\defeq \Phi_s
 \end{align*}
-where $c_0$ is an expression of type $C$, and $c_s$ is an expression of type $C$ which may involve the variable $n$ and also the symbol ``$f(n)$'', we may translate it to a definition
-\[ f \defeq \rec{\nat}(C,\,c_0,\,\lam{n}{r} c_s') \]
-where $c_s'$ is obtained from $c_s$ by replacing all occurrences of ``$f(n)$'' by the new variable $r$.
+where $\Phi_0$ is an expression of type $C$, and $\Phi_s$ is an expression of type $C$ which may involve the variable $n$ and also the symbol ``$f(n)$'', we may translate it to a definition
+\[ f \defeq \rec{\nat}(C,\,\Phi_0,\,\lam{n}{r} \Phi_s') \]
+where $\Phi_s'$ is obtained from $\Phi_s$ by replacing all occurrences of ``$f(n)$'' by the new variable $r$.
 
 This style of defining functions by recursion (or, more generally, dependent functions by induction) is so convenient that we frequently adopt it.
 It is called definition by \define{pattern matching}.

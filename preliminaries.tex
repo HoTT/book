@@ -228,9 +228,9 @@ of the variable binding ``$\lam{x}$'' is the entire rest of the expression, unle
 Thus, for instance, $\lam{x} x+x$ should be parsed as $\lam{x} (x+x)$, not as $(\lam{x}x)+x$ (which would, in this case, be ill-typed anyway).
 
 Another equivalent notation is
-\symlabel{mapsto}
+\symlabel{mapsto}%
 \[ (x \mapsto \Phi) : A \to B. \]
-\symlabel{blank}
+\symlabel{blank}%
 We may also sometimes use a blank ``$\blank$'' in the expression $\Phi$ in place of a variable, to denote an implicit $\lambda$-abstraction.
 For instance, $g(x,\blank)$ is another way to write $\lam{y} g(x,y)$.
 
@@ -426,7 +426,7 @@ Indeed, all the constructions of $\Pi$-types are generalisations of the correspo
 \indexdef{definition!of function, direct}%
 We can introduce dependent functions by explicit definitions: to
 define $f : \prd{x:A}B(x)$, where $f$ is the name of a dependent function to be
-defined, we need an expression $\Phi : B(x)$ involving the variable $x:A$,
+defined, we need an expression $\Phi : B(x)$ possibly involving the variable $x:A$,
 \index{variable}%
 and we write
 \[ f(x) \defeq \Phi \qquad \mbox{for $x:A$}\]
@@ -445,7 +445,7 @@ given $a:A$ we have $f(a) \jdeq \Phi'$ and
 $(\lamu{x:A} \Phi)(a) \jdeq \Phi'$, where $\Phi' $ is obtained by replacing all
 occurrences of $x$ in $\Phi$ by $a$ (avoiding variable capture, as always).
 Similarly, we have the uniqueness principle $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
-\index{uniqueness principle!for dependent function types}%
+\index{uniqueness!principle!for dependent function types}%
 
 An example of a dependent function is $\fmax : \prd{n:\nat} \Fin(n+1)$
 which returns the largest element in a nonempty finite type, $\fmax(n) \defeq
@@ -455,7 +455,7 @@ Another important class of dependent function types are functions which are \def
 \indexdef{polymorphic function}%
 over a given universe.
 A polymorphic function is one which takes a type as one of its arguments, and then acts on elements of that type (or other types constructed from it).
-\symlabel{idfunc}
+\symlabel{idfunc}%
 \indexdef{function!identity}%
 \indexdef{identity!function}%
 An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
@@ -548,7 +548,7 @@ In particular, we can derive the \define{projection}
 \indexsee{function!projection}{projection}%
 \indexdef{projection!from cartesian product type}%
 functions
-\symlabel{defn:proj}
+\symlabel{defn:proj}%
 \begin{align*}
   \fst & :  A \times B \to A \\
   \snd & :  A \times B \to B
@@ -581,7 +581,7 @@ We leave it as a simple exercise to show that the recursor can be
 derived from the projections and vice versa.
 % Ex: Derive from projections
 
-\symlabel{defn:recursor-unit}
+\symlabel{defn:recursor-unit}%
 We also have a recursor for the unit type:
 \[\rec{\unit} : \prd{C:\UU}C \to \unit \to C\]
 with the defining equation
@@ -618,7 +618,7 @@ More generally, the ability to define dependent functions in this way means that
 to prove it for its canonical elements, the tuples.
 When we come to inductive types such as the natural numbers, the analogous property will be the ability to write proofs by induction.
 Thus, if we do as we did above and apply this principle once in the universal case, we call the resulting function \define{induction} for product types: given $A,B : \UU$ we have
-\symlabel{defn:induction-times}
+\symlabel{defn:induction-times}%
 \[ \ind{A\times B} : \prd{C:A \times B \to \UU}
 \Parens{\prd{x:A}{y:B} C(\tup{x}{y})} \to \prd{x:A \times B} C(x) \]
 with the defining equation 
@@ -641,7 +641,7 @@ and recursion the \define{non-dependent eliminator}.
 
 Induction for the unit type turns out to be more useful than the
 recursor: 
-\symlabel{defn:induction-unit}
+\symlabel{defn:induction-unit}%
 \[ \ind{\unit} : \prd{C:\unit \to \UU} C(\ttt) \to \prd{x:\unit}C(x)\]
 with the defining equation
 \[ \ind{\unit}(C,c,\ttt) \defeq c \]
@@ -695,7 +695,7 @@ equation
 \[ f(\tup{a}{b}) \defeq g(a)(b) \]
 \indexdef{projection!from dependent pair type}%
 For instance, we can derive the first projection from a $\Sigma$-type:
-\symlabel{defn:dependent-proj1}
+\symlabel{defn:dependent-proj1}%
 \begin{eqnarray*}
   \fst & : & \Parens{\sm{x : A}B(x)} \to A.
   % \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p)).
@@ -710,7 +710,7 @@ However, since the type of the second component of a pair
   (a,b):\sm{x:A} B(x)
 }
 is $B(a)$, the second projection must be a \emph{dependent} function, whose type involves the first projection function:
-\symlabel{defn:dependent-proj2}
+\symlabel{defn:dependent-proj2}%
 \[ \snd : \prd{p:\sm{x : A}B(x)}B(\fst(p)). \]
 Thus we need the \emph{induction} principle%
 \index{induction principle!for dependent pair type}
@@ -731,13 +731,13 @@ To convince ourselves that this is correct, we note that $B (\fst(\tup{a}{b})) \
 indeed $b : B(a)$.
 
 We can package the recursion and induction principles into the recursor for $\Sigma$:
-\symlabel{defn:recursor-sm}
+\symlabel{defn:recursor-sm}%
 \[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU}\Parens{\tprd{x:A} B(x) \to C} \to
 \big(\tsm{x:A}B(x)\big) \to C \]
 with the defining equation
 \[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
 and the corresponding induction operator:
-\symlabel{defn:induction-sm}
+\symlabel{defn:induction-sm}%
 \begin{narrowmultline*}
   \ind{\sm{x:A}B(x)} : \narrowbreak
     \dprd{C:(\sm{x:A} B(x)) \to \UU}
@@ -840,7 +840,7 @@ with the defining equations
 We can always construct a function $f : \emptyt \to C$ without
 having to give any defining equations, because there are no elements of \emptyt on which to define $f$.
 Thus, the recursor for $\emptyt$ is
-\symlabel{defn:recursor-emptyt}
+\symlabel{defn:recursor-emptyt}%
 \[\rec{\emptyt} : \tprd{C:\UU} \emptyt \to C,\]
 which constructs the canonical function from the empty type to any other type.
 Logically, it corresponds to the principle \emph{ex falso quod libet}. 
@@ -859,7 +859,7 @@ This yields $f$ with the defining equations:
   f(\inl(b)) & \defeq & g_1(b) .
 \end{eqnarray*}
 We package this scheme into the induction principle for coproducts:
-\symlabel{defn:induction-plus}
+\symlabel{defn:induction-plus}%
 \begin{narrowmultline*}
   \ind{A+B} :
   \dprd{C: (A + B) \to \UU}
@@ -871,7 +871,7 @@ constant.
 
 \index{induction principle!for empty type}
 The induction principle for the empty type
-\symlabel{defn:induction-emptyt}
+\symlabel{defn:induction-emptyt}%
 \[ \ind{\emptyt} : \prd{C:\emptyt \to \UU}{z:\emptyt} C(z) \]
 gives us a way to define a trivial dependent function out of the
 empty type. % In the presence of $\eta$-equality it is derivable
@@ -906,7 +906,7 @@ add the defining equations
 \end{eqnarray*}
 The recursor corresponds to the if-then-else construct in
 functional programming:
-\symlabel{defn:recursor-bool}
+\symlabel{defn:recursor-bool}%
 \[ \rec{\bool} : \prd{C:\UU}  C \to C \to \bool \to C \]
 with the defining equations
 \begin{eqnarray*}
@@ -922,7 +922,7 @@ $f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which
   f(\btrue) & \defeq & c_1.
 \end{eqnarray*}
 We package this up into the induction principle
-\symlabel{defn:induction-bool}
+\symlabel{defn:induction-bool}%
 \[ \ind{\bool} : \dprd{C:\bool \to \UU}  C(\bfalse) \to C(\btrue)
 \to \tprd{x:\bool} C(x) \]
 with the defining equations
@@ -1051,7 +1051,7 @@ The reader is invited to verify that $2+2\jdeq 4$.
 As in previous cases, we can package the principle of primitive recursion into a recursor:
 \[\rec{\nat}  : \dprd{C:\UU} C \to (\nat \to C \to C) \to \nat \to C \]
 with the defining equations
-\symlabel{defn:recursor-nat}
+\symlabel{defn:recursor-nat}%
 \begin{eqnarray*}
 \rec{\nat}(C,c_0,c_s,0)  & \defeq & c_0 \\
 \rec{\nat}(C,c_0,c_s,\suc(n)) & \defeq & c_s(n,\rec{\nat}(C,c_0,c_s,n))
@@ -1076,7 +1076,7 @@ Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(0)$, and 
   f(\suc(n)) & \defeq & c_s(n,f(n))
 \end{eqnarray*}
 We can also package this into a single function
-\symlabel{defn:induction-nat}
+\symlabel{defn:induction-nat}%
 \[\ind{\nat}  : \dprd{C:\nat\to \UU} C(0) \to \big(\tprd{n : \nat} C(n) \to C(\suc(n))\big) \to \tprd{n : \nat} C(n) \]
 with the defining equations
 \begin{eqnarray*}
@@ -1149,7 +1149,7 @@ Conversely, given any defining equations
 \end{align*}
 where $\Phi_0$ and $\Phi_1$ are expressions that may involve the variables
 \index{variable}%
-$a$ and $b$, we can express these equations equivalently in terms of the recursor by using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}:
+$a$ and $b$ respectively, we can express these equations equivalently in terms of the recursor by using $\lambda$-abstraction\index{lambda abstraction@$\lambda$-abstraction}:
 \[ f\defeq \rec{A+B}(C, \lam{a} \Phi_0, \lam{b} \Phi_1).\]
 In the case of the natural numbers, however, the ``defining equations'' of a function such as $\dbl$:
 \begin{align}
@@ -1396,7 +1396,7 @@ Of course, the English proofs we have been using as examples are much more verbo
 The practicing mathematician has learned to fill in the gaps, so in practice we can omit plenty of details; and we will generally do so.
 The criterion of validity for proofs, however, is always that they can be translated back into the construction of an element of the corresponding type.
 
-\symlabel{leq-nat}
+\symlabel{leq-nat}%
 As a more concrete example, consider how to define inequalities of natural numbers.
 One natural definition is that $n\le m$ if there exists a $k:\nat$ such that $n+k=m$.
 (This uses again the identity types that we will introduce in the next section, but we will not need very much about them.)
@@ -1554,7 +1554,7 @@ The general, inductive form of the rule allows $C$ to also depend on the witness
 In \autoref{cha:basics} we will see that this is very important to the homotopy interpretation.
 
 If we package up path induction into a single function, it takes the form:
-\symlabel{defn:induction-ML-id}
+\symlabel{defn:induction-ML-id}%
 \begin{narrowmultline*}
   \indid{A} :  \dprd{C : \prd{x,y:A} (\id[A]{x}{y}) \to \UU}
   \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to 
@@ -1590,7 +1590,7 @@ Here, $C(x,p)$ is a family of types, where $x$ is an element of $A$ and $p$ is a
 just the case where $x$ is $a$ and $p$ is $\refl{a} : \id{a}{a}$.
 
 Packaged as a function, based path induction becomes:
-\symlabel{defn:induction-PM-id}
+\symlabel{defn:induction-PM-id}%
 \begin{align*}
   \indidb{A} :  \dprd{a:A}{C : \prd{x:A} (\id[A]{a}{x}) \to \UU}
   C(a,\refl{a}) \to \dprd{x:A}{p : \id[A]{a}{x}} C(x,p) 

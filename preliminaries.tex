@@ -60,6 +60,9 @@ A last difference between type theory and set theory is the treatment of equalit
 The familiar notion of equality in mathematics is a proposition: e.g.\ we can disprove an equality or assume an equality as a hypothesis.
 Since in type theory, propositions are types, this means that equality is a type: for elements $a,b:A$ (that is, both $a:A$ and $b:A$) we have a type ``$\id[A]ab$''.
 (In \emph{homotopy} type theory, of course, this equality proposition can behave in unfamiliar ways: see \autoref{sec:identity-types,cha:basics}, and the rest of the book).
+When $\id[A]ab$ is inhabited, we say that $a$ and $b$ are \define{(propositionally) equal}.
+\index{propositional!equality}%
+\index{equality!propositional}%
 
 However, in type theory there is also a need for an equality \emph{judgment}, existing at the same level as the judgment ``$x:A$''.
 \symlabel{defn:judgmental-equality}%
@@ -203,7 +206,7 @@ defined by $f(x) \defeq x+x$.  (We will define $\nat$ and $+$ in \autoref{sec:in
 Then $f(2)$ is judgmentally equal to $2+2$.
 
 If we don't want to introduce a name for the function, we can use
-\define{$\lambda$-abstraction}.%
+\define{$\lambda$-abstraction}.
 \index{lambda abstraction@$\lambda$-abstraction|defstyle}%
 \indexsee{function!lambda abstraction@$\lambda$-abstraction}{$\lambda$-abstraction}%
 \indexsee{abstraction!lambda-@$\lambda$-}{$\lambda$-abstraction}%
@@ -217,7 +220,7 @@ As another example, for any types $A$ and $B$ and any element $y:B$, we have a \
 \indexdef{function!constant}%
 $(\lam{x:A} y): A\to B$.
 
-We generally omit the type of the variable $x$ and write $\lam{x}b$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x b$ has type $A\to B$.
+We generally omit the type of the variable $x$ in a $\lambda$-abstraction and write $\lam{x}b$, since the typing $x:A$ is inferrable from the judgment that the function $\lam x b$ has type $A\to B$.
 By convention, the ``scope''
 \indexdef{variable!scope of}%
 \indexdef{scope}%
@@ -230,10 +233,9 @@ Another equivalent notation is
 \symlabel{blank}
 We may also sometimes use a blank ``$\blank$'' in the expression $b$ in place of a variable, to denote an implicit $\lambda$-abstraction.
 For instance, $g(x,\blank)$ is another way to write $\lam{y} g(x,y)$.
-Multiple blanks denote abstraction over multiple variables, e.g.\ $g(\blank,\blank)$ means $\lam{x}{y} g(x,y)$.
 
 Now a $\lambda$-abstraction is a function, so we can apply it to an argument $a:A$.
-We then have the following computation rule\indexdef{computation rule!for function types}\footnote{Use of this rule is often referred to as \define{$\beta$-conversion}
+We then have the following \define{computation rule}\indexdef{computation rule!for function types}\footnote{Use of this equality is often referred to as \define{$\beta$-conversion}
 \index{beta-conversion@$\beta $-conversion|footstyle}%
 \index{conversion!beta@$\beta $-|footstyle}%
 or \define{$\beta$-reduction}.%
@@ -264,7 +266,7 @@ a definition of $f: A\to B$ by
 \[ f(x) \defeq b \]
 as 
 \[ f \defeq \lamu{x:A}b.\]
-%
+
 When doing calculations involving variables, we have to be 
 careful when replacing a variable with an expression that also involves
 variables, because we want to preserve the binding structure of
@@ -302,7 +304,7 @@ $f : A \times B \to C$. However, there is another choice that avoids
 using product types, which is called \define{currying}
 \indexdef{currying}%
 \indexdef{function!currying of}%
-in functional programming.\footnote{The technique is named after the mathematician Haskell Curry}
+(after the mathematician Haskell Curry).
 \index{programming}%
 
 The idea of currying is to represent a function of two inputs $a:A$ and $b:B$ as a function which takes \emph{one} input $a:A$ and returns \emph{another function}, which then takes a second input $b:B$ and returns the result.
@@ -312,7 +314,10 @@ associativity\index{associativity!of function types} to the right as the default
 we can apply $f$ to $a$ and then apply the result to $b$, obtaining
 $f(a)(b) : C$. To avoid the proliferation of parentheses, we allow ourselves to
 write $f(a)(b)$ as $f(a,b)$ even though there are no products
-involved. Our notation for definitions with explicit parameters extends to
+involved.
+When omitting parentheses around function arguments entirely, we write $f\,a\,b$ for $(f\,a)\,b$, with the default associativity now being to the left so that $f$ is applied to its arguments in the correct order.
+
+Our notation for definitions with explicit parameters extends to
 this situation: we can define a named function $f : A \to B \to C$ by
 giving an equation
 \[ f(x,y) \defeq c\]
@@ -321,6 +326,7 @@ corresponds to
 \[ f \defeq \lamu{x:A}{y:B} c, \]
 which may also be written as 
 \[ f \defeq x \mapsto y \mapsto c. \] 
+We can also implicitly abstract over multiple variables by writing multiple blanks, e.g.\ $g(\blank,\blank)$ means $\lam{x}{y} g(x,y)$.
 Currying a function of three or more arguments is a straightforward extension of what we have just described.
  
 \index{type!function|)}%
@@ -339,7 +345,8 @@ we might wish for a universe of all types $\UU_\infty$ including itself
 (that is, with $\UU_\infty : \UU_\infty$).
 However, as in set
 theory, this is unsound, i.e.\ we can deduce from it that every type,
-including the empty type representing the proposition False, is inhabited. Indeed, using a
+including the empty type representing the proposition False (see \autoref{sec:coproduct-types}), is inhabited.
+For instance, using a
 representation of sets as trees, we can directly encode Russell's
 paradox\index{paradox} \cite{coquand:paradox}.
 %  or alternatively, in order to avoid the use of
@@ -359,7 +366,8 @@ universe are also elements of the $(i+1)^{\mathrm{st}}$ universe, i.e.\ if
 $A:\UU_i$ then also $A:\UU_{i+1}$.
 
 When we say that $A$ is a type, we mean that it inhabits some universe
-$\UU_i$. We usually want to avoid mentioning the level\indexdef{universe level}%
+$\UU_i$. We usually want to avoid mentioning the level
+\indexdef{universe level}%
 \indexsee{level}{universe level or $n$-type}%
 \indexsee{type!universe!level}{universe level}%
 $i$ explicitly,
@@ -400,10 +408,10 @@ at a type $B:\UU$, which is of course the constant function $(\lam{x:A} B):A\to\
 \indexsee{type!Pi-@$\Pi$-}{type, dependent function}%
 \indexsee{Pi-type@$\Pi$-type}{type, dependent function}%
 In type theory we often use a more general version of function
-types, called a $\Pi$-type or dependent function type. The elements of
+types, called a \define{$\Pi$-type} or \define{dependent function type}. The elements of
 a $\Pi$-type are functions
 whose codomain type can vary depending on the
-element of the domain to which the function is applied. The name ``$\Pi$-type''
+element of the domain to which the function is applied, called \define{dependent functions}. The name ``$\Pi$-type''
 is used because this type can also be regarded as the infinite cartesian
 product over a given type.
 
@@ -453,7 +461,7 @@ An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, w
 As for ordinary functions, we use currying to define dependent functions with
 several arguments. However, in the dependent case the second domain may
 depend on the first one, and the codomain may depend on both. That is,
-given $A:U$ and type families $B : A \to U$ and $C : \prd{x:A}B(x) \to \UU$, we may construct
+given $A:\UU$ and type families $B : A \to \UU$ and $C : \prd{x:A}B(x) \to \UU$, we may construct
 the type $\prd{x:A}{y : B(x)} C(x,y)$ of functions with two
 arguments.
 (Like $\lambda$-abstractions, $\Pi$s automatically scope\index{scope} over the rest of the expression unless delimited; thus $C : \prd{x:A}B(x) \to \UU$ means $C : \prd{x:A}(B(x) \to \UU)$.)
@@ -472,7 +480,7 @@ Given types $A,B:\UU$ we introduce the type $A\times B:\UU$, which we call their
 \indexsee{type!cartesian product}{type, product}%
 \index{type!product|(defstyle}%
 \indexsee{product!of types}{type, product}%
-We also introduce a nullary product type, called the \define{unit type} $\unit : \UU$
+We also introduce a nullary product type, called the \define{unit type} $\unit : \UU$.
 \indexsee{nullary!product}{type, unit}%
 \indexsee{unit!type}{type, unit}%
 \index{type!unit|(defstyle}%
@@ -498,17 +506,18 @@ However, unlike in set theory, where we define ordered pairs to be particular se
     an optional \define{uniqueness principle}\indexdef{uniqueness!principle}\footnote{also referred to as \define{$\eta$-expansion}\indexdef{$\eta$-expansion}}, which expresses how constructors act on eliminators:
     it would say that every element of the type is uniquely determined by the results of applying eliminators to it, and can be reconstructed from those results by applying a constructor.
     For example, for functions, the uniqueness principle says that any function $f$ is judgmentally equal to the ``expanded'' function $\lamu{x} f(x)$, and thus is uniquely determined by its values.
-    (A uniqueness principle whose conclusion involves propositional equality rather than judgmental equality will be called a \define{propositional uniqueness principle},
+    
+    When the uniqueness principle is not taken as a rule of judgmental equality, it is often nevertheless provable as a \emph{propositional} equality from the other rules for the type.
+    In this case we call it a \define{propositional uniqueness principle}.
     \indexdef{uniqueness!principle, propositional}%
     \indexsee{propositional!uniqueness principle}{uniqueness principle, propositional}%
-    and is said to hold if it can be proven from the other rules for the type.)
   \end{enumerate}
 See also \autoref{sec:more-formal-pi}.
 \end{rmk}
 
 The way to construct pairs is obvious: given $a:A$ and $b:B$, we may form $(a,b):A\times B$.
 Similarly, there is a unique way to construct elements of $\unit$, namely we have $\ttt:\unit$.
-However, we do not assert as a rule of type theory that ``every element of $A\times B$ is a pair'' --- it turns out that we can \emph{prove} that using the principles to be introduced below.
+We expect that ``every element of $A\times B$ is a pair'', which is the uniqueness principle for products; we do not assert this as a rule of type theory, but we will prove it later on as a propositional equality.
 
 Now, how can we \emph{use} pairs, i.e.\ how can we define functions out of a product type?
 Let us first consider the definition of a non-dependent function $f : A\times B \to C$.
@@ -551,12 +560,7 @@ Then instead of defining functions such as $\fst$ and $\snd$ directly by a defin
 \end{align*}
 We refer to the function $\rec{A\times B}$ as the \define{recursor}
 \indexsee{recursor}{recursion principle}%
-for product types.  The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.  It comes the fact that product types are a degenerate example of a general framework for inductive types, and for types such as the natural numbers, the recursor will actually be recursive.  The fact that any function $(A \times B) \to C$ is equal to an application of the recursor is the uniqueness principle\index{uniqueness!principle!for maps on product types} for maps on product types:
-\[
-(f : (A\times B) \to C) \jdeq \rec{A \times B}(\lamu{x}{y}f(x,y))
-\]
-There is also a propositional uniqueness principle for maps into a product type, which is discussed below.  
-We may also speak of the \define{recursion principle} for cartesian products, meaning the fact that we can define a function $f:A\times B\to C$ as above by giving its value on pairs.
+for product types.  The name ``recursor'' is a bit unfortunate here, since no recursion is taking place.  It comes the fact that product types are a degenerate example of a general framework for inductive types, and for types such as the natural numbers, the recursor will actually be recursive.  We may also speak of the \define{recursion principle} for cartesian products, meaning the fact that we can define a function $f:A\times B\to C$ as above by giving its value on pairs.
 \index{recursion principle!for cartesian product}%
 
 We leave it as a simple exercise to show that the recursor can be
@@ -568,7 +572,7 @@ We also have a recursor for the unit type:
 \[\rec{\unit} : \prd{C:\UU}C \to \unit \to C\]
 with the defining equation
 \[ \rec{\unit}(C,c,\ttt) \defeq c \]
-However, this is completely useless,
+Although we include it to maintain the pattern of type definitions, the recursor for $\unit$ is completely useless,
 because we could have defined such a function directly
 by simply ignoring the argument of type $\unit$.
 
@@ -581,7 +585,7 @@ function
 }
 with defining equation
 \[ f(\tup x y) \defeq g(x)(y). \] 
-For example, in this way we can prove a propositional uniqueness principle that says that every element of $A\times B$ is equal to a pair.
+For example, in this way we can prove the propositional uniqueness principle, which says that every element of $A\times B$ is equal to a pair.
 \index{uniqueness!principle, propositional!for product types}%
 Specifically, we can construct a function
 \[ \uppt : \prd{x:A \times B} (\id[A\times B]{\tup{\fst {(x)}}{\snd {(x)}}}{x}). \]
@@ -627,8 +631,8 @@ recursor:
 \[ \ind{\unit} : \prd{C:\unit \to \UU} C(\ttt) \to \prd{x:\unit}C(x)\]
 with the defining equation
 \[ \ind{\unit}(C,c,\ttt) \defeq c \]
-Induction enables us to \emph{prove} a propositional uniqueness principle that asserts that the only inhabitant of the
-unit type is $\ttt$, that is, we can construct
+Induction enables us to prove the propositional uniqueness principle for $\unit$, which asserts that its only inhabitant is $\ttt$.
+That is, we can construct
 \[\un : \prd{x:\unit} \id{x}{\ttt} \]
 by using the defining equations
 \[\un(\ttt) \defeq \refl{\ttt} \]
@@ -641,17 +645,18 @@ or equivalently by using induction:
 \section{Dependent pair types (\texorpdfstring{$\Sigma$}{Σ}-types)}
 \label{sec:sigma-types}
 
-Just as we generalized function types (\autoref{sec:function-types}) to dependent function types (\autoref{sec:pi-types}), it is often useful to generalize the product types from \autoref{sec:finite-product-types} to allow the type of
-the second component of a pair to vary depending on the choice of the first
-component. This is called a $\Sigma$-type, because in set theory it
-corresponds to an indexed sum (in the sense of coproduct or
-disjoint union) over a given type.
-
 \index{type!dependent pair|(defstyle}%
 \indexsee{type!dependent sum}{type, dependent pair}%
 \indexsee{type!Sigma-@$\Sigma$-}{type, dependent pair}%
 \indexsee{Sigma-type@$\Sigma$-type}{type, dependent pair}%
 \indexsee{sum!dependent}{type, dependent pair}%
+
+Just as we generalized function types (\autoref{sec:function-types}) to dependent function types (\autoref{sec:pi-types}), it is often useful to generalize the product types from \autoref{sec:finite-product-types} to allow the type of
+the second component of a pair to vary depending on the choice of the first
+component. This is called a \define{dependent pair type}, or \define{$\Sigma$-type}, because in set theory it
+corresponds to an indexed sum (in the sense of coproduct or
+disjoint union) over a given type.
+
 Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
 pair type is written as $\sm{x:A} B(x) : \UU$.
 Alternative notations are 
@@ -664,7 +669,7 @@ The way to construct elements of a dependent pair type is by pairing: we have
 $\tup{a}{b} : \sm{x:A} B(x)$ given $a:A$ and $b:B(a)$.
 If $B$ is constant, then the dependent pair type is the
 ordinary cartesian product type:
-\[ (\sm{x:A} B) \jdeq (A \times B).\]
+\[ \Parens{\sm{x:A} B} \jdeq (A \times B).\]
 All the constructions on $\Sigma$-types arise as straightforward generalisations of the ones for product types, with dependent functions often replacing non-dependent ones.
 
 For instance, the recursion principle%
@@ -678,7 +683,7 @@ equation
 For instance, we can derive the first projection from a $\Sigma$-type:
 \symlabel{defn:dependent-proj1}
 \begin{eqnarray*}
-  \fst & : & (\sm{x : A}B(x)) \to A.
+  \fst & : & \Parens{\sm{x : A}B(x)} \to A.
   % \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p)).
 \end{eqnarray*}
 by the defining equation
@@ -1071,7 +1076,7 @@ From this point of view, the above induction principle says that if we can prove
 This is, of course, exactly the usual principle of proof by induction on natural numbers.
 
 \index{associativity!of addition!of natural numbers}
-As an example consider how we might represent an explicit proof that $+$ is associative.
+As an example, consider how we might represent an explicit proof that $+$ is associative.
 (We will not actually write out proofs in this style, but it serves as a useful example for understanding how induction is represented formally in type theory.)
 To derive
 \[\assoc : \prd{i,j,k:\nat} \id{i + (j + k)}{(i + j) + k}, \]
@@ -1221,10 +1226,13 @@ We strongly encourage the reader to do the exercise of verifying that the rules 
 Of special note is that the empty type $\emptyt$ corresponds to falsity.
 When speaking logically, we refer to an inhabitant of $\emptyt$ as a \define{contradiction}:
 \indexdef{contradiction}%
-thus there is no way to prove a contradiction, while from a contradiction anything can be derived.
+thus there is no way to prove a contradiction,%
+\footnote{More precisely, there is no \emph{basic} way to prove a contradiction, i.e.\ \emptyt has no constructors.
+If our type theory were inconsistent, then there would be some more complicated way to construct an element of \emptyt.}
+while from a contradiction anything can be derived.
 We also define the \define{negation}
 \indexdef{negation}%
-of a type $A$ to be
+of a type $A$ as
 %
 \begin{equation*}
   \neg A \ \defeq\ A \to \emptyt.
@@ -1471,7 +1479,7 @@ called \define{reflexivity},
 which says that every element of $A$ is equal to itself (in a specified way).
 
 In particular, this means that if $a$ and $b$ are \emph{judgmentally} equal, $a\jdeq b$, then we also have an element $\refl{a} : \id[A]{a}{b}$.
-This is well-typed because $a\jdeq b$ means that also the type $\id[A]{a}{b}$ is judgmentally equal to $\id{a}{a}$, which is the type of $\refl{a}$.
+This is well-typed because $a\jdeq b$ means that also the type $\id[A]{a}{b}$ is judgmentally equal to $\id[A]{a}{a}$, which is the type of $\refl{a}$.
 
 The induction principle for the identity types is one of the most subtle parts of type theory, and crucial to the homotopy interpretation.
 We begin by considering an important consequence of it, the principle that ``equals may be substituted for equals,'' as expressed by the following:
@@ -1546,7 +1554,7 @@ The function $ \indid{A}$ is traditionally called $J$.  We leave it as an easy e
 \mentalpause
 
 Given a proof $p : \id{a}{b}$,
-path induction requires you to replace \emph{both} $a$ and $b$ with the same unknown element $x$; thus in order to define an element of a family
+path induction requires us to replace \emph{both} $a$ and $b$ with the same unknown element $x$; thus in order to define an element of a family
 $C$, for all pairs of elements of $A$, it suffices to define it on the diagonal.
 In some proofs, however, it is simpler to make use of an equation $p : \id{a}{b}$ by replacing all occurrences of $b$ with $a$ (or vice versa), because it is sometimes easier to do the remainder of the proof for the specific element $a$ mentioned in the equality than for a general unknown $x$.  This motivates a second induction principle for identity types, which says that the family of types $\id[A]{a}{x}$ is generated by the element $\refl{a} : \id{a}{a}$.  As we show below, this second principle is equivalent to the first; it is just sometimes a more convenient formulation.
 
@@ -1701,7 +1709,8 @@ or \define{not equal}.
 %
 Just like negation, disequality plays a less important role here than it does in classical\index{mathematics!classical}
 mathematics. For example, we cannot prove that two things are equal by proving that they
-are not unequal: that would be an application the classical law of double negation, see \autoref{sec:intuitionism}.
+are not unequal: that would be an application of the classical law of double negation, see \autoref{sec:intuitionism}.
+
 Sometimes it is useful to phrase disequality in a positive way. For example,
 in~\autoref{RD-inverse-apart-0} we shall prove that a real number $x$ has an inverse if,
 and only if, its distance from~$0$ is positive, which is a stronger requirement than $x
@@ -1745,7 +1754,9 @@ and \Agda\ systems.
 
 %(In the terminology of \autoref{cha:hlevels} such a type theory is about $0$-truncated types.)
 
-Another point of variation among intensional theories is the strength of judgmental equality, particularly as regards objects of function type.  Here we include the computation rule\index{computation rule} $f \jdeq \lam{x} f(x)$, as a principle of judgmental equality.  This principle is used, for example, in \autoref{sec:univalence-implies-funext}, to show that univalence implies propositional function extensionality.  Uniqueness principles are sometimes considered for other types: for instance, the uniqueness principle\index{uniqueness!principle!for product types} for cartesian products would be a judgmental assertion, $u \jdeq (\proj1(u),\proj2(u))$.  This and the corresponding version for dependent pairs would be reasonable choices (which we did not make), but we cannot include all such rules because the corresponding uniqueness principle for identity types would trivialize all the higher homotopical structure.  So we are \emph{forced} to leave it out, and the question then becomes where to draw the line. With regards to inductive types, we discuss these points further in~\autoref{sec:htpy-inductive}.
+Another point of variation among intensional theories is the strength of judgmental equality, particularly as regards objects of function type.  Here we include the uniqueness principle\index{uniqueness principle} ($\eta$-conversion) $f \jdeq \lam{x} f(x)$, as a principle of judgmental equality.  This principle is used, for example, in \autoref{sec:univalence-implies-funext}, to show that univalence implies propositional function extensionality.  Uniqueness principles are sometimes considered for other types.
+For instance, the uniqueness principle\index{uniqueness!principle!for product types} for cartesian products would be a judgmental version of the propositional equality $\uppt$ which we constructed in \autoref{sec:finite-product-types}, saying that $u \jdeq (\proj1(u),\proj2(u))$.
+This and the corresponding version for dependent pairs would be reasonable choices (which we did not make), but we cannot include all such rules, because the corresponding uniqueness principle for identity types would trivialize all the higher homotopical structure.  So we are \emph{forced} to leave it out, and the question then becomes where to draw the line. With regards to inductive types, we discuss these points further in~\autoref{sec:htpy-inductive}.
 
 It is important for our purposes that (propositional) equality of functions is taken to be \emph{extensional}.
 This is not a consequence of the rules in this chapter; it will be expressed by \autoref{axiom:funext}.
@@ -1763,7 +1774,7 @@ allows proving Axiom K.
 For these reasons, we have chosen to regard the induction principle as the basic property of an inductive definition, with pattern matching justified in terms of induction.
 
 \index{rule}%
-In general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules},
+As mentioned in \autoref{sec:finite-product-types}, in general, a kind of type in type theory (such as function types, product types, identity types, etc.)\ is associated with four kinds of rules: \emph{formation rules},
 \index{rule!formation}%
 \index{formation rule}%
 which specify how to form types of this sort; \emph{introduction rules}
@@ -1776,10 +1787,10 @@ which specify how to construct elements of such types; \emph{elimination rules}
 \index{elimination rule}%
 or \emph{eliminators},
 \index{eliminator}%
-which specify how to use elements of such types to construct elements of other types; and \emph{computation rules},
+which specify how to use elements of such types to construct elements of other types; and \emph{conversion rules},
 \index{rule!computation}%
 \index{computation rule}%
-which specify what happens when the introduction and elimination rules are combined. The computation rules are also called \emph{reduction rules} or \emph{conversion rules}.
+which specify what happens when the introduction and elimination rules are combined. The computation rules include both what we have called \emph{computation rules} (also called \emph{reduction rules} or \emph{$\beta$-conversion rules}) and what we have called \emph{uniqueness principles} (also called \emph{$\eta$-conversion rules}).
 \indexsee{reduction!rule}{computation rule}%
 \indexsee{conversion!rule}{computation rule}%
 For inductive types such as products, $\Sigma$s, coproducts, and so on, the introduction rules are the constructors (like pairing or injections), and the elimination rule is the induction principle, for which we have already mentioned the alternative terminology ``eliminator''.

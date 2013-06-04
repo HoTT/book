@@ -14,7 +14,8 @@ you compile the main files, as follows:
 * `make cover-lulu.pdf` -- generate color cover, US Trade format, very high resoltuion, used for the bound copy available at http://lulu.com/
 * `make exercise_solutions.pdf` -- compile (some) solutions to exercises
 
-## How to contribute to the book
+## License
 
-The book is released under a permissive Creative Commons licence. We encourage you to
-contribute to the book by issuing 
+This work is licensed under the
+[Creative Commons Attribution-ShareAlike 3.0 Unported License](http://creativecommons.org/licenses/by-sa/3.0/}{http://creativecommons.org/licenses/by-sa/3.0/).
+

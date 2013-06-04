@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# This script generates symbol images from which the
+# torus picture is then assembled.
+
 import subprocess
 import os
 import os.path

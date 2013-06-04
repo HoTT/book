@@ -45,10 +45,10 @@ DEFAULTPDF:=$(DEFAULTTOPTEX:.tex=.pdf)
 
 default: $(DEFAULTPDF)
 
-all: $(TOPPDFFILES) exercise_solutions.pdf
+all: $(TOPPDFFILES) exercise_solutions.pdf cover-lulu.pdf cover-letter.pdf
 
 # Main targets
-$(TOPPDFFILES) : %.pdf : %.tex cover.png $(TEXFILES) references.bib
+$(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $< ;\
 	else pdflatex $< && \
@@ -65,6 +65,16 @@ $(BOOKAUXFILES) : %.aux : %.tex
 # Generate labels for the solutions
 main.labels: $(BOOKAUXFILES)
 	cat $^ | grep ^.newlabel >$@
+
+cover-lulu.pdf: cover-lulu.tex cover-hires.png
+	if which latexmk > /dev/null 2>&1 ;\
+	then latexmk -pdf $<;\
+	else pdflatex $<; fi
+
+cover-letter.pdf: cover-lulu.tex cover-lores-front.png cover-lores-back.png
+	if which latexmk > /dev/null 2>&1 ;\
+	then latexmk -pdf $<;\
+	else pdflatex $<; fi
 
 exercise_solutions.pdf: exercise_solutions.tex main.labels
 	if which latexmk > /dev/null 2>&1 ;\

@@ -1,0 +1,86 @@
+% Cover for Lulu.com
+\input{opt-ustrade}
+
+\documentclass[\OPTfontsize]{article}
+\input{opt-color}
+
+\usepackage[utf8]{inputenc}
+\usepackage{rotating}
+\usepackage{xcolor}
+\usepackage{wallpaper}
+
+\definecolor{covercolor}{cmyk}{\OPTcovercolor}
+\pagecolor{covercolor}
+
+\usepackage{soul} % Inter-letter spacing
+\sodef\ugg{}{0pt plus 1fill}{1em plus 1fill}{0pt}
+
+%%% Set the fonts
+\usepackage{mathpazo}
+\usepackage[scaled=0.95]{helvet}
+\usepackage{courier}
+\linespread{1.05} % Palatino looks better with this
+
+\usepackage{graphicx}
+
+% Dimensions are reported by Lulu.com *after* you
+% upload the inner PDF file.
+
+\newlength{\totalwidth}
+\setlength{\totalwidth}{977.84pt} % Reported as total cover width
+
+\newlength{\coverheight}
+\setlength{\coverheight}{666pt} % Reported as total cover height
+
+\newlength{\spinewidth}
+\setlength{\spinewidth}{95.84pt} % Reported as spine width
+
+\newlength{\coverwidth}
+\setlength{\coverwidth}{441pt} % Reported as "spine begins at"
+
+% SANITY CHECK: \totalwidth = 2 * \coverwidth + \spinewidth
+
+\usepackage[margin=0pt,
+            papersize={\totalwidth,\coverheight},
+            noheadfoot,
+            textwidth=\totalwidth,
+            textheight=\coverheight]{geometry}
+%\usepackage{layout}
+\newcommand{\coverpage}[1]{\vbox to \coverheight{\hbox to \coverwidth{#1}}}
+\newcommand{\spine}[1]{\vbox to \coverheight{\hbox to \spinewidth{#1}}}
+
+\parindent=0pt
+\parskip=0pt
+
+\input{frontpage}
+
+\newcommand{\spinetext}{
+\begin{minipage}[b][\coverheight][t]{\spinewidth}
+\begin{center}
+  \begin{rotate}{270}
+    \hspace{\OPTtopskip}
+    \begin{minipage}{\coverheight}
+      {\fontsize{\OPTcoverspinefont}{\OPTcoverspinefont}\fontseries{b}\selectfont%
+        Homotopy Type Theory}
+    \end{minipage}
+  \end{rotate}
+\end{center}
+\end{minipage}
+}
+
+\newcommand{\backpage}{
+\begin{minipage}[b][\coverheight][t]{\coverwidth}
+\begin{center}
+\begin{minipage}[t]{0.80\coverwidth}
+  \vspace{\OPTtopskip}
+  \input{blurb.tex}
+\end{minipage}
+\end{center}
+\end{minipage}
+}
+
+\begin{document}
+%\layout
+\LRCornerWallPaper{0.87}{cover-hires}
+\hbox{\coverpage{\backpage}\spine{\spinetext}\coverpage{\frontpage}}
+\end{document}

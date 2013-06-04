@@ -47,7 +47,7 @@ In \autoref{cha:hlevels} we will study a more general form of this question in d
 \end{eg}
 
 \begin{eg}
-  The type $\emptyt$ is a set, for given any $x,y:\emptyt$ we may deduce anything we like, by the recursion principle of $\emptyt$.
+  The type $\emptyt$ is a set, for given any $x,y:\emptyt$ we may deduce anything we like, by the induction principle of $\emptyt$.
 \end{eg}
 
 \begin{eg}\label{thm:nat-set}
@@ -213,7 +213,7 @@ On the other hand, we can now also show that corresponding statements looking li
   \begin{equation}
     \prd{x:\bool} \neg(e(x)=x).\label{eq:fpfaut}
   \end{equation}
-  This follows from a case analysis on $x$: both cases are immediate from the definition of $e$ and the injectivity of $\inl$ and $\inr$ which we proved in \autoref{sec:compute-coprod}.
+  This follows from a case analysis on $x$: both cases are immediate from the definition of $e$ and the fact that $\btrue\neq\bfalse$ ({rmk:true-neq-false}).
   Thus, applying~\eqref{eq:fpfaut} to $f(\bool)(u)$ and~\eqref{eq:fpaut}, we obtain an element of $\emptyt$.
 \end{proof}
 
@@ -297,6 +297,8 @@ The continuity/naturality of this function implies that not only are any two ele
   Similarly, for any $y:Q$ we have $f(g(y))=y$ since $Q$ is a mere proposition; thus $f$ and $g$ are quasi-inverses.
 \end{proof}
 
+That is, as promised in \autoref{sec:pat}, if two mere propositions are logically equivalent, then they are equivalent.
+
 In homotopy theory, a space that is homotopy equivalent to \unit is said to be \emph{contractible}.
 Thus, any mere proposition which is inhabited is contractible (see also \autoref{sec:contractibility}).
 On the other hand, the uninhabited type \emptyt is also (vacuously) a mere proposition.
@@ -333,10 +335,10 @@ In particular, this implies:
   Suppose $f,g:\isprop(A)$.  By function extensionality, to show $f=g$ it
   suffices to show $f(x,y)=g(x,y)$ for any $x,y:A$.  But $f(x,y)$ and $g(x,y)$
   are both paths in $A$, and hence are equal because, by either $f$ or $g$, we
-  have that $A$ is a proposition, and hence by \autoref{thm:prop-set} is a
+  have that $A$ is a mere proposition, and hence by \autoref{thm:prop-set} is a
   set.  Similarly, suppose $f,g:\isset(A)$, which is to say that for all
-  $a,b:A$, $f(a,b):a=b$ and $g(a,b):a=b$.  But by then since $A$ is a set (by
-  either $f$ or $g$), it follows that $f(a,b)=g(a,b)$, and hence $f=g$ by
+  $a,b:A$ and $p,q:a=b$, we have $f(a,b,p,q):p=q$ and $g(a,b,p,q):p=q$.  But by then since $A$ is a set (by
+  either $f$ or $g$), and hence a 1-type, it follows that $f(a,b,p,q)=g(a,b,p,q)$; hence $f=g$ by
   function extensionality.
 \end{proof}
 
@@ -537,7 +539,7 @@ It is a form of \emph{impredicativity} for mere propositions, and by avoiding it
 \indexdef{mathematics!predicative}%
 
 In practice, what we want most frequently is a slightly different statement: that a universe \UU under consideration contains a type which ``classifies all mere propositions''.
-In other words, we want a type $\Omega:\UU$ together with a $\Omega$-indexed family of mere propositions, which contains every mere proposition up to equivalence.
+In other words, we want a type $\Omega:\UU$ together with an $\Omega$-indexed family of mere propositions, which contains every mere proposition up to equivalence.
 This statement follows from propositional resizing as stated above if $\UU$ is not the smallest universe $\UU_0$, since then we can define $\Omega\defeq \prop_{\UU_0}$.
 
 One use for impredicativity is to define power sets.
@@ -606,12 +608,13 @@ It has two constructors:
 The first constructor means that if $A$ is inhabited, so is $\brck A$.
 The second ensures that $\brck A$ is a mere proposition; usually we leave the witness of this fact nameless.
 
-The induction principle of $\brck A$ says that:
+The recursion principle of $\brck A$ says that:
 \begin{itemize}
 \item If $B$ is a mere proposition and we have $f:A\to B$, then there is an induced $g:\brck A \to B$ such that $g(\bproj a) \jdeq f(a)$ for all $a:A$.
 \end{itemize}
 In other words, any mere proposition which follows from (the inhabitedness of) $A$ already follows from $\brck A$.
 Thus, $\brck A$, as a mere proposition, contains no more information than the inhabitedness of $A$.
+(There is also an induction principle for $\brck A$, but it is not especially useful; see \autoref{ex:prop-trunc-ind}.)
 
 In \autoref{ex:lem-brck,ex:impred-brck,sec:hittruncations} we will describe some ways to construct $\brck{A}$ in terms of more general things.
 For now, we simply assume it as an additional rule alongside those of \autoref{cha:typetheory}.
@@ -619,10 +622,10 @@ For now, we simply assume it as an additional rule alongside those of \autoref{c
 With the propositional truncation, we can extend the ``logic of mere propositions'' to cover disjunction and the existential quantifier.
 Specifically, $\brck{A+B}$ is a mere propositional version of ``$A$ or $B$'', which does not ``remember'' the information of which disjunct is true.
 
-The induction principle of truncation implies that we can still do a case analysis on $\brck{A+B}$ \emph{when attempting to prove a mere proposition}.
+The recursion principle of truncation implies that we can still do a case analysis on $\brck{A+B}$ \emph{when attempting to prove a mere proposition}.
 That is, suppose we have an assumption $u:\brck{A+B}$ and we are trying to prove a mere proposition $Q$.
 In other words, we are trying to define an element of $\brck{A+B} \to Q$.
-Since $Q$ is a mere proposition, by the induction principle for propositional truncation, it suffices to construct a function $A+B\to Q$.
+Since $Q$ is a mere proposition, by the recursion principle for propositional truncation, it suffices to construct a function $A+B\to Q$.
 But now we can use case analysis on $A+B$.
 
 Similarly, for a type family $P:A\to\type$, we can consider $\brck{\sm{x:A} P(x)}$, which is a mere propositional version of ``there exists an $x:A$ such that $P(x)$''.
@@ -765,9 +768,12 @@ However, observe that we cannot relax the requirement that $X$ be a set.
 \end{lem}
 \begin{proof}
   Define $X\defeq \sm{A:\type} \brck{\bool = A}$, and let $x_0 \defeq (\bool, \bproj{\refl{\bool}}) : X$.
-  Then by the identification of paths in $\Sigma$-types, the fact that $\brck{A=\bool}$ is a mere proposition, and univalence, we have $\eqv{(\id[X]{(A,p)}{(B,p)})}{(\eqv AB)}$.
+  Then by the identification of paths in $\Sigma$-types, the fact that $\brck{A=\bool}$ is a mere proposition, and univalence, for any $(A,p),(B,q):X$ we have $\eqv{(\id[X]{(A,p)}{(B,q)})}{(\eqv AB)}$.
   In particular, $\eqv{(\id[X]{x_0}{x_0})}{(\eqv \bool\bool)}$, so as in \autoref{thm:type-is-not-a-set}, $X$ is not a set.
-  But if we define $Y(x) \defeq (x_0=x)$, then each $Y(x)$ is a set.
+
+  On the other hand, if $(A,p):X$, then $A$ is a set; this follows by induction on truncation for $p:\brck{\bool=A}$ and the fact that $\bool$ is a set.
+  Since $\eqv A B$ is a set whenever $A$ and $B$ are, it follows that $\id[X]{x_1}{x_2}$ is a set for any $x_1,x_2:X$, i.e.\ $X$ is a 1-type.
+  In particular, if we define $Y:X\to\UU$ by $Y(x) \defeq (x_0=x)$, then each $Y(x)$ is a set.
 
   Now by definition, for any $(A,p):X$ we have $\brck{\bool=A}$, and hence $\brck{x_0 = (A,p)}$.
   Thus, we have $\prd{x:X} \brck{Y(x)}$.
@@ -817,7 +823,7 @@ We would like to use an element of $A$ in our construction of an element of $B$,
 Instead, we can extend $B$ with additional data which characterizes \emph{uniquely} the object we wish to construct.
 Specifically, we define a predicate $Q:B\to\type$ such that $\sm{x:B} Q(x)$ is a mere proposition.
 Then from an element of $A$ we construct an element $b:B$ such that $Q(b)$, hence from $\brck A$ we can construct $\brck{\sm{x:B} Q(x)}$, and because $\brck{\sm{x:B} Q(x)}$ is equivalent to $\sm{x:B} Q(x)$ an element of $B$ may be projected from it.
-We provide an example below.
+An example can be found in \autoref{ex:decidable-choice}.
 
 A similar issue arises in set-theoretic mathematics, although it manifests slightly
 differently. If we are trying to define a function $f: A \to B$, and depending on an
@@ -947,7 +953,7 @@ Note that under the usual propositions-as-types reading, we can pronounce $\isco
   \index{continuity@``continuity''!of functions in type theory}%
   \index{functoriality@``functoriality''!of functions in type theory}%
   The point is that the meaning of ``there exists'' in this sentence is a continuous/natural one.
-  A more correct way to express connectedness would be $\sm{a:A}\prd{x:A} \brck{a=x}$; we will come back to this later.
+  A more correct way to express connectedness would be $\sm{a:A}\prd{x:A} \brck{a=x}$; see \autoref{thm:connected-pointed}.
 \end{rmk}
 
 \begin{lem}\label{thm:contr-unit}
@@ -1203,7 +1209,7 @@ Of course, constructive and intuitionistic mathematics has a long and complicate
 \end{ex}
 
 \begin{ex}\label{ex:prop-trunc-ind}
-  Show that the rules for the propositional truncation given in \autoref{subsec:prop-trunc} are sufficient to imply a dependent version of the induction principle: for any type family $B:\brck A \to \type$ such that each $B(x)$ is a mere proposition, if for every $a:A$ we have $B(\bproj a)$, then for every $x:\brck A$ we have $B(x)$.
+  Show that the rules for the propositional truncation given in \autoref{subsec:prop-trunc} are sufficient to imply the following induction principle: for any type family $B:\brck A \to \type$ such that each $B(x)$ is a mere proposition, if for every $a:A$ we have $B(\bproj a)$, then for every $x:\brck A$ we have $B(x)$.
 \end{ex}
 
 \begin{ex}\label{ex:lem-ldn}

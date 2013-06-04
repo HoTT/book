@@ -28,11 +28,14 @@ BOOKTEXFILES = 	main.tex \
 	formal.tex \
 	back.tex
 
+# Configuration files
+OPTFILES = opt-letter.tex \
+	   opt-ustrade.tex \
+	   opt-color.tex \
+	   opt-cover.tex
+
 # All the LaTeX files for the HoTT book in order of dependency
-TEXFILES = $(TOPTEXFILES) \
-	opt-letter.tex \
-	opt-ustrade.tex \
-	$(BOOKTEXFILES)
+TEXFILES = $(TOPTEXFILES) $(BOOKTEXFILES) $(OPTFILES)
 
 # aux files to be used when combining info from HoTT book with
 # exercises
@@ -82,12 +85,12 @@ $(BOOKAUXFILES) : %.aux : %.tex
 main.labels: $(BOOKAUXFILES)
 	cat $^ | grep ^.newlabel >$@
 
-cover-lulu.pdf: cover-lulu.tex cover-hires.png
+cover-lulu.pdf: cover-lulu.tex cover-hires.png $(OPTFILES)
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi
 
-cover-letter.pdf: cover-lulu.tex cover-lores-front.png cover-lores-back.png
+cover-letter.pdf: cover-lulu.tex cover-lores-front.png cover-lores-back.png $(OPTFILES)
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi

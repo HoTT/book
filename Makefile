@@ -90,7 +90,7 @@ cover-lulu.pdf: cover-lulu.tex cover-hires.png $(OPTFILES)
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi
 
-cover-letter.pdf: cover-lulu.tex cover-lores-front.png cover-lores-back.png $(OPTFILES)
+cover-letter.pdf: cover-letter.tex cover-lores-front.png cover-lores-back.png $(OPTFILES)
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi

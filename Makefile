@@ -1,4 +1,4 @@
-.PHONY: default all clean
+.PHONY: default all clean version.tex
 
 # Default top-level LaTeX to generate
 DEFAULTTOPTEX = hott-online.tex
@@ -10,6 +10,7 @@ TOPTEXFILES = $(DEFAULTTOPTEX) hott-ustrade.tex hott-letter.tex
 # (that is, all of them except configuration)
 BOOKTEXFILES = 	main.tex \
 	macros.tex \
+	version.tex \
 	front.tex \
 	preface.tex \
 	introduction.tex \
@@ -63,6 +64,11 @@ all default: log-check
 log-check:
 	: check for indexing errors
 	! grep -n "!! Input index error" hott-online.ilg /dev/null
+
+version.tex:
+	/bin/echo -n '\newcommand{\OPTversion}{' > version.tex
+	git describe --long >> version.tex
+	/bin/echo -n '}' >> version.tex
 
 # these warnings are mostly spurious, and could have been prevented by a better makeindex algorithm
 log-check-for-warnings:

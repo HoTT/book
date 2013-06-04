@@ -67,7 +67,7 @@ log-check:
 
 version.tex:
 	/bin/echo -n '\newcommand{\OPTversion}{' > version.tex
-	git describe --long >> version.tex
+	git describe --always --long >> version.tex
 	/bin/echo -n '}' >> version.tex
 
 # these warnings are mostly spurious, and could have been prevented by a better makeindex algorithm

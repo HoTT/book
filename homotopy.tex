@@ -24,13 +24,13 @@ points and paths and homotopies.  At the same time, our approach abstracts from
 the concrete presentation of these objects in topological spaces
 \index{space!topological}%
 (for example,
-associativity of path concatention is proved by path induction, rather
+associativity of path concatenation is proved by path induction, rather
 than by reparametrization of maps $[0,1] \to X$), and our proofs apply
 in a variety of settings: for example, homotopy type theory also has an interpretation in
 Kan\index{Kan complex} simplicial sets, which are one model of $\infty$-groupoids.  Thus,
 our proofs apply to this model, and transferring them along the geometric
 realization\index{geometric realization} functor from simplicial sets to topological spaces gives
-proofs of  correponding theorems in classical homotopy theory.
+proofs of  corresponding theorems in classical homotopy theory.
 Moreover, though this is work in progress, it seems likely that we will
 be able to interpret type theory in a wide variety of other categories
 that look like the category of $\infty$-groupoids, such as
@@ -315,7 +315,7 @@ Moreover, knowing that ${\Omega(\Sn ^1)}$ is a set will imply that $\pi_n(\Sn^1)
 \label{sec:pi1s1-initial-thoughts}
 
 It is not too hard to define functions in both directions between $\Omega(\Sn^1)$ and \Z.
-By specializing \autoref{thm:looptothe} to $\lloop:\base=\base$, we have a function $\lloop^- : \Z \rightarrow (\id{\base}{\base})$ defined (loosely speaking) by
+By specializing \autoref{thm:looptothe} to $\lloop:\base=\base$, we have a function $\lloop^{\blank} : \Z \rightarrow (\id{\base}{\base})$ defined (loosely speaking) by
 \[
   \lloop^n =
   \begin{cases}
@@ -403,7 +403,7 @@ Since $\mathbb{R}$ and $P_{\base} S^1$ are both contractible topological spaces,
 \index{cover!universal|(}%
 \index{covering space!universal|(}%
 
-Let us consider how we might express the preceeding proof in type theory.
+Let us consider how we might express the preceding proof in type theory.
 We have already remarked that the path fibration of $\Sn^1$ is represented by the type family $(x\mapsto (\base=x))$.
 We have also already seen a good candidate for the universal cover of $\Sn^1$: it's none other than the type family $c:\Sn^1\to\type$ which we defined in \autoref{sec:pi1s1-initial-thoughts}!
 By definition, the fiber of this family over $\base$ is $\Z$, while the effect of transporting around $\lloop$ is to add one --- thus it behaves just as we would expect from \autoref{fig:winding}.
@@ -527,26 +527,27 @@ Note that the instance $\encode' \defeq \encode_{\base}$ has type
 $(\id \base \base) \rightarrow \Z$.
 This will be one half of our desired equivalence; indeed, it is exactly the function $g$ defined in \autoref{sec:pi1s1-initial-thoughts}.
 
-Similarly, the function~\eqref{eq:pi1s1-decode} is a generalization of the function $\lloop^-$ from \autoref{sec:pi1s1-initial-thoughts}.
+Similarly, the function~\eqref{eq:pi1s1-decode} is a generalization of the function $\lloop^{\blank}$ from \autoref{sec:pi1s1-initial-thoughts}.
 
 \begin{defn}\label{thm:pi1s1-decode}
 Define $\decode : \prd{x : \Sn ^1}\code(x) \rightarrow (\base=x)$ by 
 circle induction on $x$.  It suffices to give a function 
-${\code(\base) \rightarrow (\base=\base)}$, for which we use $\lloop^-$, and 
-to show that $\lloop^-$ respects the loop.  
+${\code(\base) \rightarrow (\base=\base)}$, for which we use $\lloop^{\blank}$, and 
+to show that $\lloop^{\blank}$ respects the loop.  
 \end{defn}
 
 \begin{proof}
-To show that $\lloop^-$ respects the loop, it suffices to give a path
-from $\lloop^-$ to itself that lies over $\lloop$. 
-By the definition of dependent paths, this means a path from $\transfib {(x' \mapsto \code(x')
-\rightarrow (\base=x'))} {\lloop} {\lloop^-}$ to $\lloop^-$.  We define such a
+To show that $\lloop^{\blank}$ respects the loop, it suffices to give a path
+from $\lloop^{\blank}$ to itself that lies over $\lloop$. 
+By the definition of dependent paths, this means a path from
+\[\transfib {(x' \mapsto \code(x') \rightarrow (\base=x'))} {\lloop} {\lloop^{\blank}}\]
+to $\lloop^{\blank}$.  We define such a
 path as follows:
 \begin{align*}
-  \MoveEqLeft \transfib {(x' \mapsto \code(x') \rightarrow (\base=x'))} \lloop {\lloop^-}\\
-&= \transfibf {x'\mapsto (\base=x')}(\lloop) \circ {\lloop^-} \circ \transfibf \code ({\opp \lloop}) \\
-&= (- \ct \lloop) \circ (\lloop^-) \circ \transfibf \code ({\opp \lloop}) \\
-&= (- \ct \lloop) \circ (\lloop^-) \circ \Zpred \\
+  \MoveEqLeft \transfib {(x' \mapsto \code(x') \rightarrow (\base=x'))} \lloop {\lloop^{\blank}}\\
+&= \transfibf {x'\mapsto (\base=x')}(\lloop) \circ {\lloop^{\blank}} \circ \transfibf \code ({\opp \lloop}) \\
+&= (- \ct \lloop) \circ (\lloop^{\blank}) \circ \transfibf \code ({\opp \lloop}) \\
+&= (- \ct \lloop) \circ (\lloop^{\blank}) \circ \Zpred \\
 &= (n \mapsto \lloop^{n - 1} \ct \lloop)                 
 \end{align*}
 On the first line, we apply the characterization of $\mathsf{transport}$
@@ -1632,7 +1633,7 @@ Then there is a canonical map
 \begin{rmk}
   In classical algebraic topology, one considers the \emph{reduced suspension}, in which the path $\merid(x_0)$ is collapsed down to a point, identifying $\north$ and $\south$.
   The reduced and unreduced suspensions are homotopy equivalent, so the distinction is invisible to our purely homotopy-theoretic eyes --- and higher inductive types only allow us to ``identify'' points up to a higher path anyway, there is no purpose to considering reduced suspensions in homotopy type theory.
-  However, the unreducedness of our suspension is the reason for the (possibly unexpected) appearance of $\opp{\merid(x_0)}$ in the definition of $\sigma$.
+  However, the ``unreducedness'' of our suspension is the reason for the (possibly unexpected) appearance of $\opp{\merid(x_0)}$ in the definition of $\sigma$.
 \end{rmk}
 
 Our goal is now to prove the following.
@@ -1748,7 +1749,7 @@ where $r:\merid(x_0) \ct \opp{\merid(x_0)} = q \ct \opp{\merid(x_1)}$, and $r'':
   Note that in the special case when $y$ is $\north$ and $p$ is $\refl{\north}$, we have
   \[\code(\north,\refl{\north}) \jdeq \trunc{2n}{\tsm{x:X} (\merid(x) \ct \opp{\merid(x_0)} = \refl{\north})}.\]
   Thus, we can choose $c(\north,\refl{\north})\defeq \tproj{2n}{(x_0,\mathsf{rinv}_{\merid(x_0)})}$, where $\mathrm{rinv}_q$ is the obvious path $q\ct\opp q = \refl{}$ for any $q$.
-  We can now obtain $c:\prd{y:\susp X}{p:\north=y} \code(y,p)$ by path-induction on $p$, but it will be important below that we can also give a concrete definition in terms of transport:
+  We can now obtain $c:\prd{y:\susp X}{p:\north=y} \code(y,p)$ by path induction on $p$, but it will be important below that we can also give a concrete definition in terms of transport:
   \[ c(y,p) \defeq \transfib{\hat{\code}}{\pairpath(p,\mathsf{tid}_p)}{c(\north,\refl{\north})}
   \]
   where $\hat{\code}: \big(\sm{y:\susp X} (\north=y)\big) \to \type$ is the uncurried version of \code, and $\mathsf{tid}_p:\trans{p}{\refl{}} = p$ is a standard lemma.
@@ -1981,7 +1982,7 @@ Define $\code:P\to P\to \type$ by double induction on $P$ as follows.
     \tag{for $w:\Pi_1A(y_k, y_k')$}
   \end{align*}
   However, these are not necessary!
-  In fact, they follow automatically by path-induction on $w$.
+  In fact, they follow automatically by path induction on $w$.
   This is the main difference between the ``naive'' van Kampen theorem and the more refined one we will consider in the next subsection.
 \end{rmk}
 
@@ -2049,7 +2050,7 @@ This respects the set-quotient equivalence relation and the equivalences such as
 
 As usual, to show that the composite
 \[ \Pi_1P(u,v) \xrightarrow{\encode} \code(u,v) \xrightarrow{\decode} \Pi_1P(u,v) \]
-is the identity, we first peel off the 0-truncation (since the codomain is a set) and then apply path-induction.
+is the identity, we first peel off the 0-truncation (since the codomain is a set) and then apply path induction.
 The input $\refl{u}$ goes to $ru$, which then goes back to $\refl u$ (applying a further induction on $u$ to decompose $\decode(ru)$).
 
 Finally, consider the composite
@@ -2451,7 +2452,7 @@ As an application, we can deduce the converse of \autoref{thm:conn-pik}.
   the hypotheses imply that $\pi_k(\hfib f {f(a)})=0$ for all $k\le n$ and $a:A$, and that $\trunc 0{\hfib f{f(a)}}$ is contractible.
   Since $\pi_k(\hfib f {f(a)}) = \pi_k(\trunc n{\hfib f{f(a)}})$ for $k\le n$, and $\trunc n{\hfib f{f(a)}}$ is $n$-connected, by \autoref{thm:whitehead-contr} it is contractible for any $a$.
 
-  It remains to show that $\trunc n{\hfib f{b}}$ is contractible for $b:B$ not neccesarily of the form $f(a)$.
+  It remains to show that $\trunc n{\hfib f{b}}$ is contractible for $b:B$ not necessarily of the form $f(a)$.
   However, by assumption, there is $x:\trunc0A$ with $\tproj 0b = \trunc0f(x)$.
   Since contractibility is a mere proposition, we may assume $x$ is of the form $\tproj0a$ for $a:A$, in which case $\tproj 0 b = \trunc0f(\tproj0a) = \tproj0{f(a)}$, and therefore $\trunc{-1}{b=f(a)}$.
   Again since contractibility is a mere proposition, we may assume $b=f(a)$, and the result follows.
@@ -2562,7 +2563,7 @@ $\encode : \prd{x:A} \id{a_0}{x} \to \code(x)$ by
 \encode_x(\alpha) = \transfib{\code}{\alpha}{c_0}.
 \]
 We show that $\encode_{a_0}$ and $\decode_{a_0}$ are quasi-inverses.  
-The compostion $\encode_{a_0} \circ \decode_{a_0}$ is immediate by
+The composition $\encode_{a_0} \circ \decode_{a_0}$ is immediate by
 assumption (iii).  For the other composition, we show
 \[
 \prd{x:A}{p : \id{a_0}{x}} \id{\decode_{x} (\encode_{x} p)}{p}.
@@ -2647,7 +2648,7 @@ Recall from \autoref{sec:colimits} that $X \sqcup^C Y$ denotes the
 
 \begin{thm}[Blakers--Massey theorem]\label{Blakers-Massey}
   \indexdef{theorem!Blakers--Massey}%
-  \indexsee{Blakers--Massey theorem}{theorem!Blakers--Massey}%
+  \indexsee{Blakers--Massey theorem}{theorem, Blakers--Massey}%
   Suppose we are given maps $f : C  \rightarrow X$, and $g : C \rightarrow Y$. Taking first the pushout $X \sqcup^C Y $ of $f$ and $g$ and then the pullback of its inclusions $\inl : X \rightarrow X \sqcup^C Y \leftarrow Y : \inr$, we have an induced map $C \to X \times_{(X \sqcup^C Y)} Y$.
 
   If $f$ is $i$-connected and $g$ is $j$-connected, then this induced map is $(i+j)$-connected. In other words, for any points $x:X$, $y:Y$, the corresponding fiber $C_{x,y}$ of $(f,g) : C \to X \times Y $ gives an approximation to the path space $\id[X \sqcup^C Y]{\inl(x)}{\inr(y)}$ in the pushout.

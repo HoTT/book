@@ -59,6 +59,16 @@ $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png 
 	     echo "HINT: If you think this took a long time you should install latexmk." ;\
 	fi
 
+all default: log-check
+log-check:
+	: check for indexing errors
+	! grep -n "!! Input index error" hott-online.ilg /dev/null
+
+# these warnings are mostly spurious, and could have been prevented by a better makeindex algorithm
+log-check-for-warnings:
+	: check for indexing warnings
+	- ! grep -n "## Warning" hott-online.ilg /dev/null
+
 $(BOOKAUXFILES) : %.aux : %.tex
 	echo "WARNING: assuming $> is up-to-date"
 

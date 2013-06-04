@@ -133,8 +133,8 @@ This choice facilitates a computational view of higher inductive types.
 Moreover, it also greatly simplifies our lives, since otherwise the second computation rule $\apfunc f (\lloop) = \ell$ would not even be well-typed as a propositional equality; we would have to compose one side or the other with the specified identification of $f(\base)$ with $b$.
 (Such problems do arise eventually, of course, when we come to talk about paths of higher dimension, but that will not be of great concern to us here.
 See also \autoref{sec:hubs-spokes}.)
-Thus, we take the point-constructor computation rules to be judgmental, and those for paths and higher paths to be propositional.%
-\footnote{In particular, in the language of \autoref{sec:types-vs-sets}, this means that our higher inductive types are a mix of \emph{rules} (specifying how we can introduce such types and their elements, their induction principle, and their computation rules for point-constructors) and \emph{axioms} (the computation rules for path-constructors, which assert that certain identity types are inhabited by otherwise unspecified terms).
+Thus, we take the computation rules for point constructors to be judgmental, and those for paths and higher paths to be propositional.%
+\footnote{In particular, in the language of \autoref{sec:types-vs-sets}, this means that our higher inductive types are a mix of \emph{rules} (specifying how we can introduce such types and their elements, their induction principle, and their computation rules for point constructors) and \emph{axioms} (the computation rules for path constructors, which assert that certain identity types are inhabited by otherwise unspecified terms).
 We may hope that eventually, there will be a better type theory in which higher inductive types, like univalence, will be presented using only rules and no axioms.%
 \indexfoot{axiom!versus rules}%
 \indexfoot{rule!versus axioms}%
@@ -156,7 +156,7 @@ For instance, if $W$ is the natural numbers \nat, then to prove by induction tha
 \item An element $b:P(0)$ in the fiber over the constructor $0:\nat$, and
 \item For each $n:\nat$, a function $P(n) \to P(\suc(n))$.
 \end{itemize}
-The second can be viewed as a function ``$P\to P$'' lying \emph{over} the constructor $s:\nat\to\nat$, generalizing how $b:P(0)$ lies over the constructor $0:\nat$.
+The second can be viewed as a function ``$P\to P$'' lying \emph{over} the constructor $\suc:\nat\to\nat$, generalizing how $b:P(0)$ lies over the constructor $0:\nat$.
 
 By analogy, therefore, to prove that $\prd{x:\Sn^1} P(x)$, we should specify
 \begin{itemize}
@@ -168,7 +168,7 @@ This expresses the intuition that $\Sn^1$ is ``freely generated'' by its constru
 
 The question, however, is what it means to have a path ``lying over'' another path.
 It definitely does \emph{not} mean simply a path $b=b$, since that would be a path in the fiber $P(\base)$ (topologically, a path lying over the \emph{constant} path at $\base$).
-Actually, however, we have already answered this question in \autoref{cha:basics}: in the discussion preceeding \autoref{lem:mapdep} we concluded that a path from $u:P(x)$ to $v:P(y)$ lying over $p:x=y$ can be represented by a path $\trans p u = v$ in the fiber $P(y)$.
+Actually, however, we have already answered this question in \autoref{cha:basics}: in the discussion preceding \autoref{lem:mapdep} we concluded that a path from $u:P(x)$ to $v:P(y)$ lying over $p:x=y$ can be represented by a path $\trans p u = v$ in the fiber $P(y)$.
 Since we will have a lot of use for such \define{dependent paths}
 \index{path!dependent}%
 in this chapter, we introduce a special notation for them:
@@ -300,6 +300,7 @@ This is in fact the case, although deriving the non-dependent computation rule f
 We also have a corresponding uniqueness principle.
 
 \begin{lem}
+  \index{uniqueness!principle, propositional!for functions on the circle}%
   If $A$ is a type and $f,g:\Sn^1\to{}A$ are two maps together with two
   equalities $p,q$:
   \begin{align*}
@@ -322,7 +323,7 @@ These two lemmas imply the expected universal property of the circle:
 \end{lem}
 \begin{proof}
   We have a canonical function $f:(\Sn^1 \to A) \to \sm{x:A} (x=x)$ defined by $f(g) \defeq (g(\base),\ap g \lloop)$.
-  The non-dependent eliminator shows that the fibers of $f$ are inhabited, while the $\eta$-rule shows that they are mere propositions.
+  The non-dependent eliminator shows that the fibers of $f$ are inhabited, while the uniqueness principle shows that they are mere propositions.
   Hence they are contractible, so $f$ is an equivalence.
 \end{proof}
 
@@ -617,6 +618,7 @@ Topologically, the two-point space \bool is also known as the \emph{0-dimensiona
 (For instance, it is the space of points at distance $1$ from the origin in $\mathbb{R}^1$, just as the topological 1-sphere is the space of points at distance $1$ from the origin in $\mathbb{R}^2$.)
 Thus, \autoref{thm:suspbool} can be phrased suggestively as $\eqv{\susp\Sn^0}{\Sn^1}$.
 \index{type!n-sphere@$n$-sphere|defstyle}%
+\indexsee{n-sphere@$n$-sphere}{type, $n$-sphere}%
 In fact, this pattern continues: we can define all the spheres inductively by
 \begin{equation}\label{eq:Snsusp}
   \Sn^0 \defeq \bool
@@ -625,7 +627,7 @@ In fact, this pattern continues: we can define all the spheres inductively by
 \end{equation}
 In fact, we can start one dimension lower by defining $\Sn^{-1}\defeq \emptyt$, and observe that $\eqv{\susp\emptyt}{\bool}$.
 
-To prove carefully that this agrees with the definition of $\Sn^n$ from the previous section would require making the latter more explicity.
+To prove carefully that this agrees with the definition of $\Sn^n$ from the previous section would require making the latter more explicitly.
 However, we can show that the recursive definition has the same universal property that we would expect the other one to have.
 If $(A,a_0)$ and $(B,b_0)$ are pointed types (with basepoints often left implicit), let $\Map_*(A,B)$ denote the type of based maps:
 \index{based!map}
@@ -895,9 +897,9 @@ From a category-theoretic point of view, one of the important aspects of any fou
 In set-theoretic foundations, these are limits and colimits of sets, whereas in our case they are limits and colimits of \emph{types}.
 We have seen in \autoref{sec:universal-properties} that cartesian product types have the correct universal property of a categorical product of types, and in \autoref{ex:coprod-ump} that coproduct types likewise have their expected universal property.
 
-As remarked in \autoref{sec:universal-properties}, more general limits can be constructed using identity types and $\Sigma$-types, e.g.\ the pullback of $f:A\to C$ and $g:B\to C$ is $\sm{a:A}{b:B} (f(a)=g(b))$ (see \autoref{ex:pullback}).
+As remarked in \autoref{sec:universal-properties}, more general limits can be constructed using identity types and $\Sigma$-types, e.g.\ the pullback\index{pullback} of $f:A\to C$ and $g:B\to C$ is $\sm{a:A}{b:B} (f(a)=g(b))$ (see \autoref{ex:pullback}).
 However, more general \emph{colimits} require identifying elements coming from different types, for which higher inductives are well-adapted.
-Since all our constructions are homotopy-invariant, all our colimits are necessarily \emph{homotopy colimits}, but we drop the ubiquitous adjective in the interests of conciseness.
+Since all our constructions are homotopy-invariant, all our colimits are necessarily \emph{homotopy colimits}, but we drop the ubiquitous adjective in the interests of concision.
 
 In this section we discuss \emph{pushouts}, as perhaps the simplest and one of the most useful colimits.
 Indeed, one expects all finite colimits (for a suitable homotopical definition of ``finite'') to be constructible from pushouts and finite coproducts.
@@ -923,6 +925,7 @@ The recursion principle says that if $D$ is another type, we can define a map $s
 \end{itemize}
 We leave it to the reader to formulate the induction principle.
 It also implies the uniqueness principle that if $s,s':A\sqcup^CB\to{}D$ are two maps such that
+\index{uniqueness!principle, propositional!for functions on a pushout}%
 \begin{align*}
   s(\inl(a))&=s'(\inl(a))\\
   s(\inr(b))&=s'(\inr(b))\\
@@ -1019,6 +1022,7 @@ A number of standard homotopy-theoretic constructions can be expressed as (homot
   \indexdef{join!of types}
 \item The pushout of $\unit \leftarrow A \xrightarrow{f} B$ is the \define{cone} or \define{cofiber} of $f$.%
   \indexdef{cone of a function}%
+  \indexsee{mapping cone}{cone of a function}%
   \indexdef{cofiber of a function}%
 \symlabel{wedge}
 \item If $A$ and $B$ are equipped with basepoints $a_0:A$ and $b_0:B$, then the pushout of $A \xleftarrow{a_0} \unit \xrightarrow{b_0} B$ is the \define{wedge} $A\vee B$.%
@@ -1033,7 +1037,7 @@ We will discuss pushouts further in \autoref{cha:hlevels,cha:homotopy}.
 \begin{rmk}
   As remarked in \autoref{subsec:prop-trunc}, the notations $\wedge$ and $\vee$ for the smash product and wedge of pointed spaces are also used in logic for ``and'' and ``or'', respectively.
   Since types in homotopy type theory can behave either like spaces or like propositions, there is technically a potential for conflict --- but since they rarely do both at once, context generally disambiguates.
-  Furthermore, the smash product and wedge only apply to \emph{pointed} spaces, whil the only pointed mere proposition is $\top\jdeq\unit$ --- and we have $\unit\wedge \unit = \unit$ and $\unit\vee\unit=\unit$ for either meaning of $\wedge$ and $\vee$.
+  Furthermore, the smash product and wedge only apply to \emph{pointed} spaces, while the only pointed mere proposition is $\top\jdeq\unit$ --- and we have $\unit\wedge \unit = \unit$ and $\unit\vee\unit=\unit$ for either meaning of $\wedge$ and $\vee$.
 \end{rmk}
 
 \index{pushout|)}%
@@ -1441,6 +1445,8 @@ Higher inductive types are also very useful when we study sets with algebraic st
 As a running example in this section, we consider \emph{groups}, which are familiar to most mathematicians and exhibit the essential phenomena (and will be needed in later chapters).
 However, most of what we say applies equally well to any sort of algebraic structure.
 
+\index{monoid|(}%
+
 \begin{defn}
   A \define{monoid}
   \indexdef{monoid}%
@@ -1510,7 +1516,7 @@ One important notion in group theory is that of the \emph{free group} generated 
 It is well-known in type theory that \emph{some} free algebraic objects can be defined using \emph{ordinary} inductive types.
 \symlabel{lst-freemonoid}
 \indexdef{type!of lists}%
-\indexsee{list type}{type!of lists}%
+\indexsee{list type}{type, of lists}%
 For instance, the free monoid on a set $A$ can be identified with the type $\lst A$ of \emph{finite lists} of elements of $A$, which is inductively generated by
 \begin{itemize}
 \item a constructor $\nil:\lst A$, and
@@ -1610,7 +1616,7 @@ The elements of $\lst{A+A}$ are \emph{words} for the free group on $A$.
   First we show that $\freegroupx{A}$ is a group.
   We have seen that $\lst{A+A}$ is a monoid; we claim that the monoid structure descends to the quotient.
   We define $\freegroupx{A} \times \freegroupx{A} \to \freegroupx{A}$ by double quotient recursion; it suffices to check that the equivalence relation generated by the given relations is preserved by concatenation of lists.
-  Similarly, we prove the associativity and unit laws by quotent induction.
+  Similarly, we prove the associativity and unit laws by quotient induction.
 
   In order to define inverses in $\freegroupx{A}$, we first define $\mathsf{reverse}:\lst B\to\lst B$ by recursion on lists:
   \begin{align*}
@@ -1637,6 +1643,8 @@ The elements of $\lst{A+A}$ are \emph{words} for the free group on $A$.
   And since $G$ is a group, this map respects the relations, hence descends to a map $\freegroupx{A}\to G$.
   It is straightforward to prove that this is a group homomorphism, and the unique one which restricts to $f$ on $A$.
 \end{proof}
+
+\index{monoid|)}%
 
 If $A$ has decidable equality\index{decidable!equality} (such as if we assume excluded middle), then the quotient defining $\freegroupx{A}$ can be obtained from an idempotent as in \autoref{lem:quotient-when-canonical-representatives}.
 We define a word, which we recall is just an element of $\lst{A+A}$, to be \define{reduced}
@@ -2065,12 +2073,12 @@ and to do homotopy theory with them (see \autoref{cha:homotopy}).
 
 A general discussion of the syntax of higher inductive types, and their semantics in higher-categorical models, appears in~\cite{ls:hits}.
 As with ordinary inductive types, models of higher inductive types can be constructed by transfinite iterative processes; a slogan is that ordinary inductive types describe \emph{free} monads while higher inductive types describe \emph{presentations} of monads.
-The introduction of path-constructors also involves the model-category-theoretic equivalence between ``right homotopies'' (defined using path spaces) and ``left homotopies'' (defined using cylinders) --- the fact that this equivalence is generally only up to homotopy provides a semantic reason to prefer propositional computation rules for path-constructors.
+The introduction of path constructors also involves the model-category-theoretic equivalence between ``right homotopies'' (defined using path spaces) and ``left homotopies'' (defined using cylinders) --- the fact that this equivalence is generally only up to homotopy provides a semantic reason to prefer propositional computation rules for path constructors.
 
 Another (temporary) reason for this preference comes from the limitations of existing computer implementations.
 Proof assistants\index{proof assistant} like \Coq and \Agda have ordinary inductive types built in, but not yet higher inductive types.
 We can of course introduce them by assuming lots of axioms, but this results in only propositional computation rules.
-However, there is a trick due to Dan Licata which implements higher inductive types using private data types; this yields judgmental rules for point-constructors but not path-constructors.
+However, there is a trick due to Dan Licata which implements higher inductive types using private data types; this yields judgmental rules for point constructors but not path constructors.
 
 The description of higher spheres using loop spaces and suspensions in \autoref{sec:circle,sec:suspension} is largely due to Dan Licata and Guillaume Brunerie; Favonia has given an alternative description that uses a basic notion of $n$-dimensional path\index{path!n-@$n$-}.
 The reduction of higher paths to 1-dimensional paths with hubs and spokes (\autoref{sec:hubs-spokes}) is due to Peter Lumsdaine and Mike Shulman.

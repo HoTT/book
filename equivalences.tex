@@ -41,7 +41,7 @@ In this section we exhibit a specific counterexample.
 
 \begin{lem}\label{lem:qinv-autohtpy}
   If $f:A\to B$ is such that $\qinv (f)$ is inhabited, then
-  \[\eqv{\qinv(f)}{(\prd{x:A}(x=x))}.\]
+  \[\eqv{\qinv(f)}{\Parens{\prd{x:A}(x=x)}}.\]
 \end{lem}
 \begin{proof}
   By assumption, $f$ is an equivalence; that is, we have $e:\isequiv(f)$ and so $(f,e):\eqv A B$.
@@ -160,8 +160,8 @@ In order to solve this problem, the idea is to add one \emph{additional} datum w
 
 \begin{defn}\label{defn:ishae}
   A function $f:A\to B$ is a \define{half adjoint equivalence}%
-  if there are $g:B\to A$ and homotopies $\eta: g \circ f \htpy \idfunc[A]$ and $\epsilon:f \circ g \htpy \idfunc[B]$ such that there exists a path
-  \[\tau : \prd{x:A} \map{f}{\eta x} = \epsilon(fx)\]
+  if there are $g:B\to A$ and homotopies $\eta: g \circ f \htpy \idfunc[A]$ and $\epsilon:f \circ g \htpy \idfunc[B]$ such that there exists a homotopy
+  \[\tau : \prd{x:A} \map{f}{\eta x} = \epsilon(fx).\]
 \end{defn}
 
 Thus we have a type $\ishae(f)$, defined to be
@@ -176,7 +176,7 @@ and a resulting analogous definition $\ishae'(f)$.
 Fortunately, it turns out each of the conditions implies the other one:
 
 \begin{lem}\label{lem:coh-equiv}
-For $f : A \to B$, $g:B\to A$, $\eta: g \circ f = \idfunc[A]$ and $\epsilon:f \circ g = \idfunc[B]$, the following conditions are logically equivalent:
+For functions $f : A \to B$ and $g:B\to A$ and homotopies $\eta: g \circ f \htpy \idfunc[A]$ and $\epsilon:f \circ g \htpy \idfunc[B]$, the following conditions are logically equivalent:
 \begin{itemize}
 \item $\prd{x:A} \map{f}{\eta x} = \epsilon(fx)$
 \item $\prd{y:B} \map{g}{\epsilon y} = \eta(gy)$
@@ -209,7 +209,7 @@ However, it is important that we do not include \emph{both} $\tau$ and $\upsilon
 If we did, then after canceling contractible types we would still have one remaining datum --- unless we added another higher coherence condition.
 In general, we expect to get a well-behaved type if we cut off after an odd number of coherences.
 
-Of course, it is obvious that we have $\ishae(f) \to\qinv(f)$: simply forget the coherence datum.
+Of course, it is obvious that $\ishae(f) \to\qinv(f)$: simply forget the coherence datum.
 The other direction is a version of a standard argument from homotopy theory and category theory.
 
 \begin{thm}\label{thm:equiv-iso-adj}
@@ -259,7 +259,7 @@ The path lemmas in \autoref{sec:computational} yield the following characterizat
 
 \begin{lem}\label{lem:hfib}
   For any $f : A \to B$, $y : B$, and $(x,p),(x',p') : \hfib{f}{y}$, we have
-  \[ \big((x,p) = (x',p')\big) \eqvsym \sm{\gamma : x = x'} f(\gamma) \ct p' = p \qedhere\]
+  \[ \big((x,p) = (x',p')\big) \eqvsym \Parens{\sm{\gamma : x = x'} f(\gamma) \ct p' = p} \qedhere\]
 \end{lem}
 
 \begin{thm}\label{thm:contr-hae}
@@ -284,9 +284,7 @@ We now define the types which encapsulate contractible pairs of data.
 The following types put together the quasi-inverse $g$ with one of the homotopies.
 
 \begin{defn}\label{defn:linv-rinv}
-  Let $f:A\to B$.
-  \begin{itemize}
-  \item Given a function $g:B\to A$, we define the types 
+  Given a function $f:A\to B$, we define the types 
     \begin{align*}
       \linv(f) &\defeq \sm{g:B\to A} (g\circ f\htpy \idfunc[A])\\
       \rinv(f) &\defeq \sm{g:B\to A} (f\circ g\htpy \idfunc[B])
@@ -305,18 +303,17 @@ The following types put together the quasi-inverse $g$ with one of the homotopie
   \indexdef{left!invertible function}%
   \indexdef{right!invertible function}%
   if $\rinv(f)$ is inhabited.
-  \end{itemize}
 \end{defn}
 
 \begin{lem}\label{thm:equiv-compose-equiv}
   If $f:A\to B$ has a quasi-inverse, then so do
   \begin{align*}
-    (f\circ -) &: (C\to A) \to (C\to B)\\
-    (-\circ f) &: (B\to C) \to (A\to C).
+    (f\circ \blank) &: (C\to A) \to (C\to B)\\
+    (\blank\circ f) &: (B\to C) \to (A\to C).
   \end{align*}
 \end{lem}
 \begin{proof}
-  If $g$ is a quasi-inverse of $f$, then $(g\circ -)$ and $(-\circ g)$ are quasi-inverses of $(f\circ -)$ and $(-\circ f)$ respectively.
+  If $g$ is a quasi-inverse of $f$, then $(g\circ \blank)$ and $(\blank\circ g)$ are quasi-inverses of $(f\circ \blank)$ and $(\blank\circ f)$ respectively.
 \end{proof}
 
 \begin{lem}\label{lem:inv-hprop}
@@ -325,9 +322,9 @@ The following types put together the quasi-inverse $g$ with one of the homotopie
 \begin{proof}
   By function extensionality, we have
   \[\eqv{\linv(f)}{\sm{g:B\to A} (g\circ f = \idfunc[A])}.\]
-  But this is the fiber of $(-\circ f)$ over $\idfunc[A]$, and so
+  But this is the fiber of $(\blank\circ f)$ over $\idfunc[A]$, and so
   by \cref{thm:equiv-compose-equiv,thm:equiv-iso-adj,thm:contr-hae}, it is contractible.
-  Similarly, $\rinv(f)$ is equivalent to the fiber of $(f\circ -)$ over $\idfunc[B]$ and hence contractible.
+  Similarly, $\rinv(f)$ is equivalent to the fiber of $(f\circ \blank)$ over $\idfunc[B]$ and hence contractible.
 \end{proof}
 
 Next we define the types which put together the other homotopy with the additional coherence datum.
@@ -364,7 +361,7 @@ Using \autoref{lem:hfib}.
 \end{thm}
 \begin{proof}
   By \autoref{thm:contr-unit} it suffices to assume $f$ to be a half adjoint equivalence and show that $\ishae(f)$ is contractible.
-  Now by rearranging $\Sigma$s, the type $\ishae(f)$ is equivalent to
+  Now by associativity of $\Sigma$ (\autoref{ex:sigma-assoc}), the type $\ishae(f)$ is equivalent to
   \[\sm{u : \rinv(f)} \rcoh{f}{\proj{1}(u)}{\proj{2}(u)}.\]
   But by \cref{lem:inv-hprop,lem:coh-hprop} and the fact that $\Sigma$ preserves contractibility, the latter type is also contractible.
 \end{proof}
@@ -399,8 +396,7 @@ What remains is the following.
 \end{thm}
 \begin{proof}
   We may suppose $f$ to be bi-invertible and show that $\biinv(f)$ is contractible.
-  But since $\biinv(f)\to\qinv(f) \to \ishae(f)$, by \autoref{lem:inv-hprop} in this case both $\linv(f)$ and $\rinv(f)$ are contractible.
-  It is easy to show that the product of contractible types is contractible.
+  But since $\biinv(f)\to\qinv(f)$, by \autoref{lem:inv-hprop} in this case both $\linv(f)$ and $\rinv(f)$ are contractible, and the product of contractible types is contractible.
 \end{proof}
 
 Note that this also fits the proposal made at the beginning of \autoref{sec:hae}: we combine $g$ and $\eta$ into a contractible type and add an additional datum which combines with $\epsilon$ into a contractible type.
@@ -443,7 +439,7 @@ Note that in \autoref{sec:contractibility} we defined what it means for a \emph{
 Here we are defining what it means for a \emph{map} to be contractible.
 Our terminology follows the general homotopy-theoretic practice of saying that a map has a certain property if all of its (homotopy) fibers have that property.
 Thus, a type $A$ is contractible just when the map $A\to\unit$ is contractible.
-From \autoref{cha:hlevels} onwards we will call contractible maps and types \emph{$(-2)$-truncated}.
+From \autoref{cha:hlevels} onwards we will also call contractible maps and types \emph{$(-2)$-truncated}.
 
 We have already shown in \autoref{thm:contr-hae} that $\ishae(f) \to \iscontr(f)$.
 Conversely:
@@ -815,7 +811,7 @@ We have to construct quasi-inverses
 \chi & : \Parens{\sm{A:\type} (A\to B)}\to B\to\type\\
 \psi & : (B\to\type)\to\Parens{\sm{A:\type} (A\to B)}.
 \end{align*}
-We define $\chi$ by $\chi(f,b)\defeq\hfiber{f}b$, and $\psi$ by $\psi(P)\defeq\Pairr{(\sm{b:B} P(b)),\proj1}$.
+We define $\chi$ by $\chi((A,f),b)\defeq\hfiber{f}b$, and $\psi$ by $\psi(P)\defeq\Pairr{(\sm{b:B} P(b)),\proj1}$.
 Now we have to verify that $\chi\circ\psi\htpy\idfunc{}$ and that $\psi\circ\chi \htpy\idfunc{}$.
 \begin{enumerate}
 \item Let $P:B\to\type$.
@@ -883,16 +879,15 @@ Therefore, we get homotopies $f\htpy\proj1\circ e$ and $\vartheta_f\htpy \proj2\
 
 \index{function extensionality!proof from univalence}%
 In the last section of this chapter we include a proof that the univalence axiom implies function
-extensionality. Thus, in this section we work \emph{without} either the univalence axiom
-or function extensionality. The proof consists of two steps. First we show
+extensionality. Thus, in this section we work \emph{without} the function extensionality axiom.
+The proof consists of two steps. First we show
 in \autoref{uatowfe} that the univalence
 axiom implies a weak form of function extensionality, defined in \autoref{weakfunext} below. The
 principle of weak function extensionality in turn implies the usual function extensionality,
 and it does so without the univalence axiom (\autoref{wfetofe}).
 
 \index{univalence axiom}%
-In this section, we assume that $\type$ is a universe.
-We will explicitly indicate where we assume that it is univalent.
+Let $\type$ be a universe; we will explicitly indicate where we assume that it is univalent.
 
 \begin{defn}\label{weakfunext}
 The \define{weak function extensionality principle}
@@ -928,7 +923,7 @@ Then the projection $\proj{1}:(\sm{x:A}P(x))\to A$ is an equivalence. Assuming $
 \end{cor}
 
 \begin{proof}
-  By \autoref{ex:projoftotaloffamcontrisequiv}, for $\proj{1}:\sm{x:A}P(X)\to A$ and $x:A$ we have an equivalence
+  By \autoref{thm:fiber-of-a-fibration}, for $\proj{1}:\sm{x:A}P(X)\to A$ and $x:A$ we have an equivalence
   \begin{equation*}
     \eqv{\hfiber{\proj{1}}{x}}{P(x)}.
   \end{equation*}
@@ -1052,16 +1047,6 @@ Our proof is a simplification of his.
   \item Show that there is a natural map $\hfib{g\circ f}{g(b)} \to \hfib{g}{g(b)}$ whose fiber over $(b,\refl{g(b)})$ is equivalent to $\hfib f b$.
   \item Show that $\eqv{\hfib{g\circ f}{g(b)}}{\sm{w:\hfib{g}{g(b)}} \hfib f {\proj1 w}}$.
   \end{enumerate}
-\end{ex}
-
-\begin{ex}\label{ex:projoftotaloffamcontrisequiv}
-  Let $P$ be a family of types over $A$, and consider the function
-  $\proj{1}:\sm{x:A}P(x)\to A$. Show that there is an equivalence
-  \begin{equation*}
-    \eqv{\hfib{\proj{1}}{x}}{P(x)}
-  \end{equation*}
-  for each $x:A$.
-  Conclude that $\proj1$ is an equivalence if and only if each type $P(x)$ is contractible.
 \end{ex}
 
 \begin{ex}

@@ -17,7 +17,7 @@ By contrast, type theory is its own deductive system: it need not be formulated 
 Instead of the two basic notions of set theory, sets and propositions, type theory has one basic notion: \emph{types}.
 Propositions (statements which we can prove, disprove, assume, negate, and so on\footnote{Confusingly, it is also a common practice (dating 
 back to Euclid) to use the word ``proposition'' synonymously with ``theorem''.
-  We will confine ourselves to the logician's usage, according to which a \emph{proposition} is a statement \emph{susceptible to} proof, whereas a \emph{theorem} (or ``lemma'' or ``corollary'') is such a statement that \emph{has been} proven.
+  We will confine ourselves to the logician's usage, according to which a \emph{proposition} is a statement \emph{susceptible to} proof, whereas a \emph{theorem}\indexfoot{theorem} (or ``lemma''\indexfoot{lemma} or ``corollary''\indexfoot{corollary}) is such a statement that \emph{has been} proven.
 Thus ``$0=1$'' and its negation ``$\neg(0=1)$'' are both propositions, but only the latter is a theorem.}) are identified with particular types, via the correspondence shown in \autoref{tab:pov} on page~\pageref{tab:pov}.
 Thus, the mathematical activity of \emph{proving a theorem} is identified with a special case of the mathematical activity of \emph{constructing an object}---in this case, an inhabitant of a type that represents a proposition.
 
@@ -149,7 +149,7 @@ By contrast, in type theory, it is usually the \emph{rules} which contain all th
 For instance, in \autoref{sec:finite-product-types} we will see that there is a rule allowing us to deduce the judgment ``$(a,b):A\times B$'' from ``$a:A$'' and ``$b:B$'', whereas in set theory the analogous statement would be (a consequence of) the pairing axiom.
 
 The advantage of formulating type theory using only rules is that rules are ``procedural''.
-In particular, this property is what makes possible (though it does not automatically ensure) the good computational properties of type theory, such as ``canonicity''.
+In particular, this property is what makes possible (though it does not automatically ensure) the good computational properties of type theory, such as ``canonicity''.\index{canonicity}
 However, while this style works for traditional type theories, we do not yet understand how to formulate everything we need for \emph{homotopy} type theory in this way.
 In particular, in \autoref{sec:compute-pi,sec:compute-universe,cha:hits} we will have to augment the rules of type theory presented in this chapter by introducing additional axioms, notably the \emph{univalence axiom}.
 In this chapter, however, we confine ourselves to a traditional rule-based type theory.
@@ -276,6 +276,7 @@ $\Sigma$ (the latter we are going to meet soon) between the place where the vari
 defined as 
 \[ f(x) \defeq \lamu{y:\nat} x + y \] 
 Now if we have assumed somewhere that $y : \nat$, then what is $f(y)$? It would be wrong to just naively replace $x$ by $y$ everywhere in the expression ``$\lam{y}x+y$'' defining $f(x)$, obtaining $\lamu{y:\nat} y + y$, because this means that $y$ gets \define{captured}.
+\indexdef{capture!of a variable}%
 \indexdef{variable!captured}%
 Previously, the substituted\index{substitution} $y$ was referring to our assumption, but now it is referring to the argument of the $\lambda$-abstraction. Hence, this naive substitution would destroy the binding structure, allowing us to perform calculations which are semantically unsound.
 
@@ -554,6 +555,7 @@ This defining equation is the computation rule for product types\index{computati
 
 In particular, we can derive the \define{projection}
 \indexsee{function!projection}{projection}%
+\indexsee{component!of a pair}{projection}%
 \indexdef{projection!from cartesian product type}%
 functions
 \symlabel{defn:proj}%
@@ -727,7 +729,7 @@ This says that to construct a dependent function out of a $\Sigma$-type into a f
 \[ g : \prd{a:A}{b:B(x)} C(\tup{a}{b}). \]
 We can then derive a function 
 \[ f : \prd{p : \sm{x:A}B(x)} C(p) \]
-with  defining equation
+with  defining equation\index{computation rule!for dependent pair type}
 \[ f(\tup{a}{b}) \defeq g(a)(b).\]
 Applying this with $C(p)\defeq B(\fst(p))$, we can define
 \narrowequation{
@@ -865,7 +867,7 @@ require
   g_0 & : & \prd{a:A} C(\inl(a)) \\
   g_1 & : & \prd{b:B} C(\inr(b)).
 \end{eqnarray*}
-This yields $f$ with the defining equations:
+This yields $f$ with the defining equations:\index{computation rule!for coproduct type}
 \begin{eqnarray*}
   f(\inl(a)) & \defeq & g_0(a) \\
   f(\inl(b)) & \defeq & g_1(b) .
@@ -1011,7 +1013,7 @@ When denoting natural numbers, we adopt the usual decimal notation $1 \defeq \su
 The essential property of the natural numbers is that we can define functions by recursion and perform proofs by induction --- where now the words ``recursion'' and ``induction'' have a more familiar meaning.
 \index{recursion principle!for natural numbers}%
 To construct a non-dependent function $f : \nat \to C$ out of the natural numbers by recursion, it is enough to provide a starting point $c_0 : C$ and a ``next step'' function $c_s : \nat \to C \to C$.
-This gives rise to $f$ with the defining equations
+This gives rise to $f$ with the defining equations\index{computation rule!for natural numbers}
 \begin{eqnarray*}
   f(0) & \defeq & c_0 \\
   f(\suc(n)) & \defeq & c_s(n,f(n)).
@@ -1083,7 +1085,7 @@ in \autoref{sec:intuitionism,sec:axiom-choice} we will see how to augment type t
 
 \index{induction principle!for natural numbers}
 We now follow the same approach as for other types, generalizing primitive recursion to dependent functions to obtain an \emph{induction principle}.
-Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(0)$, and a function $c_s : \prd{n:\nat} C(n) \to C(\suc(n))$; then we can construct $f : \prd{n:\nat} C(n)$ with the defining equations:
+Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(0)$, and a function $c_s : \prd{n:\nat} C(n) \to C(\suc(n))$; then we can construct $f : \prd{n:\nat} C(n)$ with the defining equations:\index{computation rule!for natural numbers}
 \begin{eqnarray*}
   f(0) & \defeq & c_0 \\
   f(\suc(n)) & \defeq & c_s(n,f(n))
@@ -1224,6 +1226,9 @@ Thus, since types classify the available mathematical objects and govern how the
 The basic observation which makes this identification feasible is that we have the following natural correspondence between \emph{logical} operations on propositions, expressed in English, and \emph{type-theoretic} operations on their corresponding types of witnesses.
 \index{false}%
 \index{true}%
+\index{conjunction}%
+\index{disjunction}%
+\index{implication}%
 \begin{center}
 \medskip
 \begin{tabular}{ll}
@@ -1574,7 +1579,7 @@ If we package up path induction into a single function, it takes the form:
   \narrowbreak
   \dprd{x,y:A}{p:\id[A]{x}{y}}   C(x,y,p)
 \end{narrowmultline*}
-with the equality
+with the equality\index{computation rule!for identity types}
 \[ \indid{A}(C,c,x,x,\refl{x}) \defeq c(x) \]
 The function $ \indid{A}$ is traditionally called $J$.  We leave it as an easy exercise to show that indiscernability of identicals follows from path induction.  
 
@@ -1810,7 +1815,7 @@ We do, however, include a full cumulative hierarchy of universes, so that the ty
 As a convenience, we regard objects of a universe as types, rather than as codes for types; in the terminology of \cite{martin-lof:bibliopolis}, this means we use ``Russell-style universes'' rather than ``Tarski-style universes''.
 \index{type!universe!Tarski-style}%
 \index{type!universe!Russell-style}%
-An alternative would be to use Tarski-style universes, with an explicit coercion function required to make an element $A:\UU$ of a universe into a type $\mathsf{El}(A)$, and just say that the coercion is omitted when working informally.
+An alternative would be to use Tarski-style universes, with an explicit coercion\index{coercion!universe-raising} function required to make an element $A:\UU$ of a universe into a type $\mathsf{El}(A)$, and just say that the coercion is omitted when working informally.
 
 We also treat the universe hierarchy as cumulative, in that every type in $\UU_i$ is also in $\UU_j$ for each $j\geq i$.
 There are different ways to implement cumulativity formally: the simplest is just to include a rule that if $A:\UU_i$ then $A:\UU_j$.

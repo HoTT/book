@@ -65,7 +65,7 @@ For instance, the induction principle for \bool is:
 \item When proving a statement $E : \bool \to \type$ about \emph{all} inhabitants of \bool, it suffices to prove it for $\btrue$ and $\bfalse$, i.e., to give proofs $ e_t : E(\btrue)$ and $e_f : E(\bfalse)$.
 \end{itemize}
 
-Furthermore, the resulting proof $\ind\bool(E,e_t,e_f): \prd{b : \bool}E(b)$ behaves as expected when applied to the constructors $\btrue$ and $\bfalse$; this principle is expressed by the \emph{computation rules}\index{computation rule!for induction on $\bool$}:
+Furthermore, the resulting proof $\ind\bool(E,e_t,e_f): \prd{b : \bool}E(b)$ behaves as expected when applied to the constructors $\btrue$ and $\bfalse$; this principle is expressed by the \emph{computation rules}\index{computation rule!for type of booleans}:
 \begin{itemize}
 \item We have $\ind\bool(E,e_t,e_f,\btrue) \jdeq e_t$.
 \item We have $\ind\bool(E,e_t,e_f,\bfalse) \jdeq e_f$.
@@ -83,6 +83,7 @@ for $n$, i.e., we construct $e_z : E(0)$ and $e_s : \prd{n : \nat}{y : E(n)} E(\
 The variable
 \index{variable}%
 $y$ represents our inductive hypothesis.  As in the case of booleans, we also have the associated computation rules for the function $\ind\nat(E,e_z,e_s) : \prd{x:\nat} E(x)$:
+\index{computation rule!for natural numbers}%
 \begin{itemize}
 \item $\ind\nat(E,e_z,e_s,0) \jdeq e_z$.
 \item $\ind\nat(E,e_z,e_s,\suc(n)) \jdeq e_s(n,\ind\nat(E,e_z,e_s,n))$ for any $n : \nat$.
@@ -164,7 +165,7 @@ But what is the relation between $\nat$ and $\natp$?
 
 This is not just an academic question, since structures that ``look like'' the natural numbers can be found in many other places.
 \index{type!of lists}%
-For instance, we may identify natural numbers with lists over the type with one element (this is arguably the oldest appearance, found on walls of caves), with the non-negative integers, with subsets of the rationals and the reals, and so on.
+For instance, we may identify natural numbers with lists over the type with one element (this is arguably the oldest appearance, found on walls of caves\index{caves!walls of}), with the non-negative integers, with subsets of the rationals and the reals, and so on.
 And from a programming\index{programming} point of view, the ``unary'' representation of our natural numbers is very inefficient, so we might prefer sometimes to use a binary one instead.
 We would like to be able to identify all of these versions of ``the natural numbers'' with each other, in order to transfer constructions and results from one to another.
 
@@ -327,6 +328,7 @@ with $e$ as defined above.
 
 \symlabel{defn:recursor-wtype}
 The associated computation rule for the function $\rec{\wtype{x:A} B(x)}(E,e) : \prd{w : \wtype{x:A} B(x)} E(w)$ is as follows.
+\index{computation rule!for W-types}%
 \begin{itemize}
 \item
   For any $a : A$ and $f : B(a) \to \wtype{x:A} B(x)$ we have 
@@ -357,6 +359,7 @@ and so on.
 Just as for natural numbers, we can prove a uniqueness theorem for 
 W-types:
 \begin{thm}\label{thm:w-uniq}
+  \index{uniqueness!principle, propositional!for functions on W-types}%
 Let $g,h : \prd{w:\wtype{x:A}B(x)} E(w)$ be two functions which satisfy the recurrence
 %
 \begin{equation*}
@@ -574,6 +577,7 @@ This means that the computation rules for natural numbers, which give judgmental
 \index{type!homotopy-inductive}%
 \index{homotopy-inductive type}%
 This problem goes away if instead of the conventional inductive types we consider \emph{homotopy-inductive types}, where all computation rules are stated up to a path, i.e.\ the symbol $\jdeq$ is replaced by $=$. For instance, the computation rule for the homotopy version of W-types $\mathsf{W^h}$ becomes:
+\index{computation rule!propositional}%
 \begin{itemize}
 \item For any $a : A$ and $f : B(a) \to \wtypeh{x:A} B(x)$ we have 
 \begin{equation*}
@@ -616,6 +620,7 @@ In other words, it suffices to construct a function
   c : \prd{a:A} (B(a) \to C) \to C.
 \end{equation*}
 \end{itemize}
+\index{computation rule!propositional}%
 The associated computation rule for $\rec{\wtypeh{x:A} B(x)}(C,c) : (\wtype{x:A} B(x)) \to C$ is as follows:
 \begin{itemize}
 \item For any $a : A$ and $f : B(a) \to \wtypeh{x:A} B(x)$ we have
@@ -626,7 +631,8 @@ a witness $\beta(C,c,a,f)$ for equality
 \end{equation*}
 \end{itemize}
 
-Furthermore, we have the following uniqueness rule, saying that any two functions defined by the same recurrence are equal:
+Furthermore, we assert the following uniqueness principle, saying that any two functions defined by the same recurrence are equal:
+\index{uniqueness!principle, propositional!for homotopy W-types}%
 \begin{itemize}
 \item Let $C : \type$ and $c : \prd{a:A} (B(a) \to C) \to C$ be given. Let $g,h : (\wtypeh{x:A} B(x)) \to C$ be two functions which satisfy the recurrence $c$ up to propositional equality, i.e., such that we have
 \begin{align*}
@@ -638,7 +644,7 @@ Then $g$ and $h$ are equal, i.e.\ there is $\alpha(C,c,f,g,\beta_g,\beta_h)$ of 
 
 Recall that when we have an induction principle rather than only a recursion principle, this propositional uniqueness principle is derivable (\autoref{thm:w-uniq}).
 But with only recursion, the uniqueness principle is no longer derivable --- and in fact, the statement is not even true (exercise).  Hence, we postulate it as an axiom.
-We also postulate the following coherence law, which tells us how the proof of uniqueness behaves on canonical elements:
+We also postulate the following coherence\index{coherence} law, which tells us how the proof of uniqueness behaves on canonical elements:
 \begin{itemize}
 \item
 For any $a : A$ and $f : B(a) \to C$, the following diagram commutes propositionally:
@@ -767,7 +773,7 @@ Looking at other computation rules, we would expect something like ``$f(g(\alpha
 The induction principle of $C$ is even more problematic; it's not even clear how to write down the hypotheses.
 (See also \autoref{ex:loop,ex:loop2}.)
 
-This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors} of the type being defined, so that we can ``apply $f$ to them'' to get the result of the ``recursive call''.
+This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors}\index{functor!covariant}\index{covariant functor} of the type being defined, so that we can ``apply $f$ to them'' to get the result of the ``recursive call''.
 In other words, if we replace all occurrences of the type being defined with a variable
 \index{variable!type}%
 $X:\type$, then each domain of a constructor
@@ -777,7 +783,7 @@ This is the case for all the examples we have considered so far.
 For instance, with the constructor $\inl:A\to A+B$, the relevant functor is constant at $A$ (i.e.\ $X\mapsto A$), while for the constructor $\suc:\nat\to\nat$, the functor is the identity functor ($X\mapsto X$).
 
 However, this necessary condition is also not sufficient.
-Covariance prevents the inductive type from occurring on the left of a single function type, as in the argument $C\to\nat$ of the ``constructor'' $g$ considered above, since this yields a contravariant functor rather than a covariant one.
+Covariance prevents the inductive type from occurring on the left of a single function type, as in the argument $C\to\nat$ of the ``constructor'' $g$ considered above, since this yields a contravariant\index{functor!contravariant}\index{contravariant functor} functor rather than a covariant one.
 However, since the composite of two contravariant functors is covariant, \emph{double} function types such as $((X\to \nat)\to \nat)$ are once again covariant.
 This enables us to reproduce Cantorian-style paradoxes\index{paradox}.
 
@@ -877,6 +883,7 @@ For the example constructor~\eqref{eq:example-constructor}, we would require $P$
   (B\to C \to P) \to D \to W \to P \to P.
 \end{narrowmultline}
 Under these hypotheses, the recursion principle yields $f:W\to P$, which moreover ``preserves the constructor data'' in the evident way --- this is the computation rule, where we use covariance of the inputs.
+\index{computation rule!for inductive types}%
 For instance, in the example~\eqref{eq:example-constructor}, the computation rule says that for any $\alpha:A\to W$, $\beta:B\to C\to W$, $\delta:d$, and $\omega:W$, we have
 \begin{equation}
   f(c(\alpha,\beta,\delta,\omega)) \jdeq d(\alpha,f\circ \alpha,\beta, f\circ \beta, \delta, \omega,f(\omega)).\label{eq:example-comp}

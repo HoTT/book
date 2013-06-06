@@ -44,7 +44,7 @@ The basic judgment of type theory, analogous to ``$A$ has a proof'', is written 
 \indexdef{point!of a type}%
 When $A$ is a type representing a proposition, then $a$ may be called a \emph{witness}\index{witness!to the truth of a proposition} to the provability of $A$, or \emph{evidence}\index{evidence!of the truth of a proposition} of the truth of $A$ (or even a \emph{proof}\index{proof} of $A$, but we will try to avoid this confusing terminology).
 In this case, the judgment $a:A$ is derivable in type theory (for some $a$) precisely when the analogous judgment ``$A$ has a proof'' is derivable in first-order logic (modulo differences in the axioms assumed and in the encoding of mathematics, as we will discuss throughout the book).
-
+ 
 On the other hand, if the type $A$ is being treated more like a set than like a proposition (although as we will see, the distinction can become blurry), then ``$a:A$'' may be regarded as analogous to the set-theoretic statement ``$a\in A$''.
 However, there is an essential difference in that ``$a:A$'' is a \emph{judgment} whereas ``$a\in A$'' is a \emph{proposition}.
 In particular, when working internally in type theory, we cannot make statements such as ``if $a:A$ then it is not the case that $b:B$'', nor can we ``disprove'' the judgment ``$a:A$''.
@@ -496,7 +496,9 @@ However, unlike in set theory, where we define ordered pairs to be particular se
   \begin{enumerate}
   \item how to form new types of this kind, via \define{formation rules}.
     \indexdef{formation rules}%
-    \index{rule!formation}%
+    \index{rule!formation}%  
+(For example: We can form the function type $A \to B$ when $A$ is a type and when $B$ is a type. We can form the dependent function type $\prd{x:A} B$ when $A$ is a type and $B(x)$ is a type for $x:A$.)
+
   \item how to construct elements of that type.  
     These are called the type's \define{constructors} or \define{introduction rules}.
     \indexdef{constructor}%
@@ -515,11 +517,15 @@ However, unlike in set theory, where we define ordered pairs to be particular se
 
   \item 
     a \define{computation rule}\indexdef{computation rule}\footnote{also referred to as \define{$\beta$-reduction}\indexdef{$\beta$-reduction}}, which expresses how an eliminator acts on a constructor.
-    For example, for functions, the computation rule states that $(\lamu{x:A}b)(a)$ is judgmentally equal to the substitution of $a$ for $x$ in $b$.
+(For example, for functions, the computation rule states that $(\lamu{x:A}\Phi)(a)$ is judgmentally equal to the substitution of $a$ for $x$ in $\Phi$.)
+
   \item 
-    an optional \define{uniqueness principle}\indexdef{uniqueness!principle}\footnote{also referred to as \define{$\eta$-expansion}\indexdef{$\eta$-expansion}}, which expresses how constructors act on eliminators:
-    it would say that every element of the type is uniquely determined by the results of applying eliminators to it, and can be reconstructed from those results by applying a constructor.
-    For example, for functions, the uniqueness principle says that any function $f$ is judgmentally equal to the ``expanded'' function $\lamu{x} f(x)$, and thus is uniquely determined by its values.
+    an optional \define{uniqueness principle}\indexdef{uniqueness!principle}\footnote{also referred to as \define{$\eta$-expansion}\indexdef{$\eta$-expansion}}, which expresses
+uniqueness of maps into or out of that type.  
+For some types, the uniqueness principle characterizes maps into the type, by stating that 
+every element of the type is uniquely determined by the results of applying eliminators to it, and can be reconstructed from those results by applying a constructor---thus expressing how constructors act on eliminators, dually to the computation rule.  
+(For example, for functions, the uniqueness principle says that any function $f$ is judgmentally equal to the ``expanded'' function $\lamu{x} f(x)$, and thus is uniquely determined by its values.)
+For other types, the uniqueness principle says that every map (function) \emph{from} that type is uniquely determined by some data. (An example is the coproduct type introduced in \cref{sec:coproduct-types}, whose uniqueness principle is mentioned in \cref{sec:universal-properties}.)  
     
     When the uniqueness principle is not taken as a rule of judgmental equality, it is often nevertheless provable as a \emph{propositional} equality from the other rules for the type.
     In this case we call it a \define{propositional uniqueness principle}.

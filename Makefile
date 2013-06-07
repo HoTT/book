@@ -4,7 +4,7 @@
 DEFAULTTOPTEX = hott-online.tex
 
 # Top-level LaTeX files from which HoTT book can be generated
-TOPTEXFILES = $(DEFAULTTOPTEX) hott-ustrade.tex hott-letter.tex
+TOPTEXFILES = $(DEFAULTTOPTEX) hott-ustrade.tex hott-letter.tex hott-ebook.tex
 
 # LaTeX files that actually comprise the book
 # (that is, all of them except configuration)

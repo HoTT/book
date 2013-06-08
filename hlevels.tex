@@ -1499,8 +1499,8 @@ Then there is an equivalence
 \begin{equation*}
 E(H,b):\hfib{h_1}b\eqvsym\hfib{h_2}b
 \end{equation*}
-for any $b:B$, such that for any $a:A$ we have
-\[E(H,h_1(g_1(a)))(\pairr{g_1(a),\refl{h_1(g_1(a))}}) \jdeq \pairr{g_2(a),H(a)^{-1}}.\]
+for any $b:B$, such that for any $a:A$ we have an identification
+\[\overline{E}(H,a) :  E(H,h_1(g_1(a)))({g_1(a),\refl{h_1(g_1(a))}}) = \pairr{g_2(a),\opp{H(a)}}.\]
 \end{lem}
 
 \begin{proof}
@@ -1521,20 +1521,26 @@ Hence we obtain
 \hfib{h_1}b\eqvsym\hfib{h_2}b
 \end{equation*}
 for any $b:B$. By analyzing the underlying functions, we get the following representation of what happens to the element
-$\pairr{g_1(a),\refl{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed:
+$\pairr{g_1(a),\refl{h_1(g_1(a))}}$ after applying each of the equivalences of which $E$ is composed.
+Some of the identifications are definitional, but others (marked with a $=$ below) are only propositional; putting them together we obtain $\overline E(H,a)$.
 \begin{align*}
 \pairr{g_1(a),\refl{h_1(g_1(a))}} & 
-    \mapsto \Pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \tproj n{ \pairr{a,\refl{g_1(a)}}}}\\
+    \overset{=}{\mapsto} \Pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \tproj n{ \pairr{a,\refl{g_1(a)}}}}\\
   & \mapsto \tproj n { \pairr{\pairr{g_1(a),\refl{h_1(g_1(a))}}, \pairr{a,\refl{g_1(a)}} }}\\
   & \mapsto \tproj n { \pairr{a,\refl{h_1(g_1(a))}}}\\
-  & \mapsto \tproj n { \pairr{a,H(a)^{-1}}}\\
-  & \mapsto \tproj n { \pairr{\pairr{g_2(a),H(a)^{-1}},\pairr{a,\refl{g_2(a)}}} }\\
-  & \mapsto \Pairr{\pairr{g_2(a),H(a)^{-1}}, \tproj n {\pairr{a,\refl{g_2(a)}}} }\\
-  & \mapsto \pairr{g_2(a),H(a)^{-1}}\qedhere
+  & \overset{=}{\mapsto} \tproj n { \pairr{a,\opp{H(a)}}}\\
+  & \mapsto \tproj n { \pairr{\pairr{g_2(a),\opp{H(a)}},\pairr{a,\refl{g_2(a)}}} }\\
+  & \mapsto \Pairr{\pairr{g_2(a),\opp{H(a)}}, \tproj n {\pairr{a,\refl{g_2(a)}}} }\\
+  & \mapsto \pairr{g_2(a),\opp{H(a)}}
 \end{align*}
+The first equality is because for general $b$, the map
+\narrowequation{ \hfib{h_1}b \to \sm{w:\hfib{h_1}b} \trunc n{ \hfib{g_1}{\proj1 w}} }
+inserts the center of contraction for $\trunc n{ \hfib{g_1}{\proj1 w}}$ supplied by the assumption that $g_1$ is $n$-truncated; whereas in the case in question this type has the obvious inhabitant $\tproj n{ \pairr{a,\refl{g_1(a)}}}$, which by contractibility must be equal to the center.
+The second propositional equality is because the equivalence $\hfib{h_1\circ g_1}b\eqvsym\hfib{h_2\circ g_2}b$ concatenates the second components with $\opp{H(a)}$, and we have $\opp{H(a)} \ct \refl{} = \opp{H(a)}$.
+The reader may check that the other equalities are definitional (assuming a reasonable solution to \autoref{ex:unstable-octahedron}).
 \end{proof}
 
-The equivalences $E(H,b)$ are such that $E(H^{-1},b)= E(H,b)^{-1}$.
+% The equivalences $E(H,b)$ are such that $E(H^{-1},b)= E(H,b)^{-1}$.
 
 Combining \autoref{prop:to_image_is_connected,prop:factor_equiv_fiber}, we have the following unique factorization result:
 
@@ -1561,7 +1567,7 @@ show that $\fact_n(f)$ is a mere proposition. Suppose we have two $n$-factorizat
 \end{equation*}
 of $f$. Then we have the pointwise-concatenated homotopy
 \[ H\defeq (\lam{a} H_1(a) \ct H_2^{-1}(a)) \,:\, (h_1\circ g_1\htpy h_2\circ g_2).\]
-By univalence, it suffices to show that
+By univalence and the characterization of paths and transport in $\Sigma$-types, function types, and path types, it suffices to show that
 \begin{enumerate}
 \item there is an equivalence $e:X_1\eqvsym X_2$,
 \item there is a homotopy $\zeta:e\circ g_1\htpy g_2$,
@@ -1576,7 +1582,7 @@ We prove these four assertions in that order.
 % \note{It could be a nice exercise for the book to show
 % that if $f_1:A_1\to B$ and $f_2:A_2\to B$ have equivalent fibers, then $A_1\eqvsym A_2$}.
 \begin{equation*}
-(\lam{b} E(H,b)) : \prd{b:B} \hfib{h_1}b\to\hfib{h_2}b.
+E(H) : \prd{b:B} \eqv{\hfib{h_1}b}{\hfib{h_2}b}.
 \end{equation*}
 This induces an equivalence of total spaces, i.e.\ we have
 \begin{equation*}
@@ -1586,23 +1592,19 @@ Of course, we also have the equivalences $X_1\eqvsym\sm{b:B}\hfib{h_1}b$ and $X_
 \hfib{h_2}b$ from \autoref{thm:total-space-of-the-fibers}.
 This gives us our equivalence $e:X_1\eqvsym X_2$; the reader may verify that the underlying function of $e$ is given by
 \begin{equation*}
-e(x) \jdeq \proj1(E(H,h_1(x))(x,\refl{h_1(x)}))
+e(x) \jdeq \proj1(E(H,h_1(x))(x,\refl{h_1(x)})).
 \end{equation*}
-where $E$ is as in \autoref{prop:factor_equiv_fiber}.
-\item By \autoref{prop:factor_equiv_fiber} we have $e(g_1(a))\jdeq g_2(a)$, so we may choose $\zeta(a)\defeq \refl{g_2(a)}$. \label{item:orth-fact-2}
+\item By \autoref{prop:factor_equiv_fiber}, we may choose
+  $\zeta(a) \defeq \apfunc{\proj1}(\overline E(H,a)) : e(g_1(a)) = g_2(a)$.
+  \label{item:orth-fact-2}
 \item For every $x:X_1$, we have
 \begin{equation*}
 \proj2(E(H,h_1(x))({x,\refl{h_1(x)}})) :h_2(e(x))= h_1(x),
 \end{equation*}
 giving us a homotopy $\eta:h_2\circ e\htpy h_1$.
-\item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a)) \jdeq H(a)^{-1}$ and by~\ref{item:orth-fact-2} we have
-$\apfunc{h_2}({\zeta(a)})\jdeq \refl{h_2(g_2(a))}$. Thus we have
-\begin{align*}
-  \opp{\apfunc{h_2}(\zeta(a))} \ct \eta(g_1(a)) \ct H_1(a)
-  &\jdeq \opp{(\refl{h_2(g_2(a))})} \ct H(a)^{-1} \ct H_1(a)\\
-  &= H_2(a) \ct \opp{H_1(a)} \ct H_1(a)\\
-  &= H_2(a).\qedhere
-\end{align*}
+\item By the characterization of paths in fibers (\autoref{lem:hfib}), the path $\overline E(H,a)$ from \autoref{prop:factor_equiv_fiber} gives us
+  $\eta(g_1(a)) = \apfunc{h_2}(\zeta(a)) \ct \opp{H(a)}$.
+  The desired equality follows by substituting the definition of $H$ and rearranging paths.\qedhere
 \end{enumerate}
 \end{proof}
 

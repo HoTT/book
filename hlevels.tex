@@ -413,6 +413,7 @@ $n$-type.
 $n$-type.
 \end{proof}
 
+\index{whiskering}
 By induction and some slightly clever whiskering, we can obtain a generalization of the K property to $n>0$.
 
 \begin{thm}\label{thm:ntype-nloop}
@@ -1499,7 +1500,7 @@ Then there is an equivalence
 E(H,b):\hfib{h_1}b\eqvsym\hfib{h_2}b
 \end{equation*}
 for any $b:B$, such that for any $a:A$ we have
-\[E(H,h_1(g_1(a)))(\pairr{g_1(a),\refl{h_1(g_1(a))}}) = \pairr{g_2(a),H(a)^{-1}}.\]
+\[E(H,h_1(g_1(a)))(\pairr{g_1(a),\refl{h_1(g_1(a))}}) \jdeq \pairr{g_2(a),H(a)^{-1}}.\]
 \end{lem}
 
 \begin{proof}
@@ -1552,54 +1553,55 @@ where $\theta:\proj1\circ\tilde{f}\htpy f$ is the canonical homotopy, where $\va
 \autoref{prop:to_image_is_connected}, and where $\psi$ is the obvious proof that $\proj1:\im_n(f)\to B$ has $n$-truncated fibers.
 \end{thm}
 
-In the following proof we use the symbols $\leftwhisker$ and $\rightwhisker$ to denote the whisker\index{whiskering} operations, which were introduced in \autoref{thm:EckmannHilton}.
-Recall that if we have paths $p,p':x= y$, $s:p= p'$ and $q:y= z$, then left whiskering provides a path $q\ct p=q\ct p'$, which is denoted by $q\leftwhisker s$.
-Likewise, if $f,f':X\to Y$ and $g:Y\to X$ are functions and if $H:f\htpy f'$ is a homotopy, then pointwise whiskering provides a homotopy $g\leftwhisker H:g\circ f\htpy g\circ f'$.
-
 \begin{proof}
 By \autoref{prop:to_image_is_connected} we know that there is an element of $\fact_n(f)$, hence it is enough to
 show that $\fact_n(f)$ is a mere proposition. Suppose we have two $n$-factorizations
 \begin{equation*}
 \pairr{X_1,g_1,h_1,H_1,\varphi_1,\psi_1}\qquad\text{and}\qquad\pairr{X_2,g_2,h_2,H_2,\varphi_2,\psi_2}
 \end{equation*}
-of $f$. Then we have the homotopy $H\defeq H_2^{-1}\circ H_1:h_1\circ g_1\htpy h_2\circ g_2$. By the univalence axiom, it suffices to show that
+of $f$. Then we have the pointwise-concatenated homotopy
+\[ H\defeq (\lam{a} H_1(a) \ct H_2^{-1}(a)) \,:\, (h_1\circ g_1\htpy h_2\circ g_2).\]
+By univalence, it suffices to show that
 \begin{enumerate}
 \item there is an equivalence $e:X_1\eqvsym X_2$,
-\item there is a homotopy $\zeta:\underline{e}\circ g_1\htpy g_2$,
+\item there is a homotopy $\zeta:e\circ g_1\htpy g_2$,
 % \note{Is it easy enough to see that these elements are the various transports?}
-\item there is a homotopy $\eta:h_2\circ\underline{e}\htpy h_1$,
-\item there is a homotopy $H_1 \circ(h_1\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_2)\htpy H_2$.
+\item there is a homotopy $\eta:h_2\circ e\htpy h_1$,
+\item for any $a:A$ we have $\opp{\apfunc{h_2}(\zeta(a))} \ct \eta(g_1(a)) \ct H_1(a) = H_2(a)$.
 \end{enumerate}
-where $\underline{e}$ is the function underlying the equivalence. We prove these four assertions in that order.
+%where $\underline{e}$ is the function underlying the equivalence.
+We prove these four assertions in that order.
 \begin{enumerate}
 \item By \autoref{prop:factor_equiv_fiber}, we have a fiberwise equivalence
 % \note{It could be a nice exercise for the book to show
 % that if $f_1:A_1\to B$ and $f_2:A_2\to B$ have equivalent fibers, then $A_1\eqvsym A_2$}.
 \begin{equation*}
-\prd{b:B} \hfib{h_1}b\to\hfib{h_2}b.
+(\lam{b} E(H,b)) : \prd{b:B} \hfib{h_1}b\to\hfib{h_2}b.
 \end{equation*}
 This induces an equivalence of total spaces, i.e.\ we have
 \begin{equation*}
-\sm{b:B} \hfib{h_1}b\eqvsym\sm{b:B}\hfib{h_2}b
+\eqvspaced{\Parens{\sm{b:B} \hfib{h_1}b}}{\Parens{\sm{b:B}\hfib{h_2}b}}
 \end{equation*}
-Of course, we also have the familiar equivalences $X_1\eqvsym\sm{b:B}\hfib{h_1}b$ and $X_2\eqvsym\sm{b:B}
-\hfib{h_2}b$. This gives us our equivalence $e(H):X_1\eqvsym X_2$. The reader may verify that the underlying function
-$\underline{e}(H)$ of $e(H)$ is defined by
+Of course, we also have the equivalences $X_1\eqvsym\sm{b:B}\hfib{h_1}b$ and $X_2\eqvsym\sm{b:B}
+\hfib{h_2}b$ from \autoref{thm:total-space-of-the-fibers}.
+This gives us our equivalence $e:X_1\eqvsym X_2$; the reader may verify that the underlying function of $e$ is given by
 \begin{equation*}
-\underline{e}(H,x)\defeq \proj1\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc[h_1(x)]})
+e(x) \jdeq \proj1(E(H,h_1(x))(x,\refl{h_1(x)}))
 \end{equation*}
-\item By \autoref{prop:factor_equiv_fiber} we have $\underline{e}(H,g_1(a))=g_2(a)$. Thus we get $\zeta(a)\defeq \idfunc[g_2(a)]$. \label{item:orth-fact-2}
+where $E$ is as in \autoref{prop:factor_equiv_fiber}.
+\item By \autoref{prop:factor_equiv_fiber} we have $e(g_1(a))\jdeq g_2(a)$, so we may choose $\zeta(a)\defeq \refl{g_2(a)}$. \label{item:orth-fact-2}
 \item For every $x:X_1$, we have
 \begin{equation*}
-\proj2\underline{E}(H^{-1},h_1(x))(\pairr{x,\idfunc[h_1(x)]}):h_2(\underline{e}(H,x))= h_1(x),
+\proj2(E(H,h_1(x))({x,\refl{h_1(x)}})) :h_2(e(x))= h_1(x),
 \end{equation*}
-giving us a homotopy $\eta:h_2\circ \underline{e}\htpy h_1$.
-\item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a))=H(a)^{-1}$ and by~\ref{item:orth-fact-2} we have
-$\ap{h_2}{\zeta(a)}=\idfunc[h_2(g_2(a))]$. Thus we have
+giving us a homotopy $\eta:h_2\circ e\htpy h_1$.
+\item By \autoref{prop:factor_equiv_fiber} we have $\eta(g_1(a)) \jdeq H(a)^{-1}$ and by~\ref{item:orth-fact-2} we have
+$\apfunc{h_2}({\zeta(a)})\jdeq \refl{h_2(g_2(a))}$. Thus we have
 \begin{align*}
-(H_1 \circ(h_2\leftwhisker\zeta)^{-1}\circ(\eta\rightwhisker g_1))(a) & = H_1(a)\ct h_2(\zeta(a))^{-1}\ct \eta(g_1(a))\\
-& = H_1(a)\ct H(a)^{-1}\\
-& = H_2(a).\qedhere
+  \opp{\apfunc{h_2}(\zeta(a))} \ct \eta(g_1(a)) \ct H_1(a)
+  &\jdeq \opp{(\refl{h_2(g_2(a))})} \ct H(a)^{-1} \ct H_1(a)\\
+  &= H_2(a) \ct \opp{H_1(a)} \ct H_1(a)\\
+  &= H_2(a).\qedhere
 \end{align*}
 \end{enumerate}
 \end{proof}

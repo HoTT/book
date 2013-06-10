@@ -899,28 +899,67 @@ Finally, we can reproduce Cantor's theorem, showing that for every cardinal ther
 
 It may seem that such an inductive definition can never get off the ground, but of course if $a$ has the property that there are \emph{no} $b$ such that $b<a$, then $a$ is vacuously accessible.
 
+Note that this is an inductive definition of a family of types, like the type of vectors considered in \autoref{sec:generalizations}.
+More precisely, it has one constructor, say $\acc_<$, with type
+\[ \acc_< : \prd{a:A} \Parens{\prd{b:A} (b<a) \to \acc(b)} \to \acc(a). \]
+\index{induction principle!for accessibility}%
+The induction principle for $\acc$ says that for any $P:\prd{a:A} \acc(a) \to \type$, if we have
+\[f:\prd{a:A}{h:\prd{b:A} (b<a) \to \acc(b)}
+\Parens{\prd{b:A}{l:b<a} P(b,h(b,l))} \to
+P(a,\acc_<(a,h)),
+\]
+then we have $g:\prd{a:A}{c:\acc(a)} P(a,c)$ defined by induction, with
+\[g(a,\acc_<(a,h)) \jdeq f(a,\,h,\,\lam{b}{l} g(b,h(b,l))).\]
+This is a mouthful, but generally we apply it only in the simpler case where $P:A\to\type$ depends only on $A$.
+In this case the second and third arguments of $f$ may be combined, so that what we have to prove is
+\[f:\prd{a:A} \Parens{\prd{b:A} (b<a) \to \acc(b) \times P(b)}
+\to P(a).
+\]
+That is, we assume every $b<a$ is accessible and $g(b):P(b)$ is defined, and from these define $g(a):P(a)$.
+
+The omission of the second argument of $P$ is justified by the following lemma, whose proof is the only place where we use the more general form of the induction principle.
+
 \begin{lem}
   Accessibility\index{accessibility} is a mere property.
 \end{lem}
 \begin{proof}
-  We claim that for any $a_1,a_2:A$, any $p:a_1=a_2$, and any $s_1:\acc(a_1)$ and $s_2:\acc(a_2)$, we have $\trans{p}{s_1}=s_2$.
-  By induction, we may assume that $s_1$ is given by a function assigning to each $b_1<a_1$ a proof $s_1(b_1):\acc(b_1)$, and moreover that for any $b_2:A$, any $q:b_1=b_2$, and $t_2:\acc(b_2)$, we have $\trans{q}{s_1(b_1)}=t_2$.
-  Similarly, we may assume that $s_2$ is given by a function assigning to each $b_2<a_2$ a proof $s_2(b_2):\acc(b_2)$, and that for any $b_1:A$, any $q:b_1=b_2$, and $t_1:\acc(b_1)$, we have $\trans{q}{t_1}=s_2(b_2)$.
-  
-  Now by function extensionality, to show $\trans{p}{s_1}=s_2$ it suffices to show that for any $b_2<a_2$ we have $\trans{p}{s_1}(b_2) = s_2(b_2)$.
-  However, we can obtain this from the inductive hypothesis for $s_2$ with $q\defeq \refl{b_2}$ and $t_1 \defeq \trans{p}{s_1}(b_2)$.
-  This proves the claim.
-
-  Finally, we instantiate the claim with $a_2\defeq a_1\defeq a$ and $p\defeq \refl{a}$.
-  Thus, for any $a:A$ and $s_1,s_2:\acc(a)$, we have $s_1=s_2$, as desired.
+  We must show that for any $a:A$ and $s_1,s_2:\acc(a)$ we have $s_1=s_2$.
+  We prove this by induction on $s_1$, with
+  \[P_1(a,s_1) \defeq \prd{s_2:\acc(a)} (s_1=s_2). \]
+  Thus, we must show that for any $a:A$ and ${h_1:\prd{b:A} (b<a) \to \acc(b)}$ and
+  \[ k_1:{\prd{b:A}{l:b<a}{t:\acc(b)} h_1(b,l) = t},\]
+  we have $\acc_<(a,h) = s_2$ for any $s_2:\acc(a)$.
+  We regard this statement as $\prd{a:A}{s_2:\acc(a)} P_2(a,s_2)$, where
+  \[P_2(a,s_2) \defeq
+  \prd{h_1 : \cdots } %{h_1:\prd{b:A} (b<a) \to \acc(b)}
+  {k_1 : \cdots} % \Parens{\prd{b:A}{l:b<a}{t:\acc(b)} h_1(b,l) = t} \to
+  (\acc_<(a,h_1) = s_2);
+  \]
+  thus we may prove it by induction on $s_2$.
+  Therefore, we assume $h_2 : \prd{b:A} (b<a) \to \acc(b)$, and $k_2$ with a monstrous but irrelevant type,
+  % \begin{narrowmultline*}
+  %   k_2:\prd{b:A}{l:b<a}
+  %   \prd{h_1:\prd{b':A} (b'<b) \to \acc(b')}
+  %   \narrowbreak
+  %   \Parens{\prd{b':A}{l':b'<b}{t':\acc(b')} h_1(b',l') = t'} \to
+  %   (\acc_<(b,h_1) = h_2(b,l)).
+  % \end{narrowmultline*}
+  and must show that for any $h_1$ and $k_1$ with types as above,
+  we have $\acc_<(a,h_1) = \acc_<(a,h_2)$.
+  By function extensionality, it suffices to show $h_1(b,l) = h_2(b,l)$ for all $b:A$ and $l:b<a$.
+  This follows from $k_1$.
 \end{proof}
 
 \begin{defn}
   A binary relation $<$ on a set $A$ is \define{well-founded}
   \indexdef{relation!well-founded}%
-  \indexdef{well-founded relation}%
+  \indexdef{well-founded!relation}%
   if every element of $A$ is accessible.
 \end{defn}
+
+The point of well-foundedness is that for $P:A\to \type$, we can use the induction principle of $\acc$ to conclude $\prd{a:A} \acc(a) \to P(a)$, and then apply well-foundedness to conclude $\prd{a:A} P(a)$.
+In other words, if from $\fall{b:A} (b<a) \to P(b)$ we can prove $P(a)$, then $\fall{a:A} P(a)$.
+This is called \define{well-founded induction}\indexdef{well-founded!induction}.
 
 \begin{lem}
   Well-foundedness is a mere property.

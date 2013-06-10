@@ -127,14 +127,14 @@ First we observe that categorical monomorphisms and epimorphisms have a slightly
   \item $f$ is a \define{monomorphism}:
     \indexdef{monomorphism}%
     for all $x:A$ and ${g,h:\hom_A(x,a)}$, if $f\circ g = f\circ h$ then $g=h$.\label{item:mono1}
-  \item (If $A$ has products) the diagonal map $A\to A\times A$ is an isomorphism.\label{item:mono4}
+  \item (If $A$ has pullbacks) the diagonal map $a\to a\times_b a$ is an isomorphism.\label{item:mono4}
   \item For all $x:A$ and $k:\hom_A(x,b)$, the type $\sm{h:\hom_A(x,a)} (k = f\circ h)$ is a mere proposition.\label{item:mono2}
   \item For all $x:A$ and ${g:\hom_A(x,a)}$, the type $\sm{h:\hom_A(x,a)} (f\circ g = f\circ h)$ is contractible.\label{item:mono3}
   \end{enumerate}
 \end{lem}
 \begin{proof}
   The equivalence of conditions~\ref{item:mono1} and~\ref{item:mono4} is standard category theory.
-  Now consider the function $(f\circ -):\hom_A(x,a) \to \hom_A(x,b)$ between sets.
+  Now consider the function $(f\circ \blank ):\hom_A(x,a) \to \hom_A(x,b)$ between sets.
   Condition~\ref{item:mono1} says that it is injective, while~\ref{item:mono2} says that its fibers are mere propositions; hence they are equivalent.
   And~\ref{item:mono2} implies~\ref{item:mono3} by taking $k\defeq f\circ g$ and recalling that an inhabited mere proposition is contractible.
   Finally,~\ref{item:mono3} implies~\ref{item:mono1} since if $p:f\circ g= f\circ h$, then $(g,\refl{})$ and $(h,p)$ both inhabit the type in~\ref{item:mono3}, hence are equal and so $g=h$.
@@ -163,7 +163,7 @@ It is convenient to express its universal property as follows.
 Let $f,g:A\to B$ be functions between sets $A$ and $B$. The 
 {set-co}equalizer $c_{f,g}:B\to Q$ has the property that, for any set $C$ and any $h:B\to C$ with $h\circ f = h\circ g$, the type
 \begin{equation*}
-\sm{k:Q\to C} k\circ c_{f,g} = h
+\sm{k:Q\to C} (k\circ c_{f,g} = h)
 \end{equation*}
 is contractible.
 \end{lem}
@@ -306,7 +306,7 @@ form the kernel\index{kernel!pair} pair of $c_R$.
 
 We have already seen, in \autoref{sec:set-quotients}, two general ways to construct the quotient of a set by an equivalence relation $R:A\to A\to\prop$.
 The first can be described as the set-coequalizer of the two projections
-\[\proj1,\proj2:\sm{x,y:A} R(x,y)\to A.\]
+\[\proj1,\proj2:\Parens{\sm{x,y:A} R(x,y)} \to A.\]
 The important property of such a quotient is the following.
 
 \begin{defn}
@@ -333,6 +333,8 @@ The important property of such a quotient is the following.
 is a pullback. 
 \end{defn}
 
+Since the standard pullback of $c_R$ and itself is $\sm{x,y:A} (c_R(x)=c_R(y))$, by \autoref{thm:total-fiber-equiv} this is equivalent to asking that the canonical transformation $\prd{x,y:A} R(x,y) \to (c_R(x)=c_R(y))$ be a fiberwise equivalence.
+
 \begin{lem}\label{lem:sets_exact}
 Suppose $\pairr{A,R}$ is an equivalence relation. Then there is an equivalence
 \begin{equation*}
@@ -342,31 +344,26 @@ for any $x,y:A$. In other words, equivalence relations are effective.
 \end{lem}
 
 \begin{proof}
-We begin by extending $R$ to a relation $\tilde{R}:A/R\to A/R\to\prop$. After
-the construction of $\tilde{R}$ we will show that $\tilde{R}$ is equivalent
-to the identity type on $A/R$. We define $\tilde{R}$ by double induction on
+We begin by extending $R$ to a relation $\widetilde{R}:A/R\to A/R\to\prop$, which we will then show is equivalent
+to the identity type on $A/R$. We define $\widetilde{R}$ by double induction on
 $A/R$ (note that $\prop$ is a set by univalence for mere propositions). We
-define $\tilde{R}(c_R(x),c_R(y)) \defeq R(x,y)$. For $r:R(x,x')$ and $s:R(y,y')$,
+define $\widetilde{R}(c_R(x),c_R(y)) \defeq R(x,y)$. For $r:R(x,x')$ and $s:R(y,y')$,
 the transitivity and symmetry 
 of $R$ gives an equivalence from $R(x,y)$ to $R(x',y')$. This completes the
-definition of $\tilde{R}$. To finish the proof of the lemma, we need
-to show that $\tilde{R}(w,w')\eqvsym w= w'$ for every $w,w':A/R$. We can
-do this by showing that the type $\sm{w':A/R} \tilde{R}(w,w')$ is contractible for
-each $w:A/R$. We do this by induction. Let $x:A$. We have the element
-$\pair{c_R(x),\rho(x)}:\sm{w':A/R} \tilde{R}(c_R(x),w')$, where $\rho$ is
-the reflexivity proof of $R$, hence we only
-have to show that
-\begin{equation*}
-\prd{w':A/R}{r:\tilde{R}(c_R(x),w')} \pairr{w',r}=\pairr{c_R(x),\rho(x)},
-\end{equation*}
-which we do by induction on $w'$. Let $y:A$ and let $r:R(x,y)$. Then we have
-the path $p_R(r)^{-1}:c_R(y)= c_R(x)$. We automatically get a path from
-$p_R(r)^{-1}\cdot r=\rho(x)$, finishing the proof.
+definition of $\widetilde{R}$.
+
+It remains to show that $\widetilde{R}(w,w')\eqvsym (w= w')$ for every $w,w':A/R$.
+The direction $(w=w')\to \widetilde{R}(w,w')$ follows by transport once we show that $\widetilde{R}$ is reflexive, which is an easy induction.
+The other direction $\widetilde{R}(w,w')\to (w= w')$ is a mere proposition, so since $c_R:A\to A/R$ is surjective, it suffices to assume that $w$ and $w'$ are of the form $c_R(x)$ and $c_R(y)$.
+But in this case, we have the canonical map $\widetilde{R}(c_R(x),c_R(y)) \defeq R(x,y) \to (c_R(x)=c_R(y))$.
+(Note again the appearance of the encode-decode method.\index{encode-decode method})
 \end{proof}
 
-The second construction of quotients, which uses impredicativity\index{impredicative!quotient} of mere propositions, is as the set of equivalence classes of $R$ (a subset
+The second construction of quotients is as the set of equivalence classes of $R$ (a subset
 of its power set\index{power set}):
 \[ A\sslash R \defeq \setof{ P:A\to\prop | P \text{ is an equivalence class of } R} \]
+This requires propositional resizing\index{propositional resizing}\index{impredicative!quotient} in order to remain in the same universe as $A$ and $R$.
+
 Note that if we regard $R$ as a function from $A$ to $A\to \prop$, then $A\sslash R$ is equivalent to $\im(R)$, as constructed in \autoref{sec:image}.
 Now in \autoref{lem:images_are_coequalizers} we have shown that images are
 coequalizers. In particular, we immediately get the coequalizer diagram
@@ -386,30 +383,33 @@ We can use this to give an alternative proof that any equivalence relation is ef
 
 \begin{thm}\label{prop:kernels_are_effective}
 For any function $f:A\to B$ between any two sets, 
-the relation $\ker(f):A\to A\to\type$ given by 
-$\ker(f,x,y)\defeq f(x)= f(y)$ is effective. 
+the relation $\ker(f):A\to A\to\prop$ given by 
+$\ker(f,x,y)\defeq (f(x)= f(y))$ is effective.
 \end{thm}
 
 \begin{proof}
 We will use that $\im(f)$ is the coequalizer of $\proj1,\proj2:
-\sm{x,y:A} f(x)= f(y)\to A$.
+(\sm{x,y:A} f(x)= f(y))\to A$.
 %we get this equivalence from~\autoref{prop:images_are_coequalizers}
-Note that the canonical kernel pair of the function 
-$c_f\defeq\lam{a} \pairr{f(a),\tau_1(\pairr{a,\refl{f(a)}})}$ consists
-of the two projections
+Note that the kernel pair of the function 
+\[c_f\defeq\lam{a} \Parens{f(a),\brck{\pairr{a,\refl{f(a)}}}}
+: A \to \im(f)
+\]
+consists of the two projections
 \begin{equation*}
 \proj1,\proj2:\Parens{\sm{x,y:A} c_f(x)= c_f(y)}\to A.
 \end{equation*}
 For any $x,y:A$, we have equivalences
 \begin{align*}
-c_f(x)= c_f(y) & \eqvsym \sm{p:f(x)= f(y)} p\cdot\tau_1(\pairr{x,\refl{f(x)}})
-=\tau_1(\pairr{y,\refl{f(x)}})\\ & \eqvsym f(x)= f(y),
+  (c_f(x)= c_f(y))
+  & \eqvsym \Parens{\sm{p:f(x)= f(y)} \trans{p}{\brck{\pairr{x,\refl{f(x)}}}} =\brck{\pairr{y,\refl{f(x)}}}}\\
+  & \eqvsym (f(x)= f(y)),
 \end{align*}
 where the last equivalence holds because 
 $\brck{\hfiber{f}b}$ is a mere proposition for any $b:B$. 
 Therefore, we get that
 \begin{equation*}
-\sm{x,y:A} c_f(x)= c_f(y)\eqvsym\sm{x,y:A} f(x)= f(y)
+\Parens{\sm{x,y:A} c_f(x)= c_f(y)}\eqvsym \Parens{\sm{x,y:A} f(x)= f(y)}
 \end{equation*}
 and hence we may conclude that $\ker f$ is an effective relation 
 for any function $f$.
@@ -433,7 +433,7 @@ We need to analyze the coequalizer diagram
     {A \sslash R.}
   }
 \end{equation*}
-By the univalence axiom, the space $R(x) = R(y)$ is equivalent to the space of homotopies from $R(x)$ to $R(y)$, which is
+By the univalence axiom, the type $R(x) = R(y)$ is equivalent to the type of homotopies from $R(x)$ to $R(y)$, which is
 equivalent to
 \narrowequation{\prd{z:A} R (x,z)\eqvsym R (y,z).}
 Since $R$ is an equivalence relation, the latter space is equivalent to $R(x,y)$. To
@@ -454,11 +454,11 @@ the diagram
 is a coequalizer diagram. Since coequalizers are unique up to equivalence, it follows that $A/R \eqvsym A\sslash  R $.
 \end{proof}
 
-We finish this section by mentioning a possible third construction of the quotient of a set $A$ by an equivalence relation $R$. One
-considers the precategory with objects $A$ and hom-sets $R$. The type of objects of the Rezk completion
+We finish this section by mentioning a possible third construction of the quotient of a set $A$ by an equivalence relation $R$.
+Consider the precategory with objects $A$ and hom-sets $R$; the type of objects of the Rezk completion
 \index{completion!Rezk}%
-(see \autoref{sec:rezk}) of this precategory will be the
-quotient. The reader is invited to check the details of this construction.
+(see \autoref{sec:rezk}) of this precategory will then be the
+quotient. The reader is invited to check the details.
 
 \index{effective!equivalence relation|)}%
 \index{relation!equivalence!effective|)}%
@@ -475,7 +475,7 @@ The notion of a \emph{$\Pi\mathsf{W}$-pretopos}
 --- that is, a locally cartesian closed category
 \index{locally cartesian closed category}%
 \index{category!locally cartesian closed}%
-with disjoint finite coproducts, effective equivalence relations, and $\mathsf{W}$-types --- is intended as a ``predicative''
+with disjoint finite coproducts, effective equivalence relations, and initial algebras for polynomial endofunctors --- is intended as a ``predicative''
 \index{mathematics!predicative}%
 notion of topos, i.e.\ a category of ``predicative sets'', which can serve the purpose for constructive mathematics
 \index{mathematics!constructive}%
@@ -490,9 +490,9 @@ Typically, in constructive type theory, one resorts to an external construction 
 \begin{proof}
   We have an initial object
   \index{initial!set}%
-  $0$ and finite, disjoint sums $A+B$.  These are stable under pullback, simply because pullback has a right adjoint\index{adjoint!functor}.  Indeed, $\uset$ is locally cartesian closed, since for any map $f:A\to B$ between sets, the ``fibrant replacement'' \index{fibrant replacement} $\sm{a:A}f(a)=b$ is equivalent to $A$ (over $B$), and we have $\prod$-types for the replacement.
-We've just shown that $\uset$ is regular (\autoref{thm:set_regular}) and that quotients are effective (\autoref{lem:sets_exact}). We thus have a locally cartesian closed pretopos. Finally, since the $n$-types are closed under the formation of $\mathsf{W}$-types
-(\autoref{sec:w-types}), we see that $\uset$ is a $\Pi\mathsf{W}$-pretopos. 
+  $\emptyt$ and finite, disjoint sums $A+B$.  These are stable under pullback, simply because pullback has a right adjoint\index{adjoint!functor}.  Indeed, $\uset$ is locally cartesian closed, since for any map $f:A\to B$ between sets, the ``fibrant replacement'' \index{fibrant replacement} $\sm{a:A}f(a)=b$ is equivalent to $A$ (over $B$), and we have dependent function types for the replacement.
+We've just shown that $\uset$ is regular (\autoref{thm:set_regular}) and that quotients are effective (\autoref{lem:sets_exact}). We thus have a locally cartesian closed pretopos. Finally, since the $n$-types are closed under the formation of $\w$-types
+(\autoref{sec:w-types}), which by \autoref{thm:w-hinit} are initial algebras for polynomial endofunctors, we see that $\uset$ is a $\Pi\mathsf{W}$-pretopos. 
 \end{proof}
 
 \index{topos|(}
@@ -538,7 +538,7 @@ and $A$ is equivalent to $\id[\susp(A)]{\north}{\south}$.
 To show that $\susp(A)$ is a set, we define a
 family $P:\susp(A)\to\susp(A)\to\type$ with the 
 property that $P(x,y)$ is a mere proposition for each $x,y:\susp(A)$,
-and which is equivalent to $\idtypevar{\susp(A)}$.
+and which is equivalent to its identity type $\idtypevar{\susp(A)}$.
 %
 We make the following definitions:
 \begin{align*}
@@ -602,8 +602,8 @@ To complete the construction of $\tau$, we need to check $\trans{\merid(a)}{\tau
 given any $a : A$. The verification proceeds much along the same lines by induction on the
 second argument of $\tau$.
 
-It remains to show that the mere propositions $A$ and $\id[\susp(A)]{\north}{\south}$ are
-equivalent, but this is very easy so we leave it as exercise.
+Thus, by \autoref{thm:h-set-refrel-in-paths-sets} we have that $\susp(A)$ is a set and that $P(x,y) \eqvsym (\id{x}{y})$ for all $x,y:\susp(A)$.
+Taking $x\defeq \north$ and $y\defeq \south$ yields $\eqv{A}{(\id[\susp(A)]\north\south)}$ as desired.
 \end{proof}
 
 \begin{thm}[Diaconescu]\label{thm:1surj_to_surj_to_pem}
@@ -631,13 +631,12 @@ As equality on $\bool$ is decidable we get
  (g(f(\bfalse))= g(f(\btrue))) +
  \lnot (g(f(\bfalse))= g(f(\btrue))),
 \end{equation*}
-and, since $g$ is a section of $f$,
+and, since $g$ is a section of $f$, hence injective,
 \begin{equation*}
 (f(\bfalse) = f(\btrue)) +
 \lnot (f(\bfalse) = f(\btrue)).
 \end{equation*}
-Now we see that it suffices for $A$ to be equivalent to
-$f(\bfalse) = f(\btrue)$, which is the case by \autoref{prop:trunc_of_prop_is_set}.
+Finally, since $(f(\bfalse)=f(\btrue)) = (\north=\south) = A$ by \autoref{prop:trunc_of_prop_is_set}, we have $A+\neg A$.
 \end{proof}
 
 % This conclusion needs only \LEM{}, see \autoref{ex:lemnm}.
@@ -683,14 +682,16 @@ an exercise for the reader (\autoref{ex:well-pointed}).
   \indexdef{type!of cardinal numbers}%
   \indexdef{cardinal number}%
   \indexsee{number!cardinal}{cardinal number}%
-  is the 0-truncation of \set:
+  is the 0-truncation of the type \set of sets:
   \[ \card \defeq \pizero{\set} \]
   Thus, a \define{cardinal number}, or \define{cardinal}, is an inhabitant of $\card\jdeq \pizero\set$.
+  Technically, of course, there is a separate type $\card_\UU$ associated to each universe \type.
 \end{defn}
 
-\begin{rmk}
-  Technically, there is a separate type ``\card'' associated to each universe ``\type'', but with these conventions we can state theorems beginning with ``for all cardinal numbers\dots''\ and give them exactly the same sort of meaning as those beginning ``for all types\dots''.
-\end{rmk}
+%\begin{rmk}
+
+  % , but with these conventions we can state theorems beginning with ``for all cardinal numbers\dots''\ and give them exactly the same sort of meaning as those beginning ``for all types\dots''.
+%\end{rmk}
 
 As usual for truncations, if $A$ is a set, then $\cd{A}$ denotes its image under the canonical projection $\set \to \trunc0\set \jdeq \card$; we call $\cd{A}$ the \define{cardinality}\indexdef{cardinality} of $A$.
 By definition, \card is a set.
@@ -849,10 +850,10 @@ Finally, we can reproduce Cantor's theorem, showing that for every cardinal ther
 \begin{thm}[Cantor]
   \index{Cantor's theorem}%
   \index{theorem!Cantor's}%
-  For $A:\set$, there is no surjection $A \to (A\to \mathbf{2})$.
+  For $A:\set$, there is no surjection $A \to (A\to \bool)$.
 \end{thm}
 \begin{proof}
-  Suppose $f:A \to (A\to \mathbf{2})$ is any function, and define $g:A\to \mathbf{2}$ by $g(a) \defeq \neg f(a)(a)$.
+  Suppose $f:A \to (A\to \bool)$ is any function, and define $g:A\to \bool$ by $g(a) \defeq \neg f(a)(a)$.
   If $g = f(a_0)$, then $g(a_0) = f(a_0)(a_0)$ but $g(a_0) = \neg f(a_0)(a_0)$, a contradiction.
   Thus, $f$ is not surjective.
 \end{proof}
@@ -862,19 +863,19 @@ Finally, we can reproduce Cantor's theorem, showing that for every cardinal ther
 \end{cor}
 \begin{proof}
   Let $\beta = 2^\alpha$.
-  Now we want to show a mere proposition, so by induction we may assume $\alpha$ is $\cd{A}$, so that $\beta\jdeq \cd{A\to \mathbf{2}}$.
-  Using excluded middle, we have a function $f:A\to (A\to \mathbf{2})$ defined by
+  Now we want to show a mere proposition, so by induction we may assume $\alpha$ is $\cd{A}$, so that $\beta\jdeq \cd{A\to \bool}$.
+  Using excluded middle, we have a function $f:A\to (A\to \bool)$ defined by
   \[f(a)(a') \defeq
   \begin{cases}
-    \top &\quad a=a'\\
-    \bot &\quad a\neq a'.
+    \btrue &\quad a=a'\\
+    \bfalse &\quad a\neq a'.
   \end{cases}
   \]
-  And if $f(a)=f(a')$, then $f(a')(a) = f(a)(a) = \top$, so $a=a'$; hence $f$ is injective.
-  Thus, $\alpha \jdeq \cd{A} \le \cd{A\to \mathbf{2}} \jdeq 2^\alpha$.
+  And if $f(a)=f(a')$, then $f(a')(a) = f(a)(a) = \btrue$, so $a=a'$; hence $f$ is injective.
+  Thus, $\alpha \jdeq \cd{A} \le \cd{A\to \bool} \jdeq 2^\alpha$.
 
-  On the other hand, if $2^\alpha \le \alpha$, then we would have an injection $(A\to\mathbf{2})\to A$.
-  By \autoref{thm:injsurj}, since we have $(\lam{x} \bot):A\to \mathbf{2}$ and excluded middle, there would then be a surjection $A \to (A\to \mathbf{2})$, contradicting Cantor's theorem.
+  On the other hand, if $2^\alpha \le \alpha$, then we would have an injection $(A\to\bool)\to A$.
+  By \autoref{thm:injsurj}, since we have $(\lam{x} \bfalse):A\to \bool$ and excluded middle, there would then be a surjection $A \to (A\to \bool)$, contradicting Cantor's theorem.
 \end{proof}
 
 \section{Ordinal numbers}
@@ -972,7 +973,7 @@ Recall from \autoref{subsec:prop-subsets} that $\power B$ denotes the \emph{powe
 (We are using the notation for images of subsets from \autoref{sec:image}.)
 \begin{proof}
   We first define, for every $a:A$ and $s:\acc(a)$, an element $\bar f(a,s):B$.
-  By induction, it suffices to assume that $s$ is a function assigning to each $a'<a$ a proof $s(a'):\acc(a')$, and that moreover for each such $a'$ we have an element $\bar f(a',s(a')):B$.
+  By induction, it suffices to assume that $s$ is a function assigning to each $a'<a$ a witness $s(a'):\acc(a')$, and that moreover for each such $a'$ we have an element $\bar f(a',s(a')):B$.
   In this case, we define
   \begin{equation*}
     \bar f(a,s) \defeq g\Big(\setof{ \bar f(a',s(a')) | a'<a }\Big).
@@ -1055,7 +1056,7 @@ Rather, it is a ``local'' counterpart of the axiom of extensionality in classica
 \begin{proof}
   We prove by double well-founded induction that for any $a,b:A$, if $f(a)=f(b)$ then $a=b$.
   The inductive hypothesis for $a:A$ says that for any $a'<a$, and any $b:B$, if $f(a')=f(b)$ then $a=b$.
-  The inner inductive hypothesis for $b:A$ says that for any $b'<b$, if $f(a')=f(b')$ then $a'=b'$.
+  The inner inductive hypothesis for $b:A$ says that for any $b'<b$, if $f(a)=f(b')$ then $a=b'$.
 
   Suppose $f(a)=f(b)$; we must show $a=b$.
   By extensionality, it suffices to show that for any $c:A$ we have $(c<a)\Leftrightarrow (c<b)$.
@@ -1138,7 +1139,7 @@ We now show that \ord also admits a well-founded relation.
 \symlabel{initial-segment}
 If $A$ is an ordinal and $a:A$, let $\ordsl A a \defeq \setof{ b:A | b<a}$ denote the initial segment.
 \index{initial!segment}%
-Note that if $\ordsl A a = \ordsl A b$ as ordinals, then that isomorphisms must respect their inclusions into $A$ (since simulations form a poset), and hence they are equal as subsets of $A$.
+Note that if $\ordsl A a = \ordsl A b$ as ordinals, then that isomorphism must respect their inclusions into $A$ (since simulations form a poset), and hence they are equal as subsets of $A$.
 Therefore, since $A$ is extensional, $a=b$.
 Thus the function $a\mapsto \ordsl A a$ is an injection $A\to \ord$.
 
@@ -1350,6 +1351,7 @@ Of course,~\ref{item:wop1} is a standard classical\index{mathematics!classical} 
 
 \begin{rmk}
   If we had given the wrong proof of \autoref{thm:ordsucc} or \autoref{thm:ordunion}, then the resulting proof of \autoref{thm:wop} would be invalid: there would be no way to consistently assign universe levels\index{universe level}.
+  As it is, we require propositional resizing (which follows from \LEM{}) to ensure that $X'$ lives in the same universe as $X$ (up to equivalence).
 \end{rmk}
 
 \begin{cor}
@@ -1358,7 +1360,7 @@ Of course,~\ref{item:wop1} is a standard classical\index{mathematics!classical} 
 
 Note that \ord is a set, while \set is a 1-type.
 In general, there is no reason for a 1-type to admit any surjective function from a set.
-Even the axiom of choice does not appear to imply that \emph{every} 1-type does so, but it readily implies that this is so for 1-types constructed out of \set, such as the types of objects of categories of structures as in \autoref{sec:sip}.
+Even the axiom of choice does not appear to imply that \emph{every} 1-type does so (although see \autoref{ex:acnm-surjset}), but it readily implies that this is so for 1-types constructed out of \set, such as the types of objects of categories of structures as in \autoref{sec:sip}.
 The following corollary also applies to such categories.
 
 \begin{cor}
@@ -1418,9 +1420,11 @@ We can define a cumulative hierarchy $V$ of all sets in a given universe $\UU$ a
   \end{enumerate}
 \end{defn}
 
-In set-theoretic language, $\vset(A,f)$ can be understood as the set that is the image of $A$ under $f$, i.e.\ $\setof{ f(a) | a
-\in A }$, but of course we cannot write this in type theory. The hierarchy $V$ is
-bootstrapped from the empty map $! : \emptyt \to V$, which gives the empty set as $\emptyset = \vset(\emptyt,!)$.
+In set-theoretic language, $\vset(A,f)$ can be understood as the set (in the sense of classical set theory) that is the image of $A$ under $f$, i.e.\ $\setof{ f(a) | a \in A }$.
+However, we will avoid this notation, since it would clash with our notation for subtypes (but see~\eqref{eq:class-notation} and \autoref{def:TypeOfElements} below).
+
+The hierarchy $V$ is
+bootstrapped from the empty map $\rec\emptyt(V) : \emptyt \to V$, which gives the empty set as $\emptyset = \vset(\emptyt,\rec\emptyt(V))$.
 Then the singleton $\{\emptyset\}$ enters $V$ through $\unit \to V$, defined as $\ttt \mapsto \emptyset$, and so
 on. The type $V$ lives in the same universe as the base universe $\UU$.
 
@@ -1437,6 +1441,7 @@ At the end of the day, the induction principle for $V$ (written in pattern match
 The second clause checks that the map being defined must respect the paths introduced in \eqref{eq:V-path}.
 As usual when we state higher induction principles using pattern matching, it may seem tautologous, but is not.
 The point is that ``$h(f(a))$'' is essentially a formal symbol which we cannot peek inside of, which $h(\vset(A,f))$ must be defined in terms of. Thus, in the second clause, we assume equality of these formal symbols when appropriate, and verify that the elements resulting from the construction of the first clause are also equal.  
+Of course, if $P$ is a family of mere propositions, then the second clause is automatic.
 
 Observe that, by induction, for each $v:V$ there merely exist $A:\UU$ and $f:A\to V$ such that $v=\vset(A,f)$.
 Thus, it is reasonable to try to define the \define{membership relation}
@@ -1447,7 +1452,7 @@ $x\in v$ on $V$ by setting:
 %
 \symlabel{V-membership}
 \begin{equation*}
-  (x \in \vset(A,f)) \defeq \exis{a : A} x = f(a).
+  (x \in \vset(A,f)) \defeq (\exis{a : A} x = f(a)).
 \end{equation*}
 %
 To see that the definition is valid, we must use the recursion principle of $V$.  Thus, suppose we have a path $\vset(A, f) = \vset(B, g)$
@@ -1473,11 +1478,10 @@ if there merely exists $v\in V$ such that
 \begin{equation*}
   \fall{x : V} C(x) \Leftrightarrow x \in v.
 \end{equation*}
-
-We may also use the conventional notation for classes:
-\[
-\setof{ x | C(x) } \defeq \lam{x}C(x)
-\]
+We may also use the conventional notation for classes, which matches our standard notation for subtypes:
+\begin{equation}
+  \setof{ x | C(x) } \defeq \lam{x}C(x)\label{eq:class-notation}
+\end{equation}
 %
 A class $C: V\to \prop$ will be called \define{$\UU$-small}
 \indexdef{class!small}%
@@ -1493,15 +1497,15 @@ therefore, it will be convenient to have a $\UU$-small ``resizing'' of the ident
   relation
   %
   \begin{equation*}
-    \bisim : V \times V \longrightarrow \prop_{\UU}
+    \mathord\bisim : V \times V \longrightarrow \prop_{\UU}
   \end{equation*}
   %
   by double induction over $V$, where for $\vset(A,f)$ and $\vset(B,g)$ we let:
-  \begin{multline*}
-    \vset(A,f)  \bisim \vset(B,g) \defeq \\
+  \begin{narrowmultline*}
+    \vset(A,f)  \bisim \vset(B,g) \defeq \narrowbreak
     \big(\fall{a:A}\exis{b:B} f(a)  \bisim g(b)\big) \land
     \big(\fall{b:B}\exis{a:A} f(a) \bisim g(b)\big).
-\end{multline*}
+  \end{narrowmultline*}
 \end{defn}
 %
 To verify that the definition is correct, we just need to check that it respects paths $\vset(A, f) = \vset(B, g)$ constructed through~\eqref{eq:V-path}, but this is obvious, and that $\prop_{\UU}$ is a set, which it is.  Note that $u \bisim v$ is in $\propU$ by construction.
@@ -1511,7 +1515,8 @@ For any $u,v:V$ we have $(u=_V v) = (u \bisim v)$.
 \end{lem}
 
 \begin{proof}
-It suffices to show that $(u \bisim v)\to (u=_V v)$.
+An easy induction shows that $\bisim$ is reflexive, so by transport we have $(u=_V v)\to (u \bisim v)$.
+Thus, it remains to show that $(u \bisim v)\to (u=_V v)$.
 By induction on $u$ and $v$, we may assume they are $\vset(A,f)$ and $\vset(B,g)$ respectively.
 Then by definition, $\vset(A,f)\bisim\vset(B,g)$ implies $(\fall{a:A}\exis{b:B}f(a)  \bisim g(b))$ and conversely.
 But the inductive hypothesis then tells us that $(\fall{a:A}\exis{b:B}f(a) = g(b))$ and conversely.
@@ -1559,7 +1564,8 @@ For every $u:V$ there is a given $A_u:\UU$ and monic $m_u: A_u \mono V$ such tha
     %
   \item \emph{union:} for all $v:V$, the class $\cup v\defeq \setof{ x | \exis{u:V} x \in u \in v}$ is a $V$-set.
     %
-    \item \emph{function set:} for all $u, v:V$, the class $v^u \defeq \setof{ x | x : u\to v}$ is a $V$-set.
+    \item \emph{function set:} for all $u, v:V$, the class $v^u \defeq \setof{ x | x : u\to v}$ is a $V$-set.%
+      \footnote{Here $x:u\to v$ means that $x$ is an appropriate set of ordered pairs, according to the usual way of encoding functions in set theory.}
     %
    \item \emph{$\in$-induction:} if $C : V \to \prop$ is a class such that $C(a)$ holds whenever $C(x)$ for all $x\in a$, then $C(v)$ for all $v:V$.
    %
@@ -1591,12 +1597,12 @@ For every $u:V$ there is a given $A_u:\UU$ and monic $m_u: A_u \mono V$ such tha
     $f(a) = g(b)$. The assumption $\vset(B, g) \subseteq \vset(A, f)$ gives the other half
     of~\eqref{eq:V-path}, therefore $\vset(A,f) = \vset(B,g)$.
     
-  \item Empty set: suppose $x\in \emptyset = \vset(\emptyt,!)$.  Then $\exis{a:\emptyt}x=\, !a$, which is absurd.
+  \item Empty set: suppose $x\in \emptyset = \vset(\emptyt,\rec\emptyt(V))$.  Then $\exis{a:\emptyt}x=\, \rec\emptyt(V,a)$, which is absurd.
   
-  \item Pairing: given $u$ and $v$, let $w=\vset(1+1,[\lam{x}u, \lam{x}v])$.
+  \item Pairing: given $u$ and $v$, let $w=\vset(\bool,\rec\bool(V,u,v))$.
     \index{pair!unordered}
 
-  \item Infinity: take $w = \vset(\nat,I)$, where $I: \nat \to V$ is given by the recursion $I(0) = \emptyset$ and $I(n+1) = I(n)\cup \{I(n)\}$.
+  \item Infinity: take $w = \vset(\nat,I)$, where $I: \nat \to V$ is given by the recursion $I(0) \defeq \emptyset$ and $I(n+1) \defeq I(n)\cup \{I(n)\}$.
  
   \item Union: Take any $v:V$ and any presentation $f :A\to V$ with $v=\vset(A,f)$.  Then let $\tilde{A} \defeq \sm{a:A}[fa]$, where $[fa] \mono V$ is the type of members from \autoref{def:TypeOfElements}.  $\tilde{A}$ is plainly $\UU$-small and has a projection map $\pi:\tilde{A}\to A$.  We then let $w \defeq \vset(\tilde{A}, f\circ\pi)$.
   

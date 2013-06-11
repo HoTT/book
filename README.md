@@ -8,6 +8,7 @@ The book is a fairly complex piece of LaTeX code. The enclosed `Makefile` helps
 you compile the main files, as follows:
 
 * `make hott-online.pdf` -- the book appropriate for online reading, with colors and green links
+* `make hott-ebook.pdf` -- the book with small margins, suitable for ebook readers
 * `make hott-letter.pdf` -- the book in black & white, letter paper format, for printing at home
 * `make cover-letter.pdf` -- generate color cover, letter paper format, for printing at home
 * `make hott-ustrade.pdf` -- the book in US Trade format, without cover, used for the bound copy available at http://lulu.com/

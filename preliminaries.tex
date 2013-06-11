@@ -21,6 +21,7 @@ back to Euclid) to use the word ``proposition'' synonymously with ``theorem''.
 Thus ``$0=1$'' and its negation ``$\neg(0=1)$'' are both propositions, but only the latter is a theorem.}) are identified with particular types, via the correspondence shown in \autoref{tab:pov} on page~\pageref{tab:pov}.
 Thus, the mathematical activity of \emph{proving a theorem} is identified with a special case of the mathematical activity of \emph{constructing an object}---in this case, an inhabitant of a type that represents a proposition.
 
+\index{deductive system}%
 This leads us to another difference between type theory and set theory, but to explain it we must say a little about deductive systems in general.
 Informally, a deductive system is a collection of \define{rules}
 \indexdef{rule}%
@@ -71,7 +72,7 @@ This is called \define{judgmental equality}
 \indexdef{judgmental equality}%
 or \define{definitional equality},
 \indexdef{equality!definitional}%
-\indexdef{definitional equality}%
+\indexsee{definitional equality}{equality, definitional}%
 and we write it as $a\jdeq b$ or $a \jdeq_A b$.
 It is helpful to think of this as meaning ``equal by definition''.
 For instance, if we define a function $f:\nat\to\nat$ by the equation $f(x)=x^2$, then the expression $f(3)$ is equal to $3^2$ \emph{by definition}.
@@ -285,6 +286,8 @@ But what \emph{is} $f(y)$ in this example? Note that bound (or ``dummy'')
 variables
 \indexdef{variable!bound}%
 \indexdef{variable!dummy}%
+\indexsee{bound variable}{variable, bound}%
+\indexsee{dummy variable}{variable, bound}%
 such as $y$ in the expression $\lamu{y:\nat} x + y$
 have only a local meaning, and can be consistently replaced by any
 other variable, preserving the binding structure. Indeed, $\lamu{y:\nat} x + y$ is declared to be judgmentally equal\footnote{Use of this equality is often referred to as \define{$\alpha$-conversion.
@@ -744,7 +747,7 @@ indeed $b : B(a)$.
 We can package the recursion and induction principles into the recursor for $\Sigma$:
 \symlabel{defn:recursor-sm}%
 \[ \rec{\sm{x:A}B(x)} : \dprd{C:\UU}\Parens{\tprd{x:A} B(x) \to C} \to
-\big(\tsm{x:A}B(x)\big) \to C \]
+\Parens{\tsm{x:A}B(x)} \to C \]
 with the defining equation
 \[ \rec{\sm{x:A}B(x)}(C,g,\tup{a}{b}) \defeq g(a)(b) \]
 and the corresponding induction operator:
@@ -752,7 +755,7 @@ and the corresponding induction operator:
 \begin{narrowmultline*}
   \ind{\sm{x:A}B(x)} : \narrowbreak
     \dprd{C:(\sm{x:A} B(x)) \to \UU}
-    \Big(\tprd{a:A}{b:B(x)} C(\tup{a}{b})\Big)
+    \Parens{\tprd{a:A}{b:B(x)} C(\tup{a}{b})}
     \to \dprd{p : \sm{x:A}B(x)} C(p)
 \end{narrowmultline*}
 with the defining equation 
@@ -761,8 +764,8 @@ As before, the recursor is the special case of induction
 when the family $C$ is constant.
 
 As a further example, consider the following principle, where $A$ and $B$ are types and $R:A\to B\to \UU$.
-\[ \ac : \Big(\tprd{x:A} \tsm{y :B} R(x,y)\Big) \to
-\Big(\tsm{f:A\to B} \tprd{x:A} R(x,f(x))\Big)
+\[ \ac : \Parens{\tprd{x:A} \tsm{y :B} R(x,y)} \to
+\Parens{\tsm{f:A\to B} \tprd{x:A} R(x,f(x))}
 \]
 We may regard $R$ as a ``proof-relevant relation''
 \index{mathematics!proof-relevant}%
@@ -770,7 +773,7 @@ between $A$ and $B$, with $R(a,b)$ the type of witnesses for relatedness of $a:A
 Then $\ac$ says intuitively that if we have a dependent function $g$ assigning to every $a:A$ a dependent pair $(b,r)$ where $b:B$ and $r:R(a,b)$, then we have a function $f:A\to B$ and a dependent function assigning to every $a:A$ a witness that $R(a,f(a))$.
 Our intuition tells us that we can just split up the values of $g$ into their components.
 Indeed, using the projections we have just defined, we can define:
-\[ \ac(g) \defeq \Big(\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))\Big). \]
+\[ \ac(g) \defeq \Parens{\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))}. \]
 To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, we have
 \begin{eqnarray*}
 \lamu{x:A} \fst(g(x)) & : &  A \to  B \\
@@ -778,9 +781,9 @@ To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, 
 \end{eqnarray*}
 Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the co\-do\-main of \ac:
 \[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
-\Big(\lamu{f:A\to B} \tprd{x:A} R(x,f(x))\Big)\big(\lamu{x:A} \fst(g(x))\big). \]
+\Parens{\lamu{f:A\to B} \tprd{x:A} R(x,f(x))}\big(\lamu{x:A} \fst(g(x))\big). \]
 Thus, we have
-\[ \Big(\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))\Big) : \tsm{f:A\to B} \tprd{x:A} R(x,f(x))\]
+\[ \Parens{\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))} : \tsm{f:A\to B} \tprd{x:A} R(x,f(x))\]
 as required.
 
 If we read $\Pi$ as ``for all'' and $\Sigma$ as ``there exists'', then the type of the function $\ac$ expresses:
@@ -817,8 +820,8 @@ That is, we have $(x,y,z) \defeq (x,(y,z))$ and $(x,y,z,w)\defeq (x,(y,(z,w)))$,
 Given $A,B:\UU$, we introduce their \define{coproduct} type $A+B:\UU$.
 \indexsee{coproduct}{type, coproduct}%
 \index{type!coproduct|(defstyle}%
-\indexsee{disjoint sum}{type, coproduct}%
-\indexsee{disjoint union}{type, coproduct}%
+\indexsee{disjoint!sum}{type, coproduct}%
+\indexsee{disjoint!union}{type, coproduct}%
 \indexsee{sum!disjoint}{type, coproduct}%
 \indexsee{union!disjoint}{type, coproduct}%
 This corresponds to the \emph{disjoint union} in set theory, and we may also use that name for it.
@@ -879,8 +882,8 @@ We package this scheme into the induction principle for coproducts:
 \begin{narrowmultline*}
   \ind{A+B} :
   \dprd{C: (A + B) \to \UU}
-  \Big(\tprd{a:A} C(\inl(a))\Big) \to \narrowbreak
-  \Big(\tprd{b:B} C(\inr(b))\Big) \to \tprd{x:A+B}C(x) 
+  \Parens{\tprd{a:A} C(\inl(a))} \to \narrowbreak
+  \Parens{\tprd{b:B} C(\inr(b))} \to \tprd{x:A+B}C(x) 
 \end{narrowmultline*}
 As before, the recursor arises in the case that the family $C$ is
 constant. 
@@ -1094,7 +1097,7 @@ Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(0)$, and 
 \end{eqnarray*}
 We can also package this into a single function
 \symlabel{defn:induction-nat}%
-\[\ind{\nat}  : \dprd{C:\nat\to \UU} C(0) \to \big(\tprd{n : \nat} C(n) \to C(\suc(n))\big) \to \tprd{n : \nat} C(n) \]
+\[\ind{\nat}  : \dprd{C:\nat\to \UU} C(0) \to \Parens{\tprd{n : \nat} C(n) \to C(\suc(n))} \to \tprd{n : \nat} C(n) \]
 with the defining equations
 \begin{eqnarray*}
 \ind{\nat}(C,c_0,c_s,0)  & \defeq & c_0 \\
@@ -1443,7 +1446,7 @@ For example, we can represent the proposition \emph{for all properties $P : A \t
 where $A : \UU$ and $a,b : A$.
 However, \emph{a priori} this proposition lives in a different, higher, universe than the
 propositions we are quantifying over; that is
-\[ \Big(\prd{P : A \to \UU_i} P(a) \to P(b)\Big) : \UU_{i+1}. \]
+\[ \Parens{\prd{P : A \to \UU_i} P(a) \to P(b)} : \UU_{i+1}. \]
 We will return to this question in \autoref{subsec:prop-subsets}.
 
 \mentalpause
@@ -1577,7 +1580,7 @@ If we package up path induction into a single function, it takes the form:
 \symlabel{defn:induction-ML-id}%
 \begin{narrowmultline*}
   \indid{A} :  \dprd{C : \prd{x,y:A} (\id[A]{x}{y}) \to \UU}
-  \Big(\tprd{x:A} C(x,x,\refl{x})\Big) \to 
+  \Parens{\tprd{x:A} C(x,x,\refl{x})} \to 
   \narrowbreak
   \dprd{x,y:A}{p:\id[A]{x}{y}}   C(x,y,p)
 \end{narrowmultline*}

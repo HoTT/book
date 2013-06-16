@@ -199,8 +199,8 @@ If a sequence\index{sequence} $(a_n)_{n\in \mathbb{N}}$ is defined by giving $a_
 (This may seem so obvious as to not be worth saying, but if we view a definition by recursion as an algorithm\index{algorithm} for calculating values of a sequence, then it is precisely the process of executing that algorithm.)
 The rule~\eqref{eq:Jconv} is analogous: it says that if we define an object $f(p)$ for all $p:x=y$ by specifying what the value should be when $p$ is $\refl{x}:x=x$, then the value we specified is in fact the value of $f(\refl{x})$.
 
-This induction principle gives each type the structure of an $\infty$-groupoid\index{.infinity-groupoid@$\infty$-groupoid}, and each function between two types the structure of an $\infty$-functor\index{.infinity-functor@$\infty$-functor} between two such groupoids.  This is interesting from a mathematical point view, because it gives a new way to work with
-$\infty$-groupoids.  It is interesting from a type-theoretic point view, because it reveals new operations that are associated with each type and function.  In the remainder of this chapter, we begin to explain this structure.
+This induction principle endows each type with the structure of an $\infty$-groupoid\index{.infinity-groupoid@$\infty$-groupoid}, and each function between two types the structure of an $\infty$-functor\index{.infinity-functor@$\infty$-functor} between two such groupoids.  This is interesting from a mathematical point view, because it gives a new way to work with
+$\infty$-groupoids.  It is interesting from a type-theoretic point view, because it reveals new operations that are associated with each type and function.  In the remainder of this chapter, we begin to explore this structure.
 
 \section{Types are higher groupoids}
 \label{sec:equality}
@@ -323,16 +323,16 @@ However, in informal mathematics, and arguably even in the formalized case, it c
 Treating both sides symmetrically makes for more robust proofs; this is why we have given the proof that we did.
 (However, this is admittedly a stylistic choice.)
 
-The table below summarizes the ``equality'' and ``homotopical'' points of view on what we have done so far.
+The table below summarizes the ``equality'', ``homotopical'', and ``higher-groupoid" points of view on what we have done so far.
 \begin{center}
   \medskip
-  \begin{tabular}{ll}
+  \begin{tabular}{ccc}
     \toprule
-    Equality & Homotopy \\
+    Equality & Homotopy & $\infty$-Groupoid\\
     \midrule
-    reflexivity\index{equality!reflexivity of} & constant path\\
-    symmetry\index{equality!symmetry of} & inversion of paths\\
-    transitivity\index{equality!transitivity of} & concatenation of paths \\
+    reflexivity\index{equality!reflexivity of} & constant path & identity morphism\\
+    symmetry\index{equality!symmetry of} & inversion of paths & inverse morphism\\
+    transitivity\index{equality!transitivity of} & concatenation of paths & composition of morphisms\\
     \bottomrule
   \end{tabular}
   \medskip
@@ -712,7 +712,7 @@ In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are 
 Topologically, the transportation lemma can be viewed as a ``path lifting'' operation in a fibration.
 \index{fibration}%
 \indexdef{total!space}{%
-We think of a type family $P:A\to \type$ as a \emph{fibration} with base space $A$, with $P(x)$ being the fiber over $x$, and with $\sm{x:A}P(x)$ being the \define{total space} of the fibration.
+We think of a type family $P:A\to \type$ as a \emph{fibration} with base space $A$, with $P(x)$ being the fiber over $x$, and with $\sm{x:A}P(x)$ being the \define{total space} of the fibration, with first projection $\sm{x:A}P(x)\to A$.
 The defining property of a fibration is that given a path $p:x=y$ in the base space $A$ and a point $u:P(x)$ in the fiber over $x$, we may lift the path $p$ to a path in the total space starting at $u$.
 The point $\trans p u$ can be thought of as the other endpoint of this lifted path.
 We can also define the path itself in type theory:
@@ -839,7 +839,7 @@ In fact, these functions are inverse equivalences (in the sense to be introduced
 
 \begin{lem}\label{thm:apd-const}
   For $f:A\to B$ and $p:\id[A]xy$, we have
-  \[ \apdfunc f(p) = \transconst B p{f(x)} \ct \apfunc f (p) \]
+  \[ \apdfunc f(p) = \transconst B p{f(x)} \ct \apfunc f (p). \]
 \end{lem}
 \begin{proof}[First proof]
   Let $D:\prd{x,y:A}{p:\id xy} \type$ be the type family defined by
@@ -901,7 +901,7 @@ We will adopt the topological terminology for this.
   A \define{homotopy}
   from $f$ to $g$ is a dependent function of type
   \begin{equation*}
-    (f\htpy g) \defeq \prd{x:A} (f(x)=g(x))
+    (f\htpy g) \defeq \prd{x:A} (f(x)=g(x)).
   \end{equation*}
 \end{defn}
 
@@ -1025,14 +1025,14 @@ In general, we will only use the word \emph{isomorphism}
 \index{bijection}
 in the special case when the types $A$ and $B$ ``behave like sets'' (see \autoref{sec:basics-sets}).
 In this case, the type~\eqref{eq:qinvtype} is unproblematic.
-We will reserve the word \emph{equivalence} for an improved notion with the following properties:%
+We will reserve the word \emph{equivalence} for an improved notion $\isequiv (f)$ with the following properties:%
 \begin{enumerate}
 \item For each $f:A\to B$ there is a function $\qinv(f) \to \isequiv (f)$.\label{item:be1}
 \item Similarly, for each $f$ we have $\isequiv (f) \to \qinv(f)$; thus the two are logically equivalent (see \autoref{sec:pat}).\label{item:be2}
 \item For any two inhabitants $e_1,e_2:\isequiv(f)$ we have $e_1=e_2$.\label{item:be3}
 \end{enumerate}
 In \autoref{cha:equivalences} we will see that there are many different definitions of $\isequiv(f)$ which satisfy these three properties, but that all of them are equivalent.
-For now, to convince the reader that such things exist, we mention only the easiest such definition (though it is not the one we will eventually settle on in \autoref{cha:equivalences}):
+For now, to convince the reader that such things exist, we mention only the easiest such definition:
 \begin{equation}\label{eq:isequiv-invertible}
   \isequiv(f) \;\defeq\;
   \Parens{\sm{g:B\to A} (f\circ g \htpy \idfunc[B])}
@@ -1095,23 +1095,23 @@ Our goal in the rest of the chapter is to make explicit how this higher structur
 It turns out that for many types $A$, the equality types $\id[A]xy$ can be characterized, up to equivalence, in terms of whatever data was used to construct $A$.
 For example, if $A$ is a cartesian product $B\times C$, and $x\jdeq (b,c)$ and $y\jdeq(b',c')$, then we have an equivalence
 \begin{equation}\label{eq:prodeqv}
-  \eqv{\Big((b,c)=(b',c')\Big)}{\Big((b=b')\times (c=c')\Big)}.
+  \eqv{\big((b,c)=(b',c')\big)}{\big((b=b')\times (c=c')\big)}.
 \end{equation}
 In more traditional language, two ordered pairs are equal just when their components are equal (but the equivalence~\eqref{eq:prodeqv} says rather more than this).
 The higher structure of the identity types can also be expressed in terms of these equivalences; for instance, concatenating two equalities between pairs corresponds to pairwise concatenation.
 
 Similarly, when a type family $P:A\to\type$ is built up fiberwise using the type forming rules from \autoref{cha:typetheory}, the operation $\transfib{P}{p}{\blank}$ can be characterized, up to homotopy, in terms of the corresponding operations on the data that went into $P$.
 For instance, if $P(x) \jdeq B(x)\times C(x)$, then we have
-\[\transfib{P}{p}{(b,c)} = \left(\transfib{B}{p}{b},\transfib{C}{p}{c}\right).\]
+\[\transfib{P}{p}{(b,c)} = \big(\transfib{B}{p}{b},\transfib{C}{p}{c}\big).\]
 
 Finally, the type forming rules are also functorial, and if a function $f$ is built from this functoriality, then the operations $\apfunc f$ and $\apdfunc f$ can be computed based on the corresponding ones on the data going into $f$.
 For instance, if $g:B\to B'$ and $h:C\to C'$ and we define $f:B\times C \to B'\times C'$ by $f(b,c)\defeq (g(b),h(c))$, then modulo the equivalence~\eqref{eq:prodeqv}, we can identify $\apfunc f$ with ``$(\apfunc g,\apfunc h)$''.
 
 The next few sections (\crefrange{sec:compute-cartprod}{sec:compute-nat}) will be devoted to stating and proving theorems of this sort for all the basic type forming rules, with one section for each basic type former.
-It is here that we encounter most clearly the defects of currently available type theories.
-As will become clear in later chapters, it would be most convenient and intuitive if these characterizations of identity types, transport, and so on were \emph{judgmental}\index{judgmental equality} equalities.
-However, in the theory presented in \autoref{cha:typetheory}, the identity types are defined simultaneously for all types by their induction principle, so we cannot ``redefine'' them to be different things at different types.
-Thus, the characterizations for particular types to be discussed in this chapter are, for the most part, \emph{theorems} which we have to discover and prove.
+Here we encounter a certain apparent deficiency in currently available type theories;
+as will become clear in later chapters, it would seem to be more convenient and intuitive if these characterizations of identity types, transport, and so on were \emph{judgmental}\index{judgmental equality} equalities.
+However, in the theory presented in \autoref{cha:typetheory}, the identity types are defined uniformly for all types by their induction principle, so we cannot ``redefine'' them to be different things at different types.
+Thus, the characterizations for particular types to be discussed in this chapter are, for the most part, \emph{theorems} which we have to discover and prove, if possible.
 
 Actually, the type theory of \autoref{cha:typetheory} is insufficient to prove the desired theorems for two of the type formers: $\Pi$-types and universes.
 For this reason, we are forced to introduce axioms into our type theory, in order to make those ``theorems'' true.
@@ -1122,12 +1122,12 @@ Type-theoretically, an \emph{axiom} (c.f.~\autoref{sec:axioms}) is an ``atomic''
 \indexsee{extensionality, of functions}{function extensionality}
 \index{univalence axiom}%
 The axiom for $\Pi$-types (\autoref{sec:compute-pi}) is familiar to type theorists: it is called \emph{function extensionality}, and states (roughly) that if two functions are homotopic in the sense of \autoref{sec:basics-equivalences}, then they are equal.
-The axiom for universes, however (\autoref{sec:compute-universe}), is a new contribution of homotopy type theory due to Voevodsky: it is called the \emph{univalence axiom}, and states (roughly) that if two types are equivalent in the sense of \autoref{sec:basics-equivalences}, then they are equal.
+The axiom for universes (\autoref{sec:compute-universe}), however, is a new contribution of homotopy type theory due to Voevodsky: it is called the \emph{univalence axiom}, and states (roughly) that if two types are equivalent in the sense of \autoref{sec:basics-equivalences}, then they are equal.
 We have already remarked on this axiom in the introduction; it will play a very important role in this book.%
 \footnote{We have chosen to introduce these principles as axioms, but there are potentially other ways to formulate a type theory in which they hold.
   See the Notes to this chapter.}
 
-It is important to note, though, that not \emph{all} identity types can be ``defined'' by induction over the construction of types.
+It is important to note that not \emph{all} identity types can be ``determined'' by induction over the construction of types.
 Counterexamples include most nontrivial higher inductive types (see \autoref{cha:hits,cha:homotopy}).
 For instance, calculating the identity types of the types $\Sn^n$ (see \autoref{sec:circle}) is equivalent to calculating the higher homotopy groups of spheres, a deep and important field of research in algebraic topology.
 
@@ -1183,7 +1183,7 @@ space are pairs of paths.
 In particular, we have shown that~\eqref{eq:path-prod} has an inverse~\eqref{eq:path-prod-inverse}, which we may denote by
 \symlabel{defn:pairpath}
 \[
-\pairpath : (\id{\proj{1}(x)}{\proj{1}(y)}) \times (\id{\proj{1}(x)}{\proj{1}(y)}) \to (\id x y)
+\pairpath : (\id{\proj{1}(x)}{\proj{1}(y)}) \times (\id{\proj{1}(x)}{\proj{1}(y)}) \to (\id x y).
 \]
 Note that a special case of this yields the propositional uniqueness principle\index{uniqueness!principle, propositional!for product types} for products: $z = (\proj1(z),\proj2(z))$.
 
@@ -1218,7 +1218,7 @@ We can also characterize the reflexivity, inverses, and composition of paths in 
   {\opp{p}}
   &= {\pairpath \big(\opp{\projpath{1} (p)},\, \opp{\projpath{2} (p)}\big)} \\
   {{p \ct q}}
-  &= {\pairpath \big({\projpath{1} (p)} \ct {\projpath{1} (q)},\,{\projpath{2} (p)} \ct {\projpath{2} (q)}\big)}
+  &= {\pairpath \big({\projpath{1} (p)} \ct {\projpath{1} (q)},\,{\projpath{2} (p)} \ct {\projpath{2} (q)}\big)}.
 \end{align*}
 The same is true for the rest of the higher groupoid structure considered in \autoref{sec:equality}.
 All of these equations can be derived by using path induction on the given paths and then returning reflexivity.  
@@ -1233,7 +1233,7 @@ Now given $p : \id[Z]{z}{w}$ and $x : A(z) \times B(z)$, we can transport $x$ al
   \[
   \id[A(y) \times B(y)]
   {\transfib{A\times B}px}
-  {(\transfib{A}{p}{\proj{1}x}, \transfib{B}{p}{\proj{2}x})}
+  {(\transfib{A}{p}{\proj{1}x}, \transfib{B}{p}{\proj{2}x})}.
   \]
 \end{thm}
 \begin{proof}
@@ -1327,7 +1327,7 @@ In the reverse direction, we define
 by first inducting on $w$ and $w'$, which splits them into $(w_1,w_2)$ and
 $(w_1',w_2')$ respectively, so it suffices to show 
 \begin{equation*}
-\Parens{\sm{p:w_1 = w_1'}\trans{p}{w_2}=w_2'} \to ((w_1,w_2)=(w_1',w_2'))
+\Parens{\sm{p:w_1 = w_1'}\trans{p}{w_2}=w_2'} \to ((w_1,w_2)=(w_1',w_2')).
 \end{equation*}
 Next, given a pair $\sm{p:w_1 = w_1'}\trans{p}{w_2}=w_2'$, we can
 use $\Sigma$-induction to get $p : w_1 = w_1'$ and $q :
@@ -1445,7 +1445,7 @@ Given a type $A$ and a type family $B : A \to \type$, consider the dependent fun
 We expect the type $f=g$ of paths from $f$ to $g$ in $\prd{x:A} B(x)$ to be equivalent to 
 the type of pointwise paths:\index{pointwise!equality of functions}
 \begin{equation}
-  \eqvspaced{(\id{f}{g})}{\Parens{\prd{x:A} (\id[B(x)]{f(x)}{g(x)})}}\label{eq:path-forall}
+  \eqvspaced{(\id{f}{g})}{\Parens{\prd{x:A} (\id[B(x)]{f(x)}{g(x)})}}.\label{eq:path-forall}
 \end{equation}
 From a traditional perspective, this would say that two functions which are equal at each point are equal as functions.
 \index{continuity of functions in type theory@``continuity'' of functions in type theory}%
@@ -1481,14 +1481,14 @@ From this point of view, $\happly$ is the \emph{elimination rule}, while the hom
 \]
 and a propositional uniqueness principle\index{uniqueness!principle!for identities between functions}:
 \[
-\id{p}{\funext (x \mapsto \happly(p,{x}))} \qquad\text{for } p: (\id f g)
+\id{p}{\funext (x \mapsto \happly(p,{x}))} \qquad\text{for } p: (\id f g).
 \]
 
-We can also compute the identity, inverses, and composition in $\Pi$-types; they are simply given by pointwise operations\index{pointwise!operations on functions}.
+We can also compute the identity, inverses, and composition in $\Pi$-types; they are simply given by pointwise operations:\index{pointwise!operations on functions}.
 \begin{align*}
 \refl{f} &= \funext(x \mapsto \refl{f(x)}) \\
 \opp{\alpha} &= \funext (x \mapsto \opp{\happly (\alpha,x)})  \\
-{\alpha} \ct \beta &= \funext (x \mapsto {\happly({\alpha},x) \ct \happly({\beta},x)})
+{\alpha} \ct \beta &= \funext (x \mapsto {\happly({\alpha},x) \ct \happly({\beta},x)}).
 \end{align*}
 The first of these equalities follows from the definition of $\happly$, while the second and third are easy path inductions.
 
@@ -1618,22 +1618,22 @@ As we did in previous sections, it is useful to break this equivalence into:
 %
 \symlabel{ua}
 \begin{itemize}
-\item An introduction rule for {(\id[\type]{A}{B})}:
+\item An introduction rule for {(\id[\type]{A}{B})},
   \[
-  \ua : ({\eqv A B}) \to (\id[\type]{A}{B})
+  \ua : ({\eqv A B}) \to (\id[\type]{A}{B}).
   \]
-\item The elimination rule, which is $\idtoeqv$:
+\item The elimination rule, which is $\idtoeqv$,
   \[
-  \idtoeqv \jdeq \transfibf{X \mapsto X} : (\id[\type]{A}{B}) \to (\eqv A B)
+  \idtoeqv \jdeq \transfibf{X \mapsto X} : (\id[\type]{A}{B}) \to (\eqv A B).
   \]
-\item The propositional computation rule\index{computation rule!propositional!for univalence}: 
+\item The propositional computation rule\index{computation rule!propositional!for univalence},
   \[
-  \transfib{X \mapsto X}{\ua(f)}{x} = f(x)
+  \transfib{X \mapsto X}{\ua(f)}{x} = f(x).
   \]
-\item The propositional uniqueness principle\index{uniqueness!principle, propositional!for univalence} :
-  For any $p : \id A B$
+\item The propositional uniqueness principle: \index{uniqueness!principle, propositional!for univalence}
+  for any $p : \id A B$,
   \[
-  \id{p}{\ua(\transfibf{X \mapsto X}(p))}
+  \id{p}{\ua(\transfibf{X \mapsto X}(p))}.
   \]
 \end{itemize}
 %
@@ -1641,7 +1641,7 @@ We can also identify the reflexivity, concatenation, and inverses of equalities 
 \begin{align*}
   \refl{A} &= \ua(\idfunc[A]) \\
   \ua(f) \ct \ua(g) &= \ua(g\circ f) \\
-  \opp{\ua(f)} &= \ua(f^{-1})
+  \opp{\ua(f)} &= \ua(f^{-1}).
 \end{align*}
 The first of these follows because $\idfunc[A] = \idtoeqv(\refl{A})$ by definition of \idtoeqv, and \ua is the inverse of \idtoeqv.
 For the second, if we define $p \defeq \ua(f)$ and $q\defeq \ua(g)$, then we have
@@ -1750,7 +1750,7 @@ A yet more general version is when $B$ can be a family of types indexed on $A$:
   Then we have
   \begin{equation*}
     \transfib{x \mapsto \id[B(x)]{f(x)}{g(x)}}{p}{q} = 
-    \opp{(\apfunc{f}{p})} \ct \apdfunc{(\transfibf{A}{p})}(q) \ct \apfunc{g}{p}
+    \opp{(\apfunc{f}{p})} \ct \apdfunc{(\transfibf{A}{p})}(q) \ct \apfunc{g}{p}.
   \end{equation*}
 \end{thm}
 
@@ -1759,7 +1759,7 @@ Finally, as in \autoref{sec:compute-pi}, for families of identity types there is
 
 \begin{thm}\label{thm:dpath-path}
   For $p:\id[A]a{a'}$ with $q:a=a$ and $r:a'=a'$, we have
-  \[ \eqvspaced{ \big(\transfib{x\mapsto (x=x)}{p}{q} = r \big) }{ \big( q \ct p = p \ct r \big) } \]
+  \[ \eqvspaced{ \big(\transfib{x\mapsto (x=x)}{p}{q} = r \big) }{ \big( q \ct p = p \ct r \big). } \]
 \end{thm}
 \begin{proof}
   Path induction on $p$, followed by the fact that composing with the unit equalities $q\ct 1 = q$ and $r = 1\ct r$ is an equivalence.
@@ -1784,7 +1784,7 @@ Identity types themselves, of course, are a special case.
 
 We now consider our first example of a \emph{positive} type former.
 \index{type!positive}\index{positive!type}%
-A positive type is one which is ``presented'' by certain constructors, with the universal property of a presentation\index{presentation!of a positive type by its constructors} being expressed by its elimination rule.
+Again informally, a positive type is one which is ``presented'' by certain constructors, with the universal property of a presentation\index{presentation!of a positive type by its constructors} being expressed by its elimination rule.
 (Categorically speaking, a positive type has a ``mapping out'' universal property, while a negative type has a ``mapping in'' universal property.)
 Because computing with presentations is, in general, an uncomputable problem, for positive types we cannot always expect a straightforward characterization of the identity type.
 However, in many particular cases, a characterization or partial characterization does exist, and can be obtained by the general method that we introduce with this example.
@@ -1797,7 +1797,7 @@ Intuitively, we expect that $A+B$ contains exact copies of $A$ and $B$ disjointl
 \begin{align}
   {(\inl(a_1)=\inl(a_2))}&\eqvsym {(a_1=a_2)} \label{eq:inlinj}\\
   {(\inr(b_1)=\inr(b_2))}&\eqvsym {(b_1=b_2)}\\
-  {(\inl(a)= \inr(b))} &\eqvsym {\emptyt} \label{eq:inlrdj}
+  {(\inl(a)= \inr(b))} &\eqvsym {\emptyt}. \label{eq:inlrdj}
 \end{align}
 We prove this as follows.
 Fix an element $a_0:A$; we will characterize the type family
@@ -1812,7 +1812,7 @@ Since we want to conclude~\eqref{eq:inlinj} from this, we should have $\code(\in
 The essential insight is that we can use the recursion principle of $A+B$ to \emph{define} $\code:A+B\to\type$ by these two equations:
 \begin{align*}
   \code(\inl(a)) &\defeq (a_0=a)\\
-  \code(\inr(b)) &\defeq \emptyt
+  \code(\inr(b)) &\defeq \emptyt .
 \end{align*}
 This is a very simple example of a proof technique that is used quite a
 bit when doing homotopy theory in homotopy type theory; see
@@ -1831,7 +1831,7 @@ We can now show:
   \[ \encode(x,p) \defeq \transfib{\code}{p}{\refl{a_0}}. \]
   Note that $\refl{a_0} : \code(\inl(a_0))$, since $\code(\inl(a_0))\jdeq (a_0=a_0)$ by definition of \code.
   Next, we define a function
-  \[ \decode : \prd{x:A+B}{c:\code(x)} (\inl(a_0)=x) \]
+  \[ \decode : \prd{x:A+B}{c:\code(x)} (\inl(a_0)=x). \]
   To define $\decode(x,c)$, we may first use the elimination principle of $A+B$ to divide into cases based on whether $x$ is of the form $\inl(a)$ or the form $\inr(b)$.
 
   In the first case, where $x\jdeq \inl(a)$, then $\code(x)\jdeq (a_0=a)$, so that $c$ is an identification between $a_0$ and $a$.
@@ -2010,7 +2010,7 @@ advantages of univalence is that two isomorphic things are interchangeable,
 in the sense that every property or construction involving one also
 applies to the other.  Common ``abuses of notation''\index{abuse!of notation} become formally
 true.  Univalence itself says that equivalent types are equal, and
-therefore interchangeable, which includes e.g.\  the common practice of identifying bijective sets.  Moreover, when we define other
+therefore interchangeable, which includes e.g.\  the common practice of identifying isomorphic sets.  Moreover, when we define other
 mathematical objects as sets, or even general types, equipped with structure or properties, we
 can derive the correct notion of equality for them from univalence.  We will illustrate this
 point with a significant example in \cref{cha:category-theory}, where we
@@ -2058,11 +2058,11 @@ structures on $A$ and semigroup structures on $B$.  With univalence,
 this is indeed obvious, because given an equivalence between types $A$
 and $B$, we can automatically derive a semigroup structure on $B$ from
 one on $A$, and moreover show that this derivation is an equivalence of
-semigroup structures.  The reason is that \semigroupstrsym is a family
+semigroup structures.  The reason is that \semigroupstrsym\ is a family
 of types, and therefore has an action on paths between types given by
 $\mathsf{transport}$:
 \[
-\transfibf{\semigroupstrsym}{(\ua(e))} : \semigroupstr{A} \to \semigroupstr{B} 
+\transfibf{\semigroupstrsym}{(\ua(e))} : \semigroupstr{A} \to \semigroupstr{B} .
 \]
 Moreover, this map is an equivalence, because 
 $\transfibf{C}(\alpha)$ is always an equivalence with inverse 
@@ -2073,7 +2073,7 @@ facts about $\mathsf{transport}$ proven in the preceding sections to
 calculate what it actually does. Let $(m,a)$ be a semigroup structure on
 $A$, and we investigate the induced semigroup structure on $B$ given by
 \[
-\transfib{\semigroupstrsym}{\ua(e)}{(m,a)}
+\transfib{\semigroupstrsym}{\ua(e)}{(m,a)}.
 \]
 First, because
 \semigroupstr{X} is defined to be a $\Sigma$-type, by
@@ -2103,12 +2103,12 @@ applied to arguments $b_1,b_2 : B$. By applying
       m(\transfib{X \mapsto X}{\opp{\ua(e)}}{b_1},
         \transfib{X \mapsto X}{\opp{\ua(e)}}{b_2}
        )
-   \big)
+   \big).
 \end{narrowmultline*}
 %
 Then, because $\ua$ is quasi-inverse to $\transfibf{X\mapsto X}$, this is equal to
 \[
-e(m(\opp{e}(b_1), \opp{e}(b_2)))
+e(m(\opp{e}(b_1), \opp{e}(b_2))).
 \]
 Thus, given two elements of $B$, the induced multiplication $m'$ 
 sends them to $A$ using the equivalence $e$, multiplies them in $A$, and
@@ -2247,7 +2247,7 @@ Then we have a function
 \begin{equation}
   \label{eq:sigma-ump-map}
   \Parens{\prd{x:X}\dsm{a:A(x)} P(x,a)} \to
-  \Parens{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}
+  \Parens{\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))}.
 \end{equation}
 Note that if we have $P(x,a) \defeq B(x)$ for some $B:X\to\type$, then~\eqref{eq:sigma-ump-map} reduces to~\eqref{eq:prod-umpd-map}.
 
@@ -2278,7 +2278,7 @@ If we read $\Sigma$ as ``there exists'' and $\Pi$ (sometimes) as ``for all'', we
 \item $\prd{x:X} \sm{a:A(x)} P(x,a)$ as ``for all $x:X$ there exists an $a:A(x)$ such that $P(x,a)$'', and
 \item $\sm{g:\prd{x:X} A(x)} \prd{x:X} P(x,g(x))$ as ``there exists a choice function $g:\prd{x:X} A(x)$ such that for all $x:X$ we have $P(x,g(x))$''.
 \end{itemize}
-Thus, \autoref{thm:ttac} says that not only is the axiom of choice ``true'', it hypotheses are equivalent to its conclusion.
+Thus, \autoref{thm:ttac} says that not only is the axiom of choice ``true'', its antecedent is actually equivalent to its conclusion.
 (On the other hand, the classical\index{mathematics!classical} mathematician may find that~\eqref{eq:sigma-ump-map} does not carry the usual meaning of the axiom of choice, since we have already specified the values of $g$, and there are no choices left to be made.
 We will return to this point in \autoref{sec:axiom-choice}.)
 
@@ -2293,7 +2293,7 @@ Here the left-to-right function is simply the induction principle for $A\times B
 We leave it to the reader to prove that these are quasi-inverses.
 There is also a version for $\Sigma$-types:
 \begin{equation}
-  \eqvspaced{\Parens{\prd{w:\sm{x:A} B(x)} C(w)}}{\Parens{\prd{x:A}{y:B(x)} C(x,y)}}\label{eq:sigma-lump}
+  \eqvspaced{\Parens{\prd{w:\sm{x:A} B(x)} C(w)}}{\Parens{\prd{x:A}{y:B(x)} C(x,y)}}.\label{eq:sigma-lump}
 \end{equation}
 Again, the left-to-right function is the induction principle.
 
@@ -2325,7 +2325,7 @@ For pullbacks, the expected explicit construction works: given $f:A\to C$ and $g
   A\times_C B \defeq \sm{a:A}{b:B} (f(a)=g(b)).\label{eq:defn-pullback}
 \end{equation}
 In \autoref{ex:pullback} we ask the reader to verify this.
-Some more general homotopy limits can be constructed in a similar way, but for colimits we need a new ingredient; see \autoref{cha:hits}.
+Some more general homotopy limits can be constructed in a similar way, but for colimits we will need a new ingredient; see \autoref{cha:hits}.
 
 \index{universal!property|)}%
 
@@ -2340,17 +2340,17 @@ The definition of identity types, with their induction principle, is due to Mart
 \index{reflection rule}%
 As mentioned in the notes to \autoref{cha:typetheory}, our identity types are those that belong to \emph{intensional} type theory, by contrast with those of \emph{extensional} type theory which have an additional ``reflection rule'' saying that if $p:x=y$, then in fact $x\jdeq y$.
 This reflection rule implies that all the higher groupoid structure collapses (see \autoref{ex:equality-reflection}), so for nontrivial homotopy we must use the intensional version. 
-One may argue, however, that homotopy type theory is more ``extensional'' than traditional extensional type theory, because of the function extensionality and univalence rules.  
+One may argue, however, that homotopy type theory is in another sense more ``extensional'' than traditional extensional type theory, because of the function extensionality and univalence axioms.  
 
 The proofs of symmetry (inversion) and transitivity (concatenation) for equalities are well-known in type theory.
-The fact that these make each type into a 1-groupoid (up to homotopy) is also folklore, and was exploited in~\cite{hs:gpd-typethy} to give the first ``homotopy'' style semantics for type theory.  
+The fact that these make each type into a 1-groupoid (up to homotopy) was exploited in~\cite{hs:gpd-typethy} to give the first ``homotopy'' style semantics for type theory.  
 
 The actual homotopical interpretation, with identity types as path spaces, and type families as fibrations, is due to \cite{AW}, who used the formalism of Quillen model categories.  An interpretation in (strict) $\infty$-groupoids\index{.infinity-groupoid@$\infty$-groupoid} was also given in the thesis \cite{mw:thesis}.
 For a construction of \emph{all} the higher operations and coherences of an $\infty$-groupoid in type theory, see~\cite{pll:wkom-type} and~\cite{bg:type-wkom}.
 
 \index{proof!assistant!Coq@\textsc{Coq}}%
 Operations such as $\transfib{P}{p}{\blank}$ and $\apfunc{f}$, and one good notion of equivalence, were first studied extensively in type theory by Voevodsky, using the proof assistant \Coq.
-Subsequent researchers have found many other equivalent definitions of equivalence, which are compared in \autoref{cha:equivalences}.
+Subsequently, many other equivalent definitions of equivalence have been found, which are compared in \autoref{cha:equivalences}.
 
 The ``computational'' interpretation of identity types, transport, and so on described in \autoref{sec:computational} has been emphasized by~\cite{lh:canonicity}.
 They also described a ``1-truncated'' type theory (see \autoref{cha:hlevels}) in which these rules are judgmental equalities.
@@ -2369,7 +2369,6 @@ In the type theory we are using in this book, function extensionality and unival
 While serviceable, this has a few drawbacks.
 For instance, type theory is formally better-behaved if we can base it entirely on rules rather than asserting axioms.
 It is also sometimes inconvenient that the theorems of \crefrange{sec:compute-cartprod}{sec:compute-nat} are only propositional equalities (paths) or equivalences, since then we must explicitly mention whenever we pass back and forth across them.
-
 One direction of current research in homotopy type theory is to describe a type system in which these rules are \emph{judgmental} equalities, solving both of these problems at once.
 So far this has only been done in some simple cases, although preliminary results such as~\cite{lh:canonicity} are promising.
 There are also other potential ways to introduce univalence and function extensionality into a type theory, such as having a sufficiently powerful notion of ``higher quotients'' or ``higher inductive-recursive types''.
@@ -2427,8 +2426,8 @@ Resolving this problem is an important open question\index{open!problem} in homo
 
 \begin{ex}\label{ex:coprod-ump}
   \index{universal!property!of coproduct}%
-  Prove that coproducts have the expected universal property:
-  \[ \eqv{(A+B \to X)}{(A\to X)\times (B\to X)} \]
+  Prove that coproducts have the expected universal property,
+  \[ \eqv{(A+B \to X)}{(A\to X)\times (B\to X)}. \]
   Can you generalize this to an equivalence involving dependent functions?
 \end{ex}
 
@@ -2436,7 +2435,7 @@ Resolving this problem is an important open question\index{open!problem} in homo
   Prove that $\Sigma$-types are ``associative'',
   \index{associativity!of Sigma-types@of $\Sigma$-types}%
   in that for any $A:\UU$ and families $B:A\to\UU$ and $C:(\sm{x:A} B(x))\to\UU$, we have
-  \[\eqvspaced{\Parens{\sm{x:A}{y:B(x)} C(\pairr{x,y})}}{\Parens{\sm{p:\sm{x:A}B(x)} C(p)}} \]
+  \[\eqvspaced{\Parens{\sm{x:A}{y:B(x)} C(\pairr{x,y})}}{\Parens{\sm{p:\sm{x:A}B(x)} C(p)}}. \]
 \end{ex}
 
 \begin{ex}\label{ex:pullback}

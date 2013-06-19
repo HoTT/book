@@ -727,15 +727,13 @@ equation
 \indexdef{projection!from dependent pair type}%
 For instance, we can derive the first projection from a $\Sigma$-type:
 \symlabel{defn:dependent-proj1}%
-\begin{eqnarray*}
-  \fst & : & \Parens{\sm{x : A}B(x)} \to A.
-  % \snd & : & \prd{p:\sm{x : A}B(x)}B(\fst(p)).
-\end{eqnarray*}
+\begin{equation*}
+  \fst : \Parens{\sm{x : A}B(x)} \to A.
+\end{equation*}
 by the defining equation
-\begin{eqnarray*}
-  \fst(\tup{a}{b}) & \defeq & a.
-  % \snd(\tup{a}{b}) & \defeq & b
-\end{eqnarray*}
+\begin{equation*}
+  \fst(\tup{a}{b}) \defeq a.
+\end{equation*}
 However, since the type of the second component of a pair
 \narrowequation{
   (a,b):\sm{x:A} B(x)
@@ -792,10 +790,10 @@ Our intuition tells us that we can just split up the values of $g$ into their co
 Indeed, using the projections we have just defined, we can define:
 \[ \ac(g) \defeq \Parens{\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))}. \]
 To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, we have
-\begin{eqnarray*}
-\lamu{x:A} \fst(g(x)) & : &  A \to  B \\
-\lamu{x:A} \snd(g(x)) & : &  \tprd{x:A} R(a,\fst(g(x))).
-\end{eqnarray*}
+\begin{align*}
+\lamu{x:A} \fst(g(x)) &: A \to  B, \\
+\lamu{x:A} \snd(g(x)) &: \tprd{x:A} R(a,\fst(g(x))).
+\end{align*}
 Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the co\-do\-main of \ac:
 \[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
 \Parens{\lamu{f:A\to B} \tprd{x:A} R(x,f(x))}\big(\lamu{x:A} \fst(g(x))\big). \]
@@ -856,20 +854,20 @@ $\inr(b):A+B$ for $b:B$. There are no ways to construct elements of the empty ty
 To construct a non-dependent function $f : A+B \to C$, we need 
 functions $g_0 : A \to C$ and $g_1 : B \to C$. Then $f$ is defined
 via the defining equations
-\begin{eqnarray*}
-  f(\inl(a)) & \defeq & g_0(a) \\
-  f(\inl(b)) & \defeq & g_1(b).
-\end{eqnarray*}
+\begin{align*}
+  f(\inl(a)) &\defeq g_0(a), \\
+  f(\inl(b)) &\defeq g_1(b).
+\end{align*}
 That is, the function $f$ is defined by \define{case analysis}.
 \indexdef{case analysis}%
 As before, we can derive the recursor:
 \symlabel{defn:recursor-plus}%
 \[ \rec{A+B} : \dprd{C:\UU}(A \to C) \to (B\to C) \to A+B \to C\]
 with the defining equations
-\begin{eqnarray*}
-\rec{A+B}(C,g_0,g_1,\inl(a)) & \defeq & g_0(a) \\
-\rec{A+B}(C,g_0,g_1,\inr(b)) & \defeq & g_1(b).
-\end{eqnarray*}
+\begin{align*}
+\rec{A+B}(C,g_0,g_1,\inl(a)) &\defeq g_0(a), \\
+\rec{A+B}(C,g_0,g_1,\inr(b)) &\defeq g_1(b).
+\end{align*}
 
 \index{recursion principle!for empty type}
 We can always construct a function $f : \emptyt \to C$ without
@@ -937,36 +935,36 @@ and derive binary coproducts from $\Sigma$-types and $\bool$.
 \index{recursion principle!for type of booleans}
 To derive a function $f : \bool \to C$ we need $c_0,c_1 : C$ and
 add the defining equations
-\begin{eqnarray*}
-  f(\bfalse) & \defeq & c_0 \\
-  f(\btrue) & \defeq & c_1.
-\end{eqnarray*}
+\begin{align*}
+  f(\bfalse) &\defeq c_0, \\
+  f(\btrue)  &\defeq c_1.
+\end{align*}
 The recursor corresponds to the if-then-else construct in
 functional programming:
 \symlabel{defn:recursor-bool}%
 \[ \rec{\bool} : \prd{C:\UU}  C \to C \to \bool \to C \]
 with the defining equations
-\begin{eqnarray*}
-  \rec{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
-  \rec{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1.
-\end{eqnarray*}
+\begin{align*}
+  \rec{\bool}(C,c_0,c_1,\bfalse) &\defeq c_0, \\
+  \rec{\bool}(C,c_0,c_1,\btrue)  &\defeq c_1.
+\end{align*}
 
 \index{induction principle!for type of booleans}
 Given $C : \bool \to \UU$, to derive a dependent function 
 $f : \prd{x:\bool}C(x)$ we need $c_0:C(\bfalse)$ and $c_1 : C(\btrue)$, in which case we can give the defining equations
-\begin{eqnarray*}
-  f(\bfalse) & \defeq & c_0 \\
-  f(\btrue) & \defeq & c_1.
-\end{eqnarray*}
+\begin{align*}
+  f(\bfalse) &\defeq c_0, \\
+  f(\btrue)  &\defeq c_1.
+\end{align*}
 We package this up into the induction principle
 \symlabel{defn:induction-bool}%
 \[ \ind{\bool} : \dprd{C:\bool \to \UU}  C(\bfalse) \to C(\btrue)
 \to \tprd{x:\bool} C(x) \]
 with the defining equations
-\begin{eqnarray*}
-  \ind{\bool}(C,c_0,c_1,\bfalse) & \defeq & c_0 \\
-  \ind{\bool}(C,c_0,c_1,\btrue) & \defeq & c_1.
-\end{eqnarray*}
+\begin{align*}
+  \ind{\bool}(C,c_0,c_1,\bfalse) &\defeq c_0, \\
+  \ind{\bool}(C,c_0,c_1,\btrue)  &\defeq c_1.
+\end{align*}
 
 As an example, using the induction principle we can prove that, as we expect, every element of $\bool$ is either $\btrue$ or $\bfalse$.
 As before, we use the equality types which we have not yet introduced, but we need only the fact that everything is equal to itself by $\refl{x}:x=x$.
@@ -990,10 +988,10 @@ Thus, we could have defined
 \index{type!coproduct}%
 \[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x). \]
 with
-\begin{eqnarray*}
-  \inl(a) & \defeq & \tup{\bfalse}{a} \\
-  \inr(b) & \defeq & \tup{\btrue}{b}.
-\end{eqnarray*}
+\begin{align*}
+  \inl(a) &\defeq \tup{\bfalse}{a}, \\
+  \inr(b) &\defeq \tup{\btrue}{b}.
+\end{align*}
 We leave it as an exercise to derive the induction principle of a coproduct type from this definition.
 (See also \autoref{ex:sum-via-bool,sec:appetizer-univalence}.)
 
@@ -1002,10 +1000,10 @@ We can apply the same idea to products and $\Pi$-types: we could have defined
 Pairs could then be constructed using induction for \bool:
 \[ \tup{a}{b} \defeq \ind{\bool}(\rec{\bool}(\UU,A,B),a,b) \]
 while the projections are straightforward applications
-\begin{eqnarray*}
-  \fst(p) & \defeq & p(\btrue) \\
-  \snd(p) & \defeq & p(\bfalse).
-\end{eqnarray*}
+\begin{align*}
+  \fst(p) &\defeq p(\btrue), \\
+  \snd(p) &\defeq p(\bfalse).
+\end{align*}
 The derivation of the induction principle for binary products defined in this way is a bit more involved, and requires function extensionality, which we will introduce in \autoref{sec:compute-pi}.
 Moreover, we do not get the same judgmental equalities; see \autoref{ex:prod-via-bool}.
 This is a recurrent issue when encoding one type as another; we will return to it in \autoref{sec:htpy-inductive}. 
@@ -1036,10 +1034,10 @@ The essential property of the natural numbers is that we can define functions by
 \index{recursion principle!for natural numbers}%
 To construct a non-dependent function $f : \nat \to C$ out of the natural numbers by recursion, it is enough to provide a starting point $c_0 : C$ and a ``next step'' function $c_s : \nat \to C \to C$.
 This gives rise to $f$ with the defining equations\index{computation rule!for natural numbers}
-\begin{eqnarray*}
-  f(0) & \defeq & c_0 \\
-  f(\suc(n)) & \defeq & c_s(n,f(n)).
-\end{eqnarray*}
+\begin{align*}
+  f(0) &\defeq c_0, \\
+  f(\suc(n)) &\defeq c_s(n,f(n)).
+\end{align*}
 We say that $f$ is defined by \define{primitive recursion}.
 \indexdef{primitive!recursion}%
 \indexdef{recursion!primitive}%
@@ -1077,10 +1075,10 @@ For example, we define addition $\add : \nat \to \nat \to \nat$ with $C \defeq \
   \add_s(n,g,m) & \defeq \suc(g(m)).
 \end{align*}
 We thus obtain $\add : \nat \to \nat \to \nat$ satisfying the definitional equalities
-\begin{eqnarray*}
-  \add(0,n) & \jdeq & n \\
-  \add(\suc(m),n) & \jdeq & \suc(\add(m,n)). 
-\end{eqnarray*}
+\begin{align*}
+  \add(0,n) &\jdeq n, \\
+  \add(\suc(m),n) &\jdeq \suc(\add(m,n)). 
+\end{align*}
 As usual, we write $\add(m,n)$ as $m+n$.
 The reader is invited to verify that $2+2\jdeq 4$.
 % ex: define multiplication and exponentiation.
@@ -1089,10 +1087,10 @@ As in previous cases, we can package the principle of primitive recursion into a
 \[\rec{\nat}  : \dprd{C:\UU} C \to (\nat \to C \to C) \to \nat \to C \]
 with the defining equations
 \symlabel{defn:recursor-nat}%
-\begin{eqnarray*}
-\rec{\nat}(C,c_0,c_s,0)  & \defeq & c_0 \\
-\rec{\nat}(C,c_0,c_s,\suc(n)) & \defeq & c_s(n,\rec{\nat}(C,c_0,c_s,n)).
-\end{eqnarray*}
+\begin{align*}
+\rec{\nat}(C,c_0,c_s,0)  &\defeq c_0, \\
+\rec{\nat}(C,c_0,c_s,\suc(n)) &\defeq c_s(n,\rec{\nat}(C,c_0,c_s,n)).
+\end{align*}
 %ex derive rec from it
 Using $\rec{\nat}$ we can present $\dbl$ and $\add$ as follows:
 \begin{align}
@@ -1108,18 +1106,18 @@ in \autoref{sec:intuitionism,sec:axiom-choice} we will see how to augment type t
 \index{induction principle!for natural numbers}
 We now follow the same approach as for other types, generalizing primitive recursion to dependent functions to obtain an \emph{induction principle}.
 Thus, assume as given a family $C : \nat \to \UU$, an element $c_0 : C(0)$, and a function $c_s : \prd{n:\nat} C(n) \to C(\suc(n))$; then we can construct $f : \prd{n:\nat} C(n)$ with the defining equations:\index{computation rule!for natural numbers}
-\begin{eqnarray*}
-  f(0) & \defeq & c_0 \\
-  f(\suc(n)) & \defeq & c_s(n,f(n)).
-\end{eqnarray*}
+\begin{align*}
+  f(0) &\defeq c_0, \\
+  f(\suc(n)) \defeq c_s(n,f(n)).
+\end{align*}
 We can also package this into a single function
 \symlabel{defn:induction-nat}%
 \[\ind{\nat}  : \dprd{C:\nat\to \UU} C(0) \to \Parens{\tprd{n : \nat} C(n) \to C(\suc(n))} \to \tprd{n : \nat} C(n) \]
 with the defining equations
-\begin{eqnarray*}
-\ind{\nat}(C,c_0,c_s,0)  & \defeq & c_0 \\
-\ind{\nat}(C,c_0,c_s,\suc(n)) & \defeq & c_s(n,\ind{\nat}(C,c_0,c_s,n)).  
-\end{eqnarray*}
+\begin{align*}
+\ind{\nat}(C,c_0,c_s,0)  &\defeq c_0, \\
+\ind{\nat}(C,c_0,c_s,\suc(n)) &\defeq c_s(n,\ind{\nat}(C,c_0,c_s,n)).
+\end{align*}
 Here we finally see the connection to the classical notion of proof by induction.
 Recall that in type theory we represent propositions by types, and proving a proposition by inhabiting the corresponding type.
 In particular, a \emph{property} of natural numbers is represented by a family of types $P:\nat\to\type$.
@@ -1143,10 +1141,10 @@ To derive $\assoc_0$, recall that $0+n \jdeq n$, and hence  $0 + (j + k) \jdeq j
 Hence we can just set
 \[ \assoc_0(j,k) \defeq \refl{j+k}. \]
 For $\assoc_s$, recall that the definition of $+$ gives $\suc(m)+n \jdeq \suc(m+n)$, and hence 
-\begin{eqnarray*}
-   \suc(i) + (j + k)  & \jdeq & \suc(i+(j+k)) \qquad\text{and}\\
-   (\suc(i)+j)+k & \jdeq & \suc((i+j)+k).
-\end{eqnarray*}
+\begin{align*}
+   \suc(i) + (j + k)  &\jdeq \suc(i+(j+k)) \qquad\text{and}\\
+   (\suc(i)+j)+k &\jdeq \suc((i+j)+k).
+\end{align*}
 Thus, the output type of $\assoc_s$ is equivalently $\id{\suc(i+(j+k))}{\suc((i+j)+k)}$.
 But its input (the ``inductive hypothesis'')
 \index{hypothesis!inductive}%
@@ -1670,21 +1668,21 @@ In other words, a path $p:\id{x}{x}$ may  be not equal to reflexivity as an elem
 The two induction principles for the identity type introduced above are equivalent.
 It is easy to see that path induction follows from based path induction principle.
 Indeed, let us assume the premises of path induction:
-\begin{eqnarray*}
-C & : & \prd{x,y:A}(\id[A]{x}{y}) \to \UU  \\
-c & :  & \prd{x:A} C(x,x,\refl{x}).
-\end{eqnarray*}
+\begin{align*}
+C &: \prd{x,y:A}(\id[A]{x}{y}) \to \UU,\\
+c &: \prd{x:A} C(x,x,\refl{x}).
+\end{align*}
 Now, given an element $x:A$, we can instantiate both of the above, obtaining
-\begin{eqnarray*}
-C' & : & \prd{y:A} (\id[A]{x}{y}) \to \UU  \\
-C' & \defeq & C(x) \\
-c' & : & C'(x,\refl{x}) \\
-c' & \defeq & c(x).
-\end{eqnarray*}
+\begin{align*}
+C' &: \prd{y:A} (\id[A]{x}{y}) \to \UU,  \\
+C' &\defeq C(x), \\
+c' &: & C'(x,\refl{x}), \\
+c' &\defeq c(x).
+\end{align*}
 Clearly, $C'$ and $c'$ match the premises of based path induction and hence we can construct 
-\begin{eqnarray*}
-g : \prd{y:A}{p : \id{x}{y}} C'(y,p)
-\end{eqnarray*}
+\begin{equation*}
+  g : \prd{y:A}{p : \id{x}{y}} C'(y,p)
+\end{equation*}
 with the defining equality
 \[ g(x,\refl{x}) \defeq c'.\]
 Now we observe that $g$'s codomain is equal to $C(x,y,p)$.
@@ -1700,15 +1698,15 @@ The other direction is a bit trickier; it is not clear how we can use a particul
 based path induction. What we can do instead is to construct one instance of path induction which shows 
 all possible instantiations of based path induction at once.
 Define
-\begin{eqnarray*}
-D & : & \prd{x,y:A} (\id[A]{x}{y}) \to \UU \\
-D(x,y,p) & \defeq & \prd{C : \prd{z:A}{p : \id[A]{x}{z}} \UU} C(x,\refl{x}) \to C(y,p).
-\end{eqnarray*}
+\begin{align*}
+D &: \prd{x,y:A} (\id[A]{x}{y}) \to \UU, \\
+D(x,y,p) &\defeq \prd{C : \prd{z:A}{p : \id[A]{x}{z}} \UU} C(x,\refl{x}) \to C(y,p).
+\end{align*}
 Then we can construct the function
-\begin{eqnarray*}
-d & : & \prd{x : A} D(x,x,\refl{x}) \\
-d & \defeq & \lamu{x:A}\lamu{C:\prd{z:A}{p : \id[A]{x}{z}} \UU}\lam{c:C(x,\refl{x})} c
-\end{eqnarray*}
+\begin{align*}
+d &: \prd{x : A} D(x,x,\refl{x}), \\
+d &\defeq \lamu{x:A}\lamu{C:\prd{z:A}{p : \id[A]{x}{z}} \UU}\lam{c:C(x,\refl{x})} c
+\end{align*}
 and hence using path induction obtain
 \[ f : \prd{x,y:A}{p:\id[A]{x}{y}} D(x,y,p) \]
 with $f(x,x,\refl{x}) \defeq d(x)$. Unfolding the definition of $D$, we can expand the type of $f$:
@@ -1877,10 +1875,10 @@ The fact that Martin-L\"of's rule implies Paulin-Mohring's was proved by Streich
 Assuming as given only the \emph{iterator} for natural numbers
 \[\ite : \prd{C:\UU} C \to (C \to C) \to \nat \to C \]
 with the defining equations
-\begin{eqnarray*}
-\ite(C,c_0,c_s,0)  & \defeq & c_0 \\
-\ite(C,c_0,c_s,\suc(n)) & \defeq & c_s(\ite(C,C_0,c_s,n)  
-\end{eqnarray*}
+\begin{align*}
+\ite(C,c_0,c_s,0)  &\defeq c_0, \\
+\ite(C,c_0,c_s,\suc(n)) &\defeq c_s(\ite(C,C_0,c_s,n)  
+\end{align*}
 derive the recursor $\rec{\nat}$.
 \end{ex}
 
@@ -1914,11 +1912,11 @@ Give an alternative derivation of $\indidb{A}$ from $\indid{A}$ which avoids the
   \indexdef{function!Ackermann}%
   \indexdef{Ackermann function}%
   Show that the Ackermann function $\ack : \nat \to \nat \to \nat$ is definable using only $\rec{\nat}$ satisfying the following equations:
-  \begin{eqnarray*}
-    \ack(0,n) & \jdeq & \suc(n) \\
-    \ack(\suc(m),0) & \jdeq & 1 \\
-    \ack(\suc(m),\suc(n)) & \jdeq & \ack(m,\ack(\suc(m),n))
-  \end{eqnarray*}
+  \begin{align*}
+    \ack(0,n) &\jdeq \suc(n), \\
+    \ack(\suc(m),0) &\jdeq 1, \\
+    \ack(\suc(m),\suc(n)) &\jdeq \ack(m,\ack(\suc(m),n)).
+  \end{align*}
 \end{ex}
 
 \begin{ex}\label{ex:neg-ldn}

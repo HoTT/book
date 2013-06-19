@@ -49,7 +49,7 @@ DEFAULTPDF:=$(DEFAULTTOPTEX:.tex=.pdf)
 
 default: $(DEFAULTPDF)
 
-all: $(TOPPDFFILES) exercise_solutions.pdf cover-lulu.pdf cover-letter.pdf
+all: $(TOPPDFFILES) exercise_solutions.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-letter.pdf
 
 # Main targets
 $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
@@ -85,7 +85,12 @@ $(BOOKAUXFILES) : %.aux : %.tex
 main.labels: $(BOOKAUXFILES)
 	cat $^ | grep ^.newlabel >$@
 
-cover-lulu.pdf: cover-lulu.tex cover-hires.png $(OPTFILES)
+cover-lulu-hardcover.pdf: cover-lulu-hardcover.tex cover-hires.png $(OPTFILES)
+	if which latexmk > /dev/null 2>&1 ;\
+	then latexmk -pdf $<;\
+	else pdflatex $<; fi
+
+cover-lulu-paperback.pdf: cover-lulu-paperback.tex cover-hires.png $(OPTFILES)
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi

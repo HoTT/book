@@ -1067,16 +1067,16 @@ This indeed has the correct computational behavior: for example, we have
 \end{align*}
 We can define multi-variable functions by primitive recursion as well, by currying and allowing $C$ to be a function type.
 \indexdef{addition!of natural numbers}
-For example, we define addition $\add : \nat \to \nat \to \nat$ with $C \defeq \nat \to \nat$ and the following data:
+For example, we define addition $\add : \nat \to \nat \to \nat$ with $C \defeq \nat \to \nat$ and the following ``starting point'' and ``next step'' data:
 \begin{align*}
-  \add_0 & : \nat \to \nat, \\
-  \add_0 (n) & \defeq n, \\
-  \add_s & : \nat \to (\nat \to \nat) \to (\nat \to \nat), \\
-  \add_s(n,g,m) & \defeq \suc(g(m)).
+  c_0 & : \nat \to \nat \\
+  c_0 (n) & \defeq n \\
+  c_s & : \nat \to (\nat \to \nat) \to (\nat \to \nat) \\
+  c_s(m,g)(n) & \defeq \suc(g(n)).
 \end{align*}
 We thus obtain $\add : \nat \to \nat \to \nat$ satisfying the definitional equalities
 \begin{align*}
-  \add(0,n) &\jdeq n, \\
+  \add(0,n) &\jdeq n \\
   \add(\suc(m),n) &\jdeq \suc(\add(m,n)). 
 \end{align*}
 As usual, we write $\add(m,n)$ as $m+n$.
@@ -1098,7 +1098,7 @@ Using $\rec{\nat}$ we can present $\dbl$ and $\add$ as follows:
 \add &\defeq \rec{\nat}\big(\nat \to \nat,\, \lamu{n:\nat} n,\, \lamu{n:\nat}{g:\nat \to \nat}{m :\nat} \suc(g(m))\big).
 \end{align}
 Of course, all functions definable only using the primitive recursion principle will be \emph{computable}.
-(The presence of higher function types does, however, mean we can define more than the usual primitive recursive functions; see e.g.~\autoref{ex:ackermann}.)
+(The presence of higher function types --- that is, functions with other functions as arguments --- does, however, mean we can define more than the usual primitive recursive functions; see e.g.~\autoref{ex:ackermann}.)
 This is appropriate in constructive mathematics;
 \index{mathematics!constructive}%
 in \autoref{sec:intuitionism,sec:axiom-choice} we will see how to augment type theory so that we can define more general mathematical functions.
@@ -1390,8 +1390,6 @@ So far we have discussed only propositional logic.
 \index{logic!predicate}%
 Now we consider \emph{predicate} logic, where in addition to logical connectives like ``and'' and ``or'' we have quantifiers ``there exists'' and ``for all''.
 In this case, types play a dual role: they serve as propositions and also as types in the conventional sense, i.e., domains we quantify over.
-% Indeed, we are going to exploit this duality meaning that we can also quantify over the type of proofs of a proposition.
-% (Does this add anything here?)
 A predicate over a type $A$ is represented as a family $P : A \to \UU$, assigning to every element $a : A$ a type $P(a)$ corresponding to the proposition that $P$ holds for $a$. We now extend the above translation with an explanation of the quantifiers:
 \begin{center}
   \medskip

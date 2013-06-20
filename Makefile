@@ -4,7 +4,7 @@
 DEFAULTTOPTEX = hott-online.tex
 
 # Top-level LaTeX files from which HoTT book can be generated
-TOPTEXFILES = $(DEFAULTTOPTEX) hott-ustrade.tex hott-letter.tex hott-ebook.tex
+TOPTEXFILES = $(DEFAULTTOPTEX) hott-ustrade.tex hott-letter.tex hott-a4.tex hott-ebook.tex
 
 # LaTeX files that actually comprise the book
 # (that is, all of them except configuration)
@@ -30,6 +30,7 @@ BOOKTEXFILES = 	main.tex \
 
 # Configuration files
 OPTFILES = opt-letter.tex \
+	   opt-a4.tex \
 	   opt-ustrade.tex \
 	   opt-color.tex \
 	   opt-cover.tex
@@ -49,7 +50,7 @@ DEFAULTPDF:=$(DEFAULTTOPTEX:.tex=.pdf)
 
 default: $(DEFAULTPDF)
 
-all: $(TOPPDFFILES) exercise_solutions.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-letter.pdf
+all: $(TOPPDFFILES) exercise_solutions.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-letter.pdf cover-a4.pdf
 
 # Main targets
 $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
@@ -96,6 +97,11 @@ cover-lulu-paperback.pdf: cover-lulu-paperback.tex cover-hires.png $(OPTFILES)
 	else pdflatex $<; fi
 
 cover-letter.pdf: cover-letter.tex cover-lores-front.png cover-lores-back.png $(OPTFILES)
+	if which latexmk > /dev/null 2>&1 ;\
+	then latexmk -pdf $<;\
+	else pdflatex $<; fi
+
+cover-a4.pdf: cover-a4.tex cover-lores-front.png cover-lores-back.png $(OPTFILES)
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi

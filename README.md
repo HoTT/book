@@ -40,7 +40,8 @@ replaced with your name):
 
     \newcommand{\OPTversion}{Joe-Hacker-version}
 
-Then use whatever tools you normally do to compile LaTeX. The main LaTeX files are called `hott-XXX.tex`. Buy you really should have `make` you know.
+Then use whatever tools you normally do to compile LaTeX. The main LaTeX files are called 
+`hott-XXX.tex`. But you really should have `make`, you know.
 
 Once `make` is run so that `version.txt` gets generated, you need not run
 `make` again. You can just perform the usual LaTeX cycle from your favorite editor.

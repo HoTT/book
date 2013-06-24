@@ -409,11 +409,16 @@ codomain is a universe. These functions are called
 \indexsee{type!dependent}{type, family of}%
 \indexsee{dependent!type}{type, family of}%
 they correspond to families of sets as used in
-set theory. An example of a family is the family of finite sets $\Fin
-: \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.
+set theory.
+
+\symlabel{fin}%
+An example of a type family is the family of finite sets $\Fin
+: \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements.
+(We cannot \emph{define} the family $\Fin$ yet --- indeed, we have not even introduced its domain $\nat$ yet --- but we will be able to soon; see \autoref{ex:fin}.)
+We may denote the elements of $\Fin(n)$ by $0_n,1_n,\dots,(n-1)_n$, with subscripts to emphasize that the elements of $\Fin(n)$ are different from those of $\Fin(m)$ if $n$ is different from $m$, and all are different from the ordinary natural numbers (which we will introduce in \autoref{sec:inductive-types}).
 \index{finite!sets, family of}%
-(We will be able to define this family soon; see \autoref{ex:fin}.)
-A more trivial (but very important) example is the \define{constant} type family
+
+A more trivial (but very important) example of a type family is the \define{constant} type family
 \indexdef{constant!type family}%
 \indexdef{type!family of!constant}%
 at a type $B:\UU$, which is of course the constant function $(\lam{x:A} B):A\to\UU$.
@@ -468,11 +473,13 @@ occurrences of $x$ in $\Phi$ by $a$ (avoiding variable capture, as always).
 Similarly, we have the uniqueness principle $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
 \index{uniqueness!principle!for dependent function types}%
 
-An example of a dependent function is $\fmax : \prd{n:\nat} \Fin(n+1)$
-which returns the largest element in a nonempty finite type, $\fmax(n) \defeq
-n_{n+1}$.
+As an example, recall from \autoref{sec:universes} that there is a type family $\Fin:\nat\to\UU$ whose values are the standard finite sets, with elements $0_n,1_n,\dots,(n-1)_n : \Fin(n)$.
+There is then a dependent function $\fmax : \prd{n:\nat} \Fin(n+1)$
+which returns the ``largest'' element of each nonempty finite type, $\fmax(n) \defeq n_{n+1}$.
 \index{finite!sets, family of}%
-Another important class of dependent function types are functions which are \define{polymorphic}
+As was the case for $\Fin$ itself, we cannot define $\fmax$ yet, but we will be able to soon; see \autoref{ex:fin}.
+
+Another important class of dependent function types, which we can define now, are functions which are \define{polymorphic}
 \indexdef{function!polymorphic}%
 \indexdef{polymorphic function}%
 over a given universe.
@@ -480,9 +487,17 @@ A polymorphic function is one which takes a type as one of its arguments, and th
 \symlabel{idfunc}%
 \indexdef{function!identity}%
 \indexdef{identity!function}%
-An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
+An example is the polymorphic identity function $\idfunc : \prd{A:\UU} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
+As in this example, the type arguments of a polymorphic function are often written as subscripts, or omitted altogether if they can be inferred from context.
+Another, less trivial, example is the ``swap'' operation that switches the order of the arguments of a (curried) two-argument function:
+\[ \mathsf{swap} : \prd{A,B,C:\UU} (A\to B\to C) \to (B\to A \to C)
+\]
+We can define this by
+\[ \mathsf{swap}(A,B,C,g) \defeq \lam{b}{a} g(a)(b). \]
+We might also equivalently write
+\[ \mathsf{swap}_{A,B,C}(g)(b,a) \defeq g(a,b). \]
 
-As for ordinary functions, we use currying to define dependent functions with
+As we did for ordinary functions, we use currying to define dependent functions with
 several arguments. However, in the dependent case the second domain may
 depend on the first one, and the codomain may depend on both. That is,
 given $A:\UU$ and type families $B : A \to \UU$ and $C : \prd{x:A}B(x) \to \UU$, we may construct

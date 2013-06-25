@@ -1,3 +1,5 @@
+\itexSetCatcodes
+
 %%%% MACROS FOR NOTATION %%%%
 % Use these for any notation where there are multiple options.
 
@@ -9,7 +11,7 @@
 \newcommand{\jdeq}{\equiv}      % An equality judgment
 \let\judgeq\jdeq
 %\newcommand{\defeq}{\coloneqq}  % An equality currently being defined
-\newcommand{\defeq}{\vcentcolon\equiv}  % A judgmental equality currently being defined
+\newcommand{\defeq}{\colon\equiv}  % A judgmental equality currently being defined
 
 %%% Term being defined
 \newcommand{\define}[1]{\textbf{#1}}
@@ -205,12 +207,13 @@
 \newcommand{\refl}[1]{\ensuremath{\mathsf{refl}_{#1}}\xspace}
 
 %%% Path concatenation (used infix, in diagrammatic order) %%%
-\newcommand{\ct}{%
-  \mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}%
-             {\mathbin{\raisebox{0.5ex}{$\centerdot$}}}%
-             {\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}%
-             {\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}
-}
+%\newcommand{\ct}{%
+%  \mathchoice{\mathbin{\raisebox{0.5ex}{$\displaystyle\centerdot$}}}%
+%             {\mathbin{\raisebox{0.5ex}{$\centerdot$}}}%
+%             %{\mathbin{\raisebox{0.25ex}{$\scriptstyle\,\centerdot\,$}}}%
+%             %{\mathbin{\raisebox{0.1ex}{$\scriptscriptstyle\,\centerdot\,$}}}
+%}
+\let\ct\cdot
 
 %%% Path reversal %%%
 \newcommand{\opp}[1]{\mathord{{#1}^{-1}}}
@@ -235,7 +238,7 @@
 
 %%% Map on paths %%%
 \newcommand{\mapfunc}[1]{\ensuremath{\mathsf{ap}_{#1}}\xspace} % Without argument
-\newcommand{\map}[2]{\ensuremath{{#1}\mathopen{}\left({#2}\right)\mathclose{}}\xspace}
+\renewcommand{\map}[2]{\ensuremath{{#1}\mathopen{}\left({#2}\right)\mathclose{}}\xspace}
 \let\Ap\map
 %\newcommand{\Ap}[2]{\ensuremath{{#1}\left({#2}\right)}\xspace}
 \newcommand{\mapdepfunc}[1]{\ensuremath{\mathsf{apd}_{#1}}\xspace} % Without argument
@@ -416,9 +419,9 @@
 \newcommand{\utype}{\ensuremath{\mathcal{T}\!ype}\xspace}
 
 % Pullback corner
-\newbox\pbbox
-\setbox\pbbox=\hbox{\xy \POS(65,0)\ar@{-} (0,0) \ar@{-} (65,65)\endxy}
-\def\pb{\save[]+<3.5mm,-3.5mm>*{\copy\pbbox} \restore}
+%\newbox\pbbox
+%\setbox\pbbox=\hbox{\xy \POS(65,0)\ar@{-} (0,0) \ar@{-} (65,65)\endxy}
+\def\pb{}% needs fixing\save[]+<3.5mm,-3.5mm>*{\copy\pbbox} \restore}
 
 % Macros for the categories chapter
 \newcommand{\inv}[1]{{#1}^{-1}}
@@ -549,7 +552,7 @@
 
 %%% Macros for induction
 \newcommand{\natw}{\ensuremath{\mathbf{N^w}}\xspace}
-\newcommand{\zerow}{\ensuremath{0^\mathbf{w}}\xspace}
+\newcommand{\zerow}{\ensuremath{0^{\mathbf{w}}}\xspace}
 \newcommand{\sucw}{\ensuremath{\mathbf{s^w}}\xspace}
 \newcommand{\nalg}{\nat\mathsf{Alg}}
 \newcommand{\nhom}{\nat\mathsf{Hom}}
@@ -560,10 +563,10 @@
 \newcommand{\whom}{\w\mathsf{Hom}}
 
 %%% Macros for real numbers
-\newcommand{\RC}{\ensuremath{\mathbb{R}_\mathsf{c}}\xspace} % Cauchy
-\newcommand{\RD}{\ensuremath{\mathbb{R}_\mathsf{d}}\xspace} % Dedekind
+\newcommand{\RC}{\ensuremath{\mathbb{R}_{\mathsf{c}}}\xspace} % Cauchy
+\newcommand{\RD}{\ensuremath{\mathbb{R}_{\mathsf{d}}}\xspace} % Dedekind
 \newcommand{\R}{\ensuremath{\mathbb{R}}\xspace}           % Either 
-\newcommand{\barRD}{\ensuremath{\bar{\mathbb{R}}_\mathsf{d}}\xspace} % Dedekind completion of Dedekind
+\newcommand{\barRD}{\ensuremath{\bar{\mathbb{R}}_{\mathsf{d}}}\xspace} % Dedekind completion of Dedekind
 
 \newcommand{\close}[1]{\sim_{#1}} % Relation of closeness
 \newcommand{\closesym}{\mathord\sim}
@@ -652,7 +655,8 @@
   \newtheorem{#1}[#1]{#2}
   \aliascntresetthe{#1}
   %% This command tells cleveref's \cref what to call things
-  \crefname{#1}{#2}{#3}}
+  \crefname{#1}{#2}{#3}
+}
 
 % Now define a bunch of theorem-type environments.
 \newtheorem{thm}{Theorem}[section]
@@ -718,20 +722,20 @@
 %%%% ENUMERATE NUMBERING %%%%
 
 % Number the first level of enumerates as (i), (ii), ...
-\renewcommand{\theenumi}{(\roman{enumi})}
-\renewcommand{\labelenumi}{\theenumi}
+%\renewcommand{\theenumi}{(\roman{enumi})}
+\newcommand{\labelenumi}{\theenumi}
 
 
 %%%% MARGINS %%%%
 
 % This is a matter of personal preference, but I think the left
 % margins on enumerates and itemizes are too wide.
-\setitemize[1]{leftmargin=2em}
-\setenumerate[1]{leftmargin=*}
+%\setitemize[1]{leftmargin=2em}
+%\setenumerate[1]{leftmargin=*}
 
 % Likewise that they are too spaced out.
-\setitemize[1]{itemsep=-0.2em}
-\setenumerate[1]{itemsep=-0.2em}
+%\setitemize[1]{itemsep=-0.2em}
+%\setenumerate[1]{itemsep=-0.2em}
 
 %%% Notes %%%
 \def\noteson{%
@@ -772,6 +776,86 @@
 %% Use \symlabel instead of \label to mark a pageref that you need in the index of symbols
 \newcounter{symindex}
 \newcommand{\symlabel}[1]{\refstepcounter{symindex}\label{#1}}
+
+%%% ePub-specific macros
+
+%% The following are reasonable substitutions for existing macros
+
+\let\OPTwidow=\relax
+\let\leadsto\rightsquigarrow
+
+\expandafter\let\csname narrowmultline*\expandafter\endcsname\csname multline*\endcsname
+\expandafter\let\csname endnarrowmultline*\expandafter\endcsname\csname endmultline*\endcsname
+\let\narrowmultline\multline
+\let\endnarrowmultline\endmultline
+\expandafter\let\csname flalign*\expandafter\endcsname\csname align*\endcsname
+\expandafter\let\csname endflalign*\expandafter\endcsname\csname endalign*\endcsname
+
+\newtheorem*{comment}{Comment}
+
+\NewDocumentEnvironment {textequation} {}
+{
+  \refstepcounter{equation}
+  \center
+}
+{
+  \endcenter
+}
+
+\newcommand\definecolor[3]{}
+\let\MoveEqLeft=\relax
+
+\def\mapsfrom{\hexentity{021A4}}
+\def\longmapsto{\hexentity{027FC}}
+
+%\let\phantomsection=\relax
+\let\narrowequation=\ensuremath
+\let\qedhere=\relax
+\renewcommand\lnot{\hexentity{ac}}
+
+\let\allowdisplaybreaks=\relax
+
+\NewDocumentEnvironment {alignat*} {m}
+{
+  \csname align*\endcsname
+}
+{
+  \csname endalign*\endcsname
+}
+\def\trianglelefteqslant{\hexentity{022B4}}
+
+%% The following need some thought on how best to replace
+
+\let\narrowbreak\relax
+\let\eqref=\ref
+\let\ocircle=\circ
+\let\vcentcolon=\colon
+
+\usepackage{environ}
+\NewEnviron {table} [1][] {}{}
+\makeatletter
+\let\env@tabular@save@env=\@empty
+\let\env@tabular@process=\@empty
+\makeatother
+\RenewEnviron {tabular} [1] {}{}
+\NewEnviron {figure} {}{}
+\NewEnviron {tikzpicture} [1][] {}{}
+\NewEnviron {mathpar} {} {}
+\NewEnviron {mathparpagebreakable} {} {}
+\def\tag#1{}
+\let\notag\relax
+
+\NewDocumentCommand \xymatrix {l m} {{}}
+\let\vcenter=\relax
+\itexRestoreCatcodes
+
+\def\parbox#1{}
+
+\let\uppercurveobject\relax
+\let\lowercurveobject\relax
+\let\twocellhead\relax
+
+\DeclareDocumentCommand \titleformat {m o m m m m}
 
 % Local Variables:
 % mode: latex

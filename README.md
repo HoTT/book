@@ -1,3 +1,47 @@
+## ePub Fork
+
+This is the ePub fork of the *Homotopy Type Theory* book.
+
+To create an ePub from this, you need the following:
+
+* The `internet` class.  This can
+be obtained from
+[LaTeXporter](http://www.math.ntnu.no/~stacey/code/LaTeXporter).  This
+is a LaTeX class designed for converting LaTeX to various other text
+formats.
+* Perl.  Assembling an ePub is a complicated business so there is a
+  perl script which does the heavy lifting.
+* itex2MML.  At present, an external program is used to produce the
+  MathML segments.  This is itex2MML.  You need the version
+  [with perl support](http://www.math.ntnu.no/~stacey/code/itex).
+  This needs to be compiled before use.  The compliation steps are:
+  
+	  make perl
+	  make install_perl
+
+  The latter step needs root privileges.  If you don't have them, work
+  out where perl looks for its modules in your home directory:
+  
+	  perl -le 'print join(":",@INC)'
+	  
+  Then copy the files `itex2MML.bundle`, `itex2MML.pm`, and
+  `ItexToMML.pm` into that directory.
+* The perl module `MathML::Entities`.  This can be installed from
+  CPAN.
+* The [java epub validator](http://code.google.com/p/epubcheck/).  At
+  present, the location of this file is coded into the
+  `create_epub.pl` script from the `internet` class.  It is obvious
+  which line to change.
+
+Once everything is in place, run `pdflatex main.tex` to check that it
+all works.  Then `create_epub.pl main.tex` to create the ePub.  At
+present, there are some supposed errors reported, but it still opens
+fine in iBooks.
+  
+
+
+## Original ReadMe
+
 This is a textbook that we are writing on informal homotopy type theory.
 It is part of the [Univalent foundations of mathematics](http://www.math.ias.edu/sp/univalent)
 project which took place at the Institute for Advanced Study in 2012/13.

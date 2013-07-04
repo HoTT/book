@@ -86,6 +86,16 @@ $(BOOKAUXFILES) : %.aux : %.tex
 main.labels: $(BOOKAUXFILES)
 	cat $^ | grep ^.newlabel >$@
 
+# Extract label numbers for verifying that they haven't changed within an edition.
+# Discard symbol index numbers (not seen by user) and page numbers (we don't care about them).
+main.labelnumbers: main.labels
+	sed 's/.*symindex.*//g' main.labels | sed 's/{\({[^}]*}\).*/\1/g' | sort >main.labelnumbers
+
+# Check that no labels have changed, by making sure that all label
+# numbers from the first edition are still present
+labelcheck: main.labelnumbers
+	diff -u main.labelnumbers.first-edition main.labelnumbers | grep '^-\\newlabel' && echo Some label numbers have changed since the first edition!
+
 cover-lulu-hardcover.pdf: cover-lulu-hardcover.tex cover-hires.png $(OPTFILES)
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\

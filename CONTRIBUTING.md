@@ -9,9 +9,13 @@ branch.  Changes which add new mathematics, or which alter the
 numbering of existing sections, theorems, or equations, must wait for
 the second edition.  Other changes, as long as they are not of
 unreasonable size, can be released as updates to the first edition.
+To ensure that your change does not alter existing numberings, you can
+run "make labelcheck".
 
-Corrections of typos and other errors should also be listed in the
-errata for the first edition (errata.tex).
+Corrections of mathematical typos and other errors, as well as changes
+in exposition, should also be listed in the errata for the first
+edition (errata.tex).  The second column in the errata table is
+obtained by "git describe" on the commit where you fixed the error.
 
 We are very grateful everyone who is showing interest in our project,
 and to anyone who helps us improve it!  However, in order to avoid any

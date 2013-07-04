@@ -496,6 +496,7 @@ $\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}$.
 \end{mathpar}
 
 \subsection{Contexts}
+\label{subsec:contexts}
 
 \index{context}%
 A context is a list
@@ -508,7 +509,7 @@ which indicates that the distinct variables
 \index{variable}%
 $x_1, \ldots, x_n$ are assumed to have types $A_1, \ldots, A_n$, respectively. The list may be empty. We abbreviate contexts with the letters $\Gamma$ and $\Delta$, and we may juxtapose them to form larger contexts.
 
-The judgment $\wfctx{\Gamma}$ formally expresses the fact that $\Gamma$ is well-formed context, and is governed by the rules of inference
+The judgment $\wfctx{\Gamma}$ formally expresses the fact that $\Gamma$ is a well-formed context, and is governed by the rules of inference
 %
 \begin{mathpar}
   \inferrule*[right=\ctx-\textsc{emp}]
@@ -520,7 +521,9 @@ The judgment $\wfctx{\Gamma}$ formally expresses the fact that $\Gamma$ is well-
   {\wfctx{(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})}}
 \end{mathpar}
 %
-with a side condition for the second rule: the variable $x_n$ must be distinct from variables $x_1, \ldots, x_{n-1}$.
+with a side condition for the second rule: the variable $x_n$ must be distinct from the variables $x_1, \ldots, x_{n-1}$.
+Note that the hypothesis and conclusion of $\ctx$-\textsc{ext} are judgments of different forms: the hypothesis says that in the context of variables $x_1, \ldots, x_{n-1}$, the expression $A_n$ has type $\UU_i$; while the conclusion says that the extended context $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})$ is well-formed.
+(It is a meta-theoretic property of the system that if $\oftp{\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n}}{A_{n}}}{b}{B}$ is derivable, then the context $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n}}{A_{n}})$ must be well-formed; thus $\ctx$-\textsc{ext} does not need to hypothesize well-formedness of the context to the left of $x_n$.)
 
 \subsection{Structural rules}
 
@@ -535,6 +538,8 @@ The fact that the context holds assumptions is expressed by the rule which says 
   {\oftp{\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n}}{x_i}{A_i}}
 \end{mathpar}
 %
+As with $\ctx$-\textsc{ext}, the hypothesis and conclusion of the rule $\Vble$ are judgments of different forms, only now they are reversed: we start with a well-formed context and derive a typing judgment.
+
 The following important principles, called \define{substitution}
 \indexdef{rule!of substitution}%
 and
@@ -1056,7 +1061,7 @@ number of steps to both $a'$ and $a''$, there is some $b$ to which both $a'$ and
 $a''$ eventually simplify. Thus we can define $t\conv u$ to mean that $t$ and
 $u$ simplify to the same term.
 
-(The situation is similar in \autoref{sec:syntax-more-formally}: Athough there
+(The situation is similar in \autoref{sec:syntax-more-formally}: Although there
 we presented the computation rules as undirected equalities $\jdeq$, we can give
 an operational semantics by saying that the application of an eliminator to an
 introductory form simplifies to its equal, not the other way around.)

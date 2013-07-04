@@ -377,13 +377,14 @@ To avoid the paradox we introduce a hierarchy of universes
 \indexsee{hierarchy!of universes}{type, universe}%
 \[ \UU_0 : \UU_1 : \UU_2 : \cdots \]
 where every universe $\UU_i$ is an element of the next universe
-$\UU_{i+1}$. Moreover we assume that our universes are
+$\UU_{i+1}$. Moreover, we assume that our universes are
 \define{cumulative},
 \indexdef{type!universe!cumulative}%
 \indexdef{cumulative!universes}%
-that is that all the elements of the $i$th
+that is that all the elements of the $i^{\mathrm{th}}$
 universe are also elements of the $(i+1)^{\mathrm{st}}$ universe, i.e.\ if
 $A:\UU_i$ then also $A:\UU_{i+1}$.
+This is convenient, but has the slightly unpleasant consequence that elements no longer have unique types, and is a bit tricky in other ways that need not concern us here; see the Notes.
 
 When we say that $A$ is a type, we mean that it inhabits some universe
 $\UU_i$. We usually want to avoid mentioning the level
@@ -397,6 +398,8 @@ $\UU:\UU$, which can be read as $\UU_i:\UU_{i+1}$, having left the
 indices implicit.  Writing universes in this style is referred to as
 \define{typical ambiguity}.
 \indexdef{typical ambiguity}%
+It is convenient but a bit dangerous, since it allows us to write valid-looking proofs that reproduce the paradoxes of self-reference.
+If there is any doubt about whether an argument is correct, the way to check it is to try to assign levels consistently to all universes appearing in it.
 When some universe \UU is assumed, we may refer to types belonging to \UU as \define{small types}.
 \indexdef{small!type}%
 \indexdef{type!small}%
@@ -409,14 +412,23 @@ codomain is a universe. These functions are called
 \indexsee{type!dependent}{type, family of}%
 \indexsee{dependent!type}{type, family of}%
 they correspond to families of sets as used in
-set theory. An example of a family is the family of finite sets $\Fin
-: \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements, denoted $0_n,1_n,\dots,(n-1)_n$.
+set theory.
+
+\symlabel{fin}%
+An example of a type family is the family of finite sets $\Fin
+: \nat \to \UU$, where $\Fin(n)$ is a type with exactly $n$ elements.
+(We cannot \emph{define} the family $\Fin$ yet --- indeed, we have not even introduced its domain $\nat$ yet --- but we will be able to soon; see \autoref{ex:fin}.)
+We may denote the elements of $\Fin(n)$ by $0_n,1_n,\dots,(n-1)_n$, with subscripts to emphasize that the elements of $\Fin(n)$ are different from those of $\Fin(m)$ if $n$ is different from $m$, and all are different from the ordinary natural numbers (which we will introduce in \autoref{sec:inductive-types}).
 \index{finite!sets, family of}%
-(We will be able to define this family soon; see \autoref{ex:fin}.)
-A more trivial (but very important) example is the \define{constant} type family
+
+A more trivial (but very important) example of a type family is the \define{constant} type family
 \indexdef{constant!type family}%
 \indexdef{type!family of!constant}%
 at a type $B:\UU$, which is of course the constant function $(\lam{x:A} B):A\to\UU$.
+
+As a \emph{non}-example, in our version of type theory there is no type family ``$\lam{i:\nat} \UU_i$''.
+Indeed, there is no universe large enough to be its codomain.
+Moreover, we do not even identify the indices $i$ of the universes $\UU_i$ with the natural numbers \nat of type theory (the latter to be introduced in \autoref{sec:inductive-types}).
 
 \index{type!universe|)}%
 
@@ -468,11 +480,13 @@ occurrences of $x$ in $\Phi$ by $a$ (avoiding variable capture, as always).
 Similarly, we have the uniqueness principle $f\jdeq (\lam{x} f(x))$ for any $f:\prd{x:A} B(x)$.
 \index{uniqueness!principle!for dependent function types}%
 
-An example of a dependent function is $\fmax : \prd{n:\nat} \Fin(n+1)$
-which returns the largest element in a nonempty finite type, $\fmax(n) \defeq
-n_{n+1}$.
+As an example, recall from \autoref{sec:universes} that there is a type family $\Fin:\nat\to\UU$ whose values are the standard finite sets, with elements $0_n,1_n,\dots,(n-1)_n : \Fin(n)$.
+There is then a dependent function $\fmax : \prd{n:\nat} \Fin(n+1)$
+which returns the ``largest'' element of each nonempty finite type, $\fmax(n) \defeq n_{n+1}$.
 \index{finite!sets, family of}%
-Another important class of dependent function types are functions which are \define{polymorphic}
+As was the case for $\Fin$ itself, we cannot define $\fmax$ yet, but we will be able to soon; see \autoref{ex:fin}.
+
+Another important class of dependent function types, which we can define now, are functions which are \define{polymorphic}
 \indexdef{function!polymorphic}%
 \indexdef{polymorphic function}%
 over a given universe.
@@ -480,9 +494,17 @@ A polymorphic function is one which takes a type as one of its arguments, and th
 \symlabel{idfunc}%
 \indexdef{function!identity}%
 \indexdef{identity!function}%
-An example is the polymorphic identity function $\idfunc : \prd{A:U} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
+An example is the polymorphic identity function $\idfunc : \prd{A:\UU} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
+As in this example, the type arguments of a polymorphic function are often written as subscripts, or omitted altogether if they can be inferred from context.
+Another, less trivial, example is the ``swap'' operation that switches the order of the arguments of a (curried) two-argument function:
+\[ \mathsf{swap} : \prd{A,B,C:\UU} (A\to B\to C) \to (B\to A \to C)
+\]
+We can define this by
+\[ \mathsf{swap}(A,B,C,g) \defeq \lam{b}{a} g(a)(b). \]
+We might also equivalently write
+\[ \mathsf{swap}_{A,B,C}(g)(b,a) \defeq g(a,b). \]
 
-As for ordinary functions, we use currying to define dependent functions with
+As we did for ordinary functions, we use currying to define dependent functions with
 several arguments. However, in the dependent case the second domain may
 depend on the first one, and the codomain may depend on both. That is,
 given $A:\UU$ and type families $B : A \to \UU$ and $C : \prd{x:A}B(x) \to \UU$, we may construct
@@ -519,7 +541,7 @@ However, unlike in set theory, where we define ordered pairs to be particular se
   \item how to form new types of this kind, via \define{formation rules}.
     \indexdef{formation rule}%
     \index{rule!formation}%  
-(For example: We can form the function type $A \to B$ when $A$ is a type and when $B$ is a type. We can form the dependent function type $\prd{x:A} B$ when $A$ is a type and $B(x)$ is a type for $x:A$.)
+(For example, we can form the function type $A \to B$ when $A$ is a type and when $B$ is a type. We can form the dependent function type $\prd{x:A} B(x)$ when $A$ is a type and $B(x)$ is a type for $x:A$.)
 
   \item how to construct elements of that type.  
     These are called the type's \define{constructors} or \define{introduction rules}.
@@ -565,16 +587,20 @@ We expect that ``every element of $A\times B$ is a pair'', which is the uniquene
 
 Now, how can we \emph{use} pairs, i.e.\ how can we define functions out of a product type?
 Let us first consider the definition of a non-dependent function $f : A\times B \to C$.
-Since we intend the only elements of $A\times B$ to be pairs, in order to define such a function, it should be enough to prescribe the result
-when $f$ is applied to a pair $\tup{a}{b}$.  We prescribe these results by
-providing a function $g : A \to B \to C$ and defining 
+Since we intend the only elements of $A\times B$ to be pairs, we expect to be able to define such a function by prescribing the result
+when $f$ is applied to a pair $\tup{a}{b}$.
+We can prescribe these results by providing a function $g : A \to B \to C$.
+Thus, we introduce a new rule (the elimination rule for products), which says that for any such $g$, we can define a function $f : A\times B \to C$ by
 \[ f(\tup{a}{b}) \defeq g(a)(b). \]
-We avoid writing $g(a,b)$ here, in order to emphasize that $g$ is not a
-function on a product.
+We avoid writing $g(a,b)$ here, in order to emphasize that $g$ is not a function on a product.
 (However, later on in the book we will often write $g(a,b)$ both for functions on a product and for curried functions of two variables.)
 This defining equation is the computation rule for product types\index{computation rule!for product types}.
 
-In particular, we can derive the \define{projection}
+Note that in set theory, we would justify the above definition of $f$ by the fact that every element of $A\times B$ is a pair, so that it suffices to define $f$ on pairs.
+By contrast, type theory reverses the situation: we assume that a function on $A\times B$ is well-defined as soon as we specify its values on tuples, and from this (or more precisely, from its more general version for dependent functions, below) we will be able to \emph{prove} that every element of $A\times B$ is a pair.
+From a category-theoretic perspective, we can say that we define the product $A\times B$ to be left adjoint to the ``exponential'' $B\to C$, which we have already introduced.
+
+As an example, we can derive the \define{projection}
 \indexsee{function!projection}{projection}%
 \indexsee{component, of a pair}{projection}%
 \indexdef{projection!from cartesian product type}%
@@ -792,10 +818,10 @@ Indeed, using the projections we have just defined, we can define:
 To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, we have
 \begin{align*}
 \lamu{x:A} \fst(g(x)) &: A \to  B, \\
-\lamu{x:A} \snd(g(x)) &: \tprd{x:A} R(a,\fst(g(x))).
+\lamu{x:A} \snd(g(x)) &: \tprd{x:A} R(x,\fst(g(x))).
 \end{align*}
-Moreover, the type $\prd{x:A} R(a,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the co\-do\-main of \ac:
-\[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
+Moreover, the type $\prd{x:A} R(x,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the co\-do\-main of \ac:
+\[ \tprd{x:A} R(x,\fst(g(x))) \jdeq
 \Parens{\lamu{f:A\to B} \tprd{x:A} R(x,f(x))}\big(\lamu{x:A} \fst(g(x))\big). \]
 Thus, we have
 \[ \Parens{\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))} : \tsm{f:A\to B} \tprd{x:A} R(x,f(x))\]
@@ -922,7 +948,7 @@ empty type. % In the presence of $\eta$-equality it is derivable
 \indexsee{boolean!type of}{type of booleans}%
 \index{type!of booleans|(defstyle}%
 The type of booleans $\bool:\UU$ is intended to have exactly two elements 
-$\btrue,\bfalse : \bool$. It is clear that we could construct this
+$\bfalse,\btrue : \bool$. It is clear that we could construct this
 type out of coproduct
 % this one results in a warning message just because it's on the same page as the previous entry 
 % for {type!coproduct}, so it's not our fault
@@ -1001,14 +1027,14 @@ Pairs could then be constructed using induction for \bool:
 \[ \tup{a}{b} \defeq \ind{\bool}(\rec{\bool}(\UU,A,B),a,b) \]
 while the projections are straightforward applications
 \begin{align*}
-  \fst(p) &\defeq p(\btrue), \\
-  \snd(p) &\defeq p(\bfalse).
+  \fst(p) &\defeq p(\bfalse), \\
+  \snd(p) &\defeq p(\btrue).
 \end{align*}
 The derivation of the induction principle for binary products defined in this way is a bit more involved, and requires function extensionality, which we will introduce in \autoref{sec:compute-pi}.
 Moreover, we do not get the same judgmental equalities; see \autoref{ex:prod-via-bool}.
 This is a recurrent issue when encoding one type as another; we will return to it in \autoref{sec:htpy-inductive}. 
 
-We may occasionally refer to the elements $\btrue$ and $\bfalse$ of $\bool$ as ``true'' and ``false'' respectively.
+We may occasionally refer to the elements $\bfalse$ and $\btrue$ of $\bool$ as ``false'' and ``true'' respectively.
 However, note that unlike in classical\index{mathematics!classical} mathematics, we do not use elements of $\bool$ as truth values
 \index{value!truth}%
 or as propositions.
@@ -1325,7 +1351,9 @@ This introduces unnamed variables
 \index{variable}%
 (hypotheses)
 \index{hypothesis}%
-$x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
+of types $A\to\emptyt$ and $B\to\emptyt$.
+When translating into type theory, we have to give these variables names; let us call them $x$ and $y$.
+At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
 \[ f((x,y)) \defeq\; \Box\;:A+B\to\emptyt \]
 with a ``hole'' $\Box$ of type $A+B\to\emptyt$ indicating what remains to be done.
 (We could equivalently write $f \defeq \rec{(A\to\emptyt)\times (B\to\emptyt)}(A+B\to\emptyt,\lam{x}{y} \Box)$, using the recursor instead of pattern matching.)
@@ -1525,7 +1553,7 @@ called \define{reflexivity},
 \indexdef{reflexivity!of equality}%
 which says that every element of $A$ is equal to itself (in a specified way).  We regard $\refl{a}$ as being the
 constant path\indexdef{path!constant}\indexsee{loop!constant}{path, constant}
-at the point $a$
+at the point $a$.
 
 In particular, this means that if $a$ and $b$ are \emph{judgmentally} equal, $a\jdeq b$, then we also have an element $\refl{a} : \id[A]{a}{b}$.
 This is well-typed because $a\jdeq b$ means that also the type $\id[A]{a}{b}$ is judgmentally equal to $\id[A]{a}{a}$, which is the type of $\refl{a}$.
@@ -1674,7 +1702,7 @@ Now, given an element $x:A$, we can instantiate both of the above, obtaining
 \begin{align*}
 C' &: \prd{y:A} (\id[A]{x}{y}) \to \UU,  \\
 C' &\defeq C(x), \\
-c' &: & C'(x,\refl{x}), \\
+c' &: C'(x,\refl{x}), \\
 c' &\defeq c(x).
 \end{align*}
 Clearly, $C'$ and $c'$ match the premises of based path induction and hence we can construct 
@@ -1775,7 +1803,7 @@ theory~\cite{Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopo
 by the foundational work of Brouwer \cite{beeson}, Heyting~\cite{heyting1966intuitionism}, Scott~\cite{scott70}, de 
 Bruijn~\cite{deBruijn-1973}, Howard~\cite{howard:pat}, Tait~\cite{Tait-1966,Tait-1968}, and Lawvere~\cite{lawvere:adjinfound}\index{Lawvere}.
 \index{proof!assistant}%
-Three principal variants of Martin-L\"{o}f's type theory underlie the \NuPRL~\cite{constable+86nuprl-book}, \Coq~\cite{Coq}, and 
+Three principal variants of Martin-L\"{o}f's type theory underlie the \NuPRL \cite{constable+86nuprl-book}, \Coq~\cite{Coq}, and 
 \Agda \cite{norell2007towards} computer implementations of type theory.  The theory given here differs from these formulations in a number 
 of respects, some of which are critical to the homotopy interpretation, while others are technical conveniences or involve concepts that 
 have not yet been studied in the homotopical setting.
@@ -1841,6 +1869,11 @@ However, this has the annoying consequence that for a type family $B:A\to \UU_i$
 A more sophisticated approach that solves this problem is to introduce a judgmental subtyping relation $<:$ generated by $\UU_i<:\UU_j$, but this makes the type theory more complicated to study.
 Another alternative would be to include an explicit coercion function $\uparrow : \UU_i \to \UU_j$, which could be omitted when working informally.
 
+It is also not necessary that the universes be indexed by natural numbers and linearly ordered.
+For some purposes, it is more appropriate to assume only that every universe is an element of some larger universe, together with a ``directedness'' property that any two universes are jointly contained in some larger one.
+There are many other possible variations, such as including a universe ``$\UU_{\omega}$'' that contains all $\UU_i$ (or even higher ``large cardinal'' type universes), or by internalizing the hierarchy into a type family $\lam{i} \UU_i$.
+The latter is in fact done in \Agda.
+
 The path induction principle for identity types was formulated by Martin-L\"{o}f~\cite{Martin-Lof-1972}.
 The based path induction rule in the setting of Martin-L\"of type theory is due to Paulin-Mohring \cite{Moh93}; it can be seen as an intensional generalization of the concept of ``pointwise functionality''\index{pointwise!functionality} for hypothetical judgments from \NuPRL~\cite[Section~8.1]{constable+86nuprl-book}.
 The fact that Martin-L\"of's rule implies Paulin-Mohring's was proved by Streicher using Axiom K (see~\autoref{sec:hedberg}), by Altenkirch and Goguen as in \autoref{sec:identity-types}, and finally by Hofmann without universes (as in \autoref{ex:pm-to-ml}); see~\cite[\S1.3 and Addendum]{Streicher93}.
@@ -1868,14 +1901,14 @@ The fact that Martin-L\"of's rule implies Paulin-Mohring's was proved by Streich
   \emph{(This requires concepts from \autoref{cha:basics}.)}
 \end{ex}
 
-\begin{ex}
+\begin{ex}\label{ex:iterator}
 \index{iterator!for natural numbers}
 Assuming as given only the \emph{iterator} for natural numbers
 \[\ite : \prd{C:\UU} C \to (C \to C) \to \nat \to C \]
 with the defining equations
 \begin{align*}
 \ite(C,c_0,c_s,0)  &\defeq c_0, \\
-\ite(C,c_0,c_s,\suc(n)) &\defeq c_s(\ite(C,C_0,c_s,n)  
+\ite(C,c_0,c_s,\suc(n)) &\defeq c_s(\ite(C,c_0,c_s,n))
 \end{align*}
 derive the recursor $\rec{\nat}$.
 \end{ex}
@@ -1912,7 +1945,7 @@ Give an alternative derivation of $\indidb{A}$ from $\indid{A}$ which avoids the
   Show that the Ackermann function $\ack : \nat \to \nat \to \nat$ is definable using only $\rec{\nat}$ satisfying the following equations:
   \begin{align*}
     \ack(0,n) &\jdeq \suc(n), \\
-    \ack(\suc(m),0) &\jdeq 1, \\
+    \ack(\suc(m),0) &\jdeq \ack(m,1), \\
     \ack(\suc(m),\suc(n)) &\jdeq \ack(m,\ack(\suc(m),n)).
   \end{align*}
 \end{ex}

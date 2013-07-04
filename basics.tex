@@ -230,7 +230,9 @@ We begin with symmetry of equality, which, in topological language, means that `
   \begin{equation*}
     d\defeq \lam{x} \refl{x}:\prd{x:A} D(x,x,\refl{x}).
   \end{equation*}
-  Thus, the induction principle for identity types gives us an element $\indid{A}(D,d,x,y,p): (y= x)$ for each $p:(x= y)$.
+  Thus, the induction principle for identity types gives us an element
+  \narrowequation{ \indid{A}(D,d,x,y,p): (y= x)}
+  for each $p:(x= y)$.
   We can now define the desired function $\opp{(\blank)}$ to be $\lam{p} \indid{A}(D,d,x,y,p)$, i.e.\ we set $\opp{p} \defeq \indid{A}(D,d,x,y,p)$.
   The conversion rule~\eqref{eq:Jconv} gives $\opp{\refl{x}}\jdeq \refl{x}$, as required.
 \end{proof}
@@ -672,6 +674,9 @@ We note that $\apfunc{}$ behaves functorially, in all the ways that one might ex
 \end{proof}
 \index{function|)}%
 
+As was the case for the equalities in \autoref{thm:omg}, those in \autoref{lem:ap-functor} are themselves paths, which satisfy their own coherence laws (which can be proved in the same way), and so on.
+
+
 \section{Type families are fibrations}
 \label{sec:fibrations}
 
@@ -932,7 +937,10 @@ The following proofs are left to the reader.
 
 \index{functoriality of functions in type theory@``functoriality'' of functions in type theory}%
 \index{continuity of functions in type theory@``continuity'' of functions in type theory}%
-The first level of the continuity/naturality\index{naturality of homotopies@``naturality'' of homotopies} of homotopies can be expressed as follows:
+Just as functions in type theory are automatically ``functors'', homotopies are automatically
+\index{naturality of homotopies@``naturality'' of homotopies}%
+``natural transformations'', in the following sense.
+Recall that for $f:A\to B$ and $p:\id[A]xy$, we may write $\ap f p$ to mean $\apfunc{f} (p)$.
 
 \begin{lem}\label{lem:htpy-natural}
   Suppose $H:f\htpy g$ is a homotopy between functions $f,g:A\to B$ and let $p:\id[A]xy$.  Then we have
@@ -958,6 +966,8 @@ The first level of the continuity/naturality\index{naturality of homotopies@``na
   Let $H : f \htpy \idfunc[A]$ be a homotopy, with $f : A \to A$. Then for any $x : A$ we have \[ H(f(x)) = \ap f{H(x)}. \]
   % The above path will be denoted by $\com{H}{f}{x}$.
 \end{cor}
+\noindent
+Here $f(x)$ denotes the ordinary application of $f$ to $x$, while $\ap f{H(x)}$ denotes $\apfunc{f}(H(x))$.
 \begin{proof}
 By naturality of $H$, the following diagram of paths commutes:
 \begin{align*}
@@ -968,6 +978,8 @@ fx \ar@{=}[r]_-{Hx} & x
 \end{align*}
 Canceling $H(x)$, we see that $H(f(x)) = f(H(x))$ as desired.
 \end{proof}
+
+Of course, like the functoriality of functions (\autoref{lem:ap-functor}), the equality in \autoref{lem:htpy-natural} is a path which satisfies its own coherence laws, and so on.
 
 \index{homotopy|)}%
 
@@ -1183,7 +1195,7 @@ space are pairs of paths.
 In particular, we have shown that~\eqref{eq:path-prod} has an inverse~\eqref{eq:path-prod-inverse}, which we may denote by
 \symlabel{defn:pairpath}
 \[
-\pairpath : (\id{\proj{1}(x)}{\proj{1}(y)}) \times (\id{\proj{1}(x)}{\proj{1}(y)}) \to (\id x y).
+\pairpath : (\id{\proj{1}(x)}{\proj{1}(y)}) \times (\id{\proj{2}(x)}{\proj{2}(y)}) \to (\id x y).
 \]
 Note that a special case of this yields the propositional uniqueness principle\index{uniqueness!principle, propositional!for product types} for products: $z = (\proj1(z),\proj2(z))$.
 
@@ -1241,7 +1253,7 @@ Now given $p : \id[Z]{z}{w}$ and $x : A(z) \times B(z)$, we can transport $x$ al
   \begin{align*}
     \transfib{A\times B}px&\jdeq x\\
     \transfib{A}{p}{\proj{1}x}&\jdeq \proj1x\\
-    \transfib{A}{p}{\proj{2}x}&\jdeq \proj2x.
+    \transfib{B}{p}{\proj{2}x}&\jdeq \proj2x.
   \end{align*}
   Thus, it remains to show $x = (\proj1 x, \proj2x)$.
   But this is the propositional uniqueness principle for product types, which, as we remarked above, follows from \autoref{thm:path-prod}.
@@ -1807,7 +1819,7 @@ Fix an element $a_0:A$; we will characterize the type family
 A similar argument would characterize the analogous family $x\mapsto (x = \inr(b_0))$ for any $b_0:B$.
 Together, these characterizations imply~\eqref{eq:inlinj}--\eqref{eq:inlrdj}.
 
-In order to characterize~\eqref{eq:sumcodefam}, we will define a type family $\code:A+B\to\type$ and show that $\prd{x:A+B} (\eqv{(\inl(a)=x)}{\code(x)})$.
+In order to characterize~\eqref{eq:sumcodefam}, we will define a type family $\code:A+B\to\type$ and show that $\prd{x:A+B} (\eqv{(\inl(a_0)=x)}{\code(x)})$.
 Since we want to conclude~\eqref{eq:inlinj} from this, we should have $\code(\inl(a)) = (a_0=a)$, and since we also want to conclude~\eqref{eq:inlrdj}, we should have $\code (\inr(b)) = \emptyt$.
 The essential insight is that we can use the recursion principle of $A+B$ to \emph{define} $\code:A+B\to\type$ by these two equations:
 \begin{align*}
@@ -1821,7 +1833,7 @@ e.g.\ \autoref{sec:pi1-s1-intro,sec:general-encode-decode}.
 We can now show:
 
 \begin{thm}\label{thm:path-coprod}
-  For all $x:A+B$ we have $\eqv{(\inl(a)=x)}{\code(x)}$.
+  For all $x:A+B$ we have $\eqv{(\inl(a_0)=x)}{\code(x)}$.
 \end{thm}
 \begin{proof}
   The key to the following proof is that we do it for all points $x$ together, enabling us to use the elimination principle for the coproduct.
@@ -1866,7 +1878,7 @@ We can now show:
     \tag{by \autoref{thm:transport-compose}}\\
     &= \refl{a_0} \ct c
     \tag{by \autoref{cor:transport-path-prepost}}\\
-    &= c. \qedhere \notag
+    &= c. \notag
   \end{align}
   Finally, if $x\jdeq \inr(b)$, then $c:\emptyt$, so we may conclude anything we wish.
 \end{proof}
@@ -1888,7 +1900,7 @@ full homotopical statement of \autoref{thm:path-coprod} gives more information: 
 $a_0=a$ are actually equivalent, as are $\inr(b_0)=\inr(b)$ and $b_0=b$.
 
 \begin{rmk}\label{rmk:true-neq-false}
-In particular, since the two-element type $\bool$ is equivalent to $\unit+\unit$, we have $\btrue\neq\bfalse$.
+In particular, since the two-element type $\bool$ is equivalent to $\unit+\unit$, we have $\bfalse\neq\btrue$.
 \end{rmk}
 
 This proof illustrates a general method for describing path spaces, which we will use often.  To characterize a path space, the first step is to define a comparison fibration ``$\code$'' that provides a more explicit description of the paths.  There are several different methods for proving that such a comparison fibration is equivalent to the paths (we show a few different proofs of the same result in \autoref{sec:pi1-s1-intro}).  The one we have used here is called the \define{encode-decode method}:
@@ -2155,7 +2167,7 @@ p_2 &: \transfib{\semigroupstrsym}{p_1}{(m,a)}{(m',a')}.
 \end{align*}
 By univalence, $p_1$ is $\ua(e)$ for some equivalence $e$. By
 \cref{thm:path-sigma}, function extensionality, and the above analysis of
-transport along $\semigroupstrsym$, $p_2$ is equivalent to a pair
+transport in the type family $\semigroupstrsym$, $p_2$ is equivalent to a pair
 of proofs, the first of which shows that
 \begin{equation*} \label{eq:equality-semigroup-mult}
 \prd{y_1,y_2:B} e(m(\opp{e}(y_1), \opp{e}(y_2))) = m'(y_1,y_2)

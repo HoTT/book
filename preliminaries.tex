@@ -821,7 +821,7 @@ To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, 
 \lamu{x:A} \snd(g(x)) &: \tprd{x:A} R(x,\fst(g(x))).
 \end{align*}
 Moreover, the type $\prd{x:A} R(x,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the co\-do\-main of \ac:
-\[ \tprd{x:A} R(x,\fst(f(x))) \jdeq
+\[ \tprd{x:A} R(x,\fst(g(x))) \jdeq
 \Parens{\lamu{f:A\to B} \tprd{x:A} R(x,f(x))}\big(\lamu{x:A} \fst(g(x))\big). \]
 Thus, we have
 \[ \Parens{\lamu{x:A} \fst(g(x)),\, \lamu{x:A} \snd(g(x))} : \tsm{f:A\to B} \tprd{x:A} R(x,f(x))\]
@@ -948,7 +948,7 @@ empty type. % In the presence of $\eta$-equality it is derivable
 \indexsee{boolean!type of}{type of booleans}%
 \index{type!of booleans|(defstyle}%
 The type of booleans $\bool:\UU$ is intended to have exactly two elements 
-$\btrue,\bfalse : \bool$. It is clear that we could construct this
+$\bfalse,\btrue : \bool$. It is clear that we could construct this
 type out of coproduct
 % this one results in a warning message just because it's on the same page as the previous entry 
 % for {type!coproduct}, so it's not our fault
@@ -1027,14 +1027,14 @@ Pairs could then be constructed using induction for \bool:
 \[ \tup{a}{b} \defeq \ind{\bool}(\rec{\bool}(\UU,A,B),a,b) \]
 while the projections are straightforward applications
 \begin{align*}
-  \fst(p) &\defeq p(\btrue), \\
-  \snd(p) &\defeq p(\bfalse).
+  \fst(p) &\defeq p(\bfalse), \\
+  \snd(p) &\defeq p(\btrue).
 \end{align*}
 The derivation of the induction principle for binary products defined in this way is a bit more involved, and requires function extensionality, which we will introduce in \autoref{sec:compute-pi}.
 Moreover, we do not get the same judgmental equalities; see \autoref{ex:prod-via-bool}.
 This is a recurrent issue when encoding one type as another; we will return to it in \autoref{sec:htpy-inductive}. 
 
-We may occasionally refer to the elements $\btrue$ and $\bfalse$ of $\bool$ as ``true'' and ``false'' respectively.
+We may occasionally refer to the elements $\bfalse$ and $\btrue$ of $\bool$ as ``false'' and ``true'' respectively.
 However, note that unlike in classical\index{mathematics!classical} mathematics, we do not use elements of $\bool$ as truth values
 \index{value!truth}%
 or as propositions.
@@ -1354,7 +1354,9 @@ variables
 \index{variable}%
 (hypotheses)
 \index{hypothesis}%
-$x$ and $y$ of types $A\to\emptyt$ and $B\to\emptyt$. At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
+of types $A\to\emptyt$ and $B\to\emptyt$.
+When translating into type theory, we have to give these variables names; let us call them $x$ and $y$.
+At this point our partial definition of an element of~\eqref{eq:tautology2} can be written as
 \[ f((x,y)) \defeq\; \Box\;:A+B\to\emptyt \]
 with a ``hole'' $\Box$ of type $A+B\to\emptyt$ indicating what remains to be done.
 (We could equivalently write $f \defeq \rec{(A\to\emptyt)\times (B\to\emptyt)}(A+B\to\emptyt,\lam{x}{y} \Box)$, using the recursor instead of pattern matching.)
@@ -1953,7 +1955,7 @@ Give an alternative derivation of $\indidb{A}$ from $\indid{A}$ which avoids the
   Show that the Ackermann function $\ack : \nat \to \nat \to \nat$ is definable using only $\rec{\nat}$ satisfying the following equations:
   \begin{align*}
     \ack(0,n) &\jdeq \suc(n), \\
-    \ack(\suc(m),0) &\jdeq 1, \\
+    \ack(\suc(m),0) &\jdeq \ack(m,1), \\
     \ack(\suc(m),\suc(n)) &\jdeq \ack(m,\ack(\suc(m),n)).
   \end{align*}
 \end{ex}

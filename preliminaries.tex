@@ -113,6 +113,9 @@ Because judgments cannot be put together into more complicated statements, the s
   However, in this book we refrain from such notation until \autoref{cha:rules}.}
 Thus, for instance, ``$p:\id{x}{y}$'' should be parsed as ``$p:(\id{x}{y})$'', which makes sense since ``$\id{x}{y}$'' is a type, and not as ``$\id{(p:x)}{y}$'', which is senseless since ``$p:x$'' is a judgment and cannot be equal to anything.
 Similarly, ``$A\jdeq \id{x}{y}$'' can only be parsed as ``$A\jdeq(\id{x}{y})$'', although in extreme cases such as this, one ought to add parentheses anyway to aid reading comprehension.
+Moreover, later on we will fall into the common notation of chaining together equalities --- e.g.\ writing $a=b=c=d$ to mean ``$a=b$ and $b=c$ and $c=d$, hence $a=d$'' --- and we will also include judgmental equalities in such chains.
+Context usually suffices to make the intent clear.
+
 This is perhaps also an appropriate place to mention that the common mathematical notation ``$f:A\to B$'', expressing the fact that $f$ is a function from $A$ to $B$, can be regarded as a typing judgment, since we use ``$A\to B$'' as notation for the type of functions from $A$ to $B$ (as is standard practice in type theory; see \autoref{sec:pi-types}).
 
 \index{assumption|(defstyle}%
@@ -1553,10 +1556,11 @@ If we have an element of $\id[A]{a}{b}$, we may say that $a$ and $b$ are \define
 Just as we remarked in \autoref{sec:pat} that the propositions-as-types versions of ``or'' and ``there exists'' can include more information than just the fact that the proposition is true, nothing prevents  the type $\id{a}{b}$ from also including more information.
 Indeed, this is the cornerstone of the homotopical interpretation, where we regard witnesses of $\id{a}{b}$ as \emph{paths}\indexdef{path} or \emph{equivalences} between $a$ and $b$ in the space $A$.  Just as there can be more than one path between two points of a space, there can be more than one witness that two objects are equal.  Put differently, we may regard $\id{a}{b}$ as the type of \emph{identifications}\indexdef{identification} of $a$ and $b$, and there may be many different ways in which $a$ and $b$ can be identified.
 We will return to the interpretation in \autoref{cha:basics}; for now we focus on the basic rules for the identity type.
+Just like all the other types considered in this chapter, it will have rules for formation, introduction, elimination, and computation, which behave formally in exactly the same way.
 
-Given a type $A:\UU$ and two elements $a,b:A$, we can form the type $\id[A]{a}{b}:\UU$ in the same universe.
+The formation rule says that given a type $A:\UU$ and two elements $a,b:A$, we can form the type $(\id[A]{a}{b}):\UU$ in the same universe.
 The basic way to construct an element of $\id{a}{b}$ is to know that $a$ and $b$ are the same.
-Thus, we have a dependent function
+Thus, the introduction rule is a dependent function
 \[\refl{} : \prd{a:A} (\id[A]{a}{a})\]
 called \define{reflexivity},
 \indexdef{reflexivity!of equality}%
@@ -1567,7 +1571,7 @@ at the point $a$.
 In particular, this means that if $a$ and $b$ are \emph{judgmentally} equal, $a\jdeq b$, then we also have an element $\refl{a} : \id[A]{a}{b}$.
 This is well-typed because $a\jdeq b$ means that also the type $\id[A]{a}{b}$ is judgmentally equal to $\id[A]{a}{a}$, which is the type of $\refl{a}$.
 
-The induction principle for the identity types is one of the most subtle parts of type theory, and crucial to the homotopy interpretation.
+The induction principle (i.e.\ the elimination rule) for the identity types is one of the most subtle parts of type theory, and crucial to the homotopy interpretation.
 We begin by considering an important consequence of it, the principle that ``equals may be substituted for equals,'' as expressed by the following:
 \index{indiscernability of identicals}%
 \index{equals may be substituted for equals}%
@@ -1588,13 +1592,16 @@ f(x,x,\refl{x}) \defeq \idfunc[C(x)].
 \end{description}
 This says that every family of types $C$ respects equality, in the sense that applying $C$ to \emph{equal} elements of $A$ also results in a function between the resulting types. The displayed equality states that the function associated to reflexivity is the identity function (and we shall see that, in general, the function $f(x,y,p): C(x) \to C(y)$ is always an equivalence of types).
 
-Indiscernability of identicals can be regarded as a recursion principle for the identity type, analogous to those given for booleans and natural numbers above.  It gives a mapping property of $\id[A] x y$ with respect to certain other reflexive, binary relations on $A$, namely those of the form $C(x) \to C(y)$ for some unary predicate $C(x)$.  We could also formulate a more general recursion principle with respect to reflexive relations of the more general form $C(x,y)$.  However, 
-in order to fully characterize the identity type, we must generalize it to an induction principle, which not only considers maps out of $\id[A] x y$ but also families over it.  Put differently, we consider not only allowing equals to be substituted for equals, but also taking into account the evidence $p$ for the equality.  
+Indiscernability of identicals can be regarded as a recursion principle for the identity type, analogous to those given for booleans and natural numbers above.
+Just as $\rec{\nat}$ gives a specified map $\nat\to C$ for any other type $C$ of a certain sort, indiscernability of identicals gives a specified map from $\id[A] x y$ to certain other reflexive, binary relations on $A$, namely those of the form $C(x) \to C(y)$ for some unary predicate $C(x)$.
+We could also formulate a more general recursion principle with respect to reflexive relations of the more general form $C(x,y)$.
+However, in order to fully characterize the identity type, we must generalize this recursion principle to an induction principle, which not only considers maps out of $\id[A] x y$ but also families over it.
+Put differently, we consider not only allowing equals to be substituted for equals, but also taking into account the evidence $p$ for the equality.
     
 \subsection{Path induction}
 
 \index{generation!of a type, inductive|(}
-The induction principle for the identity type is called \define{path induction}
+The induction principle for the identity type is called \define{path induction},
 \index{path!induction|(}%
 \index{induction principle!for identity type|(}%
 in view of the homotopical interpretation to be explained in  the introduction to \autoref{cha:basics}.  It can be seen as stating that the family of identity types is freely generated by the elements of the form $\refl{x}: \id{x}{x}$.
@@ -1611,7 +1618,10 @@ in view of the homotopical interpretation to be explained in  the introduction t
   \[ f(x,x,\refl{x}) \defeq c(x). \]
 \end{description}
 
-To understand this principle, consider first the simpler case when $C$
+Note that just like the induction principles for products, coproducts, natural numbers, and so on, path induction allows us to define \emph{specified} functions which exhibit appropriate computational behavior.
+Just as we have \emph{the} function $f:\nat\to C$ defined by recursion from $c_0:C$ and $c_s:\nat \to C \to C$, which moreover satisfies $f(0)\jdeq c_0$ and $f(\suc(n))\jdeq c_s(n,f(n))$, we have \emph{the} function $f : \dprd{x,y:A}{p:\id[A]{x}{y}} C(x,y,p)$ defined by path induction from $c :  \prd{x:A} C(x,x,\refl{x})$, which moreover satisfies $f(x,x,\refl{x}) \jdeq c(x)$.
+
+To understand the meaning of this principle, consider first the simpler case when $C$
 does not depend on $p$.  Then we have $C:A\to A\to \UU$, which we may
 regard as a predicate depending on two elements of $A$.  We are
 interested in knowing when the proposition $C(x,y)$ holds for some pair

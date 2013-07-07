@@ -496,24 +496,32 @@ A polymorphic function is one which takes a type as one of its arguments, and th
 \symlabel{idfunc}%
 \indexdef{function!identity}%
 \indexdef{identity!function}%
-An example is the polymorphic identity function $\idfunc : \prd{A:\UU} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$, or more succinctly $\idfunc[A] \defeq \lamu{x:A}x$.
-As in this example, the type arguments of a polymorphic function are often written as subscripts, or omitted altogether if they can be inferred from context.
-Another, less trivial, example is the ``swap'' operation that switches the order of the arguments of a (curried) two-argument function:
-\[ \mathsf{swap} : \prd{A,B,C:\UU} (A\to B\to C) \to (B\to A \to C)
+An example is the polymorphic identity function $\idfunc : \prd{A:\UU} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$.
+
+We sometimes write some arguments of a dependent function as subscripts.
+For instance, we might equivalently define the polymorphic identity function by $\idfunc[A](x) \defeq x$.
+Moreover, if an argument can be inferred from context, we may omit it altogether.
+For instance, if $a:A$, then writing $\idfunc(x)$ is unambiguous, since $\idfunc$ must mean $\idfunc[A]$ in order for it to be applicable to $a$.
+
+Another, less trivial, example of a polymorphic function is the ``swap'' operation that switches the order of the arguments of a (curried) two-argument function:
+\[ \mathsf{swap} : \prd{A:\UU}{B:\UU}{C:\UU} (A\to B\to C) \to (B\to A \to C)
 \]
 We can define this by
 \[ \mathsf{swap}(A,B,C,g) \defeq \lam{b}{a} g(a)(b). \]
-We might also equivalently write
+We might also equivalently write the type arguments as subscripts:
 \[ \mathsf{swap}_{A,B,C}(g)(b,a) \defeq g(a,b). \]
 
-As we did for ordinary functions, we use currying to define dependent functions with
-several arguments. However, in the dependent case the second domain may
+Note that as we did for ordinary functions, we use currying to define dependent functions with
+several arguments (such as $\mathsf{swap}$). However, in the dependent case the second domain may
 depend on the first one, and the codomain may depend on both. That is,
 given $A:\UU$ and type families $B : A \to \UU$ and $C : \prd{x:A}B(x) \to \UU$, we may construct
 the type $\prd{x:A}{y : B(x)} C(x,y)$ of functions with two
 arguments.
 (Like $\lambda$-abstractions, $\Pi$s automatically scope\index{scope} over the rest of the expression unless delimited; thus $C : \prd{x:A}B(x) \to \UU$ means $C : \prd{x:A}(B(x) \to \UU)$.)
-Likewise, given $f:\prd{x:A}{y : B(x)} C(x,y)$ and arguments $a:A$ and $b:B(a)$, we have $f(a)(b) : C(a,b)$, which,
+In the case when $B$ is constant and equal to $A$, we may condense the notation and write $\prd{x,y:A}$; for instance, the type of $\mathsf{swap}$ could also be written as
+\[ \mathsf{swap} : \prd{A,B,C:\UU} (A\to B\to C) \to (B\to A \to C).
+\]
+Finally, given $f:\prd{x:A}{y : B(x)} C(x,y)$ and arguments $a:A$ and $b:B(a)$, we have $f(a)(b) : C(a,b)$, which,
 as before, we write as $f(a,b) : C(a,b)$.
 
 \index{type!dependent function|)}%

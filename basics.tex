@@ -223,8 +223,19 @@ We begin with symmetry of equality, which, in topological language, means that `
   \index{equality!symmetry of}%a
   \index{symmetry!of equality}%
 \end{lem}
+
+Since this is our first time stating something a ``Lemma'' or ``Theorem'', let us pause to consider what that means.
+Recall that propositions (statements susceptible to proof) are identified with types, whereas lemmas and theorems (statements that have been proven) are identified with \emph{inhabited} types.
+Thus, the statement of a lemma or theorem should be translated into a type, as in \autoref{sec:pat}, and its proof translated into an inhabitant of that type.
+According to the interpretation of the universal quantifier ``for every'', the type corresponding to \autoref{lem:opp} is
+\[ \prd{A:\UU}{x,y:A} (x= y)\to(y= x). \]
+The proof of \autoref{lem:opp} will consist of constructing an element of this type, i.e.\ deriving the judgment $f:\prd{A:\UU}{x,y:A} (x= y)\to(y= x)$ for some $f$.
+We then introduce the notation $\opp{(\blank)}$ for this element $f$, in which the arguments $A$, $x$, and $y$ are omitted and inferred from context.
+(As remarked in \autoref{sec:types-vs-sets}, the secondary statement ``$\opp{\refl{x}}\jdeq\refl{x}$ for each $x:A$'' should be regarded as a separate judgment.)
+
 \begin{proof}[First proof]
-  Let $D:\prd{x,y:A}{p:x= y} \type$ be the type family defined by $D(x,y,p)\defeq (y= x)$.
+  Assume given $A:\UU$, and
+  let $D:\prd{x,y:A}{p:x= y} \type$ be the type family defined by $D(x,y,p)\defeq (y= x)$.
   In other words, $D$ is a function assigning to any $x,y:A$ and $p:x=y$ a type, namely the type $y=x$.
   Then we have an element
   \begin{equation*}
@@ -238,6 +249,12 @@ We begin with symmetry of equality, which, in topological language, means that `
 \end{proof}
 
 We have written out this proof in a very formal style, which may be helpful while the induction rule on identity types is unfamiliar.
+To be even more formal, we could say that \autoref{lem:opp} and its proof together consist of the judgment
+\begin{narrowmultline*}
+  \lam{A}{x}{y}{p} \indid{A}((\lam{x}{y}{p} (y=x)), (\lam{x} \refl{x}), x, y, p)
+  \narrowbreak : \prd{A:\UU}{x,y:A} (x= y)\to(y= x)
+\end{narrowmultline*}
+(along with an additional equality judgment).
 However, eventually we prefer to use more natural language, such as in the following equivalent proof.
 
 \begin{proof}[Second proof]

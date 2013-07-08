@@ -50,7 +50,7 @@ DEFAULTPDF:=$(DEFAULTTOPTEX:.tex=.pdf)
 
 default: $(DEFAULTPDF)
 
-all: $(TOPPDFFILES) exercise_solutions.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-letter.pdf cover-a4.pdf
+all: $(TOPPDFFILES) exercise_solutions.pdf errata.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-letter.pdf cover-a4.pdf
 
 # Main targets
 $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
@@ -121,14 +121,19 @@ exercise_solutions.pdf: exercise_solutions.tex main.labels
 	then latexmk -pdf $<;\
 	else pdflatex $<; fi
 
+errata.pdf: errata.tex version.tex main.labels
+	if which latexmk > /dev/null 2>&1 ;\
+	then latexmk -pdf $<;\
+	else pdflatex $<; fi
+
 clean:
-	rm -f *~ *.aux {exercise_solutions,hott-*}.{out,log,pdf,fls,fdb_latexmk,aux,brf,bbl,idx,ilg,ind,toc}
+	rm -f *~ *.aux {exercise_solutions,errata,hott-*}.{out,log,pdf,fls,fdb_latexmk,aux,brf,bbl,idx,ilg,ind,toc}
 	if which latexmk > /dev/null 2>&1 ; then latexmk -C hott-*.tex; fi
 
 # list the tex files explicitly because:
 #   - we want to tag them in the same order they appear in the book, so tag search is in logical sequence
 #   - there are many *.tex garbage files in this directory
-TAGS: $(TEXFILES) exercise_solutions.tex
+TAGS: $(TEXFILES) exercise_solutions.tex errata.tex
 	etags $^ -o $@.tmp
 	mv $@.tmp $@
 

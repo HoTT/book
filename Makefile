@@ -11,6 +11,7 @@ TOPTEXFILES = $(DEFAULTTOPTEX) hott-ustrade.tex hott-letter.tex hott-a4.tex hott
 BOOKTEXFILES = 	main.tex \
 	macros.tex \
 	version.tex \
+	frontpage.tex \
 	front.tex \
 	preface.tex \
 	introduction.tex \
@@ -26,7 +27,9 @@ BOOKTEXFILES = 	main.tex \
 	setmath.tex \
 	reals.tex \
 	formal.tex \
-	back.tex
+	symbols.tex \
+	back.tex \
+	blurb.tex
 
 # Configuration files
 OPTFILES = opt-letter.tex \
@@ -39,6 +42,21 @@ OPTFILES = opt-letter.tex \
 	   opt-no-cover.tex \
 	   opt-bastard.tex \
 	   opt-no-bastard.tex
+
+# Image files
+LORESPNGFILES = cover-lores-back-bw.png \
+		cover-lores-back.png \
+		cover-lores-front-bw.png \
+		cover-lores-front.png \
+		cover-lores.png \
+		torus-lores-bw.png
+HIRESPNGFILES = cover-hires-back-bw.png \
+		cover-hires-back.png \
+		cover-hires-front-bw.png \
+		cover-hires-front.png \
+		cover-hires.png \
+		cover-hires-bw.png \
+		torus-hires-bw.png
 
 # All the LaTeX files for the HoTT book in order of dependency
 TEXFILES = $(TOPTEXFILES) $(BOOKTEXFILES) $(OPTFILES)
@@ -129,7 +147,7 @@ hott-arxiv.tex: hott-online.tex main.tex
 	cat main.tex >>hott-arxiv.tex
 
 hott-arxiv.tar.gz: hott-arxiv.pdf
-	tar -czf hott-arxiv.tar.gz hott-arxiv.tex hott-arxiv.bbl hott-arxiv.ind $(BOOKTEXFILES) $(OPTFILES) mathpartir.sty
+	tar -czf hott-arxiv.tar.gz hott-arxiv.tex hott-arxiv.bbl hott-arxiv.ind $(BOOKTEXFILES) $(OPTFILES) $(LORESPNGFILES) mathpartir.sty
 
 exercise_solutions.pdf: exercise_solutions.tex main.labels
 	if which latexmk > /dev/null 2>&1 ;\

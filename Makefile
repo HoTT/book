@@ -32,8 +32,13 @@ BOOKTEXFILES = 	main.tex \
 OPTFILES = opt-letter.tex \
 	   opt-a4.tex \
 	   opt-ustrade.tex \
+	   opt-ebook.tex \
 	   opt-color.tex \
-	   opt-cover.tex
+	   opt-black-white.tex \
+	   opt-cover.tex \
+	   opt-no-cover.tex \
+	   opt-bastard.tex \
+	   opt-no-bastard.tex
 
 # All the LaTeX files for the HoTT book in order of dependency
 TEXFILES = $(TOPTEXFILES) $(BOOKTEXFILES) $(OPTFILES)

@@ -1,0 +1,87 @@
+#!/usr/bin/python
+
+import re
+import sys
+
+if len(sys.argv) != 2:
+    print "Usage: myerrata versionmarker"
+    exit(1)
+
+# Version number we're being asked about
+currentversion = sys.argv[1]
+currentnumber = int(currentversion.split('-')[0])
+
+print "Filtering errata for version marker " + currentversion + "..."
+
+# Some regexps
+commentre = re.compile('^\s*%')
+versionre = re.compile('^\s*&\s*([0-9]+)-g[0-9a-f]{7}')
+
+# Old and new errata files
+errata = open("errata.tex",'r')
+new = ""
+
+# Move forward until the title
+line = errata.readline()
+while line != "%% VERSION MARKER\n":
+    new += line
+    line = errata.readline()
+
+# Discard the comment
+# Insert the version marker in the title
+new += "\\\\since version " + currentversion + "\n"
+
+# Move forward to the description
+line = errata.readline()
+while line != "%% BEGIN STARTPOINT\n":
+    new += line
+    line = errata.readline()
+
+# Insert the version marker
+new += "since version marker " + currentversion + "\n"
+
+# Discard the "so far"
+line = errata.readline()
+while line != "%% END STARTPOINT\n":
+    line = errata.readline()
+
+# Now get up to the actual errata
+line = errata.readline()
+while line != "%% BEGIN ERRATA\n":
+    new += line
+    line = errata.readline()
+
+# Parse each erratum and decide whether to include it
+while line != "%% END ERRATA\n":
+    # Skip comments
+    while commentre.search(line):
+        new += line
+        line = errata.readline()
+    # Now get the erratum, parsing the version number when we see it
+    ver = float('inf')
+    erratum = ''
+    while not commentre.search(line):
+        erratum += line
+        vmatch = versionre.search(line)
+        if vmatch:
+            ver = int(vmatch.group(1))
+        line = errata.readline()
+    # If it applies to us, put it in
+    if ver > currentnumber:
+        new += erratum
+
+# Finally, put the rest in.
+while line:
+    new += line
+    line = errata.readline()
+
+errata.close()
+
+# New errata file
+newfilename = "errata-" + currentversion + ".tex"
+
+print "Writing filtered errata to " + newfilename + "."
+
+newfile = open(newfilename,'w')
+newfile.write(new)
+newfile.close()

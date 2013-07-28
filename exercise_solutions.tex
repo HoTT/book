@@ -144,6 +144,55 @@
 \begin{document}
 \maketitle
 
+\section*{Exercises from \autoref{cha:typetheory}}
+
+\subsection*{Solution to \autoref{ex:composition}}
+
+We want a term
+\[ g \circ f \defeq\;\Box\; : A \to C \]
+
+As $A \to B$ is a function type and the $\lambda$-abstraction is its sole constructor, it has to be of the form :
+\[ g \circ f \defeq\;\lam{x:A} (\Box\; : C) \]
+
+But $C$ is the codomain of $g$, so, we're now looking for
+\[ g \circ f \defeq\;\lam{x:A} g(\Box\; : B) \]
+and $B$ is the codomain of $f$, which in turn make us search :
+\[ g \circ f \defeq\;\lam{x:A} g(f(\Box\; : A)) \]
+and given that $x:A$ we can fill the box with $x$ and so we define
+\begin{equation}
+  \label{eq:composdef}
+   g \circ f \defeq\;\lam{x:A} g(f(x)) : C
+\end{equation}
+
+Now, suppose given $h:C\to D$. We define, according to \autoref{eq:composdef}, the two terms $h \circ ( g \circ f ) \defeq\; \lamu{x:A} h ((\lam{y:A} g(f(y))) x) : A\to D$ and $( h \circ  g ) \circ f \defeq\; \lamu{x:A} (\lam{y:A} h(g(y))) (f(x)) : A\to D$ and check:
+\begin{align*}
+  h \circ ( g \circ f ) & \defeq\; \lamu{x:A} h ((\lam{y:A} g(f(y))) x)\\
+                       & \jdeq\; \lamu{x:A} h(g(f(x)))
+\end{align*}
+by applying the computation rule to the inside function and, in parallel:
+\begin{align*}
+  ( h \circ  g ) \circ f & \defeq\; \lamu{x:A} (\lam{y:A} h(g(y))) (f(x))\\
+                         & \jdeq\; \lamu{x:A} h(g(f(x)))
+\end{align*}
+and so $h \circ ( g \circ f ) \jdeq\; ( h \circ  g ) \circ f$
+
+\subsection*{Solution to \autoref{ex:pr-to-rec}}
+
+If we suppose given only $\fst : A \times B \to A$ and $\snd : A \times B \to B$ satisfying $\fst(\tup{a}{b}) \defeq a$ and $\snd(\tup{a}{b})\defeq b$, we can define $\rec{A\times B}'$ by
+\[ \rec{A\times B}' \defeq \lam{C:\UU}\lam{g:A\to B \to C}\lam{x:A\times B} g (\fst x) (\snd x) \]
+We can now verify, given $C:\UU$, $g:A\to B \to C$ and $(a,b):A\times B$,
+\begin{align*}
+  \rec{A\times B}'(C,g,(a,b)) &\jdeq g (\fst (a,b)) (\snd (a,b))\\
+                              &\jdeq g (a) (b)
+\end{align*}
+
+Now for $\Sigma$-types, we define $\rec{\sm{x:A} B(x)}'$ by
+\[ \rec{\sm{x:A} B(x)}'\defeq\; \lam{C:\UU}\lam{g:\prd{x:A}B(x)\to C}\lam{x:\sm{x:A}B(x)} g (\fst x) (\snd x)\]
+which also satisfy the definional equality of $\rec{\sm{x:A}B(x)}$.
+
+\subsection*{Solution to \autoref{ex:pr-to-ind}}
+
+
 \section*{Exercises from \autoref{cha:logic}}
 
 \subsection*{Solution to \autoref{ex:decidable-choice}}

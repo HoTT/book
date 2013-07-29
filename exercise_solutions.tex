@@ -192,6 +192,33 @@ which also satisfy the definitional equality of $\rec{\sm{x:A}B(x)}$.
 
 \subsection*{Solution to \autoref{ex:pr-to-ind}}
 
+Quite naturally, we form the term
+\[ \lam{C:A\times B \to \UU}\lam{g:\prd{y:A}\prd{z:B} C((y,z))}\lam{x:A\times B} g (\fst x) (\snd x)\]
+But unfortunately, it has type
+\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to C ((\fst x,\snd x)) \]
+when we would like it to have type
+\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to C (x) \]
+as $\ind{A\times B}$. We need now to apply an uniqueness principle which is $\uppt: \prd{x:A\times B} ((\fst x,\snd x)=_{A\times B} x)$ and the indiscernability of identicals.
+
+We now first derive this principle from path induction. Let $T$ be a type. The main problem is to create, from an unary predicate $C(x)$ a predicate depending from two elements and evidence of their equality. We do it by, given $C : T \to \UU$, defining
+\[ D \defeq \lam{x:T}\lam{y:T}\lam{p:x=_T y} C(x)\to C(y) : \prd{x,y:T}(x=_T y) \to \UU \]
+and we verify that $\ind{=_T}(D,\lamu{y:T}\idfunc[C(y)])$ is the function $f$ postulated in \ref{sec:identity-types} and that we will call $\indiden{T}$ :
+\[ \indiden{T}\defeq \ind{=_T}(\lam{x:T}\lam{y:T}\lam{p:x=_T y} C(x)\to C(y),\lam{z:T}\idfunc[C(z)]) \]
+
+We can now define $\ind{A\times B}'$ by
+\[ \ind{A\times B}'(C,g,x) \defeq \indiden{A\times B}((\fst x,\snd x),x, \uppt (x)) (g (\fst x) (\snd x)) \]
+Verify:
+\begin{align*}
+  \ind{A\times B}'(C,g,(a,b)) &\jdeq \indiden{A\times B}((a,b),(a,b), \uppt (a,b)) (g (a) (b))\\
+  &\jdeq \ind{=_{A\times B}}(\lamu{x:A\times B}\lamu{y:A\times B}\lamu{p:x=_{A\times B} y} C(x)\to C(y),\lamu{z:A\times B}\idfunc[C(z)],(a,b),(a,b),\refl{(a,b)})(g(a)(b))\\
+  &\jdeq ((\lamu{z:A\times B} \idfunc[C(z)]) (a,b))(g(a) (b))\\
+  &\jdeq \idfunc[C(a,b)] g(a) (b)\\
+  &\jdeq g(a) (b)
+\end{align*}
+
+Now, for $\Sigma$-types. We want to prove that every element of $\sm{y:A}B(y)$ is a dependent pair. More specifically, we want to construct a function
+\[ \uppt^{\Sigma}:\prd{x:\sm{y:A}B(y)} ((\fst x,\snd x)=_{\sm{y:A}B(y)}x) \]
+By induction on $x:\sm{y:A}B(y)$, we can suppose that $x=(a,b)$ for some $a:A$ and $b:B(a)$, in which case $\refl{x}$ is of the right type. The exact same term than in the non-dependent case, but with the right types, can be used as the induction function.
 
 \section*{Exercises from \autoref{cha:logic}}
 

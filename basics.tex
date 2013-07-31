@@ -506,6 +506,10 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
   Such an equality between any two particular proofs can, again, be proven by induction, reducing all the paths in question to reflexivities and then observing that both proofs reduce themselves to reflexivities.
 \end{rmk}
 
+In view of \autoref{thm:omg}\ref{item:omg4}, we will often write $p\ct q\ct r$ for $(p\ct q)\ct r$, and similarly $p\ct q\ct r \ct s$ for $((p\ct q)\ct r)\ct s$ and so on.
+We choose left-associativity for definiteness, but it makes no real difference.
+We generally trust the reader to insert instances of \autoref{thm:omg}\ref{item:omg4} to reassociate such expressions as necessary.
+
 We are still not really done with the higher groupoid structure: the paths~\ref{item:omg1}--\ref{item:omg4} must also satisfy their own higher coherence\index{coherence} laws, which are themselves higher paths,
 \index{associativity!of path concatenation!coherence of}%
 \index{globular operad}%
@@ -581,35 +585,54 @@ Composing the upper and lower 1-paths, respectively, we get two paths $p\ct r,\ 
   \alpha\hct\beta : p\ct r = q\ct s
 \end{equation*}
 %
-between them, defined as follows: first let $\alpha \rightwhisker r : p\ct r = q\ct r$ be determined by path induction on $r$, then let $q\leftwhisker \beta : q\ct r = q\ct s$ be given by induction on $q$.
-(These operations are called \define{whiskering}\indexdef{whiskering}.)
-Since these paths are composable in the type of 2-paths, we can define the \define{horizontal composition}
+between them, defined as follows.
+First, we define $\alpha \rightwhisker r : p\ct r = q\ct r$ by path induction on $r$, so that
+\[ \alpha \rightwhisker \refl{b} \jdeq \opp{\mathsf{ru}_p} \ct \alpha \ct \mathsf{ru}_q \]
+where $\mathsf{ru}_p : p = p \ct \refl{b}$ is the right unit law from \autoref{thm:omg}\ref{item:omg1}.
+We could similarly define $\rightwhisker$ by induction on $\alpha$, or on all paths in sight, resulting in different judgmental equalities, but for present purposes the definition by induction on $r$ will make things simpler.
+Similarly, we define $q\leftwhisker \beta : q\ct r = q\ct s$ by induction on $q$, so that
+\[ \refl{b} \leftwhisker \beta \jdeq \opp{\mathsf{lu}_r} \ct \beta \ct \mathsf{lu}_s \]
+where $\mathsf{lu}_r$ denotes the left unit law.
+The operations $\leftwhisker$ and $\rightwhisker$ are called \define{whiskering}\indexdef{whiskering}.
+Next, since $\alpha \rightwhisker r$ and $q\leftwhisker \beta$ are composable 2-paths, we can define the \define{horizontal composition}
 \indexdef{horizontal composition!of paths}%
 \indexdef{composition!of paths!horizontal}%
 by:
 \[
 \alpha\hct\beta\ \defeq\ (\alpha\rightwhisker r) \ct (q\leftwhisker \beta).
 \]
-Now suppose that $a \jdeq  b \jdeq  c$, so that all the above 1-paths are in $\Omega(A,a)$, and assume moreover that $q \jdeq  \refl{a}\jdeq  r$, so that $\alpha$ and $\beta$ become composable.  In that case, we therefore have
-\[
-\alpha\hct\beta\ =\ (\alpha\rightwhisker\refl{a}) \ct (\refl{a}\leftwhisker \beta) = \alpha \ct \beta.
-\]
+Now suppose that $a \jdeq  b \jdeq  c$, so that all the 1-paths $p$, $q$, $r$, and $s$ are elements of $\Omega(A,a)$, and assume moreover that $p\jdeq q \jdeq r \jdeq s\jdeq \refl{a}$, so that $\alpha:\refl{a} = \refl{a}$ and $\beta:\refl{a} = \refl{a}$ are composable in both orders.
+In that case, we have
+\begin{align*}
+  \alpha\hct\beta
+  &\jdeq (\alpha\rightwhisker\refl{a}) \ct (\refl{a}\leftwhisker \beta)\\
+  &= \opp{\mathsf{ru}_{\refl{a}}} \ct \alpha \ct \mathsf{ru}_{\refl{a}} \ct \opp{\mathsf{lu}_{\refl a}} \ct \beta \ct \mathsf{lu}_{\refl{a}}\\
+  &\jdeq \opp{\refl{\refl{a}}} \ct \alpha \ct \refl{\refl{a}} \ct \opp{\refl{\refl a}} \ct \beta \ct \refl{\refl{a}}\\
+  &= \alpha \ct \beta.
+\end{align*}
+(Recall that $\mathsf{ru}_{\refl{a}} \jdeq \mathsf{lu}_{\refl{a}} \jdeq \refl{\refl{a}}$, by the computation rule for path induction.)
 On the other hand, we can define another horizontal composition analogously by
 \[
 \alpha\hct'\beta\ \defeq\ (p\leftwhisker \beta)\ct (\alpha\rightwhisker s).
 \]
-and setting $p \jdeq  \refl{a}\jdeq  s$ we learn that in that case 
+and we similarly learn that
 \[
 \alpha\hct'\beta\ =\ (\refl{a}\leftwhisker \beta)\ct (\alpha\rightwhisker \refl{a}) = \beta\ct\alpha.
 \]
 \index{interchange law}%
-But, in general, the two ways of defining horizontal composition agree, $\alpha\hct\beta = \alpha\hct'\beta$, as we can see by induction on $\alpha$ and $\beta$.  Thus when $p \jdeq  q \jdeq  \refl{a} \jdeq  r\jdeq  s$ we have
-\[\alpha \ct \beta = \alpha\hct\beta = \alpha\hct'\beta = \beta\ct\alpha\,.
+But, in general, the two ways of defining horizontal composition agree, $\alpha\hct\beta = \alpha\hct'\beta$, as we can see by induction on $\alpha$ and $\beta$ and then on the two remaining 1-paths, to reduce everything to reflexivity.
+Thus we have
+\[\alpha \ct \beta = \alpha\hct\beta = \alpha\hct'\beta = \beta\ct\alpha.
 \qedhere
 \]
 \end{proof}
 
-The foregoing fact, which is known as the \emph{Eckmann--Hilton argument}, comes from classical homotopy theory,  and indeed it is used in \autoref{cha:homotopy} below to show that the higher homotopy groups of a type are always abelian\index{group!abelian} groups. 
+The foregoing fact, which is known as the \emph{Eckmann--Hilton argument}, comes from classical homotopy theory, and indeed it is used in \autoref{cha:homotopy} below to show that the higher homotopy groups of a type are always abelian\index{group!abelian} groups.
+The whiskering and horizontal composition operations defined in the proof are also a general part of the $\infty$-groupoid structure of types.
+They satisfy their own laws (up to higher homotopy), such as
+\[ \alpha \rightwhisker (p\ct q) = (\alpha \rightwhisker p) \rightwhisker q \]
+and so on.
+From now on, we trust the reader to apply path induction whenever needed to define further operations of this sort and verify their properties.
 
 As this example suggests, the algebra of higher path types is much more intricate than just the groupoid-like structure at each level; the levels interact to give many further operations and laws, as in the study of iterated loop spaces in homotopy theory.
 Indeed, as in classical homotopy theory, we can make the following general definitions:
@@ -1017,7 +1040,14 @@ ffx \ar@{=}[r]^-{\ap f{Hx}} \ar@{=}[d]_{H(fx)} & fx \ar@{=}[d]^{Hx} \\
 fx \ar@{=}[r]_-{Hx} & x
 }
 \end{align*}
-Canceling $H(x)$, we see that $H(f(x)) = f(H(x))$ as desired.
+That is, $\ap f{H x} \ct H x = H(f x) \ct H x$.
+We can now whisker by $\opp{(H x)}$ to cancel $H x$, obtaining
+\[ \ap f{H x}
+= \ap f{H x} \ct H x \ct \opp{(H x)}
+= H(f x) \ct H x \ct \opp{(H x)}
+= H(f x)
+\]
+as desired (with some associativity paths suppressed).
 \end{proof}
 
 Of course, like the functoriality of functions (\autoref{lem:ap-functor}), the equality in \autoref{lem:htpy-natural} is a path which satisfies its own coherence laws, and so on.

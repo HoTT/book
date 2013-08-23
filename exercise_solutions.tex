@@ -148,88 +148,98 @@
 
 \subsection*{Solution to \autoref{ex:composition}}
 
-We want a term
-\[ g \circ f \defeq\;\Box\; : A \to C \]
-
-As $A \to B$ is a function type and the $\lambda$-abstraction is its sole constructor, it has to be of the form :
-\[ g \circ f \defeq\;\lam{x:A} (\Box\; : C) \]
-
-But $C$ is the codomain of $g$, so, we're now looking for
-\[ g \circ f \defeq\;\lam{x:A} g(\Box\; : B) \]
-and $B$ is the codomain of $f$, which in turn make us search :
-\[ g \circ f \defeq\;\lam{x:A} g(f(\Box\; : A)) \]
-and given that $x:A$ we can fill the box with $x$ and so we define
+We of course know what composition of functions $f : A \to B$ and $g : B \to C$ should be, but let us see how we might derive it by considering available forms of construction. We want a term
+\[ g \circ f \defeq (\Box : A \to C), \]
+where $\Box : A \to C$ indicates that in place of $\Box$ we would like to put something of type $A \to C$.
+Since we are defining a function whose domain is $A$, we expect it to be of the form
+\[ g \circ f \defeq \lam{x:A} (\Box : C), \]
+so now we are looking for something of type $C$, with $x$, $f$ and $g$ available. Of these $g$ looks most promising as it lands in $C$:
+\[ g \circ f \defeq \lam{x:A} g (\Box : B). \]
+Now we repeat the same trick with $f$ to get
+\[ g \circ f \defeq \lam{x:A} g(f(\Box : A)). \]
+Inside the abstraction $x$ is available and has the type we need, so we define
 \begin{equation}
   \label{eq:composdef}
-   g \circ f \defeq\;\lam{x:A} g(f(x)) : C
+   g \circ f \defeq \lam{x:A} g(f(x)) : C
 \end{equation}
+%
+This baby example demonstrates how one often works with a proof assistant: look at what
+you need and what is available, and try to make some progress.
 
-Now, suppose given $h:C\to D$. We define, according to \autoref{eq:composdef}, the two terms $h \circ ( g \circ f ) \defeq\; \lamu{x:A} h ((\lam{y:A} g(f(y))) x) : A\to D$ and $( h \circ  g ) \circ f \defeq\; \lamu{x:A} (\lam{y:A} h(g(y))) (f(x)) : A\to D$ and check:
+Now, suppose given also $h : C \to D$. We have, according to \autoref{eq:composdef},
+%
 \begin{align*}
-  h \circ ( g \circ f ) & \defeq\; \lamu{x:A} h ((\lam{y:A} g(f(y))) x)\\
-                       & \;\jdeq\; \lamu{x:A} h(g(f(x)))
+  h \circ (g \circ f) &\jdeq \lamu{x:A} h ((\lam{y:A} g(f(y))) x)\\
+                      &\jdeq \lamu{x:A} h(g(f(x))),
 \end{align*}
-by applying the computation rule to the inner function and, in parallel:
+%
+and
+%
 \begin{align*}
-  ( h \circ  g ) \circ f & \defeq\; \lamu{x:A} (\lam{y:A} h(g(y))) (f(x))\\
-                         & \;\jdeq\; \lamu{x:A} h(g(f(x)))
+  (h \circ  g) \circ f & \jdeq \lamu{x:A} (\lam{y:A} h(g(y))) (f(x))\\
+                       & \jdeq \lamu{x:A} h(g(f(x))).
 \end{align*}
-and so $h \circ ( g \circ f ) \jdeq ( h \circ  g ) \circ f$
+%
+They are equal, which establishes associativity of composition.
 
 \subsection*{Solution to \autoref{ex:pr-to-rec}}
 
-If we suppose given only $\fst : A \times B \to A$ and $\snd : A \times B \to B$ satisfying $\fst(\tup{a}{b}) \defeq a$ and $\snd(\tup{a}{b})\defeq b$, we can define $\rec{A\times B}'$ by
-\[ \rec{A\times B}' \defeq \lam{C:\UU}\lam{g:A\to B \to C}\lam{x:A\times B} g (\fst x) (\snd x) \]
+If we suppose given only $\fst : A \times B \to A$ and $\snd : A \times B \to B$ satisfying $\fst(\tup{a}{b}) \jdeq a$ and $\snd(\tup{a}{b})\jdeq b$, we can define $\rec{A\times B}'$ by
+\[ \rec{A\times B}'(C,g,x) \defeq g (\fst x) (\snd x). \]
 We can now verify, given $C:\UU$, $g:A\to B \to C$ and $(a,b):A\times B$,
 \begin{align*}
   \rec{A\times B}'(C,g,(a,b)) &\jdeq g (\fst (a,b)) (\snd (a,b))\\
-                              &\jdeq g (a) (b)
+                              &\jdeq g (a) (b).
 \end{align*}
-
-Now for $\Sigma$-types, we define $\rec{\sm{x:A} B(x)}'$ by
-\[ \rec{\sm{x:A} B(x)}'\defeq\; \lam{C:\UU}\lam{g:\prd{x:A}B(x)\to C}\lam{x:\sm{x:A}B(x)} g (\fst x) (\snd x)\]
-which also satisfy the definitional equality of $\rec{\sm{x:A}B(x)}$.
+%
+For $\Sigma$-types we replace $A \times B$ above with $\sm{a:A} B(a)$, but otherwise
+everything else stays the same:
+\[ \rec{\sm{x:A} B(x)}'(C,g,x) \defeq g (\fst x) (\snd x). \]
 
 \subsection*{Solution to \autoref{ex:pr-to-ind}}
 
-Quite naturally, we form the term
-\[ \lam{C:A\times B \to \UU}\lam{g:\prd{y:A}\prd{z:B} C((y,z))}\lam{x:A\times B} g (\fst x) (\snd x)\]
-But unfortunately, it has type
-\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to C ((\fst x,\snd x)) \]
-when we would like it to have type
-\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to C (x) \]
-as $\ind{A\times B}$. We need now to apply an uniqueness principle which is $\uppt: \prd{x:A\times B} ((\fst x,\snd x)=_{A\times B} x)$ and the indiscernability of identicals.
-
-We now first derive this principle from path induction. Let $T$ be a type. The main problem is to create, from an unary predicate $C(x)$ a predicate depending from two elements and evidence of their equality. We do it by, given $C : T \to \UU$, defining
-\[ D \defeq \lam{x:T}\lam{y:T}\lam{p:x=_T y} C(x)\to C(y) : \prd{x,y:T}(x=_T y) \to \UU \]
-and we verify that $\ind{=_T}(D,\lamu{y:T}\idfunc[C(y)])$ is the function $f$ postulated in \ref{sec:identity-types} and that we will call $\indiden{T}$ :
-\[ \indiden{T}\defeq \ind{=_T}(\lam{x:T}\lam{y:T}\lam{p:x=_T y} C(x)\to C(y),\lam{z:T}\idfunc[C(z)]) \]
-
-We can now define $\ind{A\times B}'$ by
-\[ \ind{A\times B}'(C,g,x) \defeq \indiden{A\times B}((\fst x,\snd x),x, \uppt (x)) (g (\fst x) (\snd x)) \]
-Verify:
+Quite naturally, we form
+\[ \ind{A\times B}''(C,g,x) \defeq g (\fst x) (\snd x),\]
+of type
+\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to 
+   \prd{x : A \times B} C ((\fst x,\snd x)). \]
+This is not quite what we need because $\ind{A\times B}$ has the type
+\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to
+   \prd{x : A \times B} C (x). \]
+%
+Recall that we have the propositional uniqueness principle
+%
+\[ \uppt: \prd{x : A \times B} ((\fst x,\snd x)=_{A\times B} x), \]
+%
+satisfying $\uppt{(a,b)} = \refl{(a,b)}$.
+We can transport along $\uppt(x)$ to get from $C((\fst x, \snd x))$ to $C(x)$:
+%
+\[ \ind{A\times B}'(C,g,x) \defeq 
+    \transfib{C}{\uppt(x)}{\ind{A \times B}''(C, g, x)}.
+\]
+%
+It remains to verify that $\ind{A \times B}'(C, g, x)$ behaves as expected:
+%
 \begin{align*}
-  \ind{A\times B}'(C,g,(a,b)) &\jdeq \indiden{A\times B}((a,b),(a,b), \uppt (a,b)) (g (a) (b))\\
-  &\jdeq \ind{=_{A\times B}}(\lamu{x:A\times B}\lamu{y:A\times B}\lamu{p:x=_{A\times B} y} C(x)\to C(y),\lamu{z:A\times B}\idfunc[C(z)],(a,b),(a,b),\refl{(a,b)})(g(a)(b))\\
-  &\jdeq ((\lamu{z:A\times B} \idfunc[C(z)]) (a,b))(g(a) (b))\\
-  &\jdeq \idfunc[C(a,b)] g(a) (b)\\
-  &\jdeq g(a) (b)
+  \ind{A \times B}'(C,g,(a,b))
+  &\jdeq \transfib{C}{\uppt((a,b))}{g(\fst (a,b))(\snd(a,b))} \\
+  &\jdeq \transfib{C}{\uppt((a,b))}{g(a)(b)} \\
+  &\jdeq \transfib{C}{\refl{(a,b)}}{(g(a)(b)} \\
+  &\jdeq g(a)(b).
 \end{align*}
-
-Now, for $\Sigma$-types. We want to prove that every element of $\sm{y:A}B(y)$ is a dependent pair. More specifically, we want to construct a function
-\[ \uppt^{\Sigma}:\prd{x:\sm{y:A}B(y)} ((\fst x,\snd x)=_{\sm{y:A}B(y)}x) \]
-By induction on $x:\sm{y:A}B(y)$, we can suppose that $x=(a,b)$ for some $a:A$ and $b:B(a)$, in which case $\refl{x}$ is of the right type. The exact same term than in the non-dependent case, but with the right types, can be used as the induction function.
+%
+Now for $\Sigma$-types the exact same expressions work as well, except that the types change.
 
 \section*{Exercises from \autoref{cha:logic}}
 
 \subsection*{Solution to \autoref{ex:decidable-choice}}
 
 The hypotheses imply that
-\[ \Parens{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)}. \]
+\[ \Parens{\sm{n:\nat}P(n)} \to \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)}. \]
 In words, given $n$ such that $P(n)$, we can find the least such $n$: we test every $m<n$ in turn, using decidability to do a case analysis, until we find the first one that satisfies $P(m)$.
 However, the right-hand side of the above implication is a mere proposition: if both $n$ and $n'$ are least numbers satisfying~$P$ then they must be equal.
 Therefore, we also have
-\[ \Brck{\sm{n:\nat}P(n)} \;\to\; \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)} \]
+\[ \Brck{\sm{n:\nat}P(n)} \to \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)} \]
 from which the claim follows.
 
 

@@ -144,6 +144,82 @@
 \begin{document}
 \maketitle
 
+\section*{Exercises from \autoref{cha:typetheory}}
+
+\subsection*{Solution to \autoref{ex:composition}}
+
+We want a term
+\[ g \circ f \defeq\;\Box\; : A \to C \]
+
+As $A \to B$ is a function type and the $\lambda$-abstraction is its sole constructor, it has to be of the form :
+\[ g \circ f \defeq\;\lam{x:A} (\Box\; : C) \]
+
+But $C$ is the codomain of $g$, so, we're now looking for
+\[ g \circ f \defeq\;\lam{x:A} g(\Box\; : B) \]
+and $B$ is the codomain of $f$, which in turn make us search :
+\[ g \circ f \defeq\;\lam{x:A} g(f(\Box\; : A)) \]
+and given that $x:A$ we can fill the box with $x$ and so we define
+\begin{equation}
+  \label{eq:composdef}
+   g \circ f \defeq\;\lam{x:A} g(f(x)) : C
+\end{equation}
+
+Now, suppose given $h:C\to D$. We define, according to \autoref{eq:composdef}, the two terms $h \circ ( g \circ f ) \defeq\; \lamu{x:A} h ((\lam{y:A} g(f(y))) x) : A\to D$ and $( h \circ  g ) \circ f \defeq\; \lamu{x:A} (\lam{y:A} h(g(y))) (f(x)) : A\to D$ and check:
+\begin{align*}
+  h \circ ( g \circ f ) & \defeq\; \lamu{x:A} h ((\lam{y:A} g(f(y))) x)\\
+                       & \;\jdeq\; \lamu{x:A} h(g(f(x)))
+\end{align*}
+by applying the computation rule to the inner function and, in parallel:
+\begin{align*}
+  ( h \circ  g ) \circ f & \defeq\; \lamu{x:A} (\lam{y:A} h(g(y))) (f(x))\\
+                         & \;\jdeq\; \lamu{x:A} h(g(f(x)))
+\end{align*}
+and so $h \circ ( g \circ f ) \jdeq ( h \circ  g ) \circ f$
+
+\subsection*{Solution to \autoref{ex:pr-to-rec}}
+
+If we suppose given only $\fst : A \times B \to A$ and $\snd : A \times B \to B$ satisfying $\fst(\tup{a}{b}) \defeq a$ and $\snd(\tup{a}{b})\defeq b$, we can define $\rec{A\times B}'$ by
+\[ \rec{A\times B}' \defeq \lam{C:\UU}\lam{g:A\to B \to C}\lam{x:A\times B} g (\fst x) (\snd x) \]
+We can now verify, given $C:\UU$, $g:A\to B \to C$ and $(a,b):A\times B$,
+\begin{align*}
+  \rec{A\times B}'(C,g,(a,b)) &\jdeq g (\fst (a,b)) (\snd (a,b))\\
+                              &\jdeq g (a) (b)
+\end{align*}
+
+Now for $\Sigma$-types, we define $\rec{\sm{x:A} B(x)}'$ by
+\[ \rec{\sm{x:A} B(x)}'\defeq\; \lam{C:\UU}\lam{g:\prd{x:A}B(x)\to C}\lam{x:\sm{x:A}B(x)} g (\fst x) (\snd x)\]
+which also satisfy the definitional equality of $\rec{\sm{x:A}B(x)}$.
+
+\subsection*{Solution to \autoref{ex:pr-to-ind}}
+
+Quite naturally, we form the term
+\[ \lam{C:A\times B \to \UU}\lam{g:\prd{y:A}\prd{z:B} C((y,z))}\lam{x:A\times B} g (\fst x) (\snd x)\]
+But unfortunately, it has type
+\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to C ((\fst x,\snd x)) \]
+when we would like it to have type
+\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to C (x) \]
+as $\ind{A\times B}$. We need now to apply an uniqueness principle which is $\uppt: \prd{x:A\times B} ((\fst x,\snd x)=_{A\times B} x)$ and the indiscernability of identicals.
+
+We now first derive this principle from path induction. Let $T$ be a type. The main problem is to create, from an unary predicate $C(x)$ a predicate depending from two elements and evidence of their equality. We do it by, given $C : T \to \UU$, defining
+\[ D \defeq \lam{x:T}\lam{y:T}\lam{p:x=_T y} C(x)\to C(y) : \prd{x,y:T}(x=_T y) \to \UU \]
+and we verify that $\ind{=_T}(D,\lamu{y:T}\idfunc[C(y)])$ is the function $f$ postulated in \ref{sec:identity-types} and that we will call $\indiden{T}$ :
+\[ \indiden{T}\defeq \ind{=_T}(\lam{x:T}\lam{y:T}\lam{p:x=_T y} C(x)\to C(y),\lam{z:T}\idfunc[C(z)]) \]
+
+We can now define $\ind{A\times B}'$ by
+\[ \ind{A\times B}'(C,g,x) \defeq \indiden{A\times B}((\fst x,\snd x),x, \uppt (x)) (g (\fst x) (\snd x)) \]
+Verify:
+\begin{align*}
+  \ind{A\times B}'(C,g,(a,b)) &\jdeq \indiden{A\times B}((a,b),(a,b), \uppt (a,b)) (g (a) (b))\\
+  &\jdeq \ind{=_{A\times B}}(\lamu{x:A\times B}\lamu{y:A\times B}\lamu{p:x=_{A\times B} y} C(x)\to C(y),\lamu{z:A\times B}\idfunc[C(z)],(a,b),(a,b),\refl{(a,b)})(g(a)(b))\\
+  &\jdeq ((\lamu{z:A\times B} \idfunc[C(z)]) (a,b))(g(a) (b))\\
+  &\jdeq \idfunc[C(a,b)] g(a) (b)\\
+  &\jdeq g(a) (b)
+\end{align*}
+
+Now, for $\Sigma$-types. We want to prove that every element of $\sm{y:A}B(y)$ is a dependent pair. More specifically, we want to construct a function
+\[ \uppt^{\Sigma}:\prd{x:\sm{y:A}B(y)} ((\fst x,\snd x)=_{\sm{y:A}B(y)}x) \]
+By induction on $x:\sm{y:A}B(y)$, we can suppose that $x=(a,b)$ for some $a:A$ and $b:B(a)$, in which case $\refl{x}$ is of the right type. The exact same term than in the non-dependent case, but with the right types, can be used as the induction function.
+
 \section*{Exercises from \autoref{cha:logic}}
 
 \subsection*{Solution to \autoref{ex:decidable-choice}}

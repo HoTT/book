@@ -1533,7 +1533,7 @@ We now give two constructions of such a weak equivalence.
 \indexsee{Rezk completion}{completion, Rezk}%
 \index{completion!Rezk|(defstyle}%
 
-\begin{thm}
+\begin{thm}\label{thm:rezk-completion}
   For any precategory $A$, there is a category $\widehat A$ and a weak equivalence $A\to\widehat{A}$.
 \end{thm}
 
@@ -1553,21 +1553,24 @@ Then $\uset_\bbU$ and $(\uset_\bbU)^{A\op}$ are not themselves categories in \bb
 One could imagine a resizing axiom that could deal with this, but it is also possible to give a direct construction using higher inductive types.
 
 \begin{proof}[Second proof]
-  We define a higher inductive 1-type $\widehat A_0$ with the following constructors:
+  We define a higher inductive type $\widehat A_0$ with the following constructors:
   \begin{itemize}
   \item A function $i:A_0 \to \widehat A_0$.
   \item For each $a,b:A$ and $e:a\cong b$, an equality $je:\id{ia}{ib}$.
-  \item For each $a,b:A$ and $p:\id a b$, an equality $\id{j(\idtoiso(p))}{\map i p}$.
   \item For each $a:A$, an equality $\id{j(1_a)}{\refl{ia}}$.
-  \item For each $(a,b,c:A)$, $(f:a\cong b)$, and $(g:b\cong c)$, an equality $\id{j(g \circ f)}{j(g)\ct j(f)}$.
-  % \item The usual 1-truncation constructor: for all $x,y:A_0'$ and $p,q:\id x y$ and $r,s:\id p q$, an identity $\id r s$.
+  \item For each $(a,b,c:A)$, $(f:a\cong b)$, and $(g:b\cong c)$, an equality $\id{j(g \circ f)}{j(f)\ct j(g)}$.
+  \item 1-truncation: for all $x,y:\widehat A_0$ and $p,q:\id x y$ and $r,s:\id p q$, an equality $\id r s$.
   \end{itemize}
-  This will be the type of objects of $\widehat A$; we now build all the rest of the structure.
+  Note that for any $a,b:A$ and $p:\id a b$, we have $\id{j(\idtoiso(p))}{\map i p}$.
+  This follows by path induction on $p$ and the third constructor.
+
+  The type $\widehat A_0$ will be the type of objects of $\widehat A$; we now build all the rest of the structure.
   (The following proof is of the sort that can benefit a lot from the help of a computer proof assistant:\index{proof!assistant} it is wide and shallow with many short cases to consider, and a large part of the work consists of writing down what needs to be checked.)
 
   \mentalpause
 
-  \emph{Step 1:} We define a family $\hom_{\widehat A}:\widehat A_0\to \widehat A_0 \to \set$ by double induction on $\widehat A_0$, which is possible since \set is a 1-type.
+  \emph{Step 1:} We define a family $\hom_{\widehat A}:\widehat A_0\to \widehat A_0 \to \set$ by double induction on $\widehat A_0$.
+  Since \set is a 1-type, we can ignore the 1-truncation constructor.
   When $x$ and $y$ are of the form $ia$ and $ib$, we take $\hom_{\widehat A}(ia,ib) \defeq \hom_A(a,b)$.
   It remains to consider all the other possible pairs of constructors.
 
@@ -1577,11 +1580,8 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
   We take this to be the function $(e\circ \blank ):\hom_A(a,b)\to \hom_A(a,b')$.
   To see that this is an equivalence, we give its inverse as $(\inv e\circ \blank )$, with witnesses to inversion coming from the fact that $\inv e$ is the inverse of $e$ in $A$.
   
-  Next, as $y$ varies along the identity $\id{j(\idtoiso(p))}{\map ip}$, for $p:\id{b}{b'}$, we require an identity $\id{(\idtoiso(p)\circ \blank )}{\map{\hom_A(a,\blank)}{p}}$.
-  This is immediate by induction on $p$.
-
   As $y$ varies along the identity $\id{j(1_b)}{\refl{ib}}$, we require an identity $\id{(1_b\circ \blank )}{\refl{\hom_A(a,b)}}$; this follows from the identity axiom $\id{1_b\circ g}{g}$ of a precategory.
-  Similarly, as $y$ varies along the identity $\id{j(g\circ f)}{j(g)\ct j(f)}$, we require an identity $\id{((g\circ f)\circ \blank )}{(g\circ (f\circ \blank ))}$, which follows from associativity.
+  Similarly, as $y$ varies along the identity $\id{j(g\circ f)}{j(f)\ct j(g)}$, we require an identity $\id{((g\circ f)\circ \blank )}{(g\circ (f\circ \blank ))}$, which follows from associativity.
   % Finally, as $y$ varies along the 1-truncation constructor, we need only to observe that \set is 1-truncated.
 
   Now we consider the other constructors for $x$.
@@ -1597,11 +1597,11 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
   \end{gather*}
   are identical.
   This follows from associativity: $(f\circ \blank)\circ \inv e = f\circ (\blank\circ \inv e)$.
-  The rest of the constructors for $y$ are trivial, since they are 2-fold equalities in sets.
+  The other two constructors for $y$ are trivial, since they are 2-fold equalities in sets.
 
-  For the last three constructors of $x$, all but the first constructor for $y$ is likewise trivial.
-  When $x$ varies along the equality $\id{j(\idtoiso(p))}{\map i p}$ for $p:a=a'$ and $y$ is $ib$, we require $(\blank\circ \idtoiso(p)) = \map{\hom_A(\blank,b)}{p}$, which follows by induction on $p$.
-  Finally, when $x$ varies along $j(1_a)=\refl{ia}$, we use the identity axiom again, and when $x$ varies along $\id{j(g\circ f)}{j(g)\ct j(f)}$, we use associativity again.
+  For the next two constructors of $x$, all but the first constructor for $y$ is likewise trivial.
+  When $x$ varies along $j(1_a)=\refl{ia}$ and $y$ is $ib$, we use the identity axiom again.
+  Similarly, when $x$ varies along $\id{j(g\circ f)}{j(f)\ct j(g)}$, we use associativity again.
   This completes the construction of $\hom_{\widehat A}:\widehat A_0 \to \widehat A_0 \to \set$.
 
   \mentalpause
@@ -1611,8 +1611,7 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
   We are now eliminating into sets (the hom-sets of $\widehat A$), so all but the first two constructors are trivial to deal with.
 
   For identities, if $x$ is $ia$ then we have $\hom_{\widehat A}(x,x) \jdeq \hom_A(a,a)$ and we define $1_x \defeq 1_{ia}$.
-  If $x$ varies along $je$ for $e:a\cong a'$, we must show that $\trans{je}{1_{ia}} = 1_{ia'}$.
-  Here the transport is with respect to the type family $x\mapsto \hom_{\widehat A}(x,x)$.
+  If $x$ varies along $je$ for $e:a\cong a'$, we must show that $\transfib{x\mapsto \hom_{\widehat A}(x,x)}{je}{1_{ia}} = 1_{ia'}$.
   But by definition of $\hom_{\widehat A}$, transporting along $je$ is given by composing with $e$ and $\inv e$, and we have $e\circ 1_{ia} \circ \inv{e} = 1_{ia'}$.
 
   For composition, if $x,y,z$ are $ia,ib,ic$ respectively, then $\hom_{\widehat A}$ reduces to $\hom_A$ and we can define composition in $\widehat A$ to be composition in $A$.
@@ -1635,7 +1634,7 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
   When $x$ and $y$ are $ia$ and $ib$ respectively, we have $\hom_{\widehat A}(ia,ib)\jdeq \hom_A(a,b)$, with composition and identities inherited as well, so that $(ia\cong ib)$ is equivalent to $(a\cong b)$.
   But now we have the constructor $j:(a\cong b) \to (ia=ib)$.
 
-  Next, if $y$ varies along $j(e)$ for some $e:b\cong b'$, we must show that for $f:a\cong b$ we have $j(\trans{j(e)}{f}) = j(e) \ct j(f)$.
+  Next, if $y$ varies along $j(e)$ for some $e:b\cong b'$, we must show that for $f:a\cong b$ we have $j(\trans{j(e)}{f}) = j(f) \ct j(e)$.
   But by definition of $\hom_{\widehat A}$ on equalities, transporting along $j(e)$ is equivalent to post-composing with $e$, so this equality follows from the last constructor of $\widehat A_0$.
   The remaining case when $x$ varies along $j(e)$ for $e:a\cong a'$ is similar.
   This completes the definition of $k:\prd{x,y:\widehat A_0} (x\cong y) \to (x=y)$.
@@ -1643,7 +1642,7 @@ One could imagine a resizing axiom that could deal with this, but it is also pos
   Now one thing we must show is that if $p:x=y$, then $k(\idtoiso(p))=p$.
   By induction on $p$, we may assume it is $\refl x$, and hence $\idtoiso(p)\jdeq 1_x$.
   Now we argue by induction on $x:\widehat A_0$, and since our goal is a mere proposition (since $\widehat A_0$ is a 1-type), all constructors except the first are trivial.
-  But if $x$ is $ia$, then $k(1_{ia}) \jdeq j(1_a)$, which is equal to $\refl{ia}$ by the penultimate constructor of $\widehat A_0$.
+  But if $x$ is $ia$, then $k(1_{ia}) \jdeq j(1_a)$, which is equal to $\refl{ia}$ by the third constructor of $\widehat A_0$.
 
   To complete the proof that $\widehat A$ is a category, we must show that if $f:x\cong y$, then $\idtoiso(k(f))=f$.
   By induction we may assume that $x$ and $y$ are $ia$ and $ib$ respectively, in which case $f$ must arise from an isomorphism $g:a\cong b$ and we have $k(f)\jdeq j(g)$.

@@ -34,7 +34,16 @@
 % in display-math mode, and
 %     \prod_{(x:A)} \prod_{y:B}
 % in text-math mode.
-\def\prd#1{\@ifnextchar\bgroup{\prd@parens{#1}}{\@ifnextchar\sm{\prd@parens{#1}\@eatsm}{\prd@noparens{#1}}}}
+% \def\prd#1{\@ifnextchar\bgroup{\prd@parens{#1}}{%
+%     \@ifnextchar\sm{\prd@parens{#1}\@eatsm}{%
+%         \prd@noparens{#1}}}}
+\def\prd#1{\@ifnextchar\bgroup{\prd@parens{#1}}{%
+    \@ifnextchar\sm{\prd@parens{#1}\@eatsm}{%
+    \@ifnextchar\prd{\prd@parens{#1}\@eatprd}{%
+    \@ifnextchar\;{\prd@parens{#1}\@eatsemicolonspace}{%
+    \@ifnextchar\\{\prd@parens{#1}\@eatlinebreak}{%
+    \@ifnextchar\narrowbreak{\prd@parens{#1}\@eatnarrowbreak}{%
+      \prd@noparens{#1}}}}}}}}
 \def\prd@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dprd{#1}}{\@tprd{#1}}{\@tprd{#1}}{\@tprd{#1}}\prd@parens}%
   {\@ifnextchar\sm%
@@ -51,6 +60,20 @@
 \def\dprd#1{\@dprd{#1}\@ifnextchar\bgroup{\dprd}{}}
 \def\@dprd#1{\prod_{(#1)}\,}
 \def\@dprd@noparens#1{\prod_{#1}\,}
+
+% Look through spaces and linebreaks
+\def\@eatnarrowbreak\narrowbreak{%
+  \@ifnextchar\prd{\narrowbreak\@eatprd}{%
+    \@ifnextchar\sm{\narrowbreak\@eatsm}{%
+      \narrowbreak}}}
+\def\@eatlinebreak\\{%
+  \@ifnextchar\prd{\\\@eatprd}{%
+    \@ifnextchar\sm{\\\@eatsm}{%
+      \\}}}
+\def\@eatsemicolonspace\;{%
+  \@ifnextchar\prd{\;\@eatprd}{%
+    \@ifnextchar\sm{\;\@eatsm}{%
+      \;}}}
 
 %%% Lambda abstractions.
 % Each variable being abstracted over is a separate argument.  If
@@ -79,7 +102,13 @@
 %%% Dependent sums %%%
 \def\smsym{\textstyle\sum}
 % Use in the same way as \prd
-\def\sm#1{\@ifnextchar\bgroup{\sm@parens{#1}}{\@ifnextchar\prd{\sm@parens{#1}\@eatprd}{\sm@noparens{#1}}}}
+\def\sm#1{\@ifnextchar\bgroup{\sm@parens{#1}}{%
+    \@ifnextchar\prd{\sm@parens{#1}\@eatprd}{%
+    \@ifnextchar\sm{\sm@parens{#1}\@eatsm}{%
+    \@ifnextchar\;{\sm@parens{#1}\@eatsemicolonspace}{%
+    \@ifnextchar\\{\sm@parens{#1}\@eatlinebreak}{%
+    \@ifnextchar\narrowbreak{\sm@parens{#1}\@eatnarrowbreak}{%
+        \sm@noparens{#1}}}}}}}}
 \def\sm@parens#1{\@ifnextchar\bgroup%
   {\mathchoice{\@dsm{#1}}{\@tsm{#1}}{\@tsm{#1}}{\@tsm{#1}}\sm@parens}%
   {\@ifnextchar\prd%

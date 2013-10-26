@@ -242,6 +242,60 @@ Therefore, we also have
 \[ \Brck{\sm{n:\nat}P(n)} \to \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)} \]
 from which the claim follows.
 
+\section*{Exercises from \autoref{cha:equivalences}}
+
+\subsection*{Solution to \autoref{ex:symmetric-equiv}}
+
+First note that for any type $A$ we have $\eqv{\iscontr(A)}{A\times \iscontr(A)}$.
+Thus
+\begin{align*}
+  \prd{a:A} \iscontr\Parens{\sm{b:B} R(a,b)}
+  &\eqvsym \prd{a:A} \Parens{\sm{b:B} R(a,b)} \times  \iscontr\Parens{\sm{b:B} R(a,b)}\\
+  &\eqvsym \Parens{\prd{a:A}\sm{b:B} R(a,b)} \times  \Parens{\prd{a:A}\iscontr\Parens{\sm{b:B} R(a,b)}}\\
+  &\eqvsym \Parens{\sm{f:A\to B} \prd{a:A} R(a,f(a))} \times  \Parens{\prd{a:A}\iscontr\Parens{\sm{b:B} R(a,b)}}
+\end{align*}
+using \autoref{thm:ttac} at the last step.
+So the type given in the exercise is equivalent to
+\begin{equation*}
+\sm{f:A\to B}{R:A\to B\to \type}
+\Parens{\prd{a:A} R(a,f(a))}\times
+\Parens{\prd{a:A} \iscontr\Parens{\sm{b:B} R(a,b)}} \times
+\Parens{\prd{b:B} \iscontr\Parens{\sm{a:A} R(a,b)}}.
+\end{equation*}
+It will therefore suffice to show that for any $f:A\to B$, the type
+\begin{equation}\label{eq:symmetric-isequiv}
+\sm{R:A\to B\to \type}
+\Parens{\prd{a:A} R(a,f(a))}\times
+\Parens{\prd{a:A} \iscontr\Parens{\sm{b:B} R(a,b)}} \times
+\Parens{\prd{b:B} \iscontr\Parens{\sm{a:A} R(a,b)}}.
+\end{equation}
+is equivalent to $\isequiv(f)$, or equivalently that it satisfies the three desiderata of $\isequiv(f)$.
+
+Firstly, suppose $f$ has a quasi-inverse $g$, and define $R(a,b) \defeq (f(a)=b)$.
+For any $a$ we have $\iscontr(\sm{b:B} R(a,b))$ by \autoref{thm:contr-paths}, and in particular we have $R(a,f(a))$.
+On the other hand, by \autoref{thm:paths-respects-equiv} we have $\eqv{R(a,b)}{(gf(a) = g(b))}$, which is equivalent to $a = g(b)$, so \autoref{thm:contr-paths} also implies that $\iscontr(\sm{a:A} R(a,b))$ for any $b:B$.
+
+Secondly, suppose~\eqref{eq:symmetric-isequiv} is inhabited, i.e.\  we have $R:A\to B\to \type$ and witnesses $r:\prd{a:A} R(a,f(a))$ and $c:\prd{a:A} \iscontr(\sm{b:B} R(a,b))$ and $d:\prd{b:B} \iscontr(\sm{a:A} R(a,b))$.
+Let $g(b) \defeq \proj1 (\proj1(d(b)))$, yielding $g:B\to A$; thus we have $R(g(b),b)$ for any $b:B$.
+Then for any $a_0:A$ we have $R(a_0,f(a_0))$ and $R(g(f(a_0)),f(a_0))$; but $\sm{a:A} R(a,f(a_0))$ is contractible, so $a_0 = g(f(a_0))$.
+Similarly, $b_0 = f(g(b_0))$ for any $b_0:B$, so $g$ is a quasi-inverse to $f$.
+
+Finally, we must show that~\eqref{eq:symmetric-isequiv} is a mere proposition.
+Since $\prd{b:B} \iscontr\Parens{\sm{a:A} R(a,b)}$ is a mere proposition by \cref{thm:contr-forall,thm:isprop-iscontr}, by \autoref{thm:omit-contr} we may ignore it and consider only the remainder:
+\begin{equation*}
+\sm{R:A\to B\to \type}
+\Parens{\prd{a:A} R(a,f(a))}\times
+\Parens{\prd{a:A} \iscontr\Parens{\sm{b:B} R(a,b)}}.
+\end{equation*}
+Using \autoref{thm:ttac} again, this is equivalent to
+\begin{equation*}
+\prd{a:A}\sm{R:B\to \type} R(fa)\times \iscontr\Parens{\sm{b:B} R(b)}.
+\end{equation*}
+Thus it will suffice to show that for any $b_0:B$, the type
+\[ \sm{R:B\to \type} R(b_0)\times \iscontr\Parens{\sm{b:B} R(b)} \]
+is a mere proposition.
+But in fact, this type is contractible; its center of contraction consists of $\lam{b}(b_0=b)$ and $\refl{b_0}$ and \autoref{thm:contr-paths}, and the contracting homotopy arises from \autoref{thm:identity-systems}\ref{item:identity-systems4}$\Rightarrow$\ref{item:identity-systems3} (together with univalence and function extensionality).
+
 
 \section*{Exercises from \autoref{cha:hlevels}}
 

@@ -1,0 +1,28 @@
+language: c
+
+env:
+ matrix:
+   - LATEXMK="yes"
+   - LATEXMK=""
+
+
+install:
+ - echo | sudo add-apt-repository ppa:texlive-backports/ppa
+ - sudo apt-get update -q
+ - sudo apt-get install -q texlive
+ - if [ ! -z "$LATEXMK" ]; then sudo apt-get install -q latexmk; fi
+ - wget http://mirrors.ctan.org/macros/latex/contrib/comment/comment.sty
+ - wget http://www.ctan.org/tex-archive/macros/latex/contrib/misc/nextpage.sty
+ - wget http://mirrors.ctan.org/fonts/stmaryrd.zip && unzip stmaryrd && mv stmaryrd/*.{mf,dtx} ./ && latex stmaryrd.dtx
+ - wget http://mirrors.ctan.org/macros/latex/contrib/wallpaper/wallpaper.sty
+ - wget http://mirrors.ctan.org/macros/generic/xstring/xstring.sty
+ - wget http://mirrors.ctan.org/macros/generic/xstring/xstring.tex
+ - wget http://mirrors.ctan.org/macros/latex/contrib/enumitem/enumitem.sty
+ - wget http://mirrors.ctan.org/macros/latex/contrib/mh.zip && unzip mh.zip && (cd mh && for i in *.dtx; do (mv $i ../ && cd .. && tex $i); done)
+ - wget http://mirrors.ctan.org/macros/generic/diagrams/xypic.zip && unzip xypic.zip && mv xypic/*/* ./
+ - wget http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.def
+ - wget http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.sty
+ - wget http://mirrors.ctan.org/macros/latex/contrib/titlesec.zip && unzip titlesec.zip && mv titlesec/*.{tss,sty,def} ./
+ - wget http://mirrors.ctan.org/macros/latex/contrib/braket/braket.sty
+
+script: make

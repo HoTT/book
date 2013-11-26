@@ -32,7 +32,8 @@ edition (errata.tex).
   % merge of 1234567
   where 1234567 is the commit hash in which you made the fix.  (This
   necessitates making two commits, one to make the fix and one to
-  record the erratum.)
+  record the erratum.)  Please use EXACTLY this syntax so that it can
+  be automatically updated by the errata-marking script.
 
 - The third column is a description of the change.  Please be specific
   enough that someone looking at only a printed version (which may

@@ -32,9 +32,31 @@ edition (errata.tex).
   % merge of 1234567
   where 1234567 is the commit hash in which you made the fix.  (This
   necessitates making two commits, one to make the fix and one to
-  record the erratum.)
+  record the erratum.)  Please use EXACTLY this syntax so that it can
+  be automatically updated by the errata-marking script.
 
 - The third column is a description of the change.  Please be specific
   enough that someone looking at only a printed version (which may
   have page breaks in different places) could easily find its
   location.
+
+It is generally a good idea not to submit github pull requests from
+your master branch.  This is because whatever branch you submit a pull
+request from, any new commits on that branch that happen before the
+pull request is merged get added to the pull request.  Thus, if you
+submit pull requests from your master branch, you cannot have multiple
+unrelated pull requests open at once, or do unrelated work on your
+master branch before your pull request is merged.  To create a special
+branch for your pull request, run
+
+  git checkout -b BRANCHNAME
+
+Make your commits in that branch, then run
+
+  git push origin BRANCHNAME:BRANCHNAME
+
+assuming that your git remote "origin" is set up to be your github
+fork (rather than the main HoTT/book repository).  The main page of
+your github fork should then have a little prompt asking you whether
+you want to issue a pull request from your most recently pushed
+branch.

@@ -1,15 +1,18 @@
 language: c
 
 env:
+ global:
+   - secure: "1JBF9mV0vgq1StF9McuBHKc+sOQXX7mNiEEkFNfsyjKY/pM7rFWoqZk7CQhg9HvFuQyJgljYgVsLEcKDQ07DNpHBUb54aR/5Uwqse75vLtrqCR8DQfbM6BwKeUfQRRNtExFQu8bzFfgsmzk6pNv/wJ4Bg8QLRBGo4KPjnG9fIxo="
+
  matrix:
-   - LATEXMK="yes"
-   - LATEXMK=""
+   - LATEXMK="yes" UPDATE_ERRATA=""
+   - LATEXMK=""    UPDATE_ERRATA="yes"
 
 
 install:
  - echo | sudo add-apt-repository ppa:texlive-backports/ppa
  - sudo apt-get update -q
- - sudo apt-get install -q texlive
+ - sudo apt-get install -q texlive wget curl sed grep
  - if [ ! -z "$LATEXMK" ]; then sudo apt-get install -q latexmk; fi
  - wget http://mirrors.ctan.org/macros/latex/contrib/comment/comment.sty
  - wget http://www.ctan.org/tex-archive/macros/latex/contrib/misc/nextpage.sty
@@ -26,3 +29,7 @@ install:
  - wget http://mirrors.ctan.org/macros/latex/contrib/braket/braket.sty
 
 script: make
+
+# add -f to force a push even if we're not on HoTT/HoTT.
+# generally only useful for debugging
+after_script: etc/ci/update_errata.sh

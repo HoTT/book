@@ -41,6 +41,8 @@ if [ -z "$(git diff HEAD)" ]; then
 fi
 
 "$DIR"/configure_commit.sh
+echo '$ git branch -a'
+git branch -a
 echo '$ git --no-pager diff HEAD'
 git --no-pager diff HEAD
 echo '$ git --no-pager diff HEAD..origin/master'
@@ -50,8 +52,11 @@ git --no-pager diff HEAD..upstream/master
 
 BAD_REMOTES="$(git remote -v | grep origin | grep -v 'github.com/HoTT/book')"
 UPSTREAM_LOG="$(git log HEAD..upstream/master)"
+#MASTER_LOG="$(git log HEAD..master)"
+#ORIGIN_LOG="$(git log HEAD..origin/master)"
 
 git commit -am "Mark Errata (auto)"
+ERRATA_COMMIT="$(git rev-parse HEAD)"
 
 # check that we're in the right place, or that we have -f
 if [ "$1" != "-f" ]; then
@@ -61,14 +66,29 @@ if [ "$1" != "-f" ]; then
 	exit 0
     fi
 
-    git remote update
     # only make the errata if we're the same as upstream/master
     if [ ! -z "$UPSTREAM_LOG" ]; then
 	echo "Not making errata beause we do not match with upstream/master; call '$0 -f' to force"
 	exit 0
     fi
+
+#    # only make the errata if we're the same as master
+#    if [ ! -z "$MASTER_LOG" ]; then
+#	echo "Not making errata beause we do not match with master; call '$0 -f' to force"
+#	exit 0
+#    fi
+#
+#    # only make the errata if we're the same as upstream/master
+#    if [ ! -z "$ORIGIN_LOG" ]; then
+#	echo "Not making errata beause we do not match with origin/master; call '$0 -f' to force"
+#	exit 0
+#    fi
 fi
 
-git rebase origin master && "$DIR"/push_remote.sh HEAD:master
+echo '$ git reset --hard'
+git reset --hard
+
+echo '$ git rebase origin master && git cherry-pick "'"$ERRATA_COMMIT"'" && push_remote.sh HEAD:master'
+git rebase origin master && git cherry-pick "$ERRATA_COMMIT" && "$DIR"/push_remote.sh HEAD:master
 
 popd 1>/dev/null

@@ -677,59 +677,37 @@ We can also make the suspension $\susp$ act on pointed types, by $\susp(A,a_0)\d
   \[ \eqv{\Map_*(\susp A, B)}{\Map_*(A,\Omega B)}.\]
 \end{lem}
 \begin{proof}
-  From left to right, given $f:\susp A \to B$ with $p:f(\north) = b_0$, we define $g:A \to \Omega B$ by
-  \[g(a) \defeq \opp p \ct \ap f{\merid(a) \ct \opp{\merid(a_0)}} \ct p.\]
-  Then we have
-  \begin{align*}
-    g(a_0) &\jdeq \opp p \ct \ap f{\merid(a_0) \ct \opp{\merid(a_0)}} \ct p\\
-    &= \opp p \ct \ap f{\refl{\north}} \ct p\\
-    &= \opp p \ct p\\
-    &= \refl{b_0}.
-  \end{align*}
-  Thus, denoting this path by $q:g(a_0)=\refl{b_0}$, we have $(g,q):\Map_*(A,\Omega B)$.
+We first observe the following chain of equalities:
+\begin{align*}
+\Map_*(\susp A, B) & \defeq \sm{f:\susp A\to B} (f(\north)=b_0) \\
+                   & \simeq \sm{f:\sm{b_n : B} \sm{b_s : B} \prd{a:A} b_n = b_s} (\fst(f)=b_0) \\
+									 & \simeq \sm{b_n : B} \sm{b_s : B} \big(\prd{a:A} b_n = b_s\big) \times (b_n=b_0) \\
+									 & \simeq \sm{p : \sm{b_n : B} (b_n=b_0)} \sm{b_s : B} \prd{a:A} (\fst(p) = b_s) \\
+									 & \simeq \sm{b_s : B} \prd{a:A} (b_0 = b_s)
+\end{align*}
+The first equivalence follows by the universal property of suspensions, which says that the type $\susp(A) \to B$ is equivalent to \[\sm{b_n : B} \sm{b_s : B} \prd{a:A} (b_n = b_s)\] with the function from right to left given by the recursor. The last equivalence follows from the fact that $\sm{b_n : B} (b_n=b_0)$ is contractible with center $(b_0, \refl{b_0})$.
 
-  On the other hand, from right to left, given $g:A\to \Omega B$ and $q:g(a_0)=\refl{b_0}$, we define $f:\susp A \to B$ by $\susp$-recursion, such that $f(\north)\defeq b_0$ and $f(\south)\defeq b_0$ and
-  \[ \ap f {\merid(a)} \defid g(a). \]
-  Then we can simply take $p$ to be $\refl{b_0} : f(\north)= b_0$.
+It thus remains to show that \[\sm{b_s : B} \prd{a:A} (b_0 = b_s) \simeq \sm{g : A \to \Omega B} (g(a_0) = \refl{b_0})\]
+From left to right, given $(b_s,f)$ we define $g:A \to \Omega B$ by \[g(a) \defeq f(a) \ct \opp{f(a_0)} \]
+The path $q : g(a_0) = \refl{b_0}$ is then obtained by canceling inverses.
 
-  Now given $(f,p)$, by passing back and forth we obtain $(f',p')$ where $f'$ is defined by $f'(\north)\jdeq b_0$ and $f'(\south)\jdeq b_0$ and
-  \[ \ap {f'} {\merid(a)} = \opp p \ct \ap f{\merid(a) \ct \opp{\merid(a_0)}} \ct p, \]
-  while $p' \jdeq \refl{b_0}$.
-  To show $f=f'$, by function extensionality it suffices to show $f(x)=f'(x)$ for all $x:\susp A$, so we can use the induction principle of suspension.
-  First, we have
-  \begin{equation}
-    f(\north) \overset{p}{=} b_0 \jdeq f'(\north). \label{eq:ffprime-north}
-  \end{equation}
-  Second, we have
-  \[\xymatrix@C=4pc{ f(\south) \ar@{=}[r]^-{\opp{\ap f {\merid(a_0)}}} & f(\north) \overset{\smash p}{=} b_0 \jdeq f'(\south).}\]
-  And thirdly, as $x$ varies along $\merid(a)$ we must show that the following diagram of paths commutes (invoking the definition of $\ap{f'}{\merid(a)}$):
-  \[ \xymatrix{
-    f(\north) \ar@{=}[rrr]^-{p} \ar@{=}[ddd]_{f(\merid(a))} &&&
-    b_0 \ar@{=}[r]^-{\refl{}} &
-    f'(\north) \ar@{=}[d]^{\opp p}\\
-    &&&& f(\north) \ar@{=}[d]^{\ap f{\merid(a) \ct \opp{\merid(a_0)}}}\\
-    &&&& f(\north) \ar@{=}[d]^p\\
-    f(\south) \ar@{=}[rr]_-{\opp{\ap f {\merid(a_0)}}} &&
-    f(\north) \ar@{=}[r]_-p &
-    b_0 \ar@{=}[r]_-{\refl{}} &
-    f'(\south) }
-  \]
-  This is clear.
-  Thus, to show that $(f,p)=(f',p')$, it remains only to show that $p$ is identified with $p'$ when transported along this equality $f=f'$.
-  Since the type of $p$ is $f(\north)=b_0$, this means essentially that when $p$ is composed on the left with the inverse of the equality~\eqref{eq:ffprime-north}, it becomes $p'$.
-  But this is obvious, since~\eqref{eq:ffprime-north} is just $p$ itself, while $p'$ is reflexivity.
+On the other hand, from right to left, we map $(g,q)$ simply to the pair $(b_0,g)$.
 
-  On the other side, suppose given $(g,q)$.
-  By passing back and forth we obtain $(g',q')$ with
-  \begin{align*}
-    g'(a) &= \opp{\refl{b_0}} \ct g(a) \ct \opp{g(a_0)} \ct \refl{b_0}\\
-    &= g(a) \ct \opp{g(a_0)}\\
-    &= g(a)
-  \end{align*}
-  using $q:g(a_0) = \refl{b_0}$ in the last equality.
-  Thus, $g'=g$ by function extensionality, so it remains to show that when transported along this equality $q$ is identified with $q'$.
-  At $a_0$, the induced equality $g(a_0)=g'(a_0)$ consists essentially of $q$ itself, while the definition of $q'$ involves only canceling inverses and reflexivities.
-  Thus, some tedious manipulations of naturality finish the proof.
+Now given $(b_s,f)$, by passing back and forth we obtain \[(b_0,\lambda_{a:A} (f(a) \ct \opp{f(a_0)})\]
+The path $f(a_0) : b_0 = b_s$ witnesses equality of the first projections; transporting $f$ back along $f(a_0)$ then gives us precisely $\lambda_{a:A} (f(a) \ct \opp{f(a_0)}$ as desired.
+
+Finally, given $(g,q)$, by passing back and forth we obtain \[(\lambda_{a:A} (g(a) \ct \opp{g(a_0)}),q')\] where $q' : g(a) \ct \opp{g(a_0)} = \refl{b_0}$ is the cancellation-of-inverses path. We have
+\begin{align*}
+  g(a) \ct \opp{g(a_0)} &= g(a) \ct \refl{b_0} \\
+	  &= g(a)	
+\end{align*}
+ using $q:g(a_0) = \refl{b_0}$ in the first equality. Thus, the first components are equal by function extensionality. It remains to show that when transported along this equality, $q$ is identified with $q'$. The transport of $q$ can be expressed explicitly as the path 
+\begin{align*}
+g(a_0) \ct \opp{g(a_0)} &= g(a) \ct \refl{b_0} \\
+	  &= g(a_0)	\\
+		&= \refl{b_0}
+\end{align*}
+where $q:g(a_0) = \refl{b_0}$ is used in the first and last equalities. It is easy to see that this is indeed the same as the path $q'$ which cancels the inverses.
 \end{proof}
 
 \index{type!n-sphere@$n$-sphere|defstyle}%
@@ -1123,7 +1101,7 @@ Then $\trunc0A$ would be freely generated by a function $A\to \trunc0A$ together
 A natural induction principle for it would say that given $B:\trunc0 A \to \type$ together with
 \begin{itemize}
 \item a function $g:\prd{a:A} B(\tproj0a)$, and
-\item for any $x,y:\trunc0A$ with $z:B(x)$ and $w:B(y)$, and each $p,q:x=y$ with $r:\dpath{B}{p}{z}{w}$ and $s:\dpath{B}{q}{z}{w}$, a 2-path $v:\dpath{B}{u(x,y,p,q)}{r}{s}$, where $u(x,y,p,q):p=q$ is obtained from the second constructor of $\trunc0A$,
+\item for any $x,y:\trunc0A$ with $z:B(x)$ and $w:B(y)$, and each $p,q:x=y$ with $r:\dpath{B}{p}{z}{w}$ and $s:\dpath{B}{q}{z}{w}$, a 2-path $v:\dpath{\dpath{B}{-}{z}{w}}{u(x,y,p,q)}{r}{s}$, where $u(x,y,p,q):p=q$ is obtained from the second constructor of $\trunc0A$,
 \end{itemize}
 there exists $f:\prd{x:\trunc0A} B(x)$ such that $f(\tproj0a)\jdeq g(a)$ for all $a:A$, and also $\apdtwo{f}{u(x,y,p,q)}$ is the 2-path specified above.
 (As in the propositional case, the latter condition turns out to be uninteresting.)

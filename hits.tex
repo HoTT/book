@@ -1312,21 +1312,22 @@ if $r\circ r = r$.)
 
 \begin{lem}\label{lem:quotient-when-canonical-representatives}
   Suppose $\eqr$ is an equivalence relation on a set $A$, and there exists an idempotent $r
-  : A \to A$ such that, for all $x, y \in A$, $\eqv{(r(x) = r(y))}{(x \eqr y)}$. Then the
-  type
+  : A \to A$ such that, for all $x, y \in A$, $\eqv{(r(x) = r(y))}{(x \eqr y)}$.
+  (In fact, the existence of such an $r$ implies that $\eqr$ is an equivalence relation.)
+  Then the type
   %
   \begin{equation*}
     (A/{\eqr}) \defeq \sm{x : A} r(x) = x
   \end{equation*}
   %
-  is the set-quotient of $A$ by~$\eqr$.
-  In other words, there is a map $q : A \to (A/{\eqr})$ such that for every set $B$, the type $(A/{\eqr}) \to B$ is equivalent to
+  has the same universal property (\autoref{thm:quotient-ump}) as the set-quotient of $A$ by~$\eqr$, and hence is equivalent to it.
+  In other words, there is a map $q : A \to (A/{\eqr})$ such that for every set $B$, precomposition with $q$ yields an equivalence
   %
   \begin{equation}
     \label{eq:quotient-when-canonical}
-    \sm{g : A \to B} \prd{x, y : A} (x \eqr y) \to (g(x) = g(y))
+    ((A/{\eqr}) \to B) \eqvsym
+    \Parens{\sm{g : A \to B} \prd{x, y : A} (x \eqr y) \to (g(x) = g(y))}.
   \end{equation}
-  with the map being induced by precomposition with $q$.
 \end{lem}
 
 \begin{proof}
@@ -1385,7 +1386,10 @@ defined by
 %
 (This is a valid definition even constructively, since the relation $\geq$ on $\N$ is decidable.)
 Thus a non-negative integer is canonically represented as $(k, 0)$ and a non-positive one by $(0, m)$, for $k,m:\N$.
-This division into cases implies the following induction principle for integers, which will be useful in \autoref{cha:homotopy}.
+
+This yields three constructions of $\Z$: the higher inductive quotient, the impredicative quotient, and the type $\sm{x:\N\times\N} (r(x)=x)$ from \autoref{lem:quotient-when-canonical-representatives}.
+Although they are all equivalent, they support different judgmental equalities.
+For instance, $\sm{x:\N\times\N} (r(x)=x)$ satisfies the following induction principle, which will be useful in \autoref{cha:homotopy}.
 \index{natural numbers}%
 (As usual, we identify natural numbers with the corresponding non-negative integers.)
 \end{rmk}
@@ -1393,6 +1397,7 @@ This division into cases implies the following induction principle for integers,
 \begin{lem}\label{thm:sign-induction}
   \index{integers!induction principle for}%
   \index{induction principle!for integers}%
+  Define $\Z \defeq \sm{x:\N\times\N} (r(x)=x)$, with $r$ the idempotent defined in \autoref{Z-quotient-by-canonical-representatives}.
   Suppose $P:\Z\to\type$ is a type family and that we have
   \begin{itemize}
   \item $d_0: P(0)$,
@@ -1402,9 +1407,8 @@ This division into cases implies the following induction principle for integers,
   Then we have $f:\prd{z:\Z} P(z)$ such that $f(0)\jdeq d_0$ and $f(\suc(n))\jdeq d_+(f(n))$, and $f(-\suc(n))\jdeq d_-(f(-n))$ for all $n:\N$.
 \end{lem}
 \begin{proof}
-  We identify $\Z$ with $\sm{x:\N\times\N}(r(x)=x)$, where $r$ is the above idempotent.
-  Now define $Q\defeq P\circ r:\N\times \N \to \type$.
-  We can construct $g:\prd{x:\N\times \N} Q(x)$ by double induction on $n$:
+  Define $Q\defeq P\circ r:\N\times \N \to \type$.
+  Then we can construct $g:\prd{x:\N\times \N} Q(x)$ by double induction on $n$:
   \begin{align*}
     g(0,0) &\defeq d_0,\\
     g(\suc(n),0) &\defeq d_+(g(n,0)),\\
@@ -1414,7 +1418,7 @@ This division into cases implies the following induction principle for integers,
   Let $f$ be the restriction of $g$ to $\Z$.
 \end{proof}
 
-For example, we can define the $n$-fold concatenation of a loop for any integer $n$.
+For example, using this induction principle we can define the $n$-fold concatenation of a loop for any integer $n$.
 
 \begin{cor}\label{thm:looptothe}
   \indexdef{path!concatenation!n-fold@$n$-fold}%
@@ -1428,6 +1432,11 @@ For example, we can define the $n$-fold concatenation of a loop for any integer 
     & &\text{for $n\le 0$.}
   \end{align*}
 \end{cor}
+
+Since the other definitions of $\Z$ are equivalent to $\sm{x:\N\times\N} (r(x)=x)$, they also satisfy the conclusion of \autoref{thm:sign-induction}, but with propositional rather than judgmental computation rules, i.e.\ $f(0)= d_0$ and $f(\suc(n))= d_+(f(n))$, and $f(-\suc(n))= d_-(f(-n))$.
+This is usually good enough, but sometimes the judgmental equalities are convenient.
+In particular, we will use \autoref{thm:sign-induction} in \S\ref{sec:pi1-s1-intro}; thus from now on we let \Z denote $\sm{x:\N\times\N} (r(x)=x)$ rather than either of the other equivalent definitions.
+(Another possibility would be to define $\Z$ as an inductive type with three constructors $0:\Z$ and $\mathsf{pos}:\N\to\Z$ and $\mathsf{neg}:\N\to\Z$, immediately yielding \autoref{thm:sign-induction} as the induction principle.)
 
 We will discuss the integers further in \autoref{sec:free-algebras,sec:field-rati-numb}.
 

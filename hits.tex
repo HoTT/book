@@ -1843,10 +1843,10 @@ Now the following lemma says to define a section of a type family over $\sm{w:W}
   \item $c : \prd{a:A}{x:C(a)} Q(\cct'(a,x))$ and
   \item $p : \prd{b:B}{y:C(f(b))} \Big(\trans{\ppt'(b,y)}{c(f(b),y)} = c(g(b),D(b)(y))\Big)$. %_{Q(\cct'(g(b),D(b)(y)))}
   \end{itemize}
-  Then there exists $f:\prd{z:\sm{w:W} P(w)} Q(z)$ such that $f(\cct'(a,x)) \jdeq c(a,x)$.
+  Then there exists $k:\prd{z:\sm{w:W} P(w)} Q(z)$ such that $k(\cct'(a,x)) \jdeq c(a,x)$.
 \end{lem}
 \begin{proof}
-  Suppose given $w:W$ and $x:P(w)$; we must produce an element $f(w,x):Q(w,x)$.
+  Suppose given $w:W$ and $x:P(w)$; we must produce an element $k(w,x):Q(w,x)$.
   By induction on $w$, it suffices to consider two cases.
   When $w\jdeq \cc(a)$, then we have $x:C(a)$, and so $c(a,x):Q(\cc(a),x)$ as desired.
   (This part of the definition also ensures that the stated computational rule holds.)
@@ -1891,7 +1891,7 @@ Now the following lemma says to define a section of a type family over $\sm{w:W}
 
 \autoref{thm:flattening-rect} \emph{almost} gives $\sm{w:W}P(w)$ the same induction principle as \Wtil.
 The missing bit is the equality $\apdfunc{f}(\ppt'(b,y)) = p(b,y)$.
-In order to prove this, we would need to analyze the proof of \autoref{thm:flattening-rect}, which of course is the definition of $f$.
+In order to prove this, we would need to analyze the proof of \autoref{thm:flattening-rect}, which of course is the definition of $k$.
 
 It should be possible to do this, but it turns out that we only need the computation rule for the non-dependent recursion principle.
 Thus, we now give a somewhat simpler direct construction of the recursor, and a proof of its computation rule.
@@ -1902,11 +1902,11 @@ Thus, we now give a somewhat simpler direct construction of the recursor, and a 
   \item $c : \prd{a:A} C(a) \to Q$ and
   \item $p : \prd{b:B}{y:C(f(b))} \Big(c(f(b),y) =_Q c(g(b),D(b)(y))\Big)$.
   \end{itemize}
-  Then there exists $f:\big(\sm{w:W} P(w)\big) \to Q$ such that $f(\cct'(a,x)) \jdeq c(a,x)$.
+  Then there exists $k:\big(\sm{w:W} P(w)\big) \to Q$ such that $k(\cct'(a,x)) \jdeq c(a,x)$.
 \end{lem}
 \begin{proof}
-  As in \autoref{thm:flattening-rect}, we define $f(w,x)$ by induction on $w:W$.
-  When $w\jdeq \cc(a)$, we define $f(\cc(a),x)\defeq c(a,x)$.
+  As in \autoref{thm:flattening-rect}, we define $k(w,x)$ by induction on $w:W$.
+  When $w\jdeq \cc(a)$, we define $k(\cc(a),x)\defeq c(a,x)$.
   Now by \autoref{thm:dpath-arrow}, it suffices to consider, for $b:B$ and $y:C(f(b))$, the composite path
   \begin{equation}\label{eq:flattening-rectnd}
     \transfib{x\mapsto Q}{\pp(b)}{c(f(b),y)}
@@ -1921,18 +1921,18 @@ Thus, we now give a somewhat simpler direct construction of the recursor, and a 
     &= c(g(b),D(b)(y)) \tag{by $p(b,y)$}\\
     &= c(g(b),\transfib{P}{\pp(b)}{y}). \tag{by \autoref{thm:transport-is-given}}
   \end{align}
-  The computation rule $f(\cct'(a,x)) \jdeq c(a,x)$ follows by definition, as before.
+  The computation rule $k(\cct'(a,x)) \jdeq c(a,x)$ follows by definition, as before.
 \end{proof}
 
 For the second computation rule, we need the following lemma.
 
 \begin{lem}\label{thm:ap-sigma-rect-path-pair}
-  Let $Y:X\to\type$ be a type family and let $f:(\sm{x:X}Y(x)) \to Z$ be defined componentwise by $f(x,y) \defeq d(x)(y)$ for a curried function $d:\prd{x:X} Y(x)\to Z$.
+  Let $Y:X\to\type$ be a type family and let $k:(\sm{x:X}Y(x)) \to Z$ be defined componentwise by $k(x,y) \defeq d(x)(y)$ for a curried function $d:\prd{x:X} Y(x)\to Z$.
   Then for any $s:\id[X]{x_1}{x_2}$ and any $y_1:Y(x_1)$ and $y_2:Y(x_2)$ with a path $r:\trans{s}{y_1}=y_2$, the path
-  \[\apfunc f (\pairpath(s,r)) :f(x_1,y_1) = f(x_2,y_2)\]
+  \[\apfunc k (\pairpath(s,r)) :k(x_1,y_1) = k(x_2,y_2)\]
   is equal to the composite
   \begin{align}
-    f(x_1,y_1)
+    k(x_1,y_1)
     &\jdeq d(x_1)(y_1) \notag\\
     &= \transfib{x\mapsto Z}{s}{d(x_1)(y_1)}
     \tag{by $\opp{\text{(\autoref{thm:trans-trivial})}}$}\\
@@ -1944,7 +1944,7 @@ For the second computation rule, we need the following lemma.
     \tag{by $\happly(\apdfunc{d}(s))(\trans{s}{y_1}$}\\
     &= d(x_2)(y_2)
     \tag{by $\apfunc{d(x_2)}(r)$}\\
-    &\jdeq f(x_2,y_2).
+    &\jdeq k(x_2,y_2).
     \notag
   \end{align}
 \end{lem}
@@ -1953,15 +1953,15 @@ For the second computation rule, we need the following lemma.
 \end{proof}
 
 At first it may seem surprising that \autoref{thm:ap-sigma-rect-path-pair} has such a complicated statement, while it can be proven so simply.
-The reason for the complication is to ensure that the statement is well-typed: $\apfunc f (\pairpath(s,r))$ and the composite path it is claimed to be equal to must both have the same start and end points.
+The reason for the complication is to ensure that the statement is well-typed: $\apfunc k (\pairpath(s,r))$ and the composite path it is claimed to be equal to must both have the same start and end points.
 Once we have managed this, the proof is easy by path induction.
 
 \begin{lem}\label{thm:flattening-rectnd-beta-ppt}
-  In the situation of \autoref{thm:flattening-rectnd}, we have $\apfunc{f}(\ppt'(b,y)) = p(b,y)$.
+  In the situation of \autoref{thm:flattening-rectnd}, we have $\apfunc{k}(\ppt'(b,y)) = p(b,y)$.
 \end{lem}
 \begin{proof}
   Recall that $\ppt'(b,y) \defeq \pairpath(\pp(b),q)$ where $q:\trans{\pp(b)}{y} = D(b)(y)$ comes from \autoref{thm:transport-is-given}.
-  Thus, since $f$ is defined componentwise, we may compute $\apfunc{f}(\ppt'(b,y))$ by \autoref{thm:ap-sigma-rect-path-pair}, with
+  Thus, since $k$ is defined componentwise, we may compute $\apfunc{k}(\ppt'(b,y))$ by \autoref{thm:ap-sigma-rect-path-pair}, with
   \begin{align*}
     x_1 &\defeq \cc(f(b)) & y_1 &\defeq y\\
     x_2 &\defeq \cc(g(b)) & y_2 &\defeq D(b)(y)\\

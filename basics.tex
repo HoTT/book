@@ -377,6 +377,9 @@ If it should happen that $b$ and $c$, say, are judgmentally equal, then we may w
   a &= b & \text{(by $p$)}\\ &\jdeq c \\ &= d &\text{(by $r$)}
 \end{align*}
 to indicate construction of $p\ct r : (a=d)$.
+We also follow common mathematical practice in not requiring the justifications in this notation (``by $p$'' and ``by $r$'') to supply the exact witness needed; instead we allow them to simply mention the most important (or least obvious) ingredient in constructing that witness.
+For instance, if ``Lemma A'' states that for all $x$ and $y$ we have $f(x)=g(y)$, then we may write ``by Lemma A'' as a justification for the step $f(a) = g(b)$, trusting the reader to deduce that we apply Lemma A with $x\defeq a$ and $y\defeq b$.
+We may also omit a justification entirely if we trust the reader to be able to guess it.
 
 Now, because of proof-relevance, we can't stop after proving ``symmetry'' and ``transitivity'' of equality: we need to know that these \emph{operations} on equalities are well-behaved.
 (This issue is invisible in set theory, where symmetry and transitivity are mere \emph{properties} of equality, rather than structure on
@@ -779,7 +782,7 @@ Topologically, the transportation lemma can be viewed as a ``path lifting'' oper
 \index{fibration}%
 \indexdef{total!space}%
 We think of a type family $P:A\to \type$ as a \emph{fibration} with base space $A$, with $P(x)$ being the fiber over $x$, and with $\sm{x:A}P(x)$ being the \define{total space} of the fibration, with first projection $\sm{x:A}P(x)\to A$.
-The defining property of a fibration is that given a path $p:x=y$ in the base space $A$ and a point $u:P(x)$ in the fiber over $x$, we may lift the path $p$ to a path in the total space starting at $u$.
+The defining property of a fibration is that given a path $p:x=y$ in the base space $A$ and a point $u:P(x)$ in the fiber over $x$, we may lift the path $p$ to a path in the total space starting at $u$ (and this lifting can be done continuously).
 The point $\trans p u$ can be thought of as the other endpoint of this lifted path.
 We can also define the path itself in type theory:
 
@@ -791,7 +794,7 @@ We can also define the path itself in type theory:
   \begin{equation*}
     \mathsf{lift}(u,p):(x,u)=(y,\trans{p}{u})
   \end{equation*}
-  in $\sm{x:A}P(x)$.
+  in $\sm{x:A}P(x)$, such that $\ap{\proj1}{\mathsf{lift}(u,p)} = p$.
 \end{lem}
 \begin{proof}
   Left to the reader.
@@ -800,6 +803,8 @@ We can also define the path itself in type theory:
 
 In classical homotopy theory, a fibration is defined as a map for which there \emph{exist} liftings of paths; while in contrast, we have just shown that in type theory, every type family comes with a \emph{specified} ``path-lifting function''.
 This accords with the philosophy of constructive mathematics, according to which we cannot show that something exists except by exhibiting it.
+\index{continuity of functions in type theory@``continuity'' of functions in type theory}%
+It also ensures automatically that the path liftings are chosen ``continuously'', since as we have seen, all functions in type theory are ``continuous''.
 
 \begin{rmk}
   Although we may think of a type family $P:A\to \type$ as like a fibration, it is generally not a good idea to say things like ``the fibration $P:A\to\type$'', since this sounds like we are talking about a fibration with base $\type$ and total space $A$.
@@ -834,10 +839,12 @@ The topological intuition is that given $f:\prd{x:A} P(x)$ and a path $p:\id[A]x
 
 We \emph{can} obtain such a thing from \autoref{lem:map}.
 Given $f:\prd{x:A} P(x)$, we can define a non-dependent function $f':A\to \sm{x:A} P(x)$ by setting $f'(x)\defeq (x,f(x))$, and then consider $\ap{f'}{p} : f'(x) = f'(y)$.
-However, it is not obvious from the type of such a path that it lies over a specific path in $A$ (in this case, $p$), which is sometimes important.
+Since $\proj1 \circ f' \jdeq \idfunc[A]$, by \autoref{lem:ap-functor} we have $\ap{\proj1}{\ap{f'}{p}} = p$; thus $\ap{f'}{p}$ does ``lie over'' $p$ in this sense.
+However, it is not obvious from the \emph{type} of $\ap{f'}{p}$ that it lies over any specific path in $A$ (in this case, $p$), which is sometimes important.
 
 The solution is to use the transport lemma.
-Since there is a canonical path from $u:P(x)$ to $\trans p u :P(y)$ which (at least intuitively) lies over $p$, any path from $u$ to $v:P(y)$ lying over $p$ should factor through this path, essentially uniquely, by a path from $\trans p u$ to $v$ lying entirely in the fiber $P(y)$.
+By \autoref{thm:path-lifting} we have a canonical path $\mathsf{lift}(u,p)$ from $(x,u)$ to $(y,\trans p u)$ which lies over $p$.
+Thus, any path from $u:P(x)$ to $v:P(y)$ lying over $p$ should factor through $\mathsf{lift}(u,p)$, essentially uniquely, by a path from $\trans p u$ to $v$ lying entirely in the fiber $P(y)$.
 Thus, up to equivalence, it makes sense to define ``a path from $u$ to $v$ lying over $p:x=y$'' to mean a path $\trans p u = v$ in $P(y)$.
 And, indeed, we can show that dependent functions produce such paths.
 
@@ -1420,16 +1427,16 @@ $(w_1,w_2)=(w_1,w_2')$.  But $\trans{\refl{}}{w_2} \jdeq w_2$, so
 inducting on $q$ reduces to the goal to 
 $(w_1,w_2)=(w_1,w_2)$, which we can prove with $\refl{(w_1,w_2)}$.  
 
-Next we show that $f \circ g$ is the identity for all $w$, $w'$ and
+Next we show that $f(g(r))=r$ for all $w$, $w'$ and
 $r$, where $r$ has type
 \[\dsm{p:\proj{1}(w)=\proj{1}(w')} (\trans{p}{\proj{2}(w)}=\proj{2}(w')).\]
 First, we break apart the pairs $w$, $w'$, and $r$ by pair induction, as in the
 definition of $g$, and then use two path inductions to reduce both components
 of $r$ to \refl{}.  Then it suffices to show that 
-$f (g(\refl{},\refl{})) = \refl{}$, which is true by definition.
+$f (g(\refl{w_1},\refl{w_2})) = (\refl{w_1},\refl{w_2})$, which is true by definition.
 
-Similarly, to show that $g \circ f$ is the identity for all $w$, $w'$,
-and $p : w = w'$, we can do path induction on $p$, and then induction to
+Similarly, to show that $g(f(p))=p$ for all $w$, $w'$,
+and $p : w = w'$, we can do path induction on $p$, and then pair induction to
 split $w$, at which point it suffices to show that
 $g(f (\refl{(w_1,w_2)})) = \refl{(w_1,w_2)}$, which is true by
 definition.
@@ -1659,7 +1666,7 @@ Given two types $A$ and $B$, we may consider them as elements of some universe t
 As mentioned in the introduction, \emph{univalence} is the identification of $\id[\type]AB$ with the type $(\eqv AB)$ of equivalences from $A$ to $B$, which we described in \autoref{sec:basics-equivalences}.
 We perform this identification by way of the following canonical function.
 
-\begin{lem}
+\begin{lem}\label{thm:idtoeqv}
   For types $A,B:\type$, there is a certain function,
   \begin{equation}\label{eq:uidtoeqv}
     \idtoeqv : (\id[\type]AB) \to (\eqv A B),

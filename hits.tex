@@ -1385,9 +1385,9 @@ defined by
 %
 (This is a valid definition even constructively, since the relation $\geq$ on $\N$ is decidable.)
 Thus a non-negative integer is canonically represented as $(k, 0)$ and a non-positive one by $(0, m)$, for $k,m:\N$.
-This division into cases implies the following induction principle for integers, which will be useful in \autoref{cha:homotopy}.
+This division into cases implies the following ``induction principle'' for integers, which will be useful in \autoref{cha:homotopy}.
 \index{natural numbers}%
-(As usual, we identify natural numbers with the corresponding non-negative integers.)
+(As usual, we identify a natural number $n$ with the corresponding non-negative integer, i.e.\ with the image of $(n,0):\N\times\N$ in $\Z$.)
 \end{rmk}
 
 \begin{lem}\label{thm:sign-induction}
@@ -1399,32 +1399,56 @@ This division into cases implies the following induction principle for integers,
   \item $d_+: \prd{n:\N} P(n) \to P(\suc(n))$, and
   \item $d_- : \prd{n:\N} P(-n) \to P(-\suc(n))$.
   \end{itemize}
-  Then we have $f:\prd{z:\Z} P(z)$ such that $f(0)\jdeq d_0$ and $f(\suc(n))\jdeq d_+(f(n))$, and $f(-\suc(n))\jdeq d_-(f(-n))$ for all $n:\N$.
+  Then we have $f:\prd{z:\Z} P(z)$ such that
+  \begin{itemize}
+    \item $f(0) = d_0$,
+    \item $f(\suc(n)) = d_+(n,f(n))$ for all $n:\N$, and
+    \item $f(-\suc(n)) = d_-(n,f(-n))$ for all $n:\N$.
+  \end{itemize}
 \end{lem}
 \begin{proof}
-  We identify $\Z$ with $\sm{x:\N\times\N}(r(x)=x)$, where $r$ is the above idempotent.
-  Now define $Q\defeq P\circ r:\N\times \N \to \type$.
-  We can construct $g:\prd{x:\N\times \N} Q(x)$ by double induction on $n$:
+  For purposes of this proof, let $\Z$ denote $\sm{x:\N\times\N}(r(x)=x)$, where $r$ is the above idempotent.
+  (We can then transport the result to any equivalent definition of $\Z$.)
+  Let $q:\N\times\N\to\Z$ be the quotient map, defined by $q(x) = (r(x),i(x))$ as in \autoref{lem:quotient-when-canonical-representatives}.
+  Now define $Q\defeq P\circ q:\N\times \N \to \type$.
+  By transporting the given data across appropriate equalities, we obtain
   \begin{align*}
-    g(0,0) &\defeq d_0,\\
-    g(\suc(n),0) &\defeq d_+(g(n,0)),\\
-    g(0,\suc(m)) &\defeq d_-(g(0,m)),\\
-    g(\suc(n),\suc(m)) &\defeq g(n,m).
+    d'_0 &: Q(0,0)\\
+    d'_+ &: \prd{n:\N} Q(n,0) \to Q(\suc(n),0)\\
+    d'_- &: \prd{n:\N} Q(0,n) \to Q(0,\suc(n)).
   \end{align*}
-  Let $f$ be the restriction of $g$ to $\Z$.
+  Note also that since $q(n,m) = q(\suc(n),\suc(m))$, we have an induced equivalence
+  \[e_{n,m}:\eqv{Q(n,m)}{Q(\suc(n),\suc(m))}.\]
+  We can then construct $g:\prd{x:\N\times \N} Q(x)$ by double induction on $x$:
+  \begin{align*}
+    g(0,0) &\defeq d'_0,\\
+    g(\suc(n),0) &\defeq d'_+(n,g(n,0)),\\
+    g(0,\suc(m)) &\defeq d'_-(m,g(0,m)),\\
+    g(\suc(n),\suc(m)) &\defeq e_{n,m}(g(n,m)).
+  \end{align*}
+  Now we have $\proj1 : \Z \to \N\times\N$, with the property that $q\circ \proj1 = \idfunc$.
+  In particular, therefore, we have $Q\circ \proj1 = P$, and hence a family of equivalences $s:\prd{z:\Z} \eqv{Q(\proj1(z))}{P(z)}$.
+  Thus, we can define $f(z) = s(z,g(\proj1(z)))$ to obtain $f:\prd{z:\Z} P(z)$, and verify the desired equalities.
 \end{proof}
 
-For example, we can define the $n$-fold concatenation of a loop for any integer $n$.
+We will sometimes denote a function $f:\prd{z:\Z} P(z)$ obtained from \autoref{thm:sign-induction} with a pattern-matching syntax, involving the three cases $d_0$, $d_+$, and $d_-$:
+\begin{align*}
+  f(0) &\defid d_0\\
+  f(\suc(n)) &\defid d_+(n,f(n))\\
+  f(-\suc(n)) &\defid d_-(n,f(-n))
+\end{align*}
+We use $\defid$ rather than $\defeq$, as we did for the path-constructors of higher inductive types, to indicate that the ``computation'' rules implied by \autoref{thm:sign-induction} are only propositional equalities.
+For example, in this way we can define the $n$-fold concatenation of a loop for any integer $n$.
 
 \begin{cor}\label{thm:looptothe}
   \indexdef{path!concatenation!n-fold@$n$-fold}%
   Let $A$ be a type with $a:A$ and $p:a=a$.
   There is a function $\prd{n:\Z} (a=a)$, denoted $n\mapsto p^n$, defined by
   \begin{align*}
-    p^0 &\defeq \refl{\base}\\
-    p^{n+1} &\defeq p^n \ct p
+    p^0 &\defid \refl{a}\\
+    p^{n+1} &\defid p^n \ct p
     & &\text{for $n\ge 0$}\\
-    p^{n-1} &\defeq p^n \ct \opp p
+    p^{n-1} &\defid p^n \ct \opp p
     & &\text{for $n\le 0$.}
   \end{align*}
 \end{cor}
@@ -2144,6 +2168,11 @@ course, a standard set-theoretic idea, and a well-known aspect of elementary top
 \begin{ex}\label{ex:susp-lump}
   Prove the universal property of suspension:
   \[ \Parens{\susp A \to B} \eqvsym \Parens{\sm{b_n : B} \sm{b_s : B} (A \to (b_n = b_s)) } \]
+\end{ex}
+
+\begin{ex}\label{ex:alt-integers}
+  Show that $\eqv{\Z}{\N+\unit+\N}$.
+  Show that if we were to define $\Z$ as $\N+\unit+\N$, then we could obtain \autoref{thm:sign-induction} with judgmental computation rules.
 \end{ex}
 
 \index{type!higher inductive|)}%

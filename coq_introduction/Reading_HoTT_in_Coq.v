@@ -857,12 +857,12 @@ Section Projections.
 
   Definition projT1 (x:sigT P) : A := 
     match x with
-      | existT _ a _ => a
+      | existT a _ => a
     end.
 
   Definition projT2 (x:sigT P) : P (projT1 x) :=
     match x return P (projT1 x) with
-      | existT _ _ h => h
+      | existT _ h => h
     end.
 
 End Projections.
@@ -1515,8 +1515,8 @@ Next, we use the univalence axiom to build an equivalence between the
 equality of [nat] and [nat2] and the equivalence of [nat] and [nat2].
 *)
 
-Definition big_equiv : (nat = nat2) <~> (nat <~> nat2) :=
-  BuildEquiv (nat = nat2) (nat <~> nat2) (equiv_path nat nat2) _.
+Definition big_equiv : (nat = nat2 :> Type) <~> (nat <~> nat2) :=
+  BuildEquiv (nat = nat2 :> Type) (nat <~> nat2) (equiv_path nat nat2) _.
 
 (**
 With that equivalence, we can extract the inverse map, which takes the
@@ -1524,7 +1524,7 @@ equivalence to the equality.  Applying that function to the
 equivalence, gives us the equality.  Thus, [nat] is equal to [nat2]!
 *)
 
-Definition nat2_is_nat : nat = nat2 := 
+Definition nat2_is_nat : (nat = nat2 :> Type) := 
   (big_equiv ^-1) equiv_nat_nat2.
 
 (**

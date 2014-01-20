@@ -277,45 +277,42 @@ In type theory, this can be rendered as:
 \end{narrowmultline*}
 %
 Reading the type constructors $\Sigma, \Pi, \times$  here  as ``there exists'', ``for all'', and ``and'' respectively yields the usual formulation of ``$A$ and $B$ are isomorphic''; on the other hand, reading them as sums and products yields the \emph{type of all isomorphisms} between $A$ and $B$!  To prove that $A$ and $B$ are isomorphic, one  constructs a proof $p : \mathsf{Iso}(A,B)$, which is therefore the same  as constructing an isomorphism between $A$ and $B$, i.e., exhibiting a pair of functions $f, g$ together with \emph{proofs} that their composites are the respective identity maps.  The latter proofs, in turn, are nothing but homotopies of the appropriate sorts.  In this way, \emph{proving a proposition is the same as constructing an element of some particular type.}
-
 In particular, to prove a statement of the form ``$A$ and $B$'' is just to prove $A$ and to prove $B$, i.e., to give an element of the type $A\times B$.
 And to prove that $A$ implies $B$ is just to find an element of $A\to B$, i.e.\ a function from $A$ to $B$ (determining a mapping of proofs of $A$ to proofs of $B$).
-This ``constructive'' conception (for more on which, see~\cite{kolmogorov,TroelstraI,TroelstraII}) is what gives type theory its good 
+
+The logic of propositions-as-types is flexible and supports many variations, such as using only a subclass of types to represent propositions.
+In homotopy type theory, there are natural such subclasses arising from the fact that the system of all types, just like spaces in classical homotopy theory, is ``stratified'' according to the dimensions in which their higher homotopy structure exists or collapses.
+In particular, Voevodsky has found a purely type-theoretic definition of \emph{homotopy $n$-types}, corresponding to spaces with no nontrivial homotopy information above dimension $n$.
+(The $0$-types are the ``sets'' mentioned previously as satisfying Lawvere's axioms\index{Lawvere}.)
+Moreover, with higher inductive types, we can universally ``truncate'' a type into an $n$-type; in classical homotopy theory this would be its $n^{\mathrm{th}}$ Postnikov\index{Postnikov tower} section.\index{n-type@$n$-type}
+Particularly important for logic is the case of homotopy $(-1)$-types, which we call \emph{mere propositions}.
+Classically, every $(-1)$-type is empty or contractible; we interpret these possibilities as the truth values ``false'' and ``true'' respectively.
+
+Using all types as propositions yields a ``constructive'' conception of logic (for more on which, see~\cite{kolmogorov,TroelstraI,TroelstraII}), which gives type theory its good 
 computational character.
 For instance, every proof that something exists carries with it enough information to actually find such an object; and from a proof that  ``$A$ or $B$'' holds, one can extract either a proof that $A$ holds or one that $B$ holds.
 Thus, from every proof we can automatically extract an algorithm;\index{algorithm} \index{extraction of algorithms} this can be very useful in applications to computer programming.
 
-However, this conception of logic does behave in ways that are unfamiliar to most mathematicians.
+However, this logic does not faithfully represent certain important classical principles of reasoning, such as the axiom of choice and the law of excluded middle.
+For these we need to use the ``$(-1)$-truncated'' logic, in which only the homotopy $(-1)$-types represent propositions; and under this interpretation, the system is fully compatible with classical mathematics.
+Homotopy type theory is thus compatible with both constructive and classical conceptions of logic, and many more besides.
+
 \index{axiom!of choice}%
-On one hand, a naive translation of the \emph{axiom of choice} yields a statement that we can simply prove.
-Essentially, this notion of ``there exists'' is strong enough to ensure that, by showing that for every $x: A$ there exists a $y:B$ such that $R(x,y)$, we automatically construct a function $f : A\to B$ such that, for all $x:A$, we have $R(x, f(x))$.
+More specifically, consider on one hand the \emph{axiom of choice}: ``if for every $x: A$ there exists a $y:B$ such that $R(x,y)$, there is a function $f : A\to B$ such that for all $x:A$ we have $R(x, f(x))$.''
+The pure propositions-as-types notion of ``there exists'' is strong enough to make this statement simply provable --- yet it does not have all the consequences of the usual axiom of choice.
+However, in $(-1)$-truncated logic, this statement is not automatically true, but is a strong assumption with the same sorts of consequences as its counterpart in classical\index{mathematics!classical} set theory.
 
 \index{excluded middle}%
 \index{univalence axiom}%
-On the other hand, this notion of ``or'' is so strong that a naive translation of the \emph{law of excluded middle} is inconsistent with the univalence axiom.
-For if we assume ``for all $A$, either $A$ or not $A$'', then since proving ``$A$'' means exhibiting an element of it, we would have a uniform way of selecting an element from every nonempty type --- a sort of Hilbertian choice operator.
-However, univalence implies that the element of $A$ selected by such a choice operator must be invariant under all self-equivalences of $A$, since these are identified with self-identities and every operation must respect identity.
-But clearly some types have automorphisms with no fixed points, e.g.\ we can swap the elements of a two-element type.
+On the other hand, consider the \emph{law of excluded middle}: ``for all $A$, either $A$ or not $A$.''
+Interpreting this in the pure propositions-as-types logic yields a statement that is inconsistent with the univalence axiom.
+For since proving ``$A$'' means exhibiting an element of it, this assumption would give a uniform way of selecting an element from every nonempty type --- a sort of Hilbertian choice operator.
+Univalence implies that the element of $A$ selected by such a choice operator must be invariant under all self-equivalences of $A$, since these are identified with self-identities and every operation must respect identity; but clearly some types have automorphisms with no fixed points, e.g.\ we can swap the elements of a two-element type.
 \index{automorphism!fixed-point-free}%
+However, the ``$(-1)$-truncated law of excluded middle'', though also not automatically true, may consistently be assumed with most of the same consequences as in classical mathematics.
 
-Thus, the logic of ``proposition as types'' suggested by traditional type theory is not the ``classical'' logic familiar to most mathematicians.
-But it is also different from the logic sometimes called ``intuitionistic'', which may lack \emph{both} the law of excluded middle and the axiom of choice. For present purposes, it may be called \emph{constructive logic}
+In other words, while the pure propositions-as-types logic is ``constructive'' in the strong algorithmic sense mentioned above, the default $(-1)$-truncated logic is ``constructive'' in a different sense (namely, that of the logic formalized by Heyting under the name ``intuitionistic''); and to the latter we may freely add the axioms of choice and excluded middle to obtain a logic that may be called ``classical''.
 \index{logic!constructive vs classical}%
-(but one should be aware that the terms  ``intuitionistic'' and ``constructive'' are often used differently).
-
-The computational advantages of constructive logic imply that we should not  discard it lightly; but for some purposes in classical mathematics, its non-classical character can be problematic.
-Many mathematicians are, of course, accustomed to rely on the law of excluded middle; while the ``axiom of choice'' that is available in constructive logic looks superficially similar to its classical namesake, but does not have all of its strong consequences.
-Fortunately, homotopy type theory gives a finer analysis of this situation,  allowing various different kinds of logic to coexist and intermix.
-
-The new insight that makes this possible is that the system of all types, just like spaces in classical homotopy theory, is ``stratified'' according to the dimensions in which their higher homotopy structure exists or collapses.
-In particular, Voevodsky has found a purely type-theoretic definition of \emph{homotopy $n$-types}, corresponding to spaces with no nontrivial homotopy information above dimension $n$.
-(The $0$-types are the ``sets'' mentioned previously as satisfying Lawvere's axioms\index{Lawvere}.)
-Moreover, with higher inductive types, we can universally ``truncate'' a type into an $n$-type; in classical homotopy theory this would be its $n^{\mathrm{th}}$ Postnikov\index{Postnikov tower} section.\index{n-type@$n$-type}%%
-
-With these notions in hand, the homotopy $(-1)$-types, which we call \emph{(mere) propositions}, support a logic that is much more like traditional ``intuitionistic'' logic.
-(Classically, every $(-1)$-type is empty or contractible; we interpret these possibilities as the truth values ``false'' and ``true'' respectively.)
-The ``$(-1)$-truncated axiom of choice'' is not automatically true, but is a strong assumption with the same sorts of consequences as its counterpart in classical\index{mathematics!classical} set theory.
-Similarly, the ``$(-1)$-truncated law of excluded middle'' may be assumed, with many of the same consequences as in classical mathematics.
 Thus, the homotopical perspective reveals that classical and constructive logic can coexist, as endpoints of a spectrum of different systems, with an infinite number of possibilities in between (the homotopy $n$-types for $-1 < n < \infty$).
 We may speak of ``\LEM{n}'' and ``\choice{n}'', with $\choice{\infty}$ being provable and \LEM{\infty} inconsistent with univalence, while $\choice{-1}$ and $\LEM{-1}$ are the versions familiar to classical mathematicians (hence in most cases it is appropriate to assume the subscript $(-1)$ when none is given).  Indeed, one can even have useful systems in which only \emph{certain} types satisfy such further ``classical'' principles, while types in general remain ``constructive''.\index{excluded middle}\index{axiom!of choice}%%
 

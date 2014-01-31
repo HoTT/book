@@ -289,12 +289,12 @@ The constructor $\supp$ (short for supremum\index{supremum!constructor of a W-ty
 \begin{equation*}
 \zerow \defeq \supp(\bfalse, \; \lamu{x:\emptyt} \rec\emptyt(\natw,x)).
 \end{equation*}
-Put differently, we use the label $\bfalse$ to construct $\zerow$. Then, $\rec\bool(\bbU,\emptyt,\unit, \bfalse)$ evaluates to $\emptyt$, as it should since $\bfalse$ is a nullary label. Thus, we need to construct a function $f : \emptyt \to \natw$, which represents the (zero) arguments supplied to $\bfalse$. This is of course trivial, using simple elimination on $\emptyt$ as shown. Similarly, we can define
+Put differently, we use the label $\bfalse$ to construct $\zerow$. Then, $\rec\bool(\bbU,\emptyt,\unit, \bfalse)$ evaluates to $\emptyt$, as it should since $\bfalse$ is a nullary label. Thus, we need to construct a function $f : \emptyt \to \natw$, which represents the (zero) arguments supplied to $\bfalse$. This is of course trivial, using simple elimination on $\emptyt$ as shown. Similarly, we can define $1^{\mathbf{w}}$ and a successor function $\sucw$
 \begin{align*}
 1^{\mathbf{w}} &\defeq \supp(\btrue, \; \lamu{x:\unit} 0^{\mathbf{w}}) \\
-2^{\mathbf{w}} &\defeq \supp(\btrue, \; \lamu{x:\unit} 1^{\mathbf{w}})
+\sucw&\defeq \lamu{n:\natw} \supp(\btrue, \; \lamu{x:\unit} n).
 \end{align*}
-and so on.
+
 
 \index{induction principle!for W-types@for $\w$-types}%
 We have the following induction principle for $\w$-types:
@@ -321,10 +321,9 @@ If $a$ is $\bfalse$, the type $B(a)$ becomes $\emptyt$. Thus, given $f : \emptyt
 Analogously, if $a$ is $\btrue$, the type $B(a)$ becomes $\unit$.
 Since the label $\btrue$ represents the successor\index{successor} operator, it needs one inductive argument --- the predecessor\index{predecessor} --- which is represented by the variable $f : \unit \to \natw$.
 The value of the recursive call on the predecessor is represented by the variable $g : \unit \to \natw$.
-Thus, taking this value (namely $g(\ttt)$) and applying the successor operator twice thus yields the desired result:
+Thus, taking this value (namely $g(\ttt)$) and applying the successor function twice thus yields the desired result:
 \begin{equation*}
-e_1 \defeq \; \lamu{f:\unit \to \natw}{g:\unit \to \natw}
-  \supp(\btrue, (\lamu{x:\unit} \supp(\btrue, (\lamu{y : \unit} g(\ttt))))).
+e_1 \defeq \; \lamu{f:\unit \to \natw}{g:\unit \to \natw} \sucw(\sucw(g(\ttt))).
 \end{equation*}
 Putting this together, we thus have
 \[ \dbl \defeq \rec\natw(\natw, e) \]
@@ -348,15 +347,14 @@ By the above computation rule, the function $\dbl$ behaves as expected:
 \dbl(\zerow) & \jdeq \rec\natw(\natw, e, \supp(\bfalse, \; \lamu{x:\emptyt} \rec\emptyt(\natw,x))) \\
 & \jdeq e(\bfalse, \big(\lamu{x:\emptyt} \rec\emptyt(\natw,x)\big), 
    \big(\lamu{x:\emptyt} \dbl(\rec\emptyt(\natw,x))\big)) \\
- & \jdeq e_t(\big(\lamu{x:\emptyt} \rec\emptyt(\natw,x)\big), \big(\lamu{x:\emptyt} \dbl(\rec\emptyt(\natw,x))\big))\\
+ & \jdeq e_0(\big(\lamu{x:\emptyt} \rec\emptyt(\natw,x)\big), \big(\lamu{x:\emptyt} \dbl(\rec\emptyt(\natw,x))\big))\\
  & \jdeq \zerow \\
  \intertext{and}
 \dbl(1^{\mathbf{w}}) & \jdeq \rec\natw(\natw, e, \supp(\btrue, \; \lamu{x:\unit} \zerow)) \\
 & \jdeq e(\btrue, \big(\lamu{x:\unit} \zerow\big), \big(\lamu{x:\unit} \dbl(\zerow)\big)) \\
- & \jdeq e_f(\big(\lamu{x:\unit} \zerow\big), \big(\lamu{x:\unit} \dbl(\zerow)\big)) \\
- & \jdeq \supp(\btrue, (\lamu{x:\unit} \supp(\btrue,(\lamu{y:\unit} \dbl(\zerow))))) \\
- & \jdeq \supp(\btrue, (\lamu{x:\unit} \supp(\btrue,(\lamu{y:\unit} \zerow)))) \\
- & \jdeq 2^{\mathbf{w}}
+ & \jdeq e_1(\big(\lamu{x:\unit} \zerow\big), \big(\lamu{x:\unit} \dbl(\zerow)\big)) \\
+ & \jdeq \sucw(\sucw\big((\lamu{x:\unit} \dbl(\zerow))(\ttt)\big))\\
+ & \jdeq \sucw(\sucw(\zerow))
 \end{align*}
 and so on.
 

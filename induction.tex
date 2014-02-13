@@ -778,7 +778,16 @@ where the two arguments of $h$ are $\alpha$ and ``the result of applying $f$ to 
 However, what would the computation rule for the resulting function $f:C\to P$ be?
 Looking at other computation rules, we would expect something like ``$f(g(\alpha)) \jdeq h(\alpha,f(\alpha))$'' for $\alpha:C\to\nat$, but as we have seen, ``$f(\alpha)$'' does not make sense.
 The induction principle of $C$ is even more problematic; it's not even clear how to write down the hypotheses.
-(See also \autoref{ex:loop,ex:loop2}.)
+
+On the other hand, we could write down a different ``recursion principle'' for $C$ by ignoring the ``recursive'' presence of $C$ in the domain of $\alpha$, considering it as merely an indexing type for a family of natural numbers.
+In this case the input would ask for a type $P$ together with a function
+\begin{equation*}
+  h:(C\to \nat) \to P,
+\end{equation*}
+so the type of the recursion principle would be $\rec{C}:\prd{P:\UU} ((C\to \nat) \to P) \to C\to P$, and similarly for the induction principle.
+Now it is possible to write down a computation rule, namely $\rec{C}(P,h,g(\alpha))\jdeq h(\alpha)$.
+However, the existence of a type $C$ with this recursor and computation rule turns out to be inconsistent.
+See \autoref{ex:loop,ex:loop2,ex:inductive-lawvere,ex:ilunit} for proofs of this and other variations.
 
 This example suggests one restriction on inductive definitions: the domains of all the constructors must be \emph{covariant functors}\index{functor!covariant}\index{covariant functor} of the type being defined, so that we can ``apply $f$ to them'' to get the result of the ``recursive call''.
 In other words, if we replace all occurrences of the type being defined with a variable
@@ -1298,16 +1307,36 @@ For actual constructions of inductive types in homotopy-theoretic semantics of t
 
 \begin{ex}\label{ex:loop}
   Suppose that in the ``inductive definition'' of the type $C$ at the beginning of \autoref{sec:strictly-positive}, we replace the type \nat by \emptyt.
-  Using only a ``recursion principle'' for such a definition with hypotheses analogous to~\eqref{eq:fake-recursor}, construct an element of \emptyt.
+  Analogously to~\eqref{eq:fake-recursor}, we might consider a recursion principle for this type with hypothesis
+  \[ h:(C\to\emptyt) \to (P\to\emptyt) \to P. \]
+  Show that even without a computation rule, this recursion principle is inconsistent, i.e.\ it allows us to construct an element of \emptyt.
 \end{ex}
 
 \begin{ex}\label{ex:loop2}
-  Similarly to the previous exercise, derive a contradiction from an ``inductive type'' $D$ with one constructor $(D\to D) \to D$.
+  Consider now an ``inductive type'' $D$ with one constructor $\mathsf{scott}:(D\to D) \to D$.
+  The second recursor for $C$ suggested in \autoref{sec:strictly-positive} leads to the following recursor for $D$:
+  \[ \rec{D} : \prd{P:\UU} ((D\to D) \to (D\to P)\to P) \to D \to P \]
+  with computation rule $\rec{D}(P,h,\mathsf{scott}(\alpha)) \jdeq h(\alpha,(\lam{d} \rec{D}(P,h,\alpha(d))))$.
+  Show that this also leads to a contradiction.
 \end{ex}
 
-\begin{ex}\label{ex:empty_inductive_type}
-In Section~\ref{sec:bool-nat} we defined the type $\lst A$ of finite lists of elements of some type $A$.
-Consider the following inductive definition of the type $\lost A$ without a constructor $\nil$:
+\begin{ex}\label{ex:inductive-lawvere}
+  Let $A$ be an arbitrary type and consider generally an ``inductive definition'' of a type $L_A$ with constructor $\mathsf{lawvere}:(L_A\to A) \to L_A$.
+  The second recursor for $C$ suggested in \autoref{sec:strictly-positive} leads to the following recursor for $L_A$:
+  \[ \rec{L_A} : \prd{P:\UU} ((L_A\to A) \to P) \to L_A\to P \]
+  with computation rule $\rec{L_A}(P,h,\mathsf{lawvere}(\alpha)) \jdeq h(\alpha)$.
+  Using this, show that $A$ has the \emph{fixed-point property}, i.e.\ for every function $f:A\to A$ there exists an $a:A$ such that $f(a)=a$.
+  In particular, $L_A$ is inconsistent if $A$ is a type without the fixed-point property, such as $\emptyt$, $\bool$, or $\nat$.
+\end{ex}
+
+\begin{ex}\label{ex:ilunit}
+  Continuing from \autoref{ex:inductive-lawvere}, consider $L_\unit$, which is not obviously inconsistent since $\unit$ does have the fixed-point property.
+  Formulate an induction principle for $L_\unit$ and its computation rule, analogously to its recursor, and using this, prove that it is contractible.
+\end{ex}
+
+\begin{ex}\label{ex:empty-inductive-type}
+In \autoref{sec:bool-nat} we defined the type $\lst A$ of finite lists of elements of some type $A$.
+Consider a similar inductive definition of a type $\lost A$ whose only constructor is
 \[ \cons: A \to \lost A \to \lost A. \]
 Show that $\lost A$ is equivalent to $\emptyt$.
 \end{ex}

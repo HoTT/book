@@ -677,18 +677,77 @@
 % Corollary 1.2 rather than Corollary 1.1.  This makes it much easier
 % for the reader to find a particular theorem when flipping through
 % the document.
+%
+% We also allow for fractional theorem numbers, for theorems added
+% after publication in between existing theorems without changing
+% their numbers.  To create a fractional theorem number, use the
+% environment "newthm" (or "newcor", "newlem", etc.) which takes two
+% arguments, the numerator and denominator of the fraction.  Such
+% fractions must be strictly between zero and one, and must strictly
+% increase in between each pair of ordinary (integer-numbered)
+% theorems.
 \makeatletter
+% We start by defining the primary theorem environment.  The counter
+% "thm" is the one we will use for all theorem environments.
+\newtheorem{thm}{Theorem}[section]
+% Auxiliary counters which store the most recently used fraction.
+\newcounter{@newthmnum}
+\setcounter{@newthmnum}{0}
+\newcounter{@newthmdenom}
+\setcounter{@newthmdenom}{1}
+% This macro will be called to create and munge all theorem
+% environments, *including* the base one "thm" that we have already
+% created.
 \def\defthm#1#2#3{%
-  %% Ensure all theorem types are numbered with the same counter
-  \newaliascnt{#1}{thm}
-  \newtheorem{#1}[#1]{#2}
-  \aliascntresetthe{#1}
-  %% This command tells cleveref's \cref what to call things
-  \crefname{#1}{#2}{#3}}
+  % The actual "theorem environment" we use internally is not "thm" or
+  % "cor", but rather "my@thm" or "my@cor".  The aliascnt commands
+  % ensure that all such environments use the same counter "thm".
+  \newaliascnt{my@#1}{thm}
+  \newtheorem{my@#1}[my@#1]{#2}
+  \aliascntresetthe{my@#1}
+  % This command tells cleveref's \cref what to call things
+  \crefname{#1}{#2}{#3}
+  % Now we define "thm"/"cor"/etc. to be a wrapper around its my@
+  % version, which resets the "most recently seen fraction" counters
+  % afterwards.
+  \expandafter\def\csname #1\endcsname{\begin{my@#1}}
+  \expandafter\def\csname end#1\endcsname{\end{my@#1}\setcounter{@newthmnum}{0}\setcounter{@newthmdenom}{1}}
+  % Next we define the "newthm" environment for fractions.  Again, there
+  % is an internal "my@newthm" version.  Note that this does *not* use
+  % the "thm" counter, since we don't want that counter to get
+  % incremented when we pass through a newthm.  Instead it creates its
+  % own my@newthm counter, which we never actually use.
+  \newtheorem{my@new#1}{#2}
+  \crefname{my@new#1}{#2}{#3}
+  % Instead of using the "my@newthm" counter, when we need to number a
+  % newthm, we call the special macro \newthm defined below.
+  \expandafter\renewcommand\csname themy@new#1\endcsname{\thenewthm}
+  % Finally, we define the "newthm" environment to first check
+  % validity of the fraction passed and then create the theorem.
+  \newenvironment{new#1}[2]{\checknewthmfrac{##1}{##2}\setcounter{@newthmnum}{##1}\setcounter{@newthmdenom}{##2}\begin{my@new#1}}{\end{my@new#1}}
+}
+% How to display fractional theorem numbers.
+% (In particular, we leave off the zero if it is there)
+\def\thenewthm{\ifnum0<\value{my@thm}\themy@thm\else\thesection.\fi$\frac{\arabic{@newthmnum}}{\arabic{@newthmdenom}}$}
+% Reset the fraction at section boundaries too.  This is a bit of a
+% hack; \@seccntformat is not intended for this.
+\let\my@seccntformat\@seccntformat
+\renewcommand*{\@seccntformat}[1]{\setcounter{@newthmnum}{0}\setcounter{@newthmdenom}{1}\my@seccntformat{#1}}
+% Test to make sure newthm fractions increase and are all in between zero and one
+\newcount\@xone
+\newcount\@xtwo
+\def\checknewthmfrac#1#2{
+  \ifnum0<#1\else\errmessage{Fractional theorem numbers must be greater than zero}\fi
+  \ifnum#1<#2\else\errmessage{Fractional theorem numbers must be less than one}\fi
+  \@xone=#1
+  \@xtwo=#2
+  \multiply\@xtwo by \value{@newthmnum}
+  \multiply\@xone by \value{@newthmdenom}
+  \ifnum\@xone>\@xtwo\else\errmessage{Theorem numbers out of order}\fi
+}
 
 % Now define a bunch of theorem-type environments.
-\newtheorem{thm}{Theorem}[section]
-\crefname{thm}{Theorem}{Theorems}
+\defthm{thm}{Theorem}{Theorems}
 %\defthm{prop}{Proposition}   % Probably we shouldn't use "Proposition" in this way
 \defthm{cor}{Corollary}{Corollaries}
 \defthm{lem}{Lemma}{Lemmas}
@@ -745,6 +804,17 @@
 % equation (1.1).
 \let\c@equation\c@thm
 \numberwithin{equation}{section}
+
+% Fractional equation numbering.  Use a numbered equation environment
+% like "equation", and inside it, call "newtag" with two arguments:
+% the numerator and denominator, as for "newthm".  The same
+% restrictions apply (fractions must be strictly between 0 and 1, and
+% strictly increase in between ordinary integer-numbered theorems or
+% equations).
+\def\newtag#1#2{\checknewthmfrac{#1}{#2}%
+  \setcounter{@newthmnum}{#1}%
+  \setcounter{@newthmdenom}{#2}%
+  \tag{\thenewthm}}
 
 
 %%%% ENUMERATE NUMBERING %%%%

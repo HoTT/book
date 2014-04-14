@@ -161,7 +161,7 @@ errata.pdf: errata.tex version.tex main.labels
 	else pdflatex $<; fi
 
 clean:
-	rm -f *~ *.aux {exercise_solutions,errata,hott-*}.{out,log,pdf,fls,fdb_latexmk,aux,brf,bbl,idx,ilg,ind,toc}
+	rm -f *~ *.aux {exercise_solutions,errata,hott-*}.{out,log,pdf,fls,fdb_latexmk,aux,brf,bbl,idx,ilg,ind,toc,sed}
 	if which latexmk > /dev/null 2>&1 ; then latexmk -C hott-*.tex; fi
 
 # list the tex files explicitly because:
@@ -189,4 +189,3 @@ indexterms.txt:					\
 	reals.tex				\
 	formal.tex
 		other/index-helper.py >$@
-

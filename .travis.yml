@@ -5,8 +5,10 @@ env:
    - secure: "ehec8FC6y923UXtB2fMULF/xkQJkwWwzD6xFxyz0lc80IqR8Rmxh16nLKGxI9jD11qjbYSzp1yPVadXyBoSheop5aZPxeXixL49y26ikIRkyuQQdHyjsM34etoPmCKw2vVXvD+JAwjTa6qYpihSOdDXltog8ZNHF6Wp28ZaWW8g="
 
  matrix:
-   - LATEXMK="yes" UPDATE_ERRATA=""
-   - LATEXMK=""    UPDATE_ERRATA="yes"
+   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS=""
+   - LATEXMK=""    UPDATE_ERRATA="yes"  TARGETS=""
+   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS="dvi"
+   - LATEXMK=""    UPDATE_ERRATA="yes"  TARGETS="dvi"
 
 
 install:
@@ -30,7 +32,7 @@ install:
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.dtx http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.ins && latex supertabular.ins
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/soul/soul.dtx http://mirrors.ctan.org/macros/latex/contrib/soul/soul.ins && latex soul.ins
 
-script: make && make clean && make dvi
+script: make $TARGETS
 
 # add -f to force a push even if we're not on HoTT/HoTT.
 # generally only useful for debugging

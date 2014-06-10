@@ -83,6 +83,8 @@
 \linespread{1.05} % Palatino looks better with this
 
 \usepackage{graphicx}
+\DeclareGraphicsExtensions{.png}
+\input{bmpsize-hack} % for bounding boxes in dvi mode
 \usepackage{comment}
 
 \usepackage{wallpaper} % For the background image on the cover page
@@ -123,6 +125,14 @@
 \pagestyle{fancyplain}
 \setlength{\headheight}{15pt}
 \renewcommand{\sectionmark}[1]{\markright{\textsc{\thesection\ #1}}}
+\newcommand{\transfun}[3]{\mathcal{I}_{#1}(#2, #3)}
+\newcommand{\nathom}[2]{\mathsf{nat}_{#1}(#2)}
+\newcommand{\Tgh}[2]{\mathcal{T}_1(#1,#2)}
+\newcommand{\T}[2]{\mathcal{T}_2(#1,#2)}
+\newcommand{\TT}[2]{\mathcal{T}_3(#1,#2)}
+\newcommand{\I}{\mathcal{I}_1}
+\newcommand{\II}{\mathcal{I}_2}
+\newcommand{\hapfuneq}{\mathsf{happly}\mbox{-}\mathsf{funext}\mbox{-}\mathsf{inv}}
 
 \lhead[\fancyplain{}{{\thepage}}]%
       {\fancyplain{}{\nouppercase{\rightmark}}}
@@ -144,9 +154,9 @@
 \begin{document}
 \maketitle
 
-\section*{Exercises from \autoref{cha:typetheory}}
+\section*{Exercises from \cref{cha:typetheory}}
 
-\subsection*{Solution to \autoref{ex:composition}}
+\subsection*{Solution to \cref{ex:composition}}
 
 We of course know what composition of functions $f : A \to B$ and $g : B \to C$ should be, but let us see how we might derive it by considering available forms of construction. We want a term
 \[ g \circ f \defeq (\Box : A \to C), \]
@@ -166,7 +176,7 @@ Inside the abstraction $x$ is available and has the type we need, so we define
 This baby example demonstrates how one often works with a proof assistant: look at what
 you need and what is available, and try to make some progress.
 
-Now, suppose given also $h : C \to D$. We have, according to \autoref{eq:composdef},
+Now, suppose given also $h : C \to D$. We have, according to \cref{eq:composdef},
 %
 \begin{align*}
   h \circ (g \circ f) &\jdeq \lamu{x:A} h ((\lam{y:A} g(f(y))) x)\\
@@ -182,7 +192,7 @@ and
 %
 They are equal, which establishes associativity of composition.
 
-\subsection*{Solution to \autoref{ex:pr-to-rec}}
+\subsection*{Solution to \cref{ex:pr-to-rec}}
 
 If we suppose given only $\fst : A \times B \to A$ and $\snd : A \times B \to B$ satisfying $\fst(\tup{a}{b}) \jdeq a$ and $\snd(\tup{a}{b})\jdeq b$, we can define $\rec{A\times B}'$ by
 \[ \rec{A\times B}'(C,g,x) \defeq g (\fst x) (\snd x). \]
@@ -196,12 +206,12 @@ For $\Sigma$-types we replace $A \times B$ above with $\sm{a:A} B(a)$, but other
 everything else stays the same:
 \[ \rec{\sm{x:A} B(x)}'(C,g,x) \defeq g (\fst x) (\snd x). \]
 
-\subsection*{Solution to \autoref{ex:pr-to-ind}}
+\subsection*{Solution to \cref{ex:pr-to-ind}}
 
 Quite naturally, we form
 \[ \ind{A\times B}''(C,g,x) \defeq g (\fst x) (\snd x),\]
 of type
-\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to 
+\[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to
    \prd{x : A \times B} C ((\fst x,\snd x)). \]
 This is not quite what we need because $\ind{A\times B}$ has the type
 \[ \prd{C:A\times B \to \UU}\Parens{\prd{y:A}\prd{z:B} C((y,z))} \to
@@ -214,7 +224,7 @@ Recall that we have the propositional uniqueness principle
 satisfying $\uppt{(a,b)} = \refl{(a,b)}$.
 We can transport along $\uppt(x)$ to get from $C((\fst x, \snd x))$ to $C(x)$:
 %
-\[ \ind{A\times B}'(C,g,x) \defeq 
+\[ \ind{A\times B}'(C,g,x) \defeq
     \transfib{C}{\uppt(x)}{\ind{A \times B}''(C, g, x)}.
 \]
 %
@@ -224,15 +234,15 @@ It remains to verify that $\ind{A \times B}'(C, g, x)$ behaves as expected:
   \ind{A \times B}'(C,g,(a,b))
   &\jdeq \transfib{C}{\uppt((a,b))}{g(\fst (a,b))(\snd(a,b))} \\
   &\jdeq \transfib{C}{\uppt((a,b))}{g(a)(b)} \\
-  &\jdeq \transfib{C}{\refl{(a,b)}}{(g(a)(b)} \\
+  &\jdeq \transfib{C}{\refl{(a,b)}}{g(a)(b)} \\
   &\jdeq g(a)(b).
 \end{align*}
 %
 Now for $\Sigma$-types the exact same expressions work as well, except that the types change.
 
-\section*{Exercises from \autoref{cha:logic}}
+\section*{Exercises from \cref{cha:logic}}
 
-\subsection*{Solution to \autoref{ex:decidable-choice}}
+\subsection*{Solution to \cref{ex:decidable-choice}}
 
 The hypotheses imply that
 \[ \Parens{\sm{n:\nat}P(n)} \to \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)}. \]
@@ -242,9 +252,9 @@ Therefore, we also have
 \[ \Brck{\sm{n:\nat}P(n)} \to \sm{n:\nat}\Parens{P(n) \times \prd{m:\nat} \big((m<n) \to \neg P(m)\big)} \]
 from which the claim follows.
 
-\section*{Exercises from \autoref{cha:equivalences}}
+\section*{Exercises from \cref{cha:equivalences}}
 
-\subsection*{Solution to \autoref{ex:symmetric-equiv}}
+\subsection*{Solution to \cref{ex:symmetric-equiv}}
 
 First note that for any type $A$ we have $\eqv{\iscontr(A)}{A\times \iscontr(A)}$.
 Thus
@@ -254,7 +264,7 @@ Thus
   &\eqvsym \Parens{\prd{a:A}\sm{b:B} R(a,b)} \times  \Parens{\prd{a:A}\iscontr\Parens{\sm{b:B} R(a,b)}}\\
   &\eqvsym \Parens{\sm{f:A\to B} \prd{a:A} R(a,f(a))} \times  \Parens{\prd{a:A}\iscontr\Parens{\sm{b:B} R(a,b)}}
 \end{align*}
-using \autoref{thm:ttac} at the last step.
+using \cref{thm:ttac} at the last step.
 So the type given in the exercise is equivalent to
 \begin{equation*}
 \sm{f:A\to B}{R:A\to B\to \type}
@@ -272,8 +282,8 @@ It will therefore suffice to show that for any $f:A\to B$, the type
 is equivalent to $\isequiv(f)$, or equivalently that it satisfies the three desiderata of $\isequiv(f)$.
 
 Firstly, suppose $f$ has a quasi-inverse $g$, and define $R(a,b) \defeq (f(a)=b)$.
-For any $a$ we have $\iscontr(\sm{b:B} R(a,b))$ by \autoref{thm:contr-paths}, and in particular we have $R(a,f(a))$.
-On the other hand, by \autoref{thm:paths-respects-equiv} we have $\eqv{R(a,b)}{(gf(a) = g(b))}$, which is equivalent to $a = g(b)$, so \autoref{thm:contr-paths} also implies that $\iscontr(\sm{a:A} R(a,b))$ for any $b:B$.
+For any $a$ we have $\iscontr(\sm{b:B} R(a,b))$ by \cref{thm:contr-paths}, and in particular we have $R(a,f(a))$.
+On the other hand, by \cref{thm:paths-respects-equiv} we have $\eqv{R(a,b)}{(gf(a) = g(b))}$, which is equivalent to $a = g(b)$, so \cref{thm:contr-paths} also implies that $\iscontr(\sm{a:A} R(a,b))$ for any $b:B$.
 
 Secondly, suppose~\eqref{eq:symmetric-isequiv} is inhabited, i.e.\  we have $R:A\to B\to \type$ and witnesses $r:\prd{a:A} R(a,f(a))$ and $c:\prd{a:A} \iscontr(\sm{b:B} R(a,b))$ and $d:\prd{b:B} \iscontr(\sm{a:A} R(a,b))$.
 Let $g(b) \defeq \proj1 (\proj1(d(b)))$, yielding $g:B\to A$; thus we have $R(g(b),b)$ for any $b:B$.
@@ -281,25 +291,1097 @@ Then for any $a_0:A$ we have $R(a_0,f(a_0))$ and $R(g(f(a_0)),f(a_0))$; but $\sm
 Similarly, $b_0 = f(g(b_0))$ for any $b_0:B$, so $g$ is a quasi-inverse to $f$.
 
 Finally, we must show that~\eqref{eq:symmetric-isequiv} is a mere proposition.
-Since $\prd{b:B} \iscontr\Parens{\sm{a:A} R(a,b)}$ is a mere proposition by \cref{thm:isprop-forall,thm:isprop-iscontr}, by \autoref{thm:path-subset} we may ignore it and consider only the remainder:
+Since $\prd{b:B} \iscontr\Parens{\sm{a:A} R(a,b)}$ is a mere proposition by \cref{thm:isprop-forall,thm:isprop-iscontr}, by \cref{thm:path-subset} we may ignore it and consider only the remainder:
 \begin{equation*}
 \sm{R:A\to B\to \type}
 \Parens{\prd{a:A} R(a,f(a))}\times
 \Parens{\prd{a:A} \iscontr\Parens{\sm{b:B} R(a,b)}}.
 \end{equation*}
-Using \autoref{thm:ttac} again, this is equivalent to
+Using \cref{thm:ttac} again, this is equivalent to
 \begin{equation*}
 \prd{a:A}\sm{R:B\to \type} R(fa)\times \iscontr\Parens{\sm{b:B} R(b)}.
 \end{equation*}
 Thus it will suffice to show that for any $b_0:B$, the type
 \[ \sm{R:B\to \type} R(b_0)\times \iscontr\Parens{\sm{b:B} R(b)} \]
 is a mere proposition.
-But in fact, this type is contractible; its center of contraction consists of $\lam{b}(b_0=b)$ and $\refl{b_0}$ and \autoref{thm:contr-paths}, and the contracting homotopy arises from \autoref{thm:identity-systems}\ref{item:identity-systems4}$\Rightarrow$\ref{item:identity-systems3} (together with univalence and function extensionality).
+But in fact, this type is contractible; its center of contraction consists of $\lam{b}(b_0=b)$ and $\refl{b_0}$ and \cref{thm:contr-paths}, and the contracting homotopy arises from \cref{thm:identity-systems}\ref{item:identity-systems4}$\Rightarrow$\ref{item:identity-systems3} (together with univalence and function extensionality).
 
 
-\section*{Exercises from \autoref{cha:hlevels}}
+\section*{Exercises from \cref{cha:hits}}
 
-\subsection*{Solution to \autoref{ex:ntype-from-nconn-const}}
+\subsection*{Solution to \cref{ex:torus}}
+The torus $T^2$ is a higher inductive type generated by a point $b : T^2$, two paths $p : b = b$, $q : b = b$, and a 2-path $t : p \ct q = q \ct p$. The recursion principle thus says that given $C : \type$, for a function $f : T^2 \to C$ we require
+\begin{itemize}
+\item a point $b':C$,
+\item a path $p' : b' = b'$,
+\item a path $q' : b' = b'$, and
+\item a 2-path $t' : p' \ct q' = q' \ct p'$.
+\end{itemize}
+The recursor $f : T^2 \to C$ then has the property that $f(b) \jdeq b'$. Furthermore, there exist terms $\beta : \ap{f}{p} = p'$ and $\gamma : \ap{f}{q} = q'$ such that the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Nc) at (1.5,0) {=};
+\node (N0) at (0,1.5) {$\ap{f}{p\ct q}$};
+\node (N1) at (3,1.5) {$\ap{f}{q\ct p}$};
+\node (N2) at (0,0) {$\ap{f}{p}\ct\ap{f}{q}$};
+\node (N3) at (3,0) {$\ap{f}{q}\ct\ap{f}{p}$};
+\node (N4) at (0,-1.5) {$p' \ct q'$};
+\node (N5) at (3,-1.5) {$q' \ct p'$};
+\draw[-] (N0) -- node[above]{\footnotesize $\mapfunc{\mapfunc{f}}(t)$} (N1);
+\draw[-] (N0) -- node[left]{} (N2);
+\draw[-] (N1) -- node[above]{} (N3);
+\draw[-] (N2) -- node[left]{\footnotesize via $\beta$, $\gamma$} (N4);
+\draw[-] (N3) -- node[right]{\footnotesize via $\beta$, $\gamma$} (N5);
+\draw[-] (N4) -- node[below]{\footnotesize $t'$} (N5);
+\end{tikzpicture}
+\end{center}
+
+The induction principle is more complicated; it says that given a family $P : T^2 \to \type$, for a section $f : \prd{x:T^2} P(x)$ we require
+\begin{itemize}
+\item a point $b':P(b)$,
+\item a path $p' : \trans{p}{b'} = b'$,
+\item a path $q' : \trans{q}{b'} = b'$, and
+\item a 2-path $t'$ witnessing the equality of the following two paths from $\trans{(q\ct p)}{b'}$ to $b'$:
+\begin{align*}
+& \opp{\big(\mapfunc{\alpha \mapsto \trans{\alpha}{b'}}(t)\big)} \ct \big(\happly_{\transfun{P}{p}{q}}(b') \ct \mapfunc{\transf{q}}(p') \ct q' \big)\\
+& \happly_{\transfun{P}{q}{p}}(b') \ct \mapfunc{\transf{p}}(q') \ct p'
+\end{align*}
+where for any type family $B : A \to \type$ and paths $\alpha: x =_A y$ and $\alpha' : y =_A z$, the path \[\transfun{E}{\alpha}{\alpha'} : \transf{(\alpha \ct \alpha')} = \lam{u:B(x)} \trans{\alpha'}{\trans{\alpha}{u}}\] is obtained by a path induction on $\alpha$ and $\alpha'$.
+\end{itemize}
+The inductor $f : \prd{x:T^2} P(x)$ then has the property that $f(b) \jdeq b'$. Furthermore, there exist terms $\beta : \mapdep{f}{p} = p'$ and $\gamma : \mapdep{f}{q} = q'$ such that the 2-path
+\[ \mapdep{\mapdepfunc{f}}{t} : \transfib{\alpha \mapsto \trans{\alpha}{b'} = b'}{t}{\mapdepfunc{f}{(p\ct q)}} = \mapdepfunc{f}{(q \ct p)} \]
+is equal to the 2-path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,7.5) {$\transfib{\alpha \mapsto \trans{\alpha}{b'} = b'}{t}{\mapdepfunc{f}{(p\ct q)}}$};
+\node (N1) at (0,6) {$\opp{\big(\mapfunc{\alpha \mapsto \trans{\alpha}{b'}}(t)\big)} \ct \mapdepfunc{f}{(p\ct q)}$};
+\node (N2) at (0,4.5) {$\opp{\big(\mapfunc{\alpha \mapsto \trans{\alpha}{b'}}(t)\big)} \ct \big(\happly_{\transfun{P}{p}{q}}(b') \ct \mapfunc{\transf{q}}(\mapdep{f}{p}) \ct \mapdep{f}{q}\big)$};
+\node (N3) at (0,3) {$\opp{\big(\mapfunc{\alpha \mapsto \trans{\alpha}{b'}}(t)\big)} \ct \big(\happly_{\transfun{P}{p}{q}}(b') \ct \mapfunc{\transf{q}}(p') \ct q'\big)$};
+\node (N4) at (0,1.5) {$\happly_{\transfun{P}{q}{p}}(b') \ct \mapfunc{\transf{p}}(q') \ct p'$};
+\node (N5) at (0,0) {$\happly_{\transfun{P}{q}{p}}(b') \ct \mapfunc{\transf{p}}(\mapdep{f}{q}) \ct \mapdep{f}{p}$};
+\node (N6) at (0,-1.5) {$\mapdep{f}{q\ct p}$};
+\draw[-] (N0) -- node[right]{\footnotesize $\mathcal{T}^{b'}_{\alpha \mapsto \trans{\alpha}{b'}}(t,\mapdepfunc{f}{(p\ct q)})$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize via $\mathcal{D}_f(p,q)$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\beta$, $\gamma$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize $t'$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize via $\opp{\beta}$, $\opp{\gamma}$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize $\opp{\mathcal{D}_f(q,p)}$} (N6);
+\end{tikzpicture}
+\end{center}
+where for any $g : A \to B$, $c : B$, $\alpha : a =_A a'$ and $u : g(a) =_B c$, the path \[\mathcal{T}_g^c(\alpha,u) : \transfib{x \to g(x) = c}{\alpha}{u} = \opp{\ap{g}{\alpha}} \ct u\]
+is obtained by a straightforward path induction on $\alpha$. Similarly, for any $g : \prd{x : A}B(x)$ and paths $\alpha: x =_A y$, $\alpha' : y =_A z$, the path
+\[ \mathcal{D}_g(\alpha,\alpha') : \mapdep{g}{\alpha \ct \alpha'} = \happly_{\transfun{B}{\alpha}{\alpha'}}(g(x)) \ct \mapfunc{\transf{\alpha'}}(\mapdep{g}{\alpha}) \ct \mapdep{g}{\alpha'}\]
+is obtained by a path induction on $\alpha$ and $\alpha'$.
+
+\subsection*{Solution to \cref{ex:torus-s1-times-s1}}
+
+\subsubsection*{Logical equivalence between $\Sn^1 \times \Sn^1$ and $T^2$}
+We define a function $f : \Sn^1 \to T^2$ by circle recursion, mapping $\base \mapsto b$ and $\lloop \mapsto p$. We define a function $F^\to : \Sn^1 \to \Sn^1 \to T^2$ again by circle recursion, mapping $\base \mapsto f$ and $\lloop \mapsto \funext(H)$, where $H : \prd{x:\Sn^1} f(x) = f(x)$ is defined by circle induction as follows. We map $\base$ to $q$ and $\lloop$ to the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,3) {$\transfib{z \mapsto f(z) = f(z)}{\lloop}{q}$};
+\node (N1) at (0,1.5) {$\opp{\ap{f}{\lloop}} \ct (q \ct \ap{f}{\lloop})$};
+\node (N2) at (0,0) {$q$};
+\draw[-] (N0) -- node[right]{\footnotesize $\Tgh{\lloop}{q}$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize $\I(\delta)$} (N2);
+\end{tikzpicture}
+\end{center}
+where for any $\alpha : x =_{\Sn^1} y$, and $u : f(x) = f(x)$, the path \[\Tgh{\alpha}{u} : \transfib{z \mapsto f(z) = f(z)}{\alpha}{u} = \opp{\ap{f}{\alpha}} \ct u \ct \ap{f}{\alpha} \]
+is obtained by a straightforward path induction on $\alpha$. For any $u : a =_A b$, $v : b =_A d$, $w : a =_A c$, $z : c =_A d$, we have functions
+\begin{align*}
+\I & : (u \ct v = w \ct z) \to (\opp{u} \ct w \ct z = v)\\
+\I^{-1} & : (\opp{u} \ct w \ct z = v) \to (u \ct v = w \ct z)
+\end{align*}
+defined by path induction on $u$ and $z$, which form a quasi-equivalence. Finally, $\delta$ is the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,4.5) {$\ap{f}{\lloop} \ct q$};
+\node (N1) at (0,3) {$p \ct q$};
+\node (N2) at (0,1.5) {$q \ct p$};
+\node (N3) at (0,0) {$q \ct \ap{f}{\lloop}$};
+\draw[-] (N0) -- node[right]{\footnotesize via $\beta_f$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize $t$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\beta_f$} (N3);
+\end{tikzpicture}
+\end{center}
+where $\beta_f : \ap{f}{\lloop} = p$ witnesses the second computation rule for the circle.
+
+Having defined a function $F^\to : \Sn^1 \to \Sn^1 \to T^2$, it is now straightforward to define a function $F^\times : \Sn^1 \times \Sn^1 \to T^2$. For the other direction, we define $G : T^2 \to \Sn^1 \times \Sn^1$ by torus recursion as follows. We map $b \mapsto (\base,\base)$, $p \mapsto \pairpath(\refl{\base},\lloop)$, $q \mapsto \pairpath(\lloop, \refl{\base})$, and $t \mapsto \Phi_{\lloop,\lloop}$, where for $\alpha : x =_A x'$ and $\alpha' : y =_A y'$,
+\[ \Phi_{\alpha,\alpha'} : \Big(\pairpath(\refl{x},\alpha') \ct \pairpath(\alpha, \refl{y'})\Big) = \Big(\pairpath(\alpha, \refl{y}) \ct \pairpath(\refl{x'},\alpha')\Big) \]
+is defined by induction on $\alpha'$.
+
+This completes the definition of a logical equivalence between $\Sn^1 \times \Sn^1$ and $T^2$. Before we proceed to show that it is in fact a quasi-equivalence, we note a few key properties of the functions $H$, $F^\times$, $G$ constructed above.
+
+The 1-path computation rule for $F^\to$ gives us a term
+\[ \beta_{F^\to} : \ap{F^\to}{\lloop} = \funext(H) \]
+The 1-path computation rules for $G$ give us terms
+\begin{align*}
+& \beta_G : \ap{G}{p} = \pairpath(\refl{\base},\lloop)\\
+& \gamma_G : \ap{G}{q} =\pairpath(\lloop, \refl{\base})
+\end{align*}
+The 2-path computation rule for $G$ gives us the following commuting diagram:
+\begin{center}
+\begin{tikzpicture}
+\node (Nc) at (4.5,0) {$(1)$};
+\node (N0) at (0,1.5) {$\ap{G}{p\ct q}$};
+\node (N1) at (9,1.5) {$\ap{G}{q\ct p}$};
+\node (N2) at (0,0) {$\ap{G}{p}\ct\ap{G}{q}$};
+\node (N3) at (9,0) {$\ap{G}{q}\ct\ap{G}{p}$};
+\node (N4) at (0,-1.5) {$\pairpath(\refl{},\lloop) \ct \pairpath(\lloop, \refl{})$};
+\node (N5) at (9,-1.5) {$\pairpath(\lloop, \refl{}) \ct \pairpath(\refl{},\lloop)$};
+\draw[-] (N0) -- node[above]{\footnotesize via $t$} (N1);
+\draw[-] (N0) -- node[left]{} (N2);
+\draw[-] (N1) -- node[above]{} (N3);
+\draw[-] (N2) -- node[left]{\footnotesize via $\beta_G$, $\gamma_G$} (N4);
+\draw[-] (N3) -- node[right]{\footnotesize via $\beta_G$, $\gamma_G$} (N5);
+\draw[-] (N4) -- node[below]{\footnotesize $\Phi_{\lloop,\lloop}$} (N5);
+\end{tikzpicture}
+\end{center}
+For any $\alpha : x =_{T^2} x'$ and $\alpha' : y =_{T^2} y'$, we have path families
+\begin{align*}
+& \mu(\alpha') : \ap{F^\times}{\pairpath(\refl{x},\alpha')} = \ap{F^\to(x)}{\alpha'}\\
+& \nu(\alpha) : \ap{F^\times}{\pairpath(\alpha,\refl{y})} = \happly_{\ap{F^\to}{\alpha}}(y)
+\end{align*}
+defined by path induction on $\alpha$ and $\alpha'$.
+
+The function $H$ is a homotopy between $f$ and $f$. As such, for any path $\alpha : x =_{\Sn^1} y$, there exists a 2-path \[\nathom{H}{\alpha} : \ap{f}{\alpha} \ct H(y)  = H(x) \ct \ap{f}{\alpha}\] defined by induction on $\alpha$. In the case when $\alpha \defeq \lloop$, we can show that the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (2,1) {$(2)$};
+\node (N0) at (0,2) {$\ap{f}{\lloop} \ct q$};
+\node (N1) at (4,2) {$p \ct q$};
+\node (N2) at (0,0) {$q \ct \ap{f}{\lloop}$};
+\node (N3) at (4,0) {$q \ct p$};
+\draw[-] (N0) -- node[above]{\footnotesize via $\beta_f$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize $t$} (N3);
+\draw[-] (N0) -- node[left]{\footnotesize $\nathom{H}{\lloop}$} (N2);
+\draw[-] (N2) -- node[below]{\footnotesize via $\beta_f$} (N3);
+\end{tikzpicture}
+\end{center}
+To show this, we note that for any $\alpha : x =_{\Sn^1} y$, applying $\I^{-1}$ to the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,3) {$\opp{\ap{f}{\alpha}} \ct H(x) \ct \ap{f}{\alpha}$};
+\node (N1) at (0,1.5) {$\transfib{z \mapsto f(z) = f(z)}{\alpha}{H(x)}$};
+\node (N2) at (0,0) {$H(y)$};
+\draw[-] (N0) -- node[right]{\footnotesize $\opp{\Tgh{\alpha}{H(x)}}$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize $\mapdep{H}{\alpha}$} (N2);
+\end{tikzpicture}
+\end{center}
+yields precisely $\nathom{H}{\alpha}$ (by a simple path induction on $\alpha$). The second computation rule for $H$ tells us that $\mapdep{H}{\lloop} = \Tgh{\lloop}{q} \ct \I(\delta)$. Thus
+\[\nathom{H}{\lloop} = \I^{-1}\big(\opp{\Tgh{\lloop}{q}} \ct \mapdep{H}{\lloop}\big) = \delta \]
+which proves the commutativity of $(2)$.
+
+\subsubsection*{Equivalence between $\Sn^1 \times \Sn^1$ and $T^2$}
+\paragraph*{Left-to-right}
+We need to show that for any $x,y : \Sn^1$ we have $G(F^\times(x,y)) = (x,y)$. To use the circle induction, we first define a path family $\epsilon : \prd{y:\Sn^1} G(f(y)) = (\base,y)$. The definition of $\epsilon$ itself proceeds by circle induction: we map $\base$ to the path $\refl{(\base,\base)}$ and $\lloop$ to the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,6) {$\transfib{z \mapsto G(f(z)) = (\base,z)}{\lloop}{\refl{}}$};
+\node (N1) at (0,4.5) {$\opp{\ap{G}{\ap{f}{\lloop}}} \ct \refl{} \ct \pairpath(\refl{},\lloop)$};
+\node (N2) at (0,3) {$\refl{}$};
+\draw[-] (N0) -- node[right]{\footnotesize $\T{\lloop}{\refl{}}$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize $\I(\kappa)$} (N2);
+\end{tikzpicture}
+\end{center}
+where for any $\alpha : x =_{\Sn^1} y$ and $u : G(f(x)) = (\base,x)$, the path \[\T{\alpha}{u} : \transfib{z \mapsto G(f(z)) = (\base,z)}{\alpha}{u} = \opp{\ap{G}{\ap{f}{\alpha}}} \ct u \ct \pairpath(\refl{},\alpha) \]
+is defined by path induction on $\alpha$. Finally, $\kappa$ is the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,6) {$\ap{G}{\ap{f}{\lloop}} \ct \refl{}$};
+\node (N1) at (0,4.5) {$\ap{G}{\ap{f}{\lloop}}$};
+\node (N2) at (0,3) {$\pairpath(\refl{},\lloop)$};
+\node (N3) at (0,1.5) {$\refl{} \ct \pairpath(\refl{},\lloop)$};
+\draw[-] (N0) -- node[right]{} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N2);
+\draw[-] (N2) -- node[right]{} (N3);
+\end{tikzpicture}
+\end{center}
+This finishes the definition of $\epsilon$. As before, for any $\alpha : x =_{\Sn^1} y$ we have a 2-path \[\nathom{\epsilon}{\alpha} : \ap{G}{\ap{f}{\alpha}} \ct \epsilon(y) = \epsilon(x) \ct \pairpath(\refl{},\alpha)\] defined by induction on $\alpha$. In the case $\alpha \defeq \lloop$, the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (2,1) {$(3)$};
+\node (N0) at (0,2) {$\ap{G}{\ap{f}{\lloop}} \ct \refl{}$};
+\node (N1) at (4,2) {$\ap{G}{\ap{f}{\lloop}}$};
+\node (N2) at (0,0) {$\refl{} \ct \pairpath(\refl{},\lloop)$};
+\node (N3) at (4,0) {$\pairpath(\refl{},\lloop)$};
+\draw[-] (N0) -- node[above]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N3);
+\draw[-] (N0) -- node[left]{\footnotesize $\nathom{\epsilon}{\lloop}$} (N2);
+\draw[-] (N2) -- node[below]{\footnotesize} (N3);
+\end{tikzpicture}
+\end{center}
+To show this, we note that for any $\alpha : x =_{\Sn^1} y$, applying $\I^{-1}$ to the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,3) {$\opp{\ap{G}{\ap{f}{\alpha}}} \ct \epsilon(x) \ct \pairpath(\refl{},\alpha)$};
+\node (N1) at (0,1.5) {$\transfib{z \mapsto G(f(z)) = (\base,z)}{\alpha}{\epsilon(x)}$};
+\node (N2) at (0,0) {$\epsilon(y)$};
+\draw[-] (N0) -- node[right]{\footnotesize $\opp{\T{\alpha}{\epsilon(x)}}$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize $\mapdep{\epsilon}{\alpha}$} (N2);
+\end{tikzpicture}
+\end{center}
+yields precisely $\nathom{\epsilon}{\alpha}$ (by a simple path induction on $\alpha$). The second computation rule for $\epsilon$ tells us that $\mapdep{\epsilon}{\lloop} = \T{\lloop}{\refl{}} \ct \I(\kappa)$. Thus
+\[\nathom{\epsilon}{\lloop} = \I^{-1}\big(\opp{\T{\lloop}{\refl{}}} \ct \mapdep{\epsilon}{\lloop}\big) = \kappa \]
+which proves the commutativity of $(3)$.
+
+All that remains now is to prove that \[\transfib{x \mapsto \prd{y:\Sn^1} G(F^\times(x,y)) = (x,y)}{\lloop}{\epsilon} = \epsilon\] The left endpoint can be expressed explicitly as the function
+\[ y \mapsto \opp{\ap{G}{\happly_{\ap{F^\to}{\lloop}}(y)}} \ct \epsilon(y) \ct \pairpath(\lloop,\refl{})\]
+as a generalization of $\lloop$ to an arbitrary $\alpha$ and a subsequent path induction on $\alpha$ shows. By function extensionality it thus suffices to show that for any $y : \Sn^1$, we have
+\[ \opp{\ap{G}{\happly_{\ap{F^\to}{\lloop}}(y)}} \ct \epsilon(y) \ct \pairpath(\lloop,\refl{}) = \epsilon(y) \]
+The left endpoint can be simplified using $\beta_{F^\to}$ and the fact that $\happly$ and $\funext$ form a quasi-inverse:
+\[ \opp{\ap{G}{H(y)}} \ct \epsilon(y) \ct \pairpath(\lloop,\refl{}) = \epsilon(y) \]
+Showing the above is the same as showing
+\[ \ap{G}{H(y)} \ct \epsilon(y) = \epsilon(y) \ct \pairpath(\lloop,\refl{}) \]
+for any $y :\Sn^1$. We proceed yet again by circle induction. We map $\base$ to the path $\eta$ below:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,3) {$\ap{G}{q} \ct \refl{}$};
+\node (N1) at (0,1.5) {$\ap{G}{q}$};
+\node (N2) at (0,0) {$\pairpath(\lloop,\refl{})$};
+\node (N3) at (0,-1.5) {$\refl{} \ct \pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize $\gamma_G$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\end{tikzpicture}
+\end{center}
+Now it remains to show that
+\[ \transfib{z \mapsto \ap{G}{H(z)} \ct \epsilon(z) = \epsilon(z) \ct \pairpath(\lloop,\refl{})}{\lloop}{\eta} = \eta \]
+For any $u : a =_A b$, $v : b =_A d$, $w : a =_A c$, $z : c =_A d$, we have functions
+\begin{align*}
+\II & : (u \ct v = w \ct z) \to (v \ct \opp{z} = \opp{u} \ct w) \\
+\II^{-1} & : (v \ct \opp{z} = \opp{u} \ct w) \to (u \ct v = w \ct z)
+\end{align*}
+defined by induction on $u$ and $z$, which form a quasi-equivalence.
+For any $\alpha : x =_{\Sn^1} y$, let $\delta^\star(\alpha)$ be the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,3) {$\ap{G}{\ap{f}{\alpha}} \ct \ap{G}{H_y}$};
+\node (N1) at (0,1.5) {$\ap{G}{\ap{f}{\alpha} \ct H_y}$};
+\node (N2) at (0,0) {$\ap{G}{H_x \ct \ap{f}{\alpha}}$};
+\node (N3) at (0,-1.5) {$\ap{G}{H_x} \ct \ap{G}{\ap{f}{\alpha}}$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize via $\nathom{H}{\alpha}$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\end{tikzpicture}
+\end{center}
+Given any $\alpha : x =_{\Sn^1} y$ and $\eta' : G(H(x)) \ct \eta(x) = \eta(x) \ct \pairpath(\lloop,\refl{})$, we can now express the path $\transfib{z \mapsto \ap{G}{H(z)} \ct \epsilon(z) = \epsilon(z) \ct \pairpath(\lloop,\refl{})}{\alpha}{\eta'}$ explicitly as the following path:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,19.8)  {$\ap{G}{H_y} \ct \epsilon_y$};
+\node (N1) at (0,18.15){$\ap{G}{H_y} \ct \Big(\opp{\ap{G}{\ap{f}{\alpha}}} \ct \ap{G}{\ap{f}{\alpha}}\Big) \ct \epsilon_y$};
+\node (N2) at (0,16.5)  {$\Big(\ap{G}{H_y} \ct \opp{\ap{G}{\ap{f}{\alpha}}}\Big) \ct \Big(\ap{G}{\ap{f}{\alpha}} \ct \epsilon_y\Big)$};
+\node (N3) at (0,14.85){$\Big(\opp{\ap{G}{\ap{f}{\alpha}}} \ct \ap{G}{H_x}\Big) \ct \Big(\ap{G}{\ap{f}{\alpha}} \ct \epsilon_y\Big)$};
+\node (N4) at (0,13.2){$\Big(\opp{\ap{G}{\ap{f}{\alpha}}}\ct \ap{G}{H_x}\Big) \ct \Big(\epsilon_x \ct \pairpath(\refl{},\alpha)\Big)$};
+\node (N5) at (0,11.55){$\opp{\ap{G}{\ap{f}{\alpha}}}\ct\Big(\ap{G}{H_x}\ct \epsilon_x\Big) \ct \pairpath(\refl{},\alpha)$};
+\node (N6) at (0,9.9){$\opp{\ap{G}{\ap{f}{\alpha}}}\ct\Big(\epsilon_x\ct\pairpath(\lloop,\refl{})\Big) \ct \pairpath(\refl{},\alpha)$};
+\node (N7) at (0,8.25){$\Big(\opp{\ap{G}{\ap{f}{\alpha}}}\ct\epsilon_x\Big)\ct\Big(\pairpath(\lloop,\refl{})\ct \pairpath(\refl{},\alpha)\Big)$};
+\node (N8) at (0,6.6){$\Big(\opp{\ap{G}{\ap{f}{\alpha}}}\ct\epsilon_x\Big)\ct\Big(\pairpath(\refl{},\alpha)\ct \pairpath(\lloop,\refl{})\Big)$};
+\node (N9) at (0,4.95){$\opp{\ap{G}{\ap{f}{\alpha}}}\ct\Big(\epsilon_x\ct\pairpath(\refl{},\alpha)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N10) at (0,3.3){$\opp{\ap{G}{\ap{f}{\alpha}}}\ct\Big(\ap{G}{\ap{f}{\alpha}}\ct\epsilon_y\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N11) at (0,1.65){$\Big(\opp{\ap{G}{\ap{f}{\alpha}}}\ct\ap{G}{\ap{f}{\alpha}}\Big)\ct\Big(\epsilon_y\ct\pairpath(\lloop,\refl{})\Big)$};
+\node (N12) at (0,0){$\epsilon_y\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\II(\delta^\star(\alpha))$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\nathom{\epsilon}{\alpha}$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\eta'$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize} (N7);
+\draw[-] (N7) -- node[right]{\footnotesize via $\Phi^{-1}_{\lloop,\alpha}$} (N8);
+\draw[-] (N8) -- node[right]{\footnotesize} (N9);
+\draw[-] (N9) -- node[right]{\footnotesize via $\opp{\nathom{\epsilon}{\alpha}}$} (N10);
+\draw[-] (N10) -- node[right]{\footnotesize} (N11);
+\draw[-] (N11) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+In the case $\alpha \defeq \lloop$ and $\eta' \defeq \eta$ we thus have:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,19.8)  {$\ap{G}{q} \ct \refl{}$};
+\node (N1) at (0,18.15){$\ap{G}{q} \ct \Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{\ap{f}{\lloop}}\Big) \ct \refl{}$};
+\node (N2) at (0,16.5)  {$\Big(\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}\Big) \ct \Big(\ap{G}{\ap{f}{\lloop}} \ct \refl{}\Big)$};
+\node (N3) at (0,14.85){$\Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{q}\Big) \ct \Big(\ap{G}{\ap{f}{\lloop}} \ct \refl{}\Big)$};85
+\node (N4) at (0,13.2){$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct \ap{G}{q}\Big) \ct \Big(\refl{} \ct \pairpath(\refl{},\lloop)\Big)$};
+\node (N5) at (0,11.55){$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\ap{G}{q}\ct \refl{}\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N6) at (0,9.8){$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\refl{}\ct\pairpath(\lloop,\refl{})\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N7) at (0,8.25){$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\refl{}\Big)\ct\Big(\pairpath(\lloop,\refl{})\ct \pairpath(\refl{},\lloop)\Big)$};
+\node (N8) at (0,6.6){$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\refl{}\Big)\ct\Big(\pairpath(\refl{},\lloop)\ct \pairpath(\lloop,\refl{})\Big)$};
+\node (N9) at (0,4.95){$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\refl{}\ct\pairpath(\refl{},\lloop)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N10) at (0,3.3){$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\ap{G}{\ap{f}{\lloop}}\ct\refl{}\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N11) at (0,1.65){$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\ap{G}{\ap{f}{\lloop}}\Big)\ct\Big(\refl{}\ct\pairpath(\lloop,\refl{})\Big)$};
+\node (N12) at (0,0){$\refl{}\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\II(\delta^\star(\lloop))$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\nathom{\epsilon}{\lloop}$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\eta$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize} (N7);
+\draw[-] (N7) -- node[right]{\footnotesize via $\Phi^{-1}_{\lloop,\lloop}$} (N8);
+\draw[-] (N8) -- node[right]{\footnotesize} (N9);
+\draw[-] (N9) -- node[right]{\footnotesize via $\opp{\nathom{\epsilon}{\lloop}}$} (N10);
+\draw[-] (N10) -- node[right]{\footnotesize} (N11);
+\draw[-] (N11) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+We can now use the commutativity of $(3)$ and get rid of the extraneous identity paths to obtain:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,19.8)  {$\ap{G}{q} \ct \refl{}$};
+\node (N1) at (0,18.15) {$\ap{G}{q}$};
+\node (N2) at (0,16.5)  {$\ap{G}{q} \ct \Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{\ap{f}{\lloop}}\Big)$};
+\node (N3) at (0,14.85) {$\Big(\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}\Big) \ct \ap{G}{\ap{f}{\lloop}}$};
+\node (N4) at (0,13.2)  {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{q}\Big) \ct \ap{G}{\ap{f}{\lloop}}$};
+\node (N5) at (0,11.55) {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct \ap{G}{q}\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N6) at (0,9.8)   {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\pairpath(\lloop,\refl{})\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N7) at (0,8.25)  {$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\pairpath(\lloop,\refl{})\ct \pairpath(\refl{},\lloop)\Big)$};
+\node (N8) at (0,6.6)   {$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\pairpath(\refl{},\lloop)\ct \pairpath(\lloop,\refl{})\Big)$};
+\node (N9) at (0,4.95)  {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\pairpath(\refl{},\lloop)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N10) at (0,3.3)  {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\ap{G}{\ap{f}{\lloop}}\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N11) at (0,1.65) {$\pairpath(\lloop,\refl{})$};
+\node (N12) at (0,0) {$\refl{}\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\II(\delta^\star(\lloop))$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\gamma_G$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize} (N7);
+\draw[-] (N7) -- node[right]{\footnotesize via $\Phi^{-1}_{\lloop,\lloop}$} (N8);
+\draw[-] (N8) -- node[right]{\footnotesize} (N9);
+\draw[-] (N9) -- node[right]{\footnotesize via $\beta^{-1}_G$, $\beta^{-1}_f$} (N10);
+\draw[-] (N10) -- node[right]{\footnotesize} (N11);
+\draw[-] (N11) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+or equivalently:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,19.8)  {$\ap{G}{q} \ct \refl{}$};
+\node (N1) at (0,18.15) {$\ap{G}{q}$};
+\node (N2) at (0,16.5)  {$\ap{G}{q} \ct \Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{\ap{f}{\lloop}}\Big)$};
+\node (N3) at (0,14.85) {$\Big(\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}\Big) \ct \ap{G}{\ap{f}{\lloop}}$};
+\node (N4) at (0,13.2)  {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{q}\Big) \ct \ap{G}{\ap{f}{\lloop}}$};
+\node (N5) at (0,11.55) {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct \ap{G}{q}\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N6) at (0,9.8)   {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\pairpath(\lloop,\refl{})\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N7) at (0,8.25)  {$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\pairpath(\lloop,\refl{})\ct \pairpath(\refl{},\lloop)\Big)$};
+\node (N8) at (0,6.6)   {$\opp{\ap{G}{\ap{f}{\lloop}}}\ct\Big(\pairpath(\refl{},\lloop)\ct \pairpath(\lloop,\refl{})\Big)$};
+\node (N9) at (0,4.95)  {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\pairpath(\refl{},\lloop)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node[red] (N10) at (0,3.3)  {$\Big(\opp{\pairpath(\refl{},\lloop)}\ct\pairpath(\refl{},\lloop)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N11) at (0,1.65) {$\pairpath(\lloop,\refl{})$};
+\node (N12) at (0,0) {$\refl{}\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\II(\delta^\star(\lloop))$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\gamma_G$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize} (N7);
+\draw[-] (N7) -- node[right]{\footnotesize via $\Phi^{-1}_{\lloop,\lloop}$} (N8);
+\draw[-] (N8) -- node[right]{\footnotesize} (N9);
+\draw[red,-] (N9) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N10);
+\draw[red,-] (N10) -- node[right]{\footnotesize} (N11);
+\draw[-] (N11) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+After some rearranging we get:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,19.8)  {$\ap{G}{q} \ct \refl{}$};
+\node (N1) at (0,18.15) {$\ap{G}{q}$};
+\node (N2) at (0,16.5)  {$\ap{G}{q} \ct \Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{\ap{f}{\lloop}}\Big)$};
+\node (N3) at (0,14.85) {$\Big(\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}\Big) \ct \ap{G}{\ap{f}{\lloop}}$};
+\node[red] (N4) at (0,13.2)  {$\Big(\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N5) at (0,11.55) {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct \ap{G}{q}\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N6) at (0,9.8)   {$\Big(\opp{\ap{G}{\ap{f}{\lloop}}}\ct\pairpath(\lloop,\refl{})\Big) \ct \pairpath(\refl{},\lloop)$};
+\node[red] (N7) at (0,8.25)  {$\Big(\opp{\pairpath(\refl{},\lloop)}\ct\pairpath(\lloop,\refl{})\Big)\ct \pairpath(\refl{},\lloop)$};
+\node[red] (N8) at (0,6.6)   {$\opp{\pairpath(\refl{},\lloop)}\ct\Big(\pairpath(\lloop,\refl{})\ct \pairpath(\refl{},\lloop)\Big)$};
+\node[red] (N9) at (0,4.95)  {$\opp{\pairpath(\refl{},\lloop)}\ct\Big(\pairpath(\refl{},\lloop)\ct\pairpath(\lloop,\refl{})\Big)$};
+\node (N10) at (0,3.3)  {$\Big(\opp{\pairpath(\refl{},\lloop)}\ct\pairpath(\refl{},\lloop)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N11) at (0,1.65) {$\pairpath(\lloop,\refl{})$};
+\node (N12) at (0,0) {$\refl{}\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\draw[red,-] (N3) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N4);
+\draw[red,-] (N4) -- node[right]{\footnotesize via $\II(\delta^\star(\lloop))$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\gamma_G$} (N6);
+\draw[red,-] (N6) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N7);
+\draw[red,-] (N7) -- node[right]{\footnotesize} (N8);
+\draw[red,-] (N8) -- node[right]{\footnotesize via $\Phi^{-1}_{\lloop,\lloop}$} (N9);
+\draw[red,-] (N9) -- node[right]{\footnotesize} (N10);
+\draw[-] (N10) -- node[right]{\footnotesize} (N11);
+\draw[-] (N11) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+We now observe the following:
+\begin{itemize}
+\item For any paths $\alpha_u : u_1 =_{a =_A b} u_2$, $\alpha_v : v_1 =_{b =_A d} v_2$, $\alpha_w : w_1 =_{a =_A c} w_2$, $\alpha_z : z_1 =_{c =_A d} z_2$ and $\phi : u_1 \ct v_1 = w_1 \ct z_1$, $\phi' : u_2 \ct v_2 = w_2 \ct z_2$, we have
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (2.5,1) {$=$};
+\node (N0) at (0,2) {$u_1 \ct v_1$};
+\node (N1) at (2.5,2) {$u_1 \ct v_2$};
+\node (N2) at (5,2) {$u_2 \ct v_2$};
+\node (N3) at (0,0) {$w_1 \ct z_1$};
+\node (N4) at (2.5,0) {$w_1 \ct z_2$};
+\node (N5) at (5,0) {$w_2 \ct z_2$};
+\draw[-] (N0) -- node[above]{\footnotesize via $\alpha_v$} (N1);
+\draw[-] (N1) -- node[above]{\footnotesize via $\alpha_u$} (N2);
+\draw[-] (N0) -- node[left]{\footnotesize $\phi$} (N3);
+\draw[-] (N3) -- node[below]{\footnotesize via $\alpha_z$} (N4);
+\draw[-] (N4) -- node[below]{\footnotesize via $\alpha_w$} (N5);
+\draw[-] (N2) -- node[right]{\footnotesize $\phi'$} (N5);
+\end{tikzpicture}
+\end{center}
+if and only if
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (2.5,1) {$=$};
+\node (N0) at (0,2) {$v_1 \ct z^{-1}_1$};
+\node (N1) at (2.5,2) {$v_1 \ct z^{-1}_2$};
+\node (N2) at (5,2) {$v_2 \ct z^{-1}_2$};
+\node (N3) at (0,0) {$u^{-1}_1 \ct w_1$};
+\node (N4) at (2.5,0) {$u^{-1}_1 \ct w_2$};
+\node (N5) at (5,0) {$u^{-1}_2 \ct w_2$};
+\draw[-] (N0) -- node[above]{\footnotesize via $\alpha_z$} (N1);
+\draw[-] (N1) -- node[above]{\footnotesize via $\alpha_v$} (N2);
+\draw[-] (N0) -- node[left]{\footnotesize $\II(\phi)$} (N3);
+\draw[-] (N3) -- node[below]{\footnotesize via $\alpha_w$} (N4);
+\draw[-] (N4) -- node[below]{\footnotesize via $\alpha_u$} (N5);
+\draw[-] (N2) -- node[right]{\footnotesize $\II(\phi')$} (N5);
+\end{tikzpicture}
+\end{center}
+This follows at once by path induction on $\alpha_u, \alpha_v, \alpha_w, \alpha_z$ and the fact that $\II$ is an equivalence.
+\end{itemize}
+Next we want to show that the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (4.5,1) {$(4)$};
+\node (N0) at (0,2) {$\ap{G}{\ap{f}{\lloop}} \ct \ap{G}{q}$};
+\node (N1) at (0,0) {$\ap{G}{q} \ct \ap{G}{\ap{f}{\lloop}}$};
+\node (N2) at (9,2) {$\pairpath(\refl{},\lloop) \ct \pairpath(\lloop,\refl{})$};
+\node (N3) at (9,0) {$\pairpath(\lloop,\refl{}) \ct \pairpath(\refl{},\lloop)$};
+\draw[-] (N0) -- node[left]{\footnotesize $\delta^\star(\lloop)$} (N1);
+\draw[-] (N0) -- node[above]{\footnotesize via $\beta_f$, $\beta_G$, $\gamma_G$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize $\Phi_{\lloop,\lloop}$} (N3);
+\draw[-] (N1) -- node[below]{\footnotesize via $\beta_f$, $\beta_G$, $\gamma_G$} (N3);
+\end{tikzpicture}
+\end{center}
+This is the same as saying that the outer rectangle in the diagram below commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (2.5,4.125) {A};
+\node (Nb) at (2.5,2.375) {B};
+\node (Nc) at (2.5,0.725) {C};
+\node (Nd) at (8,2.475) {D};
+\node (N0) at (0,4.95) {$\ap{G}{\ap{f}{\lloop}} \ct \ap{G}{q}$};
+\node (N2) at (5,4.95) {$\ap{G}{p} \ct \ap{G}{q}$};
+\node (N4) at (11,4.95) {$\pairpath(\refl{},\lloop) \ct \pairpath(\lloop,\refl{})$};
+\node (N1) at (0,3.3) {$\ap{G}{\ap{f}{\lloop}\ct q}$};
+\node (N1c) at (0,1.65) {$\ap{G}{q\ct \ap{f}{\lloop}}$};
+\node (N3) at (0,0) {$\ap{G}{q}\ct\ap{G}{\ap{f}{\lloop}}$};
+\node (N5) at (5,0) {$\ap{G}{q} \ct \ap{G}{p}$};
+\node (N7) at (11,0) {$\pairpath(\lloop,\refl{}) \ct \pairpath(\refl{},\lloop)$};
+\node (N6) at (5,3.3) {$\ap{G}{p\ct q}$};
+\node (N6a) at (5,1.65) {$\ap{G}{q\ct p}$};
+
+\draw[-] (N0) -- node[above]{\footnotesize via $\beta_f$} (N2);
+\draw[-] (N2) -- node[above]{\footnotesize via $\beta_G$, $\gamma_G$} (N4);
+\draw[-] (N0) -- node[left]{\footnotesize} (N1);
+\draw[-] (N1c) -- node[left]{\footnotesize} (N3);
+\draw[-] (N3) -- node[below]{\footnotesize via $\beta_f$} (N5);
+\draw[-] (N5) -- node[below]{\footnotesize via $\beta_G$, $\gamma_G$} (N7);
+\draw[-] (N4) -- node[right]{\footnotesize $\Phi_{\lloop,\lloop}$} (N7);
+\draw[-] (N1) -- node[below]{\footnotesize via $\beta_f$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize via $t$} (N6a);
+\draw[-] (N1c) -- node[below]{\footnotesize via $\beta_f$} (N6a);
+\draw[-] (N2) -- node[above]{\footnotesize} (N6);
+\draw[-] (N1) -- node[left]{\footnotesize $\nathom{H}{\lloop}$} (N1c);
+\draw[-] (N6a) -- node[below]{\footnotesize} (N5);
+\end{tikzpicture}
+\end{center}
+But this is clear: A and C obviously commute, B is precisely the diagram $(2)$, and D is the diagram $(1)$.
+
+Since $(4)$ commutes, by our earlier observation the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,2) {$\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}$};
+\node (N1) at (0,0) {$\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{q}$};
+\node (N2) at (9,2) {$\pairpath(\lloop,\refl{}) \ct \opp{\pairpath(\refl{},\lloop)}$};
+\node (N3) at (9,0) {$\opp{\pairpath(\refl{},\lloop)} \ct \pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[left]{\footnotesize $\II(\delta^\star(\lloop))$} (N1);
+\draw[-] (N0) -- node[above]{\footnotesize via $\beta_f$, $\beta_G$, $\gamma_G$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize $\II(\Phi_{\lloop,\lloop})$} (N3);
+\draw[-] (N1) -- node[below]{\footnotesize via $\gamma_G$, $\beta_f$, $\beta_G$} (N3);
+\end{tikzpicture}
+\end{center}
+Our path can now be equivalently stated as:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,19.8)  {$\ap{G}{q} \ct \refl{}$};
+\node (N1) at (0,18.15) {$\ap{G}{q}$};
+\node (N2) at (0,16.5)  {$\ap{G}{q} \ct \Big(\opp{\ap{G}{\ap{f}{\lloop}}} \ct \ap{G}{\ap{f}{\lloop}}\Big)$};
+\node (N3) at (0,14.85) {$\Big(\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}\Big) \ct \ap{G}{\ap{f}{\lloop}}$};
+\node (N4) at (0,13.2)  {$\Big(\ap{G}{q} \ct \opp{\ap{G}{\ap{f}{\lloop}}}\Big) \ct \pairpath(\refl{},\lloop)$};
+\node[red] (N5) at (0,11.55) {$\Big(\ap{G}{q} \ct \pairpath(\refl{},\lloop)\Big) \ct \pairpath(\refl{},\lloop)$};
+\node[red] (N6) at (0,9.8)   {$\Big(\pairpath(\lloop,\refl{}) \ct \pairpath(\refl{},\lloop)\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N7) at (0,8.25)  {$\Big(\opp{\pairpath(\refl{},\lloop)}\ct\pairpath(\lloop,\refl{})\Big)\ct \pairpath(\refl{},\lloop)$};
+\node (N8) at (0,6.6)   {$\opp{\pairpath(\refl{},\lloop)}\ct\Big(\pairpath(\lloop,\refl{})\ct \pairpath(\refl{},\lloop)\Big)$};
+\node (N9) at (0,4.95)  {$\opp{\pairpath(\refl{},\lloop)}\ct\Big(\pairpath(\refl{},\lloop)\ct\pairpath(\lloop,\refl{})\Big)$};
+\node (N10) at (0,3.3)  {$\Big(\opp{\pairpath(\refl{},\lloop)}\ct\pairpath(\refl{},\lloop)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N11) at (0,1.65) {$\pairpath(\lloop,\refl{})$};
+\node (N12) at (0,0) {$\refl{}\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N4);
+\draw[red,-] (N4) -- node[right]{\footnotesize via $\beta_f$, $\beta_G$} (N5);
+\draw[red,-] (N5) -- node[right]{\footnotesize via $\gamma_G$} (N6);
+\draw[red,-] (N6) -- node[right]{\footnotesize via $\II(\Phi_{\lloop,\lloop})$} (N7);
+\draw[-] (N7) -- node[right]{\footnotesize} (N8);
+\draw[-] (N8) -- node[right]{\footnotesize via $\Phi^{-1}_{\lloop,\lloop}$} (N9);
+\draw[-] (N9) -- node[right]{\footnotesize} (N10);
+\draw[-] (N10) -- node[right]{\footnotesize} (N11);
+\draw[-] (N11) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+which is equal to:
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,18.15)  {$\ap{G}{q} \ct \refl{}$};
+\node (N2) at (0,16.5)   {$\ap{G}{q}$};
+\node[red] (N3) at (0,14.85)  {$\pairpath(\lloop,\refl{})$};
+\node[red] (N4) at (0,13.2) {$\pairpath(\lloop,\refl{}) \ct \Big(\opp{\pairpath(\refl{},\lloop)} \ct \pairpath(\refl{},\lloop)\Big)$};
+\node (N5) at (0,11.5)  {$\Big(\pairpath(\lloop,\refl{}) \ct \opp{\pairpath(\refl{},\lloop)}\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N6) at (0,9.8)   {$\Big(\opp{\pairpath(\refl{},\lloop)}\ct\pairpath(\lloop,\refl{})\Big) \ct \pairpath(\refl{},\lloop)$};
+\node (N8) at (0,8.25)   {$\opp{\pairpath(\refl{},\lloop)}\ct\Big(\pairpath(\lloop,\refl{})\ct \pairpath(\refl{},\lloop)\Big)$};
+\node (N9) at (0,6.6)  {$\opp{\pairpath(\refl{},\lloop)}\ct\Big(\pairpath(\refl{},\lloop)\ct\pairpath(\lloop,\refl{})\Big)$};
+\node (N10) at (0,4.95)  {$\Big(\opp{\pairpath(\refl{},\lloop)}\ct\pairpath(\refl{},\lloop)\Big)\ct\pairpath(\lloop,\refl{})$};
+\node (N11) at (0,3.3) {$\pairpath(\lloop,\refl{})$};
+\node (N12) at (0,1.65) {$\refl{}\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[red,-] (N2) -- node[right]{\footnotesize via $\gamma_G$} (N3);
+\draw[red,-] (N3) -- node[right]{\footnotesize} (N4);
+\draw[red,-] (N4) -- node[right]{\footnotesize} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\II(\Phi_{\lloop,\lloop})$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize} (N8);
+\draw[-] (N8) -- node[right]{\footnotesize via $\Phi^{-1}_{\lloop,\lloop}$} (N9);
+\draw[-] (N9) -- node[right]{\footnotesize} (N10);
+\draw[-] (N10) -- node[right]{\footnotesize} (N11);
+\draw[-] (N11) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+We now make the following observation:
+\begin{itemize}
+\item For any paths $u :a =_A b$, $v: b =_A d$, $w: a =_A c$, $z: c =_A d$ and $\phi : u \ct v = w \ct z$, the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,9) {$v$};
+\node (N1) at (0,7.5) {$v \ct (\opp{z}\ct z)$};
+\node (N2) at (0,6) {$(v \ct \opp{z})\ct z$};
+\node (N3) at (0,4.5) {$(\opp{u}\ct w) \ct z$};
+\node (N4) at (0,3) {$\opp{u}\ct(w \ct z)$};
+\node (N5) at (0,1.5) {$\opp{u}\ct(u \ct v)$};
+\node (N6) at (0,0) {$(\opp{u}\ct u) \ct v$};
+\node (N7) at (0,-1.5) {$v$};
+\draw[-] (N0) -- node[right]{\footnotesize} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\II(\phi)$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize $\opp{\phi}$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize} (N7);
+\end{tikzpicture}
+\end{center}
+is equal to the identity path at $v$. This follows by path induction on $u$ and $z$.
+\end{itemize}
+Using the above observation, we can express our path simply as
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,18.15)  {$\ap{G}{q} \ct \refl{}$};
+\node (N2) at (0,16.5)   {$\ap{G}{q}$};
+\node (N3) at (0,14.85)  {$\pairpath(\lloop,\refl{})$};
+\node (N12) at (0,13.2) {$\refl{}\ct\pairpath(\lloop,\refl{})$};
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\gamma_G$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize} (N12);
+\end{tikzpicture}
+\end{center}
+which is precisely $\eta$.
+
+\paragraph*{Right-to-left}
+We need to show that for any $x:T^2$ we have $F^\times(G(t)) = t$. We use torus induction, with $b' \defeq \refl{b}$. We let $p'$ be the path
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,9.9)  {$\transfib{z \mapsto F^\times(G(z))=z}{p}{\refl{}}$};
+\node (N2) at (0,8.25) {$\opp{\ap{F^\times}{\ap{G}{p}}} \ct \refl{} \ct p$};
+\node (N3) at (0,6.6) {$\refl{}$};
+\draw[-] (N1) -- node[right]{\footnotesize $\TT{p}{\refl{}}$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize $\zeta_p$} (N3);
+\end{tikzpicture}
+\end{center}
+where for any $\alpha : x =_{T^2} y$ and $u : F^\times(G(x))=x$, the path \[\TT{\alpha}{u} : \transfib{z \mapsto F^\times(G(z))=z}{\alpha}{u} = \opp{\ap{F^\times}{\ap{G}{\alpha}}} \ct u \ct \alpha \]
+is defined by path induction on $\alpha$ and $\zeta_p$ is the path
+\begin{center}
+\begin{tikzpicture}
+\node (N2) at (0,8.25) {$\opp{\ap{F^\times}{\ap{G}{p}}} \ct \refl{} \ct p$};
+\node (N3) at (0,6.6)  {$\opp{\ap{F^\times}{\ap{G}{p}}} \ct p$};
+\node (N4) at (0,4.95) {$\opp{\ap{F^\times}{\pairpath(\refl{},\lloop)}} \ct p$};
+\node (N5) at (0,3.3)  {$\opp{\ap{f}{\lloop}} \ct p$};
+\node (N6) at (0,1.65) {$\opp{p} \ct p$};
+\node (N7) at (0,0) {$\refl{}$};
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\beta_G$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize via $\mu(\lloop)$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\beta_f$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize} (N7);
+\end{tikzpicture}
+\end{center}
+Similarly, let $q'$ be the path
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,9.9)  {$\transfib{z \mapsto F^\times(G(z))=z}{q}{\refl{}}$};
+\node (N2) at (0,8.25) {$\opp{\ap{F^\times}{\ap{G}{q}}} \ct \refl{} \ct q$};
+\node (N3) at (0,6.6)   {$\refl{}$};
+\draw[-] (N1) -- node[right]{\footnotesize $\TT{q}{\refl{}}$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize $\zeta_q$} (N3);
+\end{tikzpicture}
+\end{center}
+where $\zeta_q$ is the path
+\begin{center}
+\begin{tikzpicture}
+\node (N2) at (0,8.25) {$\opp{\ap{F^\times}{\ap{G}{q}}} \ct \refl{} \ct q$};
+\node (N3) at (0,6.6)  {$\opp{\ap{F^\times}{\ap{G}{q}}} \ct q$};
+\node (N4) at (0,4.95) {$\opp{\ap{F^\times}{\pairpath(\lloop,\refl{})}} \ct q$};
+\node (N5) at (0,3.3)  {$\opp{\happly_{\ap{F^\to}{\lloop}}(\base)} \ct q$};
+\node (N6) at (0,1.65) {$\opp{\happly_{\funext(H)}(\base)} \ct q$};
+\node (N7) at (0,0)    {$\opp{q} \ct q$};
+\node (N8) at (0,-1.65)   {$\refl{}$};
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\gamma_G$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize via $\nu(\lloop)$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\beta_{F^\to}$} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize via $\hapfuneq(H)$} (N7);
+\draw[-] (N7) -- node[right]{\footnotesize} (N8);
+\end{tikzpicture}
+\end{center}
+All that remains now is to show that the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,9.9)  {\footnotesize $\transfib{z \mapsto F^\times(G(z))=z}{p \ct q}{\refl{}}$};
+\node (N2) at (0,8.25) {\footnotesize $\transfib{z \mapsto F^\times(G(z))=z}{q}{\transfib{z \mapsto F^\times(G(z))=z}{p}{\refl{}}}$\;\;\;\;\;};
+\node (N3) at (0,6.6)  {\footnotesize $\transfib{z \mapsto F^\times(G(z))=z}{q}{\refl{}}$};
+\node (N4) at (4.5,4.95) {$\refl{}$};
+
+\node (N5) at (8,9.9)  {\footnotesize $\transfib{z \mapsto F^\times(G(z))=z}{q \ct p}{\refl{}}$};
+\node (N6) at (8,8.25) {\footnotesize $\transfib{z \mapsto F^\times(G(z))=z}{p}{\transfib{z \mapsto F^\times(G(z))=z}{q}{\refl{}}}$};
+\node (N7) at (8,6.6)  {\footnotesize $\transfib{z \mapsto F^\times(G(z))=z}{p}{\refl{}}$};
+
+\draw[-] (N1) -- node[above]{\footnotesize via $t$} (N5);
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $p'$} (N3);
+\draw[-] (N3) -- node[below]{\footnotesize $q'$} (N4);
+\draw[-] (N5) -- node[right]{\footnotesize} (N6);
+\draw[-] (N6) -- node[right]{\footnotesize via $q'$} (N7);
+\draw[-] (N7) -- node[below]{\footnotesize $p'$} (N4);
+\end{tikzpicture}
+\end{center}
+We make the following observation:
+\begin{itemize}
+\item For any $\alpha : x =_{T^2} y$, $\alpha' : y =_{T^2} z$, $u_x : F^\times(G(x))=x$, $u_y : F^\times(G(y))=y$, $u_z : F^\times(G(z))=z$, and $\eta_y : \opp{\ap{F^\times}{\ap{G}{\alpha}}} \ct u_x \ct \alpha = u_y$, $\eta_z : \opp{\ap{F^\times}{\ap{G}{\alpha'}}} \ct u_y \ct \alpha' = u_z$, the path
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,9.9)  {$\transfib{z \mapsto F^\times(G(z))=z}{\alpha \ct \alpha'}{u_x}$};
+\node (N2) at (0,8.25) {$\transfib{z \mapsto F^\times(G(z))=z}{\alpha'}{\transfib{z \mapsto F^\times(G(z))=z}{\alpha}{u_x}}$};
+\node (N3) at (0,6.6)  {$\transfib{z \mapsto F^\times(G(z))=z}{\alpha'}{\opp{\ap{F^\times}{\ap{G}{\alpha}}} \ct u_x \ct \alpha}$};
+\node (N4) at (0,4.95) {$\transfib{z \mapsto F^\times(G(z))=z}{\alpha'}{u_y}$};
+\node (N5) at (0,3.3) {$\opp{\ap{F^\times}{\ap{G}{\alpha'}}} \ct u_y \ct \alpha'$};
+\node (N6) at (0,1.65) {$u_z$};
+
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\TT{\alpha}{u_x}$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\eta_y$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize $\TT{\alpha'}{u_y}$} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize $\eta_z$} (N6);
+\end{tikzpicture}
+\end{center}
+can be equivalently expressed as the path
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,9.9)  {$\transfib{z \mapsto F^\times(G(z))=z}{\alpha \ct \alpha'}{u_x}$};
+\node (N2) at (0,8.25) {$\opp{\ap{F^\times}{\ap{G}{\alpha \ct \alpha'}}} \ct u_x \ct (\alpha \ct \alpha')$};
+\node (N3) at (0,6.6)  {$\opp{\ap{F^\times}{\ap{G}{\alpha'}}} \ct \Big(\opp{\ap{F^\times}{\ap{G}{\alpha}}} \ct u_x \ct \alpha\Big) \ct \alpha'$};
+\node (N4) at (0,4.95) {$\opp{\ap{F^\times}{\ap{G}{\alpha'}}} \ct u_y \ct \alpha'$};
+\node (N5) at (0,3.3) {$u_z$};
+
+\draw[-] (N1) -- node[right]{\footnotesize $\TT{\alpha \ct \alpha'}{u_x}$} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\eta_y$} (N4);
+\draw[-] (N4) -- node[right]{\footnotesize $\eta_z$} (N5);
+\end{tikzpicture}
+\end{center}
+To prove this, it suffices to show that the outer rectangle in the diagram below commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (4.5,8.25) {A};
+\node (Nb) at (4.5,5.575) {B};
+\node (N1) at (0,9.9)  {\scriptsize $\transfib{z \mapsto F^\times(G(z))=z}{\alpha \ct \alpha'}{u_x}$};
+\node (N2) at (0,8.25) {\scriptsize $\transfib{z \mapsto F^\times(G(z))=z}{\alpha'}{\transfib{z \mapsto F^\times(G(z))=z}{\alpha}{u_x}}$};
+\node (N3) at (0,6.6)  {\scriptsize $\transfib{z \mapsto F^\times(G(z))=z}{\alpha'}{\opp{\ap{F^\times}{\ap{G}{\alpha}}} \ct u_x \ct \alpha}$};
+\node (N4) at (0,4.95) {\scriptsize $\transfib{z \mapsto F^\times(G(z))=z}{\alpha'}{u_y}$};
+\node (N5) at (9,4.95) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{\alpha'}}} \ct u_y \ct \alpha'$};
+
+\node (N7) at (9,9.9) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{\alpha \ct \alpha'}}} \ct u_x \ct (\alpha \ct \alpha')$};
+\node (N8) at (9,6.6) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{\alpha'}}} \ct \Big(\opp{\ap{F^\times}{\ap{G}{\alpha}}} \ct u_x \ct \alpha\Big) \ct \alpha'$};
+\draw[-] (N1) -- node[right]{\footnotesize} (N2);
+\draw[-] (N2) -- node[right]{\scriptsize via $\TT{\alpha}{u_x}$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\eta_y$} (N4);
+\draw[-] (N4) -- node[below]{\scriptsize $\TT{\alpha'}{u_y}$} (N5);
+\draw[-] (N1) -- node[above]{\scriptsize $\TT{\alpha \ct \alpha'}{u_x}$} (N7);
+\draw[-] (N7) -- node[right]{\footnotesize} (N8);
+\draw[-] (N3) -- node[below]{\scriptsize $\TT{\alpha'}{\opp{\ap{F^\times}{\ap{G}{\alpha}}} \ct u_x \ct \alpha}$} (N8);
+\draw[-] (N8) -- node[right]{\footnotesize  via $\eta_y$} (N5);
+\end{tikzpicture}
+\end{center}
+Both of the rectangles A and B are easily shown to commute by a suitable path induction.
+\end{itemize}
+Using the above observation, it suffices to show that the outer part of the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (5,9.075) {A};
+\node (Nb) at (5,6.6) {B};
+\node (N1) at (0,9.9)  {\scriptsize $\transfib{z \mapsto F^\times(G(z))=z}{p \ct q}{\refl{}}$};
+\node (N2) at (0,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{p \ct q}}} \ct \refl{} \ct (p \ct q)$};
+\node (N3) at (0,6.6)  {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q}}} \ct \Big(\opp{\ap{F^\times}{\ap{G}{p}}} \ct \refl{} \ct p\Big) \ct q$};
+\node (N4) at (0,4.95) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q}}} \ct \refl{} \ct q$};
+\node (N5) at (5,3.3) {\scriptsize $\refl{}$};
+
+\node (N6) at (10,9.9)  {\scriptsize $\transfib{z \mapsto F^\times(G(z))=z}{q \ct p}{\refl{}}$};
+\node (N7) at (10,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q \ct p}}} \ct \refl{} \ct (q \ct p)$};
+\node (N8) at (10,6.6)  {\scriptsize $\opp{\ap{F^\times}{\ap{G}{p}}} \ct \Big(\opp{\ap{F^\times}{\ap{G}{q}}} \ct \refl{} \ct q\Big) \ct p$};
+\node (N9) at (10,4.95) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{p}}} \ct \refl{} \ct q$};
+
+\node (N10) at (5,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q \ct p}}} \ct \refl{} \ct (p \ct q)$};
+
+\draw[-] (N1) -- node[above]{\scriptsize via $t$} (N6);
+\draw[-] (N1) -- node[right]{\scriptsize $\TT{p \ct q}{\refl{}}$} (N2);
+\draw[-] (N2) -- node[right]{\scriptsize} (N3);
+\draw[-] (N3) -- node[right]{\scriptsize via $\zeta_p$} (N4);
+\draw[-] (N4) -- node[below]{\scriptsize $\zeta_q$} (N5);
+\draw[-] (N6) -- node[right]{\scriptsize $\TT{q \ct p}{\refl{}}$} (N7);
+\draw[-] (N7) -- node[below]{\footnotesize} (N8);
+\draw[-] (N8) -- node[right]{\scriptsize via $\zeta_q$} (N9);
+\draw[-] (N9) -- node[below]{\scriptsize $\zeta_p$} (N5);
+\draw[-] (N2) -- node[below]{\scriptsize via $t$} (N10);
+\draw[-] (N10) -- node[below]{\scriptsize via $t$} (N7);
+\end{tikzpicture}
+\end{center}
+Since rectangle A clearly commutes, it suffices to prove that part B commutes.
+
+We can equivalently express diagram B as
+\begin{center}
+\begin{tikzpicture}
+\node (N2) at (0,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{p \ct q}}} \ct \refl{} \ct (p \ct q)$};
+\node[red] (N2a) at (0,6.6) {\scriptsize $\opp{\Big(\ap{F^\times}{\ap{G}{p}} \ct \ap{F^\times}{\ap{G}{q}}\Big)} \ct \refl{} \ct (p \ct q)$};
+\node (N3) at (0,4.95)  {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q}}} \ct \Big(\opp{\ap{F^\times}{\ap{G}{p}}} \ct \refl{} \ct p\Big) \ct q$};
+\node (N4) at (0,3.3) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q}}} \ct \refl{} \ct q$};
+\node (N5) at (5,1.65) {\scriptsize $\refl{}$};
+
+\node (N7) at (10,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q \ct p}}} \ct \refl{} \ct (q \ct p)$};
+\node[red] (N7a) at (10,6.6) {\scriptsize $\opp{\Big(\ap{F^\times}{\ap{G}{q}} \ct \ap{F^\times}{\ap{G}{p}}\Big)} \ct \refl{} \ct (q \ct p)$};
+\node (N8) at (10,4.95)  {\scriptsize $\opp{\ap{F^\times}{\ap{G}{p}}} \ct \Big(\opp{\ap{F^\times}{\ap{G}{q}}} \ct \refl{} \ct q\Big) \ct p$};
+\node (N9) at (10,3.3) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{p}}} \ct \refl{} \ct q$};
+
+\node (N10) at (5,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q \ct p}}} \ct \refl{} \ct (p \ct q)$};
+
+\draw[red,-] (N2) -- node[right]{\scriptsize} (N2a);
+\draw[red,-] (N2a) -- node[right]{\scriptsize} (N3);
+\draw[-] (N3) -- node[right]{\scriptsize via $\zeta_p$} (N4);
+\draw[-] (N4) -- node[below]{\scriptsize $\zeta_q$} (N5);
+\draw[red,-] (N7) -- node[below]{\footnotesize} (N7a);
+\draw[red,-] (N7a) -- node[below]{\footnotesize} (N8);
+\draw[-] (N8) -- node[right]{\scriptsize via $\zeta_q$} (N9);
+\draw[-] (N9) -- node[below]{\scriptsize $\zeta_p$} (N5);
+\draw[-] (N2) -- node[below]{\scriptsize via $t$} (N10);
+\draw[-] (N10) -- node[below]{\scriptsize via $t$} (N7);
+\end{tikzpicture}
+\end{center}
+We make the following observation:
+\begin{itemize}
+\item For any $\alpha_u : u_1 =_{a =_A b} u_2$, $\alpha_v : v_1 =_{b =_A c} v_2$, the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,9) {$\opp{(u_1 \ct v_1)} \ct \refl{} \ct (u_2 \ct v_2)$};
+\node (N1) at (0,7.5) {$v^{-1}_1 \ct (u^{-1}_1 \ct \refl{} \ct u_2) \ct v_2$};
+\node (N2) at (0,6) {$v^{-1}_1 \ct (u^{-1}_1 \ct u_2) \ct v_2$};
+\node (N3) at (0,4.5) {$v^{-1}_1 \ct (u^{-1}_2 \ct u_2) \ct v_2$};
+\node (N4) at (0,3) {$v^{-1}_1 \ct \refl{} \ct v_2$};
+\node (N5) at (0,1.5) {$v^{-1}_1 \ct v_2$};
+\node (N6) at (0,0) {$v^{-1}_2 \ct v_2$};
+\node (N7) at (0,-1.5) {$\refl{}$};
+
+\draw[-] (N0) -- node[right]{} (N1);
+\draw[-] (N1) -- node[right]{} (N2);
+\draw[-] (N2) -- node[right]{\footnotesize via $\alpha_u$} (N3);
+\draw[-] (N3) -- node[right]{} (N4);
+\draw[-] (N4) -- node[right]{} (N5);
+\draw[-] (N5) -- node[right]{\footnotesize via $\alpha_v$} (N6);
+\draw[-] (N6) -- node[right]{} (N7);
+\end{tikzpicture}
+\end{center}
+is equivalent to the path
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,9) {$\opp{(u_1 \ct v_1)} \ct \refl{} \ct (u_2 \ct v_2)$};
+\node (N1) at (0,7.5) {$\opp{(u_2 \ct v_1)} \ct \refl{} \ct (u_2 \ct v_2)$};
+\node (N2) at (0,6) {$\opp{(u_2 \ct v_2)} \ct \refl{} \ct (u_2 \ct v_2)$};
+\node (N3) at (0,4.5) {$\opp{(u_2 \ct v_2)} \ct (u_2 \ct v_2)$};
+\node (N4) at (0,3) {$\refl{}$};
+
+\draw[-] (N0) -- node[right]{\footnotesize via $\alpha_u$} (N1);
+\draw[-] (N1) -- node[right]{\footnotesize via $\alpha_v$} (N2);
+\draw[-] (N2) -- node[right]{} (N3);
+\draw[-] (N3) -- node[right]{} (N4);
+\end{tikzpicture}
+\end{center}
+This is clear by path induction.
+\end{itemize}
+Using this observation, it suffices to show that the outer part of the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (5,7) {A};
+\node (Nb) at (5,1.65) {B};
+\node (N2) at (0,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{p \ct q}}} \ct \refl{} \ct (p \ct q)$};
+\node (N2a) at (0,6.6) {\scriptsize $\opp{\Big(\ap{F^\times}{\ap{G}{p}} \ct \ap{F^\times}{\ap{G}{q}}\Big)} \ct \refl{} \ct (p \ct q)$};
+\node[red] (N3) at (0,4.95) {\scriptsize $\opp{\Big(p \ct \ap{F^\times}{\ap{G}{q}}\Big)} \ct \refl{} \ct (p \ct q)$};
+\node[red] (N4) at (0,3.3) {\scriptsize $\opp{(p \ct q)} \ct \refl{} \ct (p \ct q)$};
+\node[red] (N5) at (0,1.65)  {\scriptsize $\opp{(p \ct q)} \ct (p \ct q)$};
+\node (N6) at (5,0) {\scriptsize $\refl{}$};
+\node (N7) at (10,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q \ct p}}} \ct \refl{} \ct (q \ct p)$};
+\node (N7a) at (10,6.6) {\scriptsize $\opp{\Big(\ap{F^\times}{\ap{G}{q}} \ct \ap{F^\times}{\ap{G}{p}}\Big)} \ct \refl{} \ct (q \ct p)$};
+\node[red] (N8) at (10,4.95)  {\scriptsize $\opp{\Big(q \ct \ap{F^\times}{\ap{G}{p}}\Big)} \ct \refl{} \ct (q \ct p)$};
+\node[red] (N9) at (10,3.3)  {\scriptsize $\opp{(q \ct p)} \ct \refl{} \ct (q \ct p)$};
+\node[red] (N11) at (10,1.65) {\scriptsize $\opp{(q \ct p)} \ct (q \ct p)$};
+\node (N10) at (5,8.25) {\scriptsize $\opp{\ap{F^\times}{\ap{G}{q \ct p}}} \ct \refl{} \ct (p \ct q)$};
+\node[red] (N12) at (5,3.3) {\scriptsize $\opp{(q \ct p)} \ct \refl{} \ct (p \ct q)$};
+
+\draw[-] (N2) -- node[right]{\scriptsize} (N2a);
+\draw[red,-] (N2a) -- node[right]{\scriptsize via $\beta_G$, $\mu(\lloop)$, $\beta_f$} (N3);
+\draw[red,-] (N3) -- node[right]{\scriptsize via $\gamma_G$, $\nu(\lloop)$, $\beta_{F^\to}$, $\hapfuneq(H)$} (N4);
+\draw[red,-] (N4) -- node[right]{\scriptsize} (N5);
+\draw[red,-] (N5) -- node[below]{\scriptsize} (N6);
+
+\draw[-] (N7) -- node[below]{\footnotesize} (N7a);
+\draw[red,-] (N7a) -- node[left]{\scriptsize via $\gamma_G$, $\nu(\lloop)$, $\beta_{F^\to}$, $\hapfuneq(H)$} (N8);
+\draw[red,-] (N8) -- node[left]{\scriptsize via $\beta_G$, $\mu(\lloop)$, $\beta_f$} (N9);
+\draw[red,-] (N9) -- node[right]{\scriptsize} (N11);
+\draw[red,-] (N11) -- node[below]{\scriptsize} (N6);
+\draw[-] (N2) -- node[below]{\scriptsize via $t$} (N10);
+\draw[-] (N10) -- node[below]{\scriptsize via $t$} (N7);
+
+\draw[red,-] (N4) -- node[below]{\scriptsize via $t$} (N12);
+\draw[red,-] (N12) -- node[below]{\scriptsize via $t$} (N9);
+\end{tikzpicture}
+\end{center}
+Part B clearly commutes. This leaves us to show that part A commutes. We now make the following observation:
+\begin{itemize}
+\item For any 2-paths $\alpha^1_u : u_1 =_{a =_A b} u_2$, $\alpha_u^2 : u_1 =_{a =_A b} u_3$, $\alpha_u^3 : u_3 =_{a =_A b} u_4$, $\alpha_u^4 : u_2 =_{a =_A b} u_4$, $\alpha_v : v_1 =_{c =_A d} v_2$ and path $w : b=_A c$ such that
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (1,0.75) {=};
+\node (N0) at (0,1.5) {$u_1$};
+\node (N1) at (0,0) {$u_2$};
+\node (N2) at (2,1.5) {$u_3$};
+\node (N3) at (2,0) {$u_4$};
+
+\draw[-] (N0) -- node[left]{\footnotesize $\alpha^1_u$} (N1);
+\draw[-] (N0) -- node[above]{\footnotesize $\alpha^2_u$} (N2);
+\draw[-] (N1) -- node[below]{\footnotesize $\alpha^4_u$} (N3);
+\draw[-] (N2) -- node[right]{\footnotesize $\alpha^3_u$} (N3);
+\end{tikzpicture}
+\end{center}
+the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,1.5) {$u^{-1}_1 \ct w \ct v_1$};
+\node (N1) at (0,0) {$u^{-1}_2 \ct w \ct v_1$};
+\node (N2) at (4,1.5) {$u^{-1}_3 \ct w \ct v_1$};
+\node (N3) at (4,0) {$u^{-1}_4 \ct w \ct v_1$};
+\node (N4) at (8,1.5) {$u^{-1}_3 \ct w \ct v_2$};
+\node (N5) at (8,0) {$u^{-1}_4 \ct w \ct v_2$};
+
+\draw[-] (N0) -- node[left]{\footnotesize via $\alpha^1_u$} (N1);
+\draw[-] (N0) -- node[above]{\footnotesize via $\alpha^2_u$} (N2);
+\draw[-] (N1) -- node[below]{\footnotesize via $\alpha^4_u$} (N3);
+\draw[-] (N2) -- node[above]{\footnotesize via $\alpha_v$} (N4);
+\draw[-] (N3) -- node[below]{\footnotesize via $\alpha_v$} (N5);
+\draw[-] (N4) -- node[right]{\footnotesize via $\alpha^3_u$} (N5);
+\end{tikzpicture}
+\end{center}
+This is clear by path induction on $\alpha_v$, $\alpha_u^2$, $\alpha_u^4$.
+\end{itemize}
+Using this observation, it suffices to show that the following diagram commutes:
+\begin{center}
+\begin{tikzpicture}
+\node (N2) at (0,8.25) {$\ap{F^\times}{\ap{G}{p \ct q}}$};
+\node (N2a) at (0,6.6) {$\ap{F^\times}{\ap{G}{p}} \ct \ap{F^\times}{\ap{G}{q}}$};
+\node (N3) at (0,4.95) {$p \ct \ap{F^\times}{\ap{G}{q}}$};
+\node (N4) at (0,3.3) {$p \ct q$};
+
+\node (N7) at (10,8.25) {$\ap{F^\times}{\ap{G}{q \ct p}}$};
+\node (N7a) at (10,6.6) {$\ap{F^\times}{\ap{G}{q}} \ct \ap{F^\times}{\ap{G}{p}}$};
+\node (N8) at (10,4.95) {$q \ct \ap{F^\times}{\ap{G}{p}}$};
+\node (N9) at (10,3.3)  {$q \ct p$};
+
+\draw[-] (N2) -- node[right]{\footnotesize} (N2a);
+\draw[-] (N2a) -- node[right]{\footnotesize via $\beta_G$, $\mu(\lloop)$, $\beta_f$} (N3);
+\draw[-] (N3) -- node[right]{\footnotesize via $\gamma_G$, $\nu(\lloop)$, $\beta_{F^\to}$, $\hapfuneq(H)$} (N4);
+\draw[-] (N7) -- node[below]{\footnotesize} (N7a);
+\draw[-] (N7a) -- node[left]{\footnotesize via $\gamma_G$, $\nu(\lloop)$, $\beta_{F^\to}$, $\hapfuneq(H)$} (N8);
+\draw[-] (N8) -- node[left]{\footnotesize via $\beta_G$, $\mu(\lloop)$, $\beta_f$} (N9);
+\draw[-] (N2) -- node[above]{\footnotesize via $t$} (N7);
+\draw[-] (N4) -- node[below]{\footnotesize via $t$} (N9);
+\end{tikzpicture}
+\end{center}
+After some rearranging we get:
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,9.9) {\footnotesize $\ap{F^\times}{\ap{G}{p \ct q}}$};
+\node[red] (N2) at (0,8.25) {\footnotesize $\ap{F^\times}{\ap{G}{p} \ct \ap{G}{q}}$};
+\node[red] (N3) at (0,6.6) {\footnotesize $\ap{F^\times}{\ap{G}{p}} \ct \ap{F^\times}{\ap{G}{q}}$};
+\node[red] (N4) at (0,4.95) {\footnotesize $\ap{F^\times}{\pairpath(\refl{},\lloop)} \ct \ap{F^\times}{\pairpath(\lloop,\refl{})}$};
+\node[red] (N5) at (0,3.3) {\footnotesize $\ap{f}{\lloop} \ct \happly_{\ap{F^\to}{\lloop}}(\base)$};
+\node[red] (N6) at (0,1.65) {\footnotesize $\ap{f}{\lloop} \ct q$};
+\node (N7) at (0,0)    {\footnotesize $p \ct q$};
+
+\node (N11) at (9,9.9) {\footnotesize $\ap{F^\times}{\ap{G}{q \ct p}}$};
+\node[red] (N12) at (9,8.25) {\footnotesize $\ap{F^\times}{\ap{G}{q} \ct \ap{G}{p}}$};
+\node[red] (N13) at (9,6.6) {\footnotesize $\ap{F^\times}{\ap{G}{q}} \ct \ap{F^\times}{\ap{G}{p}}$};
+\node[red] (N14) at (9,4.95) {\footnotesize $\ap{F^\times}{\pairpath(\lloop,\refl{})} \ct \ap{F^\times}{\pairpath(\refl{},\lloop)}$};
+\node[red] (N15) at (9,3.3) {\footnotesize $\happly_{\ap{F^\to}{\lloop}}(\base) \ct \ap{f}{\lloop}$};
+\node[red] (N16) at (9,1.65) {\footnotesize $q \ct \ap{f}{\lloop}$};
+\node (N17) at (9,0)    {\footnotesize $q \ct p$};
+
+\draw[red,-] (N1) -- node[right]{\scriptsize} (N2);
+\draw[red,-] (N2) -- node[right]{\scriptsize} (N3);
+\draw[red,-] (N3) -- node[right]{\scriptsize via $\beta_G$, $\gamma_G$} (N4);
+\draw[red,-] (N4) -- node[right]{\scriptsize via $\mu(\lloop)$, $\nu(\lloop)$} (N5);
+\draw[red,-] (N5) -- node[right]{\scriptsize via $\beta_{F^\to}$, $\hapfuneq(H)$} (N6);
+\draw[red,-] (N6) -- node[right]{\scriptsize via $\beta_f$} (N7);
+\draw[red,-] (N11) -- node[right]{\scriptsize} (N12);
+\draw[red,-] (N12) -- node[right]{\scriptsize} (N13);
+\draw[red,-] (N13) -- node[right]{\scriptsize via $\beta_G$, $\gamma_G$} (N14);
+\draw[red,-] (N14) -- node[right]{\scriptsize via $\mu(\lloop)$, $\nu(\lloop)$} (N15);
+\draw[red,-] (N15) -- node[right]{\scriptsize via $\beta_{F^\to}$, $\hapfuneq(H)$} (N16);
+\draw[red,-] (N16) -- node[right]{\scriptsize via $\beta_f$} (N17);
+\draw[-] (N1) -- node[above]{\scriptsize via $t$} (N11);
+\draw[-] (N7) -- node[below]{\scriptsize via $t$} (N17);
+\end{tikzpicture}
+\end{center}
+or equivalently:
+\begin{center}
+\begin{tikzpicture}
+\node (N1) at (0,9.9) {\footnotesize $\ap{F^\times}{\ap{G}{p \ct q}}$};
+\node (N2) at (0,8.25) {\footnotesize $\ap{F^\times}{\ap{G}{p} \ct \ap{G}{q}}$};
+\node[red] (N3) at (0,6.6) {\footnotesize $\ap{F^\times}{\pairpath(\refl{},\lloop) \ct \pairpath(\lloop,\refl{})}$};
+\node (N4) at (0,4.95) {\footnotesize $\ap{F^\times}{\pairpath(\refl{},\lloop)} \ct \ap{F^\times}{\pairpath(\lloop,\refl{})}$};
+\node (N5) at (0,3.3) {\footnotesize $\ap{f}{\lloop} \ct \happly_{\ap{F^\to}{\lloop}}(\base)$};
+\node (N6) at (0,1.65) {\footnotesize $\ap{f}{\lloop} \ct q$};
+\node (N7) at (0,0)    {\footnotesize $p \ct q$};
+
+\node (N11) at (9,9.9) {\footnotesize $\ap{F^\times}{\ap{G}{q \ct p}}$};
+\node (N12) at (9,8.25) {\footnotesize $\ap{F^\times}{\ap{G}{q} \ct \ap{G}{p}}$};
+\node[red] (N13) at (9,6.6) {\footnotesize $\ap{F^\times}{\pairpath(\lloop,\refl{}) \ct \pairpath(\refl{},\lloop)}$};
+\node (N14) at (9,4.95) {\footnotesize $\ap{F^\times}{\pairpath(\lloop,\refl{})} \ct \ap{F^\times}{\pairpath(\refl{},\lloop)}$};
+\node (N15) at (9,3.3) {\footnotesize $\happly_{\ap{F^\to}{\lloop}}(\base) \ct \ap{f}{\lloop}$};
+\node (N16) at (9,1.65) {\footnotesize $q \ct \ap{f}{\lloop}$};
+\node (N17) at (9,0)    {\footnotesize $q \ct p$};
+
+\draw[-] (N1) -- node[right]{\scriptsize} (N2);
+\draw[red,-] (N2) -- node[right]{\scriptsize via $\beta_G$, $\gamma_G$} (N3);
+\draw[red,-] (N3) -- node[right]{\scriptsize} (N4);
+\draw[-] (N4) -- node[right]{\scriptsize via $\mu(\lloop)$, $\nu(\lloop)$} (N5);
+\draw[-] (N5) -- node[right]{\scriptsize via $\beta_{F^\to}$, $\hapfuneq(H)$} (N6);
+\draw[-] (N6) -- node[right]{\scriptsize via $\beta_f$} (N7);
+\draw[-] (N11) -- node[right]{\scriptsize} (N12);
+\draw[red,-] (N12) -- node[right]{\scriptsize  via $\beta_G$, $\gamma_G$} (N13);
+\draw[red,-] (N13) -- node[right]{\scriptsize} (N14);
+\draw[-] (N14) -- node[right]{\scriptsize via $\mu(\lloop)$, $\nu(\lloop)$} (N15);
+\draw[-] (N15) -- node[right]{\scriptsize via $\beta_{F^\to}$, $\hapfuneq(H)$} (N16);
+\draw[-] (N16) -- node[right]{\scriptsize via $\beta_f$} (N17);
+\draw[-] (N1) -- node[above]{\scriptsize via $t$} (N11);
+\draw[-] (N7) -- node[below]{\scriptsize via $t$} (N17);
+\end{tikzpicture}
+\end{center}
+Finally, this diagram can be viewed as follows:
+\begin{center}
+\begin{tikzpicture}
+\node (Na) at (4.5,8.25) {A};
+\node (Nb) at (4.5,4.95) {B};
+\node (Nc) at (4.5,2.475) {C};
+\node (Nd) at (4.5,0.76) {D};
+\node (N1) at (0,9.9) {\footnotesize $\ap{F^\times}{\ap{G}{p \ct q}}$};
+\node (N2) at (0,8.25) {\footnotesize $\ap{F^\times}{\ap{G}{p} \ct \ap{G}{q}}$};
+\node (N3) at (0,6.6) {\footnotesize $\ap{F^\times}{\pairpath(\refl{},\lloop) \ct \pairpath(\lloop,\refl{})}$};
+\node (N4) at (0,4.95) {\footnotesize $\ap{F^\times}{\pairpath(\refl{},\lloop)} \ct \ap{F^\times}{\pairpath(\lloop,\refl{})}$};
+\node (N5) at (0,3.3) {\footnotesize $\ap{f}{\lloop} \ct \happly_{\ap{F^\to}{\lloop}}(\base)$};
+\node (N6) at (0,1.65) {\footnotesize $\ap{f}{\lloop} \ct q$};
+\node (N7) at (0,0)    {\footnotesize $p \ct q$};
+
+\node (N11) at (9,9.9) {\footnotesize $\ap{F^\times}{\ap{G}{q \ct p}}$};
+\node (N12) at (9,8.25) {\footnotesize $\ap{F^\times}{\ap{G}{q} \ct \ap{G}{p}}$};
+\node (N13) at (9,6.6) {\footnotesize $\ap{F^\times}{\pairpath(\lloop,\refl{}) \ct \pairpath(\refl{},\lloop)}$};
+\node (N14) at (9,4.95) {\footnotesize $\ap{F^\times}{\pairpath(\lloop,\refl{})} \ct \ap{F^\times}{\pairpath(\refl{},\lloop)}$};
+\node (N15) at (9,3.3) {\footnotesize $\happly_{\ap{F^\to}{\lloop}}(\base) \ct \ap{f}{\lloop}$};
+\node (N16) at (9,1.65) {\footnotesize $q \ct \ap{f}{\lloop}$};
+\node (N17) at (9,0)    {\footnotesize $q \ct p$};
+
+\draw[-] (N1) -- node[right]{\scriptsize} (N2);
+\draw[-] (N2) -- node[right]{\scriptsize via $\beta_G$, $\gamma_G$} (N3);
+\draw[-] (N3) -- node[right]{\scriptsize} (N4);
+\draw[-] (N4) -- node[right]{\scriptsize via $\mu(\lloop)$, $\nu(\lloop)$} (N5);
+\draw[-] (N5) -- node[right]{\scriptsize via $\beta_{F^\to}$, $\hapfuneq(H)$} (N6);
+\draw[-] (N6) -- node[right]{\scriptsize via $\beta_f$} (N7);
+\draw[-] (N11) -- node[right]{\scriptsize} (N12);
+\draw[-] (N12) -- node[right]{\scriptsize  via $\beta_G$, $\gamma_G$} (N13);
+\draw[-] (N13) -- node[right]{\scriptsize} (N14);
+\draw[-] (N14) -- node[right]{\scriptsize via $\mu(\lloop)$, $\nu(\lloop)$} (N15);
+\draw[-] (N15) -- node[right]{\scriptsize via $\beta_{F^\to}$, $\hapfuneq(H)$} (N16);
+\draw[-] (N16) -- node[right]{\scriptsize via $\beta_f$} (N17);
+\draw[-] (N1) -- node[above]{\scriptsize via $t$} (N11);
+\draw[-] (N7) -- node[below]{\scriptsize via $t$} (N17);
+\draw[-] (N3) -- node[above]{\scriptsize via $\Phi_{\lloop,\lloop}$} (N13);
+\draw[-] (N5) -- node[above]{\scriptsize $\nathom{\happly_{\ap{F^\to}{\lloop}}}{\lloop}$} (N15);
+\draw[-] (N6) -- node[below]{\scriptsize $\nathom{H}{\lloop}$} (N16);
+\end{tikzpicture}
+\end{center}
+where for any $\alpha : x =_{\Sn^1} y$, the 2-path
+\[ \nathom{\happly_{\ap{F^\to}{\lloop}}}{\alpha} : \ap{f}{\alpha} \ct \happly_{\ap{F^\to}{\lloop}}(y) =
+\happly_{\ap{F^\to}{\lloop}}(x) \ct \ap{f}{\alpha} \]
+is defined by induction on $\alpha$.
+
+Now rectangles A and D commute by diagrams (1) and (2) respectively. Rectangles B and C commute by a suitable path induction. \qed
+
+\subsection*{Solution to \cref{ex:trunc-bool-interval}}
+
+Let's call the given homotopy $p:\prd{x:A}(f(x)=g(x))$.
+Since $B$ may not be a mere proposition, we consider the contractible type $\sm{y:B}(f(x)=y)$.
+For all $x:A$ we define a function ${q}_x:\bool\to{}\sm{y:B}(f(x)=y)$ by recursion on $\bool$, with:
+\begin{align*}
+{q}_x(\btrue) &\defeq \pairr{f(x),\refl{f(x)}},\\
+{q}_x(\bfalse) &\defeq \pairr{g(x),p(x)}.
+\end{align*}
+By induction on truncation, since $\sm{y:B}(f(x)=y)$ is a mere proposition, we get $\widetilde{p}_x:\brck \bool\to{}\sm{y:B}(f(x)=y)$ satisfying $\widetilde{p}_x (\bproj b) \equiv {q}_x(b)$ for all $b:B$.
+Hence we can define $q:\brck \bool \to(A\to{}B)$ by
+\[q(i)\defeq \lam{x} \proj1(\widetilde{p}_x(i))\]
+Then we have $q(\bproj\btrue)(x)\jdeq f(x)$ for all $x:A$, and hence $q(\bproj\btrue) \jdeq f$.
+Similarly, $q(\bproj\bfalse)\jdeq g$, and hence $\map{q} r : \id[(A\to{}B)]fg$, where $r: \bproj\btrue =_{\brck \bool} \bproj\bfalse$ exists since $\brck\bool$ is a mere proposition.
+
+\section*{Exercises from \cref{cha:hlevels}}
+
+\subsection*{Solution to \cref{ex:ntype-from-nconn-const}}
 
 Let $\modal$ be a modality; it remains to show that if all maps into $B$ out of a $\modal$-connected type are constant, then $B$ is $\modal$-modal.
 We show under that hypothesis that $\eta:B\to \modal B$ is an equivalence, by showing that its fibers are contractible.
@@ -308,54 +1390,54 @@ Since $\eta$ is always $\modal$-connected, its fibers are $\modal$-connected, an
 Thus, there is an $a:B$ such that for any $b:B$ and $p:\eta b=z$ we have $q(b,p):a=b$.
 Then $\apfunc{\eta}(q(b,p))\ct p : \eta a=z$ for any $(b,p):\hfib\eta z$, so we have a map $\hfib\eta z \to (\eta a=z)$.
 But $\modal B$ is $\modal$-modal, hence so is $\eta a = z$.
-Thus, by \autoref{thm:nconn-to-ntype-const}, this map is constant; hence we have $r:\eta a=z$ such that $\apfunc{\eta}(q(b,p))\ct p = r$ for all $(b,p)$.
+Thus, by \cref{thm:nconn-to-ntype-const}, this map is constant; hence we have $r:\eta a=z$ such that $\apfunc{\eta}(q(b,p))\ct p = r$ for all $(b,p)$.
 But using the characterization of paths in fibers, this means exactly that $(b,p)=(a,r)$ for all $(b,p)$; hence $\hfib\eta z$ is contractible with center $(a,r)$.
 
-\subsection*{Solution to \autoref{ex:connectivity-inductively}}
+\subsection*{Solution to \cref{ex:connectivity-inductively}}
 
 If $A$ is $n$-connected, then since $\trunc{-1}A = \trunc{-1}{\trunc{n}A}$, also $A$ is $(-1)$-connected.
-And since $\trunc{n-1}{\id[A]ab} = (\id[\trunc n A]{\tproj na}{\tproj nb})$ by \autoref{thm:path-truncation} and the path spaces of a contractible type are contractible, each $\id[A]ab$ is $(n-1)$-connected.
+And since $\trunc{n-1}{\id[A]ab} = (\id[\trunc n A]{\tproj na}{\tproj nb})$ by \cref{thm:path-truncation} and the path spaces of a contractible type are contractible, each $\id[A]ab$ is $(n-1)$-connected.
 
 Conversely, suppose $A$ is $(-1)$-connected and all its path spaces are $(n-1)$-connected.
 Firstly, we claim $\trunc nA$ is a mere proposition, i.e.\ that for all $x,y:\trunc nA$, the type $x=y$ is contractible.
 Since contractibility of $x=y$ is a mere proposition, it suffices to assume that $x$ and $y$ are of the form $\tproj na$ and $\tproj nb$ respectively.
-But $\id[\trunc n A]{\tproj na}{\tproj nb}$ is contractible by \autoref{thm:path-truncation} and the assumption.
+But $\id[\trunc n A]{\tproj na}{\tproj nb}$ is contractible by \cref{thm:path-truncation} and the assumption.
 Thus, $\trunc nA$ is a mere proposition.
 Since it is also $(-1)$-connected by assumption, it is therefore contractible, so $A$ is $n$-connected.
 
 
-\subsection*{Solution to \autoref{ex:lemnm}}
+\subsection*{Solution to \cref{ex:lemnm}}
 
 Evidently $\mathsf{LEM}$ is the same as $\mathsf{LEM}_{-1,-1}$, so for the first part it suffices to assume $\mathsf{LEM}$ and prove $\mathsf{LEM}_{n,-1}$ and $\mathsf{LEM}_{-1,m}$ for all $n,m$.
-For the latter, note that if $A$ is a mere proposition, then by \autoref{ex:lem-mereprop} so is $A+\neg A$, and thus $\trunc m{A+\neg A}= A+\neg A$ for any $m\ge -1$.
-For the former, note that assuming LEM, by \autoref{ex:lem-brck} we have $\trunc{-1}{B} = \neg\neg B$ for any $B$, while $\neg\neg(A+\neg A)$ is always true for any type $A$ (\autoref{ex:not-not-lem}).
+For the latter, note that if $A$ is a mere proposition, then by \cref{ex:lem-mereprop} so is $A+\neg A$, and thus $\trunc m{A+\neg A}= A+\neg A$ for any $m\ge -1$.
+For the former, note that assuming LEM, by \cref{ex:lem-brck} we have $\trunc{-1}{B} = \neg\neg B$ for any $B$, while $\neg\neg(A+\neg A)$ is always true for any type $A$ (\cref{ex:not-not-lem}).
 
-For the second part, it suffices to derive a contradiction from $\mathsf{LEM}_{0,0}$; but the proof of \autoref{thm:not-lem} already uses an $A$ that is a set (namely $\bool$).
+For the second part, it suffices to derive a contradiction from $\mathsf{LEM}_{0,0}$; but the proof of \cref{thm:not-lem} already uses an $A$ that is a set (namely $\bool$).
 
-\subsection*{Solution to \autoref{ex:acconn}}
+\subsection*{Solution to \cref{ex:acconn}}
 
 Suppose the $(-1)$-connected AC, and by induction suppose also the $n$-connected AC.
 Let $X$ be a set and $Y:X\to \type$ a family of $(n+1)$-connected types.
-By \autoref{ex:connectivity-inductively}, to show that $\prd{x:X} Y(x)$ is $(n+1)$-connected, it suffices to show that it is $(-1)$-connected and that all its path-types are $n$-connected.
-But also by \autoref{ex:connectivity-inductively}, each $Y(x)$ is $(-1)$-connected and all its path types are $n$-connected.
+By \cref{ex:connectivity-inductively}, to show that $\prd{x:X} Y(x)$ is $(n+1)$-connected, it suffices to show that it is $(-1)$-connected and that all its path-types are $n$-connected.
+But also by \cref{ex:connectivity-inductively}, each $Y(x)$ is $(-1)$-connected and all its path types are $n$-connected.
 Applying function extensionality to characterize the path types of $\prd{x:X} Y(x)$, the claim follows from the $(-1)$-connected and $n$-connected axioms of choice.
 
-\section*{Exercises from \autoref{cha:category-theory}}
+\section*{Exercises from \cref{cha:category-theory}}
 
-\subsection*{Solution to \autoref{ex:stack}}
+\subsection*{Solution to \cref{ex:stack}}
 
 Define $K$ to be the precategory with $K_0 \defeq Y$ and $\hom_K(y_1,y_2) \defeq (p(y_1)=p(y_2))$.
 Then $\mathrm{Desc}(A,p)\defeq A^K$ is a good definition.
-Moreover, the obvious functor $K\to X$ (where $X$ denotes the discrete category on itself) is a weak equivalence, so \autoref{ct:esofull-precomp-ff,ct:cat-weq-eq} yield the second and third parts.
+Moreover, the obvious functor $K\to X$ (where $X$ denotes the discrete category on itself) is a weak equivalence, so \cref{ct:esofull-precomp-ff,ct:cat-weq-eq} yield the second and third parts.
 Finally, $K$ is a strict category, so if it is a stack, then $p$ has a section, while conversely if $p$ has a section then $K\to X$ is a (strong) equivalence.
 
-\section*{Exercises from \autoref{cha:set-math}}
+\section*{Exercises from \cref{cha:set-math}}
 
-\subsection*{Solution to \autoref{ex:prop-ord}}
+\subsection*{Solution to \cref{ex:prop-ord}}
 
 Define $A<B$ iff $B \land \neg A$.
 
-\subsection*{Solution to \autoref{ex:ninf-ord}}
+\subsection*{Solution to \cref{ex:ninf-ord}}
 
 Define $a<b$ iff $\exis{n:\nat} (b_n < a_n)$.
 

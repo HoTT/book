@@ -1,0 +1,38 @@
+\RequirePackage{bmpsize-base}
+\RequirePackage{ifpdf}
+\makeatletter
+% Fix \includegraphics for dvi mode, but only if not making a pdf
+\ifpdf
+  \expandafter\@gobble
+\else
+  \expandafter\@firstofone
+\fi{%
+\AtBeginDocument{%
+\let\Gin@ii@old=\Gin@ii
+\def\Gin@ii[#1]#2{%
+  \begingroup
+    \let\@found\@empty
+    \@for\@type:=\bmpsize@types\do{%
+      \ifx\@found\@empty
+        \@nameuse{bmpsize@read@\@type}{#2.\@type}%
+        \ifbmpsize@ok
+          \let\@found=\@type
+        \fi
+      \fi
+      \ifx\@found\@empty
+        \@nameuse{bmpsize@read@\@type}{#2}%
+        \ifbmpsize@ok
+          \let\@found=\@type
+        \fi
+      \fi
+    }%
+    \ifx\@found\@empty
+      \Gin@ii@old[#1]{#2}%
+    \else
+      \Gin@ii@old[natwidth=\bmpsize@width bp,natheight=\bmpsize@height bp,#1]{#2}%
+    \fi
+  \endgroup
+}%
+}
+}
+\makeatother

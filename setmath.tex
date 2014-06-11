@@ -1241,6 +1241,8 @@ For instance, consider the following lemma, where we pay attention to how univer
   Then $B$ is an ordinal and it is easy to see that $A\cong \ordsl B \ttt$.
 \end{proof}
 
+The ordinal $B$ constructed in the proof of \cref{thm:ordsucc} is called the \define{successor}\indexdef{successor!of an ordinal} of $A$.
+
 This lemma illustrates a potential pitfall of the ``typically ambiguous''\index{typical ambiguity} style of using \UU to denote an arbitrary, unspecified universe.
 Consider the following alternative proof of it.
 
@@ -1772,7 +1774,7 @@ Our proof is similar to Wilander's, but avoids setoids by using pushouts and uni
 The implication in \cref{thm:1surj_to_surj_to_pem} from $\choice{}$ to $\LEM{}$ is an adaptation to homotopy type
 theory of a theorem from topos theory due to Diaconescu~\cite{Diaconescu}; it was posed as a problem already by Bishop~\cite[Problem~2]{Bishop1967}.
 
-For the intuitionistic theory of ordinal numbers, see~\cite{taylor:ordinals} and also \cite{JoyalMoerdijk1995}.
+For the intuitionistic theory of ordinal numbers, see~\cite{taylor:ordinals,Taylor99} and also \cite{JoyalMoerdijk1995}.
 Definitions of well-foundedness in type theory by an induction principle, including the inductive predicate of accessibility\index{accessibility}, were studied in~\cite{Huet80,Paulson86,Nordstrom88}, although the idea dates back to Gentzen's proof of the consistency\index{consistency!of arithmetic} of arithmetic~\cite{Gentzen36}.
 
 The idea of algebraic set theory, which informs our development in \cref{sec:cumulative-hierarchy} of the cumulative hierarchy, is due to~\cite{JoyalMoerdijk1995}, but it derives from earlier work by~\cite{AczelCZF}.
@@ -1907,6 +1909,42 @@ Verify that, if we assume $\choice{}$, then the cumulative hierarchy $V$ satisfi
   \[
    \fall{x\in V} \fall{y\in x}\exis{z\in V} z\in y \Rightarrow  \exis{c\in(\cup x)^x}\fall{y\in x} c(y)\in y
    \]
+\end{ex}
+
+\begin{ex}\label{ex:plump-ordinals}
+  Assuming propositional resizing, show that there is a mere predicate $\mathsf{isPlump}:\ord\to\prop$ such that for any $A:\ord$ we have
+  \begin{multline*}\label{eq:plump}
+    \mathsf{isPlump}(A) = \Parens{\fall{B<A} \mathsf{isPlump}(B)} \wedge\narrowbreak
+    \Parens{\fall{C,B:\ord} C\le B < A \wedge \mathsf{isPlump}(C) \Rightarrow C < A}.
+  \end{multline*}
+  Note that $\mathsf{isPlump}$ cannot be defined by a simple well-founded induction over \ord; you must use a different well-founded relation.
+  We say that an ordinal $A$ is \define{plump}~\cite{taylor:ordinals,Taylor99} if $\mathsf{isPlump}(A)$.
+  \index{plump!ordinal}\index{ordinal!plump}%
+\end{ex}
+
+\begin{ex}\label{ex:not-plump}
+  Show that \LEM{} is equivalent to the statement ``all ordinals are plump''.
+\end{ex}
+
+\begin{ex}\label{ex:plump-successor}
+  Define the \define{plump successor}\index{plump!successor}\indexdef{successor!plump} of an ordinal $A$ to be
+  \[ t(A) \defeq \setof{ B:\ord | (B\le A) \wedge \mathsf{isPlump}(B) } \]
+  \begin{enumerate}
+  \item By definition, $t(A)$ belongs to the next higher universe.
+    Show that assuming propositional resizing, it is equal to an ordinal in the same universe as $A$.
+  \item Again assuming propositional resizing, show that if $A$ is plump (\cref{ex:plump-ordinals}) then so is $t(A)$.
+  \end{enumerate}
+\end{ex}
+
+\begin{ex}\label{ex:ZF-algebras}
+  A \define{ZF-algebra}~\cite{JoyalMoerdijk1995}
+  \index{ZF-algebra}%
+  relative to a universe $\UU_i$ is a poset (see \cref{ct:orders}) $V:\UU_{i+1}$, which has all suprema indexed by types in $\UU_i$, and is equipped with a ``successor'' function $s:V\to V$ (not necessarily respecting $\le$ in any way).
+  \begin{enumerate}
+  \item Show that the cumulative hierarchy $(V_{\UU_i},\subseteq,s)$ is the initial ZF-algebra, where $s(x)$ is the singleton $\setof{x}$.
+  \item Show that $(\ord_{\UU_i},\le,s)$ is the initial ZF-algebra with the property that $x\le s(x)$ for all $x$, where $s(A)=A+\unit$ is the successor\index{successor!of an ordinal} from \cref{thm:ordsucc}.
+  \item Assuming propositional resizing, show that $\Parens{\setof{A:\ord_{\UU_i} | \mathsf{isPlump}(A) },\le,t}$ is the initial ZF-algebra with the property that $(x\le y) \Rightarrow (t(x)\le t(y))$ for all $x,y$, where $t$ is the plump successor from \cref{ex:plump-successor}.
+  \end{enumerate}
 \end{ex}
 
 \index{set|)}%

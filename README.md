@@ -29,8 +29,9 @@ code. Also, the file `version.tex` is generated on the fly, so you will need the
    for printing at home, as well as a color cover (just two pages)
 * `make hott-a4.pdf hott-a4.pdf` -- the book in black & white, A4 paper format,
    for printing at home, as well as a color cover (just two pages)
-* `make hott-ustrade.pdf cover-lulu.pdf` -- the book in US Trade format, without cover,
-   used for the bound copy available at http://lulu.com/
+* `make hott-ustrade.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf` --
+   the book in US Trade format, without cover, used for the bound copy available
+   at http://lulu.com/
 * `make exercise_solutions.pdf` -- compile (some) solutions to exercises
 
 If you do not have `make` (for example, because you are on MacOS and you did not

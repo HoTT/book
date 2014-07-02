@@ -5,8 +5,10 @@ env:
    - secure: "ehec8FC6y923UXtB2fMULF/xkQJkwWwzD6xFxyz0lc80IqR8Rmxh16nLKGxI9jD11qjbYSzp1yPVadXyBoSheop5aZPxeXixL49y26ikIRkyuQQdHyjsM34etoPmCKw2vVXvD+JAwjTa6qYpihSOdDXltog8ZNHF6Wp28ZaWW8g="
 
  matrix:
-   - LATEXMK="yes" UPDATE_ERRATA=""
-   - LATEXMK=""    UPDATE_ERRATA="yes"
+   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS=""
+   - LATEXMK=""    UPDATE_ERRATA="yes"  TARGETS=""
+#   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS="dvi" # latexmk is too verbose for travis
+   - LATEXMK=""    UPDATE_ERRATA="yes"  TARGETS="dvi"
 
 
 install:
@@ -14,21 +16,23 @@ install:
  - sudo apt-get update -q
  - sudo apt-get install -q texlive wget curl sed grep
  - if [ ! -z "$LATEXMK" ]; then sudo apt-get install -q latexmk; fi
- - wget http://mirrors.ctan.org/macros/latex/contrib/comment/comment.sty
- - wget http://www.ctan.org/tex-archive/macros/latex/contrib/misc/nextpage.sty
- - wget http://mirrors.ctan.org/fonts/stmaryrd.zip && unzip stmaryrd && mv stmaryrd/*.{mf,dtx} ./ && latex stmaryrd.dtx
- - wget http://mirrors.ctan.org/macros/latex/contrib/wallpaper/wallpaper.sty
- - wget http://mirrors.ctan.org/macros/generic/xstring/xstring.sty
- - wget http://mirrors.ctan.org/macros/generic/xstring/xstring.tex
- - wget http://mirrors.ctan.org/macros/latex/contrib/enumitem/enumitem.sty
- - wget http://mirrors.ctan.org/macros/latex/contrib/mh.zip && unzip mh.zip && (cd mh && for i in *.dtx; do (mv $i ../ && cd .. && tex $i); done)
- - wget http://mirrors.ctan.org/macros/generic/diagrams/xypic.zip && unzip xypic.zip && mv xypic/*/* ./
- - wget http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.def
- - wget http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.sty
- - wget http://mirrors.ctan.org/macros/latex/contrib/titlesec.zip && unzip titlesec.zip && mv titlesec/*.{tss,sty,def} ./
- - wget http://mirrors.ctan.org/macros/latex/contrib/braket/braket.sty
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/comment/comment.sty
+ - ./etc/ci/wget_retry.sh http://www.ctan.org/tex-archive/macros/latex/contrib/misc/nextpage.sty
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/fonts/stmaryrd.zip && unzip stmaryrd && mv stmaryrd/*.{mf,dtx} ./ && latex stmaryrd.dtx
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/wallpaper/wallpaper.sty
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/xstring/xstring.sty
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/xstring/xstring.tex
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/enumitem/enumitem.sty
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/mh.zip && unzip mh.zip && (cd mh && for i in *.dtx; do (mv $i ../ && cd .. && tex $i); done)
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/diagrams/xypic.zip && unzip xypic.zip && mv xypic/*/* ./
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.def
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.sty
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/titlesec.zip && unzip titlesec.zip && mv titlesec/*.{tss,sty,def} ./
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/braket/braket.sty
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.dtx http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.ins && latex supertabular.ins
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/soul/soul.dtx http://mirrors.ctan.org/macros/latex/contrib/soul/soul.ins && latex soul.ins
 
-script: make
+script: make $TARGETS
 
 # add -f to force a push even if we're not on HoTT/HoTT.
 # generally only useful for debugging

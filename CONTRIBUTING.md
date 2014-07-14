@@ -20,19 +20,21 @@ run "make labelcheck".
 
 Corrections of mathematical typos and other errors, as well as changes
 in exposition, should also be listed in the errata for the first
-edition (errata.tex).
+edition (`errata.tex`).
 
 - The first column in the errata table should be the nearest
   surrounding numbered label, be it a section, theorem, or exercise.
 
-- The second column is obtained by "git describe" on the commit where
+- The second column is obtained by `git describe` on the commit where
   the fix was merged into the master branch.  You don't know this when
   writing your fix, of course, so the correct thing to put here is a
   comment of the form
-  % merge of 1234567
-  where 1234567 is the commit hash in which you made the fix.  (This
+
+      % merge of 1234567
+  
+  where `1234567` is the commit hash in which you made the fix.  (This
   necessitates making two commits, one to make the fix and one to
-  record the erratum.)  Please use EXACTLY this syntax so that it can
+  record the erratum.)  Please use _exactly_ this syntax so that it can
   be automatically updated by the errata-marking script.
 
 - The third column is a description of the change.  Please be specific
@@ -49,14 +51,14 @@ unrelated pull requests open at once, or do unrelated work on your
 master branch before your pull request is merged.  To create a special
 branch for your pull request, run
 
-  git checkout -b BRANCHNAME
+    git checkout -b BRANCHNAME
 
 Make your commits in that branch, then run
 
-  git push origin BRANCHNAME:BRANCHNAME
+    git push origin BRANCHNAME:BRANCHNAME
 
-assuming that your git remote "origin" is set up to be your github
-fork (rather than the main HoTT/book repository).  The main page of
+assuming that your git remote `origin` is set up to be your github
+fork (rather than the main `HoTT/book` repository).  The main page of
 your github fork should then have a little prompt asking you whether
 you want to issue a pull request from your most recently pushed
 branch.

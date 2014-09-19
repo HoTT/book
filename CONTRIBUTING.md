@@ -4,7 +4,7 @@ in a straightforward way; or which add new technical functionality
 (such as versions for other devices).  We are not asking for new
 mathematical content from the public at this time.
 
-We are very grateful everyone who is showing interest in our project,
+We are very grateful to everyone who is showing interest in our project,
 and to anyone who helps us improve it!  However, in order to avoid any
 misunderstanding later, we should mention upfront that your
 contributions will only be recorded on github commit logs, but not in
@@ -25,7 +25,7 @@ edition (`errata.tex`).
 - The first column in the errata table should be the nearest
   surrounding numbered label, be it a section, theorem, or exercise.
 
-- The second column is obtained by `git describe` on the commit where
+- The second column is obtained by `git describe` in the commit where
   the fix was merged into the master branch.  You don't know this when
   writing your fix, of course, so the correct thing to put here is a
   comment of the form

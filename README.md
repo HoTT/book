@@ -1,6 +1,6 @@
 This is a textbook that we are writing on informal homotopy type theory.
 It is part of the [Univalent foundations of mathematics](http://www.math.ias.edu/sp/univalent)
-project which took place at the Institute for Advanced Study in 2012/13.
+project, which took place at the Institute for Advanced Study in 2012/13.
 
 ## License
 
@@ -21,7 +21,7 @@ installed: `tlmgr`, `install`, `braket`, `comment`, `courier`, `enumitem`,
 
 You also need the `make` utility. The book is a fairly complex piece of LaTeX
 code. Also, the file `version.tex` is generated on the fly, so you will need the
-`make` utlity with which you can compile the main files, as follows:
+`make` utility with which you can compile the main files, as follows:
 
 * `make hott-online.pdf` -- the book appropriate for online reading, with colors and green links
 * `make hott-ebook.pdf` -- the book with small margins, suitable for ebook readers

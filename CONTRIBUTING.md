@@ -25,10 +25,10 @@ edition (`errata.tex`).
 - The first column in the errata table should be the nearest
   surrounding numbered label, be it a section, theorem, or exercise.
 
-- The second column is obtained by `git describe` in the commit where
-  the fix was merged into the master branch.  You don't know this when
-  writing your fix, of course, so the correct thing to put here is a
-  comment of the form
+- The second column is obtained by running `git describe` on the
+  commit where the fix was merged into the master branch.  You don't
+  know this when writing your fix, of course, so the correct thing to
+  put here is a comment of the form
 
       % merge of 1234567
   

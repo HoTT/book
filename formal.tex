@@ -482,10 +482,10 @@ rules, with the judgment at the root of the tree. For example, with the rules gi
 $\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}$.
 %
 \begin{mathpar}
-\inferrule*[right=$\Pi$-\intro]
+\inferrule*[right=$\Pi$-\rintro]
   {\inferrule*[right=$\Vble$]
     {\inferrule*[right=\ctx-\textsc{ext}]
-      {\inferrule*[right=$\unit$-\form]
+      {\inferrule*[right=$\unit$-\rform]
         {\inferrule*[right=\ctx-\textsc{emp}]
           {\ }
           {\wfctx {\emptyctx}}}
@@ -585,9 +585,9 @@ assume that judgmental equality is an equivalence relation respected by typing.
   \inferrule*{\jdeqtp\Gamma{a}{b}{A} \\ \jdeqtp\Gamma{A}{B}{\UU_i}}{\jdeqtp\Gamma{a}{b}{B}}
 \end{mathparpagebreakable}
 %
-Additionally, for all the type formers below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
+Additionally, for all the type formers below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\rintro\ rule, we assume the rule
 \[
-  \inferrule*[right=$\Pi$-\intro-eq]
+  \inferrule*[right=$\Pi$-\rintro-eq]
   {\jdeqtp\Gamma{A}{A'}{\UU_i} \\
    \jdeqtp{\Gamma,\tmtp xA}{B}{B'}{\UU_i} \\
    \jdeqtp{\Gamma,\tmtp xA}{b}{b'}{B}}
@@ -661,23 +661,23 @@ For the dependent function type these rules are:
 %
 \begin{mathparpagebreakable}
   \def\premise{\oftp{\Gamma}{A}{\UU_i} \and \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
-  \inferrule*[right=$\Pi$-\form]
+  \inferrule*[right=$\Pi$-\rform]
     \premise
     {\oftp\Gamma{\tprd{x:A}B}{\UU_i}}
 \and
-  \inferrule*[right=$\Pi$-\intro]
+  \inferrule*[right=$\Pi$-\rintro]
   {\oftp{\Gamma,\tmtp xA}{b}{B}}
   {\oftp\Gamma{\lam{x:A} b}{\tprd{x:A} B}}
 \and
-  \inferrule*[right=$\Pi$-\elim]
+  \inferrule*[right=$\Pi$-\relim]
   {\oftp\Gamma{f}{\tprd{x:A} B} \\ \oftp\Gamma{a}{A}}
   {\oftp\Gamma{f(a)}{B[a/x]}}
 \and
-  \inferrule*[right=$\Pi$-\comp]
+  \inferrule*[right=$\Pi$-\rcomp]
   {\oftp{\Gamma,\tmtp xA}{b}{B} \\ \oftp\Gamma{a}{A}}
   {\jdeqtp\Gamma{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
 \and
-  \inferrule*[right=$\Pi$-\uniq]
+  \inferrule*[right=$\Pi$-\runiq]
   {\oftp\Gamma{f}{\tprd{x:A} B}}
   {\jdeqtp\Gamma{f}{(\lamu{x:A}f(x))}{\tprd{x:A} B}}
 \end{mathparpagebreakable}
@@ -703,22 +703,22 @@ Recall that the elimination rule for a positive type such as $\Sigma$ is called 
 %
 \begin{mathparpagebreakable}
   \def\premise{\oftp{\Gamma}{A}{\UU_i} \and \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
-  \inferrule*[right=$\Sigma$-\form]
+  \inferrule*[right=$\Sigma$-\rform]
     \premise
     {\oftp\Gamma{\tsm{x:A} B}{\UU_i}}
   \and
-  \inferrule*[right=$\Sigma$-\intro]
+  \inferrule*[right=$\Sigma$-\rintro]
     {\oftp{\Gamma, \tmtp x A}{B}{\UU_i} \\
      \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{B[a/x]}}
     {\oftp\Gamma{\tup ab}{\tsm{x:A} B}}
   \and
-  \inferrule*[right=$\Sigma$-\elim]
+  \inferrule*[right=$\Sigma$-\relim]
     {\oftp{\Gamma, \tmtp z {\tsm{x:A} B}}{C}{\UU_i} \\
      \oftp{\Gamma,\tmtp x A,\tmtp y B}{g}{C[\tup x y/z]} \\
      \oftp\Gamma{p}{\tsm{x:A} B}}
     {\oftp\Gamma{\ind{\tsm{x:A} B}(z.C,x.y.g,p)}{C[p/z]}}
   \and
-  \inferrule*[right=$\Sigma$-\comp]
+  \inferrule*[right=$\Sigma$-\rcomp]
     {\oftp{\Gamma, \tmtp z {\tsm{x:A} B}}{C}{\UU_i} \\
      \oftp{\Gamma, \tmtp x A, \tmtp y B}{g}{C[\tup x y/z]} \\\\
      \oftp\Gamma{a'}{A} \\ \oftp\Gamma{b'}{B[a'/x]}}
@@ -749,33 +749,33 @@ propositional uniqueness principle.
 \index{type!coproduct}%
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$+$-\form]
+  \inferrule*[right=$+$-\rform]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i}}
   {\oftp\Gamma{A+B}{\UU_i}}
 \\
-  \inferrule*[right=$+$-\intro${}_1$]
+  \inferrule*[right=$+$-\rintro${}_1$]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i} \\\\ \oftp\Gamma{a}{A}}
   {\oftp\Gamma{\inl(a)}{A+B}}
 \and
-  \inferrule*[right=$+$-\intro${}_2$]
+  \inferrule*[right=$+$-\rintro${}_2$]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i} \\\\ \oftp\Gamma{b}{B}}
   {\oftp\Gamma{\inr(b)}{A+B}}
 \\
-  \inferrule*[right=$+$-\elim]
+  \inferrule*[right=$+$-\relim]
   {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\\\
    \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
    \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
    \oftp\Gamma{e}{A+B}}
   {\oftp\Gamma{\ind{A+B}(z.C,x.c,y.d,e)}{C[e/z]}}
 \and
-  \inferrule*[right=$+$-\comp${}_1$]
+  \inferrule*[right=$+$-\rcomp${}_1$]
   {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
    \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
    \oftp\Gamma{a}{A}}
   {\jdeqtp\Gamma{\ind{A+B}(z.C,x.c,y.d,\inl(a))}{c[a/x]}{C[\inl(a)/z]}}
 \and
-  \inferrule*[right=$+$-\comp${}_2$]
+  \inferrule*[right=$+$-\rcomp${}_2$]
   {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
    \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
@@ -791,11 +791,11 @@ $d$.
 \index{type!empty|(}%
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\emptyt$-\form]
+  \inferrule*[right=$\emptyt$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma\emptyt{\UU_i}}
 \and
-  \inferrule*[right=$\emptyt$-\elim]
+  \inferrule*[right=$\emptyt$-\relim]
   {\oftp{\Gamma,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\Gamma{a}{\emptyt}}
   {\oftp\Gamma{\ind{\emptyt}(x.C,a)}{C[a/x]}}
 \end{mathparpagebreakable}
@@ -810,21 +810,21 @@ In $\ind{\emptyt}$, $x$ is bound in $C$. The empty type has no introduction rule
 \index{type!unit|(}%
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\unit$-\form]
+  \inferrule*[right=$\unit$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma\unit{\UU_i}}
 \and
-  \inferrule*[right=$\unit$-\intro]
+  \inferrule*[right=$\unit$-\rintro]
   {\wfctx\Gamma}
   {\oftp\Gamma{\ttt}{\unit}}
 \and
-  \inferrule*[right=$\unit$-\elim]
+  \inferrule*[right=$\unit$-\relim]
   {\oftp{\Gamma,\tmtp x\unit}{C}{\UU_i} \\
    \oftp{\Gamma}{c}{C[\ttt/x]} \\
    \oftp\Gamma{a}{\unit}}
   {\oftp\Gamma{\ind{\unit}(x.C,c,a)}{C[a/x]}}
 \and
-  \inferrule*[right=$\unit$-\comp]
+  \inferrule*[right=$\unit$-\rcomp]
   {\oftp{\Gamma,\tmtp x\unit}{C}{\UU_i} \\
    \oftp{\Gamma}{c}{C[\ttt/x]}}
   {\jdeqtp\Gamma{\ind{\unit}(x.C,c,\ttt)}{c}{C[\ttt/x]}}
@@ -850,27 +850,27 @@ We give the rules for natural numbers, following \cref{sec:inductive-types}.
      \oftp\Gamma{c_0}{C[0/x]} \\
      \oftp{\Gamma,\tmtp{x}\N,\tmtp y C}{c_s}{C[\suc(x)/x]}}
   %
-  \inferrule*[right=$\N$-\form]
+  \inferrule*[right=$\N$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma{\N}{\UU_i}}
 \and
-  \inferrule*[right=$\N$-\intro${}_1$]
+  \inferrule*[right=$\N$-\rintro${}_1$]
   {\wfctx\Gamma}
   {\oftp\Gamma{0}{\N}}
 \and
-  \inferrule*[right=$\N$-\intro${}_2$]
+  \inferrule*[right=$\N$-\rintro${}_2$]
   {\oftp\Gamma{n}{\N}}
   {\oftp\Gamma{\suc(n)}{\N}}
 \and
-  \inferrule*[right=$\N$-\elim]
+  \inferrule*[right=$\N$-\relim]
   {\premise \\ \oftp\Gamma{n}{\N}}
   {\oftp\Gamma{\ind{\N}(x.C,c_0,x.y.c_s,n)}{C[n/x]}}
 \and
-  \inferrule*[right=$\N$-\comp${}_1$]
+  \inferrule*[right=$\N$-\rcomp${}_1$]
   {\premise}
   {\jdeqtp\Gamma{\ind{\N}(x.C,c_0,x.y.c_s,0)}{c_0}{C[0/x]}}
 \and
-  \inferrule*[right=$\N$-\comp${}_2$]
+  \inferrule*[right=$\N$-\rcomp${}_2$]
   {\premise \\ \oftp\Gamma{n}{\N}}
   {\Gamma\vdash
     {\begin{aligned}[t]
@@ -895,21 +895,21 @@ The presentation here corresponds to the (unbased) path induction principle for 
 \cref{sec:identity-types}.
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\idsym$-\form]
+  \inferrule*[right=$\idsym$-\rform]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{A}}
   {\oftp\Gamma{\id[A]{a}{b}}{\UU_i}}
 \and
-  \inferrule*[right=$\idsym$-\intro]
+  \inferrule*[right=$\idsym$-\rintro]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{a}{A}}
   {\oftp\Gamma{\refl a}{\id[A]aa}}
 \and
-  \inferrule*[right=$\idsym$-\elim]
+  \inferrule*[right=$\idsym$-\relim]
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{A} \\ \oftp\Gamma{p'}{\id[A]ab}}
   {\oftp\Gamma{\indid{A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
 \and
-  \inferrule*[right=$\idsym$-\comp]
+  \inferrule*[right=$\idsym$-\rcomp]
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A}}
@@ -1006,32 +1006,32 @@ second computation rule is a propositional, not judgmental, equality. These
 differences are discussed in \cref{sec:dependent-paths}.
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\Sn^1$-\form]
+  \inferrule*[right=$\Sn^1$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma{\Sn^1}{\UU_i}}
 \and
-  \inferrule*[right=$\Sn^1$-\intro${}_1$]
+  \inferrule*[right=$\Sn^1$-\rintro${}_1$]
   {\wfctx\Gamma}
   {\oftp\Gamma{\base}{\Sn^1}}
 \and
-  \inferrule*[right=$\Sn^1$-\intro${}_2$]
+  \inferrule*[right=$\Sn^1$-\rintro${}_2$]
   {\wfctx\Gamma}
   {\oftp\Gamma{\lloop}{\id[\Sn^1]{\base}{\base}}}
 \and
-  \inferrule*[right=$\Sn^1$-\elim]
+  \inferrule*[right=$\Sn^1$-\relim]
   {\oftp{\Gamma,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gamma}{b}{C[\base/x]} \\
    \oftp{\Gamma}{\ell}{\dpath C \lloop b b} \\
    \oftp\Gamma{p}{\Sn^1}}
   {\oftp\Gamma{\ind{\Sn^1}(x.C,b,\ell,p)}{C[p/x]}}
 \and
-  \inferrule*[right=$\Sn^1$-\comp${}_1$]
+  \inferrule*[right=$\Sn^1$-\rcomp${}_1$]
   {\oftp{\Gamma,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gamma}{b}{C[\base/x]} \\
    \oftp{\Gamma}{\ell}{\dpath C \lloop b b}}
   {\jdeqtp\Gamma{\ind{\Sn^1}(x.C,b,\ell,\base)}{b}{C[\base/x]}}
 \and
-  \inferrule*[right=$\Sn^1$-\comp${}_2$]
+  \inferrule*[right=$\Sn^1$-\rcomp${}_2$]
   {\oftp{\Gamma,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gamma}{b}{C[\base/x]} \\
    \oftp{\Gamma}{\ell}{\dpath C \lloop b b}}

@@ -1260,27 +1260,35 @@ A useful variation on \cref{lem:nconnected_postcomp} is:
 Let $f:A\to B$ be a function and $P:A\to\type$ and $Q:B\to\type$ be type families. Suppose that $g:\prd{a:A} P(a)\to Q(f(a))$
 is a fiberwise $n$-connected%
 \index{fiberwise!n-connected family of functions@$n$-connected family of functions}
-family of functions, i.e.\ each function $g_a : P(a) \to Q(f(a))$ is $n$-connected. Then the function
+family of functions, i.e.\ each function $g_a : P(a) \to Q(f(a))$ is $n$-connected.
+If $f$ is also $n$-connected, then so is the function
 \begin{align*}
 \varphi &:\Parens{\sm{a:A} P(a)}\to\Parens{\sm{b:B} Q(b)}\\
-\varphi(a,u) &\defeq \pairr{f(a),g_a(u)}
+\varphi(a,u) &\defeq \pairr{f(a),g_a(u)}.
 \end{align*}
-is $n$-connected if and only if $f$ is $n$-connected.
+Conversely, if $\varphi$ and each $g_a$ are $n$-connected, and moreover $Q$ is fiberwise merely inhabited (i.e.\ we have $\brck{Q(b)}$ for all $b:B$), then $f$ is $n$-connected.
 \end{lem}
 
 \begin{proof}
-For $b:B$ and $v:Q(b)$ we have
+For any $b:B$ and $v:Q(b)$ we have
 {\allowdisplaybreaks
 \begin{align*}
-\trunc n{\hfib{\varphi}{\pairr{b,v}}} & \eqvsym \Trunc n{\sm{a:A}{u:P(a)}{p:f(a)= b} \trans{\ap f p }{g_a(u)}= v}\\
-& \eqvsym \Trunc n{\sm{w:\hfib{f}b}{u:P(\proj1(w))} g_{\proj 1 w}(u)= \trans{\opp{\ap f {\proj2 w}}}{v}}\\
-& \eqvsym \Trunc n{\sm{w:\hfib{f}b} \hfib{g(\proj1 w)}{\trans{\opp{\ap f {\proj 2 w}}}{v}}}\\
-& \eqvsym \Trunc n{\sm{w:\hfib{f}b} \trunc n{\hfib{g(\proj1 w)}{\trans{\opp{\ap f {\proj 2 w}}}{v}}}}\\
+\trunc n{\hfib{\varphi}{\pairr{b,v}}} & \eqvsym \Trunc n{\sm{a:A}{u:P(a)}{p:f(a)= b} \trans{p}{g_a(u)}= v}\\
+& \eqvsym \Trunc n{\sm{w:\hfib{f}b}{u:P(\proj1(w))} g_{\proj 1 w}(u)= \trans{\opp{\proj2(w)}}{v}}\\
+& \eqvsym \Trunc n{\sm{w:\hfib{f}b} \hfib{g(\proj1 w)}{\trans{\opp{\proj 2(w)}}{v}}}\\
+& \eqvsym \Trunc n{\sm{w:\hfib{f}b} \trunc n{\hfib{g(\proj1 w)}{\trans{\opp{\proj 2(w)}}{v}}}}\\
 & \eqvsym \trunc n{\hfib{f}b}
-\end{align*}}
+\end{align*}}%
 where the transportations along $f(p)$ and $f(p)^{-1}$ are with respect to $Q$.
 Therefore, if either is contractible, so is the other.
+
+In particular, if $f$ is $n$-connected, then $\trunc n{\hfib{f}b}$ is contractible for all $b:B$, and hence so is $\trunc n{\hfib{\varphi}{\pairr{b,v}}}$ for all $(b,v):\sm{b:B} Q(b)$.
+On the other hand, if $\varphi$ is $n$-connected, then $\trunc n{\hfib{\varphi}{\pairr{b,v}}}$ is contractible for all $(b,v)$, hence so is $\trunc n{\hfib{f}b}$ for any $b:B$ such that there exists some $v:Q(b)$.
+Finally, since contractibility is a mere proposition, it suffices to merely have such a $v$.
 \end{proof}
+
+The converse direction of \cref{lem:nconnected_postcomp_variation} can fail if $Q$ is not fiberwise merely inhabited.
+For example, if $P$ and $Q$ are both constant at $\emptyt$, then $\varphi$ and each $g_a$ are equivalences, but $f$ could be arbitrary.
 
 In the other direction, we have
 
@@ -1291,6 +1299,8 @@ f:\prd{a:A} \Parens{P(a)\to Q(a)}
 \end{equation*}
 from $P$ to $Q$. Then the induced map $\total f: \sm{a:A}P(a) \to \sm{a:A} Q(a)$ is $n$-connected if and only if each $f(a)$ is $n$-connected.
 \end{lem}
+
+Of course, the ``only if'' direction is also a special case of \cref{lem:nconnected_postcomp_variation}.
 
 \begin{proof}
 By \cref{fibwise-fiber-total-fiber-equiv}, we have
@@ -2084,6 +2094,12 @@ The modalities we have considered in this chapter are all idempotent, whereas th
   Defining such things in type theory is an important open problem.)
   
   Exhibit a graph with composition $\Gamma$ such that $\Gamma_0$ is a set and each type $\Gamma_1(x,y)$ is a mere proposition, and a diagram $F$ over $\Gamma$ such that $F(x)=\unit$ for all $x$, for which $\colim(F)=\Sn^2$.
+\end{ex}
+
+\begin{ex}\label{ex:fiber-map-not-conn}
+  Comparing \cref{lem:nconnected_postcomp_variation,prop:nconn_fiber_to_total}, one might be tempted to conjecture that if $f:A\to B$ is $n$-connected and $g:\prd{a:A} P(a) \to Q(f(a))$ induces an $n$-connected map $\Parens{\sm{a:A} P(a)} \to \Parens{\sm{b:B} Q(b)}$, then $g$ is fiberwise $n$-connected.
+  Give a counterexample to show that this is false.
+  (In fact, when generalized to modalities, this property characterizes the left exact ones; see \cref{ex:prop-modalities}.)
 \end{ex}
 
 %%% Local Variables:

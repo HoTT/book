@@ -36,7 +36,7 @@ code. Also, the file `version.tex` is generated on the fly, so you will need the
 
 If you do not have `make` (for example, because you are on MacOS and you did not
 install the XCode command-line utilities), you can still fake it as follows.
-Create the file `version.txt` and put in it (where "Joe Hacker" should be
+Create the file `version.tex` and put in it (where "Joe Hacker" should be
 replaced with your name):
 
     \newcommand{\OPTversion}{Joe-Hacker-version}
@@ -44,5 +44,5 @@ replaced with your name):
 Then use whatever tools you normally do to compile LaTeX. The main LaTeX files are called 
 `hott-XXX.tex`. But you really should have `make`, you know.
 
-Once `make` is run so that `version.txt` gets generated, you need not run
+Once `make` is run so that `version.tex` gets generated, you need not run
 `make` again. You can just perform the usual LaTeX cycle from your favorite editor.

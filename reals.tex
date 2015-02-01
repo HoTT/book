@@ -2944,11 +2944,23 @@ For the outer recursion, we take the codomain to be the subset of $\NO\to\NO$ co
 For such $g,h$ we define $(g\ble h)\defeq \fall{x:\NO} g(x)\le h(x)$ and $(g\blt h)\defeq \fall{x:\NO} g(x)< h(x)$.
 Clearly $\ble$ is antisymmetric.
 
-For the primary clause of the recursion, we suppose $x$ defined by a cut, and we define $(x+\blank)$ by an inner recursion on $\NO$ with codomain $\NO$, with relations $\bble$ and $\bblt$ coinciding with $\le$ and $<$.
-For the primary clause of the inner recursion, we suppose also $y$ defined by a cut, and give Conway's definition:
+For the primary clause of the recursion, we suppose $x$ defined by a cut, that the functions $(x^L+\blank)$ and $(x^R+\blank)$ are defined, preserve inequalities, and satisfy $x^L+y<x^R+y$, and we define $(x+\blank)$.
+As in \cref{defn:No-codes}, rather than an inner recursion, we use an inner induction into the family $A:\NO\to\type$, where $A(y)$ is the subset of those $z:\NO$ such that each $x^L + y < z$ and each $x^R + y > z$.
+We equip $A$ with the relations $\le$ and $<$ induced from $\NO$, so that antisymmetry is obvious.
+For the primary clause of the inner recursion, we suppose also $y$ defined by a cut, with each $x+y^L$ and $x+y^R$ defined and satisfying $x^L+y^L < x+y^L$, $x^L+y^R < x+y^R$, $x+y^L < x^R + y^L$, and $x+y^R < x^R+y^R$ (these come from the additional conditions imposed on elements of $A(y)$).
+Now we give Conway's definition:
 \[ x+y \defeq \surr{x^L+y, x+y^L}{x^R+y,x+y^R}. \]
 In other words, the left options of $x+y$ are all numbers of the form $x^L+y$ for some left option $x^L$, or $x+y^L$ for some left option $y^L$.
-Now we verify that this definition preserves inequality:
+We must show that each of these left options is less than each of these right options:
+\begin{itemize}
+\item $x^L+y < x^R+y$ by the outer inductive hypothesis.
+\item $x^L+y < x^L + y^R < x + y^R$, the first since $(x^L+\blank)$ preserves inequalities, and the second since $x+y^R : A(y^R)$.
+\item $x+y^L < x^R+ y^L < x^R + y$, the first since $x+y^L : A(y^L)$ and the second since $(x^R+\blank)$ preserves inequalities.
+\item $x+y^L < x+y^R$ by the outer inductive hypothesis.
+\end{itemize}
+We also have to show that $x+y$ thusly defined lies in $A(y)$, i.e.\ that $x^L + y < x+y$ and $x+y < x^R + y$; but this is true by \cref{thm:NO-refl-opt}\ref{item:NO-lt-opt}.
+
+Next we have to verify that the definition of $(x+\blank)$ preserves inequality:
 \begin{itemize}
 \item If $y\le z$ arises from knowing that $y^L<z$ and $y<z^R$ for all $L$ and $R$, then the inner inductive hypothesis gives $x+y^L<x+z$ and $x+y < x+z^R$, while the outer inductive hypotheses give $x^L+y \le x^L+z$ and $x^R+ y \le x^R+z$.
   Moreover, since $x^R+y$ is by definition a right option of $x+y$, we have $x+y < x^R+y$.
@@ -2957,7 +2969,7 @@ Now we verify that this definition preserves inequality:
 \item If $y<z$ arises from an $L_0$ with $y\le z^{L_0}$, then inductively $x+y \le x+z^{L_0}$, hence $x+y<x+z$ since $x+z^{L_0}$ is a right option of $x+z$.
 \item Similarly, if $y<z$ arises from $y^{R_0}\le z$, then $x+y<x+z$ since $x+y^{R_0}\le x+z$.
 \end{itemize}
-This completes the inner recursion.
+This completes the inner induction.
 For the outer recursion, we have to verify that $+$ preserves inequality on the left as well.
 After an $\NO$-induction, this proceeds in exactly the same way.
 \end{eg}
@@ -3269,6 +3281,11 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 \begin{ex}\label{ex:pseudo-ordinals}
   Define a surreal number to be a \define{pseudo-ordinal}\index{pseudo-ordinal}\index{ordinal!pseudo-} if it is equal to a cut $\surr{x^L}{}$ with no right options (but its left options may themselves have right options).
   Show that the statement ``every pseudo-ordinal is a plump ordinal'' is equivalent to \LEM{}.
+\end{ex}
+
+\begin{ex}\label{ex:double-No-recursion}
+  Note that \cref{defn:No-codes} and \cref{eg:surreal-addition} both use a similar pattern to define a function $\NO \to \NO \to B$: an outer \NO-recursion whose codomain is the set of order-preserving functions $\NO\to B$, followed by an inner \NO-induction into a family $A:\NO\to\type$ where $A(y)$ is a subset of $B$ ensuring that the inequalities $x^L<x$ and $x<x^R$ are also preserved.
+  Formulate and prove a general principle of ``double \NO-recursion'' that generalizes these proofs.
 \end{ex}
 
 \index{real numbers|)}%

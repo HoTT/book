@@ -33,12 +33,17 @@ The ultimate theory will almost certainly not look exactly like the one describe
 
 \subsection*{Type theory}
 
-Type theory was originally invented by Bertrand Russell \cite{Russell:1908},\index{Russell, Bertrand} as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. It was later developed as a rigorous formal system in its own right (under the name ``$\lambda$-calculus'') by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory still has numerous applications, especially in computer science and the theory of programming languages~\cite{Pierce-TAPL}.
+The concept of a type as the domain of significance of a propositional function was introduced by Bertrand Russell \cite{Russell:1908},\index{Russell, Bertrand} as a device for blocking the paradoxes in the logical foundations of mathematics  that were under investigation at the time. The next milestone in the development of type theory is the paper by Alonzo Church \cite{Church:1940tu} that connected types with the formal system called $\lambda$-calculus  that Church has developed for dealing with functions. 
+%
+%It was later developed as a rigorous formal system in its own right (under the name ``$\lambda$-calculus'') by Alonzo Church \cite{Church:1933cl,Church:1940tu,Church:1941tc}.  
+%
+Although it is not generally regarded as the foundation for classical mathematics, set theory being more customary, type theory has numerous applications, especially in computer science and the theory of programming languages~\cite{Pierce-TAPL}.
 \index{programming}%
 \index{type theory}%
 \index{lambda-calculus@$\lambda$-calculus}%
-Per Martin-L\"{o}f \cite{Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopolis}, among others,
-developed a ``predicative'' modification of Church's type system, which is now usually called dependent, constructive, intuitionistic, or simply \emph{Martin\--L\"of type theory}. This is the basis of the system that we consider here; it was originally intended as a rigorous framework for the formalization of constructive mathematics.  In what follows, we will often use ``type theory'' to refer specifically to this system and similar ones, although type theory as a subject is much broader (see \cite{somma,kamar} for the history of type theory).
+%Per Martin-L\"{o}f \cite{Martin-Lof-1972,Martin-Lof-1973,Martin-Lof-1979,martin-lof:bibliopolis}, among others, developed a ``predicative'' modification of Church's type system, which is now usually called dependent, constructive, intuitionistic, or simply \emph{Martin\--L\"of type theory}. This is the basis of the system that we consider here; it was originally intended as a rigorous framework for the formalization of constructive mathematics.  In what follows, we will often use ``type theory'' to refer specifically to this system and similar ones, although type theory as a subject is much broader (see \cite{somma,kamar} for the history of type theory).
+%
+Type theory started to accumulate new ideas in the late 1960s. The history of type theory from that time to the present is very rich, complex and remains difficult to understand.  In this book we will try to avoid discussing it leaving this subject for further scholarly study. 
 
 In type theory, unlike set theory, objects are classified using a primitive notion of \emph{type}, similar to the data-types used in programming languages.  These elaborately structured types can be used to express detailed specifications of the objects classified, giving rise to principles of reasoning about these objects.  To take a very simple example, the objects of a product type $A\times B$ are known to be of the form $\pairr{a,b}$, and so one automatically knows how to construct them and how to decompose them. Similarly, an object of function type $A\to B$ can be acquired from an object of type $B$ parametrized by objects of type $A$, and can be evaluated at an argument of type $A$.  This rigidly predictable behavior of all objects (as opposed to set theory's more liberal formation principles, allowing inhomogeneous sets) is one aspect of type theory that has led to its extensive use in verifying the correctness of computer programs.  The clear reasoning principles associated with the construction of types also form the basis of modern \emph{computer proof assistants},%
 \index{proof!assistant}%
@@ -100,23 +105,20 @@ The homotopical interpretation fits this same pattern: it clarifies the nature o
 
 The key new idea of the homotopy interpretation is that the logical notion of identity $a = b$ of two objects $a, b: A$ of the same type $A$ can be understood as the existence of a path $p : a \leadsto b$ from point $a$ to point $b$ in the space $A$.
 This also means that two functions $f, g: A\to B$ can be identified if they are homotopic, since a homotopy is just a (continuous) family of paths $p_x: f(x) \leadsto g(x)$ in $B$, one for each $x:A$.
-In type theory, for every type $A$ there is a (formerly somewhat mysterious) type $\idtypevar{A}$ of identifications of two objects of $A$; in homotopy type theory, this is just the \emph{path space} $A^I$ of all continuous maps $I\to A$ from the unit interval.
+In type theory, for every type $A$ and two objects $a,b$ of $A$, there is a (formerly somewhat mysterious) type $\idtype[A]{a}{b}$ of identifications of two objects of $A$; in homotopy type theory, this is just the \emph{path space} $A^I$ of all continuous maps $I\to A$ from the unit interval.
 \index{unit!interval}%
 \index{interval!topological unit}%
 \index{path!topological}%
 \index{topological!path}%
 In this way, a term $p : \idtype[A]{a}{b}$ represents a path $p : a \leadsto b$ in $A$. 
 
-The idea of homotopy type theory arose around 2006 in independent work by Awodey and Warren~\cite{AW} and Voevodsky~\cite{VV}, but it was inspired by 
-Hofmann and Streicher's earlier groupoid interpretation~\cite{hs:gpd-typethy}.
-Indeed, higher-dimensional category theory (particularly the theory of weak $\infty$-groupoids) is now known to be intimately connected to homotopy theory, as proposed by Grothendieck and now being studied intensely by mathematicians of both sorts.
-The original semantic models of Awodey--Warren and Voevodsky use well-known notions and techniques from homotopy theory which are now also in use in higher category theory, such as  Quillen model categories and Kan\index{Kan complex} simplicial sets\index{simplicial!sets}.
-\index{Quillen model category}%
-\index{model category}%
+Making this idea precise turned out to be much more difficult than originally expected. Depending on ones criteria for what is considered a rigorous mathematical argument, the opinions differ even on the question of whether it has been achieved yet. This issue however does not affect our ability to use the intuitions outlined above as we will be doing in this book. 
 
-Voevodsky recognized that the simplicial interpretation of type theory satisfies a further crucial property, dubbed \emph{univalence}, which had not previously been considered in type theory (although Church's principle of extensionality for propositions turns out to be a very special case of it).
-Adding univalence to type theory in the form of a new axiom has far-reaching consequences, many of which are natural, simplifying and compelling.
-The univalence axiom also further strengthens the homotopical view of type theory, since it holds in the simplicial model and other related models, while failing under the view of types as sets.
+%The idea of homotopy type theory arose around 2006 in independent work by Awodey and Warren~\cite{AW} and Voevodsky~\cite{VV}, but it was inspired by Hofmann and Streicher's earlier groupoid interpretation~\cite{hs:gpd-typethy}. Indeed, higher-dimensional category theory (particularly the theory of weak $\infty$-groupoids) is now known to be intimately connected to homotopy theory, as proposed by Grothendieck and now being studied intensely by mathematicians of both sorts. The original semantic models of Awodey--Warren and Voevodsky use well-known notions and techniques from homotopy theory which are now also in use in higher category theory, such as  Quillen model categories and Kan\index{Kan complex} simplicial sets\index{simplicial!sets}.\index{Quillen model category}%\index{model category}%
+
+The second crucial component of the intuition of the homotopy type theory concerns the interpretation of the type-theoretic universe that leads directly to its connection with the Univalent Foundations. 
+
+%Voevodsky recognized that the simplicial interpretation of type theory satisfies a further crucial property, dubbed \emph{univalence}, which had not previously been considered in type theory (although Church's principle of extensionality for propositions turns out to be a very special case of it). Adding univalence to type theory in the form of a new axiom has far-reaching consequences, many of which are natural, simplifying and compelling. The univalence axiom also further strengthens the homotopical view of type theory, since it holds in the simplicial model and other related models, while failing under the view of types as sets.
 
 \subsection*{Univalent foundations}
 

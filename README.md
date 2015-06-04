@@ -33,6 +33,7 @@ code. Also, the file `version.tex` is generated on the fly, so you will need the
    the book in US Trade format, without cover, used for the bound copy available
    at http://lulu.com/
 * `make exercise_solutions.pdf` -- compile (some) solutions to exercises
+* `make errata.pdf` -- Errata for the HoTT Book, first edition
 
 If you do not have `make` (for example, because you are on MacOS and you did not
 install the XCode command-line utilities), you can still fake it as follows.

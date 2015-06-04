@@ -6,10 +6,10 @@ env:
 
  matrix:
 # only one of these should have UPDATE_ERRATA set to "yes", otherwise we risk race conditions on pushing
-   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS=""
-   - LATEXMK=""    UPDATE_ERRATA="yes"  TARGETS=""
-#   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS="dvi" # latexmk is too verbose for travis
-   - LATEXMK=""    UPDATE_ERRATA=""     TARGETS="dvi"
+   - LATEXMK="yes" UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS=""
+   - LATEXMK=""    UPDATE_ERRATA="yes"  UPDATE_NIGHTLIES="yes"  TARGETS=""
+#   - LATEXMK="yes" UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS="dvi" # latexmk is too verbose for travis
+   - LATEXMK=""    UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS="dvi"
 
 
 install:
@@ -37,4 +37,6 @@ script: make $TARGETS
 
 # add -f to force a push even if we're not on HoTT/HoTT.
 # generally only useful for debugging
-after_script: etc/ci/update_errata.sh
+after_script:
+ - etc/ci/update_errata.sh
+ - etc/ci/update_nightlies.sh

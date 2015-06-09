@@ -466,7 +466,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       \prd{z,w:A}{q:x= z}{r:z= w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
-    To construct an element of this type, let $D_2:\prd{x,z:A}{q:x=z} \type$ be the type family
+    To construct an element of this type, let $D_2:\prd{x,z:A} (x=z) \to \type$ be the type family
     \begin{equation*}
       D_2 (x,z,q) \defeq \prd{w:A}{r:z=w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
@@ -474,7 +474,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       \prd{w:A}{r:x=w} \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
     \end{equation*}
-    To construct an element of \emph{this} type, let $D_3:\prd{x,w:A}{r:x=w} \type$ be the type family
+    To construct an element of \emph{this} type, let $D_3:\prd{x,w:A} (x=w) \to \type$ be the type family
     \begin{equation*}
       D_3(x,w,r) \defeq \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
     \end{equation*}
@@ -1314,8 +1314,29 @@ We can also characterize the reflexivity, inverses, and composition of paths in 
   {{p \ct q}}
   &= {\pairpath \big({\projpath{1} (p)} \ct {\projpath{1} (q)},\,{\projpath{2} (p)} \ct {\projpath{2} (q)}\big)}.
 \end{align*}
-The same is true for the rest of the higher groupoid structure considered in \cref{sec:equality}.
+Or, written differently:
+\begin{alignat*}{2}
+  \projpath{i}(\refl{(z : A \times B)}) &= \refl{\proj{i} z} &\qquad (i=1,2)\\
+  \pairpath(\opp p, \opp q) &= \opp{\pairpath(p,q)}\\
+  \pairpath(p\ct q, p'\ct q') &= \pairpath(p,p') \ct \pairpath(q,q').
+\end{alignat*}
 All of these equations can be derived by using path induction on the given paths and then returning reflexivity.
+The same is true for the rest of the higher groupoid structure considered in \cref{sec:equality}, although it begins to get tedious to insert enough other coherence paths to yield an equation that will typecheck.
+For instance, if we denote the path in \cref{thm:omg}\ref{item:omg4} by $\ctassoc(p,q,r)$ and the last path displayed above by $\pairct(p,q,p',q')$, then for any $u,v,z,w:A\times B$ and $p,q,r,p',q',r'$ of appropriate types we have
+\begin{equation*}
+  \begin{array}{l}
+    \pairct(p\ct q, r, p'\ct q', r) \\
+    \ct\;  (\pairct(p,q,p',q') \rightwhisker \pairpath(r,r')) \\
+    \ct\;  \ctassoc(\pairpath(p,p'),\pairpath(q,q'),\pairpath(r,r'))\\
+    =
+    \begin{array}[t]{l}
+      \apfunc{\pairpath}({\pairpath(\ctassoc(p,q,r),\ctassoc(p',q',r'))})\\
+      \ct\; \pairct(p, q\ct r, p', q'\ct r)\\
+      \ct\; (\pairpath(p,p') \leftwhisker \pairct(q,r,q',r')).
+    \end{array}
+  \end{array}
+\end{equation*}
+Fortunately, we will never have to use any such higher-dimensional coherences.
 
 \index{transport!in product types}%
 We now consider transport in a pointwise product of type families.

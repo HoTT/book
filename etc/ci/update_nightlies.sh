@@ -58,6 +58,8 @@ UPSTREAM_LOG="$(git log HEAD..upstream/master)"
 #MASTER_LOG="$(git log HEAD..master)"
 #ORIGIN_LOG="$(git log HEAD..origin/master)"
 
+MASTER_COMMIT="$(git rev-parse HEAD)"
+
 git checkout -b gh-pages upstream/gh-pages || exit 1
 
 git rm -rf nightly || true
@@ -111,7 +113,9 @@ fi
 
 git reset --hard || exit 1
 
-(git remote update && git checkout upstream/gh-pages && git cherry-pick "$NIGHTLY_COMMIT" && "$DIR"/push_remote.sh HEAD:gh-pages) || exit 1
+git checkout "$MASTER_COMMIT"
+
+"$DIR"/checkout-and-cherry-pick-and-push.sh upstream/gh-pages "$NIGHTLY_COMMIT" gh-pages || exit 1
 
 (cd book.wiki && git push origin HEAD:master) || exit 1
 

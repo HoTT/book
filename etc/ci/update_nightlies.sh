@@ -111,7 +111,7 @@ fi
 
 git reset --hard || exit 1
 
-(git remote update && git checkout origin/gh-pages && git cherry-pick "$NIGHTLY_COMMIT" && "$DIR"/push_remote.sh HEAD:gh-pages) || exit 1
+(git remote update && git checkout upstream/gh-pages && git cherry-pick "$NIGHTLY_COMMIT" && "$DIR"/push_remote.sh HEAD:gh-pages) || exit 1
 
 (cd book.wiki && git push origin HEAD:master) || exit 1
 

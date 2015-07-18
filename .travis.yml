@@ -54,6 +54,8 @@ install:
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/braket/braket.sty
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.dtx http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.ins
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/soul/soul.dtx http://mirrors.ctan.org/macros/latex/contrib/soul/soul.ins
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/xcolor/xcolor.dtx http://mirrors.ctan.org/macros/latex/contrib/xcolor/xcolor.ins
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/graphics/pgf/base.zip
  - cp "$HOME"/.cache/latex/* ./
  - unzip stmaryrd && mv stmaryrd/*.{mf,dtx} ./ && latex stmaryrd.dtx
  - unzip mathtools.zip && (cd mathtools && for i in *.dtx; do (mv $i ../ && cd .. && tex $i); done)
@@ -61,6 +63,8 @@ install:
  - unzip titlesec.zip && mv titlesec/*.{tss,sty,def} ./
  - latex supertabular.ins
  - latex soul.ins
+ - latex xcolor.ins
+ - unzip base && find base -name "*.sty" -o -name "*.tex" -o -name "*.def" -o -name "*.cfg" | grep -v pgfmanual | xargs cp -t ./
 
 script: make $TARGETS
 

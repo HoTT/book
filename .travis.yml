@@ -1,37 +1,70 @@
 language: c
 
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.cache/latex
+
+addons:
+  apt:
+    packages:
+      - texlive
+      - wget
+      - curl
+      - sed
+      - grep
+
 env:
  global:
    - secure: "ehec8FC6y923UXtB2fMULF/xkQJkwWwzD6xFxyz0lc80IqR8Rmxh16nLKGxI9jD11qjbYSzp1yPVadXyBoSheop5aZPxeXixL49y26ikIRkyuQQdHyjsM34etoPmCKw2vVXvD+JAwjTa6qYpihSOdDXltog8ZNHF6Wp28ZaWW8g="
 
- matrix:
+matrix:
+ include:
 # only one of these should have UPDATE_ERRATA set to "yes", otherwise we risk race conditions on pushing
-   - LATEXMK="yes" UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS=""
-   - LATEXMK=""    UPDATE_ERRATA="yes"  UPDATE_NIGHTLIES="yes"  TARGETS=""
-#   - LATEXMK="yes" UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS="dvi" # latexmk is too verbose for travis
-   - LATEXMK=""    UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS="dvi"
+   - env: LATEXMK="yes" UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS=""
+     addons:
+       apt:
+         packages:
+           - latexmk
+           - texlive
+           - wget
+           - curl
+           - sed
+           - grep
+   - env: LATEXMK=""    UPDATE_ERRATA="yes"  UPDATE_NIGHTLIES="yes"  TARGETS=""
+   - env: LATEXMK=""    UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS="dvi"
 
 
 install:
- - echo | sudo add-apt-repository ppa:texlive-backports/ppa
- - sudo apt-get update -q
- - sudo apt-get install -q texlive wget curl sed grep
- - if [ ! -z "$LATEXMK" ]; then sudo apt-get install -q latexmk; fi
+ - test -z "$LATEXMK" || which latexmk
+ - mkdir -p "$HOME"/.cache/latex
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/comment/comment.sty
  - ./etc/ci/wget_retry.sh http://www.ctan.org/tex-archive/macros/latex/contrib/misc/nextpage.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/fonts/stmaryrd.zip && unzip stmaryrd && mv stmaryrd/*.{mf,dtx} ./ && latex stmaryrd.dtx
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/fonts/stmaryrd.zip
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/wallpaper/wallpaper.sty
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/xstring/xstring.sty
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/xstring/xstring.tex
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/enumitem/enumitem.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/mathtools.zip && unzip mathtools.zip && (cd mathtools && for i in *.dtx; do (mv $i ../ && cd .. && tex $i); done)
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/diagrams/xypic.zip && unzip xypic.zip && mv xypic/*/* ./
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/mathtools.zip
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/diagrams/xypic.zip
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.def
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/titlesec.zip && unzip titlesec.zip && mv titlesec/*.{tss,sty,def} ./
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/titlesec.zip
  - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/braket/braket.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.dtx http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.ins && latex supertabular.ins
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/soul/soul.dtx http://mirrors.ctan.org/macros/latex/contrib/soul/soul.ins && latex soul.ins
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.dtx http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.ins
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/soul/soul.dtx http://mirrors.ctan.org/macros/latex/contrib/soul/soul.ins
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/xcolor/xcolor.dtx http://mirrors.ctan.org/macros/latex/contrib/xcolor/xcolor.ins
+ - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/graphics/pgf/base.zip
+ - cp "$HOME"/.cache/latex/* ./
+ - unzip stmaryrd && mv stmaryrd/*.{mf,dtx} ./ && latex stmaryrd.dtx
+ - unzip mathtools.zip && (cd mathtools && for i in *.dtx; do (mv $i ../ && cd .. && tex $i); done)
+ - unzip xypic.zip && mv xypic/*/* ./
+ - unzip titlesec.zip && mv titlesec/*.{tss,sty,def} ./
+ - latex supertabular.ins
+ - latex soul.ins
+ - latex xcolor.ins
+ - unzip base && find base -name "*.sty" -o -name "*.tex" -o -name "*.def" -o -name "*.cfg" | grep -v pgfmanual | xargs cp -t ./
 
 script: make $TARGETS
 

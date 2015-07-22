@@ -1441,6 +1441,245 @@ By \cref{ex:connectivity-inductively}, to show that $\prd{x:X} Y(x)$ is $(n+1)$-
 But also by \cref{ex:connectivity-inductively}, each $Y(x)$ is $(-1)$-connected and all its path types are $n$-connected.
 Applying function extensionality to characterize the path types of $\prd{x:X} Y(x)$, the claim follows from the $(-1)$-connected and $n$-connected axioms of choice.
 
+
+\section*{Exercises from \cref{cha:homotopy}}
+
+\subsection*{Solution to \cref{ex:homotopy-groups-resp-prod}}
+Remember that the fundamental group of a pointed space is defined as the
+$0$-truncation of the loop space of that space.
+If we prove the equivalence without applying $\trunc 0{\blank}$ to both sides
+we are done.  We use induction on the natural numbers, with base case $1$.
+
+Suppose we have two pointed types $(A,a)$ and $(B,b)$.
+For the base case, we have $\eqv{\Omega(A \times B)}{\Omega(A) \times \Omega(B)}$
+because it is, by definition, the equivalence of pointed types:
+
+\[\eqv{ \Parens{(a,b)=(a,b), \refl{(a,b)}} }{\Parens{(a=a \times b=b), (\refl{a}, \refl{b})}}.\]
+
+By Univalence Axiom this is the same as proving the equality.
+By the characterization of \cref{thm:path-sigma} (and using Univalence) we see
+that it suffices to give a:
+\[p:\eqv{\Parens{(a,b)=(a,b)}}{\Parens{(a=a)\times (b=b)}}\]
+
+And to show that transporting $\refl{(a,b)}$ along $\ua(p)$ is equal to
+$(\refl{a}, \refl{b})$.  To construct $p$ just use \cref{thm:path-prod}. To
+show that transport respects the equality we use
+the propositional computation rule in \cref{axiom:univalence} and the definition
+of our function $p$, that is just an application of the projections and
+functoriality (see \cref{eq:path-prod}).
+
+For the inductive step we use the inductive hypothesis to get an equivalence:
+$\eqv{\Omega^n(A \times B)}{\Omega^n(A) \times \Omega^n(B)}$.
+Then we apply $\Omega(\blank)$ on both sides and use exactly the same
+propositions we used in the base
+case. This settles the inductive case, because of the inductive definition of
+$\Omega^{\suc(n)}(\blank)$.
+
+
+\subsection*{Solution to \cref{ex:contr-infinity-sphere-colim}}
+
+To solve this exercise we must first define the spheres as a type family
+$\Sn^{\blank} : \nat \to \UU$.
+Then we must define the inclusions that appear the in the diagram:
+\[ \Sn^0 \to \Sn^1 \to \Sn^2 \to\cdots \]
+
+Then we will be able to define the colimit as
+a higher inductive type.
+
+So, by induction on the natural numbers, we define $\Sn^{\blank} : \nat \to \UU$
+with the base case being the two point type $\bool$, and the inductive case
+being the iterated application of the suspension.
+
+Now we define the inclusions $i_n : \Sn^n \to \Sn^{n+1}$.
+For the base case we have to give a function $i_0 : \bool \to \susp \bool$.
+This is easy: send one point to $\north$ and the other to $\south$.
+
+For the inductive case we notice that the domain of the function $i_n$ that
+we have to define is the suspension $\susp \Sn^{n-1}$. So we can use the
+induction of $\susp \Sn^{n-1}$. The codomain is also a suspension, so we can
+use any of the constructors:
+\begin{align*}
+  \north_{n+1} &: \Sn^{n+1}\\
+  \south_{n+1} &: \Sn^{n+1}\\
+  \merid_{n+1} &:\Sn^n \to \north_{n+1} = \south_{n+1}
+\end{align*}
+to define our function.
+We send $\north_n \mapsto \north_{n+1}$ and $\south_n \mapsto \south_{n+1}$.
+Now we must give a $\susp \Sn^{n-1}$-indexed family of equalities between
+$\north_{n+1}$ and $\south_{n+1}$. By inductive hypothesis we have
+$i_{n-1} : \Sn^{n-1} \to \Sn^n$, so we can use:
+\[ \merid_{n+1} \circ i_{n-1} \]
+It is also interesting to note that this construction works in a more general
+setting: any function $f : A \to B$ induces a function $\susp f : \susp A \to \susp B$.
+
+Now is a good time to make a drawing to convince oneself that this is the
+right way to define the inclusions between consecutive spheres, and that this
+is the diagram intended in he exercise.
+
+Lets define the type $\Sn^{\infty}$ as the colimit of the diagram we just
+constructed. The constructors are:
+\begin{align*}
+  j_{\blank} &: \prd{n : \nat} \Sn^n \to \Sn^{\infty}\\
+  \glue_{\blank} &: \prd{n : \nat} \prd{x: \Sn^n} j_n(x) = j_{n+1}\circ i_n (x)
+\end{align*}
+And the induction:
+\[
+  \ind{\Sn^{\infty}} : \prd{C:\Sn^\infty \to \UU} \prd{J_{\blank} : \prd{n : \nat} \prd{x : \Sn^n} C(j_n(x))}
+  \Parens{\prd{n:\nat} \prd{x:\Sn^n} \dpath C {\glue_n(x)} {J_n(x)} {J_{n+1}\circ i_n (x)}}
+  \to \prd{e:\Sn^{\infty}} C(e)
+\]
+
+We also have the usual computational rules.
+Now, we can interpret the proof that we are going to give as follows.
+Each sphere is the ``equator'' of the next one. We say ``equator'' because it passes
+trough $\north$ and $\south$ so technically you have to rotate the bigger sphere for
+the inclusion to be exactly in the equator.
+The intuitive idea is that we can retract to a point a circle that is the equator of a sphere.
+Just as we can retract to a point two points that are the equator of a circle.
+This idea extends to all $n$-spheres. If we have all the spheres at the same time
+we can retract them all. But we have to be careful: the homotopies
+must be coherent for the total homotopy to be well defined. This can be done in
+classical homotopy theory using the fact that a CW complex is the colimit of
+the inclusions between its skeletons. In our case we constructed the colimit.
+So, if we define a homotopy for each sphere, and prove that this functions
+coincide in the glued parts (respect the equalities given by $\glue$), by
+induction on the colimit we get a homotopy defined in the colimit.
+
+The outline of the argument is as follows. It suffices to show that every point in
+$\Sn^{\infty}$ is equal to $j_0(\north_0)$, we prove it in two steps.
+The first step is to prove it only for the points of the form $j_n(\north_n)$.
+For the second step we will take an arbitrary $x:\Sn^{\infty}$
+and, by induction, we will assume it comes from a $y : \Sn^n$ for some $n$,
+that is $x \defeq j_n(y)$.
+Then we note that using the commutative diagram given by $\glue_n(x)$:
+\begin{center}
+\begin{tikzpicture}
+\node (N0) at (0,2) {$\Sn^{n}$};
+\node (N1) at (2,2) {$\Sn^{n+1}$};
+\node (N2) at (2,0) {$\Sn^{\infty}$};
+\node (N3) at (1.1,1.1) {};
+\node (N4) at (1.5,1.5) {};
+\draw[->] (N0) -- node[above]{\footnotesize $i_n$} (N1);
+\draw[->] (N0) -- node[left]{\footnotesize $j_n$} (N2);
+\draw[->] (N1) -- node[right]{\footnotesize $j_{n+1}$} (N2);
+\draw[double, double equal sign distance] (N3) -- node[left,above]{\footnotesize $glue_n$} (N4);
+\end{tikzpicture}
+\end{center}
+we get a path $x \defeq j_n(y) = j_{n+1} \circ i_n(y)$.
+But, as we will show, the image of $\Sn^n$ under $i_n$ is contractible,
+every point in the image is equal to $\north_{n+1}$. Thus, we are able to show that
+$j_{n+1}\circ i_n(y) = j_{n+1}(\north_{n+1})$. Composing the proof of the first step
+with the proof of the second step we conclude the exercise.
+
+To construct a $D_{\blank} : \prd{n:\nat} j_n(\north_n) = j_0(\north_0)$ we
+proceed by induction on $n$. For the base case we can 
+use $\refl{j_0(\north_0)}$. For the inductive case, we have by inductive
+hypothesis $j_n(\north_n) = j_0(\north_0)$. By our definition of $i_{\blank}$,
+we have that $\north_{n+1} \equiv i_n(\north_n)$. So $j_{n+1} (\north_{n+1})$
+equals $j_{n+1}\circ i_n(\north_n)$. By concatenation with $\glue_n(\north_n)$,
+we reduce our goal to the inductive hypothesis.
+
+Lets now show that the inclusion of $\Sn^n$ in $\Sn^{n+1}$ can be
+continuously retracted to $\north_{n+1}$.
+That is, lets construct a homotopy:
+\[ H_{\blank} : \prd{n:\nat}\prd{x:\Sn^n} i_n(x) = \north_{n+1} \]
+For the case $n\equiv 0$ we know that $i_0(\btrue) \equiv \north_1$ and
+$i_0(\bfalse) \equiv \south_1$.  This is because we constructed the inclusion
+that way. So we can prove the equalities
+using $\refl{\north_1}$ and $\merid_1(\btrue) : \north_1 = \south_1$.
+
+For the inductive case we defined, previously, $i_n(\north_n) \equiv \north_{n+1}$
+and $i_n(\south_{n}) \equiv \south_{n+1}$. So we can prove the equalities using
+$\refl{\north_{n+1}}$ and $(\merid_{n+1}(\north_n))^{-1}$.
+Then we have to prove that the function respects $\merid_n$:
+\[ \prd{x:\Sn^{n-1}} \dpath {x\mapsto (i_n(x) = \north_{n+1})} {\merid_n(x)} {\refl{\north_{n+1}}} {(\merid_{n+1}(\north_n))^{-1}} \]
+By \cref{thm:transport-path} (and some straightforward computation) this reduces to:
+\[ i_n(\merid_n(x)) = \merid_{n+1}(\north_{n}) \]
+But, by our definition of $i_{\blank}$, and the computation rule of the
+suspension induction $i_n(\merid_n(x))$ equals $\merid_{n+1} \circ i_{n-1}(x)$.
+And, by inductive hypothesis, $i_{n-1}(x) = \north_n$, which gives us the
+desired result.
+
+Composing the two proofs we just gave we get a function:
+\[ J_{\blank} \defeq \glue_n(x)\ct \apfunc{j_{n+1}}{H_n(x)}\ct D_{n+1}
+    : \prd{n:\nat}\prd{x:\Sn^{\infty}} j_n(x) = j_0(\north_0). \]
+We use this function and induction on $\Sn^{\infty}$ to derive
+the contractibility of the space.
+Now it remains to show that our function respects the gluing:
+\[ \prd{n:\nat} \prd{x:\Sn^n} \dpath {x\mapsto (x = j_0(\north_0))}
+  {\glue_n(x)} {J_n(x)} {J_{n+1}\circ i_n (x)} \]
+By definition this is:
+\[ \prd{n:\nat} \prd{x:\Sn^n}
+    \transfib{x\mapsto (x = j_0(\north_0))}{\glue_n(x)}{J_n(x)}
+    = {J_{n+1}\circ i_n (x)} \]
+
+The LHS is equal to $\glue_{n}(x)^{-1}\ct J_n(x)$, and, by definition of
+$J_n(x)$, is just:
+\[ \glue_n(x)^{-1}\ct\glue_n(x)\ct\apfunc{j_{n+1}}{H_n(x)}\ct D_{n+1} =
+  \apfunc{j_{n+1}}{H_n(x)}\ct D_{n+1} \]
+
+We also use the definition of $J_{\blank}$ in the RHS, and then, the computation
+rule of $D_{\blank}$, giving us the equalities:
+\begin{align*}
+  & (J_{n+1}\circ i_n)(x)\\
+  &= \glue_{n+1}(i_n(x))\ct\apfunc{j_{n+2}}{H_{n+1}(i_n(x))}\ct D_{n+2}\\
+  &= \glue_{n+1}(i_n(x))\ct\apfunc{j_{n+2}}{H_{n+1}(i_n(x))}\ct
+                                  \glue_{n+1}(\north_{n+1})^{-1}\ct D_{n+1}.
+\end{align*}
+
+So it suffices to show:
+\[ \apfunc{j_{n+1}}{H_n(x)} = \glue_{n+1}(i_n(x))\ct\apfunc{j_{n+2}}{H_{n+1}(i_n(x))}
+    \ct\glue_{n+1}(\north_{n+1}) \]
+
+But we remeber that we have the homotopy
+$\glue_{n+1} : j_{n+1} = j_{n+2}\circ i_{n+1}$, so, by a simple application
+of \cref{lem:htpy-natural}, the functoriality of $\apfunc{}{}$, and some standard
+cancelations, we reduce the goal to:
+\[ \apfunc{i_{n+1}}{H_n(x)} = H_{n+1}(i_n(x)) \]
+This can be done easily by induction in $\Sn^n$ using the definition of $H_{\blank}$.
+
+
+\subsection*{Solution to \cref{ex:contr-infinity-sphere-susp}}
+
+First we write down the type of the induction principle explicitly:
+
+\[ \ind{\Sn^\infty} : \prd{C:\Sn^\infty \to \UU} \prd{n:C(\north)}\prd{s:C(\south)}
+  \Parens{\prd{x:\Sn^\infty} C(x) \to \dpath C {\merid(x)} {n}{s}} \to \prd{x:\Sn^\infty} C(x) . \]
+
+  We take $\north$ as center of contraction. So we have to prove
+  $\prd{x:\Sn^\infty} \north = x$. For this we use induction on $\Sn^\infty$ taking:
+\[C \defeq (\lambda x. \north = x) : \Sn^\infty \to \UU .\]
+
+  When $x$ is $\north$ we just use $\refl{\north} : \north = \north$. When $x$
+  is $\south$ we use $\merid(\north) : \north = \south$.
+  When $x$ varies along $\merid$ we have to give a function of type:
+\[\prd{x:\Sn^\infty} \Parens{\north = x} \to \Parens{\dpath C {\merid(x)} {\refl{\north}}{\merid(\north)}}. \]
+  So, given $x : \Sn^\infty$ and $p : \north = x$, we have to prove:
+  \[\transfib{x \mapsto (\north = x)}{\merid(x)}{\refl{\north}} = \merid(\north).\]
+
+By \cref{cor:transport-path-prepost} it suffices to show
+$\refl{\north}\ct \merid(x) = \merid(\north)$. Canceling $\refl{\north}$ and
+applying $\merid$ to $p$ gets us the desired result.
+
+\subsection*{Solution to \cref{ex:unique-fiber}}
+
+We know that every two points $y_1,y_2 : Y$ are merely equal, because $Y$ is
+is connected. That is, we have a function
+$c : \prd{y_1,y_2:Y}\trunc {} {y_1 = y_2}$.
+
+We note that it suffices to show that for any $y_1,y_2:Y$ we have
+$\trunc {} {\hfib{f}{y_1} = \hfib{f}{y_2}}$ because by Univalence
+$\hfib{f}{y_1} = \hfib{f}{y_2}$ is equivalent to $\hfib{f}{y_1}\simeq \hfib{f}{y_2}$
+and thus, by Univalence, they are equal.
+
+The type of $c(y_1,y_2)$ is a truncation, so we can use its recursion to
+prove the desired result.
+By recursion we can assume that $y_1 = y_2$, and in that case we obviously have
+$\trunc {} {\hfib{f}{y_1} = \hfib{f}{y_2}}$. We also have to show that
+the proposition we want to prove is $-1$-truncated, but that is straightforward
+because it is a $-1$-truncation.
+
+
 \section*{Exercises from \cref{cha:category-theory}}
 
 \subsection*{Solution to \cref{ex:stack}}

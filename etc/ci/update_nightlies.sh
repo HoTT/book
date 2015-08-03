@@ -47,6 +47,7 @@ PDFS="$(grep '^NIGHTLY: ' build-nightlies.log | sed s'/^NIGHTLY: //g')"
 WIKIPAGE="$(grep '^NIGHTLY-WIKI: ' build-nightlies.log | sed s'/^NIGHTLY-WIKI: //g')"
 
 "$DIR"/configure_commit.sh || exit 1
+git remote -v
 git branch -a
 git --no-pager diff HEAD
 git --no-pager diff HEAD..origin/master
@@ -56,6 +57,8 @@ BAD_REMOTES="$(git remote -v | grep origin | grep -v 'github.com/HoTT/book')"
 UPSTREAM_LOG="$(git log HEAD..upstream/master)"
 #MASTER_LOG="$(git log HEAD..master)"
 #ORIGIN_LOG="$(git log HEAD..origin/master)"
+
+MASTER_COMMIT="$(git rev-parse HEAD)"
 
 git checkout -b gh-pages upstream/gh-pages || exit 1
 
@@ -70,6 +73,10 @@ git mv $PDFS nightly/ || exit 1
 
 git commit -m "Update nightly builds (auto)" || exit 1
 NIGHTLY_COMMIT="$(git rev-parse HEAD)"
+
+git --no-pager diff HEAD
+git --no-pager diff HEAD..origin/gh-pages
+git --no-pager diff HEAD..upstream/gh-pages
 
 git clone https://github.com/HoTT/book.wiki.git || exit 1
 
@@ -106,8 +113,10 @@ fi
 
 git reset --hard || exit 1
 
-(git rebase origin gh-pages && git cherry-pick "$NIGHTLY_COMMIT" && "$DIR"/push_remote.sh HEAD:gh-pages) || exit 1
+git checkout "$MASTER_COMMIT"
 
-(cd book.wiki && git push origin HEAD:gh-pages) || exit 1
+"$DIR"/checkout-and-cherry-pick-and-push.sh upstream/gh-pages "$NIGHTLY_COMMIT" gh-pages || exit 1
+
+(cd book.wiki && git push origin HEAD:master) || exit 1
 
 popd 1>/dev/null

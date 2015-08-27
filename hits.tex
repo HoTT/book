@@ -1224,7 +1224,7 @@ We can now prove that the set-quotient has the expected universal property of a 
   \narrowequation{\prd{a,b:A} R(a,b) \to (f(a)=f(b)),} we define $\bar f:A/R\to B$ by $\bar f(q(a))\defeq f(a)$.
   This defining equation says precisely that $(f\mapsto \bar f)$ is a right inverse to $(\blank\circ q)$.
 
-  For it to also be a left inverse, we must show that for any $g:A/R\to B$ and $x:A/R$ we have $g(x) = \overline{g\circ q}$.
+  For it to also be a left inverse, we must show that for any $g:A/R\to B$ and $x:A/R$ we have $g(x) = \overline{g\circ q}(x)$.
   However, by \cref{thm:quotient-surjective} there merely exists $a$ such that $q(a)=x$.
   Since our desired equality is a mere proposition, we may assume there purely exists such an $a$, in which case $g(x) = g(q(a)) = \overline{g\circ q}(q(a)) = \overline{g\circ q}(x)$.
 \end{proof}
@@ -1786,7 +1786,7 @@ In this section, we describe a general lemma about type families of this sort wh
 We call it the \define{flattening lemma}:
 \indexdef{flattening lemma}%
 \indexdef{lemma!flattening}%
-it says that if $P:W\to\UU$ is defined recursively as above, then its total space $\sm{x:W} P(x)$ is equivalent to a ``flattened'' higher inductive type, whose constructors may be deduced from those of $W$ and the definition of $P$.%
+it says that if $P:W\to\UU$ is defined recursively as above, then its total space $\sm{x:W} P(x)$ is equivalent to a ``flattened'' higher inductive type, whose constructors may be deduced from those of $W$ and the definition of $P$.
 (From a category-theoretic point of view, $\sm{x:W} P(x)$ is the ``Grothendieck\index{Grothendieck construction} construction'' of $P$, and the flattening lemma expresses its universal property as a ``lax\index{lax colimit} colimit''.  Although because types in homotopy type theory (like $W$) correspond categorically to $\infty$-groupoids (since all paths are invertible), in this case the lax colimit is the same as a pseudo colimit.)
 
 We prove here one general case of the flattening lemma, which directly implies many particular cases and suggests the method to prove others.
@@ -1856,7 +1856,7 @@ We begin by showing that it comes with analogues of the constructors $\cct$ and 
   The first is easy; define $\cct'(a,x) \defeq (\cc(a),x)$ and note that by definition $P(\cc(a))\jdeq C(a)$.
   For the second, suppose given $b:B$ and $y:C(f(b))$; we must give an equality
   \[ (\cc(f(b)),y) = (\cc(g(b)),D(b)(y)). \]
-  Since we have $\pp(b):f(b)=g(b)$, by equalities in $\Sigma$-types it suffices to give an equality $\trans{\pp(b)}{y} = D(b)(y)$.
+  Since we have $\pp(b):\cc(f(b))=\cc(g(b))$, by equalities in $\Sigma$-types it suffices to give an equality $\trans{\pp(b)}{y} = D(b)(y)$.
   But this follows from \cref{thm:transport-is-given}, using the definition of $P$.
 \end{proof}
 
@@ -1896,17 +1896,17 @@ Now the following lemma says to define a section of a type family over $\sm{w:W}
   Moving the right-hand transport to the other side, and combining two transports, this is equivalent to
   %
   \begin{narrowmultline*}
-    \Transfib{Q}{\apfunc{x\mapsto \cct'(g(b),x)}(q) \ct
-      \pairpath(\pp(b),\refl{\trans{\pp(b)}{y}})}{c(f(b),y)} =
+    \Transfib{Q}{\pairpath(\pp(b),\refl{\trans{\pp(b)}{y}}) \ct
+      \apfunc{x\mapsto \cct'(g(b),x)}(q)}{c(f(b),y)} =
     \narrowbreak
     c(g(b),D(b)(y)).
   \end{narrowmultline*}
   %
   However, we have
   \begin{multline*}
-    \apfunc{x\mapsto \cct'(g(b),x)}(q) \ct \pairpath(\pp(b),\refl{\trans{\pp(b)}{y}})
+    \pairpath(\pp(b),\refl{\trans{\pp(b)}{y}}) \ct \apfunc{x\mapsto \cct'(g(b),x)}(q)
     = {} \\
-    \pairpath(\refl{g(b)},q) \ct \pairpath(\pp(b),\refl{\trans{\pp(b)}{y}})
+    \pairpath(\pp(b),\refl{\trans{\pp(b)}{y}}) \ct \pairpath(\refl{\cc(g(b))},q)
     = \pairpath(\pp(b),q)
     = \ppt'(b,y)
   \end{multline*}
@@ -1915,7 +1915,7 @@ Now the following lemma says to define a section of a type family over $\sm{w:W}
 \end{proof}
 
 \cref{thm:flattening-rect} \emph{almost} gives $\sm{w:W}P(w)$ the same induction principle as \Wtil.
-The missing bit is the equality $\apdfunc{f}(\ppt'(b,y)) = p(b,y)$.
+The missing bit is the equality $\apdfunc{k}(\ppt'(b,y)) = p(b,y)$.
 In order to prove this, we would need to analyze the proof of \cref{thm:flattening-rect}, which of course is the definition of $k$.
 
 It should be possible to do this, but it turns out that we only need the computation rule for the non-dependent recursion principle.
@@ -2101,7 +2101,7 @@ The general idea of higher inductive types was conceived in discussions between 
 and do homotopy theory with them (see \cref{cha:homotopy}).
 
 A general discussion of the syntax of higher inductive types, and their semantics in higher-categorical models, appears in~\cite{ls:hits}.
-As with ordinary inductive types, models of higher inductive types can be constructed by transfinite iterative processes; a slogan is that ordinary inductive types describe \emph{free} monads while higher inductive types describe \emph{presentations} of monads.\index{monad}%
+As with ordinary inductive types, models of higher inductive types can be constructed by transfinite iterative processes; a slogan is that ordinary inductive types describe \emph{free} monads while higher inductive types describe \emph{presentations} of monads.\index{monad}
 The introduction of path constructors also involves the model-category-theoretic equivalence between ``right homotopies'' (defined using path spaces) and ``left homotopies'' (defined using cylinders) --- the fact that this equivalence is generally only up to homotopy provides a semantic reason to prefer propositional computation rules for path constructors.
 
 Another (temporary) reason for this preference comes from the limitations of existing computer implementations.

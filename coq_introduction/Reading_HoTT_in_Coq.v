@@ -55,7 +55,7 @@ has a number of features that have allowed it to be used for
 significant proofs.  Those proofs include the formalization of the
 Four Color Theorem and the Feit-Thompson Theorem.
 
-Coq uses a dependant type theory derived from "The Calculus of
+Coq uses a dependent type theory derived from "The Calculus of
 Constructions".  It differs from Martin-Loef's intentional
 type theory, but, as we'll see, its propositional equality has the
 same higher-groupoid structure that allows us to do HoTT.
@@ -64,7 +64,7 @@ same higher-groupoid structure that allows us to do HoTT.
 (** * Introduction *)
 (**
 Coq mostly works with two concepts:
-  - dependant functions (#Pi#$\Pi$-types) 
+  - dependent functions (#Pi#$\Pi$-types) 
   - inductive types 
 
 Inductive types are used to implement the common types of type theory:
@@ -196,7 +196,7 @@ its other main feature: dependent functions.
 (** ** Identity function *)
 (**
 We'll start by defining the identity function on natural numbers and
-then we'll write a dependantly-typed identity function that works for
+then we'll write a dependently-typed identity function that works for
 any type.  
 
 The identity function (or identity map) for natural numbers is:
@@ -212,7 +212,7 @@ Its format is:
 
 In our example, the name is "idmap_nat".  The type is a function from
 [nat] to [nat].  (Notice how the "->" operator approximates the arrow
-used in the book for non-dependantly typed functions.)  The value for
+used in the book for non-dependently typed functions.)  The value for
 "idmap_nat" is a function.
 
 In Coq, a function is written:
@@ -255,9 +255,9 @@ Compute idmap_nat (S O).
 
 (** *** Dependant types *)
 (**
-"idmap_nat" is not dependantly typed, so we were able to use the arrow
+"idmap_nat" is not dependently typed, so we were able to use the arrow
 ("->") to denote its type.  We could have written the function's type
-as if it was dependantly typed. In the book, dependant types are
+as if it was dependently typed. In the book, dependent types are
 declared with a capital "#Pi#$\Pi$".  Coq uses the keyword [forall].
 *)
 
@@ -282,7 +282,7 @@ dependently typed on another parameter, the dependent one must come
 later in the list.  (We'll see an example soon.)
 
 
-Now that we know how to write a dependant function type, we can
+Now that we know how to write a dependent function type, we can
 write an identity function that works for any type.
 *)
 
@@ -290,7 +290,7 @@ Definition idmap : forall A:Type, A -> A :=
   fun (A:Type) (x:A) => x.
 
 (** 
-"idmap" is a dependantly-typed function: its return type depends on the
+"idmap" is a dependently-typed function: its return type depends on the
 type of its first parameter.  Therefore, we had to use the [forall]
 operator for that parameter.  
 

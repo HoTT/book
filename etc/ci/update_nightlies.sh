@@ -62,14 +62,15 @@ MASTER_COMMIT="$(git rev-parse HEAD)"
 
 git checkout -b gh-pages upstream/gh-pages || exit 1
 
-git rm -rf nightly || true
-rm -rf nightly || true
+OLD_NIGHTLIES="$(find nightly -type f -mtime +1)"
+git rm -rf $OLD_NIGHTLIES || true
+rm -rf $OLD_NIGHTLIES || true
 
-mkdir nightly
+mkdir -p nightly
 
 git add -f $PDFS || exit 1
 
-git mv $PDFS nightly/ || exit 1
+git mv -f $PDFS nightly/ || exit 1
 
 git commit -m "Update nightly builds (auto)" || exit 1
 NIGHTLY_COMMIT="$(git rev-parse HEAD)"

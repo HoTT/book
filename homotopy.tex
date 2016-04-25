@@ -960,7 +960,7 @@ We call this the \define{zero map}\indexdef{zero!map}\indexdef{function!zero} an
 Recall that every pointed type $(X,x_0)$ has a loop space\index{loop space} $\Omega (X,x_0)$.
 We now note that this operation is functorial on pointed maps.\index{loop space!functoriality of}\index{functor!loop space}
 
-\begin{defn}
+\begin{defn}\label{def:loopfunctor}
   Given a pointed map between pointed types $f:X \to Y$, we define a pointed
   map $\Omega f:\Omega X
   \to \Omega Y$ by
@@ -2393,13 +2393,13 @@ It may be regarded as a type-theoretic, $\infty$-group\-oid\-al version of the c
   Hence $\hfib f b$ is inhabited, and thus merely inhabited.
 \end{proof}
 
-Since homotopy groups are truncations of loop spaces\index{loop space}, rather than path spaces, we need to modify this theorem to speak about these instead.
+Since homotopy groups are truncations of loop spaces\index{loop space}, rather than path spaces, we need to modify this theorem to speak about these instead. Recall the map $\Omega f$ from \cref{def:loopfunctor}.
 
 \begin{cor}\label{thm:whitehead1}
   Suppose $f:A\to B$ is a function such that
   \begin{enumerate}
   \item $\trunc0 f : \trunc0 A \to \trunc0 B$ is a bijection, and
-  \item for any $x:A$, the function $\apfunc f : \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
+  \item for any $x:A$, the function $\Omega f : \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
   \end{enumerate}
   Then $f$ is an equivalence.
 \end{cor}
@@ -2411,7 +2411,7 @@ Since homotopy groups are truncations of loop spaces\index{loop space}, rather t
   But now the following square commutes up to homotopy:
   \begin{equation*}
   \vcenter{\xymatrix@C=3pc{
-      \Omega(A,x)\ar[r]^-{\blank\ct p}\ar[d]_{\apfunc f} &
+      \Omega(A,x)\ar[r]^-{\blank\ct p}\ar[d]_{\Omega f} &
       (\id[A]xy) \ar[d]^{\apfunc f}\\
       \Omega(B,f(x))\ar[r]_-{\blank\ct f(p)} &
       (\id[B]{f(x)}{f(y)}).
@@ -2439,17 +2439,18 @@ Condition~\ref{item:wh0} is almost the case of~\ref{item:whk} when $k=0$, except
   We proceed by induction on $n$.
   When $n=-2$, the statement is trivial.
   Thus, suppose it to be true for all functions between $n$-types, and let $A$ and $B$ be $(n+1)$-types and $f:A\to B$ as above.
-  The first condition in \cref{thm:whitehead1} holds by assumption, so it will suffice to show that for any $x:A$, the function $\apfunc f: \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
-  % in the following sentence we use \Vert instead of \trunc, because otherwise the vertical bars
-  % are so large it's ugly.
+  The first condition in \cref{thm:whitehead1} holds by assumption, so it will suffice to show that for any $x:A$, the function $\Omega f: \Omega(A,x) \to \Omega(B,f(x))$ is an equivalence.
+
   Since $\Omega(A,x)$ and $\Omega(B,f(x))$ are $n$-types we can apply the induction hypothesis.  We
-  need to check that $\Vert \apfunc f\Vert_0$ is a bijection and that for all $p : x = x$ the map
-  $\pi_k(\apfunc f):\pi_k(x = x,p) \to \pi_k(f(x) = f(x),\apfunc f(p))$ is a bijection for $k\geq1$.
-  The first statement is given, since $\Vert \apfunc f\Vert_0=\pi_1(f)$. To prove the second
-  statement, we generalize it first. We prove that for all $y : A$ and $p : x = y$ we have
-  $\pi_k(\apfunc f):\pi_k(x = y,p) \to \pi_k(f(x) = f(y),\apfunc f(p))$. To prove this, we use path
-  induction, so it's sufficient to prove it for $p \equiv \refl{a}$. In this case, we have
-  $\pi_k(\apfunc f) = \pi_{k+1}(f)$, and it's given that $\pi_{k+1}(f)$ is an bijection.
+  need to check that $\trunc 0{\Omega f}$ is a bijection and that for all $p : x = x$ the map
+  $\pi_k(\Omega f):\pi_k(x = x,p) \to \pi_k(f(x) = f(x),\Omega f(p))$ is a bijection for $k\geq1$.
+  The first statement is given, since $\trunc 0{\Omega f}=\pi_1(f)$. To prove the second statement,
+  we generalize it first. We prove that for all $y : A$ and $q : x = y$ we have $\pi_k(\apfunc
+  f):\pi_k(x = y,q) \to \pi_k(f(x) = f(y),\apfunc f(q))$. This is indeed a generalization, because
+  $\pi_k(\Omega f)=\pi_k(\apfunc f)$ if we identify the base points $\Omega f(p)=\apfunc f(p)$. To
+  prove the generalization, we use path induction, so it's sufficient to prove it for $q \equiv
+  \refl{a}$. In this case, we have $\pi_k(\apfunc f) = \pi_k(\Omega f) = \pi_{k+1}(f)$, and it's
+  given that $\pi_{k+1}(f)$ is an bijection.
 \end{proof}
 
 Note that if $A$ and $B$ are not $n$-types for any finite $n$, then there is no way for the induction to get started.

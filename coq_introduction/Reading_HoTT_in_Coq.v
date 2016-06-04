@@ -1076,7 +1076,7 @@ Check @idpath nat 4.
 (**
 which is an element that has type "4=4".  Obviously, with implicit
 arguments, we do not need "nat" and can use just "idpath 4".  Not so
-obviously, we can go a step further.  If type inferencing can determing
+obviously, we can go a step further.  If type inferencing can determine
 the type returned by "idpath", such as "4=4" in our example, then
 implicit arguments can fill in the "4" as well!  So most of the time
 you will just see "idpath" or its [Notation], "1" (in the "path_scope"
@@ -1397,7 +1397,7 @@ equivalence.
 Since we've decided to cheat and add theorems without proof, it seems
 like the opportune time to add an axiom.  Homotopy type theory's
 univalence axiom states that there exists an equivalence between two
-types being equivalence and the two types being equal.  
+types being equivalent and those same two types being equal.
 
 *)
 

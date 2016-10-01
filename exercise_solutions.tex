@@ -1469,23 +1469,26 @@ from the following computation
 \end{align*}
 \subsection*{Solution to \cref{ex:categorical-connectivity}}
 
-Let us denote by $\mathsf{isConn}(A)$ the connectivity of type $A$. It is known that
+Let us denote by $\mathsf{isConn}(A)$ the proposition that a type $A$ is connected. It is known that
 \begin{displaymath}
- \mathsf{isConn}(A) \simeq \trunc {} A \times \prd{x,y:A} \trunc {} {\id[A]xy}
+ \eqv{\mathsf{isConn}(A)}{\brck A \times \prd{x,y:A} \brck {\id[A]xy}}
 \end{displaymath}
 (see \cref{ex:connectivity-inductively}).
 \begin{enumerate}
- \item Suppose a type $A$ is connected. The goal $\prd{B,C:\type} \isequiv(e_{A,B,C})$ is a mere proposition, so we can assume $a:A$ and $\prd{x,y:A} \trunc {} {x = y}$.
+ \item Suppose a type $A$ is connected. The goal $\prd{B,C:\type} \isequiv(e_{A,B,C})$ is a mere proposition, so we can assume $a:A$ and $\prd{x,y:A} \brck {x = y}$.
 
-       Let $B,C$ be types. We want to construct $h:(A\to B+C) \to (A\to B)+(A\to C)$ such that $h \circ e = \idfunc$ and $e \circ h = \idfunc$.
+       Let $B,C$ be types.
+       We want to construct $h:(A\to B+C) \to (A\to B)+(A\to C)$ such that
+       $h \circ e_{A,B,C} = \idfunc[(A \to B) + (A \to C)]$ and
+       $e_{A,B,C} \circ h = \idfunc[A \to B + C]$.
        Let $f:A \to B+C$ be an arbitrary function. We have case analysis on $f(a):B + C$.\\
-       (a) if $f(a) \equiv \inl(u)$ for some $u:B$:
+       (a) if $f(a) \jdeq \inl(u)$ for some $u:B$:
        We want a function $g:A\to B$ such that $f(x) = \inl(g(x))$ for every $x:A$. Let us define $k:B+C\to B$ by
        \begin{align*}
 	k(\inl(b)) &\defeq b;\\
-	k(\inr(c)) &\defeq f(a) \enspace,
+	k(\inr(c)) &\defeq f(a),
        \end{align*}
-       and $g \defeq k \circ f$. Then we have $\inl(g(x)) = \inl(k(f(x))) = f(x)$ for every $x:A$ (by case analysis on $f(x)$ and $\trunc {} {\id[A]{a}{x}}$).
+       and $g \defeq k \circ f$. Then we have $\inl(g(x)) = \inl(k(f(x))) = f(x)$ for every $x:A$ (by case analysis on $f(x)$ and $\brck {\id[A]{a}{x}}$).
        With this $g$, we define $h(f) \defeq \inl(g)$. Then we have
        \begin{displaymath}
 	e_{A,B,C}(h(f)) = e_{A,B,C}(\inl(g)) = \lam{x} \inl(g(x)) = f
@@ -1495,32 +1498,39 @@ Let us denote by $\mathsf{isConn}(A)$ the connectivity of type $A$. It is known 
 	h(e_{A,B,C}(\inl(v))) = h(\lam{x} \inl(v(x))) = \lam{x} k(\inl(v(x))) = v
        \end{displaymath}
        for any $v: A\to B$.\\
-       (b) if $f(a) \equiv \inr(u)$ for some $u:C$: Similar to (a).\\
+       (b) if $f(a) \jdeq \inr(u)$ for some $u:C$: Similar to (a).\\
  \item (Categorial connectivity to $\mathsf{isConn}$ implies $\LEM{}$):
        Assume for every type $A$,
-       $(\prd{B,C:\type}\isequiv(e_{A,B,C})) \to \mathsf{isConn}(A)$.
+       \begin{displaymath}
+	\Parens{\prd{B,C:\type}\isequiv(e_{A,B,C})} \to \mathsf{isConn}(A).
+       \end{displaymath}
        Assuming $\neg \neg P$ for a mere proposition $P$, we want to prove $P$.
        Let us define $A \defeq \susp P$.
-       Since $P \simeq (\id[\susp P]{\north}{\south}) \simeq \trunc {} {\id[\susp P]{\north}{\south}}$ (by \cref{prop:trunc_of_prop_is_set}
-       and since $P$ is mere) and $\mathsf{isConn}(\susp P)$ implies $\trunc {} {\id[\susp P]{\north}{\south}}$ (by \cref{ex:connectivity-inductively}),
+       Since $P \eqvsym (\id[\susp P]{\north}{\south}) \eqvsym \brck {\id[\susp P]{\north}{\south}}$ (by \cref{prop:trunc_of_prop_is_set}
+       and since $P$ is a mere proposition) and $\mathsf{isConn}(\susp P)$ implies $\brck {\id[\susp P]{\north}{\south}}$ (by \cref{ex:connectivity-inductively}),
        it suffices to prove $\prd{B,C:\type}\isequiv(e_{\susp P,B,C})$. The proof is done by case analysis on $(f(\north), f(\south))$ for $f:\susp P\to B+C$.
 
        ($\LEM{}$ implies categorial connectivity to $\mathsf{isConn}$):
-       Assume $\LEM{}$, $A:\type$ and $\prd{B,C:\type} \isequiv(e_{A,B,C})$.
-       We need to prove $\mathsf{isConn}(A)$.
-       By $\LEM{}$ We have $\trunc {} A$ because if $\neg \trunc {} A$ we have $A \simeq 0$ and $1 + 1 \simeq 1$, which is not the case.
-       Also by $\LEM{}$, for every $x,y:A$ we have $\trunc {} {x = y} + \neg \trunc {} {x = y}$. So if we fix $x:A$ we have a function $f_x:A \to 1 + 1$ such that
+       Assume $\LEM{}$, $A:\type$ and
+       \begin{displaymath}
+        \prd{B,C:\type} \isequiv(e_{A,B,C}).
+       \end{displaymath}
+We need to prove $\mathsf{isConn}(A)$.
+       By $\LEM{}$ we have $\brck A$, because if $\neg \brck A$ we have $\eqv{A}{\emptyt}$ and $\eqv{\unit + \unit}{\unit}$, which is not the case.
+       Also by $\LEM{}$, for every $x,y:A$ we have $\brck {x = y} + \neg \brck {x = y}$. So if we fix $x:A$ we have a function $f_x:A \to \unit + \unit$ such that
        \begin{displaymath}
 	f_x(y) \defeq \begin{cases}
-		     \inl(*) & \mbox{if } \trunc {} {x = y} \\ % TODO
-		     \inr(*) & \mbox{if } \neg \trunc {} {x = y}
+		     \inl(\ttt) & \mbox{if } \brck {x = y} \\
+		     \inr(\ttt) & \mbox{if } \neg \brck {x = y}
 		    \end{cases}
        \end{displaymath}
        Applying the assumption to $f_x$, we obtain
        \begin{displaymath}
-	e_{A,1,1}^{-1}(f_x): (A \to 1) + (A \to 1)
+	\inv{e_{A,\unit,\unit}}(f_x): (A \to \unit) + (A \to \unit)
        \end{displaymath}
-       but by definition of $e$ and because $f_x(x) = \inl(*)$, it must be equal to $\inl(\lam{y} *): (A \to 1) + (A \to 1)$, which means we have $\prd{y:A} \trunc {} {x = y}$.
+       but by definition of $e$ and because $f_x(x) = \inl(\ttt)$,
+       it must be equal to $\inl(\lam{y} \ttt): (A \to \unit) + (A \to \unit)$,
+       which means we have $\prd{y:A} \brck {x = y}$.
 \end{enumerate}
 
 

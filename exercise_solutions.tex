@@ -1481,31 +1481,57 @@ Let us denote by $\mathsf{isConn}(A)$ the proposition that a type $A$ is connect
        We want to construct $h:(A\to B+C) \to (A\to B)+(A\to C)$ such that
        $h \circ e_{A,B,C} = \idfunc[(A \to B) + (A \to C)]$ and
        $e_{A,B,C} \circ h = \idfunc[A \to B + C]$.
-       Let $f:A \to B+C$ be an arbitrary function. We have case analysis on $f(a):B + C$.\\
-       (a) if $f(a) \jdeq \inl(u)$ for some $u:B$:
-       We want a function $g:A\to B$ such that $f(x) = \inl(g(x))$ for every $x:A$. Let us define $k:B+C\to B$ by
-       \begin{align*}
-	k(\inl(b)) &\defeq b;\\
-	k(\inr(c)) &\defeq f(a),
-       \end{align*}
-       and $g \defeq k \circ f$. Then we have $\inl(g(x)) = \inl(k(f(x))) = f(x)$ for every $x:A$ by case analysis on $f(x)$:
+       Let $f:A \to B+C$ be an arbitrary function.
+       Let us define $h(f):(A \to B) + (A \to C)$
+       by case analysis on $f(a):B + C$:
        \begin{itemize}
-	\item if $f(x) \jdeq \inl(v)$:
-	      $\inl(k(f(x))) = \inl(k(\inl(v))) = \inl(v) = f(x)$,
-	\item if $f(x) \jdeq \inr(v)$:
-	      we have $f(a) \neq f(x)$,
-	      which is impossible by $\brck {\id[A]{a}{x}}$.
+	\item if $f(a) \jdeq \inl(u)$ for some $u:B$:
+	      Let us define $k_1:B+C\to B$ by
+	      \begin{align*}
+	       k_1(\inl(b)) &\defeq b;\\
+	       k_1(\inr(c)) &\defeq u,
+	      \end{align*}
+	      and let $h(f)$ be $\inl(k_1 \circ f)$.
+	\item if $f(a) \jdeq \inr(u)$ for some $u:C$:
+	      Let us define $k_2:B+C\to C$ by
+	      \begin{align*}
+	       k_2(\inl(b)) &\defeq u;\\
+	       k_2(\inr(c)) &\defeq c,
+	      \end{align*}
+	      and let $h(f)$ be $\inr(k_2 \circ f)$.
        \end{itemize}
-       With this $g$, we define $h(f) \defeq \inl(g)$. Then we have
+       Let us prove that this $h$ is indeed an inverse of $e_{A,B,C}$.\\
+       First we prove $e_{A,B,C}(h(f)) = f$ for every $f:A \to B + C$
+       by case analysis on $f(a)$:\\
+       (a) if $f(a) \jdeq \inl(u)$ for some $u:B$:
+       We have $\inl(k_1(f(x))) = f(x)$ for every $x:A$
+       by case analysis on $f(x)$:
+       \begin{itemize}
+	\item if $f(x) \jdeq \inl(v)$ for some $v:B$:
+	      $\inl(k_1(f(x))) = \inl(k_1(\inl(v))) = \inl(v) = f(x)$,
+	\item if $f(x) \jdeq \inr(v)$ for some $v:C$:
+	      we have $f(a) \neq f(x)$,
+	      which contradicts $\brck {\id[A]{a}{x}}$.
+       \end{itemize}
+       Then we have
        \begin{displaymath}
-	e_{A,B,C}(h(f)) = e_{A,B,C}(\inl(g)) = \lam{x} \inl(g(x)) = f
+	e_{A,B,C}(h(f)) = e_{A,B,C}(\inl(k_1 \circ f))
+	= \lam{x} \inl(k_1(f(x))) = f.
        \end{displaymath}
-       and
-       \begin{displaymath}
-	h(e_{A,B,C}(\inl(v))) = h(\lam{x} \inl(v(x))) = \lam{x} k(\inl(v(x))) = v
-       \end{displaymath}
-       for any $v: A\to B$.\\
        (b) if $f(a) \jdeq \inr(u)$ for some $u:C$: Similar to (a).\\
+       Next we prove $h(e_{A,B,C}(f)) = f$ for every $f:(A \to B) + (A \to C)$
+       by case analysis on $f$:\\
+       (a) if $f \jdeq \inl(g)$ for some $g: A \to B$:
+       \begin{displaymath}
+	h(e_{A,B,C}(f)) = h(e_{A,B,C}(\inl(g))) = h(\lam{x} \inl(g(x)))
+	= \inl(\lam{x} g(x)) = f,
+       \end{displaymath}
+       (b) if $f \jdeq \inr(g)$ for some $g: A \to C$:
+       \begin{displaymath}
+	h(e_{A,B,C}(f)) = h(e_{A,B,C}(\inr(g))) = h(\lam{x} \inr(g(x)))
+	= \inr(\lam{x} g(x)) = f.
+       \end{displaymath}
+       Therefore we have $\isequiv(e_{A,B,C})$.
  \item (Categorial connectivity to $\mathsf{isConn}$ implies $\LEM{}$):
        Assume for every type $A$,
        \begin{displaymath}

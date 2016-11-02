@@ -1656,7 +1656,21 @@ When $P$ is a family of function types, there is an equivalent way to represent 
   \[ \eqvspaced{ \big(\trans{p}{f} = {g}\big) } { \prd{a:A(x)}  (\trans{p}{f(a)} = g(\trans{p}{a})) }. \]
   Moreover, if $q:\trans{p}{f} = {g}$ corresponds under this equivalence to $\widehat q$, then for $a:A(x)$, the path
   \[ \happly(q,\trans p a) : (\trans p f)(\trans p a) = g(\trans p a)\]
-  is equal to the composite
+  is equal to the concatenated path $i\ct j\ct k$, where
+  \begin{itemize}
+  \item $i:(\trans p f)(\trans p a) = \trans p {f (\trans {\opp p}{\trans p a})}$ comes from~\eqref{eq:transport-arrow},
+  \item $j:\trans p {f (\trans {\opp p}{\trans p a})} = \trans p {f(a)}$ comes from \cref{thm:transport-concat,thm:omg}, and
+  \item $k:\trans p {f(a)}= g(\trans p a)$ is $\widehat{q}(a)$.
+  \end{itemize}
+\end{lem}
+\begin{proof}
+  By path induction, we may assume $p$ is reflexivity, in which case the desired equivalence reduces to function extensionality.
+  The second statement then follows by the computation rule for function extensionality.
+\end{proof}
+
+In general, it happens quite frequently that we want to consider a concatenation of paths each of which arises from some previously proven lemmas or hypothesized objects, and it can be rather tedious to describe this by giving a name to each path in the concatenation as we did in the second statement above.
+Thus, we adopt a convention of writing such concatenations in the familiar mathematical style of ``chains of equalities with reasons'', and allow ourselves to omit reasons that the reader can easily fill in.
+For instance, the path $i\ct j\ct k$ from \cref{thm:dpath-arrow} would be written like this:
   \begin{align*}
     (\trans p f)(\trans p a)
     &= \trans p {f (\trans {\opp p}{\trans p a})}
@@ -1665,13 +1679,10 @@ When $P$ is a family of function types, there is an equivalent way to represent 
     &= g(\trans p a).
     \tag{by $\widehat{q}$}
   \end{align*}
-\end{lem}
-\begin{proof}
-  By path induction, we may assume $p$ is reflexivity, in which case the desired equivalence reduces to function extensionality.
-  The second statement then follows by the computation rule for function extensionality.
-\end{proof}
+In ordinary mathematics, such a chain of equalities would be merely proving that two things are equal.
+We are enhancing this by using it to describe a \emph{particular} path between them.
 
-As usual, the case of dependent functions is similar, but more complicated.
+As usual, there is a version of \cref{thm:dpath-arrow} for dependent functions that is similar, but more complicated.
 \index{path!dependent!in dependent function types}
 
 \begin{lem}\label{thm:dpath-forall}

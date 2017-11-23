@@ -239,6 +239,47 @@ It remains to verify that $\ind{A \times B}'(C, g, x)$ behaves as expected:
 %
 Now for $\Sigma$-types the exact same expressions work as well, except that the types change.
 
+\section*{Exercises from \cref{cha:basics}}
+
+\subsection*{Solution to \cref{ex:npaths}}
+
+In general, when defining an ``$n$-foo'', one should ensure that a ``$1$-foo''
+is just a ``foo'' (e.g.\ a 1-category is just a category). In this case, a
+$1$-path in some type $A$ should just be a path, that is, an equality $\id[A]
+xy$ between some elements $x,y:A$. Then a 0-path should probably be an
+element of $A$. We also know that a $2$-path, or homotopy, is a pair of
+$1$-paths and an equality between them. Our definition should extrapolate from
+this pattern. 
+
+Define $C\defeq \lam{n}\type\to\type$. By the induction principle for $\nat$, it
+suffices to give terms
+\begin{gather*}
+  c_0 : \type\to\type \\
+  c_s : \prd{n:\nat}\prd{f:\type\to\type}\type\to\type
+\end{gather*}
+Define these by
+\begin{align*}
+  c_0 &\defeq \idfunc[\type] \\
+  c_s(n,f,A) &\defeq \sm{x,y:f(A)}\id[]xy
+\end{align*}
+That is to say, an $(n+1)$-dimensional path should be a pair of $n$-dimensional
+paths, together with a path between them. More concisely:
+\begin{gather*}
+  \operatorname{npath} : \nat\to\type\to\type \\
+  \operatorname{npath} \defeq \ind{\nat}\Parens{\lam{n}\type\to\type, \idfunc[\type], \lam{n}\lam{f}\lam{A}\Parens{\sm{x,y:f(A)}\id[]xy}}
+\end{gather*}
+
+What should the boundary of an $n$-path be? The boundary of a $1$-path is
+a pair of points. The boundary of a $2$-path (that is, a homotopy) is a pair of
+$1$-paths. Perhaps the boundary of an $(n+1)$-path should be a pair of
+$n$-paths. We can get these by using the appropriate projections:
+\begin{gather*}
+  \operatorname{nboundary} :
+  \prd{n:\nat}\prd{A:\type}\operatorname{npath}(\suc(n),A)\to
+  \operatorname{npath}(n,A)\times \operatorname{npath}(n,A) \\
+  \operatorname{nboundary}(p)\defeq (\proj{1}(p),\proj{1}(\proj{2}(p)))
+\end{gather*}
+
 \section*{Exercises from \cref{cha:logic}}
 
 \subsection*{Solution to \cref{ex:equiv-functor-set}}

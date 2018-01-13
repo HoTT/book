@@ -274,9 +274,9 @@ We will write out the next few proofs in both styles, to help the reader become 
 Next we prove the transitivity of equality, or equivalently we ``concatenate paths''.
 
 \begin{lem}\label{lem:concat}
-  For every type $A$ and every $x,y,z:A$ there is a function
+  For every type $A$ and every $x,y,z:A$, there is a function
   \begin{equation*}
-  (x= y) \to   (y= z)\to (x=  z)
+  (x= y) \to   (y= z)\to (x=  z),
   \end{equation*}
   written $p \mapsto q \mapsto p\ct q$, such that $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
   We call $p\ct q$ the \define{concatenation} or \define{composite} of $p$ and $q$.
@@ -289,39 +289,45 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \end{lem}
 
 \begin{proof}[First proof]
-  Let $D:\prd{x,y:A} (x=y) \to \type$ be the type family
+  We will use path induction twice to construct a function
   \begin{equation*}
-    D(x,y,p)\defeq \prd{z:A}{q:y=z} (x=z).
+  f:\prd{x,y:A}\prd{x=y:A}\prd{z:A}\prd{q:y=z} (x=z).
   \end{equation*}
-  Note that $D(x,x,\refl x) \jdeq \prd{z:A}{q:x=z} (x=z)$.
-  Thus, in order to apply the induction principle for identity types to this $D$, we need a function of type
-  \begin{equation}\label{eq:concatD}
-    \prd{x:A} D(x,x,\refl{x})
-  \end{equation}
-  which is to say, of type
-  \[ \prd{x,z:A}{q:x=z} (x=z). \]
-  Now let $E:\prd{x,z:A}{q:x=z}\type$ be the type family $E(x,z,q)\defeq (x=z)$.
-  Note that $E(x,x,\refl x) \jdeq (x=x)$.
-  Thus, we have the function
+  Note that, given $f$, a function of the desired type
+  \begin{align}
+   f':\prd{x,y,z:A}(x=y)\to (y=z)\to (x=z)
+  \end{align}
+  can be defined by swapping the arguments, i.e. by setting
   \begin{equation*}
-    e(x) \defeq \refl{x} : E(x,x,\refl{x}).
+   f'(x,y,z,p,q):\equiv f(x,y,p,z,q).
   \end{equation*}
-  By the induction principle for identity types applied to $E$, we obtain a function
+  The rest of this proof (and many others) works essentially by using path induction to remove the quantifiers in the type of $f$, and finally reducing to reflexivity. We can construct $f$ as the direct result of a path induction by choosing the type family $D:\prd{x,y:A} (x=y) \to \type$ defined by
   \begin{equation*}
-    d : \prd{x,z:A}{q:x=z} E(x,z,q).
+    D(x,y,p)\defeq \prd{z:A}{q:y=z} (x=z)
   \end{equation*}
-  But $E(x,z,q)\jdeq (x=z)$, so the type of $d$ is~\eqref{eq:concatD}.
-  Thus, we can use this function $d$ and apply the induction principle for identity types to $D$, to obtain a function
+  and a function $d$ of type
   \begin{equation*}
-    f:\prd{x,y:A}\prd{x=y:A}\prd{z:A}\prd{q:y=z} (x=z).
+   \prd{x:A} D(x,x,\refl x) \jdeq \prd{x,z:A}{q:x=z} (x=z)
   \end{equation*}
-  Finally, for any $x,y,z:A$, we define the function
-  \begin{equation*}
-   \lambda e_{xy}.\lambda e_{yz}.f(x,y,e_{xy},z,e_{yz}): (x=y)\to (y=z)\to (x=z)
-  \end{equation*}
-  which is of the desired type.
+  as arguments to the recursor $\mathrm{ind}_{=_A}$.
   
-  The conversion rules for the two induction principles give us $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
+  To construct $d$, we apply another path induction to the type family $E:\prd{x,z:A}(x=z)\to\type$ defined by
+  \begin{equation*}
+   E(x,z,q)\defeq (x=z)
+  \end{equation*}
+  and the function $e \defeq \prd{x:A}\refl{x}$ of type
+  \begin{equation*}
+    \prd{x:A}(x=x)\jdeq\prd{x:A}E(x,x,\refl{x}).
+  \end{equation*}
+This path induction yields a function of type
+\begin{align}
+ \prd{x,z:A}\prd{q:x=z}(x=z),
+\end{align}
+which is what is required for $d$. This completes the construction.
+Finally, for any $x:A$, the conversion rules for the two induction principles give us
+  \begin{equation*}
+\refl{x}\ct \refl{x}\jdeq f(x,x,\mathrm{refl}_x,x,\mathrm{refl}_x)\jdeq d(x,x,\mathrm{refl}_x)\jdeq e(x)\jdeq\refl{x}.
+  \end{equation*}
 \end{proof}
 
 \begin{proof}[Second proof]

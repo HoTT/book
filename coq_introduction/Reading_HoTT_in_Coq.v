@@ -801,41 +801,42 @@ dependent pairs, but use the "Prop" universe.  Again, we're not using
 "Prop", we won't cover them here.
 *)
 
-(** *** Pair Notation *)
+(** *** Notación de pares *)
 (**
-To create a dependent pair, we must supply a function taking an
-element of the first type to a type for the second element.  Since we
-haven't defined propositional equality, we can't do much that is
-interesting here. For now, we can create a pair of [nat]s by supplying
-a function that always returns [nat].
+Para crear un par dependiente, debemos suministrar una función tomando 
+un elemento del primer tipo a un tipo para el segundo elemento.  Desde 
+que no definimos la igualdad proporcional, no podemos hacer mucho que sea
+interesante aquí. Por ahora, podemos crear un par de [nat]s suministrando
+una función que siempre devuelve [nat].
 *)
 
 Check (existT (fun _:nat => nat) 4 2).
 
 (** 
-Obviously, that expression is long to write and difficult to read and
-we want to use a [Notation] for it.  Since Coq already uses "(a,b)"
-for non-dependent pairs, the HoTT Coq library uses the semicolon here.
+Obviamente, esa expresión es larga para escribir y dificil para leer
+y queremos usar una [Notación] para eso.  Ya que Coq ya usa "(a,b)"
+para pares no dependientes, la biblioteca HoTT Coq usa el punto y coma
+aquí.
 *)
 
-Notation "{ x : A  & P }" := (sigT (fun x:A => P)) : type_scope.
+Notation"{ x : A  & P }" := (sigT (fun x:A => P)) : type_scope.
 Notation "( x ; y )" := (existT _ x y) : fibration_scope.
 Open Scope fibration_scope.
 
 (**
-When Coq sees "(4;2)", it will translate that into "(existT _ 4 2)".
-The underscore ("_") in a function application indicates that Coq
-should try to infer the argument or ask for help from the user.
+Cuando Coq ve "(4;2)", traducirá eso en "(existT _ 4 2)".
+El guión bajo ("_") en una aplicación de función indica que Coq
+debe intentar inferir el argumento o pedir ayuda al usuario.
 
-Here the dependent-pair [Notation] goes into the "fibration_scope".
-Since that is a new scope, we must "Open" it to make the [Notation]
-available.
+Aquí el par dependiente [Notación] va dentro de "fibration_scope".
+Dado que es un nuevo alcance, debemos "Abrirlo" para hacer la [Notación]
+disponible.
 *)
 
 (**
-Below is an example using the dependent pair "(4;2)".  It is necessary
-to say what its type is, so that Coq can infer the hidden argument to
-"existT".
+A continuación hay un ejemplo mostrando el par dependiente "(4;2)". Es
+necesario para decir que tipo es, para que Coq pueda inferir el argumento
+escondido a "existT".
 *)
 
 Definition dep_pair_example_type := 
@@ -844,19 +845,19 @@ Definition dep_pair_example : dep_pair_example_type :=
   (4;2).
 Check dep_pair_example.
 
-(** *** Projection functions *)
+(** *** Funciones de proyección *)
 (**
-The projection functions extract the first or second part of a pair.
-For dependent pairs in Coq, these are called "projT1" and "projT2".
+Las funciones de proyección extraen la primera o segunda parte de un par.
+Para pares dependientes en Coq, estos son llamados "projT1" y "projT2".
 *)
 
-Section Projections.
+Proyecciones de sección.
 
-  Context {A : Type}.
-  Context {P : A -> Type}.
+  Contexto {A : Tipo}.
+  Contexto {P : A -> Tipo}.
 
   Definition projT1 (x:sigT P) : A := 
-    match x with
+   match x with
       | existT a _ => a
     end.
 
@@ -865,68 +866,68 @@ Section Projections.
       | existT _ h => h
     end.
 
-End Projections.
+Proyecciones finales.
 
 (** 
-These are pretty much as you'd expect.  There are two items worth
-commenting on.
+Estas son más o menos las que esperabas.  Hay dos elementos que vale
+la pena comentar.
 
-The underscore ("_") in the constructor pattern is used to indicate an
-unused parameter in the [match] expression.  We've seen this before in
-parameters to [fun] and [forall].
+El guión bajo("_") en el patrón constructor se usa para indicar un
+parámetro no usador en la expresión [coincidir]. Hemos visto esto antes en
+parámetros [fun] y [forall].
 
-The other feature worth commenting on is the "return <type>" in the
-[match] expression of "projT2".  This syntax is used when the [match]
-expression has a type that depends on the element of the inductive
-type being matched on.
+La otra característica que vale la pena comentar es el "<tipo> return" en
+la expresión [match] de "projT2".  Esta sintaxis es usada cuando la expresión
+[coincidir] tiene un tipo que depende del elemento de la inductiva tipo que coincide
+con el.
 
-We will not go into all the details on the variations of the [match]
-expression, because this document is about reading what has been
-proven - that is, the _type_ of an expression - and not about
-understanding the proof - which is the value of the expression.
+No entraremos en todos los detalles en las variaciones de la expresión
+[coincidir], porque este documento es sobre leer lo que ha sido probado
+- que es, el _tipo_ de una expresión - y no sobre
+entender la prueba - que es el valor de la expresión.
 
 
-The [Notation]s for the projectors are:
+Las [Notacion]es para los proyectores son:
 *)
 
-Notation "x .1" := (projT1 x) (at level 3) : fibration_scope.
-Notation "x .2" := (projT2 x) (at level 3) : fibration_scope.
+Notation "x .1" := (projT1 x) (en el nivel 3) : fibration_scope.
+Notation "x .2" := (projT2 x) (en el nivel 3) : fibration_scope.
 
 (**
-And some examples of it are:
+Y algunos ejemplos de esto son:
 *)
 
 Check (dep_pair_example .1).
 Check (dep_pair_example .2).
 
 
-(** ** Disjoint Union Type*)
+(** ** Tipo de unión disjunta*)
 (**
-In the HoTT book, the disjoint union type, also called coproduct,
-requires
--   a type A : U, and
--   a type B : U
-and is written
+En el libro HoTT, el tipo de unión disjunta, tambien llamada coproducto,
+requiere
+-   un tipo A : U, y
+-   un tipo B : U
+y está escrita
 -   A + B.
 
-In Coq, it is defined by:
+En Coq, está definido por:
 *)
 
-Inductive sum (A B:Type) : Type :=
-  | inl : A -> sum A B
-  | inr : B -> sum A B.
+Suma indictuva (Tipo:A B) : Tipo :=
+  | inl : A -> suma A B
+  | inr : B -> suma A B.
 
 Arguments inl {A B} _ , [A] B _.
 Arguments inr {A B} _ , A [B] _.
 
-Notation "x + y" := (sum x y) : type_scope.
+Notación "x + y" := (suma x y) : type_scope.
 
 (** 
-Ignoring the "Arguments" command, which we aren't covering in this
-document, the rest should be familiar by now.
+Ignorando el comando "Arguments", que no estamos cubriendo en este
+documento, el resto debería ser familiar por ahora.
 
-Since the type "sum" has two constructors, "inl" and "inr", we can
-have two examples that build an element of a type.
+Ya que el tipo "suma" tiene dos constructores, "inl" y "inr", podemos
+tener dos ejemplos que construyen un elemento de un tipo.
 *)
 
 Definition dijoint_union_example_type := 
@@ -937,136 +938,141 @@ Definition dijoint_union_example2 : dijoint_union_example_type :=
   inr (4,2).
 
 (**
-Likewise, any [match] expression needs to handle both constructors.
+De la misma manera, cualquier expresión [coincidir] necesita manejar ambos constructores.
 *)
 
-Definition left_or_first (a : dijoint_union_example_type) : nat :=
+Definition left_or_first (un : dijoint_union_example_type) : nat :=
   match a with
       | inl x => x
       | inr p => fst p
   end.
 
-(** ** Zero, One, and Two Types *)
+(** ** Cero, Uno, y Dos Tipos *)
 (**
-The finite types with 0, 1, and 2 elements play special roles in type
-theory.  In standard Coq those types are:
+Los tipos finitos con 0, 1, y 2 elementos llevan a capo roles escenciales en el tipo
+teoría.  En el estándar Coq estos tipos son:
 *)
 
 Inductive Empty_set : Set :=.
 
-Inductive unit : Set :=
-    tt : unit.
+-Inductive unit : Set :=
+ tt : unit.
 
-Inductive bool : Set :=
-  | true : bool
-  | false : bool.
+-Inductive bool : Set :=
+-  | true : bool
+-  | false : bool.
 
 (**
-The HoTT Coq library uses slightly different names for the types.
-(Although the constructors have the same names.)
+La biblioteca HoTT Coq usa nombres ligeramente diferentes para los tipos.
+(Aunque los constructores tengan el mismo nombre.)
+*)
+ 
+-Definition Empty := Empty_set.
+-Definition Unit  := unit.
+-Definition Bool  := bool.
+
+(**
+El estándar Coq también tiene tipos finitos que viven en el universo "Prop".
+El tipo "Verdadero" tiene un constructor y el tipo "Falso" tiene cero.
+*)
+(** *** No operador *)
+(**
+En HoTT, operador no indica que el elemento de un tipo puede ser
+mapeado a los elementos del tipo vacío (cero).
 *)
 
-Definition Empty := Empty_set.
-Definition Unit  := unit.
-Definition Bool  := bool.
+-Definition not (A:Type) : Type := A -> Empty.
+-Notation "~ x" := (not x) : type_scope.
 
 (**
-Standard Coq also has finite types that live in the "Prop" universe.
-The type "True" has one constructor and the type "False" has zero.
-*)
-(** *** Not operator *)
-(**
-In HoTT, the not operator indicates that elements of a type can be
-mapped to the elements of the empty (zero) type.
+En el estándar Coq, la lógica usualmente se hace en el universo "Prop", por lo que
+el operador mapea el tipo "Falso" que vive allí (en vez de "Vacío"
+que vive en "Set").
 *)
 
-Definition not (A:Type) : Type := A -> Empty.
-Notation "~ x" := (not x) : type_scope.
-
+(** *** La absurdidad no implica nada*)
 (**
-In Standard Coq, logic is usually done in the "Prop" universe, so this
-operator maps to the type "False" that lives there (instead of "Empty"
-which lives in "Set").
+Obviamente, una expresión [coincidir] para el tipo [Unidad] maneja un
+constructor y la expresión para el tipo [Bool] maneja dos
+constructores.  Pero que hay sobre el tipo [Vacío] ?  Este no tiene
+constructores, por lo que su expresión [coincidir] está vacía.  En lógica, este es el
+equivalente de "ex falso quodlibet" o "de contradicción, lo que sea". 
 *)
 
-(** *** Absurdity Implies Anything *)
-(**
-Obviously, a [match] expression for the [Unit] type handles one
-constructor and the match expression for the [Bool] type handles two
-constructors.  But what about the [Empty] type?  It has no
-constructors, so its [match] expression is empty.  In logic, this is the
-equivalent of "ex falso quodlibet" or "from contradiction, anything". 
-*)
-
-Definition contradiction_implies_anything (a:Empty) (C:Type) : C :=
-  match a with
-      end.
+ 
+-Definition contradiction_implies_anything (a:Empty) (C:Type) : C :=
+-  match a with
+-      end.
 
 (**
-The induction constant for Empty is
+La constante de inducción para Vacío es
 [[
-  Empty_rect : forall (P : Empty -> Type) (e : Empty), P e
+-  Empty_rect : forall (P : Empty -> Type) (e : Empty), P e
 ]]
 *)
 
 
-(** ** Identity Type *)
+(** ** Tipo de identidad *)
 (**
-The identity type is defined as:
+El tipo de identidad es definido como:
+
 *) 
+-Inductive paths {A : Type} (a : A) : A -> Type :=
+-  idpath : paths a a.
 
-Inductive paths {A : Type} (a : A) : A -> Type :=
-  idpath : paths a a.
 
 (**
-Where "paths" equates to "Id" in the HoTT book and "idpath" to "refl".
+Donde "paths" equivale a "Id" en el libro HoTT e "idpath" a "refl".
 
-The standard Coq library defines equality using a type "eq" with
-constructor "refl".  This type is different from "paths" because "eq"
-is in the "Prop" universe and its elements are _not_ proof-relevant.
-To do homotopy type theory, we need an equality that is proof-relevant
-and exists in the "Type" universe.
+La bibliotéca estándar Coq define igualdad usando un tipo "eq" con el
+constructor "refl".  Este tipo es diferente de "paths" porque "eq"
+está en el universo "Prop" y sus elementos son _no_ relevantes a pruebas.
+Para hacer teoría del tipo homotopy, necesitamos una igualdad que sea relevante
+para prueba y existe en el universo "Tipo".
 
-The operator for the identity type is the equal sign.  There is also a
-[Notation] that allows the user to explicitly state the type.
+
+El operador para el tipo de identidad es el signo igual. También hay una
+[Notación] que le permite al usuario explicitar el tipo.
 *)
 
-Notation "x = y :> A" := (@paths A x y) : type_scope.
-Notation "x = y" := (x = y :>_) : type_scope.
 
-Arguments idpath {A a} , [A] a.
-Arguments paths_ind [A] a P f y p.
-Arguments paths_rec [A] a P f y p.
-Arguments paths_rect [A] a P f y p.
+-Notation "x = y :> A" := (@paths A x y) : type_scope.
+-Notation "x = y" := (x = y :>_) : type_scope.
 
-Notation "1" := idpath : path_scope.
-Local Open Scope path_scope.
+-Arguments idpath {A a} , [A] a.
+-Arguments paths_ind [A] a P f y p.
+-Arguments paths_rec [A] a P f y p.
+-Arguments paths_rect [A] a P f y p.
+
+ 
+-Notation "1" := idpath : path_scope.
+-Local Open Scope path_scope.
 
 
-(** * Homotopy Type Theory *)
+(** * Teoría del tipo Homotopy *)
 (**
-Now that we have seen the common types of type theory, we can use them
-to do homotopy type theory.  This section will demonstrate some
-theorems of HoTT and introduce the types used to do HoTT in Coq.
-Because this file is using "standard" Coq, we cannot demonstrate
-higher inductive types.
+Ahora que ya hemos visto los tipos comunes de tipos de teoría, podemos usarlos
+para hacer teoría de tipo Homotopy.  Esta sección demostará algunos
+teoremas de HoTT e introducirá los tipos usados para hacer HoTT en Coq.
+Debido a que este archivo está usando Coq "estándar", no podemos demostrar
+tipos inductivos mayores.
 *)
 
-(** ** Properties of Paths *)
+(** ** Propiedades de lod caminos *)
 (**
-For every element of a type, there is a constant path.  This is the
-same notion as equality being reflexive.  This property is witnessed
-by "idpath", which has type:
+Para cada elemento de un tipo, hay un camino constante.  Esta es la misma
+noción de que la igualdad se está volviendo reflexiva.  Esta propiedad es testigo
+para "idpath", que tiene el tipo:
 [[
   @idpath
      : forall {A : Type} (a : A), a = a
 ]]
 
-The "theorem" of reflexivity can be stated "for every type and for
-every element of that type, there is an equality with that element
-equal to itself".  In Coq, that theorem is "proven" by function that
-takes a type, an element of that type, and returns an element
-witnessing the equality.
+El "teorema" de reflexividad puede establecerse "para cada tipo y para
+cada elemento de ese tipo, hay una igualdad con ese elemento igual a si 
+mismo".  En Coq, ese teorema está "probado" por la función 
+que toma un tipo, un elemento de ese tipo, y retorna un elemento
+siendo testigo de la igualdad.
 
 For example, if we wanted to demonstrate that "4=4", we could do:
 *)

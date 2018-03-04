@@ -1058,9 +1058,9 @@ Debido a que este archivo está usando Coq "estándar", no podemos demostrar
 tipos inductivos mayores.
 *)
 
-(** ** Propiedades de las rutas *)
+(** ** Propiedades de lod caminos *)
 (**
-Para cada elemento de un tipo, hay una ruta constante.  Esta es la misma
+Para cada elemento de un tipo, hay un camino constante.  Esta es la misma
 noción de que la igualdad se está volviendo reflexiva.  Esta propiedad es testigo
 para "idpath", que tiene el tipo:
 [[

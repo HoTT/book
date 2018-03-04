@@ -977,7 +977,7 @@ El tipo "Verdadero" tiene un constructor y el tipo "Falso" tiene cero.
 *)
 (** *** No operador *)
 (**
-En HoTT, el no operator indica que el elemento de un tipo puede ser
+En HoTT, el operador no indica que el elemento de un tipo puede ser
 mapeado a los elementos del tipo vacío (cero).
 *)
 

@@ -79,6 +79,12 @@ done
 
 git add -f $PDFS || exit 1
 
+# The "git rm" commands above can cause the directory "nightly" itself
+# to be deleted (unlike the raw "rm" command, which doesn't automatically
+# remove empty directories). We restore this directory here so that the
+# following git command has a chance of working.
+mkdir -p nightly
+
 git mv -f $PDFS nightly/ || exit 1
 
 git commit -m "Update nightly builds (auto)" || exit 1

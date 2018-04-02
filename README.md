@@ -37,7 +37,7 @@ code. Also, the file `version.tex` is generated on the fly, so you will need the
 *  make hott-letter-exercises.pdf -- the book in black & white, letter paper format, but with exercises one-per-page
 * `make hott-a4.pdf hott-a4.pdf` -- the book in black & white, A4 paper format,
    for printing at home, as well as a color cover (just two pages)
-*  make hott-letter-exercises.pdf -- the book in black & white, A4 paper format, but with exercises one-per-page
+*  make hott-a4-exercises.pdf -- the book in black & white, A4 paper format, but with exercises one-per-page
 * `make hott-ustrade.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf` --
    the book in US Trade format, without cover, used for the bound copy available
    at http://lulu.com/

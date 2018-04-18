@@ -700,21 +700,23 @@ definition as before.
   To show that the composite
   \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\encode} P(u,v) \xrightarrow{\decode} (u=_{\trunc{n+1}A}v) \]
   is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that
-$\encode(r(u)) = \refl{u}$.
-  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition
-of $r$ and $\encode$.
+$\decode(r(u)) = \refl{u}$.
+  But since this is an $(n-1)$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition
+of $r$ and $\decode$.
   Finally, to show that
   \[ P(u,v) \xrightarrow{\decode} (u=_{\trunc{n+1}A}v) \xrightarrow{\encode} P(u,v) \]
-  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are
+  is the identity function, since this goal is again an $(n-1)$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are
 considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
   Then we have
   \begin{align*}
     \encode(\decode(\tproj n p)) &= \encode(\apfunc{\tprojf{n+1}}(p))\\
     &= \transfib{v\mapsto P(\tproj{n+1}x,v)}{\apfunc{\tprojf{n+1}}(p)}{\tproj n {\refl x}}\\
-    &= \transfib{v\mapsto \trunc n{u=v}}{p}{\tproj n {\refl x}}\\
-    &= \tproj n {\transfib{v \mapsto (u=v)}{p}{\refl x}}\\
-    &= \tproj n p.
+    &= \transfib{y\mapsto \trunc n{x=y}}{p}{\tproj n {\refl x}}\\
+    &= \tproj n {\transfib{y \mapsto (x=y)}{p}{\refl x}}\\
+    &= \tproj n p,
   \end{align*}
+  using \cref{thm:transport-compose,thm:ap-transport}.
+  (Alternatively, we could do path induction on $p$; the desired equality would then hold judgmentally.)
   This completes the proof that \decode and \encode are quasi-inverses.
   The stated result is then the special case where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
 \end{proof}

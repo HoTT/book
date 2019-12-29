@@ -82,22 +82,22 @@ dvi: $(TOPDVIFILES) exercise_solutions.dvi errata.dvi cover-lulu-hardcover.dvi c
 $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $< ;\
-	else (echo "run 1: pdflatex $<"; pdflatex -interaction=nonstopmode $< 2>&1 >/dev/null) && \
+	else (echo "run 1: pdflatex $<"; pdflatex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) && \
 	     bibtex $(patsubst %.tex,%,$<) && \
 	     makeindex $(patsubst %.tex,%,$<) && \
-	     (echo "run 2: pdflatex $<"; pdflatex -interaction=nonstopmode $< 2>&1 >/dev/null) ;\
-	     pdflatex $< ;\
+	     (echo "run 2: pdflatex $<"; pdflatex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) ;\
+	     pdflatex -halt-on-error $< ;\
 	     echo "HINT: If you think this took a long time you should install latexmk." ;\
 	fi
 
 $(TOPDVIFILES) : %.dvi : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -dvi $< ;\
-	else (echo "run 1: latex $<"; latex -interaction=nonstopmode $< 2>&1 >/dev/null) && \
+	else (echo "run 1: latex $<"; latex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) && \
 	     bibtex $(patsubst %.tex,%,$<) && \
 	     makeindex $(patsubst %.tex,%,$<) && \
-	     (echo "run 2: latex $<"; latex -interaction=nonstopmode $< 2>&1 >/dev/null) ;\
-	     latex $< ;\
+	     (echo "run 2: latex $<"; latex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) ;\
+	     latex -halt-on-error $< ;\
 	     echo "HINT: If you think this took a long time you should install latexmk." ;\
 	fi
 
@@ -136,12 +136,12 @@ labelcheck: main.labelnumbers
 cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-letter.pdf cover-a4.pdf exercise_solutions.pdf errata.pdf : %.pdf : %.tex
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $<;\
-	else pdflatex $<; fi
+	else pdflatex -halt-on-error $<; fi
 
 cover-lulu-hardcover.dvi cover-lulu-paperback.dvi cover-letter.dvi cover-a4.dvi exercise_solutions.dvi errata.dvi : %.dvi : %.tex
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -dvi $<;\
-	else latex $<; fi
+	else latex -halt-on-error $<; fi
 
 cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-lulu-hardcover.dvi cover-lulu-paperback.dvi: cover-hires.png $(OPTFILES)
 

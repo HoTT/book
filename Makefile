@@ -81,7 +81,7 @@ dvi: $(TOPDVIFILES) exercise_solutions.dvi errata.dvi cover-lulu-hardcover.dvi c
 # Main targets
 $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
-	then latexmk -pdf $< ;\
+	then latexmk -interaction=batchmode -pdf $< ;\
 	else (echo "run 1: pdflatex $<"; pdflatex -halt-on-error -interaction=batchmode $< 2>&1 >/dev/null) && \
 	     bibtex $(patsubst %.tex,%,$<) && \
 	     makeindex $(patsubst %.tex,%,$<) && \
@@ -92,7 +92,7 @@ $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png 
 
 $(TOPDVIFILES) : %.dvi : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
-	then latexmk -dvi $< ;\
+	then latexmk -interaction=batchmode -dvi $< ;\
 	else (echo "run 1: latex $<"; latex -halt-on-error -interaction=batchmode $< 2>&1 >/dev/null) && \
 	     bibtex $(patsubst %.tex,%,$<) && \
 	     makeindex $(patsubst %.tex,%,$<) && \
@@ -135,12 +135,12 @@ labelcheck: main.labelnumbers
 
 cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-letter.pdf cover-a4.pdf exercise_solutions.pdf errata.pdf : %.pdf : %.tex
 	if which latexmk > /dev/null 2>&1 ;\
-	then latexmk -pdf $<;\
+	then latexmk -interaction=batchmode -pdf $<;\
 	else pdflatex -halt-on-error $<; fi
 
 cover-lulu-hardcover.dvi cover-lulu-paperback.dvi cover-letter.dvi cover-a4.dvi exercise_solutions.dvi errata.dvi : %.dvi : %.tex
 	if which latexmk > /dev/null 2>&1 ;\
-	then latexmk -dvi $<;\
+	then latexmk -interaction=batchmode -dvi $<;\
 	else latex -halt-on-error $<; fi
 
 cover-lulu-hardcover.pdf cover-lulu-paperback.pdf cover-lulu-hardcover.dvi cover-lulu-paperback.dvi: cover-hires.png $(OPTFILES)
@@ -164,7 +164,7 @@ errata.pdf errata.dvi: version.tex main.labels
 
 clean:
 	rm -f *~ *.aux {exercise_solutions,errata,hott-*}.{out,log,pdf,dvi,fls,fdb_latexmk,aux,brf,bbl,idx,ilg,ind,toc,sed}
-	if which latexmk > /dev/null 2>&1 ; then latexmk -C hott-*.tex; fi
+	if which latexmk > /dev/null 2>&1 ; then latexmk -interaction=batchmode -C hott-*.tex; fi
 
 # list the tex files explicitly because:
 #   - we want to tag them in the same order they appear in the book, so tag search is in logical sequence

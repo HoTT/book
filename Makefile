@@ -82,10 +82,10 @@ dvi: $(TOPDVIFILES) exercise_solutions.dvi errata.dvi cover-lulu-hardcover.dvi c
 $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -pdf $< ;\
-	else (echo "run 1: pdflatex $<"; pdflatex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) && \
+	else (echo "run 1: pdflatex $<"; pdflatex -halt-on-error -interaction=batchmode $< 2>&1 >/dev/null) && \
 	     bibtex $(patsubst %.tex,%,$<) && \
 	     makeindex $(patsubst %.tex,%,$<) && \
-	     (echo "run 2: pdflatex $<"; pdflatex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) ;\
+	     (echo "run 2: pdflatex $<"; pdflatex -halt-on-error -interaction=batchmode $< 2>&1 >/dev/null) ;\
 	     pdflatex -halt-on-error $< ;\
 	     echo "HINT: If you think this took a long time you should install latexmk." ;\
 	fi
@@ -93,10 +93,10 @@ $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png 
 $(TOPDVIFILES) : %.dvi : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
 	then latexmk -dvi $< ;\
-	else (echo "run 1: latex $<"; latex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) && \
+	else (echo "run 1: latex $<"; latex -halt-on-error -interaction=batchmode $< 2>&1 >/dev/null) && \
 	     bibtex $(patsubst %.tex,%,$<) && \
 	     makeindex $(patsubst %.tex,%,$<) && \
-	     (echo "run 2: latex $<"; latex -halt-on-error -interaction=nonstopmode $< 2>&1 >/dev/null) ;\
+	     (echo "run 2: latex $<"; latex -halt-on-error -interaction=batchmode $< 2>&1 >/dev/null) ;\
 	     latex -halt-on-error $< ;\
 	     echo "HINT: If you think this took a long time you should install latexmk." ;\
 	fi

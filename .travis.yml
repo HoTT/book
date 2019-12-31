@@ -1,6 +1,6 @@
 language: c
 
-sudo: false
+sudo: true
 
 cache:
   directories:
@@ -30,18 +30,13 @@ env:
 
 matrix:
  include:
-# only one of these should have UPDATE_ERRATA set to "yes", otherwise we risk race conditions on pushing
+   # only one of these should have UPDATE_ERRATA set to "yes", otherwise we risk race conditions on pushing
    - env: LATEXMK="yes" UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS=""
-     addons:
-       apt:
-         packages:
-           - latexmk
    - env: LATEXMK=""    UPDATE_ERRATA="yes"  UPDATE_NIGHTLIES="yes"  TARGETS=""
    - env: LATEXMK=""    UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS="dvi"
 
-
 install:
- - test -z "$LATEXMK" || which latexmk
+ - test "$LATEXMK" = yes && sudo apt-get install latexmk
 
 script: make $TARGETS
 

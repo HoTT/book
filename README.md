@@ -17,13 +17,13 @@ and nightly builds are available on the
 ## Prerequisites and compilation
 
 To compile the book for yourself you need a fairly new version of LaTeX.
-[Texlive](http://www.tug.org/texlive/) 2012 is confirmed to work. You might need
+[Texlive](http://www.tug.org/texlive/) 2018 is confirmed to work. You might need
 to install some packages; see `main.tex` for packages that are used by the book.
 
 [BasicTeX](http://www.tug.org/mactex/morepackages.html), which is a minimalistic
 version of MacTeX, is confirmed to work once the following packages have been
-installed: `tlmgr`, `install`, `braket`, `comment`, `courier`, `enumitem`,
-`helvetic`, `mathpazo`, `nextpage`, `ntheorem`, `palatino`, `rsfs`, `stmaryrd`,
+installed: `tlmgr`, `install`, `braket`, `comment`, `courier`, `domitian`, `enumitem`,
+`helvetic`, `mathpazo`, `microtype`, `nextpage`, `ntheorem`, `palatino`, `rsfs`, `stmaryrd`,
 `symbol`, `titlesec`, `wallpaper`, `wasy`, `wasysym`, `xstring`, `zapfding`.
 
 You also need the `make` utility. The book is a fairly complex piece of LaTeX

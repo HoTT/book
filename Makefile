@@ -107,7 +107,7 @@ log-check:
 	! grep -n "!! Input index error" hott-online.ilg /dev/null
 
 version.tex:
-	/bin/echo -n '\newcommand{\OPTversion}{' > version.tex
+	/bin/echo -n '\\newcommand{\\OPTversion}{' > version.tex
 	git describe --always --long >> version.tex
 	/bin/echo -n '}' >> version.tex
 

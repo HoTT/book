@@ -64,20 +64,28 @@ git checkout -b gh-pages upstream/gh-pages || exit 1
 
 mkdir -p nightly
 
-# Delete files in /nightly not having a commit hash younger than 1 day
-# (The saunders redirects are only updated once a day.)
-YESTERDAY="$(date -d '1 day ago' +%s)"
+# Delete files in /nightly not having a commit hash younger than three days.
+# (The saunders redirects are only updated once a day. In principle, keeping
+# old builds for only one day would suffice, but this larger grace period gives
+# some extra stability.)
+CUTOFFDATE="$(date -d '3 days ago' +%s)"
 find nightly -type f | while read nfile
 do
     HASH="$(echo $nfile | sed -r 's,^.*-([0-9a-z]+).pdf$,\1,')"
     FILEDATE="$(git show -s --format=%ct $HASH 2>/dev/null)"
-    if [ -z $FILEDATE ] || [ $YESTERDAY -ge $FILEDATE ];
+    if [ -z $FILEDATE ] || [ $CUTOFFDATE -ge $FILEDATE ];
     then
 	git rm -rf $nfile
     fi
 done
 
 git add -f $PDFS || exit 1
+
+# The "git rm" commands above can cause the directory "nightly" itself
+# to be deleted (unlike the raw "rm" command, which doesn't automatically
+# remove empty directories). We restore this directory here so that the
+# following git command has a chance of working.
+mkdir -p nightly
 
 git mv -f $PDFS nightly/ || exit 1
 

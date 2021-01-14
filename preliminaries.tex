@@ -497,6 +497,8 @@ A polymorphic function is one which takes a type as one of its arguments, and th
 \indexdef{function!identity}%
 \indexdef{identity!function}%
 An example is the polymorphic identity function $\idfunc : \prd{A:\UU} A \to A$, which we define by $\idfunc{} \defeq \lam{A:\type}{x:A} x$.
+(Like $\lambda$-abstractions, $\Pi$s automatically scope\index{scope} over the rest of the expression unless delimited; thus $\idfunc : \prd{A:\UU} A \to A$ means $\idfunc : \prd{A:\UU} (A \to A)$.
+This convention, though unusual in mathematics, is common in type theory.)
 
 We sometimes write some arguments of a dependent function as subscripts.
 For instance, we might equivalently define the polymorphic identity function by $\idfunc[A](x) \defeq x$.
@@ -504,8 +506,7 @@ Moreover, if an argument can be inferred from context, we may omit it altogether
 For instance, if $a:A$, then writing $\idfunc(a)$ is unambiguous, since $\idfunc$ must mean $\idfunc[A]$ in order for it to be applicable to $a$.
 
 Another, less trivial, example of a polymorphic function is the ``swap'' operation that switches the order of the arguments of a (curried) two-argument function:
-\[ \mathsf{swap} : \prd{A:\UU}{B:\UU}{C:\UU} (A\to B\to C) \to (B\to A \to C)
-\]
+\[ \mathsf{swap} : \prd{A:\UU}{B:\UU}{C:\UU} (A\to B\to C) \to (B\to A \to C). \]
 We can define this by
 \[ \mathsf{swap}(A,B,C,g) \defeq \lam{b}{a} g(a)(b). \]
 We might also equivalently write the type arguments as subscripts:
@@ -517,10 +518,8 @@ depend on the first one, and the codomain may depend on both. That is,
 given $A:\UU$ and type families $B : A \to \UU$ and $C : \prd{x:A}B(x) \to \UU$, we may construct
 the type $\prd{x:A}{y : B(x)} C(x,y)$ of functions with two
 arguments.
-(Like $\lambda$-abstractions, $\Pi$s automatically scope\index{scope} over the rest of the expression unless delimited; thus $C : \prd{x:A}B(x) \to \UU$ means $C : \prd{x:A}(B(x) \to \UU)$.)
 In the case when $B$ is constant and equal to $A$, we may condense the notation and write $\prd{x,y:A}$; for instance, the type of $\mathsf{swap}$ could also be written as
-\[ \mathsf{swap} : \prd{A,B,C:\UU} (A\to B\to C) \to (B\to A \to C).
-\]
+\[ \mathsf{swap} : \prd{A,B,C:\UU} (A\to B\to C) \to (B\to A \to C). \]
 Finally, given $f:\prd{x:A}{y : B(x)} C(x,y)$ and arguments $a:A$ and $b:B(a)$, we have $f(a)(b) : C(a,b)$, which,
 as before, we write as $f(a,b) : C(a,b)$.
 
@@ -745,7 +744,7 @@ Given a type $A:\UU$ and a family $B : A \to \UU$, the dependent
 pair type is written as $\sm{x:A} B(x) : \UU$.
 Alternative notations are 
 \[ \tsm{x:A} B(x) \hspace{2cm} \dsm{x:A}B(x) \hspace{2cm} \lsm{x:A} B(x). \]
-Like other binding constructs such as $\lambda$-abstractions and $\Pi$s, $\Sigma$s automatically scope\index{scope} over the rest of the expression unless delimited, so e.g.\ $\sm{x:A} B(x) \times C(x)$ means $\sm{x:A} (B(x) \times C(x))$.
+Like other binding constructs such as $\lambda$-abstractions and $\Pi$s, $\Sigma$s automatically scope\index{scope} over the rest of the expression unless delimited, so e.g.\ $\sm{x:A} B(x) \to C$ means $\sm{x:A} (B(x) \to C)$.
 
 \symlabel{defn:dependent-pair}%
 \indexdef{pair!dependent}%
@@ -767,7 +766,7 @@ equation
 For instance, we can derive the first projection from a $\Sigma$-type:
 \symlabel{defn:dependent-proj1}%
 \begin{equation*}
-  \fst : \Parens{\sm{x : A}B(x)} \to A.
+  \fst : \Parens{\sm{x : A}B(x)} \to A
 \end{equation*}
 by the defining equation
 \begin{equation*}
@@ -833,7 +832,7 @@ To verify that this is well-typed, note that if $g:\prd{x:A} \sm{y :B} R(x,y)$, 
 \lamu{x:A} \fst(g(x)) &: A \to  B, \\
 \lamu{x:A} \snd(g(x)) &: \tprd{x:A} R(x,\fst(g(x))).
 \end{align*}
-Moreover, the type $\prd{x:A} R(x,\fst(g(x)))$ is the result of substituting the function $\lamu{x:A} \fst(g(x))$ for $f$ in the family being summed over in the co\-do\-main of \ac:
+Moreover, the type $\prd{x:A} R(x,\fst(g(x)))$ is the result of applying the type family $\lamu{f:A\to B} \tprd{x:A} R(x,f(x))$ being summed over in the codomain of \ac to the function $\lamu{x:A} \fst(g(x))$:
 \[ \tprd{x:A} R(x,\fst(g(x))) \jdeq
 \Parens{\lamu{f:A\to B} \tprd{x:A} R(x,f(x))}\big(\lamu{x:A} \fst(g(x))\big). \]
 Thus, we have
@@ -1027,7 +1026,7 @@ Indeed, we can obtain such a family precisely by the recursion principle for $\b
 (The ability to define \emph{type families} by induction and recursion, using the fact that the universe $\UU$ is itself a type, is a subtle and important aspect of type theory.)
 Thus, we could have defined
 \index{type!coproduct}%
-\[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x). \]
+\[ A + B \defeq \sm{x:\bool} \rec{\bool}(\UU,A,B,x) \]
 with
 \begin{align*}
   \inl(a) &\defeq \tup{\bfalse}{a}, \\
@@ -1066,8 +1065,9 @@ In particular, the type $A \to \bool$ is not generally the power set\index{power
 \indexsee{type!of natural numbers}{natural numbers}%
 \index{natural numbers|(defstyle}%
 \indexsee{number!natural}{natural numbers}%
-The rules we have introduced so far do not allow us to construct any infinite types.
-The simplest infinite type we can think of (and one which is of course also extremely useful) is the type $\nat : \UU$ of natural numbers.
+So far we have rules for constructing new types by abstract operations, but for doing concrete mathematics we also require some concrete types, such as types of numbers.
+The most basic such is the type $\nat : \UU$ of natural numbers; once we have this we can construct integers, rational numbers, real numbers, and so on (see \cref{cha:real-numbers}).
+
 The elements of $\nat$ are constructed using $0 : \nat$\indexdef{zero} and the successor\indexdef{successor} operation $\suc : \nat \to \nat$.
 When denoting natural numbers, we adopt the usual decimal notation $1 \defeq \suc(0)$, $2 \defeq \suc(1)$, $3 \defeq \suc(2)$, \dots.
 
@@ -1373,7 +1373,7 @@ At this point our partial definition of an element of~\eqref{eq:tautology2} can 
 with a ``hole'' $\Box$ of type $A+B\to\emptyt$ indicating what remains to be done.
 (We could equivalently write $f \defeq \rec{(A\to\emptyt)\times (B\to\emptyt)}(A+B\to\emptyt,\lam{x}{y} \Box)$, using the recursor instead of pattern matching.)
 The next phrase ``also suppose $A$ or $B$; we will derive a contradiction'' indicates filling this hole by a function definition, introducing another unnamed hypothesis $z:A+B$, leading to the proof state:
-\[ f((x,y))(z) \defeq \;\Box\; :\emptyt \]
+\[ f((x,y))(z) \defeq \;\Box\; :\emptyt. \]
 Now saying ``there are two cases'' indicates a case split, i.e.\ an application of the recursion principle for the coproduct $A+B$.
 If we write this using the recursor, it would be
 \[ f((x,y))(z) \defeq \rec{A+B}(\emptyt,\lam{a} \Box,\lam{b}\Box,z) \]
@@ -1584,10 +1584,10 @@ This is well-typed because $a\jdeq b$ means that also the type $\id[A]{a}{b}$ is
 
 The induction principle (i.e.\ the elimination rule) for the identity types is one of the most subtle parts of type theory, and crucial to the homotopy interpretation.
 We begin by considering an important consequence of it, the principle that ``equals may be substituted for equals'', as expressed by the following:
-\index{indiscernability of identicals}%
+\index{indiscernibility of identicals}%
 \index{equals may be substituted for equals}%
 \begin{description}
-\item[Indiscernability of identicals:]
+\item[Indiscernibility of identicals:]
 For every family 
 \[
 C : A \to \UU
@@ -1603,8 +1603,8 @@ f(x,x,\refl{x}) \defeq \idfunc[C(x)].
 \end{description}
 This says that every family of types $C$ respects equality, in the sense that applying $C$ to \emph{equal} elements of $A$ also results in a function between the resulting types. The displayed equality states that the function associated to reflexivity is the identity function (and we shall see that, in general, the function $f(x,y,p): C(x) \to C(y)$ is always an equivalence of types).
 
-Indiscernability of identicals can be regarded as a recursion principle for the identity type, analogous to those given for booleans and natural numbers above.
-Just as $\rec{\nat}$ gives a specified map $\nat\to C$ for any other type $C$ of a certain sort, indiscernability of identicals gives a specified map from $\id[A] x y$ to certain other reflexive, binary relations on $A$, namely those of the form $C(x) \to C(y)$ for some unary predicate $C(x)$.
+Indiscernibility of identicals can be regarded as a recursion principle for the identity type, analogous to those given for booleans and natural numbers above.
+Just as $\rec{\nat}$ gives a specified map $\nat\to C$ for any other type $C$ of a certain sort, indiscernibility of identicals gives a specified map from $\id[A] x y$ to certain other reflexive, binary relations on $A$, namely those of the form $C(x) \to C(y)$ for some unary predicate $C(x)$.
 We could also formulate a more general recursion principle with respect to reflexive relations of the more general form $C(x,y)$.
 However, in order to fully characterize the identity type, we must generalize this recursion principle to an induction principle, which not only considers maps out of $\id[A] x y$ but also families over it.
 Put differently, we consider not only allowing equals to be substituted for equals, but also taking into account the evidence $p$ for the equality.
@@ -1658,7 +1658,7 @@ with the equality\index{computation rule!for identity types}
 \[ \indid{A}(C,c,x,x,\refl{x}) \defeq c(x). \]
 The function $ \indid{A}$ is traditionally called $J$.
 \indexsee{J@$J$}{induction principle for identity type}%
-We will show in \cref{lem:transport} that indiscernability of identicals is an instance of path induction, and also give it a new name and notation.
+We will show in \cref{lem:transport} that indiscernibility of identicals is an instance of path induction, and also give it a new name and notation.
 
 \mentalpause
 
@@ -2032,7 +2032,7 @@ Give an alternative derivation of $\indidb{A}$ from $\indid{A}$ which avoids the
 \end{ex}
 
 \begin{ex}\label{ex:subtFromPathInd}
-  Show that indiscernability of identicals follows from path induction.  
+  Show that indiscernibility of identicals follows from path induction.  
 \end{ex}
 
 \begin{ex}\label{ex:add-nat-commutative}

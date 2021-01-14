@@ -276,7 +276,7 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{lem}\label{lem:concat}
   For every type $A$ and every $x,y,z:A$ there is a function
   \begin{equation*}
-  (x= y) \to   (y= z)\to (x=  z)
+  (x= y) \to   (y= z)\to (x=  z),
   \end{equation*}
   written $p \mapsto q \mapsto p\ct q$, such that $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
   We call $p\ct q$ the \define{concatenation} or \define{composite} of $p$ and $q$.
@@ -288,7 +288,11 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   \index{transitivity!of equality}%
 \end{lem}
 
+Note that we choose to notate path concatenation in the opposite order from function composition: from $p:x=y$ and $q:y=z$ we get $p\ct q : x=z$, whereas from $f:A\to B$ and $g:B\to C$ we get $g\circ f : A\to C$ (see \cref{ex:composition}).
+
 \begin{proof}[First proof]
+  The desired function has type $\prd{x,y,z:A} (x= y) \to   (y= z)\to (x=  z)$.
+  We will instead define a function with the equivalent type $\prd{x,y:A} (x= y) \to \prd{z:A} (y= z)\to (x=  z)$, which allows us to apply path induction twice.
   Let $D:\prd{x,y:A} (x=y) \to \type$ be the type family
   \begin{equation*}
     D(x,y,p)\defeq \prd{z:A}{q:y=z} (x=z).
@@ -313,8 +317,9 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   But $E(x,z,q)\jdeq (x=z)$, so the type of $d$ is~\eqref{eq:concatD}.
   Thus, we can use this function $d$ and apply the induction principle for identity types to $D$, to obtain our desired function of type
   \begin{equation*}
-    \prd{x,y,z:A} (y=z) \to (x=y) \to (x=z).
+    \prd{x,y:A} (x= y) \to \prd{z:A} (y= z)\to (x=  z)
   \end{equation*}
+  and hence $\prd{x,y,z:A} (y=z) \to (x=y) \to (x=z)$.
   The conversion rules for the two induction principles give us $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
 \end{proof}
 
@@ -438,7 +443,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
 
     \mentalpause
 
-    \noindent \emph{Second proof} By induction, it suffices to assume $p$ is $\refl x$.
+    \noindent \emph{Second proof:} by induction, it suffices to assume $p$ is $\refl x$.
     But in this case, we have $\opp{p} \ct p \jdeq \opp{\refl x} \ct \refl x \jdeq \refl x$.
 
   \item \emph{First proof:} let $D:\prd{x,y:A} (x=y) \to \type$ be the type family given by
@@ -712,7 +717,8 @@ The notation $\apfunc f$ can be read either as the \underline{ap}plication of $f
 \end{proof}
 
 \begin{proof}[Second proof]
-  By induction, it suffices to assume $p$ is $\refl{x}$.
+  To define $\apfunc{f}(p)$ for all $p:x=y$, it suffices, by induction, to assume
+  $p$ is $\refl{x}$.
   In this case, we may define $\apfunc f(p) \defeq \refl{f(x)}:f(x)= f(x)$.
 \end{proof}
 
@@ -748,8 +754,8 @@ Since \emph{dependently typed} functions are essential in type theory, we will a
 However, this is not quite so simple to state, because if $f:\prd{x:A} B(x)$ and $p:x=y$, then $f(x):B(x)$ and $f(y):B(y)$ are elements of distinct types, so that \emph{a priori} we cannot even ask whether they are equal.
 The missing ingredient is that $p$ itself gives us a way to relate the types $B(x)$ and $B(y)$.
 
-We have already seen this in \autoref{sec:identity-types}, where we called it ``indiscernability of identicals''.
-\index{indiscernability of identicals}%
+We have already seen this in \autoref{sec:identity-types}, where we called it ``indiscernibility of identicals''.
+\index{indiscernibility of identicals}%
 We now introduce a different name and notation for it that we will use from now on.
 
 \begin{lem}[Transport]\label{lem:transport}
@@ -1137,7 +1143,7 @@ We can show~\ref{item:be1} and~\ref{item:be2} for this definition now.
 A function $\qinv(f) \to \isequiv (f)$ is easy to define by taking $(g,\alpha,\beta)$ to $(g,\alpha,g,\beta)$.
 In the other direction, given $(g,\alpha,h,\beta)$, let $\gamma$ be the composite homotopy
 \[ g \overset{\beta}{\htpy} h\circ f\circ g \overset{\alpha}{\htpy} h, \]
-meaning that $\gamma(x) \defeq \beta(g(x)) \ct \ap{h}{\alpha(x)}$.
+meaning that $\gamma(x) \defeq \opp{\beta(g(x))} \ct \ap{h}{\alpha(x)}$.
 Now define $\beta':g\circ f\htpy \idfunc[A]$ by $\beta'(x) \defeq \gamma(f(x)) \ct \beta(x)$.
 Then $(g,\alpha,\beta'):\qinv(f)$.
 
@@ -2004,7 +2010,7 @@ We can now show:
     &\jdeq \decode(\inl(a_0),\encode(\inl(a_0),\refl{\inl(a_0)}))\\
     &\jdeq \decode(\inl(a_0),\transfib{\code}{\refl{\inl(a_0)}}{\refl{a_0}})\\
     &\jdeq \decode(\inl(a_0),\refl{a_0})\\
-    &\jdeq \ap{\inl}{\refl{a_0}}\\
+    &\jdeq \apfunc{\inl}(\refl{a_0})\\
     &\jdeq \refl{\inl(a_0)}\\
     &\jdeq p.
   \end{align*}

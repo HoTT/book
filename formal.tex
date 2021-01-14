@@ -243,6 +243,11 @@ The equality judgment $t \jdeq u : A$ is then derived by the following single ru
 %
 Judgmental equality is an equivalence relation.
 
+Note that the type theory of this presentation diverges from that used in the main body of the text in not including the judgmental uniqueness principle $f \jdeq (\lam{x} f(x))$ for functions.
+Such an equality requires that judgmental equality be sensitive to the type of the terms involved, as this equality only makes sense when $f$ is known to be a function, whereas in this presentation the convertibility relation is type-independent.
+The second presentation in \cref{sec:syntax-more-formally} includes the uniqueness principle.
+
+
 \subsection{Type universes}
 
 We postulate a hierarchy of \define{universes} denoted by primitive constants
@@ -300,7 +305,7 @@ Using non-dependent function types and leaving implicit the context $\Gamma$, th
 %
 \begin{itemize}
 \item if $A:\UU_n$ and $B:A\to\UU_n$, then $\tprd{x:A}B(x) : \UU_n$
-\item if $x:A \vdash b:B$ then $ \lam{x} b : \tprd{x:A} B(x)$
+\item if $x:A \vdash b:B(x)$ then $ \lam{x} b : \tprd{x:A} B(x)$
 \item if $g:\tprd{x:A} B(x)$ and $t:A$ then $g(t):B(t)$
 \end{itemize}
 %
@@ -523,7 +528,11 @@ The judgment $\wfctx{\Gamma}$ formally expresses the fact that $\Gamma$ is a wel
 %
 with a side condition for the second rule: the variable $x_n$ must be distinct from the variables $x_1, \ldots, x_{n-1}$.
 Note that the hypothesis and conclusion of $\ctx$-\textsc{ext} are judgments of different forms: the hypothesis says that in the context of variables $x_1, \ldots, x_{n-1}$, the expression $A_n$ has type $\UU_i$; while the conclusion says that the extended context $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})$ is well-formed.
-(It is a meta-theoretic property of the system that if $\oftp{\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n}}{A_{n}}}{b}{B}$ is derivable, then the context $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n}}{A_{n}})$ must be well-formed; thus $\ctx$-\textsc{ext} does not need to hypothesize well-formedness of the context to the left of $x_n$.)
+
+It is a meta-theoretic property of the system that if any judgment of the form $\oftp{\Gamma}{a}{A}$ or $\jdeqtp\Gamma{a}{a'}{A}$ is derivable, then so is the judgment $\wfctx\Gamma$ that the context $\Gamma$ is well-formed.
+The premises of all the rules are chosen to include just enough well-formedness hypotheses to make this property provable, but no more.
+For instance, it is not necessary for $\ctx$-\textsc{ext} to hypothesize well-formedness of $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n-1}}{A_{n-1}})$, as that will follow from the derivability of its premise; but it is necessary for the $\Vble$ rule in the next section to hypothesize well-formedness of its context.
+This choice is only one of the many possible ways to formulate a type theory precisely, but a detailed investigation of such issues is beyond the scope of this appendix.
 
 \subsection{Structural rules}
 
@@ -566,6 +575,10 @@ and for judgmental equalities they become
   {\oftp\Gamma{a}{A} \\ \jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
   {\jdeqtp{\Gamma,\Delta[a/x]}{b[a/x]}{c[a/x]}{B[a/x]}}
 \and
+  \inferrule*[right=$\Subst_3$]
+  {\jdeqtp\Gamma{a}{b}{A} \\ \oftp{\Gamma,\tmtp xA,\Delta}{c}{C}}
+  {\jdeqtp{\Gamma,\Delta[a/x]}{c[a/x]}{c[b/x]}{C[a/x]}}
+\and
   \inferrule*[right=$\Weak_2$]
   {\oftp\Gamma{A}{\UU_i} \\ \jdeqtp{\Gamma,\Delta}{b}{c}{B}}
   {\jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
@@ -585,7 +598,9 @@ assume that judgmental equality is an equivalence relation respected by typing.
   \inferrule*{\jdeqtp\Gamma{a}{b}{A} \\ \jdeqtp\Gamma{A}{B}{\UU_i}}{\jdeqtp\Gamma{a}{b}{B}}
 \end{mathparpagebreakable}
 %
-Additionally, for all the type formers below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\rintro\ rule, we assume the rule
+Finally, we assume that judgmental equality is a congruence respected by typing,
+i.e., that each constructor preserves judgmental equality in each of its
+arguments. For instance, along with the $\Pi$-\rintro\ rule, we assume the rule
 \[
   \inferrule*[right=$\Pi$-\rintro-eq]
   {\oftp\Gamma{A}{\UU_i} \\
@@ -593,7 +608,8 @@ Additionally, for all the type formers below, we assume rules stating that each 
    \jdeqtp{\Gamma,\tmtp xA}{b}{b'}{B}}
   {\jdeqtp\Gamma{\lamu{x:A} b}{\lamu{x:A'} b'}{\tprd{x:A} B}}
 \]
-However, we omit these rules for brevity.
+Taken together, these local principles imply the global congruence principles
+$\Subst_2$ and $\Subst_3$ above. We will omit these local rules for brevity.
 
 \index{rule!structural|)}%
 \index{structural!rules|)}%
@@ -925,7 +941,7 @@ $c$.
 
 \index{definition}%
 
-Although the rules we listed so far allows us to construct everything we need directly, we
+Although the rules we have listed so far allow us to construct everything we need directly, we
 would still like to be able to use named constants, such as $\isequiv$, as a matter of
 convenience. Informally, we can think of these constants simply as
 abbreviations, but the situation is a bit subtler in the formalization.
@@ -1052,7 +1068,7 @@ Recall that \cref{sec:syntax-informally} defines the terms of type theory as
 an extension of the untyped $\lambda$-calculus. The $\lambda$-calculus 
 has its own notion of computation, namely the computation rule\index{computation rule!for function types}: 
 \[
-  (\lam{x} t)(u) \defeq t[u/x]
+  (\lam{x} t)(u) \defeq t[u/x].
 \]
 This rule, together with the defining equations for the defined constants form
 \emph{rewriting rules}\index{rewriting rule}\index{rule!rewriting} that determine reduction steps for a rewriting 

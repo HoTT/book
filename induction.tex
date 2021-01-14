@@ -124,9 +124,10 @@ Then $f$ and $g$ are equal.
 \end{thm}
 
 \begin{proof}
-We use induction on the type family $D(x) \defeq \id{f(x)}{g(x)}$. For the base case, we have \[f(0) = e_z = g(0)\]
+We use induction on the type family $D(x) \defeq \id{f(x)}{g(x)}$. For the base case, we have
+\[ f(0) = e_z = g(0). \]
 For the inductive case, assume $n : \nat$ such that $f(n) = g(n)$. Then
-\[ f(\suc(n)) = e_s(n, f(n)) = e_s(n, g(n)) = g(\suc(n)) \]
+\[ f(\suc(n)) = e_s(n, f(n)) = e_s(n, g(n)) = g(\suc(n)). \]
 The first and last equality follow from the assumptions on $f$ and $g$. The middle equality follows from the inductive hypothesis and the fact that application preserves equality. This gives us pointwise equality between $f$ and $g$; invoking function extensionality finishes the proof.
 \end{proof}
 
@@ -254,7 +255,7 @@ In \cref{sec:initial-alg} we will see that inductive types actually do have a un
 
 Inductive types are very general, which is excellent for their usefulness and applicability, but makes them difficult to study as a whole.
 Fortunately, they can all be formally reduced to a few special cases.
-It is beyond the scope of this book to discuss this reduction --- which is anyway irrelevant to the mathematician using type theory in practice --- but we will take a little time to discuss the one of the basic special cases that we have not yet met.
+It is beyond the scope of this book to discuss this reduction --- which is anyway irrelevant to the mathematician using type theory in practice --- but we will take a little time to discuss one of the basic special cases that we have not yet met.
 These are Martin-L{\"o}f's \emph{$\w$-types}, also known as the types of \emph{well-founded trees}.
 \index{tree, well-founded}%
 $\w$-types are a generalization of such types as natural numbers, lists, and binary trees, which are sufficiently general to encapsulate the ``recursion'' aspect of \emph{any} inductive type.
@@ -313,9 +314,10 @@ which will represent the recurrence for the $\dbl$ function; for simplicity we d
 
 Clearly, $e$ will be a function taking $a : \bool$ as its first argument. The next step is to perform case analysis on $a$ and proceed based on whether it is $\bfalse$ or $\btrue$. This suggests the following form
 \[ e \defeq \lamu{a:\bool} \rec\bool(C,e_0,e_1,a) \]
-where \[C \defeq \prd{f : B(a) \to \natw}{g : B(a) \to \natw} \natw\]
+where
+\[ C \defeq \prd{f : B(a) \to \natw}{g : B(a) \to \natw} \natw. \]
 If $a$ is $\bfalse$, the type $B(a)$ becomes $\emptyt$. Thus, given $f : \emptyt \to \natw$ and $g : \emptyt \to \natw$, we want to construct an element of $\natw$. Since the label $\bfalse$ represents $\emptyt$, it needs zero inductive arguments and the variables $f$ and $g$ are irrelevant. We return $\zerow$\index{zero} as a result:
-\[ e_0 \defeq \lamu{f:\emptyt \to \natw}{g:\emptyt \to \natw} \zerow \]
+\[ e_0 \defeq \lamu{f:\emptyt \to \natw}{g:\emptyt \to \natw} \zerow. \]
 Analogously, if $a$ is $\btrue$, the type $B(a)$ becomes $\unit$.
 Since the label $\btrue$ represents the successor\index{successor} operator, it needs one inductive argument --- the predecessor\index{predecessor} --- which is represented by the variable $f : \unit \to \natw$.
 The value of the recursive call on the predecessor is represented by the variable $g : \unit \to \natw$.
@@ -650,9 +652,9 @@ We also postulate the following coherence\index{coherence} law, which tells us h
 \item
 For any $a : A$ and $f : B(a) \to C$, the following diagram commutes propositionally:
 \[\xymatrix{
-  g(\supp(x,f)) \ar_{\alpha(\supp(x,f))}[d] \ar^-{\beta_g}[r] & c(a,\lamu{b:B(a)} g(f(b)))
+  g(\supp(a,f)) \ar_{\alpha(\supp(a,f))}[d] \ar^-{\beta_g}[r] & c(a,\lamu{b:B(a)} g(f(b)))
   \ar^{c(a,\blank)(\funext (\lam{b} \alpha(f(b))))}[d] \\
-  h(\supp(x,f)) \ar_-{\beta_h}[r] & c(a,\lamu{b: B(a)} h(f(b))) \\
+  h(\supp(a,f)) \ar_-{\beta_h}[r] & c(a,\lamu{b: B(a)} h(f(b))) \\
 }\]
 where $\alpha$ abbreviates the path $\alpha(C,c,f,g,\beta_g,\beta_h) : g = h$.
 \end{itemize}
@@ -669,8 +671,9 @@ Putting all of this data together yields another characterization of $\wtype{x:A
                        \prd{h : W \to C}
                        \prd{\beta_g : \prd{a,f} g(\supp(a,f)) = c(a,\lamu{b: B(a)} g(f(b)))} \\
                        \prd{\beta_h : \prd{a,f} h(\supp(a,f)) = c(a,\lamu{b: B(a)} h(f(b)))}
-                       \sm{\alpha : \prd {w : W} g(w) = h(w)} \\
-                       \alpha(\supp(x,f)) \ct \beta_h = \beta_g \ct c(a,-)(\funext \; \lam{b} \alpha(f(b)))
+                       \sm{\alpha : \prd {w : W} g(w) = h(w)}
+                       \prd{a,f} \\
+                       \alpha(\supp(a,f)) \ct \beta_h = \beta_g \ct c(a,-)(\funext \; \lam{b} \alpha(f(b)))
 \end{multline*}
 
 \begin{thm}
@@ -1078,7 +1081,7 @@ inductive family, resulting in the two induction principles described in
 In both definitions, the type $A$ is a parameter.
 For the first definition, we inductively define a family $=_A : A\to A\to \type$, with two indices belonging to $A$, by the following constructor:
 \begin{itemize}
-\item for any $a:A$, an element $\refl A : a=_A a$.
+\item for any $a:A$, an element $\refl a : a=_A a$.
 \end{itemize}
 By analogy with the other inductive families, we may extract the induction principle from this definition.
 It states that given any \narrowequation{C:\prd{a,b:A} (a=_A b) \to \type,} along with $d:\prd{a:A} C(a,a,\refl{a})$, there exists \narrowequation{f:\prd{a,b:A}{p:a=_A b} C(a,b,p)} such that $f(a,a,\refl a)\jdeq d(a)$.

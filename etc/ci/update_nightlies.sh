@@ -64,16 +64,19 @@ git checkout -b gh-pages upstream/gh-pages || exit 1
 
 mkdir -p nightly
 
-# Delete files in /nightly not having a commit hash younger than three days.
-# (The saunders redirects are only updated once a day. In principle, keeping
-# old builds for only one day would suffice, but this larger grace period gives
-# some extra stability.)
-CUTOFFDATE="$(date -d '3 days ago' +%s)"
+# Delete files in /nightly which are not referenced by the
+# corresponding link on saunders
 find nightly -type f | while read nfile
 do
-    HASH="$(echo $nfile | sed -r 's,^.*-([0-9a-z]+).pdf$,\1,')"
-    FILEDATE="$(git show -s --format=%ct $HASH 2>/dev/null)"
-    if [ -z $FILEDATE ] || [ $CUTOFFDATE -ge $FILEDATE ];
+    SHORT_PDF=$(echo $nfile | grep -o '[^/]*\.pdf' | sed s'/-[0-9]*-[a-z0-9]*\.pdf/.pdf/g')
+    REAL_URL="$(curl -Ls -w %{url_effective} -o /dev/null "saunders.phil.cmu.edu/book/${SHORT_PDF}")"
+    if [ -z "${REAL_URL}" ]
+    then
+        echo "ERROR: Could not get a real URL for $nfile using the command:"
+        echo "curl -Ls -w %{url_effective} -o /dev/null \"saunders.phil.cmu.edu/book/${SHORT_PDF}\""
+        exit 1
+    fi
+    if ! (echo "${REAL_URL}" | grep -q "$nfile")
     then
 	git rm -rf $nfile
     fi

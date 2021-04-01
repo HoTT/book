@@ -857,12 +857,12 @@ Section Projections.
 
   Definition projT1 (x:sigT P) : A := 
     match x with
-      | existT a _ => a
+      | (a; _) => a
     end.
 
   Definition projT2 (x:sigT P) : P (projT1 x) :=
     match x return P (projT1 x) with
-      | existT _ h => h
+      | (_; h) => h
     end.
 
 End Projections.
@@ -1374,8 +1374,7 @@ proofs themselves, we will cheat.  We'll skip the proof and use the
 *)
 
 Definition equiv_inverse : forall {A B : Type} (e : A <~> B), (B <~> A).
-  admit.
-Defined.
+Admitted.
 
 (**
 And here is what transitivity ("composition") looks like.
@@ -1383,8 +1382,7 @@ And here is what transitivity ("composition") looks like.
 
 Definition equiv_compose' : forall {A B C : Type} (g : B <~> C) (f : A <~> B)
                             , A <~> C.
-  admit.
-Defined.
+Admitted.
 (**
 It is called "equiv_compose"-prime, because there is a second function
 that instead takes functions from "A" to "B" and from "B" to "C" and
@@ -1412,8 +1410,7 @@ Class Univalence := {
 }.
 
 Instance univalence_axiom : Univalence.
-  admit.
-Defined.
+Admitted.
 
 (**
 The function "equiv_path" says that for every equality between types,

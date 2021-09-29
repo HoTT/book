@@ -1,39 +1,47 @@
 language: c
 
+sudo: true
+
+cache:
+  directories:
+    - $HOME/.cache/latex
+
+addons:
+  apt:
+    packages:
+      - wget
+      - curl
+      - sed
+      - grep
+      - texlive
+      - texlive-generic-extra
+      - texlive-latex-base
+      - texlive-latex-extra
+      - texlive-latex-recommended
+      - texlive-math-extra
+      - texlive-metapost
+      - texlive-omega
+      - texlive-plain-extra
+      - texlive-xetex
+
 env:
  global:
    - secure: "ehec8FC6y923UXtB2fMULF/xkQJkwWwzD6xFxyz0lc80IqR8Rmxh16nLKGxI9jD11qjbYSzp1yPVadXyBoSheop5aZPxeXixL49y26ikIRkyuQQdHyjsM34etoPmCKw2vVXvD+JAwjTa6qYpihSOdDXltog8ZNHF6Wp28ZaWW8g="
 
- matrix:
-   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS=""
-   - LATEXMK=""    UPDATE_ERRATA="yes"  TARGETS=""
-#   - LATEXMK="yes" UPDATE_ERRATA=""     TARGETS="dvi" # latexmk is too verbose for travis
-   - LATEXMK=""    UPDATE_ERRATA="yes"  TARGETS="dvi"
-
+matrix:
+ include:
+   # only one of these should have UPDATE_ERRATA set to "yes", otherwise we risk race conditions on pushing
+   - env: LATEXMK="yes" UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS=""
+   - env: LATEXMK=""    UPDATE_ERRATA="yes"  UPDATE_NIGHTLIES="yes"  TARGETS=""
+   - env: LATEXMK=""    UPDATE_ERRATA=""     UPDATE_NIGHTLIES=""     TARGETS="dvi"
 
 install:
- - echo | sudo add-apt-repository ppa:texlive-backports/ppa
- - sudo apt-get update -q
- - sudo apt-get install -q texlive wget curl sed grep
- - if [ ! -z "$LATEXMK" ]; then sudo apt-get install -q latexmk; fi
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/comment/comment.sty
- - ./etc/ci/wget_retry.sh http://www.ctan.org/tex-archive/macros/latex/contrib/misc/nextpage.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/fonts/stmaryrd.zip && unzip stmaryrd && mv stmaryrd/*.{mf,dtx} ./ && latex stmaryrd.dtx
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/wallpaper/wallpaper.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/xstring/xstring.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/xstring/xstring.tex
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/enumitem/enumitem.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/mh.zip && unzip mh.zip && (cd mh && for i in *.dtx; do (mv $i ../ && cd .. && tex $i); done)
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/generic/diagrams/xypic.zip && unzip xypic.zip && mv xypic/*/* ./
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.def
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/etoolbox/etoolbox.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/titlesec.zip && unzip titlesec.zip && mv titlesec/*.{tss,sty,def} ./
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/braket/braket.sty
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.dtx http://mirrors.ctan.org/macros/latex/contrib/supertabular/supertabular.ins && latex supertabular.ins
- - ./etc/ci/wget_retry.sh http://mirrors.ctan.org/macros/latex/contrib/soul/soul.dtx http://mirrors.ctan.org/macros/latex/contrib/soul/soul.ins && latex soul.ins
+ - if test "$LATEXMK" = yes ; then sudo apt-get install latexmk ; fi
 
 script: make $TARGETS
 
 # add -f to force a push even if we're not on HoTT/HoTT.
 # generally only useful for debugging
-after_script: etc/ci/update_errata.sh
+after_script:
+ - etc/ci/update_errata.sh
+ - etc/ci/update_nightlies.sh

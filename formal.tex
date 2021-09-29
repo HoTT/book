@@ -54,7 +54,7 @@ In \cref{cha:typetheory}, we presented the two basic \define{judgments}
 \index{judgment}
 of type theory. The first, $a:A$, asserts that a term $a$ has type $A$. The second,
 $a\jdeq b:A$, states that the two terms $a$ and $b$ are \define{judgmentally
-equal}
+equal}%
 \index{equality!judgmental}
 \index{judgmental equality}
 at type $A$. These judgments are inductively defined by a set of
@@ -243,6 +243,11 @@ The equality judgment $t \jdeq u : A$ is then derived by the following single ru
 %
 Judgmental equality is an equivalence relation.
 
+Note that the type theory of this presentation diverges from that used in the main body of the text in not including the judgmental uniqueness principle $f \jdeq (\lam{x} f(x))$ for functions.
+Such an equality requires that judgmental equality be sensitive to the type of the terms involved, as this equality only makes sense when $f$ is known to be a function, whereas in this presentation the convertibility relation is type-independent.
+The second presentation in \cref{sec:syntax-more-formally} includes the uniqueness principle.
+
+
 \subsection{Type universes}
 
 We postulate a hierarchy of \define{universes} denoted by primitive constants
@@ -296,11 +301,11 @@ $A\rightarrow B$ and derive the following rule:
 \begin{itemize}
 \item if $\Gamma\vdash g:A \rightarrow B$ and $\Gamma\vdash t:A$ then $\Gamma\vdash g(t):B$
 \end{itemize}
-Using non-dependent function types and leaving implicit the context $\Gamma$, the rules above can be written in the following alternative style that we use in the rest of this section of the appendix.
+Using non-dependent function types and leaving implicit the context $\Gamma$, the rules above can be written in the following alternative style that we use in the rest of this section of the appendix:
 %
 \begin{itemize}
 \item if $A:\UU_n$ and $B:A\to\UU_n$, then $\tprd{x:A}B(x) : \UU_n$
-\item if $x:A \vdash b:B$ then $ \lam{x} b : \tprd{x:A} B(x)$
+\item if $x:A \vdash b:B(x)$ then $ \lam{x} b : \tprd{x:A} B(x)$
 \item if $g:\tprd{x:A} B(x)$ and $t:A$ then $g(t):B(t)$
 \end{itemize}
 %
@@ -320,7 +325,7 @@ rules:
 \item if, in addition, $a:A$ and $b:B(a)$, then $\tup a b:\sm{x:A}B(x)$
 \end{itemize}
 %
-If we have $A$ and $B$ as above, $C : \sm{x:A}B(x) \rightarrow \UU_m$, and
+If we have $A$ and $B$ as above, $C : (\sm{x:A}B(x)) \rightarrow \UU_m$, and
 \[
   d:\tprd{x:A}{y:B(x)} C(\tup x y)
 \]
@@ -411,18 +416,18 @@ as $\supp(x,u)$:
 %
 \begin{itemize}
 \item if $A:\UU_n$ and $B: A \rightarrow \UU_n$, then $\wtype{x:A}B(x) : \UU_n$
-\item if moreover, $a:A$ and $g:B(a)\rightarrow \wtype{x:A}B(x)$ then $\supp(a,g):\wtype{x:A}B(x)$.
+\item if moreover, $a:A$ and $u:B(a)\rightarrow \wtype{x:A}B(x)$ then $\supp(a,u):\wtype{x:A}B(x)$.
 \end{itemize}
 % 
 Here also we can define functions by total recursion. If we have $A$ and $B$
-as above and $C : \wtype{x:A}B(x) \rightarrow \UU_m$, then we can introduce a defined constant
+as above and $C : (\wtype{x:A}B(x)) \rightarrow \UU_m$, then we can introduce a defined constant
 $f:\tprd{z:\wtype{x:A}B(x)} C(z)$ whenever we have
 \[
-  d:\tprd{x:A}{u:B(x) \rightarrow \wtype{x:A}B(x)}((\tprd{y:B(x)}C(u(y))) \rightarrow C(\supp(x,u)))
+  d:\tprd{a:A}{u:B(a) \rightarrow \wtype{x:A}B(x)}((\tprd{y:B(a)}C(u(y))) \rightarrow C(\supp(a,u)))
 \]
 with the defining equation
 \[
-  f(\supp(x,u)) \defeq d(x,u,f\circ u).
+  f(\supp(a,u)) \defeq d(a,u,f\circ u).
 \]
 
 \subsection{Identity types}
@@ -482,10 +487,10 @@ rules, with the judgment at the root of the tree. For example, with the rules gi
 $\oftp{\emptyctx}{\lamu{x:\unit} x}{\unit\to\unit}$.
 %
 \begin{mathpar}
-\inferrule*[right=$\Pi$-\intro]
+\inferrule*[right=$\Pi$-\rintro]
   {\inferrule*[right=$\Vble$]
     {\inferrule*[right=\ctx-\textsc{ext}]
-      {\inferrule*[right=$\unit$-\form]
+      {\inferrule*[right=$\unit$-\rform]
         {\inferrule*[right=\ctx-\textsc{emp}]
           {\ }
           {\wfctx {\emptyctx}}}
@@ -523,7 +528,11 @@ The judgment $\wfctx{\Gamma}$ formally expresses the fact that $\Gamma$ is a wel
 %
 with a side condition for the second rule: the variable $x_n$ must be distinct from the variables $x_1, \ldots, x_{n-1}$.
 Note that the hypothesis and conclusion of $\ctx$-\textsc{ext} are judgments of different forms: the hypothesis says that in the context of variables $x_1, \ldots, x_{n-1}$, the expression $A_n$ has type $\UU_i$; while the conclusion says that the extended context $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_n}{A_n})$ is well-formed.
-(It is a meta-theoretic property of the system that if $\oftp{\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n}}{A_{n}}}{b}{B}$ is derivable, then the context $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n}}{A_{n}})$ must be well-formed; thus $\ctx$-\textsc{ext} does not need to hypothesize well-formedness of the context to the left of $x_n$.)
+
+It is a meta-theoretic property of the system that if any judgment of the form $\oftp{\Gamma}{a}{A}$ or $\jdeqtp\Gamma{a}{a'}{A}$ is derivable, then so is the judgment $\wfctx\Gamma$ that the context $\Gamma$ is well-formed.
+The premises of all the rules are chosen to include just enough well-formedness hypotheses to make this property provable, but no more.
+For instance, it is not necessary for $\ctx$-\textsc{ext} to hypothesize well-formedness of $(\tmtp{x_1}{A_1}, \ldots, \tmtp{x_{n-1}}{A_{n-1}})$, as that will follow from the derivability of its premise; but it is necessary for the $\Vble$ rule in the next section to hypothesize well-formedness of its context.
+This choice is only one of the many possible ways to formulate a type theory precisely, but a detailed investigation of such issues is beyond the scope of this appendix.
 
 \subsection{Structural rules}
 
@@ -566,6 +575,10 @@ and for judgmental equalities they become
   {\oftp\Gamma{a}{A} \\ \jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
   {\jdeqtp{\Gamma,\Delta[a/x]}{b[a/x]}{c[a/x]}{B[a/x]}}
 \and
+  \inferrule*[right=$\Subst_3$]
+  {\jdeqtp\Gamma{a}{b}{A} \\ \oftp{\Gamma,\tmtp xA,\Delta}{c}{C}}
+  {\jdeqtp{\Gamma,\Delta[a/x]}{c[a/x]}{c[b/x]}{C[a/x]}}
+\and
   \inferrule*[right=$\Weak_2$]
   {\oftp\Gamma{A}{\UU_i} \\ \jdeqtp{\Gamma,\Delta}{b}{c}{B}}
   {\jdeqtp{\Gamma,\tmtp xA,\Delta}{b}{c}{B}}
@@ -585,15 +598,18 @@ assume that judgmental equality is an equivalence relation respected by typing.
   \inferrule*{\jdeqtp\Gamma{a}{b}{A} \\ \jdeqtp\Gamma{A}{B}{\UU_i}}{\jdeqtp\Gamma{a}{b}{B}}
 \end{mathparpagebreakable}
 %
-Additionally, for all the type formers below, we assume rules stating that each constructor preserves definitional equality in each of its arguments; for instance, along with the $\Pi$-\intro\ rule, we assume the rule
+Finally, we assume that judgmental equality is a congruence respected by typing,
+i.e., that each constructor preserves judgmental equality in each of its
+arguments. For instance, along with the $\Pi$-\rintro\ rule, we assume the rule
 \[
-  \inferrule*[right=$\Pi$-\intro-eq]
-  {\jdeqtp\Gamma{A}{A'}{\UU_i} \\
-   \jdeqtp{\Gamma,\tmtp xA}{B}{B'}{\UU_i} \\
+  \inferrule*[right=$\Pi$-\rintro-eq]
+  {\oftp\Gamma{A}{\UU_i} \\
+   \oftp{\Gamma,\tmtp xA}{B}{\UU_i} \\
    \jdeqtp{\Gamma,\tmtp xA}{b}{b'}{B}}
   {\jdeqtp\Gamma{\lamu{x:A} b}{\lamu{x:A'} b'}{\tprd{x:A} B}}
 \]
-However, we omit these rules for brevity.
+Taken together, these local principles imply the global congruence principles
+$\Subst_2$ and $\Subst_3$ above. We will omit these local rules for brevity.
 
 \index{rule!structural|)}%
 \index{structural!rules|)}%
@@ -661,23 +677,23 @@ For the dependent function type these rules are:
 %
 \begin{mathparpagebreakable}
   \def\premise{\oftp{\Gamma}{A}{\UU_i} \and \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
-  \inferrule*[right=$\Pi$-\form]
+  \inferrule*[right=$\Pi$-\rform]
     \premise
     {\oftp\Gamma{\tprd{x:A}B}{\UU_i}}
 \and
-  \inferrule*[right=$\Pi$-\intro]
+  \inferrule*[right=$\Pi$-\rintro]
   {\oftp{\Gamma,\tmtp xA}{b}{B}}
   {\oftp\Gamma{\lam{x:A} b}{\tprd{x:A} B}}
 \and
-  \inferrule*[right=$\Pi$-\elim]
+  \inferrule*[right=$\Pi$-\relim]
   {\oftp\Gamma{f}{\tprd{x:A} B} \\ \oftp\Gamma{a}{A}}
   {\oftp\Gamma{f(a)}{B[a/x]}}
 \and
-  \inferrule*[right=$\Pi$-\comp]
+  \inferrule*[right=$\Pi$-\rcomp]
   {\oftp{\Gamma,\tmtp xA}{b}{B} \\ \oftp\Gamma{a}{A}}
   {\jdeqtp\Gamma{(\lam{x:A} b)(a)}{b[a/x]}{B[a/x]}}
 \and
-  \inferrule*[right=$\Pi$-\uniq]
+  \inferrule*[right=$\Pi$-\runiq]
   {\oftp\Gamma{f}{\tprd{x:A} B}}
   {\jdeqtp\Gamma{f}{(\lamu{x:A}f(x))}{\tprd{x:A} B}}
 \end{mathparpagebreakable}
@@ -703,26 +719,26 @@ Recall that the elimination rule for a positive type such as $\Sigma$ is called 
 %
 \begin{mathparpagebreakable}
   \def\premise{\oftp{\Gamma}{A}{\UU_i} \and \oftp{\Gamma,\tmtp xA}{B}{\UU_i}}
-  \inferrule*[right=$\Sigma$-\form]
+  \inferrule*[right=$\Sigma$-\rform]
     \premise
     {\oftp\Gamma{\tsm{x:A} B}{\UU_i}}
   \and
-  \inferrule*[right=$\Sigma$-\intro]
+  \inferrule*[right=$\Sigma$-\rintro]
     {\oftp{\Gamma, \tmtp x A}{B}{\UU_i} \\
      \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{B[a/x]}}
     {\oftp\Gamma{\tup ab}{\tsm{x:A} B}}
   \and
-  \inferrule*[right=$\Sigma$-\elim]
+  \inferrule*[right=$\Sigma$-\relim]
     {\oftp{\Gamma, \tmtp z {\tsm{x:A} B}}{C}{\UU_i} \\
      \oftp{\Gamma,\tmtp x A,\tmtp y B}{g}{C[\tup x y/z]} \\
      \oftp\Gamma{p}{\tsm{x:A} B}}
     {\oftp\Gamma{\ind{\tsm{x:A} B}(z.C,x.y.g,p)}{C[p/z]}}
   \and
-  \inferrule*[right=$\Sigma$-\comp]
+  \inferrule*[right=$\Sigma$-\rcomp]
     {\oftp{\Gamma, \tmtp z {\tsm{x:A} B}}{C}{\UU_i} \\
      \oftp{\Gamma, \tmtp x A, \tmtp y B}{g}{C[\tup x y/z]} \\\\
-     \oftp\Gamma{a'}{A} \\ \oftp\Gamma{b'}{B[a'/x]}}
-    {\jdeqtp\Gamma{\ind{\tsm{x:A} B}(z.C,x.y.g,\tup{a'}{b'})}{g[a',b'/x,y]}{C[\tup {a'} {b'}/z]}}
+     \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{B[a/x]}}
+    {\jdeqtp\Gamma{\ind{\tsm{x:A} B}(z.C,x.y.g,\tup{a}{b})}{g[a,b/x,y]}{C[\tup {a} {b}/z]}}
 \end{mathparpagebreakable}
 %
 The expression $\tsm{x:A} B$ binds free occurrences of $x$ in $B$. Furthermore, because
@@ -749,33 +765,33 @@ propositional uniqueness principle.
 \index{type!coproduct}%
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$+$-\form]
+  \inferrule*[right=$+$-\rform]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i}}
   {\oftp\Gamma{A+B}{\UU_i}}
 \\
-  \inferrule*[right=$+$-\intro${}_1$]
+  \inferrule*[right=$+$-\rintro${}_1$]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i} \\\\ \oftp\Gamma{a}{A}}
   {\oftp\Gamma{\inl(a)}{A+B}}
 \and
-  \inferrule*[right=$+$-\intro${}_2$]
+  \inferrule*[right=$+$-\rintro${}_2$]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{B}{\UU_i} \\\\ \oftp\Gamma{b}{B}}
   {\oftp\Gamma{\inr(b)}{A+B}}
 \\
-  \inferrule*[right=$+$-\elim]
+  \inferrule*[right=$+$-\relim]
   {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\\\
    \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
    \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
    \oftp\Gamma{e}{A+B}}
   {\oftp\Gamma{\ind{A+B}(z.C,x.c,y.d,e)}{C[e/z]}}
 \and
-  \inferrule*[right=$+$-\comp${}_1$]
+  \inferrule*[right=$+$-\rcomp${}_1$]
   {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
    \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
    \oftp\Gamma{a}{A}}
   {\jdeqtp\Gamma{\ind{A+B}(z.C,x.c,y.d,\inl(a))}{c[a/x]}{C[\inl(a)/z]}}
 \and
-  \inferrule*[right=$+$-\comp${}_2$]
+  \inferrule*[right=$+$-\rcomp${}_2$]
   {\oftp{\Gamma,\tmtp z{(A+B)}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp xA}{c}{C[\inl(x)/z]} \\
    \oftp{\Gamma,\tmtp yB}{d}{C[\inr(y)/z]} \\\\
@@ -791,11 +807,11 @@ $d$.
 \index{type!empty|(}%
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\emptyt$-\form]
+  \inferrule*[right=$\emptyt$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma\emptyt{\UU_i}}
 \and
-  \inferrule*[right=$\emptyt$-\elim]
+  \inferrule*[right=$\emptyt$-\relim]
   {\oftp{\Gamma,\tmtp x\emptyt}{C}{\UU_i} \\ \oftp\Gamma{a}{\emptyt}}
   {\oftp\Gamma{\ind{\emptyt}(x.C,a)}{C[a/x]}}
 \end{mathparpagebreakable}
@@ -810,21 +826,21 @@ In $\ind{\emptyt}$, $x$ is bound in $C$. The empty type has no introduction rule
 \index{type!unit|(}%
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\unit$-\form]
+  \inferrule*[right=$\unit$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma\unit{\UU_i}}
 \and
-  \inferrule*[right=$\unit$-\intro]
+  \inferrule*[right=$\unit$-\rintro]
   {\wfctx\Gamma}
   {\oftp\Gamma{\ttt}{\unit}}
 \and
-  \inferrule*[right=$\unit$-\elim]
+  \inferrule*[right=$\unit$-\relim]
   {\oftp{\Gamma,\tmtp x\unit}{C}{\UU_i} \\
    \oftp{\Gamma}{c}{C[\ttt/x]} \\
    \oftp\Gamma{a}{\unit}}
   {\oftp\Gamma{\ind{\unit}(x.C,c,a)}{C[a/x]}}
 \and
-  \inferrule*[right=$\unit$-\comp]
+  \inferrule*[right=$\unit$-\rcomp]
   {\oftp{\Gamma,\tmtp x\unit}{C}{\UU_i} \\
    \oftp{\Gamma}{c}{C[\ttt/x]}}
   {\jdeqtp\Gamma{\ind{\unit}(x.C,c,\ttt)}{c}{C[\ttt/x]}}
@@ -850,27 +866,27 @@ We give the rules for natural numbers, following \cref{sec:inductive-types}.
      \oftp\Gamma{c_0}{C[0/x]} \\
      \oftp{\Gamma,\tmtp{x}\N,\tmtp y C}{c_s}{C[\suc(x)/x]}}
   %
-  \inferrule*[right=$\N$-\form]
+  \inferrule*[right=$\N$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma{\N}{\UU_i}}
 \and
-  \inferrule*[right=$\N$-\intro${}_1$]
+  \inferrule*[right=$\N$-\rintro${}_1$]
   {\wfctx\Gamma}
   {\oftp\Gamma{0}{\N}}
 \and
-  \inferrule*[right=$\N$-\intro${}_2$]
+  \inferrule*[right=$\N$-\rintro${}_2$]
   {\oftp\Gamma{n}{\N}}
   {\oftp\Gamma{\suc(n)}{\N}}
 \and
-  \inferrule*[right=$\N$-\elim]
+  \inferrule*[right=$\N$-\relim]
   {\premise \\ \oftp\Gamma{n}{\N}}
   {\oftp\Gamma{\ind{\N}(x.C,c_0,x.y.c_s,n)}{C[n/x]}}
 \and
-  \inferrule*[right=$\N$-\comp${}_1$]
+  \inferrule*[right=$\N$-\rcomp${}_1$]
   {\premise}
   {\jdeqtp\Gamma{\ind{\N}(x.C,c_0,x.y.c_s,0)}{c_0}{C[0/x]}}
 \and
-  \inferrule*[right=$\N$-\comp${}_2$]
+  \inferrule*[right=$\N$-\rcomp${}_2$]
   {\premise \\ \oftp\Gamma{n}{\N}}
   {\Gamma\vdash
     {\begin{aligned}[t]
@@ -895,21 +911,21 @@ The presentation here corresponds to the (unbased) path induction principle for 
 \cref{sec:identity-types}.
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\idsym$-\form]
+  \inferrule*[right=$\idsym$-\rform]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{A}}
   {\oftp\Gamma{\id[A]{a}{b}}{\UU_i}}
 \and
-  \inferrule*[right=$\idsym$-\intro]
+  \inferrule*[right=$\idsym$-\rintro]
   {\oftp\Gamma{A}{\UU_i} \\ \oftp\Gamma{a}{A}}
   {\oftp\Gamma{\refl a}{\id[A]aa}}
 \and
-  \inferrule*[right=$\idsym$-\elim]
+  \inferrule*[right=$\idsym$-\relim]
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A} \\ \oftp\Gamma{b}{A} \\ \oftp\Gamma{p'}{\id[A]ab}}
   {\oftp\Gamma{\indid{A}(x.y.p.C,z.c,a,b,p')}{C[a,b,p'/x,y,p]}}
 \and
-  \inferrule*[right=$\idsym$-\comp]
+  \inferrule*[right=$\idsym$-\rcomp]
   {\oftp{\Gamma,\tmtp xA,\tmtp yA,\tmtp p{\id[A]xy}}{C}{\UU_i} \\
    \oftp{\Gamma,\tmtp zA}{c}{C[z,z,\refl z/x,y,p]} \\
    \oftp\Gamma{a}{A}}
@@ -925,7 +941,7 @@ $c$.
 
 \index{definition}%
 
-Although the rules we listed so far allows us to construct everything we need directly, we
+Although the rules we have listed so far allow us to construct everything we need directly, we
 would still like to be able to use named constants, such as $\isequiv$, as a matter of
 convenience. Informally, we can think of these constants simply as
 abbreviations, but the situation is a bit subtler in the formalization.
@@ -940,7 +956,7 @@ $g:B\to C$ to $g\circ f:A\to C$. Somewhat unexpectedly, to make this work formal
 \end{narrowmultline*}
 %
 From a practical perspective, we do not want to annotate each application of
-$\circ$ with $A$, $B$ and $C$, as the are usually quite easily guessed from surrounding information. We would like to simply write $g\circ f$.
+$\circ$ with $A$, $B$ and $C$, as they are usually quite easily guessed from surrounding information. We would like to simply write $g\circ f$.
 Then, strictly speaking, $g \circ f$ is not an abbreviation for $\lam{x : A} g(f(x))$,
 because it involves additional \define{implicit arguments} which we want to suppress.
 \index{implicit argument}
@@ -1006,32 +1022,32 @@ second computation rule is a propositional, not judgmental, equality. These
 differences are discussed in \cref{sec:dependent-paths}.
 
 \begin{mathparpagebreakable}
-  \inferrule*[right=$\Sn^1$-\form]
+  \inferrule*[right=$\Sn^1$-\rform]
   {\wfctx\Gamma}
   {\oftp\Gamma{\Sn^1}{\UU_i}}
 \and
-  \inferrule*[right=$\Sn^1$-\intro${}_1$]
+  \inferrule*[right=$\Sn^1$-\rintro${}_1$]
   {\wfctx\Gamma}
   {\oftp\Gamma{\base}{\Sn^1}}
 \and
-  \inferrule*[right=$\Sn^1$-\intro${}_2$]
+  \inferrule*[right=$\Sn^1$-\rintro${}_2$]
   {\wfctx\Gamma}
   {\oftp\Gamma{\lloop}{\id[\Sn^1]{\base}{\base}}}
 \and
-  \inferrule*[right=$\Sn^1$-\elim]
+  \inferrule*[right=$\Sn^1$-\relim]
   {\oftp{\Gamma,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gamma}{b}{C[\base/x]} \\
    \oftp{\Gamma}{\ell}{\dpath C \lloop b b} \\
    \oftp\Gamma{p}{\Sn^1}}
   {\oftp\Gamma{\ind{\Sn^1}(x.C,b,\ell,p)}{C[p/x]}}
 \and
-  \inferrule*[right=$\Sn^1$-\comp${}_1$]
+  \inferrule*[right=$\Sn^1$-\rcomp${}_1$]
   {\oftp{\Gamma,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gamma}{b}{C[\base/x]} \\
    \oftp{\Gamma}{\ell}{\dpath C \lloop b b}}
   {\jdeqtp\Gamma{\ind{\Sn^1}(x.C,b,\ell,\base)}{b}{C[\base/x]}}
 \and
-  \inferrule*[right=$\Sn^1$-\comp${}_2$]
+  \inferrule*[right=$\Sn^1$-\rcomp${}_2$]
   {\oftp{\Gamma,\tmtp x{\Sn^1}}{C}{\UU_i} \\
    \oftp{\Gamma}{b}{C[\base/x]} \\
    \oftp{\Gamma}{\ell}{\dpath C \lloop b b}}
@@ -1052,7 +1068,7 @@ Recall that \cref{sec:syntax-informally} defines the terms of type theory as
 an extension of the untyped $\lambda$-calculus. The $\lambda$-calculus 
 has its own notion of computation, namely the computation rule\index{computation rule!for function types}: 
 \[
-  (\lam{x} t)(u) \defeq t[u/x]
+  (\lam{x} t)(u) \defeq t[u/x].
 \]
 This rule, together with the defining equations for the defined constants form
 \emph{rewriting rules}\index{rewriting rule}\index{rule!rewriting} that determine reduction steps for a rewriting 
@@ -1199,10 +1215,6 @@ conversion: two terms are \emph{judgmentally equal} if they reduce to a
 common term by means of a sequence of applications of the reduction
 rules. This terminology was also used by de Bruijn \cite{deBruijn-1973} in his
 presentation of \emph{AUTOMATH}.\index{AUTOMATH}
-
-Streicher \cite[Theorem 4.13]{Streicher-1991}, explains how to give the
-semantics in a contextual category of terms in normal form using a simple syntax
-similar to the one we have presented.
 
 Our second presentation comprises fairly standard presentation of
 intensional Martin-L\"{o}f type theory, with some additional features needed in

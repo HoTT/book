@@ -15,7 +15,7 @@ However, we give a new construction of the Cauchy reals as a higher inductive-in
 
 In~\cref{sec:comp-cauchy-dedek} we compare the two constructions of reals. The Cauchy reals are included in the Dedekind reals. They coincide if excluded middle or countable choice holds, but in general the inclusion might be proper.
 
-In~\cref{sec:compactness-interval} we consider three notions of compactness of the closed interval~$[0,1]$. We first show that $[0,1]$ is metrically compact\indexdef{metrically compact}\indexdef{compactness!metric} in the sense that it is complete and totally bounded, and that uniformly continuous maps on metrically compact spaces behave as expected. In contrast, the Bolzano--Weierstra\ss{} property that every sequence has a convergent subsequence implies the limited principle of omniscience, which is an instance of excluded middle. Finally, we discuss Heine-Borel compactness. A naive formulation of the finite subcover property does not work, but a proof relevant notion of inductive covers does.
+In~\cref{sec:compactness-interval} we consider three notions of compactness of the closed interval~$[0,1]$. We first show that $[0,1]$ is metrically compact\indexdef{metrically compact}\indexdef{compactness!metric} in the sense that it is complete and totally bounded, and that uniformly continuous maps on metrically compact spaces behave as expected. In contrast, the Bolzano--Weierstra\ss{} property that every sequence has a convergent subsequence implies the limited principle of omniscience, which is an instance of excluded middle. Finally, we discuss Heine--Borel compactness. A naive formulation of the finite subcover property does not work, but a proof relevant notion of inductive covers does.
 This section is basically standard constructive analysis.
 
 The development of real numbers and analysis in homotopy type theory can be easily made compatible with classical mathematics. By assuming excluded middle and the axiom of choice we get standard classical analysis:\index{mathematics!classical}\index{classical!analysis} the Dedekind and Cauchy reals coincide, foundational questions about the impredicative nature of the Dedekind reals disappear, and the interval is as compact as it could be.
@@ -70,7 +70,7 @@ apply \cref{lem:quotient-when-canonical-representatives} to obtain a set \Q, whi
 again has a decidable equality.
 \index{decidable!equality}%
 
-We do not bother to write down the arithmetical operations on \Q as we trust our readers
+We do not bother to write down the arithmetical operations on \Q as we trust that our readers
 know how to compute with fractions even in the case when one is added to the denominator.
 Let us just record the conclusion that there is an entirely unproblematic construction of
 the ordered field of rational numbers \Q, with a decidable equality and decidable order.
@@ -80,7 +80,7 @@ It can also be characterized as the initial ordered field.
 \symlabel{positive-rationals}
 \indexdef{rational numbers!positive}%
 \indexdef{positive!rational numbers}%
-Let $\Qp = \setof{ q : \Q | q > 0 }$ be the type of positive rational numbers.
+Finally, we will denote by $\Qp \defeq \setof{ q : \Q | q > 0 }$ the type of positive rational numbers.
 
 \section{Dedekind reals}
 \label{sec:dedekind-reals}
@@ -177,7 +177,8 @@ logical notation from \cref{defn:logical-notation}.
   : \Q \to \Omega$ which is:
   %
   \begin{enumerate}
-  \item \emph{inhabited:} $\exis{q : \Q} L(q)$ and $\exis{r : Q} U(r)$,
+  \item \label{defn:dedekind-reals-inhabited}
+    \emph{inhabited (i.e., bounded):} $\exis{q : \Q} L(q)$ and $\exis{r : \Q} U(r)$,
   \item \emph{rounded:} for all $q, r : \Q$,
     \index{rounded!Dedekind cut}
     %
@@ -471,7 +472,7 @@ compute rates of convergence---an approximation without an error estimate carrie
 useful information. By \cref{thm:ttac}, \eqref{eq:cauchy-sequence} yields a function $M
 : \Qp \to \N$, called the \emph{modulus of convergence}\indexdef{modulus!of convergence}, such that $m, k \geq M(\epsilon)$
 implies $|x_m - x_k| < \epsilon$. From this we get $|x_{M(\delta/2)} - x_{M(\epsilon/2)}|<
-\delta + \epsilon$ for all $\epsilon : \Qp$. In fact, the map $(\epsilon \mapsto
+\delta + \epsilon$ for all $\delta, \epsilon : \Qp$. In fact, the map $(\epsilon \mapsto
 x_{M(\epsilon/2)}) : \Qp \to \Q$ carries the same information about the limit as the
 original Cauchy condition~\eqref{eq:cauchy-sequence}. We shall work with these
 approximation functions rather than with Cauchy sequences.
@@ -587,7 +588,7 @@ $<$ on~$F$ is a map ${<} : F \to F \to \Omega$.
 \end{thm}
 
 \begin{proof}
-  Let $F$ be an archimedean ordered field. For every $x : F$ define $L, U : \Q \to
+  Let $F$ be an archimedean ordered field. For every $x : F$ define $L_x, U_x : \Q \to
   \Omega$ by
   %
   \begin{equation*}
@@ -805,7 +806,7 @@ We are immediately able to populate $\RC$ with many real numbers. For suppose $x
 modulus of convergence. Then $\rcrat \circ x \circ M : \Qp \to \RC$ is a Cauchy
 approximation, using the first constructor of $\closesym$ to produce the necessary witness.
 Thus, $\rclim(\rcrat \circ x \circ m)$ is a real number. Various famous
-real numbers $\sqrt{2}$, $\pi$, $e$, \dots{} are all limits of such Cauchy sequences of
+real numbers such as $\sqrt{2}$, $\pi$, $e$, \dots{} are all limits of such Cauchy sequences of
 rationals.
 
 \subsection{Induction and recursion on Cauchy reals}
@@ -905,11 +906,11 @@ Given these data, the induction principle yields a function $f:\prd{x:\RC} A(x)$
 \end{align*}
 We call this principle \define{$\RC$-induction}; it says essentially that if we take $\close\epsilon$ as given, then $\RC$ is inductively generated by its constructors.
 
-In particular, if $A$ is a mere property, the third hypothesis in $\RC$-induction is trivial.
+Note that, if $A$ is a mere property, then the third hypothesis in $\RC$-induction is automatic (we will see in a moment that these are in fact equivalent statements).
 Thus, we may prove mere properties of real numbers by simply proving them for rationals and for limits of Cauchy approximations.
 Here is an example.
 
-\begin{lem}
+\begin{lem} \label{lem:close-reflexive}
   For any $u:\RC$ and $\epsilon:\Qp$, we have $u\close\epsilon u$.
 \end{lem}
 \begin{proof}
@@ -920,6 +921,12 @@ Here is an example.
   And in the second case, we may assume inductively that $x_\delta \close\epsilon x_\delta$ for all $\delta,\epsilon:\Qp$.
   Then in particular, we have $x_{\epsilon/3} \close{\epsilon/3} x_{\epsilon/3}$, whence $\rclim(x) \close{\epsilon} \rclim(x)$ by the fourth constructor of $\closesym$.
 \end{proof}
+
+From \cref{lem:close-reflexive}, we infer that a direct application of $\RC$-induction only has a chance to succeed if the family $A:\RC\to\type$ is a mere property.
+To see this, fix $u:\RC$.
+Taking $v$ to be $u$, the third hypothesis of $\RC$-induction tells us that, for any $a : A(u)$, we have $\dpath{A}{\rceq(u,u)}{a}{a}$.
+Given a point $b : A(u)$ in addition, we also get $\dpath{A}{\rceq(u,u)}{a}{b}$.
+From the definition of the dependent path type, we conclude that the combination of these two paths implies $a = b$, i.e.\ all points in $A(u)$ are equal.
 
 \begin{thm}\label{thm:Cauchy-reals-are-a-set}
   $\RC$ is a set.
@@ -1022,7 +1029,7 @@ Since $A$ is independent of $\RC$, we may assume for simplicity that $\bsim$ dep
 In this case, defining a function $f:\RC\to A$ by $(\RC,\closesym)$-recursion requires the following cases (which we now write using the pattern-matching convention).
 \begin{itemize}
 \item For every $q : \Q$, construct $f(\rcrat(q)) : A$.
-\item For every Cauchy approximation $x : \Qp \to \RC$, construct $f(x) : A$, assuming inductively that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$ and form a ``Cauchy approximation with respect to $\bsim$'', i.e.\ that $\fall{\epsilon,\delta:\Qp} (f(x_\epsilon) \bsim_{\epsilon+\delta} f(x_\delta))$.
+\item For every Cauchy approximation $x : \Qp \to \RC$, construct $f(\rclim(x)) : A$, assuming inductively that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$ and form a ``Cauchy approximation with respect to $\bsim$'', i.e.\ that $\fall{\epsilon,\delta:\Qp} (f(x_\epsilon) \bsim_{\epsilon+\delta} f(x_\delta))$.
 \item Prove that the relations $\bsim$ are \emph{separated}, i.e.\ that, for any $a,b:A$,
   \indexdef{relation!separated family of}%
   \indexdef{separated family of relations}%
@@ -1159,7 +1166,7 @@ while reading it left to right to \define{openness} of $\approx$,
 \index{relation!open}%
 %
 \begin{equation*}
-  (u \approx_\epsilon v) \Rightarrow \exis{\epsilon : \Qp} (\delta < \epsilon) \land (u \approx_\delta v).
+  (u \approx_\epsilon v) \Rightarrow \exis{\delta : \Qp} (\delta < \epsilon) \land (u \approx_\delta v).
 \end{equation*}
 %
 Conditions~\eqref{eq:RC-sim-rtri} and~\eqref{eq:RC-sim-ltri} are forms of the triangle inequality, which say that $\approx$ is a ``module'' over $\closesym$ on both sides.
@@ -1903,9 +1910,9 @@ compactness are:
   \index{compactness!Bolzano--Weierstrass@Bolzano--Weierstra\ss{}}%
   \indexsee{Bolzano--Weierstrass@Bolzano--Weierstra\ss{}}{compactness}%
   \index{sequence}%
-\item \define{Heine-Borel compact:} ``every open cover has a finite subcover''.
-  \index{compactness!Heine-Borel}%
-  \indexsee{Heine-Borel}{compactness}%
+\item \define{Heine--Borel compact:} ``every open cover has a finite subcover''.
+  \index{compactness!Heine--Borel}%
+  \indexsee{Heine--Borel}{compactness}%
 \end{enumerate}
 %
 These are all equivalent in classical mathematics.
@@ -2020,9 +2027,9 @@ Let us show that $[0,1]$ is compact in the first sense.
 \end{thm}
 
 \begin{proof}
-  Given $\epsilon : \Qp$, there is $n : \N$ such that $2/k < \epsilon$, so we may take the
-  $\epsilon$-net $x_i = i/k$ for $i = 0, \ldots, k-1$. This is an $\epsilon$-net because,
-  for every $y : [0,1]$ there merely exists $i$ such that $0 \leq i < k$ and $(i -
+  Given $\epsilon : \Qp$, there is $k : \N$ such that $2/k < \epsilon$, so we may take the
+  $\epsilon$-net $x_i = i/k$ for $i = 0, \ldots, k$. This is an $\epsilon$-net because,
+  for every $y : [0,1]$ there merely exists $i$ such that $0 \leq i \leq k$ and $(i -
   1)/k < y < (i+1)/k$, and so $|y - x_i| < 2/k < \epsilon$.
 
   For completeness of $[0,1]$, consider a Cauchy approximation $x : \Qp \to
@@ -2034,7 +2041,7 @@ Let us show that $[0,1]$ is compact in the first sense.
     r(\ell) =
     r (\lim x) =
     \lim (r \circ x) =
-    r (\lim x) =
+    \lim x =
     \ell,
   \end{equation*}
   %
@@ -2108,7 +2115,7 @@ of these improvements rely on the facts that in a complete totally bounded space
 \item every sequence has a convergent subsequence.
 \end{enumerate}
 %
-The first statement follows easily from Heine-Borel compactness, and the second is just
+The first statement follows easily from Heine--Borel compactness, and the second is just
 Bolzano--Weierstra\ss{} compactness.
 \index{compactness!Bolzano--Weierstrass@Bolzano--Weierstra\ss{}}%
 Unfortunately, these are both somewhat problematic. Let
@@ -2201,15 +2208,15 @@ when
   \fall{x : [a,b]} \exis{i : I} q_i < x < r_i.
 \end{equation}
 %
-The \define{Heine-Borel compactness for $[0,1]$}
-\indexdef{compactness!Heine-Borel}%
+The \define{Heine--Borel compactness for $[0,1]$}
+\indexdef{compactness!Heine--Borel}%
 states that every covering family of $[0,1]$
 merely has a finite subfamily which still covers $[0,1]$.
 
 \index{depression}
 \begin{thm} \label{classical-Heine-Borel}
   \index{excluded middle}%
-  If excluded middle holds then $[0,1]$ is Heine-Borel compact.
+  If excluded middle holds then $[0,1]$ is Heine--Borel compact.
 \end{thm}
 
 \begin{proof}
@@ -2234,7 +2241,7 @@ merely has a finite subfamily which still covers $[0,1]$.
 \end{proof}
 
 Without excluded middle, or a pinch of Brouwerian Intuitionism, we seem to be stuck.
-Nevertheless, Heine-Borel compactness of $[0,1]$ \emph{can} be recovered in a constructive
+Nevertheless, Heine--Borel compactness of $[0,1]$ \emph{can} be recovered in a constructive
 setting, in a fashion that is still compatible with classical mathematics! For this to be
 done, we need to revisit the notion of cover. The trouble with
 \eqref{eq:cover-pointwise-truncated} is that the truncated existential allows a space to
@@ -2255,7 +2262,7 @@ to exhibiting a non-constant map $[1,4] \to \bool$, see
 \index{locale}%
 the notion of cover ought to be expressed in terms of open sets, without
 reference to points. Such a ``holistic'' view of space will then allow us to analyze the
-notion of cover, and we shall be able to recover Heine-Borel compactness.  Locale
+notion of cover, and we shall be able to recover Heine--Borel compactness.  Locale
 theory uses power sets,
 \index{power set}%
 which we could obtain by assuming propositional resizing;
@@ -2326,7 +2333,7 @@ real line: one says that an interval may be covered by two intervals if they ove
 while the other one says that an interval may be covered from within. Incidentally, if $r
 \leq q$ then $(q, r)$ is covered by the empty family by the last clause.
 
-Inductive covers enjoy the Heine-Borel property, the proof of which requires a lemma.
+Inductive covers enjoy the Heine--Borel property, the proof of which requires a lemma.
 
 \begin{lem} \label{reals-formal-topology-locally-compact}
   Suppose $q < s < t < r$ and $(q, r) \cover \pairr{I, \mathcal{F}}$. Then there merely
@@ -2378,7 +2385,7 @@ Say that \define{$\pairr{I, \mathcal{F}}$ inductively covers
 \begin{cor} \label{interval-Heine-Borel}
   \index{compactness!Heine-Borel}%
   \index{interval!open and closed}%
-  A closed interval is Heine-Borel compact for inductive covers.
+  A closed interval is Heine--Borel compact for inductive covers.
 \end{cor}
 
 \begin{proof}
@@ -2453,7 +2460,7 @@ difference between pointwise and inductive covers is not what they cover but in 
 We could write another book by going on like this, but let us stop here and hope that we
 have provided ample justification for the claim that analysis can be developed in homotopy
 type theory. The curious reader should consult \cref{ex:mean-value-theorem} for
-constructive versions of the mean value theorem.
+constructive versions of the intermediate value theorem.
 
 \index{acceptance|)}
 
@@ -2577,7 +2584,7 @@ There is an unfortunate clash with the standard notation $\setof{x:A | P(x)}$ fo
   If $\Q_D$ denotes the set of dyadic rationals, we define $\iota_{\Q_D}:\Q_D\to\NO$ by induction on $n$:
   \begin{align*}
     \iota_{\Q_D}(a/2^0) &\defeq \iota_\Z(a),\\
-    \iota_{\Q_D}(a/2^n) &\defeq \surr{a/2^n - 1/2^n}{a/2^n + 1/2^n},
+    \iota_{\Q_D}(a/2^n) &\defeq \surr{\iota_{\Q_D}(a/2^n - 1/2^n)}{\iota_{\Q_D}(a/2^n + 1/2^n)},
     \quad \text{for $n>0$.}
   \end{align*}
   Here we use the fact that if $n>0$ and $a$ is odd, then $a/2^n \pm 1/2^n$ is a dyadic rational with a smaller denominator than $a/2^n$.
@@ -2722,7 +2729,8 @@ By contrast, Conway's Theorem 1 (transitivity of $\le$) is somewhat harder to es
 %   Obvious by $\NO$-induction.
 % \end{proof}
 
-We will also need the joint recursion principle, \define{$(\NO,\le,<)$-recursion}, which it is convenient to state as follows.
+We will also need the joint recursion principle, \define{$(\NO,\le,<)$-recursion}.
+It is convenient to state this as follows.
 Suppose $A$ is a type equipped with relations $\mathord\ble:A\to A\to\prop$ and $\mathord\blt:A\to A\to\prop$.
 Then we can define $f:\NO\to A$ by doing the following.
 \begin{enumerate}
@@ -2862,7 +2870,7 @@ Also as there, we will have to simultaneously prove a couple of essential proper
   Moreover, by transitivity on the left with respect to $x^L<x$, we have $x^L \prec y^{L_0}$ for any $L$, hence $x^L\prec y$ by transitivity on the right.
   Thus, $x\preceq y$.
 
-  On the other hand, if there is $R_0$ with $x^{R_0}\preceq y$, then by transitivity on the left with respect to $x^L<x^{R_0}$ we have $x^L \prec y$ for all $L$.
+  On the other hand, if there is $R_0$ with $x^{R_0}\preceq y$, then by~\eqref{eq:NO-prec-outer-IH}, we have $x^L \prec y$ for all $L$.
   And by transitivity on the left and right with respect to $x<x^{R_0}$ and $y<y^R$, we have $x\prec y^R$ for any $R$.
   Thus, $x\preceq y$.
 
@@ -2939,25 +2947,37 @@ As with the Cauchy reals, the joint $(\NO,\le,<)$-recursion principle remains es
 
 \begin{eg}\label{eg:surreal-addition}
 \index{addition!of surreal numbers}%
-We define $\mathord+:\NO\to\NO\to\NO$ by a double recursion.
-For the outer recursion, we take the codomain to be the subset of $\NO\to\NO$ consisting of functions $g$ such that $(x<y) \to (g(x)<g(x))$ and $(x\le y) \to (g(x)\le g(y))$ for all $x,y$.
+We define $\mathord+:\NO\to\NO\to\NO$ by recursion on the first argument, followed by induction on the second argument.
+For the outer recursion, we take the codomain to be the subset of $\NO\to\NO$ consisting of functions $g$ such that $(x<y) \to (g(x)<g(y))$ and $(x\le y) \to (g(x)\le g(y))$ for all $x,y$.
 For such $g,h$ we define $(g\ble h)\defeq \fall{x:\NO} g(x)\le h(x)$ and $(g\blt h)\defeq \fall{x:\NO} g(x)< h(x)$.
 Clearly $\ble$ is antisymmetric.
 
-For the primary clause of the recursion, we suppose $x$ defined by a cut, and we define $(x+\blank)$ by an inner recursion on $\NO$ with codomain $\NO$, with relations $\bble$ and $\bblt$ coinciding with $\le$ and $<$.
-For the primary clause of the inner recursion, we suppose also $y$ defined by a cut, and give Conway's definition:
+For the primary clause of the recursion, we suppose $x$ defined by a cut, that the functions $(x^L+\blank)$ and $(x^R+\blank)$ are defined, preserve inequalities, and satisfy $x^L+y<x^R+y$, and we define $(x+\blank)$.
+As in \cref{defn:No-codes}, rather than an inner recursion, we use an inner induction into the family $A:\NO\to\type$, where $A(y)$ is the subset of those $z:\NO$ such that each $x^L + y < z$ and each $x^R + y > z$.
+We equip $A$ with the relations $\le$ and $<$ induced from $\NO$, so that antisymmetry is obvious.
+For the primary clause of the inner recursion, we suppose also $y$ defined by a cut, with each $x+y^L$ and $x+y^R$ defined and satisfying $x^L+y^L < x+y^L$, $x^L+y^R < x+y^R$, $x+y^L < x^R + y^L$, and $x+y^R < x^R+y^R$ (these come from the additional conditions imposed on elements of $A(y)$), and also $x+y^L < x+y^R$ (since the elements $x+y^L$ and $x+y^R$ of $A(y)$ form a dependent cut).
+Now we give Conway's definition:
 \[ x+y \defeq \surr{x^L+y, x+y^L}{x^R+y,x+y^R}. \]
 In other words, the left options of $x+y$ are all numbers of the form $x^L+y$ for some left option $x^L$, or $x+y^L$ for some left option $y^L$.
-Now we verify that this definition preserves inequality:
+We must show that each of these left options is less than each of these right options:
 \begin{itemize}
-\item If $y\le z$ arises from knowing that $y^L<z$ and $y<z^R$ for all $L$ and $R$, then the inner inductive hypothesis gives $x+y^L<x+z$ and $x+y < x+z^R$, while the outer inductive hypotheses give $x^L+y < x^L+z$ and $x^R+ y < x^R+z$.
+\item $x^L+y < x^R+y$ by the outer inductive hypothesis.
+\item $x^L+y < x^L + y^R < x + y^R$, the first since $(x^L+\blank)$ preserves inequalities, and the second since $x+y^R : A(y^R)$.
+\item $x+y^L < x^R+ y^L < x^R + y$, the first since $x+y^L : A(y^L)$ and the second since $(x^R+\blank)$ preserves inequalities.
+\item $x+y^L < x+y^R$ by the inner inductive hypothesis (specifically, the fact that we have a dependent cut).
+\end{itemize}
+We also have to show that $x+y$ thusly defined lies in $A(y)$, i.e.\ that $x^L + y < x+y$ and $x+y < x^R + y$; but this is true by \cref{thm:NO-refl-opt}\ref{item:NO-lt-opt}.
+
+Next we have to verify that the definition of $(x+\blank)$ preserves inequality:
+\begin{itemize}
+\item If $y\le z$ arises from knowing that $y^L<z$ and $y<z^R$ for all $L$ and $R$, then the inner inductive hypothesis gives $x+y^L<x+z$ and $x+y < x+z^R$, while the outer inductive hypotheses give $x^L+y \le x^L+z$ and $x^R+ y \le x^R+z$.
   Moreover, since $x^R+y$ is by definition a right option of $x+y$, we have $x+y < x^R+y$.
-  Similarly, after a \NO-induction on $z$, we find that $x^L+z$ is a left option of $x+z$, so that $x^L+z < x+z$.
+  Similarly, we find that $x^L+z$ is a left option of $x+z$, so that $x^L+z < x+z$.
   Thus, using transitivity, we have $x^L+y < x+z$ and $x+y < x^R+z$; so we may conclude $x+y \le x+z$ by the constructor of $\le$.
 \item If $y<z$ arises from an $L_0$ with $y\le z^{L_0}$, then inductively $x+y \le x+z^{L_0}$, hence $x+y<x+z$ since $x+z^{L_0}$ is a right option of $x+z$.
 \item Similarly, if $y<z$ arises from $y^{R_0}\le z$, then $x+y<x+z$ since $x+y^{R_0}\le x+z$.
 \end{itemize}
-This completes the inner recursion.
+This completes the inner induction.
 For the outer recursion, we have to verify that $+$ preserves inequality on the left as well.
 After an $\NO$-induction, this proceeds in exactly the same way.
 \end{eg}
@@ -3053,7 +3073,8 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 
 \begin{ex} \label{ex:RD-extended-reals}
   %
-  Suppose we remove the boundedness condition in \cref{defn:dedekind-reals}.
+  Suppose we remove the boundedness condition
+  \ref{defn:dedekind-reals-inhabited} in \cref{defn:dedekind-reals}.
   Then we obtain the \define{extended reals}
   \indexdef{real numbers!extended}%
   \indexdef{extended real numbers}%
@@ -3269,6 +3290,11 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 \begin{ex}\label{ex:pseudo-ordinals}
   Define a surreal number to be a \define{pseudo-ordinal}\index{pseudo-ordinal}\index{ordinal!pseudo-} if it is equal to a cut $\surr{x^L}{}$ with no right options (but its left options may themselves have right options).
   Show that the statement ``every pseudo-ordinal is a plump ordinal'' is equivalent to \LEM{}.
+\end{ex}
+
+\begin{ex}\label{ex:double-No-recursion}
+  Note that \cref{defn:No-codes} and \cref{eg:surreal-addition} both use a similar pattern to define a function $\NO \to \NO \to B$: an outer \NO-recursion whose codomain is the set of order-preserving functions $\NO\to B$, followed by an inner \NO-induction into a family $A:\NO\to\type$ where $A(y)$ is a subset of $B$ ensuring that the inequalities $x^L<x$ and $x<x^R$ are also preserved.
+  Formulate and prove a general principle of ``double \NO-recursion'' that generalizes these proofs.
 \end{ex}
 
 \index{real numbers|)}%

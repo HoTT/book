@@ -41,10 +41,8 @@ such that $H(s,0) = p(s)$ and $H(s,1) = q(s)$ for all $s\in [0,1]$.
 In this case we require also that $H(0,t) = x$ and $H(1,t)=y$ for all $t\in [0,1]$,
 so that for each $t$ the function $H(\blank,t)$ is again a path from $x$ to $y$;
 a homotopy of this sort is said to be \emph{endpoint-preserving} or \emph{rel endpoints}.
-Such a homotopy is the
-image in $X$ of a square that fills in the space between $p$ and $q$,
-which can be thought of as a ``continuous deformation'' between $p$ and
-$q$, or a 2-dimensional \emph{path between paths}.\index{path!2-}
+In simple cases, we can think of the image of the square $[0,1]\times [0,1]$ under $H$ as ``filling the space'' between $p$ and $q$, although for general $X$ this doesn't really make sense; it is better to think of $H$ as a continuous deformation of $p$ into $q$ that doesn't move the endpoints.
+Since $[0,1]\times [0,1]$ is 2-dimensional, we also speak of $H$ as a 2-dimensional \emph{path between paths}.\index{path!2-}
 
 For example, because
 $p \ct \opp p$ walks out and back along the same route, you know that
@@ -65,7 +63,7 @@ isomorphic fundamental groups.
 Because homotopies are themselves a kind of 2-dimensional path, there is
 a natural notion of 3-dimensional \emph{homotopy between homotopies},\index{path!3-}
 and then \emph{homotopy between homotopies between homotopies}, and so
-on.  This infinite tower of points, path, homotopies, homotopies between
+on.  This infinite tower of points, paths, homotopies, homotopies between
 homotopies, \ldots, equipped with algebraic operations such as the
 fundamental group, is an instance of an algebraic structure called a
 (weak) \emph{$\infty$-groupoid}.  An $\infty$-groupoid\index{.infinity-groupoid@$\infty$-groupoid} consists of a
@@ -145,7 +143,7 @@ in which case an element $r : \id[{(\id[A]{x}{y})}]{p}{q}$ can
 be thought of as a homotopy, or a morphism between morphisms;
 we will often refer to it as a \define{2-path}
 \indexdef{path!2-}\indexsee{2-path}{path, 2-}%
-or a \define{2-dimensional path}
+or a \define{2-dimensional path}.
 \index{dimension!of paths}%
 \indexsee{2-dimensional path}{path, 2-}\indexsee{path!2-dimensional}{path, 2-}%
 Similarly, $\id[{(\id[{(\id[A]{x}{y})}]{p}{q})}]{r}{s}$ is the type of
@@ -171,7 +169,7 @@ description of spaces, in the following sense. Synthetic geometry is geometry in
 geometry, where notions such as points and lines are represented concretely using cartesian coordinates in $\R^n$---lines are sets of points---and the basic constructions and axioms are derived from this representation.  While classical homotopy theory is analytic (spaces and paths are made of points), homotopy type theory is synthetic: points, paths, and paths between paths are basic, indivisible, primitive notions.
 
 Moreover, one of the amazing things about homotopy type theory is that all of the basic constructions and axioms---all of the
-higher groupoid structure----arises automatically from the induction
+higher groupoid structure---arises automatically from the induction
 principle for identity types.
 Recall from \cref{sec:identity-types} that this says that if
 \begin{itemize}
@@ -206,7 +204,7 @@ If a sequence\index{sequence} $(a_n)_{n\in \mathbb{N}}$ is defined by giving $a_
 (This may seem so obvious as to not be worth saying, but if we view a definition by recursion as an algorithm\index{algorithm} for calculating values of a sequence, then it is precisely the process of executing that algorithm.)
 The rule~\eqref{eq:Jconv} is analogous: it says that if we define an object $f(p)$ for all $p:x=y$ by specifying what the value should be when $p$ is $\refl{x}:x=x$, then the value we specified is in fact the value of $f(\refl{x})$.
 
-This induction principle endows each type with the structure of an $\infty$-groupoid\index{.infinity-groupoid@$\infty$-groupoid}, and each function between two types the structure of an $\infty$-functor\index{.infinity-functor@$\infty$-functor} between two such groupoids.  This is interesting from a mathematical point of view, because it gives a new way to work with
+This induction principle endows each type with the structure of an $\infty$-groupoid\index{.infinity-groupoid@$\infty$-groupoid}, and each function between two types with the structure of an $\infty$-functor\index{.infinity-functor@$\infty$-functor} between two such groupoids.  This is interesting from a mathematical point of view, because it gives a new way to work with
 $\infty$-groupoids.  It is interesting from a type-theoretic point of view, because it reveals new operations that are associated with each type and function.  In the remainder of this chapter, we begin to explore this structure.
 
 \section{Types are higher groupoids}
@@ -278,7 +276,7 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{lem}\label{lem:concat}
   For every type $A$ and every $x,y,z:A$ there is a function
   \begin{equation*}
-  (x= y) \to   (y= z)\to (x=  z)
+  (x= y) \to   (y= z)\to (x=  z),
   \end{equation*}
   written $p \mapsto q \mapsto p\ct q$, such that $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
   We call $p\ct q$ the \define{concatenation} or \define{composite} of $p$ and $q$.
@@ -290,7 +288,11 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   \index{transitivity!of equality}%
 \end{lem}
 
+Note that we choose to notate path concatenation in the opposite order from function composition: from $p:x=y$ and $q:y=z$ we get $p\ct q : x=z$, whereas from $f:A\to B$ and $g:B\to C$ we get $g\circ f : A\to C$ (see \cref{ex:composition}).
+
 \begin{proof}[First proof]
+  The desired function has type $\prd{x,y,z:A} (x= y) \to   (y= z)\to (x=  z)$.
+  We will instead define a function with the equivalent type $\prd{x,y:A} (x= y) \to \prd{z:A} (y= z)\to (x=  z)$, which allows us to apply path induction twice.
   Let $D:\prd{x,y:A} (x=y) \to \type$ be the type family
   \begin{equation*}
     D(x,y,p)\defeq \prd{z:A}{q:y=z} (x=z).
@@ -315,8 +317,9 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   But $E(x,z,q)\jdeq (x=z)$, so the type of $d$ is~\eqref{eq:concatD}.
   Thus, we can use this function $d$ and apply the induction principle for identity types to $D$, to obtain our desired function of type
   \begin{equation*}
-    \prd{x,y,z:A} (y=z) \to (x=y) \to (x=z).
+    \prd{x,y:A} (x= y) \to \prd{z:A} (y= z)\to (x=  z)
   \end{equation*}
+  and hence $\prd{x,y,z:A} (y=z) \to (x=y) \to (x=z)$.
   The conversion rules for the two induction principles give us $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
 \end{proof}
 
@@ -394,8 +397,8 @@ For instance, we need to know that concatenation is \emph{associative}, and that
   We have the following:
   \begin{enumerate}
   \item $p= p\ct \refl{y}$ and $p = \refl{x} \ct p$.\label{item:omg1}
-  \item $\opp{p}\ct p=  \refl{y}$ and $p\ct \opp{p}= \refl{x}$.
-  \item $\opp{(\opp{p})}= p$.
+  \item $\opp{p}\ct p=  \refl{y}$ and $p\ct \opp{p}= \refl{x}$.\label{item:omg2}
+  \item $\opp{(\opp{p})}= p$.\label{item:omg3}
   \item $p\ct (q\ct r)=  (p\ct q)\ct r$.\label{item:omg4}
   \end{enumerate}
 \end{lem}
@@ -417,7 +420,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       d\defeq\lam{x} \refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now the induction principle for identity types gives an element $\indid{A}(D,d,p):(p= p\ct\refl{y})$ for each $p:x= y$.
+    Now the induction principle for identity types gives an element $\indid{A}(D,d,x,y,p):(p= p\ct\refl{y})$ for each $p:x= y$.
     The other equality is proven similarly.
 
     \mentalpause
@@ -435,12 +438,12 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       d\defeq\lam{x} \refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now path induction gives an element $\indid{A}(D,d,p):\opp{p}\ct p=\refl{y}$ for each $p:x= y$ in $A$.
+    Now path induction gives an element $\indid{A}(D,d,x,y,p):\opp{p}\ct p=\refl{y}$ for each $p:x= y$ in $A$.
     The other equality is similar.
 
     \mentalpause
 
-    \noindent \emph{Second proof} By induction, it suffices to assume $p$ is $\refl x$.
+    \noindent \emph{Second proof:} by induction, it suffices to assume $p$ is $\refl x$.
     But in this case, we have $\opp{p} \ct p \jdeq \opp{\refl x} \ct \refl x \jdeq \refl x$.
 
   \item \emph{First proof:} let $D:\prd{x,y:A} (x=y) \to \type$ be the type family given by
@@ -453,7 +456,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       d\defeq\lam{x} \refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now path induction gives an element $\indid{A}(D,d,p):\opp{\opp{p}}= p$ for each $p:x= y$.
+    Now path induction gives an element $\indid{A}(D,d,x,y,p):\opp{\opp{p}}= p$ for each $p:x= y$.
 
     \mentalpause
 
@@ -468,7 +471,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       \prd{z,w:A}{q:x= z}{r:z= w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
-    To construct an element of this type, let $D_2:\prd{x,z:A}{q:x=z} \type$ be the type family
+    To construct an element of this type, let $D_2:\prd{x,z:A} (x=z) \to \type$ be the type family
     \begin{equation*}
       D_2 (x,z,q) \defeq \prd{w:A}{r:z=w} \big(\refl{x}\ct(q\ct r)= (\refl{x}\ct q)\ct r\big).
     \end{equation*}
@@ -476,7 +479,7 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
     \begin{equation*}
       \prd{w:A}{r:x=w} \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
     \end{equation*}
-    To construct an element of \emph{this} type, let $D_3:\prd{x,w:A}{r:x=w} \type$ be the type family
+    To construct an element of \emph{this} type, let $D_3:\prd{x,w:A} (x=w) \to \type$ be the type family
     \begin{equation*}
       D_3(x,w,r) \defeq \big(\refl{x}\ct(\refl{x}\ct r)= (\refl{x}\ct \refl{x})\ct r\big).
     \end{equation*}
@@ -616,11 +619,11 @@ In that case, we have
 (Recall that $\mathsf{ru}_{\refl{a}} \jdeq \mathsf{lu}_{\refl{a}} \jdeq \refl{\refl{a}}$, by the computation rule for path induction.)
 On the other hand, we can define another horizontal composition analogously by
 \[
-\alpha\hct'\beta\ \defeq\ (p\leftwhisker \beta)\ct (\alpha\rightwhisker s).
+\alpha\hct'\beta\ \defeq\ (p\leftwhisker \beta)\ct (\alpha\rightwhisker s)
 \]
 and we similarly learn that
 \[
-\alpha\hct'\beta\ =\ (\refl{a}\leftwhisker \beta)\ct (\alpha\rightwhisker \refl{a}) = \beta\ct\alpha.
+\alpha\hct'\beta = \beta\ct\alpha.
 \]
 \index{interchange law}%
 But, in general, the two ways of defining horizontal composition agree, $\alpha\hct\beta = \alpha\hct'\beta$, as we can see by induction on $\alpha$ and $\beta$ and then on the two remaining 1-paths, to reduce everything to reflexivity.
@@ -714,7 +717,8 @@ The notation $\apfunc f$ can be read either as the \underline{ap}plication of $f
 \end{proof}
 
 \begin{proof}[Second proof]
-  By induction, it suffices to assume $p$ is $\refl{x}$.
+  To define $\apfunc{f}(p)$ for all $p:x=y$, it suffices, by induction, to assume
+  $p$ is $\refl{x}$.
   In this case, we may define $\apfunc f(p) \defeq \refl{f(x)}:f(x)= f(x)$.
 \end{proof}
 
@@ -749,6 +753,10 @@ As was the case for the equalities in \cref{thm:omg}, those in \cref{lem:ap-func
 Since \emph{dependently typed} functions are essential in type theory, we will also need a version of \cref{lem:map} for these.
 However, this is not quite so simple to state, because if $f:\prd{x:A} B(x)$ and $p:x=y$, then $f(x):B(x)$ and $f(y):B(y)$ are elements of distinct types, so that \emph{a priori} we cannot even ask whether they are equal.
 The missing ingredient is that $p$ itself gives us a way to relate the types $B(x)$ and $B(y)$.
+
+We have already seen this in \autoref{sec:identity-types}, where we called it ``indiscernibility of identicals''.
+\index{indiscernibility of identicals}%
+We now introduce a different name and notation for it that we will use from now on.
 
 \begin{lem}[Transport]\label{lem:transport}
   Suppose that $P$ is a type family over $A$ and that $p:\id[A]xy$.
@@ -873,7 +881,7 @@ And, indeed, we can show that dependent functions produce such paths.
 
 \begin{proof}[Second proof]
   By induction, it suffices to assume $p$ is $\refl x$.
-  But in this case, the desired equation is $\trans{(\refl{x})}{f(x)}\jdeq f(x)$, which holds judgmentally.
+  But in this case, the desired equation is $\trans{(\refl{x})}{f(x)}= f(x)$, which holds judgmentally.
 \end{proof}
 
 We will refer generally to paths which ``lie over other paths'' in this sense as \emph{dependent paths}.
@@ -963,13 +971,13 @@ Here are a few other useful lemmas about transport; we leave it to the reader to
 
 \index{homotopy|(defstyle}%
 
-So far, we have seen how the identity type $\id[A]xy$ can be regarded as a type of \emph{identifications}, \emph{paths}, or \emph{equivalences} between two elements $x$ and $y$ of a type $A$.
+So far, we have seen how the identity type $\id[A]xy$ can be regarded as a type of \emph{identifications}, \emph{paths}, or \emph{equivalences} between two elements $x$ and~$y$ of a type $A$.
 Now we investigate the appropriate notions of ``identification'' or ``sameness'' between \emph{functions} and between \emph{types}.
 In \cref{sec:compute-pi,sec:compute-universe}, we will see that homotopy type theory allows us to identify these with instances of the identity type, but before we can do that we need to understand them in their own right.
 
 Traditionally, we regard two functions as the same if they take equal values on all inputs.
 Under the propositions-as-types interpretation, this suggests that two functions $f$ and $g$ (perhaps dependently typed) should be the same if the type $\prd{x:A} (f(x)=g(x))$ is inhabited.
-Under the homotopical interpretation, this dependent function type consists of \emph{continuous} paths or \emph{functorial} equivalences, and thus may be regarded as the type of \emph{homotopies} or of \emph{natural isomorphisms}.\index{isomorphism!natural}%
+Under the homotopical interpretation, this dependent function type consists of \emph{continuous} paths or \emph{functorial} equivalences, and thus may be regarded as the type of \emph{homotopies} or of \emph{natural isomorphisms}.\index{isomorphism!natural}
 We will adopt the topological terminology for this.
 
 \begin{defn} \label{defn:homotopy}
@@ -987,12 +995,12 @@ However, in \cref{sec:compute-pi} we will introduce an axiom making homotopies a
 The following proofs are left to the reader.
 
 \begin{lem}\label{lem:homotopy-props}
-  Homotopy is an equivalence relation on each function type $A\to B$.
+  Homotopy is an equivalence relation on each dependent function type $\prd{x:A} P(x)$.
   That is, we have elements of the types
   \begin{gather*}
-    \prd{f:A\to B} (f\htpy f)\\
-    \prd{f,g:A\to B} (f\htpy g) \to (g\htpy f)\\
-    \prd{f,g,h:A\to B} (f\htpy g) \to (g\htpy h) \to (f\htpy h).
+    \prd{f:\prd{x:A} P(x)} (f\htpy f)\\
+    \prd{f,g:\prd{x:A} P(x)} (f\htpy g) \to (g\htpy f)\\
+    \prd{f,g,h:\prd{x:A} P(x)} (f\htpy g) \to (g\htpy h) \to (f\htpy h).
   \end{gather*}
 \end{lem}
 
@@ -1010,7 +1018,9 @@ The following proofs are left to the reader.
 \index{continuity of functions in type theory@``continuity'' of functions in type theory}%
 Just as functions in type theory are automatically ``functors'', homotopies are automatically
 \index{naturality of homotopies@``naturality'' of homotopies}%
-``natural transformations'', in the following sense.
+``natural transformations''.
+We will state and prove this only for non-dependent functions $f,g:A\to B$; in \cref{ex:dep-htpy-natural} we ask the reader to generalize it to dependent functions.
+
 Recall that for $f:A\to B$ and $p:\id[A]xy$, we may write $\ap f p$ to mean $\apfunc{f} (p)$.
 
 \begin{lem}\label{lem:htpy-natural}
@@ -1108,10 +1118,10 @@ Thus,~\eqref{eq:qinvtype} is \emph{the type of quasi-inverses of $f$}; we may de
   has a quasi-inverse given by $\transfib{P}{\opp p}{\blank}$; this follows from \narrowbreak \cref{thm:transport-concat}.
 \end{eg}
 
-\symlabel{basics-isequiv}
+\symlabel{basics-isequiv}\symlabel{basics:iso}
 In general, we will only use the word \emph{isomorphism}
 \index{isomorphism!of sets}
-(and similar words such as \emph{bijection})
+(and similar words such as \emph{bijection}, and the associated notation $A\cong B$)
 \index{bijection}
 in the special case when the types $A$ and $B$ ``behave like sets'' (see \cref{sec:basics-sets}).
 In this case, the type~\eqref{eq:qinvtype} is unproblematic.
@@ -1132,8 +1142,9 @@ For now, to convince the reader that such things exist, we mention only the easi
 We can show~\ref{item:be1} and~\ref{item:be2} for this definition now.
 A function $\qinv(f) \to \isequiv (f)$ is easy to define by taking $(g,\alpha,\beta)$ to $(g,\alpha,g,\beta)$.
 In the other direction, given $(g,\alpha,h,\beta)$, let $\gamma$ be the composite homotopy
-\[ g \overset{\beta}{\htpy} h\circ f\circ g \overset{\alpha}{\htpy} h \]
-and let $\beta':g\circ f\htpy \idfunc[A]$ be obtained from $\gamma$ and $\beta$.
+\[ g \overset{\beta}{\htpy} h\circ f\circ g \overset{\alpha}{\htpy} h, \]
+meaning that $\gamma(x) \defeq \opp{\beta(g(x))} \ct \ap{h}{\alpha(x)}$.
+Now define $\beta':g\circ f\htpy \idfunc[A]$ by $\beta'(x) \defeq \gamma(f(x)) \ct \beta(x)$.
 Then $(g,\alpha,\beta'):\qinv(f)$.
 
 Property~\ref{item:be3} for this definition is not too hard to prove either, but it requires identifying the identity types of cartesian products and dependent pair types, which we will discuss in \cref{sec:compute-cartprod,sec:compute-sigma}.
@@ -1149,7 +1160,9 @@ We write $(\eqv A B)$ for the type of equivalences from $A$ to $B$, i.e.\ the ty
   (\eqv A B) \defeq \sm{f:A\to B} \isequiv(f).
 \end{equation}
 Property~\ref{item:be3} above will ensure that if two equivalences are equal as functions (that is, the underlying elements of $A\to B$ are equal), then they are also equal as equivalences (see \cref{sec:compute-sigma}).
-Thus, we often abuse notation by denoting an equivalence by the same letter as its underlying function.
+Thus, we often abuse notation and blur the distinction between equivalences and their underlying functions.
+For instance, if we have a function $f:A\to B$ and we know that $e:\isequiv(f)$, we may write $f:\eqv A B$, rather than $\tup{f}{e}$.
+Or conversely, if we have an equivalence $g:\eqv A B$, we may write $g(a)$ when given $a:A$, rather than $(\proj1 g)(a)$.
 
 We conclude by observing:
 
@@ -1237,7 +1250,7 @@ Thus, we have a function
   For any $x$ and $y$, the function~\eqref{eq:path-prod} is an equivalence.
 \end{thm}
 
-Read logically, this says that two pairs are equal if they are equal
+Read logically, this says that two pairs are equal just if they are equal
 componentwise.  Read category-theoretically, this says that the
 morphisms in a product groupoid are pairs of morphisms.  Read
 homotopy-theoretically, this says that the paths in a product
@@ -1289,11 +1302,12 @@ Similarly, the two homotopies which witness~\eqref{eq:path-prod-inverse} as quas
 \begin{align*}
   {\projpath{1}{(\pairpath(p, q)})}
   &= %_{(\id{\proj{1} x}{\proj{1} y})}
-  {p} \qquad\text{for } p:\id{\proj{1} x}{\proj{1} y} \\
+  {p} \\
   {\projpath{2}{(\pairpath(p,q)})}
   &= %_{(\id{\proj{2} x}{\proj{2} y})}
-  {q} \qquad\text{for } q:\id{\proj{2} x}{\proj{2} y}
+  {q}
 \end{align*}
+for $p:\id{\proj{1} x}{\proj{1} y}$ and $q:\id{\proj{2} x}{\proj{2} y}$,
 and a \emph{propositional uniqueness principle}:
 \index{uniqueness!principle, propositional!for identities between pairs}%
 \[
@@ -1310,8 +1324,29 @@ We can also characterize the reflexivity, inverses, and composition of paths in 
   {{p \ct q}}
   &= {\pairpath \big({\projpath{1} (p)} \ct {\projpath{1} (q)},\,{\projpath{2} (p)} \ct {\projpath{2} (q)}\big)}.
 \end{align*}
-The same is true for the rest of the higher groupoid structure considered in \cref{sec:equality}.
+Or, written differently:
+\begin{alignat*}{2}
+  \projpath{i}(\refl{(z : A \times B)}) &= \refl{\proj{i} z} &\qquad (i=1,2)\\
+  \pairpath(\opp p, \opp q) &= \opp{\pairpath(p,q)}\\
+  \pairpath(p\ct q, p'\ct q') &= \pairpath(p,p') \ct \pairpath(q,q').
+\end{alignat*}
 All of these equations can be derived by using path induction on the given paths and then returning reflexivity.
+The same is true for the rest of the higher groupoid structure considered in \cref{sec:equality}, although it begins to get tedious to insert enough other coherence paths to yield an equation that will typecheck.
+For instance, if we denote the inverse of the path in \cref{thm:omg}\ref{item:omg4} by $\ctassoc(p,q,r)$ and the last path displayed above by $\pairct(p,q,p',q')$, then for any $u,v,z,w:A\times B$ and $p,q,r,p',q',r'$ of appropriate types we have
+\begin{equation*}
+  \begin{array}{l}
+    \pairct(p\ct q, r, p'\ct q', r') \\
+    \ct\;  (\pairct(p,q,p',q') \rightwhisker \pairpath(r,r')) \\
+    \ct\;  \ctassoc(\pairpath(p,p'),\pairpath(q,q'),\pairpath(r,r'))\\
+    =
+    \begin{array}[t]{l}
+      \apfunc{\pairpath}({\pairpath(\ctassoc(p,q,r),\ctassoc(p',q',r'))})\\
+      \ct\; \pairct(p, q\ct r, p', q'\ct r')\\
+      \ct\; (\pairpath(p,p') \leftwhisker \pairct(q,r,q',r')).
+    \end{array}
+  \end{array}
+\end{equation*}
+Fortunately, we will never have to use any such higher-dimensional coherences.
 
 \index{transport!in product types}%
 We now consider transport in a pointwise product of type families.
@@ -1359,8 +1394,8 @@ Suppose given types $A,B,A',B'$ and functions $g:A\to A'$ and $h:B\to B'$; then 
 \label{sec:compute-sigma}
 
 \index{type!dependent pair|(}%
-Let $A$ be a type and $B:A\to\type$ a type family.
-Recall that the $\Sigma$-type, or dependent pair type, $\sm{x:A} B(x)$ is a generalization of the cartesian product type.
+Let $A$ be a type and $P:A\to\type$ a type family.
+Recall that the $\Sigma$-type, or dependent pair type, $\sm{x:A} P(x)$ is a generalization of the cartesian product type.
 Thus, we expect its higher groupoid structure to also be a generalization of the previous section.
 In particular, its paths should be pairs of paths, but it takes a little thought to give the correct types of these paths.
 
@@ -1396,9 +1431,9 @@ Suppose that $P:A\to\type$ is a type family over a type $A$ and let $w,w':\sm{x:
 \end{thm}
 
 \begin{proof}
-We define for any $w,w':\sm{x:A}P(x)$, a function
+We define a function
 \begin{equation*}
-f: (w=w') \to \dsm{p:\proj{1}(w)=\proj{1}(w')} \trans{p}{\proj{2}(w)}=\proj{2}(w')
+f : \prd{w,w':\sm{x:A}P(x)} (w=w') \to \dsm{p:\proj{1}(w)=\proj{1}(w')} \trans{p}{\proj{2}(w)}=\proj{2}(w')
 \end{equation*}
 by path induction, with
 \begin{equation*}
@@ -1422,9 +1457,9 @@ $(w_1',w_2')$ respectively, so it suffices to show
 Next, given a pair $\sm{p:w_1 = w_1'}\trans{p}{w_2}=w_2'$, we can
 use $\Sigma$-induction to get $p : w_1 = w_1'$ and $q :
 \trans{p}{w_2}=w_2'$.  Inducting on $p$, we have $q :
-\trans{\refl{}}{w_2}=w_2'$, and it suffices to show
-$(w_1,w_2)=(w_1,w_2')$.  But $\trans{\refl{}}{w_2} \jdeq w_2$, so
-inducting on $q$ reduces to the goal to
+\trans{(\refl{w_1})}{w_2}=w_2'$, and it suffices to show
+$(w_1,w_2)=(w_1,w_2')$.  But $\trans{(\refl{w_1})}{w_2} \jdeq w_2$, so
+inducting on $q$ reduces the goal to
 $(w_1,w_2)=(w_1,w_2)$, which we can prove with $\refl{(w_1,w_2)}$.
 
 Next we show that $f(g(r))=r$ for all $w$, $w'$ and
@@ -1576,7 +1611,7 @@ From this point of view, $\happly$ is the \emph{elimination rule}, while the hom
 \]
 and a propositional uniqueness principle\index{uniqueness!principle!for identities between functions}:
 \[
-\id{p}{\funext (x \mapsto \happly(p,{x}))} \qquad\text{for } p: (\id f g).
+\id{p}{\funext (x \mapsto \happly(p,{x}))} \qquad\text{for } p: \id f g.
 \]
 
 We can also compute the identity, inverses, and composition in $\Pi$-types; they are simply given by pointwise operations:\index{pointwise!operations on functions}.
@@ -1627,7 +1662,21 @@ When $P$ is a family of function types, there is an equivalent way to represent 
   \[ \eqvspaced{ \big(\trans{p}{f} = {g}\big) } { \prd{a:A(x)}  (\trans{p}{f(a)} = g(\trans{p}{a})) }. \]
   Moreover, if $q:\trans{p}{f} = {g}$ corresponds under this equivalence to $\widehat q$, then for $a:A(x)$, the path
   \[ \happly(q,\trans p a) : (\trans p f)(\trans p a) = g(\trans p a)\]
-  is equal to the composite
+  is equal to the concatenated path $i\ct j\ct k$, where
+  \begin{itemize}
+  \item $i:(\trans p f)(\trans p a) = \trans p {f (\trans {\opp p}{\trans p a})}$ comes from~\eqref{eq:transport-arrow},
+  \item $j:\trans p {f (\trans {\opp p}{\trans p a})} = \trans p {f(a)}$ comes from \cref{thm:transport-concat,thm:omg}, and
+  \item $k:\trans p {f(a)}= g(\trans p a)$ is $\widehat{q}(a)$.
+  \end{itemize}
+\end{lem}
+\begin{proof}
+  By path induction, we may assume $p$ is reflexivity, in which case the desired equivalence reduces to function extensionality.
+  The second statement then follows by the computation rule for function extensionality.
+\end{proof}
+
+In general, it happens quite frequently that we want to consider a concatenation of paths each of which arises from some previously proven lemmas or hypothesized objects, and it can be rather tedious to describe this by giving a name to each path in the concatenation as we did in the second statement above.
+Thus, we adopt a convention of writing such concatenations in the familiar mathematical style of ``chains of equalities with reasons'', and allow ourselves to omit reasons that the reader can easily fill in.
+For instance, the path $i\ct j\ct k$ from \cref{thm:dpath-arrow} would be written like this:
   \begin{align*}
     (\trans p f)(\trans p a)
     &= \trans p {f (\trans {\opp p}{\trans p a})}
@@ -1636,13 +1685,10 @@ When $P$ is a family of function types, there is an equivalent way to represent 
     &= g(\trans p a).
     \tag{by $\widehat{q}$}
   \end{align*}
-\end{lem}
-\begin{proof}
-  By path induction, we may assume $p$ is reflexivity, in which case the desired equivalence reduces to function extensionality.
-  The second statement then follows by the computation rule for function extensionality.
-\end{proof}
+In ordinary mathematics, such a chain of equalities would be merely proving that two things are equal.
+We are enhancing this by using it to describe a \emph{particular} path between them.
 
-As usual, the case of dependent functions is similar, but more complicated.
+As usual, there is a version of \cref{thm:dpath-arrow} for dependent functions that is similar, but more complicated.
 \index{path!dependent!in dependent function types}
 
 \begin{lem}\label{thm:dpath-forall}
@@ -1692,11 +1738,13 @@ Thus, as we did for function extensionality, we formulate this property as an ax
 \begin{axiom}[Univalence]\label{axiom:univalence}
   \indexdef{univalence axiom}%
   \indexsee{axiom!univalence}{univalence axiom}%
-  For any $A,B:\type$, the function~\eqref{eq:uidtoeqv} is an equivalence; hence we have
+  For any $A,B:\type$, the function~\eqref{eq:uidtoeqv} is an equivalence.
+\end{axiom}
+
+In particular, therefore, we have
   \[
 \eqv{(\id[\type]{A}{B})}{(\eqv A B)}.
 \]
-\end{axiom}
 
 Technically, the univalence axiom is a statement about a particular universe type $\UU$.
 If a universe $\UU$ satisfies this axiom, we say that it is \define{univalent}.
@@ -1741,7 +1789,7 @@ We can also identify the reflexivity, concatenation, and inverses of equalities 
 \end{align*}
 The first of these follows because $\idfunc[A] = \idtoeqv(\refl{A})$ by definition of \idtoeqv, and \ua is the inverse of \idtoeqv.
 For the second, if we define $p \defeq \ua(f)$ and $q\defeq \ua(g)$, then we have
-\[ \ua(g\circ f) = \ua(\idtoeqv(q) \circ \idtoeqv(p)) = \ua(\idtoeqv(p\cdot q)) = p\cdot q\]
+\[ \ua(g\circ f) = \ua(\idtoeqv(q) \circ \idtoeqv(p)) = \ua(\idtoeqv(p\ct q)) = p\ct q\]
 using \cref{thm:transport-concat} and the definition of $\idtoeqv$.
 The third is similar.
 
@@ -1962,7 +2010,7 @@ We can now show:
     &\jdeq \decode(\inl(a_0),\encode(\inl(a_0),\refl{\inl(a_0)}))\\
     &\jdeq \decode(\inl(a_0),\transfib{\code}{\refl{\inl(a_0)}}{\refl{a_0}})\\
     &\jdeq \decode(\inl(a_0),\refl{a_0})\\
-    &\jdeq \ap{\inl}{\refl{a_0}}\\
+    &\jdeq \apfunc{\inl}(\refl{a_0})\\
     &\jdeq \refl{\inl(a_0)}\\
     &\jdeq p.
   \end{align*}
@@ -2245,7 +2293,7 @@ $b_1,b_2,b_3 : B$ to a path given by the following steps:
 \end{aligned}
 \end{equation}
 These steps use the proof $a$ that $m$ is associative and the inverse
-laws for $e$.  From an algebra perspective, it may seem strange to
+laws for~$e$.  From an algebra perspective, it may seem strange to
 investigate the identity of a proof that an operation is associative,
 but this makes sense if we think of $A$ and $B$ as general spaces, with
 non-trivial homotopies between paths.  In \cref{cha:logic}, we will
@@ -2634,6 +2682,10 @@ Resolving this problem is an important open question\index{open!problem} in homo
   \item Give two proofs of this fact, one using univalence and one not using it, and show that the two proofs are equal.
   \item Formulate and prove analogous results for the other type formers: $\Sigma$, $\to$, $\Pi$, and $+$.
 \end{enumerate}
+\end{ex}
+
+\begin{ex}\label{ex:dep-htpy-natural}
+  State and prove a version of \cref{lem:htpy-natural} for dependent functions.
 \end{ex}
 
 % Local Variables:

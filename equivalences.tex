@@ -35,7 +35,7 @@ Before we examine the different notions of equivalence, however, we give a littl
 \label{sec:quasi-inverses}
 
 \index{quasi-inverse|(}%
-We have said that $\qinv(f)$ is unsatisfactory because it is not a mere proposition, whereas we would rather that a given function can ``be an equivalence'' in at most one way.
+We have said that $\qinv(f)$ is unsatisfactory because it is not a mere proposition, whereas we would rather that a given function could ``be an equivalence'' in at most one way.
 However, we have given no evidence that $\qinv(f)$ is not a mere proposition.
 In this section we exhibit a specific counterexample.
 
@@ -46,7 +46,7 @@ In this section we exhibit a specific counterexample.
 \begin{proof}
   By assumption, $f$ is an equivalence; that is, we have $e:\isequiv(f)$ and so $(f,e):\eqv A B$.
   By univalence, $\idtoeqv:(A=B) \to (\eqv A B)$ is an equivalence, so we may assume that $(f,e)$ is of the form $\idtoeqv(p)$ for some $p:A=B$.
-  Then by path induction, we may assume $p$ is $\refl{A}$, in which case $\idtoeqv(p)$ is $\idfunc[A]$.
+  Then by path induction, we may assume $p$ is $\refl{A}$, in which case $f$ is $\idfunc[A]$.
   Thus we are reduced to proving $\eqv{\qinv(\idfunc[A])}{(\prd{x:A}(x=x))}$.
   Now by definition we have
   \[ \qinv(\idfunc[A]) \jdeq
@@ -58,7 +58,7 @@ In this section we exhibit a specific counterexample.
   And by \cref{ex:sigma-assoc}, this is equivalent to
   \[ \sm{h:\sm{g:A\to A} (g = \idfunc[A])} (\proj1(h) = \idfunc[A])
   \]
-  However, by \cref{thm:contr-paths}, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible with center $\idfunc[A]$; therefore by \cref{thm:omit-contr} this type is equivalent to $\idfunc[A] = \idfunc[A]$.
+  However, by \cref{thm:contr-paths}, $\sm{g:A\to A} (g = \idfunc[A])$ is contractible with center $(\idfunc[A],\refl{\idfunc[A]})$; therefore by \cref{thm:omit-contr} this type is equivalent to $\idfunc[A] = \idfunc[A]$.
   And by function extensionality, $\idfunc[A] = \idfunc[A]$ is equivalent to $\prd{x:A} x=x$.
 \end{proof}
 
@@ -87,8 +87,8 @@ This provides some motivation for the following.
   Let $g:\prd{x:A} \brck{a=x}$ be as given by~\ref{item:autohtpy2}.  First we
   observe that each type $\id[A]xy$ is a set.  For since being a set is a mere
   proposition, we may apply the induction principle of propositional truncation, and assume that $g(x)=\bproj
-  p$ and $g(y)=\bproj q$ for $p:a=x$ and $q:a=y$.  In this case, composing with
-  $p$ and $\opp{q}$ yields an equivalence $\eqv{(x=y)}{(a=a)}$.  But $(a=a)$ is
+  p$ and $g(y)=\bproj{p'}$ for $p:a=x$ and $p':a=y$.  In this case, composing with
+  $p$ and $\opp{p'}$ yields an equivalence $\eqv{(x=y)}{(a=a)}$.  But $(a=a)$ is
   a set by~\ref{item:autohtpy1}, so $(x=y)$ is also a set.
 
   Now, we would like to define $f$ by assigning to each $x$ the path $\opp{g(x)}
@@ -227,7 +227,7 @@ and take $\epsilon'$ to be $\epsilon$. Instead, we take
 \end{equation*}
 Now we need to find
 \begin{equation*}
-\tau(a): \opp{\epsilon(f(g(f(a))))}\ct (\ap{f}{\eta(g(f(a)))}\ct \epsilon(f(a)))=\ap{f}{\eta(a)}.
+\tau(a): \ap{f}{\eta(a)}=\opp{\epsilon(f(g(f(a))))}\ct (\ap{f}{\eta(g(f(a)))}\ct \epsilon(f(a))).
 \end{equation*}
 Note first that by \cref{cor:hom-fg}, we have
 %$\eta(g(f(a)))\ct\eta(a)=\ap{g}{\ap{f}{\eta(a)}}\ct\eta(a)$ and hence it follows that
@@ -449,9 +449,9 @@ For any $f:A\to B$ we have ${\iscontr(f)} \to {\ishae(f)}$.
 \end{thm}
 \begin{proof}
 Let $P : \iscontr(f)$. We define an inverse mapping $g : B \to A$ by sending each $y : B$ to the center of contraction of the fiber at $y$:
-\[ g(y) \defeq \proj{1}(\proj{1}(Py)) \]
+\[ g(y) \defeq \proj{1}(\proj{1}(Py)). \]
 We can thus define the homotopy $\epsilon$ by mapping $y$ to the witness that $g(y)$ indeed belongs to the fiber at $y$:
-\[ \epsilon(y) \defeq \proj{2}(\proj{1}(P y)) \]
+\[ \epsilon(y) \defeq \proj{2}(\proj{1}(P y)). \]
 It remains to define $\eta$ and $\tau$. This of course amounts to giving an element of $\rcoh{f}{g}{\epsilon}$. By \cref{lem:coh-hfib}, this is the same as giving for each $x:A$ a path from $(gfx,\epsilon(fx))$ to $(x,\refl{fx})$ in the fiber of $f$ over $fx$. But this is easy: for any $x : A$, the type $\hfib{f}{fx}$
 is contractible by assumption, hence such a path must exist. We can construct it explicitly as
 \[\opp{\big(\proj{2}(P(fx))(gfx,\epsilon(fx))\big)} \ct \big(\proj{2}(P(fx)) (x,\refl{fx})\big). \qedhere \]
@@ -524,7 +524,7 @@ In set theory, a function is a bijection just when it is both injective and surj
 The same is true in type theory, if we formulate these conditions appropriately.
 For clarity, when dealing with types that are not sets, we will speak of \emph{embeddings} instead of injections.
 
-\begin{defn}
+\begin{defn}\label{defn:surj-emb}
   Let $f:A\to B$.
   \begin{enumerate}
   \item We say $f$ is \define{surjective}
@@ -547,6 +547,14 @@ This must be distinguished from the stronger assertion that $\prd{b:B}\sm{a:A} (
 \indexsee{surjection!split}{function, split surjective}%
 \indexsee{surjective!function!split}{function, split surjective}%
 \indexdef{function!split surjective}%
+(Since this latter type is equivalent to $\sm{g:B\to A}\prd{b:B} (f(g(b))=b)$, being a split surjection is the same as being a \emph{retraction} as defined in \cref{sec:contractibility}.)
+\index{retraction}%
+\index{function!retraction}%
+
+The axiom of choice from \cref{sec:axiom-choice} says exactly that every surjection \emph{between sets} is split.
+However, in the presence of the univalence axiom, it is simply false that \emph{all} surjections are split.
+In \cref{thm:no-higher-ac} we constructed a type family $Y:X\to \type$ such that $\prd{x:X} \brck{Y(x)}$ but $\neg \prd{x:X} Y(x)$;
+for any such family, the first projection $(\sm{x:X} Y(x)) \to X$ is a surjection that is not split.
 
 If $A$ and $B$ are sets, then by \cref{lem:equiv-iff-hprop}, $f$ is an embedding just when
 \begin{equation}
@@ -709,7 +717,7 @@ But this transportation computes as $\opp{g(R(a))}\ct K(s(a))\ct r'(L(a))\ct R'(
 \index{fibration}%
 \index{total!space}%
 Finally, we show that fiberwise equivalences can be characterized in terms of equivalences of total spaces.
-To explain the terminology, recall from \cref{sec:fibrations} that a type family $P:A\to\type$ can be viewed as a fibration over $A$ with total space $\sm{x:A} P(x)$, the fibration being is the projection $\proj1:\sm{x:A} P(x) \to A$.
+To explain the terminology, recall from \cref{sec:fibrations} that a type family $P:A\to\type$ can be viewed as a fibration over $A$ with total space $\sm{x:A} P(x)$, the fibration being the projection $\proj1:\sm{x:A} P(x) \to A$.
 From this point of view, given two type families $P,Q:A\to\type$, we may refer to a function $f:\prd{x:A} (P(x)\to Q(x))$ as a \define{fiberwise map} or a \define{fiberwise transformation}.
 \indexsee{transformation!fiberwise}{fiberwise transformation}%
 \indexsee{function!fiberwise}{fiberwise transformation}%
@@ -871,7 +879,7 @@ A & \eqvsym \sm{b:B} \hfiber{f}b\\
 & \eqvsym \sm{b:B}{X:\type}{p:\hfiber{f}b= X} X\\
 & \eqvsym \sm{b:B}{X:\type}{x:X} \hfiber{f}b= X\\
 & \eqvsym \sm{b:B}{Y:\pointed{\type}} \hfiber{f}b = \proj1 Y\\
-& \jdeq B\times_{\type}\pointed{\type}.
+& \jdeq B\times_{\type}\pointed{\type}
 \end{align*}
 which gives us a composite equivalence $e:A\eqvsym B\times_\type\pointed{\type}$.
 We may display the action of this composite equivalence step by step by
@@ -954,11 +962,11 @@ Then $\prd{x:A}P(x)$ is a retract of $\hfiber{\alpha}{\idfunc[A]}$. As a consequ
 \begin{proof}
 Define the functions
 \begin{align*}
-  \varphi &: \tprd{x:A}P(x)\to\hfiber{\alpha}{\idfunc[A]},\\
+  \varphi &: (\tprd{x:A}P(x))\to\hfiber{\alpha}{\idfunc[A]},\\
   \varphi(f) &\defeq (\lam{x} (x,f(x)),\refl{\idfunc[A]}),
 \intertext{and}
   \psi &: \hfiber{\alpha}{\idfunc[A]}\to \tprd{x:A}P(x), \\
-  \psi(g,p) &\defeq \lam{x} \trans p{\proj{2} (g(x))}.
+  \psi(g,p) &\defeq \lam{x} \trans {\happly (p,x)}{\proj{2} (g(x))}.
 \end{align*}
 Then $\psi(\varphi(f))=\lam{x} f(x)$, which is $f$, by the uniqueness principle for dependent function types.
 \end{proof}
@@ -1021,6 +1029,7 @@ theory (the categorical analogue of \cref{thm:nobject-classifier-appetizer}) is 
 
 Finally, the fact that univalence implies function extensionality (\cref{sec:univalence-implies-funext}) is due to Voevodsky.
 Our proof is a simplification of his.
+\cref{ex:funext-from-nondep} is also due to Voevodsky.
 
 \sectionExercises
 
@@ -1059,7 +1068,7 @@ Our proof is a simplification of his.
   Suppose $f:A\to B$ and $g:B\to C$ and $b:B$.
   \begin{enumerate}
   \item Show that there is a natural map $\hfib{g\circ f}{g(b)} \to \hfib{g}{g(b)}$ whose fiber over $(b,\refl{g(b)})$ is equivalent to $\hfib f b$.
-  \item Show that $\eqv{\hfib{g\circ f}{g(b)}}{\sm{w:\hfib{g}{g(b)}} \hfib f {\proj1 w}}$.
+  \item Show that $\eqv{\hfib{g\circ f}{c}}{\sm{w:\hfib{g}{c}} \hfib f {\proj1 w}}$.
   \end{enumerate}
 \end{ex}
 
@@ -1095,6 +1104,12 @@ Our proof is a simplification of his.
 \begin{ex}\label{ex:cancellable-from-bool}
   Show that the type of left-cancellable functions $\bool\to B$ (see \cref{ex:embedding-cancellable}) is equivalent to $\sm{x,y:B}(x\neq y)$.
   Give a similar explicit characterization of the type of embeddings $\bool\to B$.
+\end{ex}
+
+\begin{ex}\label{ex:funext-from-nondep}
+  The \textbf{na\"{i}ve non-dependent function extensionality axiom} says that for $A,B:\type$ and $f,g:A\to B$ there is a function $(\prd{x:A} f(x)=g(x)) \to (f=g)$.
+  \indexdef{function extensionality!non-dependent}%
+  Modify the argument of \cref{sec:univalence-implies-funext} to show that this axiom implies the full function extensionality axiom (\cref{axiom:funext}).
 \end{ex}
 
 % Local Variables:

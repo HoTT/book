@@ -40,13 +40,13 @@ This is all we need in order to use them as a foundational system for most set-b
 Which types are sets?
 In \cref{cha:hlevels} we will study a more general form of this question in depth, but for now we can observe some easy examples.
 
-\begin{eg}
+\begin{eg}\label{eg:isset-unit}
   The type \unit is a set.
   For by \cref{thm:path-unit}, for any $x,y:\unit$ the type $(x=y)$ is equivalent to \unit.
   Since any two elements of \unit are equal, this implies that any two elements of $x=y$ are equal.
 \end{eg}
 
-\begin{eg}
+\begin{eg}\label{eg:isset-empty}
   The type $\emptyt$ is a set, for given any $x,y:\emptyt$ we may deduce anything we like, by the induction principle of $\emptyt$.
 \end{eg}
 
@@ -105,7 +105,7 @@ Similarly, the defining property of a $1$-type is that it has no non-trivial pat
 \end{defn}
 
 Similarly, we can define $2$-types, $3$-types, and so on.
-We will define the general notion of $n$-type inductively in \cref{cha:hlevels}, and study the relationships between them.
+We will define the general notion of $n$-type inductively in \cref{cha:hlevels}, and study the relationships between $n$-types for different values of $n$.
 
 However, for now it is useful to have two facts in mind.
 First, the levels are upward-closed: if $A$ is an $n$-type then $A$ is an $(n+1)$-type.
@@ -167,7 +167,7 @@ However, we have also seen some ways in which the ``logic'' resulting from this 
 For instance, in \cref{thm:ttac} we saw that the statement
 \index{axiom!of choice!type-theoretic}%
 \begin{equation}\label{eq:english-ac}
-  \parbox{\textwidth-2cm}{``If for all $x:X$ there exists an $a:A(x)$ such that $P(x,a)$, then there exists a function $g:\prd{x:A} A(x)$ such that for all $x:X$ we have $P(x,g(x))$'',}
+  \parbox{\textwidth-2cm}{``If for all $x:X$ there exists an $a:A(x)$ such that $P(x,a)$, then there exists a function $g:\prd{x:X} A(x)$ such that for all $x:X$ we have $P(x,g(x))$'',}
 \end{equation}
 which looks like the classical\index{mathematics!classical} \emph{axiom of choice}, is always true under this reading. This is a noteworthy, and often useful, feature of the propositions-as-types logic, but it also illustrates how significantly it differs from the classical interpretation of logic, under which the axiom of choice is not a logical truth, but an additional ``axiom''.
 
@@ -201,7 +201,7 @@ On the other hand, we can now also show that corresponding statements looking li
     \transfib{A\mapsto (\neg\neg A \to A)}{p}{f(\bool)}(u) =
     \narrowbreak
     \transfib{A\mapsto A}{p}{f(\bool) (\transfib{A\mapsto \neg\neg
-        A}{\opp{p}}{u})}
+        A}{\opp{p}}{u})}.
   \end{narrowmultline*}
   %
   However, any two points $u,v:\neg\neg\bool$ are equal by function extensionality, since for any $x:\neg\bool$ we have $u(x):\emptyt$ and thus we can derive any conclusion, in particular $u(x)=v(x)$.
@@ -754,6 +754,7 @@ This corresponds to a well-known equivalent form of the classical\index{mathemat
   By \cref{thm:ttac}, the codomain of~\eqref{eq:ac} is equivalent to
   \[\Brck{\prd{x:X} \sm{a:A(x)} P(x,a)}.\]
   Thus,~\eqref{eq:ac} is equivalent to the instance of~\eqref{eq:epis-split} where \narrowequation{Y(x) \defeq \sm{a:A(x)} P(x,a).}
+  (This is a set by \cref{thm:isset-prod,thm:prop-set}.)
   Conversely,~\eqref{eq:epis-split} is equivalent to the instance of~\eqref{eq:ac} where $A(x)\defeq Y(x)$ and $P(x,a)\defeq\unit$.
   Thus, the two are logically equivalent.
   Since both are mere propositions, by \cref{lem:equiv-iff-hprop} they are equivalent types.
@@ -805,7 +806,7 @@ However, observe that we cannot relax the requirement that $X$ be a set.
 
 The following observation is trivial, but very useful.
 
-\begin{lem}
+\begin{lem}\label{thm:prop-equiv-trunc}
   If $P$ is a mere proposition, then $\eqv P {\brck P}$.
 \end{lem}
 \begin{proof}
@@ -870,7 +871,7 @@ More compelling examples come from the existential quantifier.
 It is not uncommon to prove a theorem of the form ``there exists an $x$ such that \dots'' and then refer later on to ``the $x$ constructed in Theorem Y'' (note the definite article).
 Moreover, when deriving further properties of this $x$, one may use phrases such as ``by the construction of $x$ in the proof of Theorem Y''.
 
-A very common example is ``$A$ is isomorphic to $B$'', which strictly speaking means only that there exists \emph{some} isomorphism between $A$ and $B$.
+A very common example is ``$A$ is isomorphic to $B$'', which strictly speaking means only that there exists \emph{some} isomorphism between $A$ and~$B$.
 But almost invariably, when proving such a statement, one exhibits a specific isomorphism or proves that some previously known map is an isomorphism, and it often matters later on what particular isomorphism was given.
 
 Set-theoretically trained mathematicians often feel a twinge of guilt at such ``abuses of language''.\index{abuse!of language}
@@ -967,7 +968,10 @@ Note that under the usual propositions-as-types reading, we can pronounce $\isco
   \index{continuity of functions in type theory@``continuity'' of functions in type theory}%
   \index{functoriality of functions in type theory@``functoriality'' of functions in type theory}%
   The point is that the meaning of ``there exists'' in this sentence is a continuous/natural one.
-  A more correct way to express connectedness would be $\sm{a:A}\prd{x:A} \brck{a=x}$; see \cref{thm:connected-pointed}.
+
+  A better way to express connectedness would be $\sm{a:A}\prd{x:A} \brck{a=x}$.
+  This is indeed correct if $A$ is assumed to be pointed --- see the remark after \cref{thm:connected-pointed} --- but in general a type can be connected without being pointed.
+  In \cref{sec:connectivity} we will define connectedness as the $n=0$ case of a general notion of $n$-connectedness, and in \cref{ex:connectivity-inductively} the reader is asked to show that this definition is equivalent to having both $\brck{A}$ and $\prd{x,y:A} \brck{x=y}$.
 \end{rmk}
 
 \begin{lem}\label{thm:contr-unit}
@@ -1207,7 +1211,9 @@ Of course, constructive and intuitionistic mathematics has a long and complicate
 \end{ex}
 
 \begin{ex}\label{ex:lem-brck}
-  Show that assuming \LEM{}, the double negation $\neg \neg A$ has the same universal property as the propositional truncation $\brck A$, and is therefore equivalent to it.
+  Show that assuming \LEM{}, the double negation $\neg \neg A$ has the same recursion principle as the propositional truncation $\brck A$ but with a propositional computation rule rather than a judgmental one.
+  In other words, prove that assuming \LEM{}, if $B$ is a mere proposition and we have $f:A\to B$, then there is an induced $g:\neg\neg A \to B$ such that $g(\bproj a) = f(a)$ for all $a:A$.
+  Deduce that (assuming \LEM{}) we have $\eqv{\neg\neg A}{\brck{A}}$.
   Thus, under \LEM{}, the propositional truncation can be defined rather than taken as a separate type former.
 \end{ex}
 
@@ -1215,7 +1221,7 @@ Of course, constructive and intuitionistic mathematics has a long and complicate
   \index{propositional!resizing}%
   Show that if we assume propositional resizing as in \cref{subsec:prop-subsets}, then the type
   \[\prd{P:\prop} \Parens{(A\to P)\to P}\]
-  has the same universal property as $\brck A$.
+  has the same recursion principle as $\brck A$, \emph{with} the same judgmental computation rule.
   Thus, we can also define the propositional truncation in this case.
 \end{ex}
 

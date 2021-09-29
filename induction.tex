@@ -72,7 +72,7 @@ Furthermore, the resulting proof $\ind\bool(E,e_0,e_1): \prd{b : \bool}E(b)$ beh
 \end{itemize}
 
 \index{case analysis}%
-Thus, the induction principle for the type $\bool$ of booleans allow us to reason by \emph{case analysis}.
+Thus, the induction principle for the type $\bool$ of booleans allows us to reason by \emph{case analysis}.
 Since neither of the two constructors takes any arguments, this is all we need for booleans.
 
 \index{natural numbers}%
@@ -124,9 +124,10 @@ Then $f$ and $g$ are equal.
 \end{thm}
 
 \begin{proof}
-We use induction on the type family $D(x) \defeq \id{f(x)}{g(x)}$. For the base case, we have \[f(0) = e_z = g(0)\]
+We use induction on the type family $D(x) \defeq \id{f(x)}{g(x)}$. For the base case, we have
+\[ f(0) = e_z = g(0). \]
 For the inductive case, assume $n : \nat$ such that $f(n) = g(n)$. Then
-\[ f(\suc(n)) = e_s(n, f(n)) = e_s(n, g(n)) = g(\suc(n)) \]
+\[ f(\suc(n)) = e_s(n, f(n)) = e_s(n, g(n)) = g(\suc(n)). \]
 The first and last equality follow from the assumptions on $f$ and $g$. The middle equality follows from the inductive hypothesis and the fact that application preserves equality. This gives us pointwise equality between $f$ and $g$; invoking function extensionality finishes the proof.
 \end{proof}
 
@@ -254,7 +255,7 @@ In \cref{sec:initial-alg} we will see that inductive types actually do have a un
 
 Inductive types are very general, which is excellent for their usefulness and applicability, but makes them difficult to study as a whole.
 Fortunately, they can all be formally reduced to a few special cases.
-It is beyond the scope of this book to discuss this reduction --- which is anyway irrelevant to the mathematician using type theory in practice --- but we will take a little time to discuss the one of the basic special cases that we have not yet met.
+It is beyond the scope of this book to discuss this reduction --- which is anyway irrelevant to the mathematician using type theory in practice --- but we will take a little time to discuss one of the basic special cases that we have not yet met.
 These are Martin-L{\"o}f's \emph{$\w$-types}, also known as the types of \emph{well-founded trees}.
 \index{tree, well-founded}%
 $\w$-types are a generalization of such types as natural numbers, lists, and binary trees, which are sufficiently general to encapsulate the ``recursion'' aspect of \emph{any} inductive type.
@@ -313,9 +314,10 @@ which will represent the recurrence for the $\dbl$ function; for simplicity we d
 
 Clearly, $e$ will be a function taking $a : \bool$ as its first argument. The next step is to perform case analysis on $a$ and proceed based on whether it is $\bfalse$ or $\btrue$. This suggests the following form
 \[ e \defeq \lamu{a:\bool} \rec\bool(C,e_0,e_1,a) \]
-where \[C \defeq \prd{f : B(a) \to \natw}{g : B(a) \to \natw} \natw\]
+where
+\[ C \defeq \prd{f : B(a) \to \natw}{g : B(a) \to \natw} \natw. \]
 If $a$ is $\bfalse$, the type $B(a)$ becomes $\emptyt$. Thus, given $f : \emptyt \to \natw$ and $g : \emptyt \to \natw$, we want to construct an element of $\natw$. Since the label $\bfalse$ represents $\emptyt$, it needs zero inductive arguments and the variables $f$ and $g$ are irrelevant. We return $\zerow$\index{zero} as a result:
-\[ e_0 \defeq \lamu{f:\emptyt \to \natw}{g:\emptyt \to \natw} \zerow \]
+\[ e_0 \defeq \lamu{f:\emptyt \to \natw}{g:\emptyt \to \natw} \zerow. \]
 Analogously, if $a$ is $\btrue$, the type $B(a)$ becomes $\unit$.
 Since the label $\btrue$ represents the successor\index{successor} operator, it needs one inductive argument --- the predecessor\index{predecessor} --- which is represented by the variable $f : \unit \to \natw$.
 The value of the recursive call on the predecessor is represented by the variable $g : \unit \to \natw$.
@@ -475,7 +477,7 @@ Actually, this assignment is functorial only up to homotopy, but this makes no d
 By definition, a \define{$P$-algebra}
 \indexdef{algebra!for a polynomial functor}%
 \indexdef{algebra!W-@$\w$-}%
-is then a type $C$ equipped a function $s_C :  PC \rightarrow C$.
+is then a type $C$ equipped with a function $s_C :  PC \rightarrow C$.
 By the universal property of $\Sigma$-types, this is equivalent to giving a function $\prd{a:A} (B(a) \to C) \to C$.
 We will also call such objects \define{$\w$-algebras}
 \indexdef{W-algebra@$\w$-algebra}%
@@ -539,24 +541,21 @@ thus showing that $T$ is inhabited. It is furthermore necessary to show that for
 p :  (f,s_f) = (g,s_g).
 \end{equation}
 This uses the fact that, in general, a type of the form $(f,s_f) = (g,s_g) $
-is  equivalent to the type of what we call \define{algebra $2$-cells},
+is  equivalent to the type of what we call \define{algebra $2$-cells}
 \indexdef{algebra!2-cell}%
-whose canonical
+from $f$ to $g$, whose canonical
 elements are pairs of the form $(e, s_e)$, where $e : f=g$ and $s_e$ is a higher identity proof between the identity proofs represented by the following pasting diagrams:
 \[
 \xymatrix{
-PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W} \ar@{}[r]_(.52){s_g}  & PD \ar[d]^{s_D}  \\
-W \ar@/^1pc/[r]^g  \ar@/_1pc/[r]_f  \ar@{}[r]|{e} & D } \qquad
-\xymatrix{
 PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W}   \ar@/_1pc/[r]_{Pf} \ar@{}[r]|{Pe}
-& PD \ar[d]^{s_D}  \\
-W  \ar@/_1pc/[r]_f  \ar@{}[r]^{s_f} & D }
+& PC \ar[d]^{s_C}  \\
+W  \ar@/_1pc/[r]_f  \ar@{}[r]^{s_f} & C } \qquad
+\xymatrix{
+PW \ar@/^1pc/[r]^{Pg}   \ar[d]_{s_W} \ar@{}[r]_(.52){s_g}  & PC \ar[d]^{s_C}  \\
+W \ar@/^1pc/[r]^g  \ar@/_1pc/[r]_f  \ar@{}[r]|{e} & C }
 \]
 In light of this fact, to prove that there exists an element as in~\eqref{equ:prequired}, it is
-sufficient to show that there is an algebra 2-cell
-\[
-(e,s_e) : (f,s_f) = (g,s_g).
-\]
+sufficient to show that there is an algebra 2-cell $(e,s_e)$ from $f$ to $g$.
 The identity proof $e : f=g$ is now constructed by function extensionality and
 $\w$-elimination so as to guarantee the existence of the required identity
 proof $s_e$.
@@ -569,7 +568,7 @@ proof $s_e$.
 
 In \cref{sec:w-types} we showed how to encode natural numbers as $\w$-types, with
 \begin{align*}
-\natw & \defeq \wtype{b:\bool} \rec\bool(\bbU,\emptyt,\unit), \\
+\natw & \defeq \wtype{b:\bool} \rec\bool(\bbU,\emptyt,\unit,b), \\
 \zerow & \defeq \supp(\bfalse, (\lamu{x:\emptyt} \rec\emptyt(\natw,x))), \\
 \sucw & \defeq \lamu{n:\natw} \supp(\btrue, (\lamu{x:\unit} n)).
 \end{align*}
@@ -653,9 +652,9 @@ We also postulate the following coherence\index{coherence} law, which tells us h
 \item
 For any $a : A$ and $f : B(a) \to C$, the following diagram commutes propositionally:
 \[\xymatrix{
-  g(\supp(x,f)) \ar_{\alpha(\supp(x,f))}[d] \ar^-{\beta_g}[r] & c(a,\lamu{b:B(a)} g(f(b)))
+  g(\supp(a,f)) \ar_{\alpha(\supp(a,f))}[d] \ar^-{\beta_g}[r] & c(a,\lamu{b:B(a)} g(f(b)))
   \ar^{c(a,\blank)(\funext (\lam{b} \alpha(f(b))))}[d] \\
-  h(\supp(x,f)) \ar_-{\beta_h}[r] & c(a,\lamu{b: B(a)} h(f(b))) \\
+  h(\supp(a,f)) \ar_-{\beta_h}[r] & c(a,\lamu{b: B(a)} h(f(b))) \\
 }\]
 where $\alpha$ abbreviates the path $\alpha(C,c,f,g,\beta_g,\beta_h) : g = h$.
 \end{itemize}
@@ -672,8 +671,9 @@ Putting all of this data together yields another characterization of $\wtype{x:A
                        \prd{h : W \to C}
                        \prd{\beta_g : \prd{a,f} g(\supp(a,f)) = c(a,\lamu{b: B(a)} g(f(b)))} \\
                        \prd{\beta_h : \prd{a,f} h(\supp(a,f)) = c(a,\lamu{b: B(a)} h(f(b)))}
-                       \sm{\alpha : \prd {w : W} g(w) = h(w)} \\
-                       \alpha(\supp(x,f)) \ct \beta_h = \beta_g \ct c(a,-)(\funext \; \lam{b} \alpha(f(b)))
+                       \sm{\alpha : \prd {w : W} g(w) = h(w)}
+                       \prd{a,f} \\
+                       \alpha(\supp(a,f)) \ct \beta_h = \beta_g \ct c(a,-)(\funext \; \lam{b} \alpha(f(b)))
 \end{multline*}
 
 \begin{thm}
@@ -898,7 +898,7 @@ For the example constructor~\eqref{eq:example-constructor}, we would require $P$
 \end{narrowmultline}
 Under these hypotheses, the recursion principle yields $f:W\to P$, which moreover ``preserves the constructor data'' in the evident way --- this is the computation rule, where we use covariance of the inputs.
 \index{computation rule!for inductive types}%
-For instance, in the example~\eqref{eq:example-constructor}, the computation rule says that for any $\alpha:A\to W$, $\beta:B\to C\to W$, $\delta:d$, and $\omega:W$, we have
+For instance, in the example~\eqref{eq:example-constructor}, the computation rule says that for any $\alpha:A\to W$, $\beta:B\to C\to W$, $\delta:D$, and $\omega:W$, we have
 \begin{equation}
   f(c(\alpha,\beta,\delta,\omega)) \jdeq d(\alpha,f\circ \alpha,\beta, f\circ \beta, \delta, \omega,f(\omega)).\label{eq:example-comp}
 \end{equation}
@@ -950,7 +950,7 @@ With practice, one learns to automatically deduce the induction and recursion pr
 \label{sec:generalizations}
 
 \index{type!inductive!generalizations}%
-The notion of inductive type has been studied in type theory for many years, and admits of many, many generalizations: inductive type families, mutual inductive types, inductive-inductive types, inductive-recursive types, etc.
+The notion of inductive type has been studied in type theory for many years, and admits many, many generalizations: inductive type families, mutual inductive types, inductive-inductive types, inductive-recur\-sive types, etc.
 In this section we give an overview of some of these, a few of which will be used later in the book.
 (In \cref{cha:hits} we will study in more depth a very different generalization of inductive types, which is particular to \emph{homotopy} type theory.)
 
@@ -1033,8 +1033,8 @@ Note that $\mathsf{even}$ and $\mathsf{odd}$ are simple types (not type families
 If we expressed this definition as an inductive type family $\mathsf{paritynat} : \bool \to \type$, with $\mathsf{paritynat}(\bfalse)$ and $\mathsf{paritynat}(\btrue)$ representing $\mathsf{even}$ and $\mathsf{odd}$ respectively, it would instead have constructors:
 \begin{itemize}
 \item $0 : \mathsf{paritynat}(\bfalse)$,
-\item $\mathsf{esucc} : \mathsf{paritynat}(\bfalse) \to \mathsf{paritynat}(\btrue)$,
-\item $\mathsf{oesucc} : \mathsf{paritynat}(\btrue) \to \mathsf{paritynat}(\bfalse)$.
+\item $\mathsf{esucc} : \mathsf{paritynat}(\btrue) \to \mathsf{paritynat}(\bfalse)$,
+\item $\mathsf{osucc} : \mathsf{paritynat}(\bfalse) \to \mathsf{paritynat}(\btrue)$.
 \end{itemize}
 When expressed explicitly as a mutual inductive definition, the induction principle for $\mathsf{even}$ and $\mathsf{odd}$ says that given $C:\mathsf{even}\to\type$ and $D:\mathsf{odd}\to\type$, along with
 \begin{itemize}
@@ -1081,7 +1081,7 @@ inductive family, resulting in the two induction principles described in
 In both definitions, the type $A$ is a parameter.
 For the first definition, we inductively define a family $=_A : A\to A\to \type$, with two indices belonging to $A$, by the following constructor:
 \begin{itemize}
-\item for any $a:A$, an element $\refl A : a=_A a$.
+\item for any $a:A$, an element $\refl a : a=_A a$.
 \end{itemize}
 By analogy with the other inductive families, we may extract the induction principle from this definition.
 It states that given any \narrowequation{C:\prd{a,b:A} (a=_A b) \to \type,} along with $d:\prd{a:A} C(a,a,\refl{a})$, there exists \narrowequation{f:\prd{a,b:A}{p:a=_A b} C(a,b,p)} such that $f(a,a,\refl a)\jdeq d(a)$.
@@ -1091,7 +1091,7 @@ For the second definition, we consider one element $a_0:A$ to be a parameter alo
 \begin{itemize}
 \item an element $\refl{a_0} : a_0 =_A a_0$.
 \end{itemize}
-Note that because $a_0:A$ was fixed as a parameter, the constructor $\refl{a_0}$ does not appear inside the inductive definition as a function, but only an element.
+Note that because $a_0:A$ was fixed as a parameter, the constructor $\refl{a_0}$ does not appear inside the inductive definition as a function, but only as an element.
 The induction principle for this definition says that given $C:\prd{b:A} (a_0 =_A b) \to \type$ along with an element $d:C(a_0,\refl{a_0})$, there exists $f:\prd{b:A}{p:a_0 =_A b} C(b,p)$ with $f(a_0,\refl{a_0})\jdeq d$.
 This is exactly the based path induction principle for identity types.
 
@@ -1150,7 +1150,7 @@ This suggests the following definitions and theorem.
 \end{defn}
 
 \begin{thm}\label{thm:identity-systems}
-  For a pointed predicate $(R,r_0)$, the following are logically equivalent.
+  For a pointed predicate $(R,r_0)$ over $(A,a_0)$, the following are logically equivalent.
   \begin{enumerate}
   \item $(R,r_0)$ is an identity system at $a_0$.\label{item:identity-systems1}
   \item For any pointed predicate $(S,s_0)$, the type $\mathsf{ppmap}(R,S)$ is contractible.\label{item:identity-systems2}
@@ -1162,6 +1162,7 @@ This suggests the following definitions and theorem.
 Note that the equivalences~\ref{item:identity-systems1}$\Leftrightarrow$\ref{item:identity-systems2}$\Leftrightarrow$\ref{item:identity-systems3} are a version of \cref{lem:homotopy-induction-times-3} for identity types $a_0 =_A \blank$, regarded as inductive families varying over one element of $A$.
 Of course,~\ref{item:identity-systems2}--\ref{item:identity-systems4} are mere propositions, so that logical equivalence implies actual equivalence.
 (Condition~\ref{item:identity-systems1} is also a mere proposition, but we will not prove this.)
+Note also that unlike~\ref{item:identity-systems1}--\ref{item:identity-systems3}, statement~\ref{item:identity-systems4} doesn't refer to $a_0$ or $r_0$.
 
 \begin{proof}
   First, assume~\ref{item:identity-systems1} and let $(S,s_0)$ be a pointed predicate.
@@ -1199,7 +1200,7 @@ We can deduce a similar result for identity types $=_A$, regarded as a family va
 
 \begin{defn}
   An \define{identity system}
-  over a type $A$ is a family $R:A\to A\to \type$ equipped with a function $r_0:\prd{a:A} R(a,a)$ such that for any type family $D:\prd{a,b:A} R(a,b) \to \type$ and $d:\prd{a:A} D(a,a,r_0(a))$, there exists a function $f:\prd{a,b:A}{r:R(b)} D(a,b,r)$ such that $f(a,a,r_0(a))=d(a)$ for all $a:A$.
+  over a type $A$ is a family $R:A\to A\to \type$ equipped with a function $r_0:\prd{a:A} R(a,a)$ such that for any type family $D:\prd{a,b:A} R(a,b) \to \type$ and $d:\prd{a:A} D(a,a,r_0(a))$, there exists a function $f:\prd{a,b:A}{r:R(a,b)} D(a,b,r)$ such that $f(a,a,r_0(a))=d(a)$ for all $a:A$.
 \end{defn}
 
 \begin{thm}\label{thm:ML-identity-systems}

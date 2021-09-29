@@ -55,7 +55,7 @@ has a number of features that have allowed it to be used for
 significant proofs.  Those proofs include the formalization of the
 Four Color Theorem and the Feit-Thompson Theorem.
 
-Coq uses a dependant type theory derived from "The Calculus of
+Coq uses a dependent type theory derived from "The Calculus of
 Constructions".  It differs from Martin-Loef's intentional
 type theory, but, as we'll see, its propositional equality has the
 same higher-groupoid structure that allows us to do HoTT.
@@ -64,7 +64,7 @@ same higher-groupoid structure that allows us to do HoTT.
 (** * Introduction *)
 (**
 Coq mostly works with two concepts:
-  - dependant functions (#Pi#$\Pi$-types) 
+  - dependent functions (#Pi#$\Pi$-types) 
   - inductive types 
 
 Inductive types are used to implement the common types of type theory:
@@ -196,7 +196,7 @@ its other main feature: dependent functions.
 (** ** Identity function *)
 (**
 We'll start by defining the identity function on natural numbers and
-then we'll write a dependantly-typed identity function that works for
+then we'll write a dependently-typed identity function that works for
 any type.  
 
 The identity function (or identity map) for natural numbers is:
@@ -212,7 +212,7 @@ Its format is:
 
 In our example, the name is "idmap_nat".  The type is a function from
 [nat] to [nat].  (Notice how the "->" operator approximates the arrow
-used in the book for non-dependantly typed functions.)  The value for
+used in the book for non-dependently typed functions.)  The value for
 "idmap_nat" is a function.
 
 In Coq, a function is written:
@@ -255,9 +255,9 @@ Compute idmap_nat (S O).
 
 (** *** Dependant types *)
 (**
-"idmap_nat" is not dependantly typed, so we were able to use the arrow
+"idmap_nat" is not dependently typed, so we were able to use the arrow
 ("->") to denote its type.  We could have written the function's type
-as if it was dependantly typed. In the book, dependant types are
+as if it was dependently typed. In the book, dependent types are
 declared with a capital "#Pi#$\Pi$".  Coq uses the keyword [forall].
 *)
 
@@ -282,7 +282,7 @@ dependently typed on another parameter, the dependent one must come
 later in the list.  (We'll see an example soon.)
 
 
-Now that we know how to write a dependant function type, we can
+Now that we know how to write a dependent function type, we can
 write an identity function that works for any type.
 *)
 
@@ -290,7 +290,7 @@ Definition idmap : forall A:Type, A -> A :=
   fun (A:Type) (x:A) => x.
 
 (** 
-"idmap" is a dependantly-typed function: its return type depends on the
+"idmap" is a dependently-typed function: its return type depends on the
 type of its first parameter.  Therefore, we had to use the [forall]
 operator for that parameter.  
 
@@ -857,12 +857,12 @@ Section Projections.
 
   Definition projT1 (x:sigT P) : A := 
     match x with
-      | existT a _ => a
+      | (a; _) => a
     end.
 
   Definition projT2 (x:sigT P) : P (projT1 x) :=
     match x return P (projT1 x) with
-      | existT _ h => h
+      | (_; h) => h
     end.
 
 End Projections.
@@ -1076,7 +1076,7 @@ Check @idpath nat 4.
 (**
 which is an element that has type "4=4".  Obviously, with implicit
 arguments, we do not need "nat" and can use just "idpath 4".  Not so
-obviously, we can go a step further.  If type inferencing can determing
+obviously, we can go a step further.  If type inferencing can determine
 the type returned by "idpath", such as "4=4" in our example, then
 implicit arguments can fill in the "4" as well!  So most of the time
 you will just see "idpath" or its [Notation], "1" (in the "path_scope"
@@ -1374,8 +1374,7 @@ proofs themselves, we will cheat.  We'll skip the proof and use the
 *)
 
 Definition equiv_inverse : forall {A B : Type} (e : A <~> B), (B <~> A).
-  admit.
-Defined.
+Admitted.
 
 (**
 And here is what transitivity ("composition") looks like.
@@ -1383,8 +1382,7 @@ And here is what transitivity ("composition") looks like.
 
 Definition equiv_compose' : forall {A B C : Type} (g : B <~> C) (f : A <~> B)
                             , A <~> C.
-  admit.
-Defined.
+Admitted.
 (**
 It is called "equiv_compose"-prime, because there is a second function
 that instead takes functions from "A" to "B" and from "B" to "C" and
@@ -1397,7 +1395,7 @@ equivalence.
 Since we've decided to cheat and add theorems without proof, it seems
 like the opportune time to add an axiom.  Homotopy type theory's
 univalence axiom states that there exists an equivalence between two
-types being equivalence and the two types being equal.  
+types being equivalent and those same two types being equal.
 
 *)
 
@@ -1412,8 +1410,7 @@ Class Univalence := {
 }.
 
 Instance univalence_axiom : Univalence.
-  admit.
-Defined.
+Admitted.
 
 (**
 The function "equiv_path" says that for every equality between types,

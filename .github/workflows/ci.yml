@@ -1,0 +1,64 @@
+name: CI
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - latexmk: 'yes'
+            update_errata: ''
+            update_nightlies: '' 
+            targets: ''
+          - latexmk: ''
+            update_errata: 'yes'
+            update_nightlies: 'yes'
+            targets: ''
+          - latexmk: ''
+            update_errata: ''
+            update_nightlies: ''
+            targets: 'dvi'
+
+    env:
+      LATEXMK: ${{ matrix.latexmk }}
+      UPDATE_ERRATA: ${{ matrix.update_errata }}
+      UPDATE_NIGHTLIES: ${{ matrix.update_nightlies }}
+      TARGETS: ${{ matrix.targets }}
+
+    steps:
+      # Install texlive and other deps
+    - name: Install deps
+      run: |
+        sudo apt-get install \
+          wget \
+          curl \
+          sed \
+          grep \
+          texlive \
+          texlive-latex-base \
+          texlive-latex-extra \
+          texlive-latex-recommended \
+          texlive-science-doc \
+          texlive-science \
+          texlive-metapost \
+          texlive-xetex
+  
+    - name: Checkout repo
+      uses: actions/checkout@v2
+  
+      # Install latexmk if needed
+    - name: Install latexmk
+      if: matrix.latexmk == 'yes'
+      run: sudo apt-get install latexmk -y
+          
+    - name: Build
+      run: make ${{ matrix.targets }}
+    
+    - name: Update errata
+      run: etc/ci/update_errata.sh
+ 
+    - name: Update nightlies
+      run: etc/ci/update_nightlies.sh

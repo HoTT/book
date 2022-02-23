@@ -31,7 +31,7 @@ jobs:
     steps:
       # Install texlive and other deps
     - name: Install deps
-      run:
+      run: |
         sudo apt-get install \
           wget \
           curl \
@@ -51,11 +51,10 @@ jobs:
       # Install latexmk if needed
     - name: Install latexmk
       if: matrix.latexmk == "yes"
-      run:
-        sudo apt-get install latexmk -y
+      run: sudo apt-get install latexmk -y
           
-    - name: build
-          make ${{ matrix.targets }}
+    - name: Build
+      run: make ${{ matrix.targets }}
     
     - name: Update errata
       run: etc/ci/update_errata.sh

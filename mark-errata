@@ -1,7 +1,7 @@
 #!/bin/bash
 
 for COMMIT in $( git blame errata.tex | grep -o '% merge of.\+' | grep -o '[^ ]\+$' ); do
-    MERGE=$(git log "$COMMIT..master" --ancestry-path --merges --oneline | grep -o '^[^ ]\+' | xargs git describe | sed s'/first-edition-//g' | tail -n 1)
+    MERGE=$(git log "$COMMIT..master" --ancestry-path --merges --oneline -- | grep -o '^[^ ]\+' | xargs git describe | sed s'/first-edition-//g' | tail -n 1)
     echo "Marking $COMMIT as $MERGE"
     sed -i "s/% merge of $COMMIT/$MERGE/g" errata.tex
 done

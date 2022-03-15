@@ -1,48 +1,81 @@
-name: CI
+name: Build
 
-on: [ push, pull_request ]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
-  build:
+  update-errata:
+    name: Update errata
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        include:
-          - latexmk: 'yes'
-            targets: ''
-          - latexmk: ''
-            targets: 'dvi'
-
-    env:
-      LATEXMK: ${{ matrix.latexmk }}
-      TARGETS: ${{ matrix.targets }}
-
+    # it seems impossible to update a branch in a forked repo with the default token
+    if: ${{ ! (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
     steps:
-      # Install texlive and other deps
-    - name: Install deps
-      run: |
-        sudo apt-get install \
-          wget \
-          curl \
-          sed \
-          grep \
-          texlive \
-          texlive-latex-base \
-          texlive-latex-extra \
-          texlive-latex-recommended \
-          texlive-science-doc \
-          texlive-science \
-          texlive-metapost \
-          texlive-xetex
-  
-    - name: Checkout repo
-      uses: actions/checkout@v2
-  
-      # Install latexmk if needed
-    - name: Install latexmk
-      if: matrix.latexmk == 'yes'
-      run: sudo apt-get install latexmk -y
-          
-    - name: Build
-      run: make ${{ matrix.targets }}
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Fetch all tags for `git describe`
+        run: git fetch --force --prune --unshallow --tags
+
+      - name: Update ./errata.tex
+        run: ./mark-errata
+
+      - name: Push changes of ./errata.tex
+        run: |
+          if ! git diff --quiet -- ./errata.tex; then
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            git add errata.tex
+            git commit -m "Mark Errata (auto)"
+            git push
+          fi
+  build-default:
+    name: Build and update nightlies
+    needs: update-errata
+    runs-on: ubuntu-latest
+    container: danteev/texlive:latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Fetch all tags for `git describe`
+        run: git fetch --force --prune --unshallow --tags
+
+      - name: Generate nightlies
+        run: ./generate-nightlies "./_www_dir/" "./_wiki_dir/"
+
+      - name: Push GitHub pages
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          force_orphan: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: "./_www_dir/"
+
+      - name: Push GitHub wiki pages
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: Andrew-Chen-Wang/github-wiki-action@v2
+        env:
+          WIKI_DIR: "./_wiki_dir/"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_NAME: "github-actions"
+          GH_MAIL: "github-actions@github.com"
+  build-dvi:
+    name: Build DVIs
+    needs: update-errata
+    runs-on: ubuntu-latest
+    container: danteev/texlive:latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Fetch all tags for `git describe`
+        run: git fetch --force --prune --unshallow --tags
+
+      - name: Build DVI
+        run: make dvi

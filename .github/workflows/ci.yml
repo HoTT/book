@@ -50,7 +50,10 @@ jobs:
         run: ./generate-nightlies "./_www_dir/" "./_wiki_dir/"
 
       - name: Push GitHub pages
-        if: ${{ github.ref == 'refs/heads/master' }}
+        # This step is disabled for all forked repos. The idea is that the nightlies will
+        # not be useful for most usage of forked repos. However, there are no technical
+        # reasons not to enable it, if one wishes to do so.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
         uses: peaceiris/actions-gh-pages@v3
         with:
           force_orphan: true
@@ -58,7 +61,9 @@ jobs:
           publish_dir: "./_www_dir/"
 
       - name: Push GitHub wiki pages
-        if: ${{ github.ref == 'refs/heads/master' }}
+        # This step would err if the forked repo does not already have wiki pages.
+        # As a workaround, it is disabled for all forked repos.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
         uses: Andrew-Chen-Wang/github-wiki-action@v2
         env:
           WIKI_DIR: "./_wiki_dir/"

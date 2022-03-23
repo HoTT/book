@@ -11,8 +11,9 @@ jobs:
   update-errata:
     name: Update errata
     runs-on: ubuntu-latest
-    # it seems impossible to update a branch in a forked repo with the default token
-    if: ${{ ! (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
+    # ./mark-errata should only run on the master branch of the main repo.
+    # This job is thus disabled for pull requests and forked repos.
+    if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -37,6 +38,7 @@ jobs:
   build-default:
     name: Build and update nightlies
     needs: update-errata
+    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     container: danteev/texlive:latest
     steps:
@@ -48,6 +50,12 @@ jobs:
 
       - name: Generate nightlies
         run: ./generate-nightlies "./_www_dir/" "./_wiki_dir/"
+
+      - name: Check if errata.tex is clean
+        # Interrupt the uploading if errata.tex is not clean.
+        # This should not happen, but it does not hurt to check.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
+        run: ./check-errata
 
       - name: Push GitHub pages
         # This step is disabled for all forked repos. The idea is that the nightlies will
@@ -73,6 +81,7 @@ jobs:
   build-dvi:
     name: Build DVIs
     needs: update-errata
+    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     container: danteev/texlive:latest
     steps:

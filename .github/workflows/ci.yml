@@ -11,8 +11,9 @@ jobs:
   update-errata:
     name: Update errata
     runs-on: ubuntu-latest
-    # it seems impossible to update a branch in a forked repo with the default token
-    if: ${{ ! (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository) }}
+    # It seems the ./mark-errata script would not work correctly for pull_request events.
+    # We want to run the script on the master branch anyways.
+    if: ${{ (github.event_name == 'workflow_dispatch' || github.event_name == 'push') && github.ref == 'refs/heads/master' }}
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3

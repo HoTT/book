@@ -8,37 +8,8 @@ on:
   pull_request:
 
 jobs:
-  update-errata:
-    name: Update errata
-    runs-on: ubuntu-latest
-    # ./mark-errata should only run on the master branch of the main repo.
-    # This job is thus disabled for pull requests and forked repos.
-    if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: Fetch all tags for `git describe`
-        run: git fetch --force --prune --unshallow --tags
-
-      - name: Update ./errata.tex
-        run: ./mark-errata
-
-      - name: Push changes of ./errata.tex
-        run: |
-          if ! git diff --quiet -- ./errata.tex; then
-            git config --global user.name "github-actions"
-            git config --global user.email "github-actions@github.com"
-            git add errata.tex
-            git commit -m "Mark Errata (auto)"
-            git push
-          fi
-  build-default:
+  build:
     name: Build and update nightlies
-    needs: update-errata
-    if: ${{ ! cancelled() }}
     runs-on: ubuntu-latest
     container: danteev/texlive:latest
     steps:
@@ -48,11 +19,25 @@ jobs:
       - name: Fetch all tags for `git describe`
         run: git fetch --force --prune --unshallow --tags
 
+      - name: Update ./errata.tex
+        # ./mark-errata should only run on the master branch of the main repo.
+        # This job is thus disabled for pull requests and forked repos.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
+        run: |
+          ./mark-errata
+          if ! git diff --quiet -- ./errata.tex; then
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            git add errata.tex
+            git commit -m "Mark Errata (auto)"
+            git push
+          fi
+
       - name: Generate nightlies
         run: ./generate-nightlies "./_www_dir/" "./_wiki_dir/"
 
       - name: Check if errata.tex is clean
-        # Interrupt the uploading if errata.tex is not clean.
+        # Interrupt the uploading if errata.tex somehow is not clean.
         # This should not happen, but it does not hurt to check.
         if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
         run: ./check-errata
@@ -78,18 +63,3 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_NAME: "github-actions"
           GH_MAIL: "github-actions@github.com"
-  build-dvi:
-    name: Build DVIs
-    needs: update-errata
-    if: ${{ ! cancelled() }}
-    runs-on: ubuntu-latest
-    container: danteev/texlive:latest
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Fetch all tags for `git describe`
-        run: git fetch --force --prune --unshallow --tags
-
-      - name: Build DVI
-        run: make dvi

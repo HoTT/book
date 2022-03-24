@@ -115,7 +115,7 @@ log-check-for-warnings:
 	- ! grep -n "## Warning" hott-online.ilg /dev/null
 
 $(BOOKAUXFILES) : %.aux : %.tex
-	echo "WARNING: assuming $> is up-to-date"
+	echo "WARNING: assuming $@ is up-to-date"
 
 # Generate labels for the solutions
 main.labels: $(BOOKAUXFILES)

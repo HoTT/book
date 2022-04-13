@@ -16,7 +16,7 @@ and nightly builds are available on the
 
 ## Editing the book
 
-This book is not a community project, but we do welcome our readers to suggest minor improvements. The best way to propose an edit is to open a pull request with your suggested change.
+This book is not a community project, but we do welcome our readers to suggest improvements. The best way to propose an edit is to [open a pull request](https://github.com/HoTT/book/compare) with your suggested change. You can also [open an issue](https://github.com/HoTT/book/issues/new/choose) if you do not have a concrete proposal yet.
 
 ## Code of conduct
 

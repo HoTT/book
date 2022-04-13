@@ -1,0 +1,56 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]; then
+    echo "Usage: ${0} www-dir wiki-dir"
+    exit 1
+fi
+
+WWW_DIR=$1
+WIKI_DIR=$2
+
+VERSION_MARKER="$(git describe --always --long)"
+VERSION="${VERSION_MARKER#first-edition-}"
+DATE="$(date +"%B %-d, %Y")"
+
+function generate_www () {
+  rm -rf -- "${WWW_DIR}" && mkdir -p -- "${WWW_DIR}" || exit 1
+  PDF_TARGETS=(hott-online hott-ebook hott-letter hott-a4 errata)
+  for TARGET in "${PDF_TARGETS[@]}"; do
+      echo "::group::Generating ${WWW_DIR}/$TARGET-$VERSION.pdf"
+      if [ ! -f "$TARGET.pdf" ]; then
+        make "${TARGET}.pdf" || exit 1
+      fi
+      echo "Copying $TARGET.pdf to ${WWW_DIR}/$TARGET-$VERSION.pdf"
+      cp -f "$TARGET.pdf" "${WWW_DIR}/$TARGET-$VERSION.pdf" || exit 1
+      echo "::endgroup::"
+      echo "::group::Generating ${WWW_DIR}/${TARGET}.pdf.html"
+      tee "${WWW_DIR}/${TARGET}.pdf.html" <<EOF
+<!doctype html><title>$TARGET-$VERSION.pdf</title><meta http-equiv=refresh content="0; url=$TARGET-$VERSION.pdf">
+EOF
+      echo "::endgroup::"
+  done
+}
+
+function generate_wiki () {
+  rm -rf -- "${WIKI_DIR}" && mkdir -p -- "${WIKI_DIR}" || exit 1
+  echo "::group::Generating ${WIKI_DIR}/Home.md"
+  tee "${WIKI_DIR}/Home.md" <<EOF
+This wiki is not in use, except that it hosts the [[Nightly builds]] page.  There is a general wiki for homotopy type theory [here](http://ncatlab.org/homotopytypetheory).
+EOF
+  echo "::endgroup::"
+  echo "::group::Generating ${WIKI_DIR}/Nightly-Builds.md"
+  tee "${WIKI_DIR}/Nightly-Builds.md" <<EOF
+<!--- This page is auto-generated.  To update this page; update the build-nightlies script. --->
+Below are links to "nightly builds" of the book, incorporating fixes and improvements that have not yet been incorporated into the "released version" that can be found on the [official book web site](http://homotopytypetheory.org/book/).  The nightly builds are updated automatically; their most recent update was on $DATE and their version marker is "$VERSION_MARKER".
+
+* [PDF for on-screen viewing](//hott.github.io/book/hott-online-$VERSION.pdf)
+* [PDF for e-book readers](//hott.github.io/book/hott-ebook-$VERSION.pdf)
+* [PDF for printing on letter paper](//hott.github.io/book/hott-letter-$VERSION.pdf)
+* [PDF for printing on A4 paper](//hott.github.io/book/hott-a4-$VERSION.pdf)
+* [errata for previous versions](//hott.github.io/book/errata-$VERSION.pdf)
+EOF
+  echo "::endgroup::"
+}
+
+generate_www
+generate_wiki

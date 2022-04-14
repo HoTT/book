@@ -16,7 +16,7 @@ and nightly builds are available on the
 
 ## Editing the book
 
-This book is not a community project, but we do welcome our readers to suggest improvements. The best way to propose an edit is to [open a pull request](https://github.com/HoTT/book/compare) with your suggested change. You can also [open an issue](https://github.com/HoTT/book/issues/new/choose) if you do not have a concrete proposal yet. For further directions about editing the book, see the [guidelines for contributions](https://github.com/HoTT/book/blob/master/CONTRIBUTING.md)
+This book is not a community project, but we do welcome our readers to suggest improvements. The best way to propose an edit is to [open a pull request](https://github.com/HoTT/book/compare) with your suggested change. You can also [open an issue](https://github.com/HoTT/book/issues/new/choose) if you do not have a concrete proposal yet. The issues and the pull requests are dedicated to improvements, questions, and other issues pertaining to the HoTT book itself. General discussions about homotopy type theory and topics related to the wider HoTT community are welcome at the [homotopytypetheory google group](https://groups.google.com/g/homotopytypetheory) or at the [HoTT zulip](https://hott.zulipchat.com). For further directions about editing the book, see the [guidelines for contributions](https://github.com/HoTT/book/blob/master/CONTRIBUTING.md)
 
 ## Code of conduct
 

@@ -80,7 +80,7 @@ It can also be characterized as the initial ordered field.
 \symlabel{positive-rationals}
 \indexdef{rational numbers!positive}%
 \indexdef{positive!rational numbers}%
-Let $\Qp = \setof{ q : \Q | q > 0 }$ be the type of positive rational numbers.
+Finally, we will denote by $\Qp \defeq \setof{ q : \Q | q > 0 }$ the type of positive rational numbers.
 
 \section{Dedekind reals}
 \label{sec:dedekind-reals}
@@ -177,7 +177,8 @@ logical notation from \cref{defn:logical-notation}.
   : \Q \to \Omega$ which is:
   %
   \begin{enumerate}
-  \item \emph{inhabited:} $\exis{q : \Q} L(q)$ and $\exis{r : \Q} U(r)$,
+  \item \label{defn:dedekind-reals-inhabited}
+    \emph{inhabited (i.e., bounded):} $\exis{q : \Q} L(q)$ and $\exis{r : \Q} U(r)$,
   \item \emph{rounded:} for all $q, r : \Q$,
     \index{rounded!Dedekind cut}
     %
@@ -1028,7 +1029,7 @@ Since $A$ is independent of $\RC$, we may assume for simplicity that $\bsim$ dep
 In this case, defining a function $f:\RC\to A$ by $(\RC,\closesym)$-recursion requires the following cases (which we now write using the pattern-matching convention).
 \begin{itemize}
 \item For every $q : \Q$, construct $f(\rcrat(q)) : A$.
-\item For every Cauchy approximation $x : \Qp \to \RC$, construct $f(x) : A$, assuming inductively that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$ and form a ``Cauchy approximation with respect to $\bsim$'', i.e.\ that $\fall{\epsilon,\delta:\Qp} (f(x_\epsilon) \bsim_{\epsilon+\delta} f(x_\delta))$.
+\item For every Cauchy approximation $x : \Qp \to \RC$, construct $f(\rclim(x)) : A$, assuming inductively that $f(x_\epsilon)$ has already been defined for all $\epsilon : \Qp$ and form a ``Cauchy approximation with respect to $\bsim$'', i.e.\ that $\fall{\epsilon,\delta:\Qp} (f(x_\epsilon) \bsim_{\epsilon+\delta} f(x_\delta))$.
 \item Prove that the relations $\bsim$ are \emph{separated}, i.e.\ that, for any $a,b:A$,
   \indexdef{relation!separated family of}%
   \indexdef{separated family of relations}%
@@ -2026,9 +2027,9 @@ Let us show that $[0,1]$ is compact in the first sense.
 \end{thm}
 
 \begin{proof}
-  Given $\epsilon : \Qp$, there is $n : \N$ such that $2/k < \epsilon$, so we may take the
-  $\epsilon$-net $x_i = i/k$ for $i = 0, \ldots, k-1$. This is an $\epsilon$-net because,
-  for every $y : [0,1]$ there merely exists $i$ such that $0 \leq i < k$ and $(i -
+  Given $\epsilon : \Qp$, there is $k : \N$ such that $2/k < \epsilon$, so we may take the
+  $\epsilon$-net $x_i = i/k$ for $i = 0, \ldots, k$. This is an $\epsilon$-net because,
+  for every $y : [0,1]$ there merely exists $i$ such that $0 \leq i \leq k$ and $(i -
   1)/k < y < (i+1)/k$, and so $|y - x_i| < 2/k < \epsilon$.
 
   For completeness of $[0,1]$, consider a Cauchy approximation $x : \Qp \to
@@ -2040,7 +2041,7 @@ Let us show that $[0,1]$ is compact in the first sense.
     r(\ell) =
     r (\lim x) =
     \lim (r \circ x) =
-    r (\lim x) =
+    \lim x =
     \ell,
   \end{equation*}
   %
@@ -2459,7 +2460,7 @@ difference between pointwise and inductive covers is not what they cover but in 
 We could write another book by going on like this, but let us stop here and hope that we
 have provided ample justification for the claim that analysis can be developed in homotopy
 type theory. The curious reader should consult \cref{ex:mean-value-theorem} for
-constructive versions of the mean value theorem.
+constructive versions of the intermediate value theorem.
 
 \index{acceptance|)}
 
@@ -2583,7 +2584,7 @@ There is an unfortunate clash with the standard notation $\setof{x:A | P(x)}$ fo
   If $\Q_D$ denotes the set of dyadic rationals, we define $\iota_{\Q_D}:\Q_D\to\NO$ by induction on $n$:
   \begin{align*}
     \iota_{\Q_D}(a/2^0) &\defeq \iota_\Z(a),\\
-    \iota_{\Q_D}(a/2^n) &\defeq \surr{a/2^n - 1/2^n}{a/2^n + 1/2^n},
+    \iota_{\Q_D}(a/2^n) &\defeq \surr{\iota_{\Q_D}(a/2^n - 1/2^n)}{\iota_{\Q_D}(a/2^n + 1/2^n)},
     \quad \text{for $n>0$.}
   \end{align*}
   Here we use the fact that if $n>0$ and $a$ is odd, then $a/2^n \pm 1/2^n$ is a dyadic rational with a smaller denominator than $a/2^n$.
@@ -3072,7 +3073,8 @@ The \emph{higher} inductive-inductive version presented here, which builds in th
 
 \begin{ex} \label{ex:RD-extended-reals}
   %
-  Suppose we remove the boundedness condition in \cref{defn:dedekind-reals}.
+  Suppose we remove the boundedness condition
+  \ref{defn:dedekind-reals-inhabited} in \cref{defn:dedekind-reals}.
   Then we obtain the \define{extended reals}
   \indexdef{real numbers!extended}%
   \indexdef{extended real numbers}%

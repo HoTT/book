@@ -1,0 +1,65 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  build:
+    name: Build and update nightlies
+    runs-on: ubuntu-latest
+    container: danteev/texlive:latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Fetch all tags for `git describe`
+        run: git fetch --force --prune --unshallow --tags
+
+      - name: Update ./errata.tex
+        # ./mark-errata should only run on the master branch of the main repo.
+        # This job is thus disabled for pull requests and forked repos.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
+        run: |
+          ./mark-errata
+          if ! git diff --quiet -- ./errata.tex; then
+            git config --global user.name "github-actions"
+            git config --global user.email "github-actions@github.com"
+            git add errata.tex
+            git commit -m "Mark Errata (auto)"
+            git push
+          fi
+
+      - name: Generate nightlies
+        run: ./generate-nightlies "./_www_dir/" "./_wiki_dir/"
+
+      - name: Check if errata.tex is clean
+        # Interrupt the uploading if errata.tex somehow is not clean.
+        # This should not happen, but it does not hurt to check.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
+        run: ./check-errata
+
+      - name: Push GitHub pages
+        # This step is disabled for all forked repos. The idea is that the nightlies will
+        # not be useful for most usage of forked repos. However, there are no technical
+        # reasons not to enable it, if one wishes to do so.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          force_orphan: true
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: "./_www_dir/"
+
+      - name: Push GitHub wiki pages
+        # This step would err if the forked repo does not already have wiki pages.
+        # As a workaround, it is disabled for all forked repos.
+        if: ${{ github.repository_owner == 'HoTT' && github.ref == 'refs/heads/master' }}
+        uses: Andrew-Chen-Wang/github-wiki-action@v3
+        env:
+          WIKI_DIR: "./_wiki_dir/"
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_NAME: "github-actions"
+          GH_MAIL: "github-actions@github.com"

@@ -1466,6 +1466,217 @@ from the following computation
   &= (t \circ \tprojf k)(a) \tag{since $g$ is a section of $\lam{s} s\circ f$}\\
   & \equiv t(\tproj ka).
 \end{align*}
+\subsection*{Solution to \cref{ex:categorical-connectedness}}
+
+Let us denote by $\mathsf{isConn}(A)$ the proposition that a type $A$ is connected. It is known that
+\begin{displaymath}
+ \eqv{\mathsf{isConn}(A)}{\brck A \times \prd{x,y:A} \brck {\id[A]xy}}
+\end{displaymath}
+(see \cref{ex:connectivity-inductively}).
+\begin{enumerate}
+ \item Suppose a type $A$ is connected. The goal $\prd{B,C:\type} \isequiv(e_{A,B,C})$ is a mere proposition, so we can assume $a:A$ and $\prd{x,y:A} \brck {x = y}$.
+
+       Let $B,C$ be types.
+       We want to construct $h:(A\to B+C) \to (A\to B)+(A\to C)$ such that
+       $h \circ e_{A,B,C} = \idfunc[(A \to B) + (A \to C)]$ and
+       $e_{A,B,C} \circ h = \idfunc[A \to B + C]$.
+       Let $f:A \to B+C$ be an arbitrary function.
+       Let us define $h(f):(A \to B) + (A \to C)$
+       by case analysis on $f(a):B + C$:
+       \begin{itemize}
+	\item if $f(a) \jdeq \inl(u)$ for some $u:B$:
+	      Let us define $k_1:B+C\to B$ by
+	      \begin{align*}
+	       k_1(\inl(b)) &\defeq b;\\
+	       k_1(\inr(c)) &\defeq u,
+	      \end{align*}
+	      and let $h(f)$ be $\inl(k_1 \circ f)$.
+	\item if $f(a) \jdeq \inr(u)$ for some $u:C$:
+	      Let us define $k_2:B+C\to C$ by
+	      \begin{align*}
+	       k_2(\inl(b)) &\defeq u;\\
+	       k_2(\inr(c)) &\defeq c,
+	      \end{align*}
+	      and let $h(f)$ be $\inr(k_2 \circ f)$.
+       \end{itemize}
+       Let us prove that this $h$ is indeed an inverse of $e_{A,B,C}$.
+       First we prove $e_{A,B,C}(h(f)) = f$ for every $f:A \to B + C$
+       by case analysis on $f(a)$:
+       \begin{enumerate}[label=(\alph*)]
+        \item \label{enum:categorical-connectedness-inl}
+	      if $f(a) \jdeq \inl(u)$ for some $u:B$:
+	      We have $\inl(k_1(f(x))) = f(x)$ for every $x:A$
+	      by case analysis on $f(x)$:
+	      \begin{itemize}
+	       \item if $f(x) \jdeq \inl(v)$ for some $v:B$:
+		     $\inl(k_1(f(x))) = \inl(k_1(\inl(v))) = \inl(v) = f(x)$,
+	       \item if $f(x) \jdeq \inr(v)$ for some $v:C$:
+		     we have $f(a) \neq f(x)$,
+		     which contradicts $\brck {\id[A]{a}{x}}$.
+	      \end{itemize}
+	      Then we have
+	      \begin{displaymath}
+	       e_{A,B,C}(h(f)) = e_{A,B,C}(\inl(k_1 \circ f))
+	       = \lam{x} \inl(k_1(f(x))) = f.
+	      \end{displaymath}
+	\item if $f(a) \jdeq \inr(u)$ for some $u:C$:
+	      Similar to \ref{enum:categorical-connectedness-inl}.
+       \end{enumerate}
+       Next we prove $h(e_{A,B,C}(f)) = f$ for every $f:(A \to B) + (A \to C)$
+       by case analysis on $f$:
+       \begin{enumerate}[label=(\alph*)]
+        \item if $f \jdeq \inl(g)$ for some $g: A \to B$:
+	      \begin{displaymath}
+	       h(e_{A,B,C}(f)) = h(e_{A,B,C}(\inl(g))) = h(\lam{x} \inl(g(x)))
+	       = \inl(\lam{x} g(x)) = f,
+	      \end{displaymath}
+	\item if $f \jdeq \inr(g)$ for some $g: A \to C$:
+	      \begin{displaymath}
+	       h(e_{A,B,C}(f)) = h(e_{A,B,C}(\inr(g))) = h(\lam{x} \inr(g(x)))
+	       = \inr(\lam{x} g(x)) = f.
+	      \end{displaymath}
+       \end{enumerate}
+       Therefore we have $\isequiv(e_{A,B,C})$.
+ \item (Categorical connectedness to $\mathsf{isConn}$ implies $\LEM{}$):
+       Assume for every type $A$,
+       \begin{displaymath}
+	\Parens{\prd{B,C:\type}\isequiv(e_{A,B,C})} \to \mathsf{isConn}(A).
+       \end{displaymath}
+       Assuming $\neg \neg P$ for a mere proposition $P$, we want to prove $P$.
+       Let us define $A \defeq \susp P$.
+       Since $P \eqvsym (\id[\susp P]{\north}{\south}) \eqvsym \brck {\id[\susp P]{\north}{\south}}$ (by \cref{prop:trunc_of_prop_is_set}
+       and since $P$ is a mere proposition) and $\mathsf{isConn}(\susp P)$ implies $\brck {\id[\susp P]{\north}{\south}}$ (by \cref{ex:connectivity-inductively}),
+       it suffices to prove $\prd{B,C:\type}\isequiv(e_{\susp P,B,C})$.
+
+       Before proving this, we prove that
+       \begin{equation}
+	\label{lem:cat-conn-neg-neg-eq-xy}
+	\prd{x, y:\susp P} \neg \neg (x =_{\susp P} y)
+       \end{equation}
+       by case analysis on $x$ and $y$:
+       \begin{enumerate}[label=(\alph*)]
+	\item if $x \jdeq \north$:
+	      \begin{itemize}
+	       \item if $y \jdeq \north$: $\lam{k} k(\refl{\north})$ has type
+		     $\neg \neg (\north = \north)$.
+	       \item if $y \jdeq \south$:
+		     $\neg \neg (\north = \south)$ is equivalent to
+		     $\neg \neg P$, so it is inhabited.
+	       \item if $y$ varies on $\merid(p)$ for some $p: P$: Since
+		     $\neg \neg (\north =_{\susp P} y)$ is a mere proposition
+		     for every $y$ (see \cref{thm:isprop-forall}),
+		     we do not need to consider this case.
+	      \end{itemize}
+	      \label{enum:categorical-connectedness-north}
+	\item if $x \jdeq \south$:
+	      Similar to \ref{enum:categorical-connectedness-north}.
+	\item if $x$ varies on $\merid(p)$ for some $p: P$:
+	      Since $\prd{y:\susp P} \neg \neg (x =_{\susp P} y)$
+	      is a mere proposition for every $x$,
+	      we do not need to consider this case.
+       \end{enumerate}
+
+       Let us prove $\prd{B,C:\type}\isequiv(e_{\susp P,B,C})$.
+       Let $B, C$ be types.
+       We want to construct
+       $h:(\susp P\to B+C) \to (\susp P \to B)+(\susp P\to C)$ such that
+       $h \circ e_{\susp P,B,C} = \idfunc[(\susp P\to B) + (\susp P\to C)]$ and
+       $e_{\susp P,B,C} \circ h = \idfunc[\susp P\to B + C]$.
+
+       Let $f:\susp P\to B+C$ be an arbitrary function.
+       Let us define $h(f):(\susp P\to B) + (\susp P\to C)$
+       by case analysis on $(f(\north), f(\south)):(B + C) \times (B + C)$:
+       \begin{itemize}
+	\item if $(f(\north), f(\south)) \jdeq (\inl(u_1), \inl(u_2))$
+	      for some $u_1, u_2:B$:
+	      Let us define $k_1:B+C\to B$ by
+	      \begin{align*}
+	       k_1(\inl(b)) &\defeq b;\\
+	       k_1(\inr(c)) &\defeq u_1,
+	      \end{align*}
+	      and let $h(f)$ be $\inl(k_1 \circ f)$.
+	\item if $(f(\north), f(\south)) \jdeq (\inr(u_1), \inr(u_2))$
+	      for some $u_1, u_2:C$:
+	      Let us define $k_2:B+C\to C$ by
+	      \begin{align*}
+	       k_2(\inl(b)) &\defeq u_1;\\
+	       k_2(\inr(c)) &\defeq c,
+	      \end{align*}
+	      and let $h(f)$ be $\inl(k_2 \circ f)$.
+	\item if $(f(\north), f(\south)) \jdeq (\inl(u), \inr(v))$
+	      for some $u: B, v:C$: This case is impossible.
+	      $f(\north) \neq f(\south)$ implies $\north \neq \south$,
+	      which contradicts \eqref{lem:cat-conn-neg-neg-eq-xy}.
+	\item if $(f(\north), f(\south)) \jdeq (\inr(u), \inl(v))$
+	      for some $u: C, v:B$: This case is also impossible.
+       \end{itemize}
+       Let us prove that this $h$ is indeed an inverse of $e_{\susp P,B,C}$.
+       First we prove $e_{\susp P,B,C}(h(f)) = f$ for every $f:\susp P\to B+C$.
+       It is done by case analysis on
+       $(f(\north), f(\south)):(B + C) \times (B + C)$:
+       \begin{enumerate}[label=(\alph*)]
+        \item if $(f(\north), f(\south)) \jdeq (\inl(u_1), \inl(u_2))$
+	      for some $u_1, u_2:B$:
+	      We have $\inl(k_1(f(x))) = f(x)$ for every $x:\susp P$
+	      by case analysis on $f(x)$:
+	      \begin{itemize}
+	       \item if $f(x) \jdeq \inl(v)$ for some $v:B$:
+		     $\inl(k_1(f(x))) = \inl(k_1(\inl(v))) = \inl(v) = f(x)$,
+	       \item if $f(x) \jdeq \inr(v)$ for some $v:C$:
+		     we have $f(\north) \neq f(x)$ and hence $\north \neq x$,
+		     which contradicts \eqref{lem:cat-conn-neg-neg-eq-xy}.
+	      \end{itemize}
+	      Then we have
+	      \begin{displaymath}
+	       e_{\susp P,B,C}(h(f)) = e_{\susp P,B,C}(\inl(k_1 \circ f))
+	       = \lam{x} \inl(k_1(f(x))) = f.
+	      \end{displaymath}
+	      \label{enum:inl-inl}
+	\item if $(f(\north), f(\south)) \jdeq (\inr(u_1), \inr(u_2))$
+	      for some $u_1, u_2:C$: Similar to \ref{enum:inl-inl}.
+       \end{enumerate}
+       Next we prove $h(e_{\susp P,B,C}(f)) = f$
+       for every $f:(\susp P\to B) + (\susp P\to C)$
+       by case analysis on $f$:
+       \begin{enumerate}
+        \item if $f \jdeq \inl(g)$ for some $g: \susp P\to B$:
+	      \begin{displaymath}
+	       h(e_{\susp P,B,C}(f)) = h(e_{\susp P,B,C}(\inl(g)))
+	       = h(\lam{x} \inl(g(x)))
+	       = \inl(\lam{x} g(x)) = f,
+	      \end{displaymath}
+	\item if $f \jdeq \inr(g)$ for some $g: \susp P\to C$:
+	      \begin{displaymath}
+	       h(e_{\susp P,B,C}(f)) = h(e_{\susp P,B,C}(\inr(g)))
+	       = h(\lam{x} \inr(g(x)))
+	       = \inr(\lam{x} g(x)) = f.
+	      \end{displaymath}
+       \end{enumerate}
+       Therefore we have $\isequiv(e_{\susp P,B,C})$.
+
+       ($\LEM{}$ implies categorical connectedness to $\mathsf{isConn}$):
+       Assume $\LEM{}$, $A:\type$ and
+       \begin{displaymath}
+        \prd{B,C:\type} \isequiv(e_{A,B,C}).
+       \end{displaymath}
+We need to prove $\mathsf{isConn}(A)$.
+       By $\LEM{}$ we have $\brck A$, because if $\neg \brck A$ we have $\eqv{A}{\emptyt}$ and $\eqv{\unit + \unit}{\unit}$, which is not the case.
+       Also by $\LEM{}$, for every $x,y:A$ we have $\brck {x = y} + \neg \brck {x = y}$. So if we fix $x:A$ we have a function $f_x:A \to \unit + \unit$ such that
+       \begin{displaymath}
+	f_x(y) \defeq \begin{cases}
+		     \inl(\ttt) & \mbox{if } \brck {x = y} \\
+		     \inr(\ttt) & \mbox{if } \neg \brck {x = y}
+		    \end{cases}
+       \end{displaymath}
+       Applying the assumption to $f_x$, we obtain
+       \begin{displaymath}
+	\inv{e_{A,\unit,\unit}}(f_x): (A \to \unit) + (A \to \unit)
+       \end{displaymath}
+       but by definition of $e$ and because $f_x(x) = \inl(\ttt)$,
+       it must be equal to $\inl(\lam{y} \ttt): (A \to \unit) + (A \to \unit)$,
+       which means we have $\prd{y:A} \brck {x = y}$.
+\end{enumerate}
+
 
 \section*{Exercises from \cref{cha:homotopy}}
 

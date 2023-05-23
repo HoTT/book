@@ -276,7 +276,7 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
 \begin{lem}\label{lem:concat}
   For every type $A$ and every $x,y,z:A$ there is a function
   \begin{equation*}
-  (x= y) \to   (y= z)\to (x=  z)
+  (x= y) \to   (y= z)\to (x=  z),
   \end{equation*}
   written $p \mapsto q \mapsto p\ct q$, such that $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
   We call $p\ct q$ the \define{concatenation} or \define{composite} of $p$ and $q$.
@@ -288,7 +288,11 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   \index{transitivity!of equality}%
 \end{lem}
 
+Note that we choose to notate path concatenation in the opposite order from function composition: from $p:x=y$ and $q:y=z$ we get $p\ct q : x=z$, whereas from $f:A\to B$ and $g:B\to C$ we get $g\circ f : A\to C$ (see \cref{ex:composition}).
+
 \begin{proof}[First proof]
+  The desired function has type $\prd{x,y,z:A} (x= y) \to   (y= z)\to (x=  z)$.
+  We will instead define a function with the equivalent type $\prd{x,y:A} (x= y) \to \prd{z:A} (y= z)\to (x=  z)$, which allows us to apply path induction twice.
   Let $D:\prd{x,y:A} (x=y) \to \type$ be the type family
   \begin{equation*}
     D(x,y,p)\defeq \prd{z:A}{q:y=z} (x=z).
@@ -313,8 +317,9 @@ Next we prove the transitivity of equality, or equivalently we ``concatenate pat
   But $E(x,z,q)\jdeq (x=z)$, so the type of $d$ is~\eqref{eq:concatD}.
   Thus, we can use this function $d$ and apply the induction principle for identity types to $D$, to obtain our desired function of type
   \begin{equation*}
-    \prd{x,y,z:A} (y=z) \to (x=y) \to (x=z).
+    \prd{x,y:A} (x= y) \to \prd{z:A} (y= z)\to (x=  z)
   \end{equation*}
+  and hence $\prd{x,y,z:A} (y=z) \to (x=y) \to (x=z)$.
   The conversion rules for the two induction principles give us $\refl{x}\ct \refl{x}\jdeq \refl{x}$ for any $x:A$.
 \end{proof}
 
@@ -438,25 +443,25 @@ It is a familiar fact in topology that when we concatenate a path $p$ with the r
 
     \mentalpause
 
-    \noindent \emph{Second proof} By induction, it suffices to assume $p$ is $\refl x$.
+    \noindent \emph{Second proof:} by induction, it suffices to assume $p$ is $\refl x$.
     But in this case, we have $\opp{p} \ct p \jdeq \opp{\refl x} \ct \refl x \jdeq \refl x$.
 
   \item \emph{First proof:} let $D:\prd{x,y:A} (x=y) \to \type$ be the type family given by
     \begin{equation*}
-      D(x,y,p)\defeq (\opp{\opp{p}}= p).
+      D(x,y,p)\defeq (\opp{(\opp{p})}= p).
     \end{equation*}
-    Then $D(x,x,\refl{x})$ is the type $(\opp{\opp{\refl x}}=\refl{x})$.
-    But since $\opp{\refl{x}}\jdeq \refl{x}$ for each $x:A$, we have $\opp{\opp{\refl{x}}}\jdeq \opp{\refl{x}} \jdeq\refl{x}$, and thus $D(x,x,\refl{x})\jdeq(\refl{x}=\refl{x})$.
+    Then $D(x,x,\refl{x})$ is the type $(\opp{(\opp{\refl x})}=\refl{x})$.
+    But since $\opp{\refl{x}}\jdeq \refl{x}$ for each $x:A$, we have $\opp{(\opp{\refl{x}})}\jdeq \opp{\refl{x}} \jdeq\refl{x}$, and thus $D(x,x,\refl{x})\jdeq(\refl{x}=\refl{x})$.
     Hence we find the function
     \begin{equation*}
       d\defeq\lam{x} \refl{\refl{x}}:\prd{x:A} D(x,x,\refl{x}).
     \end{equation*}
-    Now path induction gives an element $\indid{A}(D,d,x,y,p):\opp{\opp{p}}= p$ for each $p:x= y$.
+    Now path induction gives an element $\indid{A}(D,d,x,y,p):\opp{(\opp{p})}= p$ for each $p:x= y$.
 
     \mentalpause
 
     \noindent \emph{Second proof:} by induction, it suffices to assume $p$ is $\refl x$.
-    But in this case, we have $\opp{\opp{p}}\jdeq \opp{\opp{\refl x}} \jdeq \refl x$.
+    But in this case, we have $\opp{(\opp{p})}\jdeq \opp{(\opp{\refl x})} \jdeq \refl x$.
 
   \item \emph{First proof:} let $D_1:\prd{x,y:A} (x=y) \to \type$ be the type family given by
     \begin{equation*}
@@ -749,8 +754,8 @@ Since \emph{dependently typed} functions are essential in type theory, we will a
 However, this is not quite so simple to state, because if $f:\prd{x:A} B(x)$ and $p:x=y$, then $f(x):B(x)$ and $f(y):B(y)$ are elements of distinct types, so that \emph{a priori} we cannot even ask whether they are equal.
 The missing ingredient is that $p$ itself gives us a way to relate the types $B(x)$ and $B(y)$.
 
-We have already seen this in \autoref{sec:identity-types}, where we called it ``indiscernability of identicals''.
-\index{indiscernability of identicals}%
+We have already seen this in \autoref{sec:identity-types}, where we called it ``indiscernibility of identicals''.
+\index{indiscernibility of identicals}%
 We now introduce a different name and notation for it that we will use from now on.
 
 \begin{lem}[Transport]\label{lem:transport}
@@ -784,7 +789,7 @@ In fact, we will see later on that if $x=y$ then actually $P(x)$ and $P(y)$ are 
 Topologically, the transportation lemma can be viewed as a ``path lifting'' operation in a fibration.
 \index{fibration}%
 \indexdef{total!space}%
-We think of a type family $P:A\to \type$ as a \emph{fibration} with base space $A$, with $P(x)$ being the fiber over $x$, and with $\sm{x:A}P(x)$ being the \define{total space} of the fibration, with first projection $\sm{x:A}P(x)\to A$.
+We think of a type family $P:A\to \type$ as a \emph{fibration} with base space $A$, with $P(x)$ being the fiber over $x$, and with $\sm{x:A}P(x)$ being the \define{total space} of the fibration, with first projection $\sm{x:A}(P(x))\to A$.
 The defining property of a fibration is that given a path $p:x=y$ in the base space $A$ and a point $u:P(x)$ in the fiber over $x$, we may lift the path $p$ to a path in the total space starting at $u$ (and this lifting can be done continuously).
 The point $\trans p u$ can be thought of as the other endpoint of this lifted path.
 We can also define the path itself in type theory:
@@ -1138,7 +1143,7 @@ We can show~\ref{item:be1} and~\ref{item:be2} for this definition now.
 A function $\qinv(f) \to \isequiv (f)$ is easy to define by taking $(g,\alpha,\beta)$ to $(g,\alpha,g,\beta)$.
 In the other direction, given $(g,\alpha,h,\beta)$, let $\gamma$ be the composite homotopy
 \[ g \overset{\beta}{\htpy} h\circ f\circ g \overset{\alpha}{\htpy} h, \]
-meaning that $\gamma(x) \defeq \beta(g(x)) \ct \ap{h}{\alpha(x)}$.
+meaning that $\gamma(x) \defeq \opp{\beta(g(x))} \ct \ap{h}{\alpha(x)}$.
 Now define $\beta':g\circ f\htpy \idfunc[A]$ by $\beta'(x) \defeq \gamma(f(x)) \ct \beta(x)$.
 Then $(g,\alpha,\beta'):\qinv(f)$.
 
@@ -1609,7 +1614,7 @@ and a propositional uniqueness principle\index{uniqueness!principle!for identiti
 \id{p}{\funext (x \mapsto \happly(p,{x}))} \qquad\text{for } p: \id f g.
 \]
 
-We can also compute the identity, inverses, and composition in $\Pi$-types; they are simply given by pointwise operations:\index{pointwise!operations on functions}.
+We can also compute the identity, inverses, and composition in $\Pi$-types; they are simply given by pointwise operations:\index{pointwise!operations on functions}
 \begin{align*}
 \refl{f} &= \funext(x \mapsto \refl{f(x)}) \\
 \opp{\alpha} &= \funext (x \mapsto \opp{\happly (\alpha,x)})  \\
@@ -2005,7 +2010,7 @@ We can now show:
     &\jdeq \decode(\inl(a_0),\encode(\inl(a_0),\refl{\inl(a_0)}))\\
     &\jdeq \decode(\inl(a_0),\transfib{\code}{\refl{\inl(a_0)}}{\refl{a_0}})\\
     &\jdeq \decode(\inl(a_0),\refl{a_0})\\
-    &\jdeq \ap{\inl}{\refl{a_0}}\\
+    &\jdeq \apfunc{\inl}(\refl{a_0})\\
     &\jdeq \refl{\inl(a_0)}\\
     &\jdeq p.
   \end{align*}
@@ -2091,6 +2096,7 @@ We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
   We define
   \[ \encode : \prd{m,n:\N} (m=n) \to \code(m,n) \]
   by transporting, $\encode(m,n,p) \defeq \transfib{\code(m,{\blank})}{p}{r(m)}$.
+  (We could also define $\encode$ directly by path induction, but the definition in terms of transport often makes subsequent computations easier.)
   And we define
   \[ \decode : \prd{m,n:\N} \code(m,n) \to (m=n) \]
   by double induction on $m,n$.
@@ -2132,6 +2138,7 @@ We also define by recursion a dependent function $r:\prd{n:\N} \code(n,n)$, with
   \end{aligned}
   \end{multline*}
   using the inductive hypothesis.
+  (In fact this proof is longer than necessary; see \cref{ex:n-set}.)
 \end{proof}
 
 In particular, we have
@@ -2200,7 +2207,7 @@ is a type together with such a structure:
 \end{defn}
 
 \noindent
-In the next two sections, we describe two ways in which univalence makes
+In the next two subsections, we describe two ways in which univalence makes
 it easier to work with such semigroups.
 
 \subsection{Lifting equivalences}
@@ -2314,9 +2321,9 @@ By univalence, $p_1$ is $\ua(e)$ for some equivalence $e$. By
 \cref{thm:path-sigma}, function extensionality, and the above analysis of
 transport in the type family $\semigroupstrsym$, $p_2$ is equivalent to a pair
 of proofs, the first of which shows that
-\begin{equation*} \label{eq:equality-semigroup-mult}
+\begin{equation} \label{eq:equality-semigroup-mult}
 \prd{y_1,y_2:B} e(m(\opp{e}(y_1), \opp{e}(y_2))) = m'(y_1,y_2)
-\end{equation*}
+\end{equation}
 and the second of which shows that $a'$ is equal to the induced
 associativity proof constructed from $a$ in
 \eqref{eq:transport-semigroup-assoc}.  But by cancellation of inverses
@@ -2489,7 +2496,7 @@ Some more general homotopy limits can be constructed in a similar way, but for c
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 \sectionNotes
 
-The definition of identity types, with their induction principle, is due to Martin-L\"of \cite{Martin-Lof-1972}.
+The definition of identity types, with their induction principle, is due to Martin-L\"of \cite{Martin-Lof-1973}.
 \index{intensional type theory}%
 \index{extensional!type theory}%
 \index{type theory!intensional}%

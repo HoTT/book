@@ -197,7 +197,7 @@ We can now generalize our observations in \cref{cha:basics} that $\isset(A)$ and
  This is \cref{thm:isprop-iscontr}.
 
 For the inductive step we need to show
-\[\prd{X : \type} \isprop (\istype{n}(X)) \to \prd{X : \type} \isprop (\istype{\nplusone}(X)) \]
+\[\prd{X : \type} \isprop (\istype{n}(X)) \to \prd{X : \type} \isprop (\istype{\nplusone}(X)). \]
 To show the conclusion of this implication, we need to show that for any type $X$, the type
 \[\prd{x, x' : X}\istype{n}(x = x')\]
 is a mere proposition. By \cref{thm:isprop-forall} or \cref{thm:hlevel-prod}, it suffices to show that for any $x, x' : X$, the type $\istype{n}(x =_X x')$ is a mere
@@ -208,7 +208,7 @@ But this follows from the inductive hypothesis applied to the type $(x =_X x')$.
 Finally, we show that the type of $n$-types is itself an $\nplusone$-type.
 We define this to be:
 \symlabel{universe-of-ntypes}
-\[\ntype{n} \defeq \sm{X : \type} \istype{n}(X) \]
+\[\ntype{n} \defeq \sm{X : \type} \istype{n}(X). \]
 If necessary, we may specify the universe $\UU$ by writing $\ntypeU{n}$.
 In particular, we have $\prop \defeq \ntype{(-1)}$ and $\set \defeq \ntype{0}$, as defined in \cref{cha:basics}.
 Note that just as for \prop and \set, because $\istype{n}(X)$ is a mere proposition, by \cref{thm:path-subset} for any $(X,p), (X',p'):\ntype{n}$ we have
@@ -286,7 +286,7 @@ is a set.
 
   Firstly, for any $x:X$ and $p:\id[X]xx$, consider $\apdfunc{f(x)}(p)$.
   This is a dependent path from $f(x,x)$ to itself.
-  Since $f(x,x)$ is still a function $R(x,x) \to (\id[X]xy)$, by \cref{thm:dpath-arrow} this yields for any $r:R(x,x)$ a path
+  Since $f(x,x)$ is still a function $R(x,x) \to (\id[X]xx)$, by \cref{thm:dpath-arrow} this yields for any $r:R(x,x)$ a path
   \[\trans{p}{f(x,x,r)} = f(x,x,\trans{p}r).
   \]
   On the left-hand side, we have transport in an identity type, which is concatenation.
@@ -700,21 +700,23 @@ definition as before.
   To show that the composite
   \[ (u=_{\trunc{n+1}A}v) \xrightarrow{\encode} P(u,v) \xrightarrow{\decode} (u=_{\trunc{n+1}A}v) \]
   is the identity function, by path induction it suffices to check it for $\refl u : u=u$, in which case what we need to know is that
-$\encode(r(u)) = \refl{u}$.
-  But since this is an $n$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition
-of $r$ and $\encode$.
+$\decode(r(u)) = \refl{u}$.
+  But since this is an $(n-1)$-type, hence also an $(n+1)$-type, we may assume $u\jdeq \tproj {n+1} x$, in which case it follows by definition
+of $r$ and $\decode$.
   Finally, to show that
   \[ P(u,v) \xrightarrow{\decode} (u=_{\trunc{n+1}A}v) \xrightarrow{\encode} P(u,v) \]
-  is the identity function, since this goal is again an $n$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are
+  is the identity function, since this goal is again an $(n-1)$-type, we may assume that $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$ and that we are
 considering $\tproj n p:P(\tproj{n+1}x,\tproj{n+1}y)$ for some $p:x=y$.
   Then we have
   \begin{align*}
     \encode(\decode(\tproj n p)) &= \encode(\apfunc{\tprojf{n+1}}(p))\\
     &= \transfib{v\mapsto P(\tproj{n+1}x,v)}{\apfunc{\tprojf{n+1}}(p)}{\tproj n {\refl x}}\\
-    &= \transfib{v\mapsto \trunc n{u=v}}{p}{\tproj n {\refl x}}\\
-    &= \tproj n {\transfib{v \mapsto (u=v)}{p}{\refl x}}\\
-    &= \tproj n p.
+    &= \transfib{y\mapsto \trunc n{x=y}}{p}{\tproj n {\refl x}}\\
+    &= \tproj n {\transfib{y \mapsto (x=y)}{p}{\refl x}}\\
+    &= \tproj n p,
   \end{align*}
+  using \cref{thm:transport-compose,thm:ap-transport}.
+  (Alternatively, we could do path induction on $p$; the desired equality would then hold judgmentally.)
   This completes the proof that \decode and \encode are quasi-inverses.
   The stated result is then the special case where $u=\tproj {n+1}x$ and $v=\tproj {n+1}y$.
 \end{proof}
@@ -805,7 +807,7 @@ For instance, given $D,E$ % $D,E:\P$
 and a map $t:D\to{}E$, there is a map
   \[\function{\cocone{\Ddiag}{D}}{\cocone{\Ddiag}{E}}{c}{\composecocone{t}c}\]
   defined by:
-  \[\composecocone{t}(i,j,h)=(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h)\]
+  \[\composecocone{t}(i,j,h)=(t\circ{}i,t\circ{}j,\mapfunc{t}\circ{}h).\]
 And given $D,E,F$, %$:\P$,
 functions $t:D\to{}E$, $u:E\to{}F$ and $c:\cocone{\Ddiag}{D}$, we have
 \begin{align}
@@ -1327,7 +1329,7 @@ To define the map from right to left, by the universal property of
 truncations, it suffices to give a map $\mathsf{back} : B \to {\trunc{n}{A}}$.  We can
 define this map as follows:
 \[
-\mathsf{back}(y) \defeq \trunc{n}{\proj{1}}{(\proj{1}{(c(y))})}
+\mathsf{back}(y) \defeq \trunc{n}{\proj{1}}{(\proj{1}{(c(y))})}.
 \]
 By definition, $c(y)$ has type $\iscontr(\trunc n {\hfiber{f}y})$, so its
 first component has type $\trunc n{\hfiber{f}y}$, and we can obtain an
@@ -1339,19 +1341,19 @@ cover the case of the constructor $\tprojf{n}$.
 
 In one direction, we must show that for all $x:A$,
 \[
-\trunc{n}{\proj{1}}{(\proj{1}{(c(f(x)))})} = \tproj{n}{x}
+\trunc{n}{\proj{1}}{(\proj{1}{(c(f(x)))})} = \tproj{n}{x}.
 \]
 But $\tproj{n}{(x, \refl{f(x)})} : \trunc n{\hfiber{f}{f(x)}}$, and
 $c(f(x))$ says that this type is contractible, so
 \[
-\proj{1}{(c(f(x)))} = \tproj{n}{(x, \refl{})}
+\proj{1}{(c(f(x)))} = \tproj{n}{(x, \refl{})}.
 \]
 Applying $\trunc{n}{\proj{1}}$ to both sides of this equation gives the
 result.
 
 In the other direction, we must show that for all $y:B$,
 \[
-\trunc{n}{f}(\trunc{n}{\proj{1}} (\proj{1}{(c(y))})) = \tproj{n}{y}
+\trunc{n}{f}(\trunc{n}{\proj{1}} (\proj{1}{(c(y))})) = \tproj{n}{y}.
 \]
 $\proj{1}{(c(y))}$ has type $\trunc n {\hfiber{f}y}$, and the path we
 want is essentially the second component of the $\hfiber{f}y$, but we
@@ -1509,7 +1511,7 @@ Combining \cref{prop:to_image_is_connected,prop:factor_equiv_fiber}, we have the
 \begin{thm}\label{thm:orth-fact}
 For each $f:A\to B$, the space $\fact_n(f)$ defined by
 \begin{equation*}
-\sm{X:\type}{g:A\to X}{h:X\to B} (h\circ g\htpy f)\times\mathsf{conn}_n(g)\times\mathsf{trunc}_n(h).
+\sm{X:\type}{g:A\to X}{h:X\to B} (h\circ g\htpy f)\times\mathsf{conn}_n(g)\times\mathsf{trunc}_n(h)
 \end{equation*}
 is contractible.
 Its center of contraction is the element
@@ -1856,7 +1858,7 @@ By assumption, each $B(z)$ is modal, and hence each type $s(z)= R^\modal_X(s\cir
 is also modal.
 Thus, it suffices to find a function of type
 \begin{equation*}
-\prd{a:A}s(\mreturn^\modal_A(a))= \ind{\modal}(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a)).
+\prd{a:A}s(\mreturn^\modal_A(a))= \ind{\modal}(s\circ \mreturn^\modal_A)(\mreturn^\modal_A(a))
 \end{equation*}
 which follows from \cref{defn:modality}\ref{item:modal3}.
 \end{proof}
@@ -1927,7 +1929,7 @@ Sometimes there are ways around this (see e.g.~\cite{QGFTinCHoTT12}), but for si
 
 On the computational side, monads (and hence modalities\index{modality}) are used to model computational effects in functional programming~\cite{Moggi89}.%
 \index{programming}%
-\index{computational effect}%
+\index{computational effect}
 A computation is said to be \emph{pure} if its execution results in no side effects (such as printing a message to the screen, playing music, or sending data over the Internet).
 There exist ``purely functional'' programming languages, such as Haskell\index{Haskell}, in which it is technically only possible to write pure functions: side effects are represented by applying ``monads'' to output types.
 For instance, a function of type $\mathsf{Int}\to\mathsf{Int}$ is pure, while a function of type $\mathsf{Int}\to \mathsf{IO}(\mathsf{Int})$ may perform input and output along the way to computing its result; the operation $\mathsf{IO}$ is a monad.
@@ -2114,6 +2116,21 @@ The modalities we have considered in this chapter are all idempotent, whereas th
 
 \begin{ex}\label{ex:is-conn-trunc-functor}
   Show that if $f : A \to B$ is $n$-connected, then $\trunc kf : \trunc kA \to \trunc kB$ is also $n$-connected.
+\end{ex}
+
+\begin{ex}\label{ex:categorical-connectedness}
+  We say a type $A$ is \define{categorically connected}
+  \indexdef{connected!categorically} if for every types $B, C$ the canonical map
+  $e_{A, B, C}:((A\to B) + (A\to C)) \to (A \to B + C)$ defined by
+  \begin{align*}
+    e_{A,B,C}(\inl(g)) &\defeq \lam{x} \inl(g(x)),\\
+    e_{A,B,C}(\inr(g)) &\defeq \lam{x} \inr(g(x))
+  \end{align*}
+  is an equivalence.
+  \begin{enumerate}
+  \item Show that any connected type is categorically connected.
+  \item Show that all categorically connected types are connected if and only if $\LEM{}$ holds. (Hint: consider $A \defeq \Sigma P$ such that $\neg \neg P$ holds.)
+  \end{enumerate}
 \end{ex}
 
 %%% Local Variables:

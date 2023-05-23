@@ -32,17 +32,25 @@ code. Also, the file `version.tex` is generated on the fly, so you will need the
 
 * `make hott-online.pdf` -- the book appropriate for online reading, with colors and green links
 * `make hott-ebook.pdf` -- the book with small margins, suitable for ebook readers
-* `make hott-letter.pdf hott-cover.pdf` -- the book in black & white, letter paper format,
+* `make hott-ebook-wide.pdf` -- the book with small margins, suitable for ebook readers, wider page
+* `make hott-ebook-narrow.pdf` -- the book with small margins, suitable for ebook readers, narrower page
+* `make hott-letter.pdf cover-letter.pdf` -- the book in black & white, letter paper format,
    for printing at home, as well as a color cover (just two pages)
-*  make hott-letter-exercises.pdf -- the book in black & white, letter paper format, but with exercises one-per-page
-* `make hott-a4.pdf hott-a4.pdf` -- the book in black & white, A4 paper format,
+* `make hott-a4.pdf cover-a4.pdf` -- the book in black & white, A4 paper format,
    for printing at home, as well as a color cover (just two pages)
-*  make hott-a4-exercises.pdf -- the book in black & white, A4 paper format, but with exercises one-per-page
+* `make hott-arxiv.pdf` -- the version that is uploaded to arXiv
+* `make hott-letter-exercises.pdf` -- the book in black & white, letter paper format, but with exercises one-per-page
+* `make hott-a4-exercises.pdf` -- the book in black & white, A4 paper format, but with exercises one-per-page
 * `make hott-ustrade.pdf cover-lulu-hardcover.pdf cover-lulu-paperback.pdf` --
    the book in US Trade format, without cover, used for the bound copy available
    at http://lulu.com/
-* `make exercise_solutions.pdf` -- compile (some) solutions to exercises
-* `make errata.pdf` -- Errata for the HoTT Book, first edition
+* `make exercise_solutions.pdf` -- (some) solutions to exercises
+* `make errata.pdf` -- errata for the HoTT Book, first edition
+
+Note: once `make` is run so that `version.tex` is generated, you need not run `make` every time you make
+a change to the source file. You can just perform the usual LaTeX cycle from your favorite editor.
+
+#### Compiling without `make`
 
 If you do not have `make` (for example, because you are on MacOS and you did not
 install the XCode command-line utilities), you can still fake it as follows.
@@ -54,5 +62,3 @@ replaced with your name):
 Then use whatever tools you normally do to compile LaTeX. The main LaTeX files are called 
 `hott-XXX.tex`. But you really should have `make`, you know.
 
-Once `make` is run so that `version.tex` gets generated, you need not run
-`make` again. You can just perform the usual LaTeX cycle from your favorite editor.

@@ -14,6 +14,14 @@ Compiled and printed versions of the book are available at the
 and nightly builds are available on the
 [github wiki](https://github.com/HoTT/book/wiki/Nightly-Builds).
 
+## Editing the book
+
+This book is not a community project, but we do welcome our readers to suggest improvements. The best way to propose an edit is to [open a pull request](https://github.com/HoTT/book/compare) with your suggested change. You can also [open an issue](https://github.com/HoTT/book/issues/new/choose) if you do not have a concrete proposal yet. The issues and the pull requests are dedicated to improvements, questions, and other issues pertaining to the HoTT book itself. General discussions about homotopy type theory and topics related to the wider HoTT community are welcome at the [homotopytypetheory google group](https://groups.google.com/g/homotopytypetheory) or at the [HoTT zulip](https://hott.zulipchat.com). For further directions about editing the book, see the [guidelines for contributions](https://github.com/HoTT/book/blob/master/CONTRIBUTING.md)
+
+## Code of conduct
+
+For many, the HoTT book is their introduction to our subject and our diverse community, including people from any nationality, gender identity, sexual orientation, race, color, ability, and background. In order to ensure for everyone a welcoming and inclusive environment in our discussions, we follow the guidelines of the [GitHub code of conduct](https://docs.github.com/en/site-policy/github-terms/github-community-forum-code-of-conduct). You can expect from the authors and any participant that we are kind and respectful in discussions, that we use inclusive language, and that we do our best to understand each other's different perspectives. It might not always be that we accept the change in the way you proposed it, but we always value your input, regardless of your level of experience or status within the community.
+
 ## Prerequisites and compilation
 
 To compile the book for yourself you need a fairly new version of LaTeX.

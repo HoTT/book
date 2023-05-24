@@ -239,7 +239,146 @@ It remains to verify that $\ind{A \times B}'(C, g, x)$ behaves as expected:
 %
 Now for $\Sigma$-types the exact same expressions work as well, except that the types change.
 
+\section*{Exercises from \cref{cha:basics}}
+
+\subsection*{Solution to \cref{ex:npaths}}
+
+In general, when defining an ``$n$-foo'', one should ensure that a ``$1$-foo''
+is just a ``foo'' (e.g.\ a 1-category is just a category). In this case, a
+$1$-path in some type $A$ should just be a path, that is, an equality $\id[A]
+xy$ between some elements $x,y:A$. Then a 0-path should probably be an
+element of $A$. We also know that a $2$-path, or homotopy, is a pair of
+$1$-paths and an equality between them. Our definition should extrapolate from
+this pattern. 
+
+Define $C\defeq \lam{n}\type\to\type$. By the induction principle for $\nat$, it
+suffices to give terms
+\begin{gather*}
+  c_0 : \type\to\type \\
+  c_s : \prd{n:\nat}\prd{f:\type\to\type}\type\to\type
+\end{gather*}
+Define these by
+\begin{align*}
+  c_0 &\defeq \idfunc[\type] \\
+  c_s(n,f,A) &\defeq \sm{x,y:f(A)}\id[]xy
+\end{align*}
+That is to say, an $(n+1)$-dimensional path should be a pair of $n$-dimensional
+paths, together with a path between them. More concisely:
+\begin{gather*}
+  \operatorname{npath} : \nat\to\type\to\type \\
+  \operatorname{npath} \defeq \ind{\nat}\Parens{\lam{n}\type\to\type, \idfunc[\type], \lam{n}\lam{f}\lam{A}\Parens{\sm{x,y:f(A)}\id[]xy}}
+\end{gather*}
+
+What should the boundary of an $n$-path be? The boundary of a $1$-path is
+a pair of points. The boundary of a $2$-path (that is, a homotopy) is a pair of
+$1$-paths. Perhaps the boundary of an $(n+1)$-path should be a pair of
+$n$-paths. We can get these by using the appropriate projections:
+\begin{gather*}
+  \operatorname{nboundary} :
+  \prd{n:\nat}\prd{A:\type}\operatorname{npath}(\suc(n),A)\to
+  \operatorname{npath}(n,A)\times \operatorname{npath}(n,A) \\
+  \operatorname{nboundary}(p)\defeq (\proj{1}(p),\proj{1}(\proj{2}(p)))
+\end{gather*}
+
 \section*{Exercises from \cref{cha:logic}}
+
+\subsection*{Solution to \cref{ex:equiv-functor-set}}
+
+% Prove that if $\eqv A B$ and $A$ is a set, then so is $B$.
+
+Generally, we can use univalence to transform equivalences to equalities
+(paths), and use the principle indiscernability of identicals (transport) to
+show that any statement (family) that holds for one type holds for any type it
+is equivalent to. 
+
+Let $A,B:\type$, $s:\isset(A)$, and $\eqv A B$. By univalence, there is
+a path $p:A=_{\type}B$. We can transport $s$ across this path to obtain the
+desired result:
+\begin{equation*}
+	\transfib{X\mapsto \isset(X)}{p}{s} : \isset(B)
+\end{equation*}
+
+\subsection*{Solution to \cref{ex:isset-coprod}}
+
+Let $A,B:\type$, and assume that $A$ and $B$ are sets. To show $\isset(A+B)$, we
+must show that there is at most one path between elements of $A+B$, up to
+homotopy. Let $x,y:A+B$. We proceed by case analysis on $x$ and $y$.
+
+Consider the cases where $x\jdeq \inl(a)$ and $y\jdeq \inr(b)$ or
+$x\jdeq \inr(b)$ and $y\jdeq \inl(a)$ for some $a:A$ and $b:B$. By the
+characterization of paths in coproduct types (\cref{sec:compute-coprod}), these
+can't be equal. In particular, by \eqref{eq:inlrdj}, given $p:x=y$, we can
+conclude anything we like.
+
+Now suppose that $x\jdeq \inl(a_1)$ and $y\jdeq \inl(a_2)$ for $a_1,a_2:A$. Then
+by \eqref{eq:inlinj},
+\begin{equation*}
+	(x=y)\jdeq {(\inl(a_1)=\inl(a_2))}\eqvsym {(a_1=a_2)}.
+\end{equation*}
+Since $A$ is a set, $a_1=a_2$ is a mere proposition. It follows that
+$x=y$ is a mere proposition (one can use univalence and
+transport, as in the previous exercise). A symmetric proof shows that 
+in the case that $x\jdeq \inr(b_1)$ and $y\jdeq \inr(b_2)$ for $b_1,b_2:B$,
+$x=y$ is also a mere proposition. Therefore, $A+B$ is a set.
+
+\subsection*{Solution to \cref{ex:prop-endocontr}}
+
+($\Rightarrow$) Let $A:\type$ and $P:\isprop(A)$. To show that
+$A\to A$ is contractible, we must give a center of contraction and show that
+every other function $A\to A$ is equal to the center. Define our center to be
+$\idfunc[A]$, and let $f:A\to A$. Define a homotopy $\idfunc[A]\htpy f$ by
+\begin{gather*}
+  \alpha:\prd{x:A}\id[]{\idfunc[A](x)}{f(x)} \\
+  \alpha(x)\defeq P(\idfunc[A](x),f(x))
+\end{gather*}
+Then by function extensionality, $\idfunc[A]=f$.
+
+($\Leftarrow$) Assume $A\to A$ is contractible with center of contraction $c$,
+and let $x,y:A$. We want to show that $x=y$. Define $f:A\to A$ by $f(z)\defeq
+y$. By contractability of $A\to A$, $\idfunc[A]=c=f$. Using $\happly$ on the
+equality between $\idfunc[A]$ and $f$, we obtain that
+$x\jdeq \idfunc[A](x)=f(x)\jdeq y$, so $\id[]xy$. We have shown that any
+two elements of $A$ are equal, that is, $A$ is a mere proposition.
+
+\subsection*{Solution to \cref{ex:lem-mereprop}}
+
+Assume $A$ is a proposition, and let $x,y:A+(\neg A)$. We want to show that
+$x=y$. We proceed by cases using the induction principle for coproducts.
+\begin{enumerate}
+  \item Assume $x\jdeq \inl(a)$ and $y\jdeq \inr(n)$. Then
+    $n(a):\emptyt$ gives us a contradiction.
+  \item Assume $x\jdeq \inr(n)$ and $y\jdeq \inl(a)$. Then
+    $n(a):\emptyt$ gives us a contradiction.
+  \item Assume $x\jdeq \inl(a_1)$ and $y\jdeq \inl(a_2)$. By the
+    characterization of paths in coproduct types (\cref{sec:compute-coprod}), we
+    know $\eqv{(\id[]xy)}{(\id[]{a_1}{a_2})}$, and we have $\id[]{a_1}{a_2}$
+    since $A$ is a proposition. 
+  \item Finally, assume $x\jdeq \inr(n_1)$ and $y\jdeq \inr(n_2)$.
+    Again by the characterization of paths in coproduct types, we know
+    $\eqv{(\id[]xy)}{(\id[]{n_1}{n_2})}$, so it suffices to show $\id[]{n_1}{n_2}$.
+    Since $\neg A\jdeq A\to \emptyt$ and $\emptyt$ is a mere proposition, we
+    have by \cref{thm:isprop-forall} that $\neg A$ is a mere proposition.
+    Therefore, any two elements of $\neg A$ are equal, and in particular,
+    $\id[]{n_1}{n_2}$.
+\end{enumerate}
+
+\subsection*{Solution to \cref{ex:disjoint-or}}
+
+Assume $h:\neg(A\times B)$, and let $x,y:A+B$. We want to show that
+$x=y$. We proceed by cases using the induction principle for coproducts.
+\begin{enumerate}
+  \item Assume $x\jdeq \inl(a)$ and $y\jdeq \inr(b)$ for $a:A$ and $b:B$.
+    Then $h(a,b):\emptyt$, and we can use the destructor for $\emptyt$ to
+    conclude anything we wish.
+  \item Assume $x\jdeq \inr(b)$ and $y\jdeq \inl(a)$. Then $h(a,b):\emptyt$, and
+    we're done.
+  \item Assume $x\jdeq \inl(a_1)$ and $y\jdeq \inl(a_2)$. By the
+    characterization of paths in coproduct types (\cref{sec:compute-coprod}), we
+    know $\eqv{(\id[]xy)}{(\id[]{a_1}{a_2})}$, and we have $\id[]{a_1}{a_2}$
+    since $A$ is a proposition. 
+  \item Assume $x\jdeq \inr(b_1)$ and $y\jdeq \inr(b_2)$. Just as above,
+    we have $\eqv{(\id[]xy)}{(\id[]{b_1}{b_2})}$, and $\id[]{b_1}{b_2}$.
+\end{enumerate}
 
 \subsection*{Solution to \cref{ex:decidable-choice}}
 

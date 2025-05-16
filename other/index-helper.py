@@ -56,7 +56,7 @@ for fn in files:
     #text = re.sub(r"['`]", ' ', text)
     # Replace --- with space
     text = re.sub(r'---', '   ', text)
-    # Replace punctuations with space
+    # Replace punctuation with space
     #text = re.sub(r'[,.;:?!]', ' ', text)
     # Replace newlines with spaces
     #text = re.sub(r'\n', ' ', text)

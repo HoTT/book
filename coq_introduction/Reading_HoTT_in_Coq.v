@@ -121,7 +121,7 @@ a rough description, the major properties are:
 - The constructors are exhaustive.  There is no other way to create a
   term of type [nat].
 
-- Contructors create well-founded terms.  There is no way to create a
+- Constructors create well-founded terms.  There is no way to create a
   self-referential [nat], such as having an [S] that returns itself.
 
 - Terms created with different constructors are not equal.  [O] is not
@@ -584,12 +584,12 @@ universe is split into two: "Prop" and "Set".
 The "Prop" universe contains propositions - statements that can be
 proven or disproven.  In practice, that means types that are shown to
 be either inhabited or uninhabited.  Types in "Prop" must be "proof
-irrelavent": it cannot matter which term inhabits the type, just that
+irrelevant": it cannot matter which term inhabits the type, just that
 it is inhabited.
 
 The "Set" universe contains all other "small types".  (Small types are
 ones that do not contain references to a universe.)  Since in homotopy
-type theory every equality proof is relavent, all of our inductive
+type theory every equality proof is relevant, all of our inductive
 types will reside in the "Set" universe.
 
 The infinite number of universes above "Prop" and "Set" are known as

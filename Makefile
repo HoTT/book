@@ -83,7 +83,7 @@ dvi: $(TOPDVIFILES) exercise_solutions.dvi errata.dvi cover-lulu-hardcover.dvi c
 # Main targets
 $(TOPPDFFILES) : %.pdf : %.tex $(TEXFILES) references.bib cover-lores-front.png cover-lores-back.png
 	if which latexmk > /dev/null 2>&1 ;\
-	then latexmk -interaction=batchmode -pdf $< ;\
+	then latexmk -interaction=batchmode -g -pdf $< ;\
 	else (echo "run 1: pdflatex $<"; pdflatex -halt-on-error -interaction=batchmode $< 2>&1 >/dev/null) && \
 	     bibtex $(patsubst %.tex,%,$<) && \
 	     makeindex $(patsubst %.tex,%,$<) && \
